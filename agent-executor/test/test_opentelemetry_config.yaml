@@ -1,0 +1,51 @@
+# OpenTelemetry测试配置
+# 此配置用于测试OpenTelemetry集成
+
+app:
+  host_ip: "0.0.0.0"
+  port: 8080
+  log_level: "info"
+  debug: true
+
+# OpenTelemetry配置
+o11y:
+  # 日志配置 - 启用Console导出器
+  log_enabled: true
+  log_exporter: "console"
+  log_http_endpoint: ""
+
+  # 跟踪配置 - 启用Console导出器
+  trace_enabled: true
+  trace_exporter: "console"
+  trace_http_endpoint: ""
+
+  # 指标配置 - 启用Console导出器
+  metric_enabled: true
+  metric_exporter: "console"
+  metric_http_endpoint: ""
+
+  # 服务标识
+  service_name: "agent-executor-test"
+  service_version: "1.0.0-test"
+
+
+# 其他必要的最小配置
+redis:
+  host: "localhost"
+  port: 6379
+  db: 0
+
+rds:
+  host: "localhost"
+  port: 5432
+  database: "test"
+  username: "test"
+  password: "test"
+
+# 简化配置以进行测试
+features:
+  enable_executor_log_output: false
+  enable_gpt_cache: false
+
+local_dev:
+  is_show_config_on_boot: true

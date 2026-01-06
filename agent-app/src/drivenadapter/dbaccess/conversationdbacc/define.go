@@ -1,0 +1,40 @@
+package conversationdbacc
+
+import (
+	"sync"
+
+	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/cmp/icmp"
+	"github.com/data-agent/agent-app/src/drivenadapter/dbaccess"
+	"github.com/data-agent/agent-app/src/infra/common/global"
+	"github.com/data-agent/agent-app/src/port/driven/idbaccess"
+	"github.com/kweaver-ai/kweaver-go-lib/logger"
+
+	"github.com/kweaver-ai/proton-rds-sdk-go/sqlx"
+)
+
+var (
+	conversationRepoOnce sync.Once
+	conversationRepoImpl idbaccess.IConversationRepo
+)
+
+type ConversationRepo struct {
+	idbaccess.IDBAccBaseRepo
+
+	db *sqlx.DB
+
+	logger icmp.Logger
+}
+
+var _ idbaccess.IConversationRepo = &ConversationRepo{}
+
+func NewConversationRepo() idbaccess.IConversationRepo {
+	conversationRepoOnce.Do(func() {
+		conversationRepoImpl = &ConversationRepo{
+			db:             global.GDB,
+			logger:         logger.GetLogger(),
+			IDBAccBaseRepo: dbaccess.NewDBAccBase(),
+		}
+	})
+
+	return conversationRepoImpl
+}
