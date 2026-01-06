@@ -3,7 +3,7 @@ module devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory
 go 1.24.0
 
 require (
-	github.com/kweaver-ai/agent-go-common-pkg v1.1.4
+	github.com/kweaver-ai/agent-go-common-pkg v1.1.5
 	devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib v0.0.33
 	devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/proton-rds-sdk-go v1.2.1
 	github.com/stretchr/testify v1.11.1
