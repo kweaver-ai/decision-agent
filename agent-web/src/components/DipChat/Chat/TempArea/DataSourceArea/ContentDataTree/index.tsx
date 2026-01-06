@@ -55,6 +55,7 @@ const ContentDataTree = ({ dataSource, onPreviewFile }: any) => {
     }
   };
   const onLoadData = (nodeData: AdTreeDataNode) => {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise<any>(async resolve => {
       const key = nodeData.key as string;
       const res = await listDir({ docid: _.last(key.split('-'))!, limit: 100 });

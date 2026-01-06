@@ -150,4 +150,10 @@ export const getKnExperimentList = () =>
   });
 
 export const getKnExperimentDetailsById = (kn_id: string) =>
-  get(`${knExperimentDataBaseUrl}/knowledge-networks/${kn_id}`);
+  get(`${knExperimentDataBaseUrl}/knowledge-networks/${kn_id}?include_detail=false&include_statistics=false`);
+
+/** 获取知识网络的对象类 */
+export const getObjectTypeById = (kn_id: string) =>
+  get(
+    `${knExperimentDataBaseUrl}/knowledge-networks/${kn_id}/object-types?offset=0&limit=-1&direction=desc&sort=update_time&name_pattern=`
+  );

@@ -1,5 +1,5 @@
 import styles from './index.module.less';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import classNames from 'classnames';
 import ScrollBarContainer from '@/components/ScrollBarContainer';
 import { useDipChatStore } from '@/components/DipChat/store';

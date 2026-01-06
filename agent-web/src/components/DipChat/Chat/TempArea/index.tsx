@@ -2,7 +2,7 @@ import styles from './index.module.less';
 import { Splitter } from 'antd';
 import DataSourceArea from './DataSourceArea';
 import FileArea from './FileArea';
-import { FileItem, PreviewFileType } from '@/components/DipChat/interface';
+import type { FileItem, PreviewFileType } from '@/components/DipChat/interface';
 import classNames from 'classnames';
 import { getFileExtension } from '@/utils/doc';
 import { useDipChatStore } from '@/components/DipChat/store';

@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { getKnowledgeSourceDetail } from '@/apis/knowledge-data';
 import AdTree from '@/components/AdTree';
-import { AdTreeDataNode, adTreeUtils } from '@/utils/handle-function';
+import { type AdTreeDataNode, adTreeUtils } from '@/utils/handle-function';
 import DipIcon from '@/components/DipIcon';
 import styles from './index.module.less';
 import { nanoid } from 'nanoid';
