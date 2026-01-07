@@ -1,0 +1,58 @@
+# PTC Tools Configuration Example
+# Shared configuration file for multiple PTC tools
+# Place this file as ptc_tools_config.yaml in your working directory
+
+text2metric:
+  # Data source configuration (required)
+  data_source:
+    metric_list: # List of metric IDs (required)
+      - metric_id_1
+      - metric_id_2
+    base_url: https://your-server.com # str, optional: Server base URL
+    token: your_token # str, optional: Authentication token
+    user_id: your_user_id # str, optional: User ID
+    account_type: user # str, optional: Account type, defaults to "user". Options: "user", "app", "anonymous"
+    kn: # list, optional: Knowledge network configuration
+      - knowledge_network_id: "kn_id_1"
+        object_types: ["object_type_1"]
+    search_scope: # list, optional: Search scope for knowledge network
+      - object_types
+      - relation_types
+    recall_mode: keyword_vector_retrieval # str, optional: Recall mode, defaults to "keyword_vector_retrieval"
+
+  # LLM configuration for external language model (optional)
+  llm:
+    model_name: gpt-4
+    openai_api_key: your_api_key
+    openai_api_base: https://api.openai.com/v1
+    max_tokens: 2000
+    temperature: 0.1
+
+  # Inner LLM configuration from model factory (optional)
+  inner_llm:
+    id: model_id
+    name: model_name
+    max_tokens: 1000
+    temperature: 0.1
+
+  # Tool-specific configuration (optional)
+  config:
+    background: "" # str, optional: Background information
+    session_type: redis # str, optional: Session type, defaults to "redis". Options: "in_memory", "redis"
+    session_id: default_session # str, optional: Session ID
+    force_limit: 200 # int, optional: Force limit for query results, -1 means no limit
+    recall_top_k: 5 # int, optional: Number of metrics to recall, -1 means no limit
+    dimension_num_limit: 30 # int, optional: Maximum number of dimensions, -1 means no limit
+    return_record_limit: 100 # int, optional: Maximum number of records to return, -1 means no limit
+    return_data_limit: 10000 # int, optional: Maximum data size to return in bytes, -1 means no limit
+
+# Other tools can be added here:
+# text2sql:
+#   data_source:
+#     view_list: [view_id_1]
+#     user_id: your_user_id
+# sql_helper:
+#   data_source:
+#     view_list: [view_id_1]
+#     user_id: your_user_id
+

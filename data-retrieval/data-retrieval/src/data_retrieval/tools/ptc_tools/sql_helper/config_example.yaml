@@ -1,0 +1,45 @@
+# PTC Tools Configuration Example
+# Shared configuration file for multiple PTC tools
+# Place this file as ptc_tools_config.yaml in your working directory
+
+sql_helper:
+  # Data source configuration (required)
+  data_source:
+    view_list:  # list, required: List of view IDs to query
+      - view_id_1
+      - view_id_2
+    user_id: your_user_id  # str, required: User ID for authentication
+    # base_url: https://your-server.com  # str, optional: Server base URL, defaults to empty string
+    # token: your_token  # str, optional: Authentication token, defaults to empty string
+    account_type: user  # str, optional: Account type, defaults to "user". Options: "user", "app"
+    # kn:  # list, optional: Knowledge network configuration for retrieving views dynamically
+    #   - knowledge_network_id: "kn_id_1"
+    #     object_types: ["data_view", "metric"]
+    # search_scope:  # list, optional: Search scope for knowledge network. Options: "object_types", "relation_types", "action_types"
+    #   - object_types
+    #   - relation_types
+    # recall_mode: keyword_vector_retrieval  # str, optional: Recall mode for knowledge network, defaults to "keyword_vector_retrieval"
+
+  # Tool-specific configuration (optional)
+  config:
+    session_type: redis  # str, optional: Session type, defaults to "redis". Options: "in_memory", "redis"
+    session_id: default_session  # str, optional: Session ID for maintaining context across requests
+    view_num_limit: 5  # int, optional: Maximum number of views to return in metadata (only effective for get_metadata command), defaults to system setting
+    dimension_num_limit: 30  # int, optional: Maximum number of dimensions to return in metadata (only effective for get_metadata command), defaults to system setting
+    with_sample: true  # bool, optional: Include sample data in metadata, defaults to true
+    return_record_limit: 100  # int, optional: Maximum number of records to return in query results, defaults to system setting
+    return_data_limit: 10000  # int, optional: Maximum data size to return in bytes, defaults to system setting
+    force_limit: 200  # int, optional: Automatically add LIMIT clause to SQL before execution, -1 means no limit, defaults to system setting
+    # get_desc_from_datasource: false  # bool, optional: Whether to get description from datasource, defaults to false
+
+# Other tools can be added here:
+# text2sql:
+#   data_source:
+#     view_list: [view_id_1]
+#     user_id: your_user_id
+#   llm:
+#     model_name: gpt-4
+#     openai_api_key: your_api_key
+#   config:
+#     retry_times: 3
+#     force_limit: 100

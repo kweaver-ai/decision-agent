@@ -1,0 +1,54 @@
+# PTC Tools Configuration Example
+# Shared configuration file for multiple PTC tools
+# Place this file as ptc_tools_config.yaml in your working directory
+
+text2sql:
+  # Data source configuration (required)
+  data_source:
+    view_list:  # List of view IDs to query (required)
+      - view_id_1
+      - view_id_2
+    user_id: your_user_id  # User ID for authentication (required)
+    base_url: https://your-server.com  # Server base URL (optional, default empty)
+    token: your_token  # Authentication token (optional, default empty)
+    account_type: user  # Account type: "user" or "app" (optional, default "user")
+    # kg: []  # Knowledge graph configuration (optional)
+    # kn: []  # Knowledge network configuration (optional)
+    # search_scope: []  # Search scope configuration (optional)
+    # recall_mode: keyword_vector_retrieval  # Recall mode (optional)
+
+  # LLM configuration for external language model (optional)
+  llm:
+    model_name: gpt-4  # Model name, e.g., "gpt-4", "gpt-3.5-turbo"
+    openai_api_key: your_api_key  # API key for OpenAI-compatible API
+    openai_api_base: https://api.openai.com/v1  # API base URL
+    max_tokens: 2000  # Maximum tokens for generation
+    temperature: 0.1  # Temperature for generation (0.0-2.0)
+
+  # Inner LLM configuration from model factory (optional)
+  inner_llm:
+    id: model_id  # Model ID from model factory
+    name: model_name  # Model name
+    max_tokens: 1000  # Maximum tokens for generation
+    temperature: 0.1  # Temperature for generation
+
+  # Tool-specific configuration (optional)
+  config:
+    session_id: default_session  # Session ID for maintaining context
+    retry_times: 3  # Number of retry attempts on failure (default 3)
+    force_limit: 100  # Automatically add LIMIT clause to generated SQL
+    view_num_limit: 5  # Maximum number of views to return in metadata
+    dimension_num_limit: 30  # Maximum number of dimensions to return in metadata
+    return_record_limit: 100  # Maximum number of records to return in query results
+    return_data_limit: 10000  # Maximum data size to return in bytes
+    rewrite_query: false  # Whether to rewrite user query (default false)
+    only_essential_dim: true  # Only show essential dimensions (default true)
+
+# Other tools can be added here:
+# sql_helper:
+#   data_source:
+#     view_list: [view_id_1]
+#     user_id: your_user_id
+#   config:
+#     session_id: default_session
+#     view_num_limit: 5
