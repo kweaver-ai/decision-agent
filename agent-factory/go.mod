@@ -3,7 +3,7 @@ module github.com/kweaver-ai/decision-agent/agent-factory
 go 1.24.0
 
 require (
-	github.com/kweaver-ai/agent-go-common-pkg v1.1.7
+	github.com/kweaver-ai/agent-go-common-pkg v1.1.8
 	github.com/kweaver-ai/kweaver-go-lib v1.0.2
 	github.com/kweaver-ai/proton-rds-sdk-go v1.4.2
 	github.com/stretchr/testify v1.11.1
@@ -25,7 +25,7 @@ require (
 	github.com/DATA-DOG/go-sqlmock v1.5.2 // indirect
 	github.com/IBM/sarama v1.46.3 // indirect
 	github.com/avast/retry-go v3.0.0+incompatible // indirect
-	github.com/bytedance/sonic v1.14.1 // indirect
+	github.com/bytedance/sonic v1.14.2 // indirect
 	github.com/bytedance/sonic/loader v0.4.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect

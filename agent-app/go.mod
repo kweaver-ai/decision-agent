@@ -4,12 +4,12 @@ go 1.24.0
 
 require (
 	github.com/PuerkitoBio/goquery v1.10.3
-	github.com/bytedance/sonic v1.14.1
+	github.com/bytedance/sonic v1.14.2
 	github.com/getkin/kin-openapi v0.132.0
 	github.com/gin-gonic/gin v1.11.0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/kweaver-ai/TelemetrySDK-Go/span/v2 v2.10.3
-	github.com/kweaver-ai/agent-go-common-pkg v1.1.7
+	github.com/kweaver-ai/agent-go-common-pkg v1.1.8
 	github.com/kweaver-ai/kweaver-go-lib v1.0.2
 	github.com/kweaver-ai/proton-rds-sdk-go v1.4.2
 	github.com/pkg/errors v0.9.1
