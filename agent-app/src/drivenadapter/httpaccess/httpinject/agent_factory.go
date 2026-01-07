@@ -3,11 +3,11 @@ package httpinject
 import (
 	"sync"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/httpaccess/agentfactoryaccess"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/infra/common/global"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driven/ihttpaccess/iagentfactoryhttp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/logger"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/rest"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/httpaccess/agentfactoryaccess"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/infra/common/global"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driven/ihttpaccess/iagentfactoryhttp"
+	"github.com/kweaver-ai/kweaver-go-lib/logger"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
 var (

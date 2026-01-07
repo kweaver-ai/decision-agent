@@ -8,8 +8,8 @@ import (
 	"syscall"
 	"time"
 
-	_ "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/boot"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/server"
+	_ "github.com/kweaver-ai/decision-agent/agent-factory/src/boot"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/server"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/cenvhelper"
 )
 

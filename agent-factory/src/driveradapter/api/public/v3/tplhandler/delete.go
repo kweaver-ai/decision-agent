@@ -4,13 +4,13 @@ import (
 	"net/http"
 	"strconv"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/constant/auditconstant"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/auditconstant"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capimiddleware"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/ginhelper"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/audit"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/rest"
+	"github.com/kweaver-ai/kweaver-go-lib/audit"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/gin-gonic/gin"
 )
 

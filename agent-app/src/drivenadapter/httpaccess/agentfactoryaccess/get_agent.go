@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/httpaccess/agentfactoryaccess/agentfactorydto"
-	o11y "devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/observability"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/httpaccess/agentfactoryaccess/agentfactorydto"
+	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/bytedance/sonic"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"

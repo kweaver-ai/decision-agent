@@ -5,10 +5,10 @@ import (
 
 	"github.com/pkg/errors"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/square/squarereq"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squarereq"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/rest"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/gin-gonic/gin"
 )
 

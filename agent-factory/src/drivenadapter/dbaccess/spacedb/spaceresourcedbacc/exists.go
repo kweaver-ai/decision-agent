@@ -3,7 +3,7 @@ package spaceresourcedbacc
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/valueobject/spacevo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/spacevo"
 )
 
 func (repo *SpaceResourceRepo) ExistsBySpaceIDAndResourceTypeAndResourceIDs(ctx context.Context, spaceID string, resources []*spacevo.ResourceUniq) (exists []*spacevo.ResourceUniq, err error) {

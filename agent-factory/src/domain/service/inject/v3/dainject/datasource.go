@@ -3,14 +3,14 @@ package dainject
 import (
 	"sync"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/service"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/service/v3/dssvc"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/drivenadapter/dbaccess/datasetdbacc"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/drivenadapter/dbaccess/dsdbacc"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/drivenadapter/httpaccess/httpinject"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/port/driver/iv3portdriver"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/v3/dssvc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/datasetdbacc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/dsdbacc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/httpinject"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/rediscmp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/logger"
+	"github.com/kweaver-ai/kweaver-go-lib/logger"
 )
 
 var (

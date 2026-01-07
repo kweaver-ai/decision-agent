@@ -3,9 +3,9 @@ package productsvc
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/e2p/producte2p"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/product/productreq"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/apierr"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/e2p/producte2p"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/product/productreq"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"

@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/conversation_message/conversationmsgreq"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/conversation_message/conversationmsgreq"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/infra/persistence/dapo"
 )
 
 //go:generate mockgen -source=./conversation.go -destination ./idbaccessmock/conversation.go -package idbaccessmock

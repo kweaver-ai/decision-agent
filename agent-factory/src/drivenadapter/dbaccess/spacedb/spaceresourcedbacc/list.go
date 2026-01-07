@@ -3,8 +3,8 @@ package spaceresourcedbacc
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/drivenadapter/dbaccess/spacedb/spaceresourcedbacc/srdbarg"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/spacedb/spaceresourcedbacc/srdbarg"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/dbhelper2"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/sqlhelper2"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"

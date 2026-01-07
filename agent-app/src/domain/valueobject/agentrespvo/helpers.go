@@ -1,7 +1,7 @@
 package agentrespvo
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/infra/common/util"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/infra/common/util"
 	"github.com/bytedance/sonic"
 )
 

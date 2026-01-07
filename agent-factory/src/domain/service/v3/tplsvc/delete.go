@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/auditlogdto"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/apierr"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/auditlogdto"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/drivenadapter/httpaccess/bizdomainhttp/bizdomainhttpreq"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"

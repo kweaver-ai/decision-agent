@@ -1,11 +1,11 @@
 package uniqueryaccess
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/conf"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driven/ihttpaccess/iuniqueryhttp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/cmp/icmp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/cutil"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/rest"
+	"github.com/kweaver-ai/decision-agent/agent-app/conf"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driven/ihttpaccess/iuniqueryhttp"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/icmp"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
 type uniqueryHttpAcc struct {

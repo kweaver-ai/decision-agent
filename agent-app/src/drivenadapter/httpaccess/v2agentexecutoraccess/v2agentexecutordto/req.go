@@ -1,9 +1,9 @@
 package v2agentexecutordto
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/constant"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/domain/valueobject/daconfvalobj"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/cenum"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/constant"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/valueobject/daconfvalobj"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cenum"
 )
 
 // V2AgentCallReq v2 版本的 Agent 调用请求

@@ -1,8 +1,8 @@
 package v2agentexecutoraccess
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutordto"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutordto"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
 )
 
 // ConvertV1ToV2CallReq 将 v1 的 AgentCallReq 转换为 v2 的 V2AgentCallReq

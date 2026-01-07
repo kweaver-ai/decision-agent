@@ -3,9 +3,9 @@ package iv3portdriver
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/auditlogdto"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/product/productreq"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/product/productresp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/auditlogdto"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/product/productreq"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/product/productresp"
 )
 
 //go:generate mockgen -source=./prouct_svc.go -destination ./v3portdrivermock/prouct_svc.go -package v3portdrivermock

@@ -14,10 +14,10 @@ import (
 	sql "database/sql"
 	reflect "reflect"
 
-	spacevo "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/valueobject/spacevo"
-	common "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/common"
-	dapo "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/persistence/dapo"
-	sqlx "devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/proton-rds-sdk-go/sqlx"
+	spacevo "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/spacevo"
+	common "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/common"
+	dapo "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
+	sqlx "github.com/kweaver-ai/proton-rds-sdk-go/sqlx"
 	gomock "go.uber.org/mock/gomock"
 )
 

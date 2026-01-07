@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/constant/daconstant"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/daconstant"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/dbhelper2"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
 	"github.com/pkg/errors"

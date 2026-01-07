@@ -3,10 +3,10 @@ package conversationp2e
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/entity/conversationeo"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/conversation_message/conversationmsgreq"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/infra/persistence/dapo"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driven/idbaccess"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/entity/conversationeo"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/conversation_message/conversationmsgreq"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driven/idbaccess"
 	"github.com/pkg/errors"
 )
 

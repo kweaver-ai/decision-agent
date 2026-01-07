@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"slices"
 
-	agentreq "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/agent/req"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/static"
-	o11y "devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/observability"
+	agentreq "github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/agent/req"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/static"
+	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"

@@ -3,8 +3,8 @@ package iportdriver
 import (
 	"context"
 
-	tempareareq "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/temparea/req"
-	temparearesp "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/temparea/resp"
+	tempareareq "github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/temparea/req"
+	temparearesp "github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/temparea/resp"
 )
 
 type ITempAreaSvc interface {

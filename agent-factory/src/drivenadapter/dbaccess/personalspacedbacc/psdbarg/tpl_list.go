@@ -1,6 +1,6 @@
 package psdbarg
 
-import "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/personal_space/personalspacereq"
+import "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/personal_space/personalspacereq"
 
 type TplListArg struct {
 	ListReq   *personalspacereq.AgentTplListReq

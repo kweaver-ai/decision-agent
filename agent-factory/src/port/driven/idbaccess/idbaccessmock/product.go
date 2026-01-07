@@ -13,7 +13,7 @@ import (
 	context "context"
 	reflect "reflect"
 
-	dapo "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/persistence/dapo"
+	dapo "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	gomock "go.uber.org/mock/gomock"
 )
 

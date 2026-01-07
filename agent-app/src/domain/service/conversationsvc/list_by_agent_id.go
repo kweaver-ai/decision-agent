@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/p2e/conversationp2e"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/conversation/conversationresp"
-	o11y "devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/observability"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/p2e/conversationp2e"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/conversation/conversationresp"
+	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )

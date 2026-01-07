@@ -1,9 +1,9 @@
 package global
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/conf"
+	"github.com/kweaver-ai/decision-agent/agent-app/conf"
 
-	"devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/proton-rds-sdk-go/sqlx"
+	"github.com/kweaver-ai/proton-rds-sdk-go/sqlx"
 )
 
 var (

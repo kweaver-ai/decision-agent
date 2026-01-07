@@ -5,11 +5,11 @@ import (
 	"fmt"
 	"math"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/constant"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/httpaccess/docsetaccess/docsetdto"
-	agentreq "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/agent/req"
-	agentresp "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/agent/resp"
-	o11y "devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/observability"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/constant"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/httpaccess/docsetaccess/docsetdto"
+	agentreq "github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/agent/req"
+	agentresp "github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/agent/resp"
+	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 )
 

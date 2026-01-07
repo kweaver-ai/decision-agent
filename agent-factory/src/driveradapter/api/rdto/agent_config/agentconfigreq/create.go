@@ -3,7 +3,7 @@ package agentconfigreq
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/entity/daconfeo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/daconfeo"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cenum"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
 	"github.com/pkg/errors"

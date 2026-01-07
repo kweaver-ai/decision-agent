@@ -4,8 +4,8 @@ import (
 	"context"
 	"strconv"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/persistence/dapo"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/port/driven/idbaccess"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/drivenadapter/httpaccess/bizdomainhttp/bizdomainhttpreq"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cenum"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper"

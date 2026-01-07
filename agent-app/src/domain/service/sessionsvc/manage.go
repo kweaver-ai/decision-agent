@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutoraccreq"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/session/sessionreq"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/session/sessionresp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/ctype"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutoraccreq"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/session/sessionreq"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/session/sessionresp"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/ctype"
 )
 
 func (s *sessionSvc) Manage(ctx context.Context, req sessionreq.ManageReq, visitorInfo *ctype.VisitorInfo) (resp sessionresp.ManageResp, err error) {

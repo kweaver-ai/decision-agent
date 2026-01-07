@@ -3,7 +3,7 @@ package comvalobj
 import (
 	"errors"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/domain/constant/cdaconstant"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/constant/cdaconstant"
 )
 
 type DataAgentUniqFlag struct {

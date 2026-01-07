@@ -6,7 +6,7 @@ import (
 	"github.com/kweaver-ai/agent-go-common-pkg/src/drivenadapter/rdto/agent_permission/cpmsreq"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/rest"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 )

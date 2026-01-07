@@ -3,14 +3,14 @@ package dainject
 import (
 	"sync"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/service"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/service/conversationsvc"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/dbaccess/conversationdbacc"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/dbaccess/conversationmsgdbacc"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/dbaccess/tempareadbacc"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/httpaccess/httpinject"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driver/iportdriver"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/logger"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/service"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/service/conversationsvc"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/dbaccess/conversationdbacc"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/dbaccess/conversationmsgdbacc"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/dbaccess/tempareadbacc"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/httpaccess/httpinject"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driver/iportdriver"
+	"github.com/kweaver-ai/kweaver-go-lib/logger"
 )
 
 var (

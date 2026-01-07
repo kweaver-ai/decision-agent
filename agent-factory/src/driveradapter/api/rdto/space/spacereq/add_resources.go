@@ -4,8 +4,8 @@ import (
 	"errors"
 	"strconv"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/constant/csconstant"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/entity/spaceeo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/csconstant"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/spaceeo"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
 )

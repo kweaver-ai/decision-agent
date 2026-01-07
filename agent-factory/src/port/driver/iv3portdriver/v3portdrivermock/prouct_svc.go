@@ -13,9 +13,9 @@ import (
 	context "context"
 	reflect "reflect"
 
-	auditlogdto "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/auditlogdto"
-	productreq "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/product/productreq"
-	productresp "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/product/productresp"
+	auditlogdto "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/auditlogdto"
+	productreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/product/productreq"
+	productresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/product/productresp"
 	gomock "go.uber.org/mock/gomock"
 )
 

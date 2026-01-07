@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"errors"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/dbhelper2"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"

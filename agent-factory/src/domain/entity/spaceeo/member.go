@@ -1,7 +1,7 @@
 package spaceeo
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 )
 
 // SpaceMember 空间成员实体对象

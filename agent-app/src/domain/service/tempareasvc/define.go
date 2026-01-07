@@ -1,13 +1,13 @@
 package tempareasvc
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/service"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driven/idbaccess"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driven/ihttpaccess/iagentfactoryhttp"
-	iecoConfighttp "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driven/ihttpaccess/iecoconfighttp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driven/ihttpaccess/iefasthttp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driver/iportdriver"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/cmp/icmp"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/service"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driven/idbaccess"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driven/ihttpaccess/iagentfactoryhttp"
+	iecoConfighttp "github.com/kweaver-ai/decision-agent/agent-app/src/port/driven/ihttpaccess/iecoconfighttp"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driven/ihttpaccess/iefasthttp"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driver/iportdriver"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/icmp"
 )
 
 type tempareaSvc struct {

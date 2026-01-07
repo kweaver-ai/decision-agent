@@ -3,9 +3,9 @@ package spacep2e
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/locale"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/entity/spaceeo"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/locale"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/spaceeo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/umcmp/dto/umarg"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/umcmp/umtypes"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cenum"

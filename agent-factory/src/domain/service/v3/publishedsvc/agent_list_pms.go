@@ -3,10 +3,10 @@ package publishedsvc
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/published/pubedreq"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/published/pubedresp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/common"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/published/pubedreq"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/published/pubedresp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
 	"github.com/pkg/errors"

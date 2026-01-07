@@ -1,9 +1,9 @@
 package agentreq
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/valueobject"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/valueobject/comvalobj"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/agent/req/chatopt"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/valueobject"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/valueobject/comvalobj"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/agent/req/chatopt"
 )
 
 type DebugReq struct {

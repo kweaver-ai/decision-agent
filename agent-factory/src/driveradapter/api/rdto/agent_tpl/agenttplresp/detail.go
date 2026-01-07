@@ -1,7 +1,7 @@
 package agenttplresp
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/entity/daconfeo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/daconfeo"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/valueobject/daconfvalobj"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"

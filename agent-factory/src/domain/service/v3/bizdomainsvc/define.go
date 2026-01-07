@@ -1,7 +1,7 @@
 package bizdomainsvc
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/service"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/icmp"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/port/driven/ihttpaccess/ibizdomainacc"
 )

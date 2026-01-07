@@ -5,13 +5,13 @@ import (
 	"net/http"
 	"strconv"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/conversation/conversationreq"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/infra/apierr"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/capierr"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/chelper"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/conversation/conversationreq"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/infra/apierr"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper"
 
-	o11y "devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/observability"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/rest"
+	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"

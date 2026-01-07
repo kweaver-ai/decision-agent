@@ -3,10 +3,10 @@ package v3agentconfigsvc
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/auditlogdto"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/agent_tpl/agenttplreq"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/agent_tpl/agenttplresp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/auditlogdto"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_tpl/agenttplreq"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_tpl/agenttplresp"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper"
 	"github.com/pkg/errors"

@@ -1,6 +1,6 @@
 package agentfactorydto
 
-import "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/domain/valueobject/daconfvalobj"
+import "github.com/kweaver-ai/agent-go-common-pkg/src/domain/valueobject/daconfvalobj"
 
 type Field struct {
 	Name string `json:"name"`

@@ -2,9 +2,9 @@ package apierr
 
 import (
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/rest"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/locale"
+	"github.com/kweaver-ai/decision-agent/agent-factory/locale"
 )
 
 // 公共错误码, 服务内所有模块均可使用

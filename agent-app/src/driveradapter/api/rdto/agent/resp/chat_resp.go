@@ -1,9 +1,9 @@
 package agentresp
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/valueobject/conversationmsgvo"
-	// "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/rest"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/rest"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/valueobject/conversationmsgvo"
+	// "github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/rest"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
 // NOTE: chat的响应结果，要求和会话详情基本一致

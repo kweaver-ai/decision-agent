@@ -3,7 +3,7 @@ package permissionsvc
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/common"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/enum/cdapmsenum"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/drivenadapter/rdto/agent_permission/cpmsresp"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper"

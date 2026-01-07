@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/constant/daconstant"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/daconstant"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
 )
 

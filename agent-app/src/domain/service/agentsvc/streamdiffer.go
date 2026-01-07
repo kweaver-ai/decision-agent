@@ -6,8 +6,8 @@ import (
 	"reflect"
 	"strings"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/logger"
-	o11y "devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/observability"
+	"github.com/kweaver-ai/kweaver-go-lib/logger"
+	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/bytedance/sonic"
 )
 

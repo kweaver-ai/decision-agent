@@ -3,7 +3,7 @@ package idbaccess
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/infra/persistence/dapo"
 )
 
 type ITempAreaRepo interface {

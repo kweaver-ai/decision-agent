@@ -3,12 +3,12 @@ package squarehandler
 import (
 	"sync"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/service/v3/squaresvc"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/public/v3/apiv3common"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/port/driver/ihandlerportdriver"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/port/driver/iv3portdriver"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/v3/squaresvc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/public/v3/apiv3common"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/ihandlerportdriver"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/icmp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/logger"
+	"github.com/kweaver-ai/kweaver-go-lib/logger"
 
 	"github.com/gin-gonic/gin"
 )

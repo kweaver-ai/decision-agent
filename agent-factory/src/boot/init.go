@@ -1,18 +1,18 @@
 package boot
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/conf"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/common"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/common/global"
+	"github.com/kweaver-ai/decision-agent/agent-factory/conf"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	_ "github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cglobal"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/cenvhelper"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/redishelper"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/audit"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/mq"
+	"github.com/kweaver-ai/kweaver-go-lib/audit"
+	"github.com/kweaver-ai/kweaver-go-lib/mq"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/logger"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/rest"
+	"github.com/kweaver-ai/kweaver-go-lib/logger"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/pkg/errors"
 )
 

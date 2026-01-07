@@ -1,7 +1,7 @@
 package spacereq
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/valueobject/spacevo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/spacevo"
 )
 
 // SpaceMemberReq 空间成员请求

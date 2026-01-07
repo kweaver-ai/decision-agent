@@ -3,8 +3,8 @@ package bizdomain
 import (
 	"sync"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/service/inject/v3/dainject"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/service/v3/bizdomainsvc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/inject/v3/dainject"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/v3/bizdomainsvc"
 	"github.com/gin-gonic/gin"
 )
 

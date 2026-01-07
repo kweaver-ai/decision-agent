@@ -13,9 +13,9 @@ import (
 	context "context"
 	reflect "reflect"
 
-	auditlogdto "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/auditlogdto"
-	spacereq "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/space/spacereq"
-	spaceresp "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/space/spaceresp"
+	auditlogdto "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/auditlogdto"
+	spacereq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/space/spacereq"
+	spaceresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/space/spaceresp"
 	cdaenum "github.com/kweaver-ai/agent-go-common-pkg/src/domain/enum/cdaenum"
 	gomock "go.uber.org/mock/gomock"
 )

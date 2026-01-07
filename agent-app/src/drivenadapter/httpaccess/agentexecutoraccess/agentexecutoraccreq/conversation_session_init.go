@@ -1,7 +1,7 @@
 package agentexecutoraccreq
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/domain/valueobject/daconfvalobj"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/valueobject/daconfvalobj"
 )
 
 type ConversationSessionInitReq struct {

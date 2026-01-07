@@ -3,13 +3,13 @@ package conversationmsgdbacc
 import (
 	"sync"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/dbaccess"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/infra/common/global"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driven/idbaccess"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/cmp/icmp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/logger"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/dbaccess"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/infra/common/global"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driven/idbaccess"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/icmp"
+	"github.com/kweaver-ai/kweaver-go-lib/logger"
 
-	"devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/proton-rds-sdk-go/sqlx"
+	"github.com/kweaver-ai/proton-rds-sdk-go/sqlx"
 )
 
 var (

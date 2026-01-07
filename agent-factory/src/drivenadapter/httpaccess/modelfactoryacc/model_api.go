@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/cmp/httpclient"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/common/global"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/port/driven/ihttpaccess/imodelfactoryacc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/httpclient"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/imodelfactoryacc"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/icmp"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/rest"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/sashabaranov/go-openai"
 )

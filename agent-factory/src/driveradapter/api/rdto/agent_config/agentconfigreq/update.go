@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/entity/daconfeo"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/common/customvalidator"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/daconfeo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/customvalidator"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/valueobject/daconfvalobj"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/cenvhelper"

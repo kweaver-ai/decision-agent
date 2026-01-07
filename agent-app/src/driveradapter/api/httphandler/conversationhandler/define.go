@@ -3,12 +3,12 @@ package conversationhandler
 import (
 	"sync"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/service/inject/dainject"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driver/ihandlerportdriver"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driver/iportdriver"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/cmp/icmp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/capimiddleware"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/logger"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/service/inject/dainject"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driver/ihandlerportdriver"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driver/iportdriver"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/icmp"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capimiddleware"
+	"github.com/kweaver-ai/kweaver-go-lib/logger"
 
 	"github.com/gin-gonic/gin"
 )

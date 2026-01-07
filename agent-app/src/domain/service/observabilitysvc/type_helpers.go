@@ -3,7 +3,7 @@ package observabilitysvc
 import (
 	"time"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/valueobject/agentrespvo"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/valueobject/agentrespvo"
 )
 
 // 辅助函数用于安全的类型断言

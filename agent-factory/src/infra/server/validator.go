@@ -1,7 +1,7 @@
 package server
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/common/customvalidator"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/customvalidator"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
 )

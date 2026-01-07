@@ -3,9 +3,9 @@ package publishedp2e
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/entity/pubedeo"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/persistence/dapo"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/port/driven/idbaccess"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/pubedeo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/valueobject/daconfvalobj"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"

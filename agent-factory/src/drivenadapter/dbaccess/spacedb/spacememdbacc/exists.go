@@ -3,7 +3,7 @@ package spacememdbacc
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/valueobject/spacevo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/spacevo"
 )
 
 func (repo *SpaceMemberRepo) ExistsBySpaceIDAndObjTypeAndObjIDs(ctx context.Context, spaceID string, members []*spacevo.MemberUniq) (exists []*spacevo.MemberUniq, err error) {

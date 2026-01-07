@@ -1,7 +1,7 @@
 package conversationresp
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/entity/conversationeo"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/entity/conversationeo"
 )
 
 type ConversationDetail struct {

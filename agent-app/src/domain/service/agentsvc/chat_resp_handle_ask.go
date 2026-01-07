@@ -1,6 +1,6 @@
 package agentsvc
 
-import "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/valueobject/agentrespvo/daresvo"
+import "github.com/kweaver-ai/decision-agent/agent-app/src/domain/valueobject/agentrespvo/daresvo"
 
 // 首先尝试从原始数据中提取ask信息
 func (agentSvc *agentSvc) ask(result *daresvo.DataAgentRes) (ask interface{}, err error) {

@@ -1,10 +1,10 @@
 package sessionsvc
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driven/ihttpaccess/iagentexecutorhttp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driven/iredisaccess/isessionredis"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driver/iportdriver"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/cmp/icmp"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driven/ihttpaccess/iagentexecutorhttp"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driven/iredisaccess/isessionredis"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driver/iportdriver"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/icmp"
 )
 
 type sessionSvc struct {

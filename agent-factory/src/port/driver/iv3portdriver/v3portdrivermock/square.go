@@ -13,8 +13,8 @@ import (
 	context "context"
 	reflect "reflect"
 
-	squarereq "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/square/squarereq"
-	squareresp "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/square/squareresp"
+	squarereq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squarereq"
+	squareresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squareresp"
 	gomock "go.uber.org/mock/gomock"
 )
 

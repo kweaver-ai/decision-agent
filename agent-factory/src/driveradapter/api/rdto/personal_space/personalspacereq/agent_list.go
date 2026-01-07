@@ -1,8 +1,8 @@
 package personalspacereq
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/enum/daenum"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/personal_space/personalspaceresp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/daenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/personal_space/personalspaceresp"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/enum/cdaenum"
 	"github.com/pkg/errors"
 )

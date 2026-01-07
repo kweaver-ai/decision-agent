@@ -9,13 +9,13 @@ import (
 	"slices"
 	"strings"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/common/global"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/port/driven/ihttpaccess/iusermanagementacc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iusermanagementacc"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/icmp"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/cenvhelper"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/httphelper"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/logger"
+	"github.com/kweaver-ai/kweaver-go-lib/logger"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/pkg/errors"
 )

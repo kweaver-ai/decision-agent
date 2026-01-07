@@ -3,8 +3,8 @@ package iportdriver
 import (
 	"context"
 
-	agentreq "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/agent/req"
-	agentresp "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/agent/resp"
+	agentreq "github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/agent/req"
+	agentresp "github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/agent/resp"
 )
 
 //go:generate mockgen -source=./agent_svc.go -destination ./iportdrivermock/agent_svc.go -package iportdrivermock

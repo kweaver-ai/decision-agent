@@ -3,8 +3,8 @@ package personalspacedbacc
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/drivenadapter/dbaccess/personalspacedbacc/psdbarg"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/personalspacedbacc/psdbarg"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/dbhelper2"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/sqlhelper2"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"

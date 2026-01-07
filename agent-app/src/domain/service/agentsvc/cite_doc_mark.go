@@ -6,7 +6,7 @@ import (
 	"sort"
 	"strings"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/valueobject/agentrespvo"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/valueobject/agentrespvo"
 	"github.com/PuerkitoBio/goquery"
 )
 

@@ -3,10 +3,10 @@ package agentsvc
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/valueobject/agentrespvo"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/valueobject/conversationmsgvo"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/cutil"
-	o11y "devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/observability"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/valueobject/agentrespvo"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/valueobject/conversationmsgvo"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
+	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 )
 
 type handleExploreDto struct {

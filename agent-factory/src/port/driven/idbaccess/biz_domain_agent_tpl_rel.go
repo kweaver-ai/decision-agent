@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 )
 
 //go:generate mockgen -source=./biz_domain_agent_tpl_rel.go -destination ./idbaccessmock/biz_domain_agent_tpl_rel.go -package idbaccessmock

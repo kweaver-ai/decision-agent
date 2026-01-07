@@ -5,13 +5,13 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/valueobject/agentrespvo"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/httpaccess/uniqueryaccess/uniquerydto"
-	observabilityreq "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/observability/req"
-	observabilityresp "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/observability/resp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/infra/apierr"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/valueobject/agentrespvo"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/httpaccess/uniqueryaccess/uniquerydto"
+	observabilityreq "github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/observability/req"
+	observabilityresp "github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/observability/resp"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/infra/apierr"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/rest"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
 func (s *observabilitySvc) RunDetail(ctx context.Context, req *observabilityreq.RunDetailReq) (*observabilityresp.RunDetailResp, error) {

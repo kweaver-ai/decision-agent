@@ -3,19 +3,19 @@ package dainject
 import (
 	"sync"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/service"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/service/v3/categorysvc"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/service/v3/tplsvc"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/drivenadapter/dbaccess/bddbacc/bdagenttpldbacc"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/drivenadapter/dbaccess/categoryacc"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/drivenadapter/dbaccess/daconfdbacc"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/drivenadapter/dbaccess/daconftpldbacc"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/drivenadapter/dbaccess/productdbacc"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/drivenadapter/dbaccess/publishedtpldbacc"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/port/driver/iv3portdriver"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/v3/categorysvc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/v3/tplsvc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/bddbacc/bdagenttpldbacc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/categoryacc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/daconfdbacc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/daconftpldbacc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/productdbacc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/publishedtpldbacc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/drivenadapter/httpaccess/chttpinject"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/rediscmp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/logger"
+	"github.com/kweaver-ai/kweaver-go-lib/logger"
 )
 
 var (

@@ -1,9 +1,9 @@
 package daresvo
 
 import (
-	// "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/valueobject/agentrespvo"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/valueobject/agentrespvo"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/cutil"
+	// "github.com/kweaver-ai/decision-agent/agent-app/src/domain/valueobject/agentrespvo"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/valueobject/agentrespvo"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
 )
 
 func (r *DataAgentRes) GetExploreAnswerList() (answerList []*agentrespvo.AnswerExplore, ok bool) {

@@ -3,8 +3,8 @@ package iportdriver
 import (
 	"context"
 
-	observabilityreq "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/observability/req"
-	observabilityresp "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/observability/resp"
+	observabilityreq "github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/observability/req"
+	observabilityresp "github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/observability/resp"
 )
 
 // IObservability 可观测性服务接口

@@ -3,7 +3,7 @@ package boot
 import (
     "context"
 
-    "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/service/inject/v3/dainject"
+    "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/inject/v3/dainject"
     _ "github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"
     "github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/cenvhelper"
 )

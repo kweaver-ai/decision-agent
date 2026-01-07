@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/redisaccess/sessionredisacc"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/session/sessionreq"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/chelper/grhelper"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/ctype"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/redisaccess/sessionredisacc"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/session/sessionreq"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/grhelper"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/ctype"
 )
 
 // HandleRecoverLifetimeOrCreate 处理recover_lifetime_or_create操作

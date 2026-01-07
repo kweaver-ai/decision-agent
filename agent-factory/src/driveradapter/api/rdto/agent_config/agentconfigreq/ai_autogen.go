@@ -1,7 +1,7 @@
 package agentconfigreq
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/enum/daenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/daenum"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cenum"
 	"github.com/pkg/errors"
 )

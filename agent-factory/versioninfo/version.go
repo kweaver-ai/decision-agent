@@ -3,7 +3,7 @@ package versioninfo
 import (
 	"runtime"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/audit"
+	"github.com/kweaver-ai/kweaver-go-lib/audit"
 )
 
 var (

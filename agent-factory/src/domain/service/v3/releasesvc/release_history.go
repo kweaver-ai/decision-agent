@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/release/releaseresp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/release/releaseresp"
 	"github.com/pkg/errors"
 )
 

@@ -1,9 +1,9 @@
 package apierr
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/rest"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/locale"
+	"github.com/kweaver-ai/decision-agent/agent-app/locale"
 )
 
 // 公共错误码, 服务内所有模块均可使用

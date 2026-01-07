@@ -3,9 +3,9 @@ package producthandler
 import (
 	"sync"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/service/v3/productsvc"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/port/driver/ihandlerportdriver"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/port/driver/iv3portdriver"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/v3/productsvc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/ihandlerportdriver"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capimiddleware"
 	"github.com/gin-gonic/gin"
 )

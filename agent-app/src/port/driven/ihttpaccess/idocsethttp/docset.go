@@ -3,7 +3,7 @@ package idocsethttp
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/httpaccess/docsetaccess/docsetdto"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/httpaccess/docsetaccess/docsetdto"
 )
 
 type IDocset interface {

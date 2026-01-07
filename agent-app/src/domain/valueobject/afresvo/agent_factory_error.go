@@ -1,8 +1,8 @@
 package afresvo
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/valueobject/agentresperr"
-	agentresp "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/agent/resp"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/valueobject/agentresperr"
+	agentresp "github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/agent/resp"
 	"github.com/bytedance/sonic"
 )
 

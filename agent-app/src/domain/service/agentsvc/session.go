@@ -3,7 +3,7 @@ package agentsvc
 import (
 	"sync"
 
-	agentresp "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/agent/resp"
+	agentresp "github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/agent/resp"
 )
 
 type Session struct {

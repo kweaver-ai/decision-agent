@@ -1,6 +1,6 @@
 package spacereq
 
-import "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/common"
+import "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/common"
 
 // ResourceListReq 空间资源列表请求
 type ResourceListReq struct {

@@ -1,6 +1,6 @@
 package dapo
 
-import "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/enum/daenum"
+import "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/daenum"
 
 type DsDatasetObjPo struct {
 	ID int64 `json:"id" db:"f_id"`

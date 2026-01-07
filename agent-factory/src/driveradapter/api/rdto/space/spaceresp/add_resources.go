@@ -1,8 +1,8 @@
 package spaceresp
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/valueobject/spacevo"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/space/spacereq"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/spacevo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/space/spacereq"
 )
 
 // AddResourcesResp 添加空间资源响应

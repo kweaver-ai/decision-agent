@@ -1,7 +1,7 @@
 package daresvo
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/valueobject/agentresperr"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/valueobject/agentresperr"
 )
 
 func (r *DataAgentRes) GetExecutorError() (respErr *agentresperr.RespError) {

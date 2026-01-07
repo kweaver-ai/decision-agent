@@ -13,8 +13,8 @@ import (
 	context "context"
 	reflect "reflect"
 
-	personalspacereq "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/personal_space/personalspacereq"
-	personalspaceresp "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/personal_space/personalspaceresp"
+	personalspacereq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/personal_space/personalspacereq"
+	personalspaceresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/personal_space/personalspaceresp"
 	gomock "go.uber.org/mock/gomock"
 )
 

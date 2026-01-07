@@ -4,12 +4,12 @@ import (
 	"context"
 	"net/http"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/httpaccess/uniqueryaccess/uniquerydto"
-	observabilityreq "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/observability/req"
-	observabilityresp "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/observability/resp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/infra/apierr"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/httpaccess/uniqueryaccess/uniquerydto"
+	observabilityreq "github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/observability/req"
+	observabilityresp "github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/observability/resp"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/infra/apierr"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/rest"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
 // sessionMetric 用于临时存储session级别的计算指标

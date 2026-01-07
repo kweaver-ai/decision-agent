@@ -14,8 +14,8 @@ import (
 	sql "database/sql"
 	reflect "reflect"
 
-	dsdto "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/types/dto/daconfigdto/dsdto"
-	docindexobj "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/valueobject/docindexobj"
+	dsdto "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/types/dto/daconfigdto/dsdto"
+	docindexobj "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/docindexobj"
 	gomock "go.uber.org/mock/gomock"
 )
 

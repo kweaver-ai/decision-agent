@@ -3,9 +3,9 @@ package daresvo
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/valueobject/agentconfigvo"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/valueobject/agentrespvo"
-	o11y "devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/observability"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/valueobject/agentconfigvo"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/valueobject/agentrespvo"
+	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/bytedance/sonic"
 	"github.com/pkg/errors"
 )

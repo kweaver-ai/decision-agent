@@ -1,7 +1,7 @@
 package conf
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/cconf"
+	"github.com/kweaver-ai/agent-go-common-pkg/cconf"
 )
 
 type UniqueryConf struct {

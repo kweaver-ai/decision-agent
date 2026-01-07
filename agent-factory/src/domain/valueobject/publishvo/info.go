@@ -1,8 +1,8 @@
 package publishvo
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/enum/daenum"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/valueobject/pmsvo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/daenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/pmsvo"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/enum/cdaenum"
 )
 

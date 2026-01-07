@@ -1,6 +1,6 @@
 package observabilityresp
 
-import "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/conversation/conversationresp"
+import "github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/conversation/conversationresp"
 
 type ObservabilityConversationDetail struct {
 	Conversation conversationresp.ConversationDetail `json:"conversation"`

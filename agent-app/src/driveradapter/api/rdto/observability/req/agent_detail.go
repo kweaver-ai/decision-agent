@@ -1,7 +1,7 @@
 package observabilityreq
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/cenum"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cenum"
 )
 
 // POST /observability/agent/{agent_id}/detail

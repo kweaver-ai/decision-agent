@@ -1,14 +1,14 @@
 package conversationsvc
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/service"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driven/idbaccess"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driven/ihttpaccess/iagentexecutorhttp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driven/ihttpaccess/iagentfactoryhttp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driven/ihttpaccess/iv2agentexecutorhttp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driver/iportdriver"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/cmp/icmp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/port/driven/ihttpaccess/iusermanagementacc"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/service"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driven/idbaccess"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driven/ihttpaccess/iagentexecutorhttp"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driven/ihttpaccess/iagentfactoryhttp"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driven/ihttpaccess/iv2agentexecutorhttp"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driver/iportdriver"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/icmp"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/port/driven/ihttpaccess/iusermanagementacc"
 )
 
 type conversationSvc struct {

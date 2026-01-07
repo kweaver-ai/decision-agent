@@ -3,7 +3,7 @@ package tempareasvc
 import (
 	"context"
 
-	tempareareq "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/temparea/req"
+	tempareareq "github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/temparea/req"
 	"github.com/pkg/errors"
 )
 

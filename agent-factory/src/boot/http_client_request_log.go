@@ -4,7 +4,7 @@ import (
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/cenvhelper"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/httphelper"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/httprequesthelper"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/logger"
+	"github.com/kweaver-ai/kweaver-go-lib/logger"
 )
 
 // initHTTPClientRequestLog 初始化HTTP客户端请求日志记录器

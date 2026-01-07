@@ -3,9 +3,9 @@ package iportdriver
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/valueobject/comvalobj"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/conversation/conversationreq"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/conversation/conversationresp"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/valueobject/comvalobj"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/conversation/conversationreq"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/conversation/conversationresp"
 )
 
 //go:generate mockgen -source=./conversation_svc.go -destination ./iportdrivermock/conversation_svc.go -package iportdrivermock

@@ -1,8 +1,8 @@
 package squarehandler
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/square/squarereq"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/apierr"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squarereq"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/drivenadapter/httpaccess/agentfactoryhttp/afhttpdto"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capimiddleware"

@@ -1,8 +1,8 @@
 package daresvo
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/enum/chat_enum/chatresenum"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/valueobject/agentrespvo"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/enum/chat_enum/chatresenum"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/valueobject/agentrespvo"
 )
 
 // DocRetrievalResultStrategy 文档召回结果判断策略接口

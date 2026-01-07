@@ -3,9 +3,9 @@ package iv3portdriver
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/auditlogdto"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/space/spacereq"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/space/spaceresp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/auditlogdto"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/space/spacereq"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/space/spaceresp"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/enum/cdaenum"
 )
 

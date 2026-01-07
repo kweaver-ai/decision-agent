@@ -3,10 +3,10 @@ package tempareahandler
 import (
 	"net/http"
 
-	tempareareq "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/temparea/req"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/infra/apierr"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/capierr"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/rest"
+	tempareareq "github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/temparea/req"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/infra/apierr"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/gin-gonic/gin"
 )
 

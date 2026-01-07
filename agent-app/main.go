@@ -8,8 +8,8 @@ import (
 	"syscall"
 	"time"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/boot"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/infra/server"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/boot"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/infra/server"
 )
 
 func main() {

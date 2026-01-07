@@ -1,7 +1,7 @@
 package spaceresp
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/entity/spaceeo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/spaceeo"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
 	"github.com/pkg/errors"
 )

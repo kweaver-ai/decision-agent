@@ -1,7 +1,7 @@
 package otherresp
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/other/otherreq"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/other/otherreq"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/entity/dolphintpleo"
 )
 

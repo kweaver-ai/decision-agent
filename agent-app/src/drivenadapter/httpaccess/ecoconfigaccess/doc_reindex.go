@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/httpaccess/ecoconfigaccess/ecoconfigdto"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/httpaccess/ecoconfigaccess/ecoconfigdto"
 	"github.com/pkg/errors"
 )
 

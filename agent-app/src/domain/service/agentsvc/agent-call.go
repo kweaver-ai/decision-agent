@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutordto"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/httpaccess/v2agentexecutoraccess"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driven/ihttpaccess/iagentexecutorhttp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driven/ihttpaccess/iv2agentexecutorhttp"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutordto"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/httpaccess/v2agentexecutoraccess"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driven/ihttpaccess/iagentexecutorhttp"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driven/ihttpaccess/iv2agentexecutorhttp"
 )
 
 type AgentCall struct {

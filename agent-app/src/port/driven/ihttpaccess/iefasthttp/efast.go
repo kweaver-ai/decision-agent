@@ -3,7 +3,7 @@ package iefasthttp
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/httpaccess/efastaccess/efastdto"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/httpaccess/efastaccess/efastdto"
 )
 
 type IEfast interface {

@@ -3,8 +3,8 @@ package tempareadbacc
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/infra/persistence/dapo"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/chelper/dbhelper2"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/dbhelper2"
 )
 
 func (repo *TempAreaRepo) Remove(ctx context.Context, tempAreaID string, sourceID []string) (err error) {

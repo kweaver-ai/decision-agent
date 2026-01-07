@@ -3,7 +3,7 @@ package idbaccess
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 )
 
 //go:generate mockgen -source=./product.go -destination ./idbaccessmock/product.go -package idbaccessmock

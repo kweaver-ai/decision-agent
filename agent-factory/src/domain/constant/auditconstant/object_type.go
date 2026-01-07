@@ -1,6 +1,6 @@
 package auditconstant
 
-import "devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/audit"
+import "github.com/kweaver-ai/kweaver-go-lib/audit"
 
 const (
 	OBJECT_TYPE_AGENT          = "agent"          // 智能体/智能體/Agent

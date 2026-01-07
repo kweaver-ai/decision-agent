@@ -1,12 +1,12 @@
 package agentexecutoraccess
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/conf"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/infra/cmp/httpclient"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driven/ihttpaccess/iagentexecutorhttp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/cmp/icmp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/cutil"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/rest"
+	"github.com/kweaver-ai/decision-agent/agent-app/conf"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/infra/cmp/httpclient"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driven/ihttpaccess/iagentexecutorhttp"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/icmp"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
 type agentExecutorHttpAcc struct {

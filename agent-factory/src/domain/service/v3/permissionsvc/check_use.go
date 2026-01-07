@@ -3,9 +3,9 @@ package permissionsvc
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/apierr"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/common"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/drivenadapter/rdto/agent_permission/cpmsreq"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/drivenadapter/rdto/agent_permission/cpmsresp"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"

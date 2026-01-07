@@ -6,8 +6,8 @@ import (
 	"regexp"
 	"strings"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/httpaccess/agentfactoryaccess/agentfactorydto"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/httpaccess/agentfactoryaccess/agentfactorydto"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
 )
 
 type Variable struct {

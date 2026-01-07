@@ -3,7 +3,7 @@ package iv3portdriver
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/category/categoryresp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/category/categoryresp"
 )
 
 //go:generate mockgen -source=./category.go -destination ./v3portdrivermock/category.go -package v3portdrivermock

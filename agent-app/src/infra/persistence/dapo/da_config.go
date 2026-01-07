@@ -1,6 +1,6 @@
 package dapo
 
-import "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/domain/enum/cdaenum"
+import "github.com/kweaver-ai/agent-go-common-pkg/src/domain/enum/cdaenum"
 
 type DataAgentPo struct {
 	ID   string `json:"id" db:"f_id"`

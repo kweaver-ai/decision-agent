@@ -4,15 +4,15 @@ import (
 	"sync"
 	"time"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/httpaccess/v2agentexecutoraccess"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/infra/cmp/httpclient"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/infra/common/global"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driven/ihttpaccess/iagentexecutorhttp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driven/ihttpaccess/iv2agentexecutorhttp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/cmp/cmphelper"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/logger"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/rest"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/httpaccess/v2agentexecutoraccess"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/infra/cmp/httpclient"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/infra/common/global"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driven/ihttpaccess/iagentexecutorhttp"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driven/ihttpaccess/iv2agentexecutorhttp"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/cmphelper"
+	"github.com/kweaver-ai/kweaver-go-lib/logger"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
 var (

@@ -3,11 +3,11 @@ package dainject
 import (
 	"sync"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/service/sessionsvc"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/httpaccess/httpinject"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/redisaccess/sessionredisacc"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/port/driver/iportdriver"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/logger"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/service/sessionsvc"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/httpaccess/httpinject"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/redisaccess/sessionredisacc"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/port/driver/iportdriver"
+	"github.com/kweaver-ai/kweaver-go-lib/logger"
 )
 
 var (

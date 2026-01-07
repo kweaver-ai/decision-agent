@@ -4,5 +4,5 @@ go 1.23.7
 
 
 require (
-	//devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/tool/apitesttool/apitest v1.0.0
+	//github.com/kweaver-ai/agent-go-common-pkg/tool/apitesttool/apitest v1.0.0
 )

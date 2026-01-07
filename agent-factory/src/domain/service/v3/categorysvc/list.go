@@ -3,7 +3,7 @@ package categorysvc
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/driveradapter/api/rdto/category/categoryresp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/category/categoryresp"
 	"github.com/pkg/errors"
 )
 

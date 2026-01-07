@@ -1,6 +1,6 @@
 package observabilityresp
 
-import "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/domain/valueobject/daconfvalobj"
+import "github.com/kweaver-ai/agent-go-common-pkg/src/domain/valueobject/daconfvalobj"
 
 type AgentResp struct {
 	Agent              Agent   `json:"agent"`

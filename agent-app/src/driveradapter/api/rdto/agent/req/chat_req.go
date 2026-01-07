@@ -1,11 +1,11 @@
 package agentreq
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/constant"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/valueobject"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/valueobject/comvalobj"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/driveradapter/api/rdto/agent/req/chatopt"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/cenum"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/constant"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/valueobject"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/valueobject/comvalobj"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/agent/req/chatopt"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cenum"
 )
 
 type ChatReq struct {

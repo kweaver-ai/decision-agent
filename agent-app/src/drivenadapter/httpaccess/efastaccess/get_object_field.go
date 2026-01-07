@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"strings"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/drivenadapter/httpaccess/efastaccess/efastdto"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/infra/common/util"
-	o11y "devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib/observability"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/httpaccess/efastaccess/efastdto"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/infra/common/util"
+	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"go.opentelemetry.io/otel/attribute"
 
 	"github.com/bytedance/sonic"

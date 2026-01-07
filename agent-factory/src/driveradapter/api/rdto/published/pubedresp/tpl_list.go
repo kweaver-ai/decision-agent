@@ -1,7 +1,7 @@
 package pubedresp
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/entity/pubedeo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/pubedeo"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
 )
 

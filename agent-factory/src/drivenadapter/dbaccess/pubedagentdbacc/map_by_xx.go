@@ -3,8 +3,8 @@ package pubedagentdbacc
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/drivenadapter/dbaccess/pubedagentdbacc/padbarg"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/drivenadapter/dbaccess/pubedagentdbacc/padbret"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/pubedagentdbacc/padbarg"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/pubedagentdbacc/padbret"
 )
 
 func (repo *pubedAgentRepo) GetPubedPoMapByXx(ctx context.Context, arg *padbarg.GetPaPoListByXxArg) (ret *padbret.GetPaPoMapByXxRet, err error) {

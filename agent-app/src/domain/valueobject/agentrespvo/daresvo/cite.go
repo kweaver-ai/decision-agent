@@ -1,8 +1,8 @@
 package daresvo
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/enum/chat_enum/chatresenum"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app/src/domain/valueobject/agentrespvo"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/enum/chat_enum/chatresenum"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/domain/valueobject/agentrespvo"
 	"github.com/bytedance/sonic"
 	"github.com/pkg/errors"
 )

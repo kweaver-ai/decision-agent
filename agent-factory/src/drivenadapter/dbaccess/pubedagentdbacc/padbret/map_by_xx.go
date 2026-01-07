@@ -1,6 +1,6 @@
 package padbret
 
-import "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/infra/persistence/dapo"
+import "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 
 type GetPaPoMapByXxRet struct {
 	JoinPosID2PoMap  map[string]*dapo.PublishedJoinPo

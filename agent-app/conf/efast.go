@@ -1,6 +1,6 @@
 package conf
 
-import "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/cconf"
+import "github.com/kweaver-ai/agent-go-common-pkg/cconf"
 
 type EfastConf struct {
 	PublicSvc  cconf.SvcConf `yaml:"public_svc"`

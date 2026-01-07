@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/types/dto/daconfigdto/dsdto"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-factory/src/domain/valueobject/docindexobj"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/types/dto/daconfigdto/dsdto"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/docindexobj"
 )
 
 //go:generate mockgen -source=./ds_svc.go -destination ./v3portdrivermock/ds_svc.go -package v3portdrivermock
