@@ -1,0 +1,96 @@
+# MkDocs 配置文件
+# Dolphin Language SDK 文档
+
+site_name: Agent APP 文档
+site_description: Agent APP - AI Agent 应用
+site_url: http://localhost:30050
+repo_url: https://devops.aishu.cn/AISHUDevOps/DIP/_git/agent-app
+repo_name: DIP/agent-app
+
+# 主题配置
+theme:
+  name: material
+  language: zh
+  features:
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+  palette:
+    - scheme: default
+      primary: blue
+      accent: light blue
+      toggle:
+        icon: material/brightness-7
+        name: 切换到深色模式
+    - scheme: slate
+      primary: blue
+      accent: light blue
+      toggle:
+        icon: material/brightness-4
+        name: 切换到浅色模式
+
+# 扩展
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+  - admonition
+  - def_list
+  - footnotes
+  - toc:
+      permalink: true
+      title: 在此页面上
+
+# 导航结构
+nav:
+  - Agent 可观测:
+    - Agent 可观测&质量分析/prd.md 
+  - Agent 可观测实现设计:
+    - Agent 可观测&质量分析/agent-app可观测性实现设计.md
+
+# 插件
+plugins:
+  - search
+
+# 额外配置
+extra:
+  version:
+    provider: mike
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/your-org/agent-app
+    - icon: fontawesome/brands/twitter
+      link: https://twitter.com/your-org
+
+# 静态文件
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - javascripts/extra.js
+  - javascripts/mermaid.min.js
+  - javascripts/mermaid-init.js
+
+# 监听文件
+watch:
+  - docs/
+
+# 开发服务器配置
+dev_addr: '0.0.0.0:30050'
