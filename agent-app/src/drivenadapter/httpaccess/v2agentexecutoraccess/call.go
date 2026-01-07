@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/chelper"
-	"github.com/data-agent/agent-app/src/domain/constant"
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
+	"github.com/decision-agent/agent-app/src/domain/constant"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"go.opentelemetry.io/otel/attribute"
 )

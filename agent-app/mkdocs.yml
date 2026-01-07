@@ -4,7 +4,7 @@
 site_name: Agent APP 文档
 site_description: Agent APP - AI Agent 应用
 site_url: http://localhost:30050
-repo_url: https://github.com/data-agent/agent-app
+repo_url: https://github.com/decision-agent/agent-app
 repo_name: DIP/agent-app
 
 # 主题配置

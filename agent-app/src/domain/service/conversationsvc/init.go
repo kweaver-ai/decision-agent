@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/data-agent/agent-app/src/driveradapter/api/rdto/conversation/conversationreq"
-	"github.com/data-agent/agent-app/src/driveradapter/api/rdto/conversation/conversationresp"
-	"github.com/data-agent/agent-app/src/infra/persistence/dapo"
+	"github.com/decision-agent/agent-app/src/driveradapter/api/rdto/conversation/conversationreq"
+	"github.com/decision-agent/agent-app/src/driveradapter/api/rdto/conversation/conversationresp"
+	"github.com/decision-agent/agent-app/src/infra/persistence/dapo"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 )

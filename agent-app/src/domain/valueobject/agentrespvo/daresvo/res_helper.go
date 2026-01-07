@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/bytedance/sonic"
-	"github.com/data-agent/agent-app/src/domain/valueobject/agentconfigvo"
-	"github.com/data-agent/agent-app/src/domain/valueobject/agentrespvo"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/agentconfigvo"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/agentrespvo"
 	"github.com/pkg/errors"
 )
 

@@ -4,6 +4,7 @@ from DolphinLanguageSDK.agent import DolphinAgent
 from DolphinLanguageSDK.config.global_config import GlobalConfig
 from DolphinLanguageSDK.skill.triditional_toolkit import TriditionalToolkit
 from DolphinLanguageSDK.utils.tools import ToolInterrupt
+from attr import attributes
 
 # from DolphinLanguageSDK.context_engineer.core.context_manager import (
 #     ContextManager,
@@ -22,7 +23,7 @@ from app.utils.common import (
 from app.common.tool_v2.tool import build_tools
 from app.utils.observability.trace_wrapper import internal_span
 from opentelemetry.trace import Span
-from app.utils.observability.observability_log import get_logger as o11y_logger
+from app.utils.observability.opentelemetry_logger import get_otel_logger
 
 from .trace import span_set_attrs
 from .input_handler_pkg import (
@@ -154,8 +155,8 @@ async def run_dolphin(
         yield output
         return
 
-    o11y_logger().info(f"[run_dolphin] agent_init init_params = {init_params}")
-    o11y_logger().info(f"[run_dolphin] agent_run dolphin_prompt = {dolphin_prompt}")
+    get_otel_logger().info(f"[run_dolphin] agent_init init_params:  {init_params}" )
+    get_otel_logger().info(f"[run_dolphin] agent_run dolphin_prompt: {dolphin_prompt}")
 
     # 8. 从llm_config字典创建GlobalConfig对象
     global_config = GlobalConfig.from_dict(llm_config)

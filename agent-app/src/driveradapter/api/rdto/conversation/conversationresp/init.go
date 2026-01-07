@@ -1,6 +1,6 @@
 package conversationresp
 
-import "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/cenum"
+import "github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cenum"
 
 type InitConversationResp struct {
 	ID           string            `json:"id"`

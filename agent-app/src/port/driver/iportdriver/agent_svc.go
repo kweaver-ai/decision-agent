@@ -3,8 +3,8 @@ package iportdriver
 import (
 	"context"
 
-	agentreq "github.com/data-agent/agent-app/src/driveradapter/api/rdto/agent/req"
-	agentresp "github.com/data-agent/agent-app/src/driveradapter/api/rdto/agent/resp"
+	agentreq "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/agent/req"
+	agentresp "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/agent/resp"
 )
 
 //go:generate mockgen -source=./agent_svc.go -destination ./iportdrivermock/agent_svc.go -package iportdrivermock

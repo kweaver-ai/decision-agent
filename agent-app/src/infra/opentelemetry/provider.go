@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/data-agent/agent-app/conf"
+	"github.com/decision-agent/agent-app/conf"
 
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"

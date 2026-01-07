@@ -138,7 +138,7 @@ class AgentFactoryService:
     @circuit(
         failure_threshold=GetFailureThreshold(), recovery_timeout=GetRecoveryTimeout()
     )
-    # @internal_span()
+    @internal_span()
     async def check_agent_permission(
         self, agent_id, user_id, visitor_type, span: Span = None
     ) -> bool:

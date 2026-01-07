@@ -3,9 +3,9 @@ package httpinject
 import (
 	"sync"
 
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/uniqueryaccess"
-	"github.com/data-agent/agent-app/src/infra/common/global"
-	"github.com/data-agent/agent-app/src/port/driven/ihttpaccess/iuniqueryhttp"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/uniqueryaccess"
+	"github.com/decision-agent/agent-app/src/infra/common/global"
+	"github.com/decision-agent/agent-app/src/port/driven/ihttpaccess/iuniqueryhttp"
 	"github.com/kweaver-ai/kweaver-go-lib/logger"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )

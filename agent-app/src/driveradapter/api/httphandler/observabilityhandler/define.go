@@ -3,11 +3,11 @@ package observabilityhandler
 import (
 	"sync"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/cmp/icmp"
-	"github.com/data-agent/agent-app/src/domain/service/inject/dainject"
-	apimiddleware "github.com/data-agent/agent-app/src/driveradapter/api/apimiddlerware"
-	"github.com/data-agent/agent-app/src/port/driver/ihandlerportdriver"
-	"github.com/data-agent/agent-app/src/port/driver/iportdriver"
+	"github.com/decision-agent/agent-app/src/domain/service/inject/dainject"
+	apimiddleware "github.com/decision-agent/agent-app/src/driveradapter/api/apimiddlerware"
+	"github.com/decision-agent/agent-app/src/port/driver/ihandlerportdriver"
+	"github.com/decision-agent/agent-app/src/port/driver/iportdriver"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/icmp"
 
 	"github.com/kweaver-ai/kweaver-go-lib/logger"
 

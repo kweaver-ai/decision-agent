@@ -6,10 +6,10 @@ import (
 	"strings"
 
 	"github.com/bytedance/sonic"
-	"github.com/data-agent/agent-app/src/domain/valueobject/agentrespvo"
-	"github.com/data-agent/agent-app/src/domain/valueobject/agentrespvo/daresvo"
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/efastaccess/efastdto"
-	"github.com/data-agent/agent-app/src/infra/common/util"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/agentrespvo"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/agentrespvo/daresvo"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/efastaccess/efastdto"
+	"github.com/decision-agent/agent-app/src/infra/common/util"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 )

@@ -3,7 +3,7 @@ package iuniqueryhttp
 import (
 	"context"
 
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/uniqueryaccess/uniquerydto"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/uniqueryaccess/uniquerydto"
 )
 
 type IUniquery interface {

@@ -3,10 +3,10 @@ package iagentexecutorhttp
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/ctype"
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutoraccreq"
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutoraccres"
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutordto"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutoraccreq"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutoraccres"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutordto"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/ctype"
 )
 
 type IAgentExecutor interface {

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/capierr"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/cenum"
-	observabilityreq "github.com/data-agent/agent-app/src/driveradapter/api/rdto/observability/req"
+	observabilityreq "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/observability/req"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cenum"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 

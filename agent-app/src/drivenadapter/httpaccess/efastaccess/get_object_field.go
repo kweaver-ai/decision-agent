@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/efastaccess/efastdto"
-	"github.com/data-agent/agent-app/src/infra/common/util"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/efastaccess/efastdto"
+	"github.com/decision-agent/agent-app/src/infra/common/util"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"go.opentelemetry.io/otel/attribute"
 

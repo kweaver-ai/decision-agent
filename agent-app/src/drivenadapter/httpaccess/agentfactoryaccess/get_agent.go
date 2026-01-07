@@ -6,7 +6,7 @@ import (
 	"net/http"
 
 	"github.com/bytedance/sonic"
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/agentfactoryaccess/agentfactorydto"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/agentfactoryaccess/agentfactorydto"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"

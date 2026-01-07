@@ -4,8 +4,8 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/data-agent/agent-app/src/domain/valueobject/agentrespvo"
-	"github.com/data-agent/agent-app/src/domain/valueobject/conversationmsgvo"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/agentrespvo"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/conversationmsgvo"
 )
 
 type toolHandleDto struct {

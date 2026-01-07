@@ -12,7 +12,7 @@ from app.domain.entity.agent_cache import AgentCacheEntity
 from app.domain.vo.agent_cache import AgentCacheIdVO
 from app.domain.vo.agentvo import AgentConfigVo
 
-from app.utils.observability.observability_log import get_logger as o11y_logger
+from app.utils.observability.opentelemetry_logger import get_otel_logger
 
 
 if TYPE_CHECKING:
@@ -76,7 +76,7 @@ async def create_cache(
         await manager.cache_service.save(cache_entity)
 
     except Exception as e:
-        o11y_logger().error(f"agent cache create failed: {e}")
+        get_otel_logger().error(f"agent cache create failed: {e}")
         raise e
 
     return cache_entity

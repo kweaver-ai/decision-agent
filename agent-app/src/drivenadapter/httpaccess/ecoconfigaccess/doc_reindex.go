@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/ecoconfigaccess/ecoconfigdto"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/ecoconfigaccess/ecoconfigdto"
 	"github.com/pkg/errors"
 )
 

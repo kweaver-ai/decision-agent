@@ -3,9 +3,9 @@ package httpinject
 import (
 	"sync"
 
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/ecoconfigaccess"
-	"github.com/data-agent/agent-app/src/infra/common/global"
-	iecoConfighttp "github.com/data-agent/agent-app/src/port/driven/ihttpaccess/iecoconfighttp"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/ecoconfigaccess"
+	"github.com/decision-agent/agent-app/src/infra/common/global"
+	iecoConfighttp "github.com/decision-agent/agent-app/src/port/driven/ihttpaccess/iecoconfighttp"
 	"github.com/kweaver-ai/kweaver-go-lib/logger"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )

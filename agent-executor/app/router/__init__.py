@@ -8,31 +8,42 @@ from fastapi.openapi.utils import get_openapi
 from limiter import Limiter
 from pydantic import BaseModel, Field
 
-from app.common.config import Config, observability_config, server_info
+from app.common.config import Config
 
 from app.logic.sensitive_word_detection import build_sensitive_detector
-from app.utils.observability.observability import (
-    init_observability,
-    shutdown_observability,
-)
-from app.utils.observability.observability_log import get_logger as o11y_logger
+# from app.utils.observability.observability import (
+#     init_observability,
+#     shutdown_observability,
+# )
+from app.utils.observability.opentelemetry_logger import get_otel_logger
 from app.utils.observability.opentelemetry_manager import initialize_opentelemetry, shutdown_opentelemetry
 
 # from data_migrations.init.manage_built_in_agent_and_tool import (
 #     main as init_built_in_agent_and_tool,
 # )
 from opentelemetry.instrumentation.aiohttp_client import AioHttpClientInstrumentor
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
 
 from app.common.stand_log import StandLogger
 from app.common.struct_logger import struct_logger
 from typing import Callable
 
 # 导入中间件
-from .middleware_pkg import before_request, o11y_trace, log_requests
+# from .middleware_pkg import before_request, o11y_trace, log_requests
+
+from .middleware_pkg import before_request, log_requests
+
+
 
 
 app = FastAPI()
 
+# 初始化OpenTelemetry
+initialize_opentelemetry()
+# 启用 aiohttp 客户端自动注入
+AioHttpClientInstrumentor().instrument()
+# 启用FastAPI自动追踪
+FastAPIInstrumentor().instrument_app(app)
 
 token_rate = Config.app.rps_limit
 token_capacity = 1000
@@ -78,10 +89,6 @@ async def startup_event():
     # 初始化可观测模块
     # init_observability(server_info, observability_config)
     #TODO: 需要去除老的o11y逻辑
-    # 初始化OpenTelemetry
-    initialize_opentelemetry()
-    # 启用 aiohttp 客户端自动注入
-    AioHttpClientInstrumentor().instrument()
 
     # if not Config.is_debug_mode() and not Config.LOCAL_DEV:
     #     init_built_in_agent_and_tool()

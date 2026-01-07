@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/data-agent/agent-app/src/driveradapter/api/rdto/conversation/conversationreq"
-	"github.com/data-agent/agent-app/src/infra/persistence/dapo"
+	"github.com/decision-agent/agent-app/src/driveradapter/api/rdto/conversation/conversationreq"
+	"github.com/decision-agent/agent-app/src/infra/persistence/dapo"
 )
 
 //go:generate mockgen -source=./conversation.go -destination ./idbaccessmock/conversation.go -package idbaccessmock

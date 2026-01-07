@@ -7,8 +7,8 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/metric"
 
-	"github.com/data-agent/agent-app/conf"
-	"github.com/data-agent/agent-app/src/domain/constant"
+	"github.com/decision-agent/agent-app/conf"
+	"github.com/decision-agent/agent-app/src/domain/constant"
 )
 
 // Metrics 指标记录器

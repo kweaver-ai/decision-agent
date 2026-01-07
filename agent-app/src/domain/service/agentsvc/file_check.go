@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"math"
 
-	"github.com/data-agent/agent-app/src/domain/constant"
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/docsetaccess/docsetdto"
-	agentreq "github.com/data-agent/agent-app/src/driveradapter/api/rdto/agent/req"
-	agentresp "github.com/data-agent/agent-app/src/driveradapter/api/rdto/agent/resp"
+	"github.com/decision-agent/agent-app/src/domain/constant"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/docsetaccess/docsetdto"
+	agentreq "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/agent/req"
+	agentresp "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/agent/resp"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 )

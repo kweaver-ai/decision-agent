@@ -1,6 +1,6 @@
 package observabilityresp
 
-import "github.com/data-agent/agent-app/src/driveradapter/api/rdto/conversation/conversationresp"
+import "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/conversation/conversationresp"
 
 type ObservabilityConversationDetail struct {
 	Conversation conversationresp.ConversationDetail `json:"conversation"`

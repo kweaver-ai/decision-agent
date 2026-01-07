@@ -1,12 +1,12 @@
 package agentexecutordto
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/domain/valueobject/daconfvalobj"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/cenum"
-	"github.com/data-agent/agent-app/src/domain/constant"
-	"github.com/data-agent/agent-app/src/domain/valueobject"
-	"github.com/data-agent/agent-app/src/domain/valueobject/comvalobj"
-	"github.com/data-agent/agent-app/src/driveradapter/api/rdto/agent/req/chatopt"
+	"github.com/decision-agent/agent-app/src/domain/constant"
+	"github.com/decision-agent/agent-app/src/domain/valueobject"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/comvalobj"
+	"github.com/decision-agent/agent-app/src/driveradapter/api/rdto/agent/req/chatopt"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/valueobject/daconfvalobj"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cenum"
 )
 
 type AgentCallReq struct {

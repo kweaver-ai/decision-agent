@@ -3,7 +3,7 @@ package tempareasvc
 import (
 	"context"
 
-	tempareareq "github.com/data-agent/agent-app/src/driveradapter/api/rdto/temparea/req"
+	tempareareq "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/temparea/req"
 	"github.com/pkg/errors"
 )
 

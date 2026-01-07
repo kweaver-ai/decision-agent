@@ -3,7 +3,7 @@ package agentsvc
 import (
 	"sync"
 
-	agentresp "github.com/data-agent/agent-app/src/driveradapter/api/rdto/agent/resp"
+	agentresp "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/agent/resp"
 )
 
 type Session struct {

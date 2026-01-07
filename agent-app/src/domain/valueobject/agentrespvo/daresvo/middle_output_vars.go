@@ -1,7 +1,7 @@
 package daresvo
 
 import (
-	"github.com/data-agent/agent-app/src/domain/valueobject/agentrespvo"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/agentrespvo"
 )
 
 func (r *DataAgentRes) GetMiddleOutputVars() (middleOutputVarRes *agentrespvo.MiddleOutputVarRes, err error) {

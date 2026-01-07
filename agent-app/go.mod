@@ -1,15 +1,15 @@
-module github.com/data-agent/agent-app
+module github.com/decision-agent/agent-app
 
 go 1.24.0
 
 require (
-	devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg v1.1.3
 	github.com/PuerkitoBio/goquery v1.10.3
 	github.com/bytedance/sonic v1.14.2
 	github.com/getkin/kin-openapi v0.132.0
 	github.com/gin-gonic/gin v1.11.0
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/kweaver-ai/TelemetrySDK-Go/span/v2 v2.10.3
+	github.com/kweaver-ai/agent-go-common-pkg v1.1.7
 	github.com/kweaver-ai/kweaver-go-lib v1.0.2
 	github.com/kweaver-ai/proton-rds-sdk-go v1.4.2
 	github.com/pkg/errors v0.9.1
@@ -31,15 +31,6 @@ require (
 	go.opentelemetry.io/otel/sdk/log v0.15.0
 	go.opentelemetry.io/otel/sdk/metric v1.39.0
 	go.opentelemetry.io/otel/trace v1.39.0
-)
-
-require (
-	devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib v0.0.33 // indirect
-	devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/event/v2 v2.9.0 // indirect
-	devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/exporter/v2 v2.9.0 // indirect
-	devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/span/v2 v2.9.0 // indirect
-	devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/proton-mq-go v1.7.6-for-ar-rm-tlq9-4 // indirect
-	devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/proton-rds-sdk-go v1.2.1 // indirect
 )
 
 require (

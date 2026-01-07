@@ -3,7 +3,7 @@ from sse_starlette import EventSourceResponse
 
 from app.common.structs import AgentConfig, AgentInput
 from app.logic.agent_core_logic.agent_core import AgentCore
-from app.utils.observability.observability_log import get_logger as o11y_logger
+from app.utils.observability.opentelemetry_logger import get_otel_logger
 
 from .common import router
 
@@ -50,7 +50,7 @@ async def run_agent(agent_name: str, request: Request) -> EventSourceResponse:
         tools = simplechat_config["tools"]
         config = simplechat_config
     else:
-        o11y_logger().error(f"agent_name not found: agent_name = {agent_name}")
+        get_otel_logger().error(f"agent_name not found: agent_name = {agent_name}")
         raise Exception("agent_name not found")
 
     headers = dict(request.headers)

@@ -3,7 +3,7 @@ package iecoConfighttp
 import (
 	"context"
 
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/ecoconfigaccess/ecoconfigdto"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/ecoconfigaccess/ecoconfigdto"
 )
 
 type IEcoConfig interface {

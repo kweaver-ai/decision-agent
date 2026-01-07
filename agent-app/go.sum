@@ -1,17 +1,3 @@
-devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg v1.1.3 h1:MrwRztXCik0uYDVXQKSJ8Ci29nPXa/ChKVbERsvf9fA=
-devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg v1.1.3/go.mod h1:NTq6eYYrUhx0B4acTXD4wmpbF9vzsGof6qfRR80Mvdo=
-devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib v0.0.33 h1:pCZlEonUHcxgiaAR9YklnshlGT/9GXcSMPQt8uq654A=
-devops.aishu.cn/AISHUDevOps/DIP/_git/mdl-go-lib v0.0.33/go.mod h1:ujvgeePqy1sRu84gY8aveBTkCKBTbcDr/GXYaVwGT5E=
-devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/event/v2 v2.9.0 h1:vdxbSaudBu0lK20x/mhePiOwC4lwZ4yFCyaCBp7m5cw=
-devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/event/v2 v2.9.0/go.mod h1:azyC5qNNwUQWeSt7fFADpg6VXoQ5Qo7tCC2FdTA5rUw=
-devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/exporter/v2 v2.9.0 h1:fRyAL9jRLB6uGQTdfSyTcOZnx8fpos0xAHo4usi9OR4=
-devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/exporter/v2 v2.9.0/go.mod h1:ap824/Gg2DSU2dkLn//YEXYxQxpWy/zvHYqA4G/ioCk=
-devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/span/v2 v2.9.0 h1:9GfmS+qKMKenT+4YJ4TAATLzR8L5v+idUF8HtzLHm6M=
-devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/TelemetrySDK-Go.git/span/v2 v2.9.0/go.mod h1:zn6RVbOzWsfP1CoHTMec23/VirbfXsQqPsx8ZOzMGVI=
-devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/proton-mq-go v1.7.6-for-ar-rm-tlq9-4 h1:W6BnVPienq0k/1nFFDTOBWAW2RcmIpv+cicEquyBjJ4=
-devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/proton-mq-go v1.7.6-for-ar-rm-tlq9-4/go.mod h1:qmyZuWAURpd2JzcdfHozQ+NwewRhPySXgAaB8bXs6TY=
-devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/proton-rds-sdk-go v1.2.1 h1:Eh/6TFwRRZOLBdvk4NlL/TqVjHl1QaaX6s1/OldRxAs=
-devops.aishu.cn/AISHUDevOps/ONE-Architecture/_git/proton-rds-sdk-go v1.2.1/go.mod h1:Sno+3IQxjIBIamXgXl/M6SHN8VU/wvq73eJjxxliwBM=
 filippo.io/edwards25519 v1.1.0 h1:FNf4tywRC1HmFuKW5xopWpigGjJKiJSV0Cqo0cJWDaA=
 filippo.io/edwards25519 v1.1.0/go.mod h1:BxyFTGdWcka3PhytdK4V28tE5sGfRvvvRV7EaN4VDT4=
 gitee.com/chunanyong/dm v1.8.19 h1:E77puiJmhJM/n7ddqRmTE0Vkv5tVSZoGiu3tVd67LWg=
@@ -22,8 +8,6 @@ github.com/DATA-DOG/go-sqlmock v1.5.2 h1:OcvFkGmslmlZibjAjaHm3L//6LiuBgolP7Oputl
 github.com/DATA-DOG/go-sqlmock v1.5.2/go.mod h1:88MAG/4G7SMwSE3CeA0ZKzrT5CiOU3OJ+JlNzwDqpNU=
 github.com/PuerkitoBio/goquery v1.10.3 h1:pFYcNSqHxBD06Fpj/KsbStFRsgRATgnf3LeXiUkhzPo=
 github.com/PuerkitoBio/goquery v1.10.3/go.mod h1:tMUX0zDMHXYlAQk6p35XxQMqMweEKB7iK7iLNd4RH4Y=
-github.com/agiledragon/gomonkey v2.0.2+incompatible h1:eXKi9/piiC3cjJD1658mEE2o3NjkJ5vDLgYjCQu0Xlw=
-github.com/agiledragon/gomonkey v2.0.2+incompatible/go.mod h1:2NGfXu1a80LLr2cmWXGBDaHEjb1idR6+FVlX5T3D9hw=
 github.com/agiledragon/gomonkey/v2 v2.14.0 h1:FASzes6sjtD0hRo5lu0g796qKL03bOHCgcIA/4am9QM=
 github.com/agiledragon/gomonkey/v2 v2.14.0/go.mod h1:ap1AmDzcVOAz1YpeJ3TCzIgstoaWLA6jbbgxfB4w2iY=
 github.com/andybalholm/cascadia v1.3.3 h1:AG2YHrzJIm4BZ19iwJ/DAua6Btl3IwJX+VI4kktS1LM=
@@ -192,6 +176,8 @@ github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2 v2.10.3 h1:pE+nTrolc4ddaflWHFa
 github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2 v2.10.3/go.mod h1:UFxm9Z8IHeiOGJwW1ZFtBUGp1UamOBakmMYKqniKpwM=
 github.com/kweaver-ai/TelemetrySDK-Go/span/v2 v2.10.3 h1:RfDAVWBrQ9Beu5kNBCga3HcwWnTjoUSHDX5cxw6DZfI=
 github.com/kweaver-ai/TelemetrySDK-Go/span/v2 v2.10.3/go.mod h1:JrfEsKeZEQG5cic8RTCYqk9L2jBr/T9GhtS9gYini0A=
+github.com/kweaver-ai/agent-go-common-pkg v1.1.7 h1:4htdLZLZmYChhMgj/RDvG7BUbKsaKmgL/xoYNcNT28I=
+github.com/kweaver-ai/agent-go-common-pkg v1.1.7/go.mod h1:x5+WhIw9bTkJDT/p6HTWIOC5UZaUqV+57wRPUM7952U=
 github.com/kweaver-ai/kweaver-go-lib v1.0.2 h1:sjRBwi+6GzmMr+PJIgtMxLJ1r9YVmvT7qs+oKrGZuUE=
 github.com/kweaver-ai/kweaver-go-lib v1.0.2/go.mod h1:XBaZZakJdbd7cWDLvgcwn2yVDbhKu2oZe3rfykZs3DY=
 github.com/kweaver-ai/proton-mq-sdk-go v1.9.1 h1:pYRw/GS2lqdY41V8W2Kpj0H2Y9mx0aNMzxl36xIgy5Q=

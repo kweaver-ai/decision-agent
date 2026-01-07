@@ -107,78 +107,78 @@ class OpenTelemetryManager:
         """获取配置状态"""
         return OtelConfigManager.validate_config()
 
-    def create_fastapi_middleware(self):
-        """
-        创建FastAPI中间件（用于自动跟踪HTTP请求）
+    # def create_fastapi_middleware(self):
+    #     """
+    #     创建FastAPI中间件（用于自动跟踪HTTP请求）
 
-        返回:
-            FastAPI中间件函数
-        """
-        from fastapi import Request
-        from starlette.middleware.base import BaseHTTPMiddleware
-        import time
+    #     返回:
+    #         FastAPI中间件函数
+    #     """
+    #     from fastapi import Request
+    #     from starlette.middleware.base import BaseHTTPMiddleware
+    #     import time
 
-        config_validation = OtelConfigManager.validate_config()
-        if not config_validation["trace_enabled"]:
-            # 如果跟踪未启用，返回空中间件
-            class NoOpMiddleware(BaseHTTPMiddleware):
-                async def dispatch(self, request: Request, call_next):
-                    return await call_next(request)
-            return NoOpMiddleware
+    #     config_validation = OtelConfigManager.validate_config()
+    #     if not config_validation["trace_enabled"]:
+    #         # 如果跟踪未启用，返回空中间件
+    #         class NoOpMiddleware(BaseHTTPMiddleware):
+    #             async def dispatch(self, request: Request, call_next):
+    #                 return await call_next(request)
+    #         return NoOpMiddleware
 
-        class OpenTelemetryMiddleware(BaseHTTPMiddleware):
-            async def dispatch(self, request: Request, call_next):
-                # 开始时间
-                start_time = time.time()
+    #     class OpenTelemetryMiddleware(BaseHTTPMiddleware):
+    #         async def dispatch(self, request: Request, call_next):
+    #             # 开始时间
+    #             start_time = time.time()
 
-                # 创建span
-                span_name = f"{request.method} {request.url.path}"
-                attributes = {
-                    "http.method": request.method,
-                    "http.url": str(request.url),
-                    "http.route": request.url.path,
-                    "http.host": request.url.hostname,
-                    "http.scheme": request.url.scheme,
-                }
+    #             # 创建span
+    #             span_name = f"{request.method} {request.url.path}"
+    #             attributes = {
+    #                 "http.method": request.method,
+    #                 "http.url": str(request.url),
+    #                 "http.route": request.url.path,
+    #                 "http.host": request.url.hostname,
+    #                 "http.scheme": request.url.scheme,
+    #             }
 
-                tracer = self.tracer
-                if tracer and tracer.tracer:
-                    with tracer.span(span_name, attributes=attributes) as span:
-                        # 添加请求头作为属性
-                        if span:
-                            for header, value in request.headers.items():
-                                if header.lower() in ["user-agent", "content-type", "content-length"]:
-                                    span.set_attribute(f"http.header.{header.lower()}", value)
+    #             tracer = self.tracer
+    #             if tracer and tracer.tracer:
+    #                 with tracer.span(span_name, attributes=attributes) as span:
+    #                     # 添加请求头作为属性
+    #                     if span:
+    #                         for header, value in request.headers.items():
+    #                             if header.lower() in ["user-agent", "content-type", "content-length"]:
+    #                                 span.set_attribute(f"http.header.{header.lower()}", value)
 
-                        # 处理请求
-                        response = await call_next(request)
+    #                     # 处理请求
+    #                     response = await call_next(request)
 
-                        # 记录响应信息
-                        duration_ms = (time.time() - start_time) * 1000
-                        if span:
-                            span.set_attribute("http.status_code", response.status_code)
-                            span.set_attribute("http.response.duration_ms", duration_ms)
+    #                     # 记录响应信息
+    #                     duration_ms = (time.time() - start_time) * 1000
+    #                     if span:
+    #                         span.set_attribute("http.status_code", response.status_code)
+    #                         span.set_attribute("http.response.duration_ms", duration_ms)
 
-                        # 记录指标
-                        if config_validation["metric_enabled"]:
-                            self.metrics.record_request_count(
-                                request.url.path,
-                                request.method,
-                                response.status_code
-                            )
-                            self.metrics.record_request_duration(
-                                request.url.path,
-                                request.method,
-                                duration_ms
-                            )
+    #                     # 记录指标
+    #                     if config_validation["metric_enabled"]:
+    #                         self.metrics.record_request_count(
+    #                             request.url.path,
+    #                             request.method,
+    #                             response.status_code
+    #                         )
+    #                         self.metrics.record_request_duration(
+    #                             request.url.path,
+    #                             request.method,
+    #                             duration_ms
+    #                         )
 
-                        return response
-                else:
-                    # 没有跟踪器，直接处理请求
-                    response = await call_next(request)
-                    return response
+    #                     return response
+    #             else:
+    #                 # 没有跟踪器，直接处理请求
+    #                 response = await call_next(request)
+    #                 return response
 
-        return OpenTelemetryMiddleware
+    #     return OpenTelemetryMiddleware
 
 
 # 全局实例

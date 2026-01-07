@@ -4,10 +4,10 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/uniqueryaccess/uniquerydto"
-	observabilityreq "github.com/data-agent/agent-app/src/driveradapter/api/rdto/observability/req"
-	observabilityresp "github.com/data-agent/agent-app/src/driveradapter/api/rdto/observability/resp"
-	"github.com/data-agent/agent-app/src/infra/apierr"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/uniqueryaccess/uniquerydto"
+	observabilityreq "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/observability/req"
+	observabilityresp "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/observability/resp"
+	"github.com/decision-agent/agent-app/src/infra/apierr"
 
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )

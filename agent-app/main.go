@@ -8,10 +8,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/data-agent/agent-app/src/boot"
-	"github.com/data-agent/agent-app/src/infra/common/global"
-	"github.com/data-agent/agent-app/src/infra/opentelemetry"
-	"github.com/data-agent/agent-app/src/infra/server"
+	"github.com/decision-agent/agent-app/src/boot"
+	"github.com/decision-agent/agent-app/src/infra/common/global"
+	"github.com/decision-agent/agent-app/src/infra/opentelemetry"
+	"github.com/decision-agent/agent-app/src/infra/server"
 )
 
 func main() {

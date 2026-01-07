@@ -1,9 +1,9 @@
 package agentreq
 
 import (
-	"github.com/data-agent/agent-app/src/domain/valueobject"
-	"github.com/data-agent/agent-app/src/domain/valueobject/comvalobj"
-	"github.com/data-agent/agent-app/src/driveradapter/api/rdto/agent/req/chatopt"
+	"github.com/decision-agent/agent-app/src/domain/valueobject"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/comvalobj"
+	"github.com/decision-agent/agent-app/src/driveradapter/api/rdto/agent/req/chatopt"
 )
 
 type DebugReq struct {

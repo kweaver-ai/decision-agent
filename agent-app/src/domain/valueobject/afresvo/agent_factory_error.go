@@ -2,8 +2,8 @@ package afresvo
 
 import (
 	"github.com/bytedance/sonic"
-	"github.com/data-agent/agent-app/src/domain/valueobject/agentresperr"
-	agentresp "github.com/data-agent/agent-app/src/driveradapter/api/rdto/agent/resp"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/agentresperr"
+	agentresp "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/agent/resp"
 )
 
 type AgentFactoryError struct {

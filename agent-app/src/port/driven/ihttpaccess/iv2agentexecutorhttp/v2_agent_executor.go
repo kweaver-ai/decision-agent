@@ -3,7 +3,7 @@ package iv2agentexecutorhttp
 import (
 	"context"
 
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
 )
 
 // IV2AgentExecutor v2 版本的 Agent Executor 接口

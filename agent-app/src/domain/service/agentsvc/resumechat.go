@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/capierr"
 	"github.com/bytedance/sonic"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"go.opentelemetry.io/otel/attribute"
 )

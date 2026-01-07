@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	agentreq "github.com/data-agent/agent-app/src/driveradapter/api/rdto/agent/req"
-	"github.com/data-agent/agent-app/src/infra/apierr"
+	agentreq "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/agent/req"
+	"github.com/decision-agent/agent-app/src/infra/apierr"
 	"github.com/gin-gonic/gin"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"

@@ -7,11 +7,11 @@ import (
 	otellog "go.opentelemetry.io/otel/log"
 	"go.opentelemetry.io/otel/metric"
 
-	"github.com/data-agent/agent-app/conf"
-	"github.com/data-agent/agent-app/src/infra/opentelemetry"
-	"github.com/data-agent/agent-app/src/infra/opentelemetry/logs"
-	"github.com/data-agent/agent-app/src/infra/opentelemetry/metrics"
-	"github.com/data-agent/agent-app/src/infra/opentelemetry/middleware"
+	"github.com/decision-agent/agent-app/conf"
+	"github.com/decision-agent/agent-app/src/infra/opentelemetry"
+	"github.com/decision-agent/agent-app/src/infra/opentelemetry/logs"
+	"github.com/decision-agent/agent-app/src/infra/opentelemetry/metrics"
+	"github.com/decision-agent/agent-app/src/infra/opentelemetry/middleware"
 
 	"github.com/kweaver-ai/proton-rds-sdk-go/sqlx"
 )

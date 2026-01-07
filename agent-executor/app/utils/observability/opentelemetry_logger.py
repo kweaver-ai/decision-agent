@@ -8,7 +8,7 @@ OpenTelemetry日志工具模块
 import logging
 import inspect
 from typing import Optional, Dict, Any
-from datetime import datetime
+from datetime import datetime, timezone
 
 from opentelemetry import trace
 from opentelemetry._logs import get_logger_provider, std_to_otel
@@ -70,6 +70,14 @@ class OpenTelemetryLogger:
             "code.function": function_name
         }
 
+    def _datetime_to_nanos(self, dt: datetime) -> int:
+        """将datetime对象转换为纳秒时间戳"""
+        # 如果datetime没有时区信息，假设为UTC
+        if dt.tzinfo is None:
+            dt = dt.replace(tzinfo=timezone.utc)
+        # 转换为UTC时间戳（秒），然后转换为纳秒
+        return int(dt.timestamp() * 1e9)
+
     def _create_log_record(
         self,
         severity: int,
@@ -92,8 +100,12 @@ class OpenTelemetryLogger:
         merged_attributes.update(caller_info)
 
         # 创建日志记录
+        # 转换时间戳为纳秒
+        ts_dt = timestamp or datetime.now(timezone.utc)
+        ts_nanos = self._datetime_to_nanos(ts_dt)
+
         log_record = LogRecord(
-            timestamp=timestamp or datetime.now(),
+            timestamp=ts_nanos,
             severity_number=severity,
             severity_text=logging.getLevelName(severity),
             body=message,
@@ -150,22 +162,22 @@ class OpenTelemetryLogger:
         except Exception as e:
             logging.error(f"OpenTelemetry日志记录失败: {e}")
 
-    def log_with_span(
-        self,
-        message: str,
-        span: trace.Span,
-        severity: int = logging.INFO,
-        attributes: Optional[Dict[str, Any]] = None
-    ) -> None:
-        """在指定span上下文中记录日志"""
-        # 设置当前span为提供的span
-        ctx = trace.set_span_in_context(span)
-        token = trace.context_api.attach(ctx)
+    # def log_with_span(
+    #     self,
+    #     message: str,
+    #     span: trace.Span,
+    #     severity: int = logging.INFO,
+    #     attributes: Optional[Dict[str, Any]] = None
+    # ) -> None:
+    #     """在指定span上下文中记录日志"""
+    #     # 设置当前span为提供的span
+    #     ctx = trace.set_span_in_context(span)
+    #     token = trace.context_api.attach(ctx)
 
-        try:
-            self._log(severity, message, attributes)
-        finally:
-            trace.context_api.detach(token)
+    #     try:
+    #         self._log(severity, message, attributes)
+    #     finally:
+    #         trace.context_api.detach(token)
 
 
 # 全局实例

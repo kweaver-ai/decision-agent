@@ -4,10 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutordto"
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/v2agentexecutoraccess"
-	"github.com/data-agent/agent-app/src/port/driven/ihttpaccess/iagentexecutorhttp"
-	"github.com/data-agent/agent-app/src/port/driven/ihttpaccess/iv2agentexecutorhttp"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutordto"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/v2agentexecutoraccess"
+	"github.com/decision-agent/agent-app/src/port/driven/ihttpaccess/iagentexecutorhttp"
+	"github.com/decision-agent/agent-app/src/port/driven/ihttpaccess/iv2agentexecutorhttp"
 )
 
 type AgentCall struct {

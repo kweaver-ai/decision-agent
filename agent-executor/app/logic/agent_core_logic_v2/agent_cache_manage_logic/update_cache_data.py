@@ -10,7 +10,7 @@ from typing import Dict, TYPE_CHECKING
 from app.domain.vo.agent_cache import AgentCacheIdVO
 from app.domain.vo.agentvo import AgentConfigVo
 
-from app.utils.observability.observability_log import get_logger as o11y_logger
+from app.utils.observability.opentelemetry_logger import get_otel_logger
 
 
 if TYPE_CHECKING:
@@ -67,5 +67,5 @@ async def update_cache_data(
         await manager.cache_service.save(cache_entity)
 
     except Exception as e:
-        o11y_logger().error(f"agent cache update data failed: {e}")
+        get_otel_logger().error(f"agent cache update data failed: {e}")
         raise e

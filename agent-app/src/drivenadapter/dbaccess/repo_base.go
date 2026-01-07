@@ -5,8 +5,8 @@ import (
 	"database/sql"
 	"sync"
 
-	"github.com/data-agent/agent-app/src/infra/common/global"
-	"github.com/data-agent/agent-app/src/port/driven/idbaccess"
+	"github.com/decision-agent/agent-app/src/infra/common/global"
+	"github.com/decision-agent/agent-app/src/port/driven/idbaccess"
 	"github.com/kweaver-ai/proton-rds-sdk-go/sqlx"
 )
 

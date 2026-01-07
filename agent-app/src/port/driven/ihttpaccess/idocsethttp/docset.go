@@ -3,7 +3,7 @@ package idocsethttp
 import (
 	"context"
 
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/docsetaccess/docsetdto"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/docsetaccess/docsetdto"
 )
 
 type IDocset interface {

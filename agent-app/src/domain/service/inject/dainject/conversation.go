@@ -3,13 +3,13 @@ package dainject
 import (
 	"sync"
 
-	"github.com/data-agent/agent-app/src/domain/service"
-	"github.com/data-agent/agent-app/src/domain/service/conversationsvc"
-	"github.com/data-agent/agent-app/src/drivenadapter/dbaccess/conversationdbacc"
-	"github.com/data-agent/agent-app/src/drivenadapter/dbaccess/conversationmsgdbacc"
-	"github.com/data-agent/agent-app/src/drivenadapter/dbaccess/tempareadbacc"
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/httpinject"
-	"github.com/data-agent/agent-app/src/port/driver/iportdriver"
+	"github.com/decision-agent/agent-app/src/domain/service"
+	"github.com/decision-agent/agent-app/src/domain/service/conversationsvc"
+	"github.com/decision-agent/agent-app/src/drivenadapter/dbaccess/conversationdbacc"
+	"github.com/decision-agent/agent-app/src/drivenadapter/dbaccess/conversationmsgdbacc"
+	"github.com/decision-agent/agent-app/src/drivenadapter/dbaccess/tempareadbacc"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/httpinject"
+	"github.com/decision-agent/agent-app/src/port/driver/iportdriver"
 	"github.com/kweaver-ai/kweaver-go-lib/logger"
 )
 

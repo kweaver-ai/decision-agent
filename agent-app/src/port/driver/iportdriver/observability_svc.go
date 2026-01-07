@@ -3,8 +3,8 @@ package iportdriver
 import (
 	"context"
 
-	observabilityreq "github.com/data-agent/agent-app/src/driveradapter/api/rdto/observability/req"
-	observabilityresp "github.com/data-agent/agent-app/src/driveradapter/api/rdto/observability/resp"
+	observabilityreq "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/observability/req"
+	observabilityresp "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/observability/resp"
 )
 
 // IObservability 可观测性服务接口

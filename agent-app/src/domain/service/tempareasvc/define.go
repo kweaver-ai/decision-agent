@@ -1,13 +1,13 @@
 package tempareasvc
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/cmp/icmp"
-	"github.com/data-agent/agent-app/src/domain/service"
-	"github.com/data-agent/agent-app/src/port/driven/idbaccess"
-	"github.com/data-agent/agent-app/src/port/driven/ihttpaccess/iagentfactoryhttp"
-	iecoConfighttp "github.com/data-agent/agent-app/src/port/driven/ihttpaccess/iecoconfighttp"
-	"github.com/data-agent/agent-app/src/port/driven/ihttpaccess/iefasthttp"
-	"github.com/data-agent/agent-app/src/port/driver/iportdriver"
+	"github.com/decision-agent/agent-app/src/domain/service"
+	"github.com/decision-agent/agent-app/src/port/driven/idbaccess"
+	"github.com/decision-agent/agent-app/src/port/driven/ihttpaccess/iagentfactoryhttp"
+	iecoConfighttp "github.com/decision-agent/agent-app/src/port/driven/ihttpaccess/iecoconfighttp"
+	"github.com/decision-agent/agent-app/src/port/driven/ihttpaccess/iefasthttp"
+	"github.com/decision-agent/agent-app/src/port/driver/iportdriver"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/icmp"
 )
 
 type tempareaSvc struct {

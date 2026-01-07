@@ -1,8 +1,8 @@
 package daresvo
 
 import (
-	"github.com/data-agent/agent-app/src/domain/enum/chat_enum/chatresenum"
-	"github.com/data-agent/agent-app/src/domain/valueobject/agentrespvo"
+	"github.com/decision-agent/agent-app/src/domain/enum/chat_enum/chatresenum"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/agentrespvo"
 )
 
 // DocRetrievalResultStrategy 文档召回结果判断策略接口

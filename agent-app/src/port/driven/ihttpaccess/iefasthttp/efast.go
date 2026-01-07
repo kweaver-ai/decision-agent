@@ -3,7 +3,7 @@ package iefasthttp
 import (
 	"context"
 
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/efastaccess/efastdto"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/efastaccess/efastdto"
 )
 
 type IEfast interface {

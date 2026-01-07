@@ -11,7 +11,7 @@ from app.domain.enum.common.user_account_header_key import (
     set_user_account_id,
     set_user_account_type,
 )
-from app.utils.observability.observability_log import get_logger as o11y_logger
+from app.utils.observability.opentelemetry_logger import get_otel_logger
 
 from ..common import router
 from ..dependencies import get_account_id, get_account_type, get_biz_domain_id
@@ -86,5 +86,5 @@ async def manage_agent_cache(
             )
 
     except Exception as e:
-        o11y_logger().error(f"manage_agent_cache failed: {e}")
+        get_otel_logger().error(f"manage_agent_cache failed: {e}")
         raise

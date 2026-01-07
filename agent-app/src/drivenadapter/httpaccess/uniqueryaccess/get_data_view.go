@@ -9,7 +9,7 @@ import (
 	"path/filepath"
 
 	"github.com/bytedance/sonic"
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/uniqueryaccess/uniquerydto"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/uniqueryaccess/uniquerydto"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"

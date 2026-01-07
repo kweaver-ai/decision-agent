@@ -3,10 +3,10 @@ package conversationp2e
 import (
 	"context"
 
-	"github.com/data-agent/agent-app/src/domain/entity/conversationeo"
-	"github.com/data-agent/agent-app/src/driveradapter/api/rdto/conversation_message/conversationmsgreq"
-	"github.com/data-agent/agent-app/src/infra/persistence/dapo"
-	"github.com/data-agent/agent-app/src/port/driven/idbaccess"
+	"github.com/decision-agent/agent-app/src/domain/entity/conversationeo"
+	"github.com/decision-agent/agent-app/src/driveradapter/api/rdto/conversation_message/conversationmsgreq"
+	"github.com/decision-agent/agent-app/src/infra/persistence/dapo"
+	"github.com/decision-agent/agent-app/src/port/driven/idbaccess"
 	"github.com/pkg/errors"
 )
 

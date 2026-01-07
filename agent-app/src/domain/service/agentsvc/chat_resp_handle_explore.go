@@ -3,9 +3,9 @@ package agentsvc
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/cutil"
-	"github.com/data-agent/agent-app/src/domain/valueobject/agentrespvo"
-	"github.com/data-agent/agent-app/src/domain/valueobject/conversationmsgvo"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/agentrespvo"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/conversationmsgvo"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 )
 

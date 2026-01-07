@@ -3,7 +3,7 @@ package apierr
 import (
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 
-	"github.com/data-agent/agent-app/locale"
+	"github.com/decision-agent/agent-app/locale"
 )
 
 // 公共错误码, 服务内所有模块均可使用

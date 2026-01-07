@@ -3,7 +3,7 @@ package iagentfactoryhttp
 import (
 	"context"
 
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/agentfactoryaccess/agentfactorydto"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/agentfactoryaccess/agentfactorydto"
 )
 
 type IAgentFactory interface {

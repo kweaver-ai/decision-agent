@@ -4,14 +4,14 @@ import (
 	"fmt"
 	"net/http"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/capierr"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/cenum"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/chelper"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/cutil"
-	"github.com/data-agent/agent-app/src/domain/constant"
-	agentreq "github.com/data-agent/agent-app/src/driveradapter/api/rdto/agent/req"
+	"github.com/decision-agent/agent-app/src/domain/constant"
+	agentreq "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/agent/req"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cenum"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
 
-	// "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/capierr/chelper"
+	// "github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr/chelper"
 
 	"github.com/bytedance/sonic"
 	"github.com/gin-gonic/gin"

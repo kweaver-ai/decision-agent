@@ -14,7 +14,7 @@ from app.domain.enum.common.user_account_header_key import (
     set_user_account_type,
 )
 from app.domain.vo.agentvo import AgentConfigVo, AgentInputVo
-from app.utils.observability.observability_log import get_logger as o11y_logger
+from app.utils.observability.opentelemetry_logger import get_otel_logger
 
 from .process_options import process_options
 from .history_delete_sensitive import history_delete_sensitive
@@ -76,7 +76,7 @@ async def prepare(
 
         agent_config = AgentConfigVo(**config_dict)
     else:
-        o11y_logger().error(
+        get_otel_logger().error(
             f"run_agent failed:At least one of agent_id or agent_config must be provided, agent_id = {req.agent_id}, agent_config = {req.agent_config}"
         )
         raise ParamException(
@@ -106,7 +106,7 @@ async def prepare(
     if not await agent_factory_service.check_agent_permission(
         agent_config.agent_id, account_id, account_type
     ):
-        o11y_logger().error(
+        get_otel_logger().error(
             f"check_agent_permission failed: agent_id = {agent_config.agent_id}, account_id = {account_id}, account_type = {account_type}"
         )
         raise AgentPermissionException(agent_config.agent_id, account_id)

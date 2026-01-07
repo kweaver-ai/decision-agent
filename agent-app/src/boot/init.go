@@ -1,12 +1,12 @@
 package boot
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/cglobal"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/chelper/redishelper"
-	"github.com/data-agent/agent-app/conf"
-	_ "github.com/data-agent/agent-app/src/infra/apierr"
-	"github.com/data-agent/agent-app/src/infra/common"
-	"github.com/data-agent/agent-app/src/infra/common/global"
+	"github.com/decision-agent/agent-app/conf"
+	_ "github.com/decision-agent/agent-app/src/infra/apierr"
+	"github.com/decision-agent/agent-app/src/infra/common"
+	"github.com/decision-agent/agent-app/src/infra/common/global"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cglobal"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/redishelper"
 	"github.com/kweaver-ai/kweaver-go-lib/logger"
 )
 

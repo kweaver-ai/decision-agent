@@ -6,10 +6,10 @@ package agentexecutoraccess
 // 	"fmt"
 // 	"net/http"
 
-// 	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutoraccreq"
-// 	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutoraccres"
-// 	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/chelper"
-// 	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/ctype"
+// 	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutoraccreq"
+// 	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutoraccres"
+// 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper"
+// 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/ctype"
 // )
 
 // // ConversationSessionInit 只有 v1 接口，没有 v2 接口

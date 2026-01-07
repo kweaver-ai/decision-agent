@@ -1,7 +1,7 @@
 package daresvo
 
 import (
-	"github.com/data-agent/agent-app/src/domain/valueobject/agentresperr"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/agentresperr"
 )
 
 func (r *DataAgentRes) GetExecutorError() (respErr *agentresperr.RespError) {

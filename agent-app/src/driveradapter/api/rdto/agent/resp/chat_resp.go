@@ -1,8 +1,8 @@
 package agentresp
 
 import (
-	"github.com/data-agent/agent-app/src/domain/valueobject/conversationmsgvo"
-	// "devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/rest"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/conversationmsgvo"
+	// "github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/rest"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 

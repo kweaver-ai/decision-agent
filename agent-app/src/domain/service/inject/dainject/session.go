@@ -3,10 +3,10 @@ package dainject
 import (
 	"sync"
 
-	"github.com/data-agent/agent-app/src/domain/service/sessionsvc"
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/httpinject"
-	"github.com/data-agent/agent-app/src/drivenadapter/redisaccess/sessionredisacc"
-	"github.com/data-agent/agent-app/src/port/driver/iportdriver"
+	"github.com/decision-agent/agent-app/src/domain/service/sessionsvc"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/httpinject"
+	"github.com/decision-agent/agent-app/src/drivenadapter/redisaccess/sessionredisacc"
+	"github.com/decision-agent/agent-app/src/port/driver/iportdriver"
 	"github.com/kweaver-ai/kweaver-go-lib/logger"
 )
 

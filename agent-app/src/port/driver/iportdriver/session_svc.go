@@ -3,9 +3,9 @@ package iportdriver
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/ctype"
-	"github.com/data-agent/agent-app/src/driveradapter/api/rdto/session/sessionreq"
-	"github.com/data-agent/agent-app/src/driveradapter/api/rdto/session/sessionresp"
+	"github.com/decision-agent/agent-app/src/driveradapter/api/rdto/session/sessionreq"
+	"github.com/decision-agent/agent-app/src/driveradapter/api/rdto/session/sessionresp"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/ctype"
 )
 
 //go:generate mockgen -source=./session_svc.go -destination ./iportdrivermock/session_svc.go -package iportdrivermock

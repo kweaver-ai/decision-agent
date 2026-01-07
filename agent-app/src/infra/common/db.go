@@ -4,7 +4,7 @@ package common
 import (
 	"sync"
 
-	"github.com/data-agent/agent-app/src/infra/common/global"
+	"github.com/decision-agent/agent-app/src/infra/common/global"
 	"github.com/kweaver-ai/kweaver-go-lib/logger"
 	"github.com/kweaver-ai/proton-rds-sdk-go/sqlx"
 

@@ -24,7 +24,7 @@ from .cache_handler import CacheHandler
 from app.utils.snow_id import snow_id
 from app.utils.observability.trace_wrapper import internal_span
 from opentelemetry.trace import Span
-from app.utils.observability.observability_log import get_logger as o11y_logger
+from app.utils.observability.opentelemetry_logger import get_otel_logger
 
 from .trace import span_set_attrs
 from app.domain.enum.common.user_account_header_key import (
@@ -227,19 +227,19 @@ class AgentCoreV2:
                     user_id=get_user_account_id(headers) or "",
                 )
                 await ExceptionHandler.handle_exception(dolphin_except, res, headers)
-                o11y_logger().error(f"agent run failed: {e}")
+                get_otel_logger().error(f"agent run failed: {e}")
                 # 在yield前移除context键
                 yield self.remove_context_from_response(res)
             except Exception as e:
                 # 处理其他异常
                 await ExceptionHandler.handle_exception(e, res, headers)
-                o11y_logger().error(f"agent run failed: {e}")
+                get_otel_logger().error(f"agent run failed: {e}")
                 # 在yield前移除context键
                 yield self.remove_context_from_response(res)
 
         except Exception as e:
             # 处理整体异常
             await ExceptionHandler.handle_exception(e, res, headers)
-            o11y_logger().error(f"agent run failed: {e}")
+            get_otel_logger().error(f"agent run failed: {e}")
             # 在yield前移除context键
             yield self.remove_context_from_response(res)

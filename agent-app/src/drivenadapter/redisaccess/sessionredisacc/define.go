@@ -3,9 +3,9 @@ package sessionredisacc
 import (
 	"fmt"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/cmp/icmp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/cmp/rediscmp"
-	"github.com/data-agent/agent-app/src/port/driven/iredisaccess/isessionredis"
+	"github.com/decision-agent/agent-app/src/port/driven/iredisaccess/isessionredis"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/icmp"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/rediscmp"
 )
 
 const (

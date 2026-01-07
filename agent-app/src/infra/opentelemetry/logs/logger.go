@@ -10,8 +10,8 @@ import (
 	"go.opentelemetry.io/otel/log/embedded"
 	"go.opentelemetry.io/otel/trace"
 
-	"github.com/data-agent/agent-app/conf"
-	"github.com/data-agent/agent-app/src/domain/constant"
+	"github.com/decision-agent/agent-app/conf"
+	"github.com/decision-agent/agent-app/src/domain/constant"
 )
 
 // Logger OpenTelemetry 日志记录器

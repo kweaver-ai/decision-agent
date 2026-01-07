@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"net/http"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/capierr"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/cenum"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/chelper"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/ctype"
-	"github.com/data-agent/agent-app/src/driveradapter/api/rdto/session/sessionreq"
+	"github.com/decision-agent/agent-app/src/driveradapter/api/rdto/session/sessionreq"
 	"github.com/gin-gonic/gin"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cenum"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/ctype"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 

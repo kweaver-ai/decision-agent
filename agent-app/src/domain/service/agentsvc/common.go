@@ -3,15 +3,15 @@ package agentsvc
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/domain/valueobject/daconfvalobj"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/domain/valueobject/daconfvalobj/skillvalobj"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/cutil"
-	"github.com/data-agent/agent-app/src/domain/constant"
-	"github.com/data-agent/agent-app/src/domain/valueobject/agentrespvo"
-	"github.com/data-agent/agent-app/src/domain/valueobject/agentrespvo/daresvo"
-	"github.com/data-agent/agent-app/src/domain/valueobject/conversationmsgvo"
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutordto"
-	agentreq "github.com/data-agent/agent-app/src/driveradapter/api/rdto/agent/req"
+	"github.com/decision-agent/agent-app/src/domain/constant"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/agentrespvo"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/agentrespvo/daresvo"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/conversationmsgvo"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutordto"
+	agentreq "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/agent/req"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/valueobject/daconfvalobj"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/valueobject/daconfvalobj/skillvalobj"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
 )
 
 // NOTE: 将agent配置转换为agent call请求配置，支持用户传入llm配置和数据源配置代替agent配置中的llm配置和数据源配置

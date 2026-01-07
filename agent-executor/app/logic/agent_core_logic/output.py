@@ -61,7 +61,7 @@ class OutputHandler:
             chunk["status"] = "True"
             yield chunk
 
-    # @internal_span()
+    @internal_span()
     async def result_output(
         self,
         agent_config: AgentConfig,

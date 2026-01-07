@@ -1,6 +1,6 @@
 package observabilityresp
 
-import "github.com/data-agent/agent-app/src/domain/valueobject/agentrespvo"
+import "github.com/decision-agent/agent-app/src/domain/valueobject/agentrespvo"
 
 // POST /api/agent-app/v1/observability/agent/:agent_id/conversation/:conversation_id/session/:session_id/run/:run_id/detail
 // 获取指定run的详情信息

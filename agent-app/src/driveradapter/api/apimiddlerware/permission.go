@@ -5,14 +5,14 @@ import (
 	"fmt"
 	"io"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/drivenadapter/httpaccess/agentfactoryhttp/afhttpdto"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/capierr"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/capimiddleware"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/chelper"
 	"github.com/bytedance/sonic"
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/httpinject"
-	"github.com/data-agent/agent-app/src/infra/apierr"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/httpinject"
+	"github.com/decision-agent/agent-app/src/infra/apierr"
 	"github.com/gin-gonic/gin"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/drivenadapter/httpaccess/agentfactoryhttp/afhttpdto"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capimiddleware"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 

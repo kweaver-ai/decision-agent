@@ -1,15 +1,15 @@
 package agentsvc
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/cmp/icmp"
-	"github.com/data-agent/agent-app/src/domain/service"
-	"github.com/data-agent/agent-app/src/port/driven/idbaccess"
-	"github.com/data-agent/agent-app/src/port/driven/ihttpaccess/iagentexecutorhttp"
-	"github.com/data-agent/agent-app/src/port/driven/ihttpaccess/iagentfactoryhttp"
-	"github.com/data-agent/agent-app/src/port/driven/ihttpaccess/idocsethttp"
-	"github.com/data-agent/agent-app/src/port/driven/ihttpaccess/iefasthttp"
-	"github.com/data-agent/agent-app/src/port/driven/ihttpaccess/iv2agentexecutorhttp"
-	"github.com/data-agent/agent-app/src/port/driver/iportdriver"
+	"github.com/decision-agent/agent-app/src/domain/service"
+	"github.com/decision-agent/agent-app/src/port/driven/idbaccess"
+	"github.com/decision-agent/agent-app/src/port/driven/ihttpaccess/iagentexecutorhttp"
+	"github.com/decision-agent/agent-app/src/port/driven/ihttpaccess/iagentfactoryhttp"
+	"github.com/decision-agent/agent-app/src/port/driven/ihttpaccess/idocsethttp"
+	"github.com/decision-agent/agent-app/src/port/driven/ihttpaccess/iefasthttp"
+	"github.com/decision-agent/agent-app/src/port/driven/ihttpaccess/iv2agentexecutorhttp"
+	"github.com/decision-agent/agent-app/src/port/driver/iportdriver"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/icmp"
 )
 
 type agentSvc struct {

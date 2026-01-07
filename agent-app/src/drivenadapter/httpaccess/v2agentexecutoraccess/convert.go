@@ -1,8 +1,8 @@
 package v2agentexecutoraccess
 
 import (
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutordto"
-	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutordto"
+	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
 )
 
 // ConvertV1ToV2CallReq 将 v1 的 AgentCallReq 转换为 v2 的 V2AgentCallReq

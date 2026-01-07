@@ -62,7 +62,7 @@ def history_delete_sensitive(agent_input: AgentInput) -> AgentInput:
     return agent_input
 
 
-# @internal_span()
+@internal_span()
 def process_options(
     options: AgentOptions,
     agent_config: AgentConfig,

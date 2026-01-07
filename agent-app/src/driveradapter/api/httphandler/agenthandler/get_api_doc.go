@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/capierr"
-	"github.com/data-agent/agent-app/src/domain/constant"
-	agentreq "github.com/data-agent/agent-app/src/driveradapter/api/rdto/agent/req"
+	"github.com/decision-agent/agent-app/src/domain/constant"
+	agentreq "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/agent/req"
 	"github.com/gin-gonic/gin"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/pkg/errors"

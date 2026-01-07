@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"github.com/data-agent/agent-app/src/infra/opentelemetry/logs"
-	"github.com/data-agent/agent-app/src/infra/opentelemetry/metrics"
+	"github.com/decision-agent/agent-app/src/infra/opentelemetry/logs"
+	"github.com/decision-agent/agent-app/src/infra/opentelemetry/metrics"
 
 	"github.com/gin-gonic/gin"
 )

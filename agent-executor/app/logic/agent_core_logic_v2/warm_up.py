@@ -8,7 +8,7 @@ from .trace import span_set_attrs
 from .run_dolphin import run_dolphin
 from ...common.stand_log import StandLogger
 
-from app.utils.observability.observability_log import get_logger as o11y_logger
+from app.utils.observability.opentelemetry_logger import get_otel_logger
 from app.domain.enum.common.user_account_header_key import (
     get_user_account_id,
     get_user_account_type,
@@ -76,4 +76,4 @@ class WarmUpHandler:
 
         except Exception as e:
             # 处理整体异常
-            o11y_logger().error(f"agent warnup failed: {e}")
+            get_otel_logger().error(f"agent warnup failed: {e}")

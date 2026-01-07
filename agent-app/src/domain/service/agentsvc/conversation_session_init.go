@@ -3,11 +3,11 @@ package agentsvc
 // import (
 // 	"context"
 
-// 	"github.com/data-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutoraccreq"
-// 	agentreq "github.com/data-agent/agent-app/src/driveradapter/api/rdto/agent/req"
-// 	agentresp "github.com/data-agent/agent-app/src/driveradapter/api/rdto/agent/resp"
-// 	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/cenum"
-// 	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/ctype"
+// 	"github.com/decision-agent/agent-app/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutoraccreq"
+// 	agentreq "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/agent/req"
+// 	agentresp "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/agent/resp"
+// 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cenum"
+// 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/ctype"
 // 	"github.com/pkg/errors"
 // )
 

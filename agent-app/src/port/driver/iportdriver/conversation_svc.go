@@ -3,9 +3,9 @@ package iportdriver
 import (
 	"context"
 
-	"github.com/data-agent/agent-app/src/domain/valueobject/comvalobj"
-	"github.com/data-agent/agent-app/src/driveradapter/api/rdto/conversation/conversationreq"
-	"github.com/data-agent/agent-app/src/driveradapter/api/rdto/conversation/conversationresp"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/comvalobj"
+	"github.com/decision-agent/agent-app/src/driveradapter/api/rdto/conversation/conversationreq"
+	"github.com/decision-agent/agent-app/src/driveradapter/api/rdto/conversation/conversationresp"
 )
 
 //go:generate mockgen -source=./conversation_svc.go -destination ./iportdrivermock/conversation_svc.go -package iportdrivermock

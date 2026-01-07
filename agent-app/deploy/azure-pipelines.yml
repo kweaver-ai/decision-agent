@@ -308,7 +308,7 @@ stages:
                     cd /agent-app
 
                     go mod tidy
-                    go build -ldflags "-s -w -X 'github.com/data-agent/agent-app/conf/version.ServerVersion=${VERSION}'" -o agent-app ./main.go
+                    go build -ldflags "-s -w -X 'github.com/decision-agent/agent-app/conf/version.ServerVersion=${VERSION}'" -o agent-app ./main.go
                     "
                 docker build --force-rm --no-cache --pull -t ${CURRENT_IMAGE} -f ./deploy/Dockerfile \
                  --build-arg baseImage=$(baseImage) .

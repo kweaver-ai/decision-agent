@@ -1,11 +1,11 @@
 package conversationmsgvo
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/domain/enum/cdaenum"
-	"github.com/data-agent/agent-app/src/domain/enum/chat_enum/chatresenum"
-	"github.com/data-agent/agent-app/src/domain/valueobject"
-	"github.com/data-agent/agent-app/src/domain/valueobject/agentconfigvo"
-	"github.com/data-agent/agent-app/src/domain/valueobject/agentrespvo"
+	"github.com/decision-agent/agent-app/src/domain/enum/chat_enum/chatresenum"
+	"github.com/decision-agent/agent-app/src/domain/valueobject"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/agentconfigvo"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/agentrespvo"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/enum/cdaenum"
 )
 
 type Message struct {

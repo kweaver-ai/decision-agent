@@ -3,9 +3,9 @@ package agentrespvo
 import (
 	"errors"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/cutil"
 	"github.com/bytedance/sonic"
-	"github.com/data-agent/agent-app/src/domain/enum/chat_enum/chatresenum"
+	"github.com/decision-agent/agent-app/src/domain/enum/chat_enum/chatresenum"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
 	"github.com/tidwall/gjson"
 )
 

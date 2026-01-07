@@ -1,7 +1,7 @@
 package conversationresp
 
 import (
-	"github.com/data-agent/agent-app/src/domain/entity/conversationeo"
+	"github.com/decision-agent/agent-app/src/domain/entity/conversationeo"
 )
 
 type ConversationDetail struct {

@@ -37,7 +37,7 @@ from app.utils.snow_id import snow_id
 from app.common.tool.tool import build_tools
 from app.utils.observability.trace_wrapper import internal_span
 from opentelemetry.trace import Span
-from app.utils.observability.observability_log import get_logger as o11y_logger
+from app.utils.observability.opentelemetry_logger import get_otel_logger
 
 
 class AgentCore:
@@ -165,18 +165,18 @@ class AgentCore:
                     user_id=get_user_account_id(headers) or "",
                 )
                 await ExceptionHandler.handle_exception(dolphin_except, res, headers)
-                o11y_logger().error(f"agent run failed: {e}")
+                get_otel_logger().error(f"agent run failed: {e}")
                 yield res
             except Exception as e:
                 # 处理其他异常
                 await ExceptionHandler.handle_exception(e, res, headers)
-                o11y_logger().error(f"agent run failed: {e}")
+                get_otel_logger().error(f"agent run failed: {e}")
                 yield res
 
         except Exception as e:
             # 处理整体异常
             await ExceptionHandler.handle_exception(e, res, headers)
-            o11y_logger().error(f"agent run failed: {e}")
+            get_otel_logger().error(f"agent run failed: {e}")
             yield res
 
     @internal_span()
@@ -288,9 +288,9 @@ class AgentCore:
             yield output
             return
 
-        o11y_logger().info(f"[run_dolphin] executor_init init_params = {init_params}")
-        o11y_logger().info(
-            f"[run_dolphin] executor_run dolphin_prompt = {dolphin_prompt}"
+        get_otel_logger().info(f"[run_dolphin] executor_init init_params {init_params}")
+        get_otel_logger().info(
+            f"[run_dolphin] executor_run dolphin_prompt {dolphin_prompt}"
         )
         # 8. 构造executor
         self.executor = DolphinExecutor(verbose=Config.app.enable_dolphin_agent_verbose)

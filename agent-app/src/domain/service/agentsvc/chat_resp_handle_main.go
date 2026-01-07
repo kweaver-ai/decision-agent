@@ -3,8 +3,8 @@ package agentsvc
 import (
 	"context"
 
-	"github.com/data-agent/agent-app/src/domain/valueobject/agentrespvo"
-	"github.com/data-agent/agent-app/src/domain/valueobject/conversationmsgvo"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/agentrespvo"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/conversationmsgvo"
 )
 
 type mainHandleDto struct {

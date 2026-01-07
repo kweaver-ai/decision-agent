@@ -3,7 +3,7 @@ package idbaccess
 import (
 	"context"
 
-	"github.com/data-agent/agent-app/src/infra/persistence/dapo"
+	"github.com/decision-agent/agent-app/src/infra/persistence/dapo"
 )
 
 type ITempAreaRepo interface {

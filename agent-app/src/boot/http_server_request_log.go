@@ -1,9 +1,9 @@
 package boot
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/capimiddleware"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/chelper/cenvhelper"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/chelper/httprequesthelper"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capimiddleware"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/cenvhelper"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/httprequesthelper"
 	"github.com/kweaver-ai/kweaver-go-lib/logger"
 )
 

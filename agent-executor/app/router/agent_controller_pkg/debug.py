@@ -12,7 +12,7 @@ from app.domain.enum.common.user_account_header_key import (
     set_user_account_type,
 )
 from app.logic.agent_core_logic.agent_core import AgentCore
-from app.utils.observability.observability_log import get_logger as o11y_logger
+from app.utils.observability.opentelemetry_logger import get_otel_logger
 
 from .common import (
     router,
@@ -57,8 +57,9 @@ async def debug_agent(
             agent_config = json.loads(agent_config)
         agent_config = AgentConfig(**agent_config)
     else:
-        o11y_logger().error(
-            f"debug_agent failed: At least one of id or config must be provided, id = {param.id}, config = {param.config}"
+        get_otel_logger().error(
+            f"debug_agent failed: At least one of id or config must be provided param.id = {param.id}, param.config = {param.config}",
+            attributes={"id": param.id, },
         )
         raise ParamException("At least one of id or config must be provided.")
 
@@ -83,8 +84,9 @@ async def debug_agent(
     if not await agent_factory_service.check_agent_permission(
         agent_config.agent_id, account_id, account_type
     ):
-        o11y_logger().error(
-            f"check_agent_permission failed: agent_id = {agent_config.agent_id}, account_id = {account_id}, account_type = {account_type}"
+        get_otel_logger().error(
+            f"check_agent_permission failed",
+            attributes={"agent_id": agent_config.agent_id, "account_id": account_id , "account_type": account_type},
         )
         raise AgentPermissionException(agent_config.agent_id, account_id)
 

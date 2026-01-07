@@ -3,10 +3,10 @@ package conf
 import (
 	"sync"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/chelper/cenvhelper"
-	"github.com/data-agent/agent-app/appruntime"
+	"github.com/decision-agent/agent-app/appruntime"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/cenvhelper"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/cconf"
+	"github.com/kweaver-ai/agent-go-common-pkg/cconf"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/spf13/viper"
 )

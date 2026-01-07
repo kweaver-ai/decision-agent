@@ -25,7 +25,7 @@ from app.driven.dip.agent_factory_service import agent_factory_service
 from app.domain.vo.agentvo import AgentConfigVo
 from app.domain.vo.agent_cache import AgentCacheIdVO
 from app.logic.agent_core_logic_v2.agent_cache_manage_logic import AgentCacheManager
-from app.utils.observability.observability_log import get_logger as o11y_logger
+from app.utils.observability.opentelemetry_logger import get_otel_logger
 
 from ..rdto.v1.req.agent_cache import AgentCacheManageReq
 from ..rdto.v1.res.agent_cache import AgentCacheManageRes
@@ -71,7 +71,7 @@ async def prepare_agent_config(
     if not await agent_factory_service.check_agent_permission(
         agent_config.agent_id, account_id, account_type
     ):
-        o11y_logger().error(
+        get_otel_logger().error(
             f"check_agent_permission failed: agent_id = {agent_config.agent_id}, account_id = {account_id}, account_type = {account_type}"
         )
         raise AgentPermissionException(agent_config.agent_id, account_id)

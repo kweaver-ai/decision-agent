@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"slices"
 
-	agentreq "github.com/data-agent/agent-app/src/driveradapter/api/rdto/agent/req"
-	"github.com/data-agent/agent-app/src/static"
+	agentreq "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/agent/req"
+	"github.com/decision-agent/agent-app/src/static"
 	"github.com/getkin/kin-openapi/openapi3"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"

@@ -2,8 +2,8 @@ package daresvo
 
 import (
 	"github.com/bytedance/sonic"
-	"github.com/data-agent/agent-app/src/domain/enum/chat_enum/chatresenum"
-	"github.com/data-agent/agent-app/src/domain/valueobject/agentrespvo"
+	"github.com/decision-agent/agent-app/src/domain/enum/chat_enum/chatresenum"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/agentrespvo"
 	"github.com/pkg/errors"
 )
 

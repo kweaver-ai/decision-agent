@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/bytedance/sonic"
-	"github.com/data-agent/agent-app/src/domain/valueobject/agentconfigvo"
-	"github.com/data-agent/agent-app/src/domain/valueobject/agentrespvo"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/agentconfigvo"
+	"github.com/decision-agent/agent-app/src/domain/valueobject/agentrespvo"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 )

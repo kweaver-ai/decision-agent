@@ -1,10 +1,10 @@
 package docsetaccess
 
 import (
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/cmp/icmp"
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/cutil"
-	"github.com/data-agent/agent-app/conf"
-	"github.com/data-agent/agent-app/src/port/driven/ihttpaccess/idocsethttp"
+	"github.com/decision-agent/agent-app/conf"
+	"github.com/decision-agent/agent-app/src/port/driven/ihttpaccess/idocsethttp"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/icmp"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 

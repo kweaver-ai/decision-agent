@@ -7,7 +7,7 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/data-agent/agent-app/appruntime"
+	"github.com/decision-agent/agent-app/appruntime"
 	"github.com/gin-gonic/gin"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"

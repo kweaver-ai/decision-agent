@@ -12,7 +12,7 @@ from app.utils.common import (
 )
 from app.utils.observability.trace_wrapper import internal_span
 from opentelemetry.trace import Span
-from app.utils.observability.observability_log import get_logger as o11y_logger
+from app.utils.observability.opentelemetry_logger import get_otel_logger
 
 from .trace import span_set_attrs
 from app.domain.enum.common.user_account_header_key import (
@@ -159,4 +159,4 @@ class MemoryHandler:
             StandLogger.error(
                 f"记忆构建失败: {str(e)}, traceback: {traceback.format_exc()}"
             )
-            o11y_logger().error(f"记忆构建失败: {str(e)}")
+            get_otel_logger().error(f"记忆构建失败: {str(e)}")

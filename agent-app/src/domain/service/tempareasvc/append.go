@@ -3,10 +3,10 @@ package tempareasvc
 import (
 	"context"
 
-	"devops.aishu.cn/AISHUDevOps/DIP/_git/agent-go-common-pkg/src/infra/common/cutil"
-	tempareareq "github.com/data-agent/agent-app/src/driveradapter/api/rdto/temparea/req"
-	temparearesp "github.com/data-agent/agent-app/src/driveradapter/api/rdto/temparea/resp"
-	"github.com/data-agent/agent-app/src/infra/persistence/dapo"
+	tempareareq "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/temparea/req"
+	temparearesp "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/temparea/resp"
+	"github.com/decision-agent/agent-app/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
 	"github.com/pkg/errors"
 )
 

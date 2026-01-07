@@ -3,8 +3,8 @@ package iportdriver
 import (
 	"context"
 
-	tempareareq "github.com/data-agent/agent-app/src/driveradapter/api/rdto/temparea/req"
-	temparearesp "github.com/data-agent/agent-app/src/driveradapter/api/rdto/temparea/resp"
+	tempareareq "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/temparea/req"
+	temparearesp "github.com/decision-agent/agent-app/src/driveradapter/api/rdto/temparea/resp"
 )
 
 type ITempAreaSvc interface {

@@ -11,7 +11,7 @@ from typing import Optional
 from fastapi import Request
 
 from app.domain.vo.agentvo import AgentConfigVo
-from app.utils.observability.observability_log import get_logger as o11y_logger
+from app.utils.observability.opentelemetry_logger import get_otel_logger
 
 from ..rdto.v1.res.agent_cache import AgentCacheManageRes
 from .common import (
@@ -52,11 +52,11 @@ async def handle_get_info(
 
     if cache_entity is None:
         # Cache不存在，返回None
-        o11y_logger().info(f"Agent缓存不存在: cache_id={cache_id_vo}")
+        get_otel_logger().info(f"Agent缓存不存在: cache_id={cache_id_vo}")
         return None
 
     # 3. Cache存在，返回缓存信息
-    o11y_logger().info(f"Agent缓存存在，返回缓存信息: cache_id={cache_id_vo}")
+    get_otel_logger().info(f"Agent缓存存在，返回缓存信息: cache_id={cache_id_vo}")
 
     # 获取实时TTL
     ttl = await cache_manager.cache_service.get_ttl(cache_id_vo)
