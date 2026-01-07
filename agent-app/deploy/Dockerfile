@@ -1,4 +1,4 @@
-ARG baseImage=acr.aishu.cn/public/ubuntu:22.04.20241202
+ARG baseImage=ubuntu:22.04
 
 FROM ${baseImage} AS prod 
 
