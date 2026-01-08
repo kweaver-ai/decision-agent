@@ -25,6 +25,13 @@ class KnowledgeNetworkConfig:
         "http://ontology-query-svc:13018/api/ontology-query/in/v1"
         # "http://192.168.232.11:13018/api/ontology-query/in/v1"
     )
+
+    # 是否默认忽略底层存储缓存（接口query参数 ignoring_store_cache）
+    # 可通过环境变量 IGNORE_STORE_CACHE_DEFAULT 控制，默认 False
+    IGNORE_STORE_CACHE_DEFAULT = os.getenv(
+        "IGNORE_STORE_CACHE_DEFAULT",
+        "true"
+    ).lower() == "false"
     
     # 大模型配置
     # 用于知识网络检索相关的 LLM 调用

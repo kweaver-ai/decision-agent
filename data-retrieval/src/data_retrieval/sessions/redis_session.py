@@ -1,16 +1,25 @@
 import json
+import logging
+import os
+import redis
+from redis.sentinel import Sentinel
 import re
-from typing import Any, Union, Awaitable
+from abc import ABC
+from typing import Any
 
 from langchain.schema import HumanMessage, SystemMessage, BaseChatMessageHistory
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.messages import AIMessage
+from typing import Union, Awaitable
+from pydantic_settings import BaseSettings
 
 from data_retrieval.sessions.base import BaseChatHistorySession
 from data_retrieval.settings import get_settings
 from data_retrieval.logs.logger import logger
 
 settings = get_settings()
+empty = ""
+from data_retrieval.sessions.base import BaseChatHistorySession
 
 
 class RedisHistorySession(BaseChatHistorySession):
@@ -20,8 +29,7 @@ class RedisHistorySession(BaseChatHistorySession):
             history_num_limit=settings.AGENT_SESSION_HISTORY_NUM_LIMIT,
             history_max=settings.AGENT_SESSION_HISTORY_MAX
     ):
-        from data_retrieval.utils.redis_client import RedisConnect
-        self.client = RedisConnect.get_client()
+        self.client = RedisConnect().connect()
         self.history_num_limit = history_num_limit
         self.history_max = history_max
 
@@ -181,3 +189,42 @@ class RedisHistorySession(BaseChatHistorySession):
     ):
         """ empty"""
         pass
+class RedisConnect:
+    def __init__(self):
+        settings = get_settings()
+        self.redis_cluster_mode = settings.REDISCLUSTERMODE
+        self.db = settings.REDIS_DB
+        self.master_name = settings.SENTINELMASTER
+        self.sentinel_user_name = settings.SENTINELUSER
+        self.host = settings.REDISHOST
+        self.sentinel_host = settings.REDIS_SENTINEL_HOST
+        self.port = settings.REDISPORT
+        self.sentinel_port = settings.REDIS_SENTINEL_PORT
+        self.password = settings.REDIS_PASSWORD
+        self.sentinel_password = settings.SENTINELPASS
+    def connect(self):
+        if self.redis_cluster_mode == "master-slave":
+            pool = redis.ConnectionPool(
+                host=self.host,
+                port=self.port,
+                password=self.password,
+                db=self.db,
+            )
+            client = redis.StrictRedis(connection_pool=pool)
+            return client
+        if self.redis_cluster_mode == "sentinel":
+            sentinel = Sentinel(
+                [(self.sentinel_host, self.sentinel_port)],
+                password=self.sentinel_password,
+                sentinel_kwargs={
+                    "password": self.sentinel_password,
+                    "username": self.sentinel_user_name
+                }
+            )
+            client = sentinel.master_for(
+                self.master_name,
+                password=self.sentinel_password,
+                username=self.sentinel_user_name,
+                db=self.db
+            )
+            return client
