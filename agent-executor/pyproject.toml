@@ -31,8 +31,8 @@ dependencies = [
     "structlog==24.1.0",
     "tika==3.1.0",
     "uvicorn==0.38.0",
-    "mq-sdk@git+ssh://git@github.com:kweaver-ai/proton-mq-sdk-py.git@release/1.9.0",
-    "telemetrysdk-python@git+ssh://git@github.com:kweaver-ai/TelemetrySDK-Python.git@2.4.2",
+    "mq-sdk@git+ssh://git@github.com/kweaver-ai/proton-mq-sdk-py.git@release/1.9.0",
+    "telemetrysdk-python@git+ssh://git@github.com/kweaver-ai/TelemetrySDK-Python.git@2.4.2",
     "dolphinlanguagesdk@git+ssh://devops.aishu.cn:22/AISHUDevOps/DIP/_git/dolphin-language@release/0.3.7",
 ]
 
