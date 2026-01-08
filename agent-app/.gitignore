@@ -6,6 +6,6 @@ __debug*
 agent-app.log
 coverage_report
 src/domain/service/agentsvc/example
-agent-app
+/agent-app
 CLAUDE.md
 /api_docs
