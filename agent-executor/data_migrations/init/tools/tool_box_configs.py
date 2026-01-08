@@ -25,16 +25,8 @@ tool_box_configs = [
         "source": "internal",
         "config_version": "1.0.0",
         "config_source": "auto",
-        "files": [
-            (
-                "data",
-                (
-                    "search_tools.json",
-                    open(openapi_file_path / "search_tools.json", "rb"),
-                    "application/json",
-                ),
-            )
-        ],
+        "file_path": openapi_file_path / "search_tools.json",
+        "content_type": "application/json",
     },
     {
         "box_id": "4cc04ed2-8b9e-4352-8ea6-103bf50b4250",
@@ -45,16 +37,8 @@ tool_box_configs = [
         "source": "internal",
         "config_version": "1.0.0",
         "config_source": "auto",
-        "files": [
-            (
-                "data",
-                (
-                    "file_process_tools.json",
-                    open(openapi_file_path / "file_process_tools.json", "rb"),
-                    "application/json",
-                ),
-            )
-        ],
+        "file_path": openapi_file_path / "file_process_tools.json",
+        "content_type": "application/json",
     },
     {
         "box_id": "c1ad888b-2591-4e33-804b-66face219c4b",
@@ -65,16 +49,8 @@ tool_box_configs = [
         "source": "internal",
         "config_version": "1.0.0",
         "config_source": "auto",
-        "files": [
-            (
-                "data",
-                (
-                    "data_process_tools.json",
-                    open(openapi_file_path / "data_process_tools.json", "rb"),
-                    "application/json",
-                ),
-            )
-        ],
+        "file_path": openapi_file_path / "data_process_tools.json",
+        "content_type": "application/json",
     },
     {
         "box_id": "55cd6b6c-b546-4236-961a-4d09571fc931",
@@ -85,16 +61,8 @@ tool_box_configs = [
         "source": "internal",
         "config_version": "1.0.0",
         "config_source": "auto",
-        "files": [
-            (
-                "data",
-                (
-                    "agent_memory.yaml",
-                    open(openapi_file_path / "agent_memory.yaml", "rb"),
-                    "application/yaml",
-                ),
-            )
-        ],
+        "file_path": openapi_file_path / "agent_memory.yaml",
+        "content_type": "application/yaml",
     },
     {
         "box_id": "91883b13-d5a6-f754-c90d-daf4ab416205",
@@ -104,16 +72,8 @@ tool_box_configs = [
         "source": "internal",
         "config_version": "1.0.0",
         "config_source": "auto",
-        "files": [
-            (
-                "data",
-                (
-                    "agent_config.yaml",
-                    open(openapi_file_path / "agent_config.yaml", "rb"),
-                    "application/yaml",
-                ),
-            )
-        ],
+        "file_path": openapi_file_path / "agent_config.yaml",
+        "content_type": "application/yaml",
     },
     {
         "box_id": "bf0da1b2-e3b5-4bc5-83a2-ef0d3042ed83",
@@ -123,16 +83,8 @@ tool_box_configs = [
         "source": "internal",
         "config_version": "1.0.0",
         "config_source": "auto",
-        "files": [
-            (
-                "data",
-                (
-                    "online_search_cite_tools.json",
-                    open(openapi_file_path / "online_search_cite_tools.json", "rb"),
-                    "application/json",
-                ),
-            )
-        ],
+        "file_path": openapi_file_path / "online_search_cite_tools.json",
+        "content_type": "application/json",
     },
     {
         "box_id": "9951e8a4-ec26-4e55-a614-ca7817ea516f",
@@ -142,15 +94,7 @@ tool_box_configs = [
         "source": "internal",
         "config_version": "1.0.0",
         "config_source": "auto",
-        "files": [
-            (
-                "data",
-                (
-                    "agent_observalibility.yaml",
-                    open(openapi_file_path / "agent_observalibility.yaml", "rb"),
-                    "application/yaml",
-                ),
-            )
-        ],
+        "file_path": openapi_file_path / "agent_observalibility.yaml",
+        "content_type": "application/yaml",
     },
 ]
