@@ -1,10 +1,12 @@
-# AF Agent
+# data-retrieval
 
-This is a package for building and running agents for AnyFabric
+A library for building and running data retrieval tools for Decison Agent.
 
-## 快速开始
+[中文文档](README.zh-CN.md)
 
-### 安装依赖
+## Quick Start
+
+### Install Dependencies
 
 ```bash
 cd data-retrieval
@@ -14,30 +16,37 @@ python -m venv .venv
 pip install -r requirements.txt
 ```
 
-### 启动服务
+### Start Service
 
 ```bash
-python -m data_retrieval
+# Method 1: Run tool_api_router.py directly
+cd src/data_retrieval/tools
+python tool_api_router.py
+
+# Method 2: Use uvicorn
+uvicorn data_retrieval.tools.tool_api_router:DEFAULT_APP --host 0.0.0.0 --port 9100
 ```
 
-## 脚本工具
+The service will be available at `http://localhost:9100`.
 
-### 生成 API 文档
+## Scripts
 
-使用 `scripts/generate_api_docs.py` 可以在不启动服务的情况下生成 OpenAPI 3.0 规范的 API 文档。
+### Generate API Documentation
+
+Use `scripts/generate_api_docs.py` to generate OpenAPI 3.0 specification API documentation without starting the service.
 
 ```bash
-# 激活虚拟环境
+# Activate virtual environment
 .\.venv\Scripts\Activate.ps1  # Windows
 # source .venv/bin/activate   # Linux/Mac
 
-# 使用默认参数生成（输出到 api.json，服务地址为 http://data-retrieval:9100）
+# Generate with default parameters (output to api.json, server URL: http://data-retrieval:9100)
 python scripts/generate_api_docs.py
 
-# 指定输出路径和服务地址
+# Specify output path and server URL
 python scripts/generate_api_docs.py ./api.json http://localhost:9100
 ```
 
-**参数说明：**
-- `output_path`：输出文件路径，默认为 `api.json`
-- `server_url`：API 文档中的服务地址，默认为 `http://data-retrieval:9100`
+**Parameters:**
+- `output_path`: Output file path, defaults to `api.json`
+- `server_url`: Server URL in API documentation, defaults to `http://data-retrieval:9100`
