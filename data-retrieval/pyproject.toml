@@ -9,9 +9,11 @@ authors = [
 ]
 description = "A library for Kweaver data retrieval"
 readme = "README.pypi.md"
+license = {text = "Apache-2.0"}
 requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent"
 ]
 dependencies = [

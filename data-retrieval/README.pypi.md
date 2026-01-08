@@ -54,4 +54,4 @@ uvicorn data_retrieval.tools.tool_api_router:DEFAULT_APP --host 0.0.0.0 --port 9
 
 ## License
 
-MIT License
+Apache License 2.0
