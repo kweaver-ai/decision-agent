@@ -14,11 +14,15 @@ on:
     types: [published]
   workflow_dispatch:
     inputs:
-      publish:
-        description: 'Publish to PyPI'
+      publish_target:
+        description: 'Publish target'
         required: false
-        default: 'false'
-        type: boolean
+        default: 'none'
+        type: choice
+        options:
+          - none
+          - testpypi
+          - pypi
 
 jobs:
   build:
@@ -54,8 +58,15 @@ jobs:
           path: data-retrieval/dist/
           retention-days: 30
 
+      - name: Publish to TestPyPI
+        if: github.event.inputs.publish_target == 'testpypi'
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        run: twine upload --repository testpypi dist/*
+
       - name: Publish to PyPI
-        if: github.event_name == 'release' || (github.event.inputs.publish == 'true' && github.ref == 'refs/heads/main')
+        if: github.event_name == 'release' || github.event.inputs.publish_target == 'pypi'
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
