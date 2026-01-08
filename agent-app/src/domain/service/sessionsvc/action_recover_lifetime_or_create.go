@@ -4,10 +4,10 @@ import (
 	"context"
 	"time"
 
-	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/redisaccess/sessionredisacc"
-	"github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/session/sessionreq"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/grhelper"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/ctype"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/drivenadapter/redisaccess/sessionredisacc"
+	"github.com/kweaver-ai/decision-agent/agent-app/src/driveradapter/api/rdto/session/sessionreq"
 )
 
 // HandleRecoverLifetimeOrCreate 处理recover_lifetime_or_create操作
@@ -54,8 +54,10 @@ func (s *sessionSvc) HandleRecoverLifetimeOrCreate(ctx context.Context, req sess
 
 	// 3. 异步触发agent缓存的创建或更新
 	if isTriggerCacheUpsert {
+		_ctx := context.Background()
+
 		grhelper.GoSafe(s.logger, func() error {
-			return s.triggerAgentCacheUpsert(ctx, req, visitorInfo)
+			return s.triggerAgentCacheUpsert(_ctx, req, visitorInfo)
 		})
 	}
 

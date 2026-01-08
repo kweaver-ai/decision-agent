@@ -17,16 +17,16 @@ The DIP platform includes key subsystems such as ADP, Decision Agent, DIP Studio
 - 🐛 [Report Bug](https://github.com/kweaver-ai/decision-agent) - Report a bug or issue
 - 💡 [Request Feature](https://github.com/kweaver-ai/decision-agent) - Suggest a new feature
 
-## Data Agent Definition
+## Decision Agent Definition
 
-Data Agent is a specialized agent that loads business knowledge networks to form high-quality context, and then implements multi-agent collaboration through the Agent framework for planning, reasoning, execution, and security control.
+Decision Agent is a specialized agent that loads business knowledge networks to form high-quality context, and then implements multi-agent collaboration through the Agent framework for planning, reasoning, execution, and security control.
 
-Data Agent is a specialized intelligent agent based on business knowledge networks as a unified business semantic foundation, integrating enterprise multi-source heterogeneous data, business systems, and automated processes. Through ContextLoader, it dynamically and precisely constructs high-quality context, and is driven by the Dolphin dynamic orchestration engine to enable multi-agent completion of planning, reasoning, action, and tool invocation closed loops. Under the guarantee of full-link observability, evaluability, and auditability mechanisms, it leverages large language models to implement Data+AI for enterprise core business scenarios.
+Decision Agent is a specialized intelligent agent based on business knowledge networks as a unified business semantic foundation, integrating enterprise multi-source heterogeneous data, business systems, and automated processes. Through ContextLoader, it dynamically and precisely constructs high-quality context, and is driven by the Dolphin dynamic orchestration engine to enable multi-agent completion of planning, reasoning, action, and tool invocation closed loops. Under the guarantee of full-link observability, evaluability, and auditability mechanisms, it leverages large language models to implement Data+AI for enterprise core business scenarios.
 
-## Key Requirements for Data Agent
+## Key Requirements for Decision Agent
 
 - **Reducing Agent Development Complexity: Tightly Coupled Business Logic, Difficult to Reuse**
-  - Business semantics/metric calibers are fragmented. Agent configurers need to embed semantic logic into prompts and control chains, resulting in poor adaptability of Agent configurations to business scenarios, with Data Agent tightly coupled to business logic.
+  - Business semantics/metric calibers are fragmented. Agent configurers need to embed semantic logic into prompts and control chains, resulting in poor adaptability of Agent configurations to business scenarios, with Decision Agent tightly coupled to business logic.
   - Multi-system tool integration is fragmented (inconsistent interfaces, parameters, error handling), amplifying integration and orchestration costs.
 
 - **Difficult Maintenance and Optimization: Unobservable After Go-live, Optimization Relies on Manual Effort**
@@ -45,7 +45,7 @@ Data Agent is a specialized intelligent agent based on business knowledge networ
   - Reasoning and execution chains are not traceable (what data was used, what tools were called, why it was done this way), making error accountability and review difficult.
   - Prompt injection and unauthorized calls are prominent risks. Without complete tool permissions, data masking, and approval trails, entry into core production pipelines is impossible.
 
-## Technical Goals of Data Agent
+## Technical Goals of Decision Agent
 
 ### 1. Reducing Agent Development Complexity: Semantic Modeling Decoupling and Low-Code Assembly
 
@@ -87,19 +87,19 @@ Through security policy layers (permission verification, sensitive information f
 - **Log Auditing**: Record all Agent operations (such as Plan decisions, Act executions), meeting compliance requirements like classified protection and GDPR.
 - **Data Security Services**: Support data encryption, data masking, sensitive data detection and filtering, prompt injection protection, and other security capabilities.
 
-## Business Value of Data Agent
+## Business Value of Decision Agent
 
 - **Decision Efficiency: From "Information Production" to "Decision Driving"**
   - Transform "labor costs" of data collection, caliber alignment, and analysis writing into reusable decision assets, making management actions faster and more consistent. For example, in business review/weekly-monthly report scenarios, automatically align calibers for issues like declining sales, profit fluctuations, and TopN anomalies, outputting meeting-ready conclusions, attributions, key evidence, and action recommendations.
 
 - **Trustworthy Knowledge: From "Word of Mouth" to "Documented Evidence"**
-  - Unify internal enterprise calibers for answers to the same question, with traceable and reviewable answers, reducing communication costs and misjudgment risks. In business Q&A scenarios, DataAgent uniformly recalls multi-source information based on ContextLoader and cites business knowledge network sources, outputting "conclusions + evidence chains."
+  - Unify internal enterprise calibers for answers to the same question, with traceable and reviewable answers, reducing communication costs and misjudgment risks. In business Q&A scenarios, DecisionAgent uniformly recalls multi-source information based on ContextLoader and cites business knowledge network sources, outputting "conclusions + evidence chains."
 
 - **Process Automation: From "Manual Chaining" to "Closed-Loop Delivery"**
   - Transform cross-department tasks into executable, trackable, and approvable standard processes, significantly reducing collaboration friction and rework. For example, in specialized report materials/operations follow-up scenarios, chain "query-analysis-writing-verification-approval-implementation" into AutoFlow; different nodes are completed by different Agents, with humans only doing key confirmations/approvals, tasks automatically progressing to delivery.
 
 - **Usable Data Assets: From "After-the-Fact Firefighting" to "Continuously Stable Availability"**
-  - Continuously reduce the business impact of metric caliber conflicts and data quality issues, accumulating long-term capabilities for "the same set of data." When metric anomalies, caliber conflicts, or data source changes occur, DataAgent automatically locates impact scope and differences, generates governance recommendations, and links to tickets/processes for closed-loop processing.
+  - Continuously reduce the business impact of metric caliber conflicts and data quality issues, accumulating long-term capabilities for "the same set of data." When metric anomalies, caliber conflicts, or data source changes occur, DecisionAgent automatically locates impact scope and differences, generates governance recommendations, and links to tickets/processes for closed-loop processing.
 
 - **Controllable Risk: From "Unusable Black Box" to "Auditable Production Capability"**
   - Without sacrificing efficiency, ensure data and behavior are compliant and controllable, allowing AI to enter core business pipelines. In sensitive scenarios like finance/legal/HR/customer data, introduce permission boundaries, approval trails, and full-link tracing for sensitive data access and critical operations; outputs are reviewable and replayable, meeting audit and internal control requirements.
@@ -108,13 +108,13 @@ Through security policy layers (permission verification, sensitive information f
 
 ```text
 ┌─────────────────────────────────────────────────────────────────────────────────────┐
-│                              Data Agent Applications                                 │
+│                              Decision Agent Applications                                 │
 │  ┌────────────────┐ ┌────────────────┐ ┌────────────────┐ ┌────────────────┐        │
 │  │ Data Governance│ │ Intelligence   │ │ Quality        │ │ Ops Analysis   │        │
 │  │ Agent          │ │ Analysis Agent │ │ Detection Agent│ │ Agent          │ ...    │
 │  └────────────────┘ └────────────────┘ └────────────────┘ └────────────────┘        │
 ├─────────────────────────────────────────────────────────────────────────────────────┤
-│                         Data Agent Lifecycle Management                              │
+│                         Decision Agent Lifecycle Management                              │
 │              Configure → Test → Publish → Run → Observe → Optimize                   │
 ├─────────────────────────────────────────────────────────────────────────────────────┤
 │                                  Core Components                                     │

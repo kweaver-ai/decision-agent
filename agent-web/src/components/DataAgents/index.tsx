@@ -1219,7 +1219,13 @@ const DataAgents = ({ mode: modeFromProps = ModeEnum.DataAgent }: DataAgentsProp
       <ResizeObserver
         onResize={({ width }) => {
           if (width > 0) {
-            const count = computeColumnCount(width);
+            let count = computeColumnCount(width);
+            if (count > 4) {
+              count = 4;
+            }
+            if (count > 6) {
+              count = 6;
+            }
             setCountOfRow(count);
           }
         }}
