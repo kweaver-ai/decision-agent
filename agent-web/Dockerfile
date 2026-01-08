@@ -1,4 +1,4 @@
-FROM nginx:1.22-alpine
+FROM acr.aishu.cn/public/nginx:1.22.1-alpine-latest
 
 # 给nginx添加权限
 RUN chown root /usr/sbin/nginx && \
