@@ -2,7 +2,7 @@
 requires = ["setuptools"]
 
 [project]
-name = "data-retrival"
+name = "data-retrieval"
 version = "0.1.0"
 authors = [
   { name="Chen Xiao", email="xavier.chen@aishu.cn" },
