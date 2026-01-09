@@ -68,7 +68,7 @@ probe:
 nodeSelector: {}
 
 depServices:
-  class=443:
+  class-443:
     ingressClass: nginx
 
 enableSystemLog: true
