@@ -4,7 +4,7 @@
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE.txt)
 
-Decision Agent is part of the KWeaver ecosystem. If you find it useful, please consider giving a ⭐ to the **[KWeaver](https://github.com/kweaver-ai/kweaver)** project as well.
+Decision Agent is part of the KWeaver ecosystem. If you like it, please also star⭐ the **[KWeaver](https://github.com/kweaver-ai/kweaver)** project as well.
 
 **[KWeaver](https://github.com/kweaver-ai/kweaver)** is an open-source ecosystem for building, deploying, and running decision intelligence AI applications. This ecosystem adopts ontology as the core methodology for business knowledge networks, with DIP as the core platform, aiming to provide elastic, agile, and reliable enterprise-grade decision intelligence to further unleash everyone's productivity.
 
