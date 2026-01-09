@@ -2,8 +2,8 @@ ARG baseImage=ubuntu:22.04
 
 FROM ${baseImage} AS prod 
 
-ARG UID=1000
-ARG GID=1000
+ARG UID=10000
+ARG GID=10000
 
 # 创建非root用户
 RUN groupadd -r -g $GID aishu && \
