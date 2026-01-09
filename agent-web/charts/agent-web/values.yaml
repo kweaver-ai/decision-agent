@@ -11,16 +11,14 @@ image:
   name: agent-web
 
 service:
-  ingressclassname: ''
-  agentWEB:
+  web:
     type: ClusterIP
     port: 1101
     nodePort: 1101
     ingress:
       enabled: true
       interface:
-        path:
-          - /agent-web
+        path: /agent-web
   enableDualStack: false
   type: ClusterIP
   ports:
@@ -70,6 +68,8 @@ probe:
 nodeSelector: {}
 
 depServices:
+  class=443:
+    ingressClass: nginx
 
 enableSystemLog: true
 
