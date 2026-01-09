@@ -4,9 +4,9 @@
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE.txt)
 
-**AISHU 爱数 For a smarter future.**
+Decision Agent 是 KWeaver 生态的一部分。如果您觉得有用，欢迎给 **[KWeaver](https://github.com/kweaver-ai/kweaver)** 项目点个 ⭐！
 
-KWeaver 是一个构建、发布、运行决策智能型 AI 应用的开源生态。此生态采用本体作为业务知识网络的核心方法，以 DIP 为核心平台，旨在提供弹性、敏捷、可靠的企业级决策智能，进一步释放每一员的生产力。
+**[KWeaver](https://github.com/kweaver-ai/kweaver)** 是一个构建、发布、运行决策智能型 AI 应用的开源生态。此生态采用本体作为业务知识网络的核心方法，以 DIP 为核心平台，旨在提供弹性、敏捷、可靠的企业级决策智能，进一步释放每一员的生产力。
 
 DIP 平台包括 ADP、Decision Agent、DIP Studio、AI Store 等关键子系统。
 
