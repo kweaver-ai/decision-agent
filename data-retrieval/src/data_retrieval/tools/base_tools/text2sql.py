@@ -189,7 +189,7 @@ class Text2SQLTool(LLMTool):
             )
 
     @classmethod
-    def from_data_source(cls, data_source: DataSource, llm, prompt_manager, *args, **kwargs):
+    def from_data_source(cls, data_source: DataSource, llm, *args, **kwargs):
         """Create a new instance of Text2SQLTool
 
         Args:
@@ -206,7 +206,7 @@ class Text2SQLTool(LLMTool):
                 llm=llm
             )
         """
-        return cls(data_source=data_source, llm=llm, prompt_manager=prompt_manager, *args, **kwargs)
+        return cls(data_source=data_source, llm=llm, *args, **kwargs)
 
     def _config_chain(
             self,
@@ -227,7 +227,6 @@ class Text2SQLTool(LLMTool):
             metadata=metadata,
             background=self.background,
             errors=errors,
-            prompt_manager=self.prompt_manager,
             language=self.language
         )
 

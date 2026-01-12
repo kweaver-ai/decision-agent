@@ -87,7 +87,6 @@ class DataSourceFilterTool(LLMTool):
     ):
         system_prompt = DataSourceFilterPrompt(
             data_source_list=data_source_list,
-            prompt_manager=self.prompt_manager,
             language=self.language,
             data_source_list_description=data_source_list_description,
             background=self.background

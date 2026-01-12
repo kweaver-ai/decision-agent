@@ -14,7 +14,6 @@ class BasePrompt(BaseModel, ABC):
     """
     language: str = "cn"
     templates: Dict[str, str] = {"cn": "", "en": ""}
-    prompt_manager: Any = None
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -29,13 +28,7 @@ class BasePrompt(BaseModel, ABC):
             self.aa = "aaa"
 
         """
-        if self.prompt_manager:
-            template_str = self.prompt_manager.get_prompt(self.get_name(), self.language)
-        
-        if not self.prompt_manager or not template_str:
-            template_str = self.get_prompt(self.language)
-
-        return template_str
+        return self.get_prompt(self.language)
     
     @classmethod
     def get_name(cls) -> str:

@@ -6,7 +6,6 @@ from typing import Optional, List, Any
 import json
 
 from data_retrieval.prompts.base import BasePrompt
-from data_retrieval.prompts.manager.base import BasePromptManager
 
 # DIP 指标查询参数模板
 dip_metric_prompt_template = """# ROLE
@@ -399,13 +398,3 @@ class Text2DIPMetricPrompt(BasePrompt):
                     self.metrics = '\n\n'.join(self.metrics)
             else:
                 self.metrics = ""
-
-
-# class Text2DIPMetricPromptManager(BasePromptManager):
-#     """Text2DIPMetric Prompt 管理器"""
-
-#     def __init__(self, **kwargs):
-#         super().__init__(**kwargs)
-#         self.prompts = {
-#             "default": Text2DIPMetricPrompt,
-#         }

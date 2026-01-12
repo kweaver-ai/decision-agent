@@ -42,7 +42,6 @@ from data_retrieval.tools.base_tools.context2question import achat_history_to_qu
 from data_retrieval.utils.embeddings import M3EEmbeddings, MSE_EMBEDDING_SIZE
 from data_retrieval.utils.func import JsonParse, json_to_markdown
 from data_retrieval.tools.base import LLMTool, _TOOL_MESSAGE_KEY
-from data_retrieval.prompts.manager.base import BasePromptManager
 from data_retrieval.settings import get_settings
 from data_retrieval.tools.base import api_tool_decorator, _TOOL_MESSAGE_KEY
 from data_retrieval.utils.llm import CustomChatOpenAI
@@ -133,9 +132,6 @@ class Text2MetricTool(LLMTool):
         if kwargs.get("session") is None:
             self.session = CreateSession(self.session_type)
         
-        if kwargs.get("manager") is not None:
-            self.prompt_manager = kwargs.get("manager")
-        
         if self.indicator and self.indicator.get_data_list():
             self._initial_metric_ids = self.indicator.get_data_list()
         else:
@@ -163,7 +159,6 @@ class Text2MetricTool(LLMTool):
         cls,
         indicator: AFIndicator,
         llm: Optional[Any] = None,
-        prompt_manager: Optional[BasePromptManager] = None,
         session_id: Optional[str] = "",
         *args,
         **kwargs
@@ -177,7 +172,7 @@ class Text2MetricTool(LLMTool):
         Returns:
             Text2MetricTool: Text2MetricTool instance
         """
-        return cls(indicator=indicator, llm=llm, manager=prompt_manager, session_id=session_id, *args, **kwargs)
+        return cls(indicator=indicator, llm=llm, session_id=session_id, *args, **kwargs)
 
     def get_chat_history(
         self,
@@ -308,7 +303,6 @@ class Text2MetricTool(LLMTool):
             errors=errors,
             language=self.language,
             enable_yoy_or_mom=self.enable_yoy_or_mom,
-            prompt_manager=self.prompt_manager,
         )
 
         logger.debug(f"text2metric -> model_type: {self.model_type}")

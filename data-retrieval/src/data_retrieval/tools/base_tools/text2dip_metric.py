@@ -33,7 +33,6 @@ from data_retrieval.tools.base import LLMTool, ToolMultipleResult, ToolName
 from data_retrieval.tools.base_tools.context2question import achat_history_to_question, chat_history_to_question
 from data_retrieval.utils.func import JsonParse, json_to_markdown
 from data_retrieval.tools.base import LLMTool, _TOOL_MESSAGE_KEY
-from data_retrieval.prompts.manager.base import BasePromptManager
 from data_retrieval.settings import get_settings
 from data_retrieval.tools.base import api_tool_decorator, _TOOL_MESSAGE_KEY
 from data_retrieval.utils.llm import CustomChatOpenAI
@@ -128,9 +127,6 @@ class Text2DIPMetricTool(LLMTool):
 
         if kwargs.get("session") is None:
             self.session = CreateSession(self.session_type)
-        
-        if kwargs.get("manager") is not None:
-            self.prompt_manager = kwargs.get("manager")
         
         if self.dip_metric and self.dip_metric.get_data_list():
             self._initial_metric_ids = self.dip_metric.get_data_list()
@@ -804,7 +800,6 @@ class Text2DIPMetricTool(LLMTool):
         cls,
         dip_metric: DIPMetric,
         llm: Optional[Any] = None,
-        prompt_manager: Optional[BasePromptManager] = None,
         session_id: Optional[str] = "",
         api_mode: bool = False,
         *args,
@@ -814,7 +809,6 @@ class Text2DIPMetricTool(LLMTool):
         instance = cls(
             dip_metric=dip_metric,
             llm=llm,
-            prompt_manager=prompt_manager,
             session_id=session_id,
             api_mode=api_mode,
             *args, **kwargs)

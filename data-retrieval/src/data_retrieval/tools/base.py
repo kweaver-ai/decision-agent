@@ -16,7 +16,6 @@ from langchain.schema import BaseMessage
 
 from fastapi import HTTPException
 
-from data_retrieval.prompts.manager.base import BasePromptManager
 from data_retrieval.settings import get_settings
 from data_retrieval.utils.model_types import get_standard_model_type
 from langchain.callbacks.base import AsyncCallbackHandler, BaseCallbackHandler
@@ -172,7 +171,6 @@ class AFTool(BaseTool, ABC):
 class LLMTool(AFTool):
     language: str = "cn"
     llm: Any = None
-    prompt_manager: BasePromptManager = None
     model_type: str = get_standard_model_type(_settings.MODEL_TYPE)
 
 

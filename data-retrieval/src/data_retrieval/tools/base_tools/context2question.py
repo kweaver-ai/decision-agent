@@ -50,27 +50,16 @@ class Context2QuestionTool(LLMTool):
     description: str = _DESCS["tool_description"]["cn"]
 
     @classmethod
-    def from_llm(cls, llm, prompt_manager, *args, language="cn", **kwargs):
-        """Create a new instance of Text2SQLTool
+    def from_llm(cls, llm, *args, language="cn", **kwargs):
+        """Create a new instance of Context2QueryTool
 
         Args:
-            data_source (DataSource): DataSource instance
             llm: Language model instance
-
-        Examples:
-            data_source = SQLiteDataSource(
-                db_file="{yourfile}.db",
-                tables=[{yourtable}]
-            )
-            tool = Text2SQLTool.from_data_source(
-                data_source=sqlite,
-                llm=llm
-            )
+            language: Language for the tool description
         """
         description = _DESCS["tool_description"].get(language, "cn")
         return cls(
             llm=llm,
-            prompt_manager=prompt_manager,
             name=ToolName.context2question.value,
             description=description,
             *args, **kwargs
@@ -92,8 +81,7 @@ class Context2QuestionTool(LLMTool):
             text = "\n".join(context)
 
         system_prompt = Context2QueryPrompt(
-            language=self.language,
-            prompt_manager=self.prompt_manager
+            language=self.language
         )
 
         prompt = ChatPromptTemplate.from_messages(
@@ -159,15 +147,13 @@ def chat_history_to_question(
     question: str,
     chat_history: Any,
     language: str = "cn",
-    from_agent: bool = True,
-    prompt_manager: Any = None
+    from_agent: bool = True
 ):
     # Use chat history to generate a new Question
     if chat_history:
         new_question_tool = Context2QuestionTool.from_llm(
             llm=llm,
-            language=language,
-            prompt_manager=prompt_manager
+            language=language
         )
         if isinstance(chat_history, InMemoryChatMessageHistory):
             chat_history = chat_history.messages
@@ -194,14 +180,12 @@ async def achat_history_to_question(
     question: str,
     chat_history: List,
     language: str = "cn",
-    from_agent: bool = True,
-    prompt_manager: Any = None
+    from_agent: bool = True
 ):
     if chat_history:
         new_question_tool = Context2QuestionTool.from_llm(
             llm=llm,
-            language=language,
-            prompt_manager=prompt_manager
+            language=language
         )
         if isinstance(chat_history, InMemoryChatMessageHistory):
             chat_history = chat_history.messages
