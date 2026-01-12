@@ -8,27 +8,7 @@ from importlib import import_module
 
 # :TODO get models automatically
 PROMPT_MAPPINGS = [
-    # Agent Prompts
-    {
-        "module": "data_retrieval.prompts.agent_prompts.react_agent_prompt.langchain",
-        "class": "LangchainReactAgentPrompt"
-    },
-    {
-        "module": "data_retrieval.prompts.agent_prompts.react_agent_prompt.default",
-        "class": "DefaultReactAgentPrompt"
-    },
-    {
-        "module": "data_retrieval.prompts.agent_prompts.react_agent_prompt.deepseek_r1",
-        "class": "DeepSeekR1ReactAgentPrompt"
-    },
-    # Tool Use
-    {
-        "module": "data_retrieval.prompts.agent_prompts.tool_use_prompt",
-        "class": "ToolUsePrompt"
-    },
-
     # Tools Prompts
-
     {
         "module": "data_retrieval.prompts.tools_prompts.text2sql_prompt.text2sql",
         "class": "Text2SQLPrompt"
