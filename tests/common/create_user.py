@@ -2,7 +2,9 @@
 
 import requests
 import json
-import warnings 
+import warnings
+import os
+import sys
 warnings.filterwarnings("ignore")
 
 from eisoo import tclients
@@ -10,14 +12,21 @@ from eisoo.tclients import TClient
 from ShareMgnt.ttypes import *
 
 from common.get_token import GetToken
+from common.get_content import GetContent
 
 class CreateUser:
     def __init__(self, host):
         self.sharemgnt_ip = "sharemgnt.anyshare.svc.cluster.local"
         self.host = host
 
+        # Read admin password from config file
+        configfile = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config/env.ini")
+        file = GetContent(configfile)
+        config = file.config()
+        admin_password = config["admin"]["admin_password"]
+
         client = GetToken(self.host)
-        result = client.get_token(self.host, "admin", "eisoo.com123")
+        result = client.get_token(self.host, "admin", admin_password)
         admin_token = result[1]
 
         self.headers = {
