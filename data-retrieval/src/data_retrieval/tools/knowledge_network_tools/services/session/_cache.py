@@ -80,7 +80,8 @@ class _CacheMixin(_SessionBase):
         return None
 
     @classmethod
-    def set_semantic_instance_cache(cls, session_id: str, kn_id: str, query: str, semantic_instances_map: Dict[str, Any]) -> None:
+    def set_semantic_instance_cache(cls, session_id: str, kn_id: str, query: str,
+                                    semantic_instances_map: Dict[str, Any]) -> None:
         if not session_id or not kn_id or not query:
             return
         cls._update_session_access_time(session_id)
@@ -92,5 +93,3 @@ class _CacheMixin(_SessionBase):
             "timestamp": datetime.now(),
         }
         logger.debug(f"已缓存语义实例召回结果，session_id={session_id}, kn_id={kn_id}, query={query[:50]}...")
-
-

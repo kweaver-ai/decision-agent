@@ -15,7 +15,7 @@ class EnumEncoder(json.JSONEncoder):
         if isinstance(o, Enum):
             return o.name  # 返回枚举成员的名称作为字符串
         return json.JSONEncoder.default(self, o)
-    
+
 
 class RedisHistorySession:
 
@@ -79,7 +79,7 @@ class RedisHistorySession:
         else:
             logger.info('Redis连接失败！！')
         return final_res
-    
+
     def _hlen(self, hname: str):
         if self.check_and_try_reconnect():
             try:
@@ -88,7 +88,7 @@ class RedisHistorySession:
                 logger.info(f'Redis hlen error: {e}')
         logger.info('Redis连接失败！！')
         return 0
-    
+
     def check_and_try_reconnect(self):
         if self.client:
             return True
@@ -103,7 +103,7 @@ class RedisHistorySession:
             idx += 1
         return False
 
-    
+
 class RedisConnect:
     def __init__(self):
         settings = get_settings()
@@ -148,7 +148,7 @@ class RedisConnect:
                 db=self.db
             )
             return client
-        
+
 
 if __name__ == '__main__':
     # agent0aad0c6e32779b1aaf49b333f53025a7

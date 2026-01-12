@@ -1,1 +1,3 @@
-from .fixer import QueryFixer as QueryFixer
+from .fixer import QueryFixer
+
+__all__ = ["QueryFixer"]

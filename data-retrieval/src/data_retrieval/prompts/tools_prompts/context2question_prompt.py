@@ -26,7 +26,7 @@ from data_retrieval.prompts.base import BasePrompt
 # 1. 请你也用 JSON 的格式，包含一个 question 的 key
 # 2. 只输出一个问题
 # """
-prompt_template_cn = """# ROLE 
+prompt_template_cn = """# ROLE
 你需要根据上一环为你提供的对话信息，总结出一个新的问题
 
 ## SKILLS
@@ -59,7 +59,7 @@ prompt_template_cn = """# ROLE
 """
 
 
-prompt_template_en = """# ROLE 
+prompt_template_en = """# ROLE
 You need to summarize a new question based on the conversation information provided in the previous step.
 
 ## SKILLS

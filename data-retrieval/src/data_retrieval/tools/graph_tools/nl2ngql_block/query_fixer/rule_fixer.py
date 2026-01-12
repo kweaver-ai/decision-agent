@@ -1,7 +1,6 @@
 import regex as re
 
 
-
 class RuleFixer:
     def __init__(self):
         self.queries_fix = []
@@ -30,7 +29,7 @@ class RuleFixer:
         # step1：矫正路径，主要是箭头方向
         fix_query, res = self.fix_edge_path(fix_query)
         if not self.queries_fix:
-        # step3：添加嵌套关系child*0..
+            # step3：添加嵌套关系child*0..
             fix_query, res = self.add_nested_node(fix_query)
         if not self.queries_fix:
             self.queries_fix.append({"executed_res": res, "ngql": query})
@@ -52,8 +51,6 @@ class RuleFixer:
         for entity in self.schema.get("entity", []):
             self.entity_name2props.setdefault(entity["name"], entity["props"])
         return
-
-
 
     def cypher_case_insensitive_query(self, query):
         # 使用正则表达式匹配属性值并进行忽略大小写处理
@@ -80,8 +77,10 @@ class RuleFixer:
             if edge in query and edge not in edge_names:
                 node1 = self.edge_name2props[edge]["subject"]
                 node2 = self.edge_name2props[edge]["object"]
-                query = re.sub(f"(\([a-zA-Z]\d:{node1}\))-.?(\[e?\d?:{edge}\])-.?(\([a-zA-Z]\d:{node2}\))", r"\1-\2->\3", query)
-                query = re.sub(f"(\([a-zA-Z]\d:{node2}\))-.?(\[e?\d?:{edge}\])-.?(\([a-zA-Z]\d:{node1}\))", r"\1<-\2-\3", query)
+                query = re.sub(
+                    f"(\\([a-zA-Z]\\d:{node1}\\))-.?(\\[e?\\d?:{edge}\\])-.?(\\([a-zA-Z]\\d:{node2}\\))", r"\1-\2->\3", query)
+                query = re.sub(
+                    f"(\\([a-zA-Z]\\d:{node2}\\))-.?(\\[e?\\d?:{edge}\\])-.?(\\([a-zA-Z]\\d:{node1}\\))", r"\1<-\2-\3", query)
 
         res, error_info = self.nebula_engine.execute_any_ngql(self.space_name, query + " limit 20")
         # res = nebula_connector.execute_query(query, limit=20)
@@ -110,13 +109,13 @@ class RuleFixer:
 
             if use_min_node_index - min_node_index >= 1 or max_node_index - use_max_node_index >= 1:
                 if use_min_node_index - min_node_index >= 1:
-                    query = re.sub(f"\(v{min_node_index}:[^\)]*\)(?:(?!match).)*(\(v{use_min_node_index}:[^\)]*\))",
+                    query = re.sub(f"\\(v{min_node_index}:[^\\)]*\\)(?:(?!match).)*(\\(v{use_min_node_index}:[^\\)]*\\))",
                                    r"\1",
                                    query)
                 # print(query)
                 if max_node_index - use_max_node_index >= 1:
                     # print(max_node_index, use_max_node_index)
-                    query = re.sub(f"(\(v{use_max_node_index}:[^\)]*\))(?:(?!match).)*\(v{max_node_index}:[^\)]*\)",
+                    query = re.sub(f"(\\(v{use_max_node_index}:[^\\)]*\\))(?:(?!match).)*\\(v{max_node_index}:[^\\)]*\\)",
                                    r"\1",
                                    query)
 
@@ -160,31 +159,33 @@ class RuleFixer:
             (v2:orgnization)-[e2:orgnization_2_orgnization_child*0..]->(v3:orgnization)
             """
             if edge_name in query:
-                pattern = f'(\(v\d:{node_name}\)<-\[e\d*:{edge_name}[^\]]+\]-\(v\d+:{node_name}\))'
+                pattern = f'(\\(v\\d:{node_name}\\)<-\\[e\\d*:{edge_name}[^\\]]+\\]-\\(v\\d+:{node_name}\\))'
                 # 两个orgnization的add
                 res = re.findall(pattern, query)
                 if res:
                     query = re.sub(pattern, f"(v_{node_name}:{node_name})<-[e_{node_name}:{edge_name}*0..11]-" + r"\1",
                                    query)
 
-                pattern = f'(\(v\d:{node_name}\)-\[e\d*:{edge_name}[^\]]+\]->\(v\d+:{node_name}\))'
+                pattern = f'(\\(v\\d:{node_name}\\)-\\[e\\d*:{edge_name}[^\\]]+\\]->\\(v\\d+:{node_name}\\))'
                 # 两个orgnization的add
                 res = re.findall(pattern, query)
                 if res:
                     query = re.sub(pattern, r"\1" + f"-[e_{node_name}:{edge_name}*0..11]->(v_{node_name}:{node_name})",
                                    query)
 
-            elif re.findall(f"v\d?\.{node_name}\.", query):
+            elif re.findall(f"v\\d?\\.{node_name}\\.", query):
                 # 单个orgnization的add。
-                # 如果where 条件不涉及组织，就不加嵌套，如张小宇的组还有谁：match (v1:person)-[e1:person_2_orgnization_belong_to]->(v2:orgnization)<-[e2:person_2_orgnization_belong_to]-(v3:person) where v1.person.name  contains  '张小宇' return distinct v3.person.name
+                # 如果where 条件不涉及组织，就不加嵌套，如张小宇的组还有谁：match
+                # (v1:person)-[e1:person_2_orgnization_belong_to]->(v2:orgnization)<-[e2:person_2_orgnization_belong_to]-(v3:person)
+                # where v1.person.name  contains  '张小宇' return distinct v3.person.name
                 if f'->(v{node_index}:{node_name})'.format(node_name=node_name, node_index=node_index) in query:
-                    query = re.sub(f'->\(v{node_index}:{node_name}\)'.format(
+                    query = re.sub(f'->\\(v{node_index}:{node_name}\\)'.format(
                         node_name=node_name, node_index=node_index),
                         f'->(v_{node_name}:{node_name})<-[e_{node_name}:{edge_name}*0..11]-(v{node_index}:{node_name})'.format(
                             node_name=node_name, edge_name=edge_name, node_index=node_index),
                         query)
                 elif f'(v{node_index}:{node_name})<-'.format(node_name=node_name, node_index=node_index) in query:
-                    query = re.sub(f'\(v{node_index}:{node_name}\)<-'.format(
+                    query = re.sub(f'\\(v{node_index}:{node_name}\\)<-'.format(
                         node_name=node_name, node_index=node_index),
                         f'(v{node_index}:{node_name})-[e_{node_name}:{edge_name}*0..11]->(v_{node_name}:{node_name})<-'.format(
                             node_name=node_name, edge_name=edge_name, node_index=node_index),
@@ -198,6 +199,7 @@ class RuleFixer:
             self.queries_fix.append({"executed_res": res, "ngql": query})
             self.execute_res.append(res)
         return query, res
+
     def check_null_values(self, executed_res):
         if not executed_res or not isinstance(executed_res, dict):
             return True
@@ -214,15 +216,17 @@ class RuleFixer:
             else:
                 return True
         return False
+
     def replace_contains(self, query, res):
         if not self.has_value(res):
-            query = re.sub("(\.[^. ]+\.[^. ]+ ?)(?:==|=~)( ?['\"][^'\"]+['\"])",
+            query = re.sub("(\\.[^. ]+\\.[^. ]+ ?)(?:==|=~)( ?['\"][^'\"]+['\"])",
                            r"\1 contains \2", query)
             res, error_info = self.nebula_engine.execute_any_ngql(self.space_name, query + " limit 20")
             if res == "none":
                 res = {}
                 # StandLogger.warning(query)
         return query, res
+
     def has_value(self, res):
         res_value = [v for key, value in res.items() for v in value]
         if not res_value or (len(res_value) == 1 and (res_value[0] == 0 or res_value[0] == "0")):

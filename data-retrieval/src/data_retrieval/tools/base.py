@@ -28,29 +28,32 @@ from data_retrieval.logs.logger import logger
 _settings = get_settings()
 _TOOL_MESSAGE_KEY = "tool_type"
 
+
 def is_tool_message(message: BaseMessage) -> bool:
     if message.additional_kwargs.get(_TOOL_MESSAGE_KEY, ""):
         return True
     return False
 
-def parse_llm_from_model_factory(inner_llm_dict: dict, headers: dict = {"x-user": "any", "x-account-id": "any", "x-account-type": "user"}) -> dict:
+
+def parse_llm_from_model_factory(inner_llm_dict: dict, headers: dict = {
+                                 "x-user": "any", "x-account-id": "any", "x-account-type": "user"}) -> dict:
     """
     解析模型工厂调用参数
     """
     # {
     #      'frequency_penalty': 0,
-    #      'id': '1935601639213895680', 
-    #      'max_tokens': 1000, 
-    #      'name': 'doubao-seed-1.6-flash', 
-    #      'presence_penalty': 0, 
-    #      'temperature': 1, 
-    #      'top_k': 1, 
+    #      'id': '1935601639213895680',
+    #      'max_tokens': 1000,
+    #      'name': 'doubao-seed-1.6-flash',
+    #      'presence_penalty': 0,
+    #      'temperature': 1,
+    #      'top_k': 1,
     #      'top_p': 1
     # }
     llm_dict = {}
     if inner_llm_dict:
         logger.info(f"inner_llm_dict: {inner_llm_dict}")
-        
+
         inner_llm_dict.pop("id", "")
         llm_dict["model_name"] = inner_llm_dict.pop("name", "")
         llm_dict["openai_api_key"] = "EMPTY"
@@ -75,15 +78,15 @@ def parse_llm_from_model_factory(inner_llm_dict: dict, headers: dict = {"x-user"
         # llm_dict["model_kwargs"] = inner_llm_dict
 
         llm_dict["default_headers"] = headers
-    
+
     else:
-            # 不设置时, 从内部获取
+        # 不设置时, 从内部获取
         llm_dict = {
             "model_name": _settings.TOOL_LLM_MODEL_NAME,
             "openai_api_key": _settings.TOOL_LLM_OPENAI_API_KEY,
             "openai_api_base": _settings.TOOL_LLM_OPENAI_API_BASE,
         }
-        
+
     return llm_dict
 
 
@@ -130,7 +133,7 @@ def api_tool_decorator(func: Callable):
 
 class AFTool(BaseTool, ABC):
     return_record_limit: int = -1  # 返回数据条数，与字节数相互作用, -1 代表不限制
-    return_data_limit: int = -1  # 返回数据总量，与字节数相互作用, -1 
+    return_data_limit: int = -1  # 返回数据总量，与字节数相互作用, -1
     session_id: str = ""
     api_mode: bool = False
     timeout: int = 120
@@ -160,11 +163,12 @@ class AFTool(BaseTool, ABC):
         """
         tool = cls(*args, **kwargs, api_mode=True)
         return tool._arun(*args, **kwargs)
-    
+
     # def as_function(self, *args, **kwargs):
     #     """将工具转换为同步函数
     #     """
     #     pass
+
 
 class LLMTool(AFTool):
     language: str = "cn"
@@ -198,6 +202,7 @@ class ToolName(Enum):
     # sandbox tools
     sandbox = "sandbox"
 
+
 @dataclass
 class RetrieverConfig:
     """Use vector store to retrieve information
@@ -208,6 +213,7 @@ class RetrieverConfig:
     """
     top_k: int = 0
     threshold: float = 0.5
+
 
 class ToolResult:
     def __init__(
@@ -229,15 +235,15 @@ class ToolResult:
         self.explain = explain
         self.chart = chart
         self.new_chart = new_chart
-        
+
     def __repr__(self):
         return dedent(
             f"""
              ToolResult(
                  cites={self.cites},
-                 table={self.table}, 
-                 df2json={self.df2json}, 
-                 text={self.text}, 
+                 table={self.table},
+                 df2json={self.df2json},
+                 text={self.text},
                  explain={self.explain},
                  chart={self.chart},
                  new_table={self.new_table},
@@ -333,9 +339,9 @@ class ToolMultipleResult:
             f"""
              ToolMultipleResult(
                  cites={self.cites},
-                 table={self.table}, 
-                 df2json={self.df2json}, 
-                 text={self.text}, 
+                 table={self.table},
+                 df2json={self.df2json},
+                 text={self.text},
                  explain={self.explain},
                  chart={self.chart},
                  new_table={self.new_table},
@@ -405,9 +411,9 @@ class LogResult:
     def __repr__(self):
         return dedent(
             f"""
-             LogResult(  
-                 observation={self.observation},               
-                 tool_name={self.tool_name}, 
+             LogResult(
+                 observation={self.observation},
+                 tool_name={self.tool_name},
                  tool_input={self.tool_input},
                  thought={self.thought},
                  result={self.result},
@@ -486,6 +492,7 @@ def async_construct_final_answer(func):
 
     return wrapper
 
+
 class ToolCallbackHandler(AsyncCallbackHandler):
     messages: List = []
     llm_response: Any = None
@@ -496,7 +503,7 @@ class ToolCallbackHandler(AsyncCallbackHandler):
 
     async def on_llm_start(self, **kwargs):
         self.messages = kwargs.get("messages", [])
-    
+
     async def on_chat_model_start(
         self,
         serialized: Dict[str, Any],
@@ -533,7 +540,7 @@ class ToolCallbackHandler(AsyncCallbackHandler):
         **kwargs: Any
     ):
         pass
-    
+
     async def on_chain_end(
         self,
         outputs: Dict[str, Any],
@@ -549,10 +556,10 @@ class ToolCallbackHandler(AsyncCallbackHandler):
 def validate_openapi_schema(schema: dict) -> Tuple[bool, Optional[str]]:
     """
     验证 OpenAPI Schema 语法
-    
+
     Args:
         schema: API Schema 字典
-        
+
     Returns:
         (is_valid, error_message): (是否合法, 错误信息)
     """

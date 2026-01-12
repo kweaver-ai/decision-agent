@@ -28,11 +28,13 @@ _DESCS = {
     }
 }
 
+
 class KnowledgeItemInput(BaseModel):
     input: str = Field(
         default="",
         description="输入的文本，如果为空则获取全部的知识条目"
     )
+
 
 class KnowledgeItemTool(AFTool):
     """Knowledge Item Tool
@@ -58,10 +60,10 @@ class KnowledgeItemTool(AFTool):
 
     @classmethod
     def from_data_model_service(
-        cls,
-        data_model: DataModelService,
-        knowledge_item_ids: list[str],
-        *args, **kwargs):
+            cls,
+            data_model: DataModelService,
+            knowledge_item_ids: list[str],
+            *args, **kwargs):
         """Create a new instance of SQLHelperTool
 
         Args:
@@ -102,10 +104,10 @@ class KnowledgeItemTool(AFTool):
                 self.knowledge_item_ids = self.knowledge_item_ids[:self.knowledge_item_limit]
 
             knowledge_item_ids = ",".join(self.knowledge_item_ids)
-            
+
             if not knowledge_item_ids:
                 raise KnowledgeItemError("知识条目ID列表为空，请先设置知识条目ID列表")
-            
+
             knowledge_items = self.data_model.get_knowledge_items_by_ids(knowledge_item_ids)
 
             result = []
@@ -115,10 +117,10 @@ class KnowledgeItemTool(AFTool):
                 user_id=self.user_id,
                 token=self.token
             ).get_service()
-            
+
             for knowledge_item in knowledge_items:
                 ki_type = knowledge_item.get("type", "")
-                
+
                 message = ""
                 items = knowledge_item.get("items", [])
                 if len(items) > _SETTINGS.KNOWLEDGE_ITEM_HARD_LIMIT:
@@ -138,10 +140,11 @@ class KnowledgeItemTool(AFTool):
                     items_kv = {item["item_id"]: f"{item['key']}: {item['value']}" for item in items}
                 else:
                     key_names = [key.get("name") for key in knowledge_item.get("dimension", {}).get("keys", [])]
-                    
+
                     for item in items:
                         item_key = "-".join(str(item.get(k, "")) for k in key_names if k in item).rstrip("-")
-                        item_value = "<|>".join(f"{k}: {v}" for k, v in item.items() if k not in key_names + ["comment"]).rstrip(";")
+                        item_value = "<|>".join(f"{k}: {v}" for k, v in item.items()
+                                                if k not in key_names + ["comment"]).rstrip(";")
                         items_kv[item_key] = item_value
 
                         if item.get("comment", "").startswith("FR"):
@@ -159,7 +162,7 @@ class KnowledgeItemTool(AFTool):
                 logger.info(f"Retrieval Results: {retrieval_results}")
 
                 new_items = []
-                if  ki_type == "kv_dict":
+                if ki_type == "kv_dict":
                     for rr in retrieval_results:
                         content = items_kv.get(rr[0], "")
                         new_items.append(content)
@@ -183,11 +186,11 @@ class KnowledgeItemTool(AFTool):
                     },
                     "title": input if input else knowledge_item["name"]
                 }
-            
+
                 if message:
                     summary["message"] = message
                 result.append(summary)
-            
+
             return result
         except Exception as e:
             print(traceback.format_exc())
@@ -222,7 +225,7 @@ class KnowledgeItemTool(AFTool):
             else:
                 logger.error(f"知识条目ID列表格式不正确: {data_item_ids}")
                 raise KnowledgeItemError(detail="知识条目ID列表格式不正确", reason="知识条目ID列表格式不正确")
-        
+
         input = params.get('input', '')
         data_model = DataModelService(
             base_url=data_source_dict.get('base_url', ''),
@@ -477,7 +480,8 @@ class KnowledgeItemTool(AFTool):
 if __name__ == "__main__":
     from data_retrieval.api.data_model import DataModelService
 
-    data_model = DataModelService(base_url="https://localhost:13020", headers={"x-user": "any", "x-account-id": "any", "x-account-type": "user"})
+    data_model = DataModelService(base_url="https://localhost:13020",
+                                  headers={"x-user": "any", "x-account-id": "any", "x-account-type": "user"})
 
     tool = KnowledgeItemTool.from_data_model_service(
         data_model=data_model

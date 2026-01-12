@@ -10,6 +10,7 @@ from .utils import find_keys_with_multiple_values, permutations
 # 设置随机数生成器的种子
 random.seed(10)
 
+
 class nGQLTemplateSynthetic:
     def __init__(self):
         self.operator_dic = {
@@ -73,7 +74,7 @@ class nGQLTemplateSynthetic:
             # if index > 10: continue
             # if index == 1000: break
             rel_path = ngql_templates["path1"]
-            nGQL, _category = ngql_templates["nggl_template"], ngql_templates
+            nGQL, _ = ngql_templates["nggl_template"], ngql_templates
             # if nGQL.count("match") > 1:
             #     continue
             # StandLogger.debug("rel_path:", rel_path)
@@ -124,13 +125,13 @@ class nGQLTemplateSynthetic:
                         special_idx = None
 
                         # 获取属性的最大编号
-                        require_prop_idx = re.findall(f"prop_{entity_i}" + "_(\d)", nGQL)
+                        require_prop_idx = re.findall(f"prop_{entity_i}" + "_(\\d)", nGQL)
                         if require_prop_idx:
                             require_prop_num = max([int(i) for i in require_prop_idx])
                         else:
                             require_prop_num = 0
 
-                        pairs = re.findall(f"prop_{entity_i}" + "_(\d)_([^}]+)", nGQL)
+                        pairs = re.findall(f"prop_{entity_i}" + "_(\\d)_([^}]+)", nGQL)
                         if pairs:
                             if find_keys_with_multiple_values(pairs):
                                 # StandLogger.debug()
@@ -148,12 +149,14 @@ class nGQLTemplateSynthetic:
                         if not all_candidate_combination:
                             continue
                         entity_i_list = list(all_candidate_combination.keys())
-                        combination_idx = {key: list(range(len(value))) for key, value in all_candidate_combination.items()}
+                        combination_idx = {key: list(range(len(value)))
+                                           for key, value in all_candidate_combination.items()}
                         all_candidate_combination_idx = letterCombinations(combination_idx)
                         count_freq.setdefault(len(all_candidate_combination_idx), 0)
                         count_freq[len(all_candidate_combination_idx)] += 1
                         if len(all_candidate_combination_idx) > self.sample_size:
-                            all_candidate_combination_idx = random.sample(all_candidate_combination_idx, self.sample_size)
+                            all_candidate_combination_idx = random.sample(
+                                all_candidate_combination_idx, self.sample_size)
                         for comb_index, candidate_combination in enumerate(all_candidate_combination_idx):
                             # 每次换模板需要初始化
                             all_params.update({"connector": random.choice(["AND"])})
@@ -171,16 +174,12 @@ class nGQLTemplateSynthetic:
                             entity_params = {}
                             self.get_entity_params(entity_params, candidate_combination, all_candidate_combination,
                                                    entity_i_list)
-                            nGQL_new = re.sub("(prop_(\d)" + "_(\d))_[^}]+", r"\1", nGQL)
+                            nGQL_new = re.sub("(prop_(\\d)" + "_(\\d))_[^}]+", r"\1", nGQL)
                             nGQL_new = re.sub(r'\s+', ' ', nGQL_new).strip()
                             example = nGQL_new.format(**all_params, **entity_params)
                             # print(example)
                             nGQL_template.setdefault(nGQL, []).append(example)
         return nGQL_template
-
-
-
-
 
     def generate_template(self):
         check = set()
@@ -202,7 +201,7 @@ class nGQLTemplateSynthetic:
                 try:
                     path1 = template_params.pop("path1")
                     template_params.pop("path2") if "path2" in template_params else []  # TODO 可能有path2的场景
-                except:
+                except BaseException:
                     raise
                 letter_combination = uniqueletterCombinations(template_params)
                 # StandLogger.debug(letter_combination)
@@ -212,15 +211,15 @@ class nGQLTemplateSynthetic:
                     last_value = -1
                     for value, node_tag in zip(params_value, template_params.keys()):
                         # where v1 and v2 和where v2 and v1 是一样的，需要去重。
-                        if re.search("node(\d)\+", node_tag):
-                            value = int(re.findall("v(\d)", value)[0])
+                        if re.search("node(\\d)\\+", node_tag):
+                            value = int(re.findall("v(\\d)", value)[0])
                             if value < last_value:
                                 # StandLogger.debug("--------------------------------")
                                 # StandLogger.debug(ngql_template)
                                 # StandLogger.debug(params_value)
                                 break
-                        elif re.search("node(\d)", node_tag):
-                            value = int(re.findall("v(\d)", value)[0])
+                        elif re.search("node(\\d)", node_tag):
+                            value = int(re.findall("v(\\d)", value)[0])
                         last_value = value
                     else:
                         """
@@ -462,8 +461,6 @@ class nGQLTemplateSynthetic:
                         prop_value = "\"" + prop_value + "\""
                     prop_value_params["val_{}_{}_{}".format(entity_i, prop_i, value_i)] = prop_value
                 entity_params.update(prop_value_params)
-
-
 
 
 # generate_example()

@@ -25,6 +25,7 @@ CwIDAQAB
 
 settings = get_settings()
 
+
 async def ad_builder_get_kg_info_async(graph_id, appid="", token=""):
     if settings.AD_GATEWAY_URL:
         base_url = settings.AD_GATEWAY_URL
@@ -32,7 +33,7 @@ async def ad_builder_get_kg_info_async(graph_id, appid="", token=""):
     else:
         base_url = settings.DIP_BUILDER_URL
         headers = {"Authorization": token}
-    
+
     try:
         builder_engine = Builder.from_conn_data(
             addr=base_url,
@@ -96,9 +97,10 @@ async def v(url, body):
     try:
         res = await opensearch_engine.execute(url=url, body=body)
         return res
-    except  Exception as e:
+    except Exception as e:
         logger.info(f'AF-AD-SDK Opensearch 错误！,{opensearch_engine.pre_url}\n{url} no index or server error')
         raise OpenSearchRequestError(e)
+
 
 async def ad_opensearch_with_kgid_connector_async(kg_id, appid="", token="", params=None, entity_classes=["*"]):
     if settings.AD_GATEWAY_URL:
@@ -117,6 +119,7 @@ async def ad_opensearch_with_kgid_connector_async(kg_id, appid="", token="", par
     except Exception as e:
         logger.info(f'AF-AD-SDK 知识网络引擎下载词库接口错, 图谱 ID: {kg_id}, 实体类型: {entity_classes}')
         raise OpenSearchRequestError(e)
+
 
 def ad_opensearch_with_kgid_connector(kg_id, appid="", token="", params=None, entity_classes=["*"]):
     if settings.AD_GATEWAY_URL:
@@ -137,7 +140,6 @@ def ad_opensearch_with_kgid_connector(kg_id, appid="", token="", params=None, en
         raise OpenSearchRequestError(e)
 
 
-
 def ad_opensearch_connector(url, body):
     opensearch_engine = OpenSearch(
         ips=[settings.AD_OPENSEARCH_HOST],
@@ -148,8 +150,8 @@ def ad_opensearch_connector(url, body):
     try:
         res = opensearch_engine.naexecute(url=url, body=body)
         return res
-    except  Exception as e:
-        logger.info('AF-AD-SDK Opensearch 错误！',f'{opensearch_engine.pre_url}\n{url} no index or server error')
+    except Exception as e:
+        logger.info('AF-AD-SDK Opensearch 错误！', f'{opensearch_engine.pre_url}\n{url} no index or server error')
         raise OpenSearchRequestError(e)
 
 

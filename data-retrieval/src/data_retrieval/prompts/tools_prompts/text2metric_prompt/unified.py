@@ -73,7 +73,7 @@ dimensions, 指标可供分组或下钻的维度
 {
     "title": "... 对于数据的简要描述 ... "
 }
-   
+
 ### 任务1: 选择指标
 
 根据用户的问题选择一个合适的指标，指标的 id 为指标的唯一标识
@@ -344,9 +344,10 @@ class Text2MetricPrompt(BasePrompt):
         if isinstance(self.indicators, dict):
             self.indicators = json.dumps(self.indicators, ensure_ascii=False)
         elif isinstance(self.indicators, list):
-            if len(self.indicators) > 0:    
+            if len(self.indicators) > 0:
                 if isinstance(self.indicators[0], dict):
-                    self.indicators = '\n'.join([ json.dumps(indicator, ensure_ascii=False) for indicator in self.indicators ])
+                    self.indicators = '\n'.join([json.dumps(indicator, ensure_ascii=False)
+                                                for indicator in self.indicators])
                 else:
                     self.indicators = '\n\n'.join(self.indicators)
             else:

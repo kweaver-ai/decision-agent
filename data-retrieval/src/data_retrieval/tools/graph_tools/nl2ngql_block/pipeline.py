@@ -6,7 +6,6 @@ from .query_fixer import QueryFixer
 from .common.structs import IntermediateResult
 
 
-
 class Text2nGQLSystem:
     def __init__(self, params):
         self.params = params
@@ -17,7 +16,7 @@ class Text2nGQLSystem:
     async def process(self, intermediate_result: IntermediateResult):
 
         if intermediate_result.retrieval:
-        # Step 1: Value retrieval
+            # Step 1: Value retrieval
             retrieval_values = await self.retrieval_engine.retrieval(intermediate_result)
             intermediate_result.retrieval_values = retrieval_values
         messages = await self.candidate_generator.generate(intermediate_result)
@@ -26,5 +25,3 @@ class Text2nGQLSystem:
 
         StandLogger.info('fixed_queries: {}'.format(fixed_queries))
         return {"messages": messages, "response": fixed_queries}
-
-

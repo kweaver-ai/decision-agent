@@ -84,7 +84,8 @@ class Text2MetricInput(BaseModel):
 
 
 class Text2MetricInputWithMetricList(Text2MetricInput):
-    metric_list: List[MetricDescSchema] = Field(default=[], description=f"指标列表，注意指标指的一个数据源，不是字段信息，当已经初始化过虚拟视图列表时，不需要填写该参数。如果需要填写该参数，请确保`上下文缓存的数据资源中存在`，不要随意生成。注意参数一定要准确。格式为 {MetricDescSchema.schema_json(ensure_ascii=False)}")
+    metric_list: List[MetricDescSchema] = Field(
+        default=[], description=f"指标列表，注意指标指的一个数据源，不是字段信息，当已经初始化过虚拟视图列表时，不需要填写该参数。如果需要填写该参数，请确保`上下文缓存的数据资源中存在`，不要随意生成。注意参数一定要准确。格式为 {MetricDescSchema.schema_json(ensure_ascii=False)}")
 
 
 class Text2MetricTool(LLMTool):
@@ -108,9 +109,9 @@ class Text2MetricTool(LLMTool):
     rewrite_query: bool = bool(_SETTINGS.INDICATOR_REWRITE_QUERY)  # 是否重写指标查询语句
     model_type: str = _SETTINGS.TEXT2METRIC_MODEL_TYPE
     return_record_limit: int = _SETTINGS.RETURN_RECORD_LIMIT
-    return_data_limit: int = _SETTINGS.RETURN_DATA_LIMIT    
+    return_data_limit: int = _SETTINGS.RETURN_DATA_LIMIT
 
-    _initial_metric_ids: List[str] = PrivateAttr(default=[]) # 工具初始化时设置的指标id列表
+    _initial_metric_ids: List[str] = PrivateAttr(default=[])  # 工具初始化时设置的指标id列表
 
     def __init__(self, *args, **kwargs):
 
@@ -120,7 +121,7 @@ class Text2MetricTool(LLMTool):
 
         if kwargs.get("session") is None:
             self.session = CreateSession(self.session_type)
-        
+
         if self.indicator and self.indicator.get_data_list():
             self._initial_metric_ids = self.indicator.get_data_list()
         else:
@@ -130,14 +131,14 @@ class Text2MetricTool(LLMTool):
         self._get_desc_from_datasource(self.get_desc_from_datasource)
 
     def _get_desc_from_datasource(self, get_desc_from_datasource: bool):
-        
+
         if get_desc_from_datasource:
             if self.indicator:
                 desc = self.indicator.get_description()
                 if desc:
                     self.description += _DESCS["desc_from_datasource"][self.language].format(
                         desc=desc
-                )
+                    )
         if not self.indicator.get_data_list():
             self.description += _DESCS["desc_from_datasource"]["cn"].format(
                 desc=f"工具初始化时没有提供指标数据源，调用前需要使用 `{ToolName.from_sailor.value}` 工具搜索，并基于结果初始化"
@@ -199,7 +200,7 @@ class Text2MetricTool(LLMTool):
 
                     sample = self.indicator.get_sample_from_data_view(
                         refer_view_id,
-                        [ dim["technical_name"] for dim in detail["dimensions"] ]
+                        [dim["technical_name"] for dim in detail["dimensions"]]
                     )
 
                     samples_dict[desc["refer_view_name"]] = sample | old_sample
@@ -209,14 +210,13 @@ class Text2MetricTool(LLMTool):
             detail_str += json_to_markdown([desc]) + '\n'
             detail_str += "**Dimensions Details**: \n" + json_to_markdown(detail["dimensions"]) + '\n\n'
 
-
             # desc["dimensions"] = detail["dimensions"]
             # detail_str = json.dumps(desc, ensure_ascii=False)
 
             # Use metadata to store detail_str, use name + description to search
             # to prevent additional information from affecting the search results
             indicator_details.append(detail_str)
-            
+
             # 如果 input_question 为空，说明是第一次调用，需要将指标详情添加到向量存储中
             # if not input_question:
             #     docs_in_vectorstore.append(
@@ -354,14 +354,14 @@ class Text2MetricTool(LLMTool):
                     info = json.loads(knowledge_enhanced_information)
                     knowledge_enhanced_information = json.dumps(info, ensure_ascii=False)
             except Exception as e:
-                logger.debug(f"Convert Error, use original str. Error: {e}\n, Original str:{knowledge_enhanced_information}")
-
+                logger.debug(
+                    f"Convert Error, use original str. Error: {e}\n, Original str:{knowledge_enhanced_information}")
 
             if knowledge_enhanced_information:
                 new_background += dedent("\n"
-                + "知识增强工具中包含了维度相关的信息, 请在条件允许的情况下，与现有 filter 合并:\n"
-                + knowledge_enhanced_information
-            )
+                                         + "知识增强工具中包含了维度相关的信息, 请在条件允许的情况下，与现有 filter 合并:\n"
+                                         + knowledge_enhanced_information
+                                         )
         else:
             knowledge_enhanced_information = ""
 
@@ -371,7 +371,7 @@ class Text2MetricTool(LLMTool):
         # just in case
         if len(columns) == 0:
             return columns
-        
+
         def _is_default_name(name: str):
             if name.startswith("_col"):
                 return True
@@ -403,12 +403,11 @@ class Text2MetricTool(LLMTool):
 
         # expression is like sum(\"sales_std\"), sum(\"target_std\")
         if indicator_info.get("indicator_type") == "atomic":
-            indicator_expressions = indicator_info.get("expression","").replace("\"", "").split(",")
+            indicator_expressions = indicator_info.get("expression", "").replace("\"", "").split(",")
             if len(indicator_expressions) > 1:
                 for i, exp in enumerate(indicator_expressions):
                     if i + len(dimension_params) < len(columns):
                         columns[i + len(dimension_params)]["name"] = exp
-
 
         return columns
 
@@ -460,7 +459,8 @@ class Text2MetricTool(LLMTool):
                 raise Text2MetricError("指标为空，请先设置指标")
 
             # 根据问题重新筛选字段，因为indicator 已经做了缓存，不会重复请求数据
-            new_background, extra_info, knowledge_enhanced_information = self._add_extra_info(extra_info, knowledge_enhanced_information)
+            new_background, extra_info, knowledge_enhanced_information = self._add_extra_info(
+                extra_info, knowledge_enhanced_information)
             indicator_details, sample_data = self._init_indicator_details_and_samples(
                 ("\n".join([input, extra_info, knowledge_enhanced_information]))
             )
@@ -497,7 +497,7 @@ class Text2MetricTool(LLMTool):
                     #     indicator_details = self.indicator_details
 
                     chain = self._config_chain(indicator_details, sample_data, errors, new_background)
-                    
+
                     # callback_handler = ToolCallbackHandler()
 
                     # 重写指标查询语句，提高指标查询的准确性
@@ -600,9 +600,9 @@ class Text2MetricTool(LLMTool):
                                 "return_records_num": len(res["data"]),
                                 "real_records_num": parse.get_records_num()
                             }
-                                                # 转完换后，删除 res 字段
+                            # 转完换后，删除 res 字段
                         del res["res"]
-                        
+
                         # 将包含大量数据的字段移动到末尾
                         llm_res = OrderedDict(res)
                         llm_res.move_to_end("data")
@@ -613,7 +613,7 @@ class Text2MetricTool(LLMTool):
                                 "full_output": full_output
                             }
                         else:
-                            return res  
+                            return res
 
                 except Exception as e:
                     print("=====")
@@ -637,7 +637,7 @@ class Text2MetricTool(LLMTool):
         except Exception as e:
             logger.error(f"Error: {e}")
             raise ToolFatalError(reason="指标调用失败", detail=e) from e
-            
+
     def handle_result(
         self,
         log: Dict[str, Any],
@@ -668,7 +668,7 @@ class Text2MetricTool(LLMTool):
                     "is_empty": tool_res.get("is_empty", len(data) == 0),
                     "fields": tool_res.get("fields", list(data[0].keys()) if data else []),
                 }
-                
+
                 ans_multiple.cache_keys[self._result_cache_key] = cache_result
 
     @classmethod
@@ -679,8 +679,8 @@ class Text2MetricTool(LLMTool):
     ):
         # TODO: 需要按照 DIP 进行重构
         # Indicator Params
-            # indicator_list: list[str]
-            # token: str
+        # indicator_list: list[str]
+        # token: str
         indicator_dict = params.get("indicator", {})
 
         # just for test
@@ -690,13 +690,14 @@ class Text2MetricTool(LLMTool):
             password = indicator_dict.get("password", "")
 
             try:
-                indicator_dict["token"] = get_authorization(indicator_dict.get("auth_url", _SETTINGS.AF_DEBUG_IP), user, password)
+                indicator_dict["token"] = get_authorization(indicator_dict.get(
+                    "auth_url", _SETTINGS.AF_DEBUG_IP), user, password)
             except Exception as e:
                 logger.error(f"Error: {e}")
                 raise ToolFatalError(reason="获取 token 失败", detail=e) from e
 
         indicator = AFIndicator(**indicator_dict)
-        
+
         # LLM Params
         # client_params = {
         #     "openai_api_key",
@@ -727,24 +728,23 @@ class Text2MetricTool(LLMTool):
         # }
         llm_dict = parse_llm_from_model_factory(params.get("inner_llm", {}))
         llm_dict.update(params.get("llm", {}))
-        
 
         # llm_dict = params.get("llm", {})
         llm = CustomChatOpenAI(**llm_dict)
 
         # config of text2metric tool
-            # background: str = ""
-            # retry_times: int = 3
-            # session_type: str = "redis"
-            # session_id: Optional[Any] = None
-            # with_execution: bool = True  # 是否执行指标函数
-            # get_desc_from_datasource: bool = True  # 是否从数据源获取描述
-            # enable_yoy_or_mom: bool = True  # 是否启用同比环比
-            # essential_explain: bool = True  # 是否只展示必要的解释
-            # with_sample_data: bool = True   # 是否从逻辑是同中获取样例数据
-            # dimension_num_limit: int = -1   # 维度数量限制
-            # return_record_limit: int = -1  # 返回数据条数，与字节数相互作用, -1 代表不限制
-            # return_data_limit: int = -1  # 返回数据总量，与字节数相互作用, -1 
+        # background: str = ""
+        # retry_times: int = 3
+        # session_type: str = "redis"
+        # session_id: Optional[Any] = None
+        # with_execution: bool = True  # 是否执行指标函数
+        # get_desc_from_datasource: bool = True  # 是否从数据源获取描述
+        # enable_yoy_or_mom: bool = True  # 是否启用同比环比
+        # essential_explain: bool = True  # 是否只展示必要的解释
+        # with_sample_data: bool = True   # 是否从逻辑是同中获取样例数据
+        # dimension_num_limit: int = -1   # 维度数量限制
+        # return_record_limit: int = -1  # 返回数据条数，与字节数相互作用, -1 代表不限制
+        # return_data_limit: int = -1  # 返回数据总量，与字节数相互作用, -1
 
         config_dict = params.get("config", {})
         # if config_dict.get("retriever_config"):
@@ -758,11 +758,10 @@ class Text2MetricTool(LLMTool):
         infos = params.get("infos", {})
         infos['input'] = params.get('input', '')
 
-
         # invoke tool
         res = await tool.ainvoke(input=infos)
         return res
-    
+
     @staticmethod
     async def get_api_schema():
         inputs = {
@@ -1060,7 +1059,7 @@ class Text2MetricTool(LLMTool):
                 }
             }
         }
-    
+
     def _config_rewrite_metric_query_chain(self, question: str, background: str, metrics: list, samples: list):
         prompt = RewriteMetricQueryPrompt(
             question=question,
@@ -1072,12 +1071,14 @@ class Text2MetricTool(LLMTool):
 
         if self.model_type == ModelType4Prompt.DEEPSEEK_R1.value:
             messages = [
-                HumanMessage(content=prompt.render(escape_braces=False), additional_kwargs={_TOOL_MESSAGE_KEY: "text2metric_rewrite_query"}),
+                HumanMessage(content=prompt.render(escape_braces=False), additional_kwargs={
+                             _TOOL_MESSAGE_KEY: "text2metric_rewrite_query"}),
                 HumanMessage(content=question)
             ]
         else:
             messages = [
-                SystemMessage(content=prompt.render(escape_braces=False), additional_kwargs={_TOOL_MESSAGE_KEY: "text2metric_rewrite_query"}),
+                SystemMessage(content=prompt.render(escape_braces=False), additional_kwargs={
+                              _TOOL_MESSAGE_KEY: "text2metric_rewrite_query"}),
                 HumanMessage(content=question)
             ]
 
@@ -1090,13 +1091,12 @@ class Text2MetricTool(LLMTool):
 
         # 输出是字符串，帮助后续问题理解
         return json.dumps(new_question, ensure_ascii=False)
-    
+
     def _rewrite_metric_query(self, question: str, background: str, metrics: list, samples: list):
         chain, messages = self._config_rewrite_metric_query_chain(question, background, metrics, samples)
         new_question = chain.invoke(messages)
 
         return json.dumps(new_question, ensure_ascii=False)
-
 
 
 if __name__ == "__main__":
@@ -1113,8 +1113,6 @@ if __name__ == "__main__":
     )
     # llm = ChatOllama(model="phi3:latest")
     # llm = ChatOllama(model="codegemma")
-
-    from data_retrieval.api.auth import get_authorization
 
     # indicator_list = ["532179399886306706"]
     # token = get_authorization("https://10.4.109.201", "liberly", "111111")
@@ -1167,19 +1165,13 @@ if __name__ == "__main__":
     #
     #     print(tool.description)
 
-
     async def main():
         res = await tool.ainvoke({"input": "‘小白白品牌’Q1销量同比增长"})
         print("============")
         print(res)
-
 
     import asyncio
     asyncio.run(main())
 
     # print(tool.invoke({"input": "近三年大区为东部大区各个片区的销量"}))
     # print(tool.invoke({"input": "按下单地点、渠道分析指标，并按滤渠道是拼多多进行过滤，时间是近三年"}))
-
-
-
-

@@ -10,4 +10,3 @@ PTC Text2SQL Tool
 from data_retrieval.tools.ptc_tools.text2sql.text2sql import Text2SQL
 
 __all__ = ["Text2SQL"]
-

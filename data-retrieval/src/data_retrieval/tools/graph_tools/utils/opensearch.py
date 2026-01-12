@@ -429,7 +429,7 @@ class OpenSearchConnector(object):
             sorted_merge_pd_res = sorted_merge_pd_res.fillna(0)
             # 计算融合得分
             sorted_merge_pd_res["merge_score"] = sorted_merge_pd_res["rrf_norm_emb_score"] * weight_emb + \
-                                                 sorted_merge_pd_res["rrf_norm_text_score"] * weight_text
+                sorted_merge_pd_res["rrf_norm_text_score"] * weight_text
 
             # 重排序
             sorted_merge_pd_res = sorted_merge_pd_res.sort_values(by=["merge_score"], ascending=False)

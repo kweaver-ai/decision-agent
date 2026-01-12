@@ -31,7 +31,7 @@ def find_unique_nodes(edges):
     paths = []
     for edge in edges:
         if edge['subject'] not in nodes:
-            nodes.add(edge['subject'])# 添加起点
+            nodes.add(edge['subject'])  # 添加起点
             paths.append({
                 'v1': edge['subject'],
             })
@@ -151,7 +151,9 @@ def find_three_hop_paths(edges):
 # # 输出结果
 # for path in paths:
 #     print(
-#         f"(v1: {path['v1']})-[e1: {path['e1']}]->(v2: {path['v2']})-[e2: {path['e2']}]->(v3: {path['v3']})-[e3: {path['e3']}]->(v4: {path['v4']})")
+# f"(v1: {path['v1']})-[e1: {path['e1']}]->(v2: {path['v2']})-[e2:
+# {path['e2']}]->(v3: {path['v3']})-[e3: {path['e3']}]->(v4:
+# {path['v4']})")
 
 
 # 555定义函数查找符合条件的路径
@@ -178,6 +180,7 @@ def find_converging_paths(edges):
                     'v3': v3
                 })
     return paths
+
 
 def find_diverging_paths(edges):
     """查找路径 (v1)<-[e1]-(v2)-[e2]->(v3)"""
@@ -211,7 +214,6 @@ def find_diverging_paths(edges):
 #     print(f"(v1: {path['v1']})-[e1: {path['e1']}]->(v2: {path['v2']})<-[e2: {path['e2']}]->(v3: {path['v3']})")
 
 
-
 """
 我有一些图的关系数据，如：
 'edge': [
@@ -229,7 +231,7 @@ def find_diverging_paths(edges):
         {'alias': '创作', 'description': '', 'name': 'author_2_book', 'object': 'book', 'subject': 'author'},
         {'alias': '属于', 'description': '', 'name': 'address_2_country', 'object': 'country', 'subject': 'address'}
     ]
-    
+
 subject 和 object是节点标签，用v表示。关系边，用e表示。
 我想找到(v1)-[e1]->(v2)-[e2]->(v3)这种路径的所有组合，请问怎么写代码。
 如下满足要求。

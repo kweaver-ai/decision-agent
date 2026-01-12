@@ -83,5 +83,3 @@ class _SessionBase:
             rec.setdefault("semantic_nodes_results", [])
             rec.setdefault("concept_retrieval_cache", {})
             rec.setdefault("semantic_instance_cache", {})
-
-

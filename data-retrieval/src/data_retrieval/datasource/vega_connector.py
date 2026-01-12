@@ -10,17 +10,18 @@ from data_retrieval.utils.dip_services.base import ServiceType
 # threadsafety = 1
 # paramstyle = "named"  # 比如 :name 形式
 
+
 def connect(
-        url=None,
-        user=None,
-        password=None,
-        host=None,
-        port=None,
-        user_id="",
-        view_list=None,
-        kg_params=None,
-        **kwargs
-    ):
+    url=None,
+    user=None,
+    password=None,
+    host=None,
+    port=None,
+    user_id="",
+    view_list=None,
+    kg_params=None,
+    **kwargs
+):
     if not url:
         raise ValueError("Missing URL")
 
@@ -42,6 +43,7 @@ def connect(
         kg_params=kg_params
     )
 
+
 class Connection:
     """ 参数说明
 
@@ -54,6 +56,7 @@ class Connection:
     kg_params: 可选，知识图谱参数
     dip_type: 可选，服务类型，默认 dip，可选值：dip、outter_dip、af
     """
+
     def __init__(
         self,
         base_url: str = "",
@@ -72,14 +75,14 @@ class Connection:
             self.auth = (username, password, get_authorization(self.base_url, username, password))
         else:
             self.auth = (username, password, token)
-        
+
         self.user_id = user_id
         self.account_type = account_type
         self.kg_params = kg_params
         self.view_list = view_list
         self.af_datasource = None
         self.vega_type = vega_type
-        
+
     def _init_datasource(self):
         # 如果设置了地址，则默认为外部的 DIP 服务, 也有可能是 AF 服务
         if self.base_url:
@@ -89,11 +92,11 @@ class Connection:
 
         if not self.af_datasource:
             if self.kg_params:
-                headers={
-                        "x-user": self.user_id,
-                        "x-account-id": self.user_id,
-                        "x-account-type": self.account_type
-                    }
+                headers = {
+                    "x-user": self.user_id,
+                    "x-account-id": self.user_id,
+                    "x-account-type": self.account_type
+                }
                 token = self.auth[2]
                 if token:
                     if not token.startswith("Bearer "):
@@ -105,7 +108,7 @@ class Connection:
                     kg_params=self.kg_params,
                     dip_type=dip_type,
                     headers=headers
-                    )
+                )
                 )
 
                 self.view_list = [ds.get("id") for ds in datasources_in_kg]
@@ -136,7 +139,7 @@ class Connection:
 
     def close(self):
         pass
-    
+
     def get_meta_sample_data(self, input_query="", **kwargs):
         """ Params:
             input_query: 用户问题
@@ -150,7 +153,6 @@ class Connection:
         # 删除不必要的信息
         api_res.pop("view_schema_infos")
 
-
         sample_dict = api_res.pop("sample", {})
 
         for detail in api_res.get("detail", []):
@@ -158,9 +160,8 @@ class Connection:
 
             if kwargs.get("with_sample", False):
                 detail["sample"] = sample_dict.get(detail.get("id", ""), {})
-    
+
         return api_res
-    
 
     async def get_meta_sample_data_async(self, input_query="", **kwargs):
         """ Params:
@@ -175,7 +176,6 @@ class Connection:
         # 删除不必要的信息
         api_res.pop("view_schema_infos")
 
-
         sample_dict = api_res.pop("sample", {})
 
         for detail in api_res.get("detail", []):
@@ -183,17 +183,18 @@ class Connection:
 
             if kwargs.get("with_sample", False):
                 detail["sample"] = sample_dict.get(detail.get("id", ""), {})
-    
+
         return api_res
+
 
 class Cursor:
     def __init__(
-            self,
-            base_url: str,
-            auth: tuple,
-            af_datasource: DataView,
-            account_type: str = "user"
-        ):
+        self,
+        base_url: str,
+        auth: tuple,
+        af_datasource: DataView,
+        account_type: str = "user"
+    ):
         self.base_url = base_url
         self.auth = auth
         self._results = []
@@ -223,4 +224,3 @@ class Cursor:
 
     def close(self):
         pass
-

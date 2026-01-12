@@ -80,7 +80,7 @@ class SQLiteDataSource(DataSource):
         #     f"{sample} \n"
         # )
 
-        tables = ",".join(["'"+table+"'" for table in identities if table])
+        tables = ",".join(["'" + table + "'" for table in identities if table])
 
         if tables:
             _, data = self._query(

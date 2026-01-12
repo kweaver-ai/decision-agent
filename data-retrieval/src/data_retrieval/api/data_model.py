@@ -15,21 +15,21 @@ settings = get_settings()
 
 class DataModelService:
     """数据模型服务类，用于获取指标/视图详情和查询指标数据"""
-    
+
     def __init__(self, base_url: str = "", headers: dict = {}):
         self.data_model_url: str = settings.DIP_DATA_MODEL_URL
         self.model_query_url: str = settings.DIP_MODEL_QUERY_URL
         self.outer_dip: bool = False
-        
+
         if base_url:
             self.data_model_url: str = base_url
             self.model_query_url: str = base_url
             self.outer_dip = True
 
         self.headers: dict = headers
-            
+
         self._gen_api_url()
-    
+
     def _gen_api_url(self):
         """生成API URL"""
         if self.outer_dip:
@@ -61,13 +61,13 @@ class DataModelService:
             self.knowledge_items_detail_url = self.data_model_url + \
                 "/api/mdl-data-model/in/v1/data-dicts/{ids}"
 
-    def get_metric_models_detail(self, ids: str|list[str], headers: dict = {}) -> dict:
+    def get_metric_models_detail(self, ids: str | list[str], headers: dict = {}) -> dict:
         """获取指标详情
-        
+
         Args:
             ids (str): 指标ID，多个ID用逗号分隔
             headers (dict): 请求头
-            
+
         Returns:
             dict: 指标详情数据
         """
@@ -84,14 +84,14 @@ class DataModelService:
             return res
         except AfDataSourceError as e:
             raise DataModelDetailError(e) from e
-    
+
     async def get_metric_models_detail_async(self, ids: str, headers: dict = {}) -> dict:
         """异步获取指标详情
-        
+
         Args:
             ids (str): 指标ID，多个ID用逗号分隔
             headers (dict): 请求头
-            
+
         Returns:
             dict: 指标详情数据
         """
@@ -105,15 +105,15 @@ class DataModelService:
             return res
         except AfDataSourceError as e:
             raise DataModelDetailError(e) from e
-    
+
     def query_metric_models_data(self, ids: str, headers: dict = {}, params: dict = {}) -> dict:
         """查询指标数据
-        
+
         Args:
             ids (str): 指标ID，多个ID用逗号分隔
             headers (dict): 请求头
             data (dict): 查询参数
-            
+
         Returns:
             dict: 指标数据
         """
@@ -133,15 +133,15 @@ class DataModelService:
             return res
         except AfDataSourceError as e:
             raise DataModelQueryError(e) from e
-    
+
     async def query_metric_models_data_async(self, ids: str, headers: dict = {}, params: dict = {}) -> dict:
         """异步查询指标数据
-        
+
         Args:
             ids (str): 指标ID，多个ID用逗号分隔
             headers (dict): 请求头
             data (dict): 查询参数
-            
+
         Returns:
             dict: 指标数据
         """
@@ -162,7 +162,8 @@ class DataModelService:
         except AfDataSourceError as e:
             raise DataModelQueryError(e) from e
 
-    def get_view_data_preview(self, view_id: str, headers: dict = {}, fields: list[str] = [], limit: int = 1, offset: int = 0) -> dict:
+    def get_view_data_preview(self, view_id: str, headers: dict = {},
+                              fields: list[str] = [], limit: int = 1, offset: int = 0) -> dict:
         url = self.data_view_models_query_url.format(ids=view_id)
 
         headers.update(self.headers)
@@ -188,7 +189,8 @@ class DataModelService:
         except AfDataSourceError as e:
             raise DataModelQueryError(e) from e
 
-    async def get_view_data_preview_async(self, view_id: str, headers: dict = {}, fields: list[str] = [], limit: int = 1, offset: int = 0) -> dict:
+    async def get_view_data_preview_async(self, view_id: str, headers: dict = {},
+                                          fields: list[str] = [], limit: int = 1, offset: int = 0) -> dict:
         url = self.data_view_models_query_url.format(ids=view_id)
 
         headers.update(self.headers)
@@ -246,11 +248,10 @@ class DataModelService:
             traceback.print_exc()
             raise e
 
-    
     def get_knowledge_items_by_ids(self, ids: list[str], headers: dict = {}) -> dict:
         url = self.knowledge_items_detail_url.format(ids=ids)
         headers.update(self.headers)
-        
+
         api = API(
             url=url,
             headers=headers,
@@ -260,11 +261,11 @@ class DataModelService:
             return res
         except AfDataSourceError as e:
             raise DataModelDetailError(e) from e
-        
+
     async def get_knowledge_items_by_ids_async(self, ids: list[str], headers: dict = {}) -> dict:
         url = self.knowledge_items_detail_url.format(ids=ids)
         headers.update(self.headers)
-        
+
         api = API(
             url=url,
             headers=headers,
@@ -285,5 +286,5 @@ if __name__ == '__main__':
         # headers = {"Authorization": f"Bearer {token}"}
         # res = service.get_metric_models_detail("metric_id_1,metric_id_2", headers)
         # print(res)
-    
+
     main()

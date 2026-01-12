@@ -8,6 +8,7 @@ __all__ = [
     "BaseChatHistorySession"
 ]
 
+
 def CreateSession(session_type: str):
     if session_type == "redis":
         return RedisHistorySession()

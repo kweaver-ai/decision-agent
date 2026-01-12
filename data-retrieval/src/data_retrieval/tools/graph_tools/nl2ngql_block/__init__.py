@@ -1,1 +1,3 @@
-from .pipeline import Text2nGQLSystem as Text2nGQLSystem
+from .pipeline import Text2nGQLSystem
+
+__all__ = ["Text2nGQLSystem"]

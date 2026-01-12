@@ -10,13 +10,13 @@ class ModelType4Prompt(Enum):
     """
     GPT4O = "gpt-4o"
     LANGCHAIN = "langchain"
-    DEEPSEEK_R1= "deepseek-r1"
+    DEEPSEEK_R1 = "deepseek-r1"
     DEFAULT = "default"
 
     @classmethod
     def values(cls):
         return [mt.value for mt in cls]
-    
+
     @classmethod
     def keys(cls):
         return [mt.name for mt in cls]

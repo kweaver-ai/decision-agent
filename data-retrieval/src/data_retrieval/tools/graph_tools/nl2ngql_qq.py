@@ -33,7 +33,7 @@ class Text2nGQLArgsSchema(BaseModel):
     history: List[Dict[str, Any]] = Field(default=[], description="对话历史记录，多轮对话时需要")
     cache_cover: bool = Field(default=False, description="是否覆盖缓存，如果True，会重新获取最新的schema或者数据")
     action: str = Field(
-        default="nl2ngql", 
+        default="nl2ngql",
         description="操作类型: nl2ngql(自然语言转查询), get_schema(获取schema), keyword_retrieval(获取图谱检索结果)"
     )
     timeout: int = Field(default=120, description="超时时间（秒）")
@@ -53,15 +53,15 @@ _TOOL_DESCRIPTION = dedent("""
 
 class Text2nGQLTool():
     """图谱查询工具：将自然语言转换为nGQL查询"""
-    
+
     # ============== MCP Required Attributes ==============
     name: str = ToolName.from_text2ngql.value
     description: str = _TOOL_DESCRIPTION
     args_schema: Type[BaseModel] = Text2nGQLArgsSchema
-    
+
     # ============== Singleton Pattern ==============
     _instance = None
-    
+
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
@@ -85,30 +85,30 @@ class Text2nGQLTool():
         try:
             # 将字典参数转换为Text2nGQLRequest对象
             request = Text2nGQLRequest(**params)
-            
+
             # 确保 inner_llm 是一个字典
             if request.inner_llm is None:
                 request.inner_llm = {}
-            
+
             # 从 HeaderParams 中提取 account_id 和 account_type，并添加到 inner_llm 中
             if header_params.account_id:
                 request.inner_llm["account_id"] = header_params.account_id
             if header_params.account_type:
                 request.inner_llm["account_type"] = header_params.account_type
-            
+
             # 执行对应的操作
             if request.action == "get_schema":
                 return await cls().run_func_get_schema(request)
             elif request.action == "keyword_retrieval":
                 return await cls().run_func_keyword_retrieval(request)
             return await cls().run_func_nl2ngql(request)
-        
+
         except HTTPException:
             raise
         except (NGQLSchemaError, NGQLConnectionError, Text2NGQLError) as e:
             # 判断是否为参数验证错误
             is_param_error = (
-                isinstance(e, (NGQLSchemaError, Text2NGQLError)) and 
+                isinstance(e, (NGQLSchemaError, Text2NGQLError)) and
                 ("参数" in e.description or "kg_id" in str(e.detail) or "validation error" in str(e.detail).lower())
             )
             raise HTTPException(
@@ -123,7 +123,7 @@ class Text2nGQLTool():
             is_param_error = "validation error" in error_msg or "field required" in error_msg
             is_schema_error = "schema" in error_msg or "redis" in error_msg or "graph" in error_msg
             is_connection_error = "connection" in error_msg or "connect" in error_msg or "nebula" in error_msg
-            
+
             if is_param_error:
                 error = Text2NGQLError(
                     detail={"error": str(e)},
@@ -149,7 +149,7 @@ class Text2nGQLTool():
                     description="nl2ngql 工具执行失败"
                 )
                 status_code = 500
-            
+
             raise HTTPException(
                 status_code=status_code,
                 detail=error.json()
@@ -170,7 +170,7 @@ class Text2nGQLTool():
                 detail={"error": "kg_id 参数缺失"},
                 description="inner_kg.kg_id 是必传参数"
             )
-        
+
         # 获取 schema
         schema_res = graph_util.find_redis_graph_cache(graph_id=graph_id)
         if not schema_res:
@@ -178,7 +178,7 @@ class Text2nGQLTool():
                 detail={"error": f"未找到图谱 schema，graph_id: {graph_id}"},
                 description="Redis 中不存在该图谱的 schema 信息"
             )
-        
+
         # 连接 Nebula
         nebula_engine = NebulaConnector(
             ips=Config.GRAPHDB_HOST.split(','),
@@ -207,7 +207,7 @@ class Text2nGQLTool():
         schema_parser = SchemaParser()
         schema = schema_parser.reformat_schema(intermediate_result, schema_res)
         intermediate_result.schema = schema
-        
+
         return intermediate_result
 
     async def load_env_async(self, params):
@@ -224,8 +224,6 @@ class Text2nGQLTool():
         intermediate_result = await self.load_env_async(params)
         return {"schema": intermediate_result.schema}
 
-
-
     async def run_func_nl2ngql(self, params: Text2nGQLRequest) -> Text2nGQLResponse:
         # 1、准备环境
         intermediate_result = await self.load_env_async(params)
@@ -236,18 +234,18 @@ class Text2nGQLTool():
             answer = response["response"]
             if len(answer) == 1:
                 answer = answer[0]
-                format_response.result = {"sql":answer["ngql"], "data": answer["executed_res"]}
+                format_response.result = {"sql": answer["ngql"], "data": answer["executed_res"]}
             elif len(answer) > 1:
                 ngql_str = "\n\n".join([item["ngql"] for item in answer])
-                format_response.result = {"sql":ngql_str, "data": [item["executed_res"] for item in answer]}
+                format_response.result = {"sql": ngql_str, "data": [item["executed_res"] for item in answer]}
             else:
-                format_response.result = {"sql":"", "data": []}
+                format_response.result = {"sql": "", "data": []}
         return format_response
 
     @staticmethod
     async def get_api_schema():
         """获取 API Schema"""
-        return  {
+        return {
             "post": {
                 "summary": "text2ngql",
                 "description": "将问题生成nGQL查询语句，并获取执行结果，复杂问题务必拆分子问题，工具一次只能解决一个子问题",
@@ -436,36 +434,36 @@ class Text2nGQLTool():
                                         ]
                                     }
                                 },
-                                "向量检索示例":  {
+                                "向量检索示例": {
                                     "summary": "向量检索示例",
                                     "value": {
-                                            "query": "Rose是谁",
-                                            "inner_kg": {
-                                                "kg_id": "5", 
-                                                "fields": ["orgnization", "person", "district"]
-                                            },
-                                            "inner_llm": {
-                                                "name": "ali-deepseek-v3",
-                                                "temperature": 0.01,
-                                                "top_k": 2,
-                                                "top_p": 0.5,
-                                                "frequency_penalty": 0.5,
-                                                "max_tokens": 10000,
-                                                "presence_penalty": 0.5
-                                            },
-                                            "action": "keyword_retrieval",
-                                            "retrieval_params": {
-                                                "keywords_extract": False,
-                                                "score": 0,
-                                                "label_name": "*"
-                                            }
+                                        "query": "Rose是谁",
+                                        "inner_kg": {
+                                            "kg_id": "5",
+                                            "fields": ["orgnization", "person", "district"]
+                                        },
+                                        "inner_llm": {
+                                            "name": "ali-deepseek-v3",
+                                            "temperature": 0.01,
+                                            "top_k": 2,
+                                            "top_p": 0.5,
+                                            "frequency_penalty": 0.5,
+                                            "max_tokens": 10000,
+                                            "presence_penalty": 0.5
+                                        },
+                                        "action": "keyword_retrieval",
+                                        "retrieval_params": {
+                                            "keywords_extract": False,
+                                            "score": 0,
+                                            "label_name": "*"
+                                        }
                                     },
                                 },
-                                "获取图谱schema示例":  {
+                                "获取图谱schema示例": {
                                     "summary": "向量检索示例",
                                     "value": {
                                         "inner_kg": {
-                                            "kg_id": "5", 
+                                            "kg_id": "5",
                                             "fields": ["orgnization", "person", "district"]
                                         },
                                         "action": "get_schema"
@@ -526,5 +524,7 @@ class Text2nGQLTool():
                 }
             }
         }
+
+
 if __name__ == '__main__':
     pass

@@ -15,11 +15,10 @@ from fastapi import APIRouter, FastAPI  # noqa: E402
 from data_retrieval.tools.registry import BASE_TOOLS_MAPPING, ALL_TOOLS_MAPPING  # noqa: E402
 
 
-
-
 _BASE_TOOLS_MAPPING = BASE_TOOLS_MAPPING
 
-class BaseToolAPIRouter(APIRouter): 
+
+class BaseToolAPIRouter(APIRouter):
     name: str = "基础结构化数据分析工具箱"
     description: str = "支持对结构话数据进行处理的工具箱"
 
@@ -29,10 +28,9 @@ class BaseToolAPIRouter(APIRouter):
 
         if not self.tools_mapping:
             self.tools_mapping = _BASE_TOOLS_MAPPING
-        
+
         self._init_tools()
 
-    
     def add_tool(self, tool_name: str, tool_cls):
         if hasattr(tool_cls, "as_async_api_cls"):
             self.add_api_route(
@@ -50,20 +48,19 @@ class BaseToolAPIRouter(APIRouter):
     def _init_tools(self):
         for tool_name, tool_cls in self.tools_mapping.items():
             self.add_tool(tool_name, tool_cls)
-        
+
         self.add_api_route(
             path="/docs",
             endpoint=self.get_api_docs,
             methods=["GET"]
         )
 
-
     async def get_api_docs(self, server_url: str = "http://data-retrieval:9100"):
         """获取工具的API文档, 符合OpenAPI 3.0规范
         Parameters:
             server_url: 服务地址
             tools: 工具列表, 为空时返回所有工具的API文档
-        Returns: 
+        Returns:
             符合OpenAPI 3.0规范的API文档
         """
         tools = list(self.tools_mapping.keys())
@@ -89,14 +86,14 @@ class BaseToolAPIRouter(APIRouter):
             ],
             "paths": {}
         }
-        
+
         for tool_name in tools:
             schemas["paths"][f"{self.prefix}/{tool_name}"] = await self.tools_mapping[tool_name].get_api_schema()
-        
+
         # schemas["paths"][f"{self.prefix}/result"] = await self.get_tool_result_schema()
 
         return schemas
-    
+
 
 # class SandboxToolAPIRouter(BaseToolAPIRouter):
 #     name: str = "沙箱环境工具箱"
@@ -126,7 +123,7 @@ DEFAULT_APP = create_app()
 
 if __name__ == "__main__":
     import uvicorn
-    
+
     router = BaseToolAPIRouter(prefix="/tools", tools_mapping=ALL_TOOLS_MAPPING)
     # sandbox_router = SandboxToolAPIRouter(prefix="/sandbox_tools")
     # router.include_router(sandbox_router)

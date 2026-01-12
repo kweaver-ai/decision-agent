@@ -44,8 +44,8 @@ class ModelManagerService(object):
         req = {"model": model, "messages": messages, "stream": True}
 
         headers = {
-            "content_type": "application/json", 
-            "x-account-id": account_id, 
+            "content_type": "application/json",
+            "x-account-id": account_id,
             "x-account-type": account_type,
 
             "x-user": account_id,  # 兼容旧版本
@@ -153,8 +153,8 @@ class ModelManagerService(object):
         """
         req = {"model": model, "messages": messages, "stream": False}
         headers = {
-            "content_type": "application/json", 
-            "x-account-id": account_id, 
+            "content_type": "application/json",
+            "x-account-id": account_id,
             "x-account-type": account_type,
 
             "x-user": account_id,  # 兼容旧版本
@@ -227,7 +227,6 @@ class ModelManagerService(object):
             account_type=account_type,
         )
         return res.get("content") or ""
-
 
 
 model_manager_service = ModelManagerService()

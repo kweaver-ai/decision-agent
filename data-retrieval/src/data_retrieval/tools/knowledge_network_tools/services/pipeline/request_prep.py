@@ -57,5 +57,3 @@ def normalize_retrieval_config(retrieval_config: Optional[Any]) -> RetrievalConf
         return retrieval_config
     # 容错：让上游尽早报错
     raise TypeError(f"retrieval_config 类型不支持: {type(retrieval_config)}")
-
-

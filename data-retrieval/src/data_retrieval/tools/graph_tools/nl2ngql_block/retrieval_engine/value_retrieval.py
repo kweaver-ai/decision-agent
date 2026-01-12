@@ -9,7 +9,6 @@ from data_retrieval.tools.graph_tools.common.config import Config
 from data_retrieval.tools.graph_tools.utils.opensearch import OpenSearchConnector
 
 
-
 class VectorRetrieval:
     def __init__(self, params):
         # 初始化向量检索算法，例如LSH
@@ -48,9 +47,9 @@ class VectorRetrieval:
         StandLogger.info("embedding_url:{}".format(self.embedding_url))
         StandLogger.info("关键词检索text:{}".format(text))
         pyload = {
-                "model": "embedding",
-                "input": [text.strip()]
-            }
+            "model": "embedding",
+            "input": [text.strip()]
+        }
         retrieval_values = {}
         # 问题编码
         # 问题编码
@@ -104,7 +103,6 @@ class VectorRetrieval:
                 response = await session.post(url=search_url, json=requests_body, ssl=False)
                 results = await response.json()
 
-            
             if results and results.get("hits"):
                 results["hits"]["max_score"]
                 for hit in results["hits"]["hits"]:
@@ -143,13 +141,14 @@ class VectorRetrieval:
 
         # print(float_results)
 
+
 class BaseValueRetrieval:
     """
     只做关键词检索
     """
+
     def __init__(self, params):
         self.vector_retrieval = VectorRetrieval(params)
-
 
     async def retrieval(self, intermediate_result, keywords):
         self.schema = intermediate_result.schema
@@ -166,7 +165,8 @@ class BaseValueRetrieval:
             keywords = [intermediate_result.query]
         retrieve_results = await self.vector_retrieval.retrieval(intermediate_result, keywords)
         return retrieve_results
-    
+
+
 class ValueRetrieval:
     def __init__(self, params):
         self.vector_retrieval = VectorRetrieval(params)

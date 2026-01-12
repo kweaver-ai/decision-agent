@@ -15,6 +15,7 @@ from langchain_core.messages import AIMessage
 from data_retrieval.sessions.base import BaseChatHistorySession
 from data_retrieval.logs.logger import logger
 
+
 class InMemoryChatSession(BaseChatHistorySession):
     _instance = None
 
@@ -40,7 +41,8 @@ class InMemoryChatSession(BaseChatHistorySession):
         while True:
             time.sleep(600)  # 每10分钟清理一次
             now = time.time()
-            expired_history = [sid for sid, (_, ts) in self.message_history_session.items() if now - ts > expire_seconds]
+            expired_history = [sid for sid, (_, ts) in self.message_history_session.items()
+                               if now - ts > expire_seconds]
             expired_logs = [sid for sid, (_, ts) in self.agent_logs.items() if now - ts > expire_seconds]
             for sid in expired_history:
                 logger.info(f"clean expired chat history: {sid}")
@@ -49,7 +51,6 @@ class InMemoryChatSession(BaseChatHistorySession):
             for sid in expired_logs:
                 logger.info(f"clean expired agent logs: {sid}")
                 self.agent_logs.pop(sid, None)
-
 
     def add_chat_history(
         self,

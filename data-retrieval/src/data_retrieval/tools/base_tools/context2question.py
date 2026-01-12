@@ -64,9 +64,9 @@ class Context2QuestionTool(LLMTool):
             description=description,
             *args, **kwargs
         )
-    
+
     def _pre_run(
-        self, 
+        self,
         context: List
     ):
         if not context or len(context) == 0:
@@ -131,7 +131,7 @@ class Context2QuestionTool(LLMTool):
         text, prompt = self._pre_run(context)
         if prompt is None:
             return text
-        
+
         logger.debug(f"context2question -> text: {text}")
 
         chain = prompt | self.llm | JsonOutputParser()
@@ -141,7 +141,8 @@ class Context2QuestionTool(LLMTool):
             await run_manager.on_text("总结完成")
 
         return question
-    
+
+
 def chat_history_to_question(
     llm: Any,
     question: str,
@@ -174,6 +175,7 @@ def chat_history_to_question(
         new_question = question
 
     return new_question
+
 
 async def achat_history_to_question(
     llm: Any,
@@ -211,7 +213,7 @@ async def achat_history_to_question(
         new_question = question
 
     return new_question
-    
+
 
 if __name__ == "__main__":
     # from langchain_openai import ChatOpenAI

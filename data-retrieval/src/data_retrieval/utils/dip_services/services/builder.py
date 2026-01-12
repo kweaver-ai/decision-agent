@@ -17,7 +17,7 @@ class Builder(Service):
     """ Builder Service
     """
     builder_url: str = ""
-    
+
     alive_url: str = ""
     kgids_url: str = ""
     kgidname_url: str = ""
@@ -28,17 +28,15 @@ class Builder(Service):
 
     def __init__(self, addr="", headers={}, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+
         self._setup_connection(addr, headers)
         self._gen_api_url()
-
-
 
     def _setup_connection(self, addr, headers):
         """设置连接配置"""
         if self.conn is not None:
             return  # 如果已经设置了连接，直接返回
-        
+
         if not addr:
             if self.type.lower() == ServiceType.AD.value:
                 addr = settings.AD_GATEWAY_URL
@@ -58,14 +56,14 @@ class Builder(Service):
             ServiceType.DIP.value: "/api/kn-knowledge-data/v0"
         }
         self.builder_url = url_mapping.get(self.type, "/api/kn-knowledge-data/v0")
-        
+
         self.conn = ConnectionData(addr=addr, headers=headers)
 
     def _gen_api_url(self):
         # 3.0.0.1 版本需要加 Open
         if self.version == VER_3_0_0_1:
             self.builder_url = self.builder_url + "/open"
-        
+
         self.alive_url = self.builder_url + "/health/ready"
         self.kgids_url: str = self.builder_url + "/knw/get_graph_by_knw"
         self.kgidname_url: str = self.builder_url + "/graph/info/basic"
@@ -76,7 +74,6 @@ class Builder(Service):
         self.kg_info_url: str = self.builder_url + "/graph/{kg_id}"
 
         self.download_lexicon_url: str = self.builder_url + "/lexicon/download"
-            
 
     def test_connet(self) -> bool:
         """test connection for builder service
@@ -244,6 +241,7 @@ class Builder(Service):
             return res
         except DIPServiceError as e:
             raise BuilderError(e) from e
+
     def get_kg_info_na(self, kg_id: str) -> dict:
         """get knowledge graph info by knowledge graph ID
 
@@ -269,6 +267,7 @@ class Builder(Service):
             return res
         except DIPServiceError as e:
             raise BuilderError(e) from e
+
     def download_lexicon(self, lexicon_id: int, timeout=30) -> dict:
         """download lexicon by lexicon ID
 
@@ -369,11 +368,11 @@ if __name__ == "__main__":
             print("✅ get_kg_info_na 成功")
             print("完整响应:")
             print(json.dumps(res, indent=4, ensure_ascii=False))
-            
+
             mapping_info = res.get("res", {}).get("graph_KMap", {})
             print("\nmapping_info 内容:")
             print(json.dumps(mapping_info, indent=4, ensure_ascii=False))
-            
+
             print("=== 同步测试完成 ===")
             return True
         except Exception as e:
@@ -385,7 +384,7 @@ if __name__ == "__main__":
     async def main():
         try:
             print("=== 异步测试开始 ===")
-            
+
             # res = builder_service.test_connet()
             # print(res)
 
@@ -406,7 +405,7 @@ if __name__ == "__main__":
             print("✅ get_graph_ontology_by_id 成功")
             print("完整响应:")
             print(json.dumps(res, indent=4, ensure_ascii=False))
-            
+
             # 强制刷新并等待
             sys.stdout.flush()
             await asyncio.sleep(0.1)
@@ -416,11 +415,11 @@ if __name__ == "__main__":
             print("✅ get_kg_info 成功")
             print("完整响应:")
             print(json.dumps(res, indent=4, ensure_ascii=False))
-            
+
             mapping_info = res.get("res", {}).get("graph_KMap", {})
             print("\nmapping_info 内容:")
             print(json.dumps(mapping_info, indent=4, ensure_ascii=False))
-            
+
             # 强制刷新并等待
             sys.stdout.flush()
             await asyncio.sleep(0.1)
@@ -429,7 +428,7 @@ if __name__ == "__main__":
             # print(res)
             # res = await builder_service.download_lexicon_async(112)
             # print(res)
-            
+
             print("\n=== 异步测试完成 ===")
 
         except DIPServiceError as e:
@@ -447,10 +446,10 @@ if __name__ == "__main__":
     # 先运行同步测试
     print("开始同步测试...")
     sync_success = test_sync()
-    
+
     # 等待一下确保输出完成
     time.sleep(1)
-    
+
     # 再运行异步测试
     print("\n开始异步测试...")
     try:
@@ -461,7 +460,7 @@ if __name__ == "__main__":
         print(f"异步程序运行异常: {e}")
         import traceback
         traceback.print_exc()
-    
+
     # 最后等待确保所有输出都完成
     print("\n程序结束，等待输出完成...")
     time.sleep(2)

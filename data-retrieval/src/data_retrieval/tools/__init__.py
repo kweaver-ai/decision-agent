@@ -13,7 +13,7 @@ from data_retrieval.tools.base import (
 )
 
 __all__ = [
-    "Json2Plot", 
+    "Json2Plot",
     "Text2MetricTool",
     "Text2SQLTool",
     "AfSailorTool",

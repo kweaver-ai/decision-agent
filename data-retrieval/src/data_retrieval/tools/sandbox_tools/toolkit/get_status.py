@@ -16,7 +16,7 @@ class GetStatusInput(BaseSandboxToolInput):
 
 class GetStatusTool(BaseSandboxTool):
     """获取状态工具，获取沙箱环境的当前状态"""
-    
+
     name: str = "get_status"
     description: str = "获取沙箱环境的当前状态信息"
     args_schema: type[BaseSandboxToolInput] = GetStatusInput
@@ -33,7 +33,7 @@ class GetStatusTool(BaseSandboxTool):
         except Exception as e:
             logger.error(f"Get status failed: {e}")
             raise SandboxError(reason="获取状态失败", detail=str(e)) from e
-    
+
     @async_construct_final_answer
     async def _arun(
         self,
@@ -54,11 +54,11 @@ class GetStatusTool(BaseSandboxTool):
         except Exception as e:
             logger.error(f"Get status failed: {e}")
             raise SandboxError(reason="获取状态失败", detail=str(e)) from e
-    
+
     async def _get_status(self) -> dict:
         """执行具体的状态获取操作"""
         sandbox = self._get_sandbox()
-        
+
         try:
             result = await sandbox.get_status()
             return {
@@ -76,10 +76,10 @@ class GetStatusTool(BaseSandboxTool):
         base_schema = await BaseSandboxTool.get_api_schema()
         base_schema["post"]["summary"] = "get_status"
         base_schema["post"]["description"] = "获取沙箱环境的当前状态信息"
-        
+
         # 更新请求体 schema - 不需要额外参数
         base_schema["post"]["requestBody"]["content"]["application/json"]["schema"]["required"] = []
-        
+
         # 添加示例
         base_schema["post"]["requestBody"]["content"]["application/json"]["examples"] = {
             "get_sandbox_status": {
@@ -91,5 +91,5 @@ class GetStatusTool(BaseSandboxTool):
                 }
             }
         }
-        
-        return base_schema 
+
+        return base_schema

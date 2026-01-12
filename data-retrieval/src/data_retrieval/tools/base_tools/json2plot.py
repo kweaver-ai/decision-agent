@@ -18,12 +18,14 @@ from data_retrieval.tools.base import api_tool_decorator
 
 from fastapi import FastAPI, HTTPException, Body
 
+
 class ChartType(str, Enum):
     PIE = "Pie"
     LINE = "Line"
     COLUMN = "Column"
 
-_CHART_TYPE_DICT ={
+
+_CHART_TYPE_DICT = {
     "Pie": ChartType.PIE,
     "pie": ChartType.PIE,
     "饼图": ChartType.PIE,
@@ -59,7 +61,7 @@ class LineChartSchema(BaseModel):
     def from_df(cls, metric_col: str, group_by: List[str]):
         if len(group_by) == 0:
             raise Json2PlotError(f"{ChartType.LINE} 分组字段为空")
-        
+
         series_field = ""
         if len(group_by) >= 2:
             series_field = group_by[1]
@@ -85,7 +87,8 @@ class ColumnChatrSchema(LineChartSchema):
             group_field = group_by[2]
             isStack = True
 
-        return cls(xField=group_by[0], yField=metric_col, seriesField=series_field, groupField=group_field, isStack=isStack, isGroup=isGroup)
+        return cls(xField=group_by[0], yField=metric_col, seriesField=series_field,
+                   groupField=group_field, isStack=isStack, isGroup=isGroup)
 
 
 class PieChartSchema(BaseModel):
@@ -109,9 +112,11 @@ class ArgsModel(BaseModel):
 - 对于柱状图, group_by 可能有1~3个值, 第一个是 x 轴, 第二个字段是 堆叠, 第三个字段是 分组, data_field 是 y 轴
 - 对于饼图, group_by 只有一个值, 即 colorField, data_field 是 angleField
 """))
-    data: List[Dict[str, Any]] = Field(default=[], description="用于作图的 JSON 数据，与 tool_result_cache_key 参数不能同时设置, 如果 tool_result_cache_key 为空, 才是用")
+    data: List[Dict[str, Any]] = Field(
+        default=[], description="用于作图的 JSON 数据，与 tool_result_cache_key 参数不能同时设置, 如果 tool_result_cache_key 为空, 才是用")
     data_field: str = Field(default="", description="数据字段，注意设置的 group_by 和 data_field 必须和数据匹配，不要自己生成，如果数据中没有，可以询问用户")
-    tool_result_cache_key: str = Field(default="", description=f"{ToolName.from_text2metric.value} 或 {ToolName.from_text2sql.value}工具缓存 key, 其他工具的结果没有意义，key 是一个字符串, 与 data 不能同时设置")
+    tool_result_cache_key: str = Field(
+        default="", description=f"{ToolName.from_text2metric.value} 或 {ToolName.from_text2sql.value}工具缓存 key, 其他工具的结果没有意义，key 是一个字符串, 与 data 不能同时设置")
 
 
 _SCHEMA = {
@@ -126,6 +131,7 @@ _TOOL_DESCS = dedent(f"""根据绘图参数生成用于前端展示的 JSON 对�
 
 **注意：**
 - 你拿到结果后, 不需要给用户展示这个 JSON 对象, 前端会自动画图""")
+
 
 class Json2Plot(AFTool):
     name: str = ToolName.from_json2plot.value
@@ -149,7 +155,7 @@ class Json2Plot(AFTool):
         tool_result_cache_key: str = "",
         **kwargs
     ) -> Any:
-        
+
         plot_json = {}
         if self.session:
             tool_res = self.session.get_agent_logs(
@@ -168,13 +174,14 @@ class Json2Plot(AFTool):
         #     plot_json = json.dumps(plot_json, ensure_ascii=False)
 
         return plot_json
-    
-    def _get_config(self, chart_type: ChartType, group_by: List[str], metric_col: str, df: pd.DataFrame)->tuple[dict, str]:
+
+    def _get_config(self, chart_type: ChartType, group_by: List[str],
+                    metric_col: str, df: pd.DataFrame) -> tuple[dict, str]:
         text = ""
         for dim in group_by + [metric_col]:
             if dim not in df.columns:
                 raise Json2PlotError(f"配置字段与实际数据不匹配: {dim}，请告诉用户绘图失败")
-            
+
         for col in df.columns:
             if col not in group_by + [metric_col]:
                 text += f"数据中存在未使用的字段: {col}，可能出现绘图异常"
@@ -184,11 +191,11 @@ class Json2Plot(AFTool):
 
         if chart_type not in _CHART_TYPE_DICT:
             raise Json2PlotError(f"不支持的图表类型: {chart_type}，请重新生成配置")
-        
+
         chart_schema = _SCHEMA[chart_type]
 
         return chart_schema.from_df(metric_col, group_by), text
-    
+
     def _choose_date_col(self, df: pd.DataFrame) -> str:
         pass
 
@@ -199,7 +206,7 @@ class Json2Plot(AFTool):
         plot_json = self._get_data(**kwargs)
         # df = pd.read_json(StringIO(plot_json), orient="records")
         df = pd.DataFrame(plot_json)
-        
+
         # Rules:
         # 1. last column is always metric
         # 2. if there is only one column, we need to add a new column self increasing
@@ -224,7 +231,7 @@ class Json2Plot(AFTool):
         if not pd.api.types.is_numeric_dtype(df[metric_col]):
             df[metric_col] = pd.to_numeric(df[metric_col], errors="coerce")
             df = df.dropna(subset=[metric_col])
-        
+
         config, text = self._get_config(chart_type, kwargs["group_by"], metric_col, df)
 
         config = config.dict()
@@ -310,12 +317,13 @@ class Json2Plot(AFTool):
                             "chart_config": tool_res["chart_config"]
                         }
                     })
-                
+
                 ans_multiple.cache_keys[self._result_cache_key] = {
                     "title": tool_res.get("title", "json2plot"),
                     "tool_name": "json2plot",
                     "chart_config": tool_res.get("chart_config", {}),
                 }
+
     @classmethod
     @api_tool_decorator
     async def as_async_api_cls(
@@ -325,18 +333,18 @@ class Json2Plot(AFTool):
         mode: str = "http"
     ):
         tool = cls(
-            session_id=params.get("session_id", ""), 
+            session_id=params.get("session_id", ""),
             session_type=params.get("session_type", "redis"),
             api_mode=True
         )
-        
+
         res = await tool.ainvoke(input=params)
         return res
 
     @staticmethod
     async def get_api_schema():
         inputs = {
-            "title": "2024年1月1日到2024年1月3日，每天的销售额", 
+            "title": "2024年1月1日到2024年1月3日，每天的销售额",
             "chart_type": "Line",
             "group_by": ["报告时间(按年)"],
             "data_field": "营收收入指标",
@@ -510,10 +518,10 @@ if __name__ == "__main__":
 
     async def main():
         tool = Json2Plot(session_id="123", session_type="in_memory")
-        
+
         # 原有的测试用例
         result1 = await tool.ainvoke({
-            "title": "2024年1月1日到2024年1月3日，每天的销售额", 
+            "title": "2024年1月1日到2024年1月3日，每天的销售额",
             "last_tool_name": "text2metric",
             "group_by": ["报告时间(按年)"],
             "chart_type": "Line",
@@ -568,7 +576,7 @@ if __name__ == "__main__":
         })
 
         result2 = await tool._arun(
-            title="2024年1月1日到2024年1月3日，每天的销售额", 
+            title="2024年1月1日到2024年1月3日，每天的销售额",
             chart_type="Line",
             group_by=["报告时间(按年)"],
             data_field="营收收入指标",
@@ -577,10 +585,10 @@ if __name__ == "__main__":
             ],
             last_tool_name=""
         )
-        
+
         # 新增只有一列数据的测试用例
         result3 = await tool.ainvoke({
-            "title": "测试单列数据", 
+            "title": "测试单列数据",
             "chart_type": "Pie",
             "group_by": [],
             "last_tool_name": "",
@@ -592,7 +600,7 @@ if __name__ == "__main__":
                 {"销售额": 250}
             ]
         })
-        
+
         print("测试用例1结果:", json.loads(result1))
         print("\n测试用例2结果:", json.loads(result2))
         print("\n测试用例3结果:", json.loads(result3))
@@ -617,4 +625,3 @@ if __name__ == "__main__":
             return result
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
-

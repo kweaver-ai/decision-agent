@@ -11,6 +11,7 @@ from nebula3.Config import Config
 from typing import List
 import re
 
+
 class NebulaGraph(object):
     """
     Nebula Graph Database Connect and Search API
@@ -144,9 +145,9 @@ if __name__ == "__main__":
 
     # Nebula
     nebula_connector = NebulaGraph(ips=["10.4.133.84"],
-                                       ports=["9669"],
-                                       user="root",
-                                       password="nebula")
+                                   ports=["9669"],
+                                   user="root",
+                                   password="nebula")
 
     res = asyncio.run(nebula_connector.get_vertex_by_id(space="u895e892cc85a11ed8fcb9256262ff8e2-64",
                                                         vids=['00b566b558e51c373c4d2dbc75c51be5']))

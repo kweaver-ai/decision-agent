@@ -199,5 +199,3 @@ class _SemanticNodesMixin(_SessionBase):
             seen_local.add(k)
             out.append(n)
         return out
-
-

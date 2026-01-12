@@ -9,5 +9,3 @@ This package provides:
 Transport/server implementation is intentionally kept separate so you can plug in
 any MCP Python SDK (stdio, http, etc.) without changing tool logic.
 """
-
-

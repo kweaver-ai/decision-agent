@@ -27,7 +27,7 @@ keyword_schema = {
                     'partial_values': ['王磊', '李蓉', '余双军', '潘月梅', '靳慧慧']
                 }]
         },
-		{
+        {
             'name': 'orgnization',
             'alias': '部门',
             'props': [{

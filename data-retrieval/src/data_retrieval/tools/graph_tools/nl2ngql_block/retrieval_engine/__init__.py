@@ -1,2 +1,3 @@
-from .retriever import RetrievalEngine as RetrievalEngine
-from .retriever import BaseRetrievalEngine as BaseRetrievalEngine
+from .retriever import RetrievalEngine, BaseRetrievalEngine
+
+__all__ = ["RetrievalEngine", "BaseRetrievalEngine"]

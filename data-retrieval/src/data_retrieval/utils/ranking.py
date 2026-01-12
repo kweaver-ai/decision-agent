@@ -6,7 +6,7 @@
 # 融合方式支持两种：
 # 1. z-score，(得分 - 均值) / 中位数, 再通过加权方式进行融合
 # 2. RRF，根据得分排名进行融合 E[1/(k+rank)], 相当于排名贡献度
-# 
+#
 # 解决 BM25 召回的问题：例如文档库中可能存在长短文本的情况，通过调和算法来进行融合
 # 1. 分别短文本召回算法 Okapi 与 BM25L 值
 # 2. 计算文档长度归一化，根据文档长度归一化计算权重, 越长的文本惩罚力度越大，避免更多的命中导致得分过高
@@ -85,13 +85,15 @@ CN_STOPWORDS = {
 def skip_bigrams(s: str, skip: int = 1) -> List[str]:
     """连续 bigram + 跳字 bigram（skip=1 生成家电、用器等）"""
     s = re.sub(r"\s+", "", s)
-    grams = [s[i:i+2] for i in range(len(s)-1)]  # 连续
+    grams = [s[i:i + 2] for i in range(len(s) - 1)]  # 连续
     if skip >= 1 and len(s) >= 3:
-        grams += [s[i] + s[i+2] for i in range(len(s)-2)]  # 跳1
+        grams += [s[i] + s[i + 2] for i in range(len(s) - 2)]  # 跳1
     # 如需更激进，可再加跳2： s[i]+s[i+3]（注意爆炸）
     return grams
 
 # 分词
+
+
 def tokenize(
     text: str,
     keep_unigram: bool = True,
@@ -112,7 +114,7 @@ def tokenize(
         if re.match(r"[\u4e00-\u9fff]", p):
             # 分词
             words = list(jieba.cut_for_search(p))
-            
+
             # unigram
             unigrams = list(p) if keep_unigram else []
 
@@ -121,11 +123,11 @@ def tokenize(
             if use_bigram or use_skip_bigram:
                 # 连续 bigram
                 if use_bigram and len(p) > 1:
-                    grams += [p[i:i+2] for i in range(len(p)-1)]
+                    grams += [p[i:i + 2] for i in range(len(p) - 1)]
                 # 跳字 bigram（关键：能得到 “家电”）
                 if use_skip_bigram and len(p) > 2:
-                    grams += [p[i] + p[i+2] for i in range(len(p)-2)]
-                    
+                    grams += [p[i] + p[i + 2] for i in range(len(p) - 2)]
+
             words_list = list(dict.fromkeys(words + grams + unigrams))
             if use_stop_words:
                 words_list = [word for word in words_list if word not in CN_STOPWORDS]
@@ -135,6 +137,8 @@ def tokenize(
     return tokens
 
 # BM25 索引类
+
+
 class KVAdaptiveBM25:
     """
     k-v 结构 BM25 索引:
@@ -144,15 +148,16 @@ class KVAdaptiveBM25:
       - "bm25l"    : BM25L
       - "adaptive" : Okapi 与 BM25L 按文档长度加权融合
     """
+
     def __init__(
-            self,
-            k1=1.5,
-            b=0.75,
-            delta=0.5,
-            tokenizer=tokenize,
-            force_retrieval_keys: List[str] = [],
-            use_stop_words: bool = True
-        ):
+        self,
+        k1=1.5,
+        b=0.75,
+        delta=0.5,
+        tokenizer=tokenize,
+        force_retrieval_keys: List[str] = [],
+        use_stop_words: bool = True
+    ):
         self.k1, self.b, self.delta = k1, b, delta
         self.tokenizer = tokenizer
         self.keys: List[str] = []
@@ -196,7 +201,7 @@ class KVAdaptiveBM25:
             scores = self.l_.get_scores(q)
         elif mode == "adaptive":
             s_ok = self.ok.get_scores(q)
-            s_l  = self.l_.get_scores(q)
+            s_l = self.l_.get_scores(q)
             w = self.len_norm
             scores = (1 - w) * s_ok + w * s_l
         else:
@@ -252,14 +257,15 @@ def topk_indices(scores, k):
     idx_sorted = idx_part[np.argsort(s[idx_part], kind="stable")[::-1]]
     return idx_sorted
 
+
 class VectorIndex:
     def __init__(
-            self, 
-            embedding_service: BaseEmbeddingsService,
-            force_retrieval_keys: List[str] = [],
-            similarity_func: callable = cosine_similarity,
-            batch_size: int = 64
-        ):
+        self,
+        embedding_service: BaseEmbeddingsService,
+        force_retrieval_keys: List[str] = [],
+        similarity_func: callable = cosine_similarity,
+        batch_size: int = 64
+    ):
         self.embedding_service = embedding_service
         self.force_retrieval_keys = force_retrieval_keys
         self.batch_size = batch_size
@@ -275,8 +281,8 @@ class VectorIndex:
             start_time = time.time()
             futures = []
             for i in range(0, len(self._doc_texts), self.batch_size):
-                batch_texts = self._doc_texts[i:i+self.batch_size]
-                batch_ids = self._doc_ids[i:i+self.batch_size]
+                batch_texts = self._doc_texts[i:i + self.batch_size]
+                batch_ids = self._doc_ids[i:i + self.batch_size]
                 if batch_texts:  # 确保批次不为空
                     futures.append(
                         executor.submit(
@@ -290,7 +296,7 @@ class VectorIndex:
                 doc_vecs = future.result()
                 for doc_id, doc_vec in doc_vecs:
                     self._doc_vecs.append((doc_id, doc_vec))
-            
+
             end_time = time.time()
             logger.info(f"VectorIndex build time: {end_time - start_time} seconds")
 
@@ -305,8 +311,8 @@ class VectorIndex:
         batch_size = self.batch_size
         tasks = []
         for i in range(0, len(self._doc_texts), batch_size):
-            batch_texts = self._doc_texts[i:i+batch_size]
-            batch_ids = self._doc_ids[i:i+batch_size]
+            batch_texts = self._doc_texts[i:i + batch_size]
+            batch_ids = self._doc_ids[i:i + batch_size]
             if batch_texts:  # 确保批次不为空
                 task = self.embedding_service.aembed_texts_with_idx(batch_texts, batch_ids)
                 tasks.append(task)
@@ -395,7 +401,7 @@ def zscore(
     ids, arr = [v[0] for v in values], np.array([v[1] for v in values], dtype=float)
 
     if clip_pct > 0:
-        lo, hi = np.percentile(arr, [100*clip_pct, 100*(1-clip_pct)])
+        lo, hi = np.percentile(arr, [100 * clip_pct, 100 * (1 - clip_pct)])
         arr = np.clip(arr, lo, hi)
 
     # 1.4268 是稳健 z-score 的中位值绝对偏差
@@ -411,6 +417,8 @@ def zscore(
     return {i: float(v) for i, v in zip(ids, z)}
 
 # ---------- 融合一：加权 z-score ----------
+
+
 def fuse_weighted_z(
     bm25_scores: List[Tuple[str, float]],
     vec_scores: List[Tuple[str, float]],
@@ -425,7 +433,7 @@ def fuse_weighted_z(
     """
     # 分别做 z-score（这里默认用稳健 z）
     z_bm25 = zscore(bm25_scores, robust=True)
-    z_vec  = zscore(vec_scores,  robust=True)
+    z_vec = zscore(vec_scores, robust=True)
 
     # 合并文档集合
     all_ids = set(z_bm25) | set(z_vec)
@@ -433,7 +441,7 @@ def fuse_weighted_z(
     fused_list = []
     for did in all_ids:
         zb = z_bm25.get(did, missing_fill)
-        zv = z_vec.get(did,  missing_fill)
+        zv = z_vec.get(did, missing_fill)
         fused = w_bm25 * zb + w_vec * zv
         fused_list.append((did, fused, zb, zv))
 
@@ -466,8 +474,8 @@ def fuse_rrf(
         # rv = r_v.get(did, 10**9)
         rb = r_b.get(did, 1000)
         rv = r_v.get(did, 1000)
-        rrf = 1.0/(k + rb) + 1.0/(k + rv)
-        out.append((did, rrf, rb if rb<1000 else -1, rv if rv<1000 else -1))
+        rrf = 1.0 / (k + rb) + 1.0 / (k + rv)
+        out.append((did, rrf, rb if rb < 1000 else -1, rv if rv < 1000 else -1))
 
     out.sort(key=lambda x: x[1], reverse=True)
     return out
@@ -475,18 +483,17 @@ def fuse_rrf(
 
 class HybridRetriever:
     def __init__(
-            self,
-            emb_service: BaseEmbeddingsService,
-            corpus_kv: Dict[str, str],
-            force_retrieval_keys: List[str] = []
-        ):
+        self,
+        emb_service: BaseEmbeddingsService,
+        corpus_kv: Dict[str, str],
+        force_retrieval_keys: List[str] = []
+    ):
         self.bm25_idx = KVAdaptiveBM25(force_retrieval_keys=force_retrieval_keys)
         self.vec_idx = VectorIndex(emb_service, force_retrieval_keys=force_retrieval_keys)
         self.fuse_func = fuse_rrf
         self.corpus_kv = corpus_kv
         self.force_retrieval_keys = force_retrieval_keys
 
-       
     def build(self):
         start_time = time.time()
         self.bm25_idx.build(self.corpus_kv)
@@ -521,7 +528,8 @@ class HybridRetriever:
         logger.info(f"HybridRetriever search time: {end_time - start_time} seconds")
         return results[:topk]
 
-    async def asearch(self, query: str, topk: int = 10, bm25mode="adaptive") -> Tuple[List[Tuple[str, float, int, int]]]:
+    async def asearch(self, query: str, topk: int = 10,
+                      bm25mode="adaptive") -> Tuple[List[Tuple[str, float, int, int]]]:
         """异步版本的 search 方法"""
         start_time = time.time()
         bm25_scores = await self.bm25_idx.asearch(query, topk * 2, mode=bm25mode)
@@ -566,7 +574,7 @@ if __name__ == "__main__":
     # for k, s in idx.search(q, topk=3, mode="adaptive"):
     #     print(k, s)
     from data_retrieval.utils.embeddings import EmbeddingServiceFactory
-    
+
     embedding = EmbeddingServiceFactory(
         embedding_type="model_factory",
         user_id="450dd110-5bba-11f0-b8d9-1688e6ea28e2",

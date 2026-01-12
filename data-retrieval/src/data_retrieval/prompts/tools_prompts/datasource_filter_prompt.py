@@ -75,4 +75,3 @@ class DataSourceFilterPrompt(BasePrompt):
         super().__init__(*args, **kwargs)
         now_time = datetime.now()
         self.current_date_time = now_time.strftime("%Y-%m-%d %H:%M:%S")
-

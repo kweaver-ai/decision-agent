@@ -20,7 +20,7 @@ class CogEngine(Service):
     """
     engine_url: str = "/api/engine/v1"
     cognitive_service_url: str = "/api/cognitive-service/v1/services/{service_id}"
-        
+
     alive_url: str = ""
 
     # 获取自定义认知服务的配置，先设置为空，后利用 _gen_api_url 初始化
@@ -34,7 +34,7 @@ class CogEngine(Service):
         self._set_engine_url()
         self._setup_connection(kwargs)
         self._gen_api_url()
-        
+
     def _set_engine_url(self):
         """根据服务类型设置 engine URL"""
         url_mapping = {
@@ -48,7 +48,7 @@ class CogEngine(Service):
         """设置连接配置"""
         if self.conn is not None:
             return  # 如果已经设置了连接，直接返回
-        
+
         if not addr:
             if self.type == ServiceType.AD.value:
                 addr = settings.AD_GATEWAY_URL
@@ -56,21 +56,21 @@ class CogEngine(Service):
                 addr = settings.OUTTER_DIP_URL
             else:
                 addr = settings.DIP_ENGINE_URL
-        
+
         self.conn = ConnectionData(addr=addr, headers=headers)
 
     def _gen_api_url(self):
         # 3.0.0.1 版本需要加 Open
         if self.version == VER_3_0_0_1:
             self.engine_url = self.engine_url + "/open"
-            
+
         self.alive_url: str = self.engine_url + "/health/ready"
 
         # 获取自定义认知服务的配置
         self.search_kg_url: str = self.engine_url + "/custom-search/kgs/{kg_id}"
         self.custom_search_service_url: str = self.engine_url + \
             "/custom-search/services/{service_id}"
-        
+
         self.opensearch_custom_search_url: str = self.engine_url + \
             "/opensearch/custom/"
 
@@ -184,8 +184,7 @@ class CogEngine(Service):
             return res
         except DIPServiceError as e:
             raise CogEngineError(e) from e
-    
-    
+
     async def a_opensearch_custom_search(
         self,
         params: List[dict],
@@ -199,7 +198,7 @@ class CogEngine(Service):
 
         Returns:
             dict: return result
-        
+
         Example:
             params = [
                 {
@@ -237,7 +236,7 @@ class CogEngine(Service):
             return res
         except DIPServiceError as e:
             raise CogEngineError(e) from e
-    
+
     async def a_opensearch_custom_search_by_kg_id(
         self,
         kg_id: str,
@@ -256,9 +255,9 @@ class CogEngine(Service):
         except Exception as e:
             raise CogEngineError(e) from e
 
-        res =  await self.a_opensearch_custom_search([params_for_ad], timeout=timeout)
+        res = await self.a_opensearch_custom_search([params_for_ad], timeout=timeout)
 
-        response = res.get("responses",[])
+        response = res.get("responses", [])
 
         if len(response) != 0:
             return response[0]
@@ -278,7 +277,7 @@ class CogEngine(Service):
 
         Returns:
             dict: return result
-        
+
         Example:
             params = [
                 {
@@ -316,7 +315,7 @@ class CogEngine(Service):
             return res
         except DIPServiceError as e:
             raise CogEngineError(e) from e
-    
+
     def opensearch_custom_search_by_kg_id(
         self,
         kg_id: str,
@@ -333,9 +332,9 @@ class CogEngine(Service):
         except Exception as e:
             raise CogEngineError(e) from e
 
-        res =  self.opensearch_custom_search([params_for_ad], timeout=timeout)
+        res = self.opensearch_custom_search([params_for_ad], timeout=timeout)
 
-        response = res.get("responses",[])
+        response = res.get("responses", [])
 
         if len(response) != 0:
             return response[0]
@@ -344,9 +343,6 @@ class CogEngine(Service):
 
 
 if __name__ == "__main__":
-    import json
-
-    from data_retrieval.utils.dip_services.base import ConnectionData
     connData = ConnectionData(
         addr="https://10.4.109.199:8444/",
         access_key="O4ydIe0EcxLLZHVdK0O"
@@ -401,7 +397,7 @@ if __name__ == "__main__":
                     {
                         "kg_id": "1668",
                         "query": "{\"query\": {\"terms\": {\"name.keyword\": [\"小白白\", \"销量\", \"小白白品牌\"]}}}",
-                        "tags":["salesdata"]
+                        "tags": ["salesdata"]
                     }
                 ]
             )
@@ -435,7 +431,7 @@ if __name__ == "__main__":
             {
                 "kg_id": "1668",
                 "query": "{\"query\": {\"terms\": {\"name.keyword\": [\"小白白\", \"销量\", \"小白白品牌\"]}}}",
-                "tags":["salesdata"]
+                "tags": ["salesdata"]
             }
         ]
     )

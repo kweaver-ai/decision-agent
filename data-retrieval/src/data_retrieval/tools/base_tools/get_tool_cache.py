@@ -13,8 +13,10 @@ import json
 
 _SETTINGS = get_settings()
 
+
 class GetToolCacheInput(BaseModel):
     cache_key: str = Field(..., description="工具缓存 key")
+
 
 class GetToolCacheTool(AFTool):
     """
@@ -47,7 +49,7 @@ class GetToolCacheTool(AFTool):
         """
         tool_res = self.session.get_agent_logs(cache_key)
         res_str = json.dumps(tool_res, ensure_ascii=False)
-        
+
         if len(res_str) > _SETTINGS.CACHE_SIZE_LIMIT:
             # 如果超过限制，则需要截取一部分, CACHE_SIZE_LIMIT 的 前 80% 和后 20%
             res_str = (
@@ -56,4 +58,3 @@ class GetToolCacheTool(AFTool):
                 res_str[-int(_SETTINGS.CACHE_SIZE_LIMIT * 0.2):]
             )
         return res_str
-

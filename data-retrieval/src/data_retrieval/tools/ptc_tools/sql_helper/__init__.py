@@ -9,4 +9,3 @@ PTC SQL Helper Tool
 from data_retrieval.tools.ptc_tools.sql_helper.sql_helper import SQLHelper
 
 __all__ = ["SQLHelper"]
-

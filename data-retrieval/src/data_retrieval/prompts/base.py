@@ -17,7 +17,7 @@ class BasePrompt(BaseModel, ABC):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+
     def custom_template(self) -> str:
         """Add some custom fields for the prompt
 
@@ -29,25 +29,24 @@ class BasePrompt(BaseModel, ABC):
 
         """
         return self.get_prompt(self.language)
-    
+
     @classmethod
     def get_name(cls) -> str:
         """Get the name of the prompt"""
-        if  cls.__fields__.get("name"):
+        if cls.__fields__.get("name"):
             return cls.__fields__.get("name").default
         else:
             return cls.__name__
-    
+
     @classmethod
     def get_prompt(cls, language=""):
         """Get the prompt"""
         if not language:
             return cls.__fields__.get("templates").default
-        
+
         if cls.__fields__.get("templates", {}):
             return cls.__fields__.get("templates").default.get(language, "")
         return ""
-        
 
     def render(self, remove_lines=True, escape_braces=False) -> str:
         """Render the prompt with Jinja2 template engine
@@ -68,8 +67,8 @@ class BasePrompt(BaseModel, ABC):
 
         for key in var_keys:
             if key in self.__dict__:
-                vars_to_render[key]= self.__dict__[key]
-        
+                vars_to_render[key] = self.__dict__[key]
+
         rendered = template.render(
             vars_to_render,
         )

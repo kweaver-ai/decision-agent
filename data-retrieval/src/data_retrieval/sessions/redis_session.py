@@ -36,6 +36,7 @@ class RedisHistorySession(BaseChatHistorySession):
         while '\\\"' in s:
             s = s.replace('\\\"', '\"')
         return s
+
     def get_history_num(
             self,
             session_id: str
@@ -80,7 +81,7 @@ class RedisHistorySession(BaseChatHistorySession):
                     if k == last_key_of_sort_history:
                         chat_message_history.add_message(AIMessage(v))
         chat_message_history.messages = chat_message_history.messages[-self.history_num_limit:]
-        
+
         idx, total_len = max(-self.history_num_limit, -len(chat_message_history.messages)), 0
 
         for i in range(-1, idx, -1):
@@ -88,9 +89,8 @@ class RedisHistorySession(BaseChatHistorySession):
             if total_len > self.history_max:
                 idx = i
                 break
-        
-        chat_message_history.messages = chat_message_history.messages[idx:]
 
+        chat_message_history.messages = chat_message_history.messages[idx:]
 
         # for message in chat_message_history.messages:
         #     if len(message.content) > self.history_max:
@@ -114,7 +114,7 @@ class RedisHistorySession(BaseChatHistorySession):
     ):
         session_id = "agent" + session_id
         # chat_message_history = self.get_history_num(session_id)
-        nums = str(self.get_history_num(session_id)+1)
+        nums = str(self.get_history_num(session_id) + 1)
         nums = (4 - len(nums)) * "0" + nums
         if types == "human":
             self.client.hset(session_id, f"{nums}:human", content)
@@ -134,7 +134,7 @@ class RedisHistorySession(BaseChatHistorySession):
     ) -> Any:
         self.client.setex(
             name=session_id,
-            time= 60 * 60 * 2,
+            time=60 * 60 * 2,
             value=json.dumps(logs, ensure_ascii=False),
         )
 
@@ -184,6 +184,8 @@ class RedisHistorySession(BaseChatHistorySession):
     ):
         """ empty"""
         pass
+
+
 class RedisConnect:
     def __init__(self):
         settings = get_settings()
@@ -197,6 +199,7 @@ class RedisConnect:
         self.sentinel_port = settings.REDIS_SENTINEL_PORT
         self.password = settings.REDIS_PASSWORD
         self.sentinel_password = settings.SENTINELPASS
+
     def connect(self):
         if self.redis_cluster_mode == "master-slave":
             pool = redis.ConnectionPool(

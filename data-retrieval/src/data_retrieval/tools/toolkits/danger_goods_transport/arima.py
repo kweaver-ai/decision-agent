@@ -2,7 +2,7 @@
 @File: calculator.py
 @Date: 2024-09-11
 @Author: Danny.gao
-@Desc: 
+@Desc:
 """
 
 import re
@@ -55,6 +55,7 @@ class ArimaInput(BaseModel):
     # datas: list = Field(description=_DESCS['datas']['cn'])
     input: str = Field(description=_DESCS["input"]["cn"])
 
+
 class ArimaTool(AFTool):
     name: str = ToolName.arima_prediction.value
     description: str = _DESCS['tool_description']['cn']
@@ -97,7 +98,8 @@ class ArimaTool(AFTool):
         has_day = ['day', '日', '天数', '天']
         load_time_list = ['load_time', '装货时间']
         unload_time_list = ['unload_time', '卸货时间']
-        sql = replace_(sql, year_list + has_quarter + month_list + week_list + has_day + load_time_list + unload_time_list)
+        sql = replace_(sql, year_list + has_quarter + month_list +
+                       week_list + has_day + load_time_list + unload_time_list)
 
         sql = re.sub(r'(AND|and) T\d.*."?rn"? = \d+''', r'', sql)
         sql = re.sub(r'(WHERE|where) T\d.*."?rn"? = \d+ (AND|and)', r'WHERE', sql)
@@ -107,7 +109,6 @@ class ArimaTool(AFTool):
         datas = self.text2sql_tool.data_source.query(sql)
         datas = format_table_datas(datas)
         return datas
-
 
     def str_to_date(self, time_str):
         year = datetime.strptime('2024年', '%Y年').year  # 提取年份
@@ -352,8 +353,8 @@ class ArimaTool(AFTool):
                 'redis_normal': redis_normal,
                 'explanation': explanation,
                 # 'fname': self.draw_data(datas=resid, fname='resid.png'),
-                'lb_test': self.check_lb_random(datas=resid, lags=len(resid)//2),
-                'resid_acf': self.draw_acf_pacf(datas=resid, lags=len(resid)//2, fname='resid_data.png')
+                'lb_test': self.check_lb_random(datas=resid, lags=len(resid) // 2),
+                'resid_acf': self.draw_acf_pacf(datas=resid, lags=len(resid) // 2, fname='resid_data.png')
             }
         except Exception as e:
             item = {
@@ -390,21 +391,20 @@ class ArimaTool(AFTool):
         time_series = dataframe.set_index(time_field)
         """ 2. 数据校验: ADF + LB """
         adf_res = self.check_adf_stable(datas=time_series)
-        lb_res = self.check_lb_random(datas=time_series, lags=len(time_series)//2)
+        lb_res = self.check_lb_random(datas=time_series, lags=len(time_series) // 2)
         season = self.check_season(datas=time_series, fname='season')
 
         """ 3. 模型拟合 """
         p, q = self._get_pq(datas=time_series)
         is_stable = True if 'is_stable' in adf_res and adf_res['is_stable'] else False
         d = 0 if is_stable else 1
-        model = ARIMA(time_series, order=(p,d,q)).fit()
+        model = ARIMA(time_series, order=(p, d, q)).fit()
 
         """ 4. 残差校验模型拟合能力 """
         resid_res = self.check_resid(resid=model.resid)
 
         """ 5. 模型预测 """
-        predictions = model.predict(1, len(time_series)+3)
-
+        predictions = model.predict(1, len(time_series) + 3)
 
         """ 6. 模型评价 """
         mae, rmse = self.evaluation(time_series.to_numpy(), predictions[:len(time_series)].to_numpy())
@@ -442,7 +442,7 @@ class ArimaTool(AFTool):
                     'rmse': rmse
                 }
             },
-            'time_field':time_field, 'value_field': value_field, 'sql': sql, 'cites': cites
+            'time_field': time_field, 'value_field': value_field, 'sql': sql, 'cites': cites
         }
 
         return final_res
@@ -510,7 +510,7 @@ class ArimaTool(AFTool):
         run_manager: Optional[AsyncCallbackManagerForToolRun] = None,
     ):
         return self._run(input=input)
-    
+
     def handle_result(
         self,
         log: Dict[str, Any],
@@ -548,5 +548,3 @@ if __name__ == '__main__':
     #     retry_times=2,
     #     # background='流向是指当沿路段上有货物运输时的方向'
     # )
-
-

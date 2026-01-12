@@ -33,8 +33,6 @@ from openai._types import Timeout
 import re
 
 
-
-
 # Deepseek need it, because it's output has <think></think> tag, that will
 # influence the result of agent
 def deal_think_tags(content):
@@ -51,6 +49,7 @@ def deal_think_tags(content):
         after_think = content
 
     return before_think, think_content, after_think
+
 
 class CustomChatOpenAI(ChatOpenAI):
     """
@@ -74,7 +73,7 @@ class CustomChatOpenAI(ChatOpenAI):
         # max_retries: int = DEFAULT_MAX_RETRIES,
         # default_headers: Mapping[str, str] | None = None,
         # default_query: Mapping[str, object] | None = None,
-        
+
         client_params = {
             "api_key": kwargs.get("openai_api_key"),
             "organization": kwargs.get("openai_organization"),
@@ -93,7 +92,6 @@ class CustomChatOpenAI(ChatOpenAI):
         }
 
         return client_params, http_params
-
 
     def __init__(self, *args, **kwargs):
         client_params, http_params = self._get_client_params(**kwargs)
@@ -122,7 +120,6 @@ class CustomChatOpenAI(ChatOpenAI):
         async_client = openai.AsyncOpenAI(**client_params, http_client=async_http_client).chat.completions
 
         super().__init__(client=client, async_client=async_client, *args, **kwargs)
-
 
     async def _astream(
         self,
@@ -162,7 +159,7 @@ class CustomChatOpenAI(ChatOpenAI):
             if run_manager:
                 await run_manager.on_llm_new_token(token=cg_chunk.text, chunk=cg_chunk)
             yield cg_chunk
-    
+
     def _create_chat_result(self, response) -> ChatResult:
         generations = []
         if not isinstance(response, dict):

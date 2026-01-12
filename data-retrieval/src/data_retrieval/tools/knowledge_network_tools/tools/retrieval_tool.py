@@ -61,10 +61,10 @@ from ..core.retrieval.semantic_instance_retrieval import SemanticInstanceRetriev
 
 class KnowledgeNetworkRetrievalTool:
     """基于知识网络的检索工具"""
-    
+
     def __init__(self):
         pass
-    
+
     @classmethod
     async def _fetch_sample_data_for_object_type(
         cls,
@@ -74,7 +74,7 @@ class KnowledgeNetworkRetrievalTool:
     ) -> Optional[Dict[str, Any]]:
         """兼容接口：委托到 `retrieval/sample_data.py`。"""
         return await fetch_sample_data_for_object_type(kn_id, object_type_id, headers)
-    
+
     @classmethod
     async def _fetch_all_sample_data(
         cls,
@@ -85,12 +85,12 @@ class KnowledgeNetworkRetrievalTool:
     ) -> Dict[str, Optional[Dict[str, Any]]]:
         """兼容接口：委托到 `retrieval/sample_data.py`。"""
         return await fetch_all_sample_data(kn_id, object_types, headers, max_concurrent)
-    
+
     @classmethod
     def _filter_properties_mapped_field(cls, properties: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """兼容接口：委托到 `retrieval/tool_utils.py`。"""
         return filter_properties_mapped_field(properties)
-    
+
     @classmethod
     def _build_instance_dedup_key(
         cls,
@@ -100,7 +100,7 @@ class KnowledgeNetworkRetrievalTool:
     ) -> str:
         """兼容接口：委托到 `retrieval/tool_utils.py`。"""
         return build_instance_dedup_key(instance, primary_keys, display_key)
-    
+
     @classmethod
     def _merge_semantic_instances_maps(
         cls,
@@ -130,12 +130,11 @@ class KnowledgeNetworkRetrievalTool:
         """兼容接口：委托到 `retrieval/semantic_output.py`。"""
         return semantic_instances_map_to_nodes(semantic_instances_map)
 
-    
     @classmethod
     def _to_brief_schema(cls, result: Dict[str, Any]) -> Dict[str, Any]:
         """兼容接口：委托到 `retrieval/schema_brief.py`。"""
         return to_brief_schema(result)
-    
+
     @classmethod
     def _get_schema_info(
         cls,
@@ -155,7 +154,7 @@ class KnowledgeNetworkRetrievalTool:
             filtered_relations=filtered_relations,
             raise_on_error=raise_on_error,
         )
-    
+
     @classmethod
     async def _build_final_result(
         cls,
@@ -185,8 +184,7 @@ class KnowledgeNetworkRetrievalTool:
             per_object_property_top_k=per_object_property_top_k,
             global_property_top_k=global_property_top_k,
         )
-    
-    
+
     @classmethod
     async def retrieve(
         cls,
@@ -201,7 +199,7 @@ class KnowledgeNetworkRetrievalTool:
     ) -> tuple[Union[Dict[str, List[Dict[str, Any]]], Dict[str, Any]], float]:
         """
         执行知识网络检索
-        
+
         Args:
             query: 用户查询问题（完整问题）
             kn_ids: 指定的知识网络配置列表，每个配置包含knowledge_network_id字段，必须传递
@@ -210,7 +208,7 @@ class KnowledgeNetworkRetrievalTool:
             headers: HTTP请求头
             retrieval_config: 召回配置参数（RetrievalConfig对象），用于控制语义实例召回的实例数据阈值和数量
             only_schema: 是否只召回概念（schema），不召回语义实例。如果为True，则只返回object_types和relation_types，不返回nodes。默认为False。
-            
+
         Returns:
             包含object_types和relation_types的字典和执行时间
         """
@@ -218,7 +216,7 @@ class KnowledgeNetworkRetrievalTool:
         api_cost = {"detail": 0.0, "object_query": 0.0, "path_query": 0.0, "rerank": 0.0, "other": 0.0}
         set_timing_ctx(api_cost, req_start)
         kn_id_list = normalize_kn_ids(kn_ids)
-            
+
         start_time = time.time()
         try:
             # 概念召回/流程参数统一从 retrieval_config.concept_retrieval 读取
@@ -250,10 +248,10 @@ class KnowledgeNetworkRetrievalTool:
             # only_schema 已废弃：schema 与语义实例解耦，语义实例统一通过 nodes 返回
 
             logger.info(f"开始执行知识网络检索（概念召回），查询: {query}")
-            
+
             # 在每次请求开始时清理一次过期会话，但排除当前会话
             RetrievalSessionManager._clean_expired_sessions()
-            
+
             # 从 headers 中提取 account_id 和 account_type（必需参数，已由HeaderParams验证）
             account_id = headers.get("x-account-id") if headers else None
             account_type = headers.get("x-account-type") if headers else None
@@ -262,22 +260,22 @@ class KnowledgeNetworkRetrievalTool:
                 raise ValueError("x-account-id header参数不能为空")
             if not account_type:
                 raise ValueError("x-account-type header参数不能为空")
-            
+
             # 获取第一个知识网络ID（目前只支持单个知识网络）
             kn_id = kn_id_list[0] if kn_id_list else None
             if not kn_id:
                 raise ValueError("kn_ids参数不能为空，必须提供至少一个知识网络配置")
-            
+
             # 进行概念召回流程（schema召回）
             # 检查是否有概念召回缓存
             relevant_concepts = None
             network_details = None
-            
+
             if session_id and RetrievalSessionManager.has_concept_retrieval_cache(session_id, kn_id, query):
                 # 有缓存，直接使用缓存结果
                 logger.info(f"发现概念召回缓存（session_id={session_id}, query={query[:50]}...），复用缓存结果")
                 cached_result = RetrievalSessionManager.get_concept_retrieval_cache(session_id, kn_id, query)
-                
+
                 if cached_result:
                     relevant_concepts = cached_result["relevant_concepts"]  # (filtered_objects, filtered_relations)
                     network_details = cached_result["network_details"]
@@ -287,7 +285,7 @@ class KnowledgeNetworkRetrievalTool:
                     logger.warning("概念召回缓存获取失败，继续执行概念召回")
                     relevant_concepts = None
                     network_details = None
-            
+
             # 如果没有缓存结果，执行概念召回
             if relevant_concepts is None or network_details is None:
                 # 检查session中是否有schema信息，判断是首次召回还是多轮召回
@@ -297,7 +295,7 @@ class KnowledgeNetworkRetrievalTool:
                 else:
                     # 没有schema信息，这是首次概念召回
                     logger.info("Session中没有schema信息，进行首次概念召回")
-                
+
                 # 使用KnowledgeNetworkRetrieval获取相关知识网络和详情，目前只会获取一个知识网络
                 network_details = await KnowledgeNetworkRetrieval._rank_knowledge_networks(
                     query,
@@ -312,7 +310,7 @@ class KnowledgeNetworkRetrievalTool:
                     enable_rerank=enable_rerank,
                 )
                 logger.info("获取知识网络详情")
-                
+
                 # 如果需要获取样例数据，在概念召回之前先获取并存储到session
                 if include_sample_data and session_id:
                     # 检查session中是否已有样例数据
@@ -335,7 +333,7 @@ class KnowledgeNetworkRetrievalTool:
                             logger.warning(f"知识网络 {kn_id} 没有对象类型，跳过样例数据获取")
                     else:
                         logger.info("Session中已有样例数据，跳过样例数据获取")
-                
+
                 # 步骤4: 使用LLM判断相关的关系类型
                 logger.info(f"跳过关系类型的LLM检索，直接使用前{top_k}个关系类型")
                 # 调用ConceptRetrieval.rank_relation_types方法，但跳过LLM处理，直接返回前top_k个关系
@@ -352,16 +350,16 @@ class KnowledgeNetworkRetrievalTool:
                     global_property_top_k=global_property_top_k,
                     enable_rerank=enable_rerank,
                 )
-                
+
                 logger.info("筛选出相关概念")
-                
+
                 # 存储到缓存
                 if session_id:
                     RetrievalSessionManager.set_concept_retrieval_cache(
                         session_id, kn_id, query, relevant_concepts, network_details
                     )
                     logger.info("概念召回结果已缓存")
-            
+
             # 步骤5: 语义实例召回（与 schema 统一返回）
             # 对召回的对象类型进行语义实例召回；若没有对象类型则自然为空。
             semantic_instances_map: Dict[str, List[Dict[str, Any]]] = {}
@@ -413,7 +411,8 @@ class KnowledgeNetworkRetrievalTool:
                     if not schema_info:
                         logger.warning("无法获取schema_info，语义实例召回输出将无法基于display_key进行精简")
 
-                    if can_use_cache and session_id and RetrievalSessionManager.has_semantic_instance_cache(session_id, kn_id, query):
+                    if can_use_cache and session_id and RetrievalSessionManager.has_semantic_instance_cache(
+                            session_id, kn_id, query):
                         # 有缓存，直接使用缓存结果
                         logger.info(f"发现语义实例召回缓存（session_id={session_id}, query={query[:50]}...），复用缓存结果")
                         cached_result = RetrievalSessionManager.get_semantic_instance_cache(session_id, kn_id, query)
@@ -442,7 +441,7 @@ class KnowledgeNetworkRetrievalTool:
                     else:
                         semantic_instances_map = None
                         logger.debug("没有缓存或缓存不可用，semantic_instances_map设为None，将执行语义实例召回")
-                    
+
                     # 如果没有缓存结果，执行语义实例召回
                     if semantic_instances_map is None:
                         logger.debug("进入语义实例召回分支：semantic_instances_map为None，开始执行语义实例召回")
@@ -454,18 +453,18 @@ class KnowledgeNetworkRetrievalTool:
                                 "concept_name": obj.get("name"),
                                 "data_properties": obj.get("data_properties", [])
                             })
-                        
+
                         # schema_info 已在上方提前构建；此处仅兜底
                         if not schema_info:
                             logger.warning("无法获取schema_info，语义实例召回可能无法正常工作")
-                        
+
                         # candidate_limit和per_type_instance_limit现在都有默认值，不需要回退逻辑
                         semantic_per_type_limit = semantic_config.per_type_instance_limit
                         semantic_candidate_limit = semantic_config.initial_candidate_count
                         # 预过滤阶段每个对象类型保留的上限，若未配置则退化为 per_type_instance_limit
                         pre_filter_per_type_limit = getattr(semantic_config, "pre_filter_per_type_limit", None) \
                             or semantic_per_type_limit
-                        
+
                         keyword_results: List[Tuple[str, Dict[str, List[Dict[str, Any]]]]] = []
                         if filtered_objects:
                             # 方案B（优化版）：多关键词合并为"每对象类型一次候选召回"，再用完整query统一过滤/重排
@@ -500,7 +499,7 @@ class KnowledgeNetworkRetrievalTool:
                                                 inst["keyword_sources"] = list(keywords_for_search)
                                 except Exception:
                                     pass
-                                
+
                                 # 使用完整query进行最终过滤/重排（体现关键词组合意图）
                                 logger.info(
                                     f"多关键词候选召回完成，候选实例数={sum(len(v) for v in (candidate_instance_map or {}).values())}"
@@ -521,7 +520,7 @@ class KnowledgeNetworkRetrievalTool:
                                     headers=headers,
                                     semantic_config=semantic_config
                                 )
-                                
+
                                 logger.info(f"语义实例召回完成（方案B：候选并集+统一过滤），对象类型数={len(semantic_instances_map)}")
                             else:
                                 async def _run_kw(kw: str) -> Tuple[str, Dict[str, List[Dict[str, Any]]]]:
@@ -543,13 +542,14 @@ class KnowledgeNetworkRetrievalTool:
                                         enable_rerank=enable_rerank,  # 传递 enable_rerank 参数
                                     )
                                     return kw, (kw_map or {})
-                            
+
                                 # 关键词之间并发执行；如任一关键词失败，将直接抛出异常（不吞异常）
                                 keyword_results = await asyncio.gather(*[_run_kw(kw) for kw in keywords_for_search])
                                 # 合并去重
-                                semantic_instances_map = cls._merge_semantic_instances_maps(keyword_results, schema_info)
+                                semantic_instances_map = cls._merge_semantic_instances_maps(
+                                    keyword_results, schema_info)
                                 logger.info(f"语义实例召回完成（合并多关键词），对象类型数={len(semantic_instances_map)}")
-                        
+
                         # 存储到缓存（仅单关键词场景）
                         if can_use_cache and session_id and semantic_instances_map is not None:
                             # 全局分数过滤（抑制低质尾部噪声）
@@ -639,12 +639,12 @@ class KnowledgeNetworkRetrievalTool:
                 len(final_result.get("relation_types", []) or []),
                 len(final_result.get("nodes", []) or []),
             )
-            
+
             # 根据schema_brief开关返回精简结果（仅裁剪 schema 字段，不影响 nodes/message）
             if schema_brief and "object_types" in final_result:
                 logger.info("schema_brief=True，返回精简schema（保留 nodes/message）")
                 final_result = cls._to_brief_schema(final_result)
-            
+
             execution_time = time.time() - start_time
             total_ms = (time.monotonic() - req_start) * 1000
             api_union_ms = compute_api_union_ms()
@@ -678,7 +678,7 @@ class KnowledgeNetworkRetrievalTool:
                 pass
             logger.info(f"知识网络检索完成，执行时间: {execution_time:.2f}秒")
             return final_result, execution_time
-            
+
         except Exception as e:
             logger.error(f"知识网络检索过程中出现错误: {str(e)}", exc_info=True)
             raise
@@ -689,11 +689,11 @@ class KnowledgeNetworkRetrievalTool:
     async def as_async_api_cls(cls, params: dict = Body(...), header_params: HeaderParams = Depends()):
         """
         API接口方法
-        
+
         Args:
             params: API请求参数
             header_params: 请求头参数对象
-            
+
         Returns:
             检索结果列表
         """
@@ -702,13 +702,13 @@ class KnowledgeNetworkRetrievalTool:
             try:
                 print(params)
                 print(header_params)
-                # 验证参数  
+                # 验证参数
                 input_data = KnowledgeNetworkRetrievalInput(**params)
 
                 # 概念流程参数统一从 retrieval_config.concept_retrieval 读取
                 cfg_obj = input_data.retrieval_config or RetrievalConfig()
                 concept_cfg = cfg_obj.get_concept_config() if cfg_obj else None
-                
+
                 # 构建headers字典
                 headers_dict = {
                     "x-account-type": header_params.account_type,
@@ -722,7 +722,7 @@ class KnowledgeNetworkRetrievalTool:
                     detail={"error": str(e)},
                     link="https://example.com/api-docs/knowledge-network-retrieval"
                 )
-            
+
             # 执行检索阶段
             try:
                 # 执行检索
@@ -737,11 +737,11 @@ class KnowledgeNetworkRetrievalTool:
                     enable_rerank=input_data.enable_rerank
                 )
                 logger.debug("知识网络检索执行完成")
-                
+
                 # schema_brief 走精简返回，避免再做Pydantic包装
                 if concept_cfg and concept_cfg.schema_brief:
                     return result
-                
+
                 # 统一返回 schema（object_types/relation_types/action_types），并兼容返回 nodes/message
                 nodes = result.get("nodes")
                 message = result.get("message")
@@ -751,13 +751,13 @@ class KnowledgeNetworkRetrievalTool:
                     "object_types": [],
                     "relation_types": []
                 }
-                
+
                 # 处理对象类型（包含属性信息）
                 for obj_item in result.get("object_types", []):
                     # 对象类型不包含kn_id、source_object_type_id、target_object_type_id字段
-                    api_item = {k: v for k, v in obj_item.items() 
-                           if k not in ["kn_id", "source_object_type_id", "target_object_type_id"]}
-                    
+                    api_item = {k: v for k, v in obj_item.items()
+                                if k not in ["kn_id", "source_object_type_id", "target_object_type_id"]}
+
                     # 确保data_properties字段始终是列表（即使为空）
                     properties = api_item.get("data_properties")
                     if properties is None:
@@ -767,40 +767,41 @@ class KnowledgeNetworkRetrievalTool:
                     else:
                         # 过滤掉属性中的mapped_field字段
                         api_item["data_properties"] = cls._filter_properties_mapped_field(properties)
-                    
+
                     # 处理sample_data字段：如果include_sample_data=False，不包含该字段
                     # 如果include_sample_data=True，包含该字段（即使为None）
                     if (concept_cfg and not concept_cfg.include_sample_data) and "sample_data" in api_item:
                         # 如果不需要样例数据，移除该字段
                         del api_item["sample_data"]
-                
+
                     # 确保logic_properties字段为列表（非精简模式下返回）
                     logic_properties = api_item.get("logic_properties")
                     if logic_properties is None:
                         api_item["logic_properties"] = []
                     elif not isinstance(logic_properties, list):
                         api_item["logic_properties"] = []
-                    
+
                     # 确保primary_keys存在（即使为空列表），便于下游消费多主键信息
                     if "primary_keys" not in api_item:
                         api_item["primary_keys"] = []
-                    
+
                     # 创建Pydantic对象
                     # 注意：api_item已经排除了source_object_type_id和target_object_type_id
                     # 但Pydantic模型定义了这些字段（默认None），所以序列化时会包含
                     # 我们稍后在最终响应中统一清理
                     api_result["object_types"].append(KnowledgeNetworkRetrievalResult(**api_item))
-                
+
                 # 处理关系类型（不包含属性信息）
                 for rel_item in result.get("relation_types", []):
                     api_item = {k: v for k, v in rel_item.items() if k not in ["kn_id", "data_properties"]}
                     api_result["relation_types"].append(KnowledgeNetworkRetrievalResult(**api_item))
-                    
-                logger.debug(f"结果转换完成，对象类型: {len(api_result['object_types'])} 项，关系类型: {len(api_result['relation_types'])} 项")
-                
+
+                logger.debug(
+                    f"结果转换完成，对象类型: {len(api_result['object_types'])} 项，关系类型: {len(api_result['relation_types'])} 项")
+
                 # 获取action_types（如果存在）
                 action_types = result.get("action_types")
-                
+
                 # 构建响应对象
                 response_obj = KnowledgeNetworkRetrievalResponse(
                     object_types=api_result["object_types"],
@@ -809,10 +810,10 @@ class KnowledgeNetworkRetrievalTool:
                     nodes=nodes,
                     message=message,
                 )
-                
+
                 # 转换为字典
                 response_dict = response_obj.model_dump()
-                
+
                 # 清理对象类型中的source_object_type_id和target_object_type_id字段
                 # 注意：即使这些字段值为None，Pydantic也会在序列化时包含它们
                 # 所以我们需要手动删除对象类型中的这两个字段
@@ -822,7 +823,7 @@ class KnowledgeNetworkRetrievalTool:
                         del obj_type["source_object_type_id"]
                     if "target_object_type_id" in obj_type:
                         del obj_type["target_object_type_id"]
-                
+
                 # 清理关系类型中不需要的字段（data_properties/primary_key_field/sample_data）
                 for rel_type in response_dict.get("relation_types", []):
                     rel_type.pop("data_properties", None)
@@ -830,7 +831,7 @@ class KnowledgeNetworkRetrievalTool:
                     rel_type.pop("primary_keys", None)
                     rel_type.pop("sample_data", None)
                     # 关系类型不包含实例字段
-                
+
                 # 返回清理后的字典（FastAPI会自动序列化）
                 return response_dict
             except KnowledgeNetworkRetrievalError:
@@ -853,7 +854,7 @@ class KnowledgeNetworkRetrievalTool:
                 status_code=400 if isinstance(e, KnowledgeNetworkParamError) else 500,
                 detail=e.json()
             )
-    
+
     @classmethod
     async def get_api_schema(cls):
         """获取API schema定义"""
@@ -1348,7 +1349,7 @@ class KnowledgeNetworkRetrievalTool:
                                                         "description": "样例数据（当include_sample_data=True时返回，无论schema_brief是否为True）",
                                                         "nullable": True
                                                     },
-                                                   
+
                                                 },
                                                 "required": [
                                                     "concept_id",
@@ -1461,8 +1462,8 @@ class KnowledgeNetworkRetrievalTool:
                                     }
                                 }
                             }
-                            }
                         }
                     }
                 }
             }
+        }

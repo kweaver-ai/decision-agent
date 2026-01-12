@@ -28,11 +28,11 @@ _OPERATOR = {
     "not include": ["str"],
     "prefix": ["str"],
     "not prefix": ["str"],
-    "in list": ["str","str","str"],
-    "belong": ["str","str","str"],
+    "in list": ["str", "str", "str"],
+    "belong": ["str", "str", "str"],
     "true": [],
     "false": [],
-    "between": ["datetime","datetime"],
+    "between": ["datetime", "datetime"],
 }
 
 _DATE_FORMAT = [
@@ -83,9 +83,9 @@ class AFIndicator(APIDataSource):
     """
     indicator_list: list[str] = []
     token: str
-    
+
     headers: Any
-    
+
     service: Services = None
     dimension_reduce: Any = None
     cache_data: Dict[str, Any] = {}
@@ -117,12 +117,12 @@ class AFIndicator(APIDataSource):
 
     def test_connection(self) -> bool:
         return True
-    
+
     def set_data_list(self, data_list: list[str]):
         """Set data list
         """
         self.indicator_list = data_list
-    
+
     def get_data_list(self) -> list[str]:
         return self.indicator_list
 
@@ -166,7 +166,7 @@ class AFIndicator(APIDataSource):
         #         }   // 当type==sameperiod时，sameperiod_config必须存在以及method、offset、time_granularity
         #     }
         # }
-        
+
         # check time_constraint
         # if time_constraint is not set, set it from 01.01 to now
 
@@ -194,16 +194,15 @@ class AFIndicator(APIDataSource):
                 # try to convert to datetime format
                 start_time = _convert_str_2_date_time(start_time_str)
                 start_time_str = start_time.strftime(date_format)
-            
-            params["time_constraint"]["start_time"] = start_time_str
 
+            params["time_constraint"]["start_time"] = start_time_str
 
             if not end_time_str:
                 end_time_str = current_time
             else:
                 end_time = _convert_str_2_date_time(end_time_str)
                 end_time_str = end_time.strftime(date_format)
-            
+
             params["time_constraint"]["end_time"] = end_time_str
 
         # check dimensions
@@ -214,7 +213,7 @@ class AFIndicator(APIDataSource):
             for dimension in params["dimensions"]:
                 # if indicator_id is set, chech the field
 
-                dimension["field_id"] = self._field_num_to_id(dimension["field_id"])                       
+                dimension["field_id"] = self._field_num_to_id(dimension["field_id"])
                 if "format" in dimension:
                     if dimension.get("original_data_type") not in ["date", "timestamp", "datetime"]:
                         del dimension["format"]
@@ -237,10 +236,10 @@ class AFIndicator(APIDataSource):
                 if filter.get("field_id"):
                     # filter["field_id"] = self._get_field_mapping(indicator_id, filter["field_id"])
                     filter["field_id"] = self._field_num_to_id(filter["field_id"])
-            
+
             # remove items where key is empty
             params["filters"] = [filter for filter in params["filters"] if filter.get("field_id")]
-        
+
         # check metrics
         if not params.get("metrics", {}):
             pass
@@ -249,7 +248,7 @@ class AFIndicator(APIDataSource):
             metric_type = metrics.get("type", "value")
             if metric_type not in _METRIC_TYPE:
                 del params["metrics"]
-            
+
             if metric_type == "sameperiod":
                 metric_config = metrics.get("sameperiod_config", {})
                 if not metric_config:
@@ -265,7 +264,7 @@ class AFIndicator(APIDataSource):
                     metric_offset = metric_config.get("offset", 1)
                     if not isinstance(metric_offset, int):
                         metric_config["offset"] = 1
-                    
+
                     metric_time_granularity = metric_config.get("time_granularity", "year")
                     if isinstance(metric_time_granularity, str):
                         metric_time_granularity = metric_time_granularity.lower()
@@ -274,7 +273,7 @@ class AFIndicator(APIDataSource):
                     if metric_time_granularity not in _TIME_GRANULARITY:
                         metric_config["time_granularity"] = "year"
         return params
-    
+
     def get_description_by_id(self, indicator_id: str) -> Dict[str, Any]:
         # get value and set cache
         if self.cache_data.get("indicators", {}).get(indicator_id):
@@ -312,7 +311,7 @@ class AFIndicator(APIDataSource):
         # mapping field_id to field_num, to save tokens, field id is uuid, too long
         # field_id is uuid, cannot be replicatied
 
-        field_num = 1 # if start from 0, logic if self.cache_data.get("field_ids") will be false
+        field_num = 1  # if start from 0, logic if self.cache_data.get("field_ids") will be false
         if self.cache_data.get("field_ids"):
             if self.cache_data["field_ids"].get(field_id):
                 field_num = self.cache_data["field_ids"][field_id]
@@ -331,12 +330,12 @@ class AFIndicator(APIDataSource):
             self.cache_data["fields_nums"] = {field_num: field_id}
 
         return field_num
-    
+
     def _field_num_to_id(self, num: int) -> str:
         if isinstance(num, str):
             num = int(num)
         return self.cache_data.get("fields_nums", {}).get(num, "")
-        
+
     def get_field_info_by_mapping(self, indicator_id: str, field_num: str) -> Dict[str, Any]:
         # field_id = self._get_field_mapping(indicator_id, field_num)
         field_id = self._field_num_to_id(field_num)
@@ -346,19 +345,20 @@ class AFIndicator(APIDataSource):
         for dim in dimensions:
             if dim.get("field_id") == field_id:
                 return dim
-        
+
         return {}
-    
+
     def get_field_info_by_id(self, indicator_id: str, field_id: str) -> Dict[str, Any]:
         dimensions = self.get_description_by_id(indicator_id).get("analysis_dimensions", [])
 
         for dim in dimensions:
             if dim.get("field_id") == field_id:
                 return dim
-        
+
         return {}
 
-    def get_details(self, input_query: str="", indicator_num_limit: int=5, input_dimension_num_limit: int=30) -> Dict[str, Any]:
+    def get_details(self, input_query: str = "", indicator_num_limit: int = 5,
+                    input_dimension_num_limit: int = 30) -> Dict[str, Any]:
         indicators_details = {}
         indicators_details_value = []
         try:
@@ -367,7 +367,7 @@ class AFIndicator(APIDataSource):
                 res = self.get_description_by_id(indicator_id)
 
                 indicator_infos[indicator_id] = res
-            
+
             reduced_indicators = self.dimension_reduce.datasource_reduce(
                 input_query,
                 indicator_infos,
@@ -393,7 +393,7 @@ class AFIndicator(APIDataSource):
                     input_dimension_num_limit,
                     date_mark.get("field_id", "")
                 )
-        
+
                 for item in analysis_dimensions:
                     dimension_detail = {}
 
@@ -413,7 +413,6 @@ class AFIndicator(APIDataSource):
         except AfDataSourceError as e:
             raise IndicatorDetailError(e) from e
         return indicators_details
-
 
     def call(self, indicator_id: str, data: dict) -> Any:
         # mapping field_num to field_id
@@ -440,7 +439,7 @@ class AFIndicator(APIDataSource):
     async def acall(self, indicator_id: str, data: dict) -> Any:
         res = self.call(indicator_id, data)
         return res
-    
+
     def get_sample_from_data_view(self, view_id: str, includes: list) -> list:
         if self.cache_data.get("samples", {}).get(view_id, {}):
             return self.cache_data["samples"][view_id]
@@ -448,7 +447,7 @@ class AFIndicator(APIDataSource):
             column = self.service.get_view_column_by_id(view_id, headers=self.headers)
             totype, column_name, table, zh_table = get_view_en2type(column)
             asset: dict = {"index": view_id, "title": table.split(".")[2],
-                            "view_source_catalog": table.split(".")[0]}
+                           "view_source_catalog": table.split(".")[0]}
             source = view_source_reshape(asset)
             sample = self.service.get_view_sample_by_source(source, headers=self.headers)
             # res_sample = {
@@ -564,6 +563,5 @@ if __name__ == '__main__':
 
         res = text2metric.get_details()
         print(res)
-
 
     main()

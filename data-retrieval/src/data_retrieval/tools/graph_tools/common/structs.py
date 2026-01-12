@@ -332,8 +332,10 @@ NL2NGQL_PROMPTS_AS = {
     }
 }
 
+
 class AgentConstants:
     """ 这里是agent版本变更导致的一些常量的变更 """
+
     def __init__(self, version):
         # if version == '':
         #     self.input_block_name = 'input'

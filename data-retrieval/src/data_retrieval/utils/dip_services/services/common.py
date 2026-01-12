@@ -70,7 +70,7 @@ class Common(Service):
         except DIPServiceError as e:
             raise CommonError(e) from e
 
-    async def call_api_async(  
+    async def call_api_async(
         self, method: str,
         url: str,
         params: dict = None,

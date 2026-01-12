@@ -66,7 +66,16 @@ exclude = ["tests", "tests.*"]
 
 [dependency-groups]
 dev = [
+    "autopep8>=2.3.2",
+    "flake8>=7.3.0",
     "pytest>=9.0.2",
     "pytest-cov>=7.0.0",
     "ruff>=0.14.11",
 ]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = ["E501"]  # 行长由 line-length 控制

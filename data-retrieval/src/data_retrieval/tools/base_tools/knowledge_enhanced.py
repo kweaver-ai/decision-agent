@@ -30,12 +30,13 @@ class KnowledgeEnhancedToolModel(BaseModel):
 
 
 _TOOL_DESCS = dedent(
-f"""
+    f"""
 知识增强工具，工具包含以下能力： a. 知识图谱搜索； b. 同义词搜索； c. 关键词排序，调用方式为 {ToolName.from_knowledge_enhanced.value}(query: str)
 
-**工具须知**: 
+**工具须知**:
 - 每次调用获取数据前，都**必须**首先调用 {ToolName.from_knowledge_enhanced.value} 工具进行知识增强
 """)
+
 
 class KnowledgeEnhancedTool(AFTool):
     name: str = ToolName.from_knowledge_enhanced.value
@@ -51,8 +52,8 @@ class KnowledgeEnhancedTool(AFTool):
     ad_connect: AD_CONNECT = None
     ad_appid: str = ""
     token: str = ""
-    kg_type: str = "default" # 图谱类型 默认手动构建的分析维度图谱 default 和基于主题专题模型构建的图谱 model
-    kg_info: dict = dict() # 图谱信息，根据kg_id获取
+    kg_type: str = "default"  # 图谱类型 默认手动构建的分析维度图谱 default 和基于主题专题模型构建的图谱 model
+    kg_info: dict = dict()  # 图谱信息，根据kg_id获取
 
     def __init__(self, kg_id: Union[str, List], synonym_id: str, word_id: str, token: str, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -70,7 +71,6 @@ class KnowledgeEnhancedTool(AFTool):
         # 图谱信息
         self.kg_info = self.get_kg_info()
         logger.info("图谱信息 {}".format(self.kg_info))
-
 
     @construct_final_answer
     def _run(self, query: str) -> list:
@@ -112,9 +112,8 @@ class KnowledgeEnhancedTool(AFTool):
                 self._result_cache_key,
                 logs={'result': result}
             )
-        
-        return json.dumps(result, ensure_ascii=False)
 
+        return json.dumps(result, ensure_ascii=False)
 
     def syns_run(self):
         if not self.synonym_id:
@@ -282,6 +281,7 @@ class KnowledgeEnhancedTool(AFTool):
         else:
             space_name = ""
         return space_name
+
     def get_kg_info(self):
         kg_info = dict()
         if self.kg_id:
@@ -328,7 +328,7 @@ class KnowledgeEnhancedTool(AFTool):
                                 else:
                                     logger.info("使用模型图谱进行知识增强")
                                     result_in = await search_by_keyword_async_with_kgid_with_model(self.ad_appid, kg_id, kg_value["space_name"],
-                                                                                        words)
+                                                                                                   words)
                                 words.remove(j)
                                 for value in result_in:
                                     result.append(value)
@@ -340,7 +340,7 @@ class KnowledgeEnhancedTool(AFTool):
                         result_in = await search_by_keyword_async_with_kgid(self.ad_appid, kg_id, kg_value["space_name"], words, )
                     else:
                         result_in = await search_by_keyword_async_with_kgid_with_model(self.ad_appid, kg_id, kg_value["space_name"], words,
-                                                                         )
+                                                                                       )
                     for value in result_in:
                         result.append(value)
         else:
@@ -371,10 +371,12 @@ class KnowledgeEnhancedTool(AFTool):
                                 words.append(j)
                                 print('用于查找维度值的关键词为', words)
                                 if self.kg_type == "default":
-                                    result_in = search_by_keyword_with_kgid(self.ad_appid, kg_id, kg_value["space_name"], words)
+                                    result_in = search_by_keyword_with_kgid(
+                                        self.ad_appid, kg_id, kg_value["space_name"], words)
                                 else:
                                     logger.info("使用模型图谱进行知识增强")
-                                    result_in = search_by_keyword_with_kgid_with_model(self.ad_appid, kg_id, kg_value["space_name"], words)
+                                    result_in = search_by_keyword_with_kgid_with_model(
+                                        self.ad_appid, kg_id, kg_value["space_name"], words)
                                 words.remove(j)
                                 for value in result_in:
                                     result.append(value)
@@ -386,7 +388,8 @@ class KnowledgeEnhancedTool(AFTool):
                         result_in = search_by_keyword_with_kgid(self.ad_appid, kg_id, kg_value["space_name"], words)
                     else:
                         logger.info("使用模型图谱进行知识增强")
-                        result_in = search_by_keyword_with_kgid_with_model(self.ad_appid, kg_id, kg_value["space_name"], words)
+                        result_in = search_by_keyword_with_kgid_with_model(
+                            self.ad_appid, kg_id, kg_value["space_name"], words)
                     for value in result_in:
                         result.append(value)
         else:
@@ -398,7 +401,7 @@ class KnowledgeEnhancedTool(AFTool):
 
         logger.debug(f"知识增强 finally_fun : {result}")
         return result
-    
+
     def handle_result(
         self,
         log,
@@ -408,10 +411,10 @@ class KnowledgeEnhancedTool(AFTool):
             tool_res = self.session.get_agent_logs(
                 self._result_cache_key
             )
-        
+
             if tool_res:
                 log['result'] = tool_res.get('result', [])
-                
+
                 # 知识增强不需要记录缓存
                 ans_multiple.cache_keys.extend({
                     "tool_name": "knowledge_enhanced",
@@ -533,7 +536,8 @@ class KnowledgeEnhancedTool(AFTool):
         }
 
 
-async def search_by_keyword_async_with_kgid(kg_id, space_name, cal_query, appid="", token="", entity_classes=["*"], kg_type="default"):
+async def search_by_keyword_async_with_kgid(
+        kg_id, space_name, cal_query, appid="", token="", entity_classes=["*"], kg_type="default"):
     logger.debug(f"search_by_keyword_async_with_kgid -> cal_query: {cal_query}")
 
     body1 = {
@@ -608,11 +612,12 @@ async def search_by_keyword_async_with_kgid(kg_id, space_name, cal_query, appid=
     return find_num
 
 
-async def search_by_keyword_async_with_kgid_with_model(kg_id, space_name, cal_query, appid="", token="", entity_classes=["*"]):
+async def search_by_keyword_async_with_kgid_with_model(
+        kg_id, space_name, cal_query, appid="", token="", entity_classes=["*"]):
     logger.debug(f"search_by_keyword_async_with_kgid_with_model -> cal_query: {cal_query}")
     stop_words = get_default_stop_words()
 
-    new_cut_query  = []
+    new_cut_query = []
     for item in cal_query:
         if item in stop_words:
             continue
@@ -654,6 +659,7 @@ async def search_by_keyword_async_with_kgid_with_model(kg_id, space_name, cal_qu
                 if re not in find_num:
                     find_num.append(re)
     return find_num
+
 
 def search_by_keyword_with_kgid(kg_id, space_name, cal_query, appid="", token="", entity_classes=["*"]):
     logger.debug(f"search_by_keyword_with_kgid -> cal_query: {cal_query}")
@@ -724,6 +730,7 @@ def search_by_keyword_with_kgid(kg_id, space_name, cal_query, appid="", token=""
             find_num.append(re)
     return find_num
 
+
 def search_by_keyword_with_kgid_with_model(kg_id, space_name, cal_query, appid="", token="", entity_classes=["*"]):
     logger.debug(f"search_by_keyword_with_kgid_with_model -> cal_query: {cal_query}")
     stop_words = get_default_stop_words()
@@ -771,6 +778,7 @@ def search_by_keyword_with_kgid_with_model(kg_id, space_name, cal_query, appid="
                     find_num.append(re)
     return find_num
 
+
 if __name__ == '__main__':
     tool = KnowledgeEnhancedTool(
         kg_id="605",
@@ -785,19 +793,15 @@ if __name__ == '__main__':
         )
         print("异步结果#################################", res)
 
-
     def main2():
         import asyncio
 
         asyncio.run(amain())
 
-
     main2()
-
 
     def main():
         res = tool.invoke(query)
         print("同步结果#################################3333", res)
-
 
     main()

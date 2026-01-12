@@ -131,5 +131,3 @@ def get_schema_info(
                 logger.debug(f"补充对象类型 {obj_type_id} 到schema_info")
 
     return schema_info
-
-

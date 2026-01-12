@@ -36,7 +36,7 @@ class RedisClient(object):
                                 sentinel_kwargs={
                                     "password": self.redis_sentinel_password,
                                     "username": self.redis_sentinel_user
-                                })
+            })
             if model == "write":
                 redis_con = sentinel.master_for(self.redis_master_name, username=self.redis_user,
                                                 password=self.redis_passwd, db=db)
@@ -62,7 +62,7 @@ class RedisClient(object):
                                       sentinel_kwargs={
                                           "password": self.redis_sentinel_password,
                                           "username": self.redis_sentinel_user
-                                      })
+            })
             if model == "write":
                 redis_con = sentinel.master_for(self.redis_master_name, username=self.redis_user,
                                                 password=self.redis_passwd, db=db)

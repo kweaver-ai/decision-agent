@@ -33,7 +33,7 @@ class ExecuteCodeInput(BaseSandboxToolInput):
 
 class ExecuteCodeTool(BaseSandboxTool):
     """执行代码工具，在沙箱环境中执行 Python 代码"""
-    
+
     name: str = "execute_code"
     description: str = "在沙箱环境中执行 Python 代码，支持 pandas 等数据分析库，注意沙箱环境是受限环境，没有网络连接，不能使用 pip 安装第三方库"
     args_schema: type[BaseSandboxToolInput] = ExecuteCodeInput
@@ -57,7 +57,7 @@ class ExecuteCodeTool(BaseSandboxTool):
         except Exception as e:
             logger.error(f"Execute code failed: {e}")
             raise SandboxError(reason="执行代码失败", detail=str(e)) from e
-    
+
     @async_construct_final_answer
     async def _arun(
         self,
@@ -72,7 +72,7 @@ class ExecuteCodeTool(BaseSandboxTool):
             result = await self._execute_code(content, filename, args, output_params)
             if self._random_session_id:
                 result["session_id"] = self.session_id
-            
+
             if title:
                 result["title"] = title
             else:
@@ -82,7 +82,7 @@ class ExecuteCodeTool(BaseSandboxTool):
         except Exception as e:
             logger.error(f"Execute code failed: {e}")
             raise SandboxError(reason="执行代码失败", detail=str(e)) from e
-    
+
     async def _execute_code(
         self,
         content: str,
@@ -95,18 +95,18 @@ class ExecuteCodeTool(BaseSandboxTool):
             raise SandboxError(reason="执行代码失败", detail="content 参数不能为空")
 
         sandbox = self._get_sandbox()
-        
+
         try:
             result = await sandbox.execute_code(
-                content, 
+                content,
                 filename=filename if filename else None,
                 args=args if args else None,
                 output_params=output_params if output_params else None
             )
-            
+
             # 检查执行结果，处理异常情况
             self._check_execution_result(result, "代码执行")
-            
+
             return {
                 "action": "execute_code",
                 "result": result,
@@ -115,8 +115,6 @@ class ExecuteCodeTool(BaseSandboxTool):
         except Exception as e:
             logger.error(f"Execute code action failed: {e}")
             raise SandboxError(reason="代码执行失败", detail=str(e)) from e
-    
-
 
     @staticmethod
     async def get_api_schema():
@@ -124,7 +122,7 @@ class ExecuteCodeTool(BaseSandboxTool):
         base_schema = await BaseSandboxTool.get_api_schema()
         base_schema["post"]["summary"] = "execute_code"
         base_schema["post"]["description"] = "在沙箱环境中执行 Python 代码，支持 pandas 等数据分析库，注意沙箱环境是受限环境，没有网络连接，不能使用 pip 安装第三方库。运行代码时，需要通过 print 输出结果，或者设置输出变量 output_params 参数，返回结果"
-        
+
         # 更新请求体 schema，添加工具特定参数
         base_schema["post"]["requestBody"]["content"]["application/json"]["schema"]["properties"].update({
             "content": {
@@ -147,7 +145,7 @@ class ExecuteCodeTool(BaseSandboxTool):
             }
         })
         base_schema["post"]["requestBody"]["content"]["application/json"]["schema"]["required"] = ["content"]
-        
+
         # 添加示例
         base_schema["post"]["requestBody"]["content"]["application/json"]["examples"] = {
             "basic_execution": {
@@ -173,5 +171,5 @@ class ExecuteCodeTool(BaseSandboxTool):
                 }
             }
         }
-        
-        return base_schema 
+
+        return base_schema

@@ -25,7 +25,8 @@ CREATE_SCHEMA_TEMPLATE = """CREATE TABLE {source}.{schema}.{title}
 RESP_TEMPLATE = """根据<strong>"{table}"</strong><i slice_idx=0>{index}</i>，检索到如下数据："""
 
 
-async def get_datasource_from_kg_params(kg_params: Union[Dict, List], addr="", headers={}, dip_type=ServiceType.DIP.value):
+async def get_datasource_from_kg_params(
+        kg_params: Union[Dict, List], addr="", headers={}, dip_type=ServiceType.DIP.value):
     """
     解析 KG 参数
     """
@@ -58,9 +59,9 @@ async def get_datasource_from_kg_params(kg_params: Union[Dict, List], addr="", h
     # }
     if isinstance(kg_params, Dict):
         kg_params = kg_params.get("kg", [])
-    
+
     builder_service = Builder(addr=addr, headers=headers, type=dip_type)
-    
+
     for kg in kg_params:
         kg_id = kg.get("kg_id", "")
 
@@ -135,13 +136,12 @@ async def get_datasource_from_kg_params(kg_params: Union[Dict, List], addr="", h
             for s in source:
                 view_name = s.get("file_name", "")
                 view_id = s.get("file_source", "")
-            
 
                 res.append({
                     "name": view_name,
                     "id": view_id
                 })
-    
+
     return res
 
 
@@ -244,7 +244,6 @@ class VegaDataSource(DataSource):
     class Config:
         arbitrary_types_allowed = True
 
-
     def __init__(
         self,
         **kwargs
@@ -272,7 +271,7 @@ class VegaDataSource(DataSource):
             self.service = VegaServices(base_url=self.base_url)
         else:
             raise VirEngineError(f"Invalid vega type: {self.vega_type}")
-        
+
         self.dimension_reduce = DimensionReduce(
             embedding_url=self.base_url,
             token=self.token,
@@ -297,7 +296,7 @@ class VegaDataSource(DataSource):
 
     def test_connection(self):
         return True
-    
+
     def set_tables(self, tables: List[str]):
         self.view_list = tables
 
@@ -306,18 +305,18 @@ class VegaDataSource(DataSource):
 
     def query(self, query: str, as_gen=True, as_dict=True) -> dict:
         try:
-            table = self.service.exec_vir_engine_by_sql(self.user, self.user_id, query, account_type=self.account_type, headers=self.headers)
+            table = self.service.exec_vir_engine_by_sql(
+                self.user, self.user_id, query, account_type=self.account_type, headers=self.headers)
         except AfDataSourceError as e:
             raise VirEngineError(e) from e
         return table
-    
+
     async def query_async(self, query: str, as_gen=True, as_dict=True) -> dict:
         try:
             table = await self.service.exec_vir_engine_by_sql_async(self.user, self.user_id, query, account_type=self.account_type, headers=self.headers)
         except AfDataSourceError as e:
             raise VirEngineError(e) from e
         return table
-
 
     def get_metadata(self, identities=None) -> list:
         details = []
@@ -334,7 +333,7 @@ class VegaDataSource(DataSource):
         except AfDataSourceError as e:
             raise FrontendColumnError(e) from e
         return details
-    
+
     async def get_metadata_async(self, identities=None) -> list:
         details = []
         try:
@@ -381,21 +380,23 @@ class VegaDataSource(DataSource):
             raise FrontendColumnError(e) from e
         return samples
 
-    def get_meta_sample_data(self, input_query="", view_limit=5, dimension_num_limit=30, with_sample=True)->dict:
+    def get_meta_sample_data(self, input_query="", view_limit=5, dimension_num_limit=30, with_sample=True) -> dict:
         details = []
         samples = {}
-        logger.info("get meta sample data query {}, view_limit {}, dimension_num_limit {}".format(input_query, view_limit, dimension_num_limit))
+        logger.info("get meta sample data query {}, view_limit {}, dimension_num_limit {}".format(
+            input_query, view_limit, dimension_num_limit))
         try:
             view_infos = {}
             view_white_list_sql_infos = {}  # 白名单筛选sql
-            view_classifier_field_list = {} # 分类分级
+            view_classifier_field_list = {}  # 分类分级
             view_schema_infos = {}    # 表头名字
             for view_id in self.view_list:
                 view_infos[view_id] = self.service.get_view_details_by_id(view_id, headers=self.headers)
                 try:
                     # AF 才需要获取白名单、字段脱敏、分类分级
                     if self.vega_type == VegaType.AF.value:
-                        view_white_list_sql_infos[view_id] = self.service.get_view_white_policy_sql(view_id, headers=self.headers)
+                        view_white_list_sql_infos[view_id] = self.service.get_view_white_policy_sql(
+                            view_id, headers=self.headers)
                         view_filed_infos = self.service.get_view_field_info(view_id, headers=self.headers)
                         view_valid_list = []
                         if "field_list" in view_filed_infos and len(view_filed_infos["field_list"]):
@@ -411,7 +412,7 @@ class VegaDataSource(DataSource):
             # 降维
             column_infos = {}
             common_filed = []
-            
+
             first = True
             for view_id in reduced_view.keys():
                 column = self.service.get_view_column_by_id(view_id, headers=self.headers)
@@ -426,7 +427,7 @@ class VegaDataSource(DataSource):
                         if filed["technical_name"] in common_filed:
                             n_common_field.append(filed["technical_name"])
                     common_filed = n_common_field
-            
+
             if len(reduced_view) < 2:
                 common_filed = []
 
@@ -434,12 +435,12 @@ class VegaDataSource(DataSource):
                 # column = self.service.get_view_column_by_id(view_id, headers=self.headers)
                 special_fields = []
                 # 指定字段必须保留
-                if self.special_data_view_fields is not  None and view_id in self.special_data_view_fields:
+                if self.special_data_view_fields is not None and view_id in self.special_data_view_fields:
                     special_fields = [field["technical_name"] for field in self.special_data_view_fields[view_id]]
                     logger.info("保留字段有{}".format(special_fields))
 
-                column["fields"] = self.dimension_reduce.data_view_reduce_v3(input_query, column["fields"], dimension_num_limit, common_filed+special_fields)
-
+                column["fields"] = self.dimension_reduce.data_view_reduce_v3(
+                    input_query, column["fields"], dimension_num_limit, common_filed + special_fields)
 
                 # 分类分级过滤
                 if view_id in view_classifier_field_list and len(view_classifier_field_list[view_id]):
@@ -461,7 +462,8 @@ class VegaDataSource(DataSource):
                             n_column_fields.append(n_field)
                     column["fields"] = n_column_fields
                     logger.info("view_id {} 字段数量 {} 模型字段过滤后字段数量 {}".format(view_id, num_fields, len(n_column_fields)))
-                logger.info("view_id {} 字段最后保留字段为 {}".format(view_id, [_filed["technical_name"] for _filed in column["fields"]]))
+                logger.info("view_id {} 字段最后保留字段为 {}".format(
+                    view_id, [_filed["technical_name"] for _filed in column["fields"]]))
 
                 totype, column_name, table, zh_table = get_view_en2type(column)
                 asset: dict = {"index": view_id, "title": table.split(".")[2],
@@ -488,37 +490,39 @@ class VegaDataSource(DataSource):
 
                     logger.info("get sample data num {}".format(len(dict_sample)))
 
-
         except AfDataSourceError as e:
             raise FrontendColumnError(e) from e
 
-        result =  {
+        result = {
             "detail": details,
             "view_schema_infos": view_schema_infos
         }
 
         if view_white_list_sql_infos:
-            result["view_white_list_sql_infos"] = view_white_list_sql_infos 
+            result["view_white_list_sql_infos"] = view_white_list_sql_infos
 
         if with_sample:
             result["sample"] = samples
         return result
-    
-    async def get_meta_sample_data_async(self, input_query="", view_limit=5, dimension_num_limit=30, with_sample=True)->dict:
+
+    async def get_meta_sample_data_async(self, input_query="", view_limit=5,
+                                         dimension_num_limit=30, with_sample=True) -> dict:
         details = []
         samples = {}
-        logger.info("get meta sample data query {}, view_limit {}, dimension_num_limit {}".format(input_query, view_limit, dimension_num_limit))
+        logger.info("get meta sample data query {}, view_limit {}, dimension_num_limit {}".format(
+            input_query, view_limit, dimension_num_limit))
         try:
             view_infos = {}
             view_white_list_sql_infos = {}  # 白名单筛选sql
-            view_classifier_field_list = {} # 分类分级
+            view_classifier_field_list = {}  # 分类分级
             view_schema_infos = {}    # 表头名字
             for view_id in self.view_list:
                 view_infos[view_id] = await self.service.get_view_details_by_id_async(view_id, headers=self.headers)
                 try:
                     # AF 才需要获取白名单、字段脱敏、分类分级
                     if self.vega_type == VegaType.AF.value:
-                        view_white_list_sql_infos[view_id] = self.service.get_view_white_policy_sql(view_id, headers=self.headers)
+                        view_white_list_sql_infos[view_id] = self.service.get_view_white_policy_sql(
+                            view_id, headers=self.headers)
                         view_filed_infos = self.service.get_view_field_info(view_id, headers=self.headers)
                         view_valid_list = []
                         if "field_list" in view_filed_infos and len(view_filed_infos["field_list"]):
@@ -534,7 +538,7 @@ class VegaDataSource(DataSource):
             # 降维
             column_infos = {}
             common_filed = []
-            
+
             first = True
             for view_id in reduced_view.keys():
                 column = await self.service.get_view_column_by_id_async(view_id, headers=self.headers)
@@ -549,7 +553,7 @@ class VegaDataSource(DataSource):
                         if filed["technical_name"] in common_filed:
                             n_common_field.append(filed["technical_name"])
                     common_filed = n_common_field
-            
+
             if len(reduced_view) < 2:
                 common_filed = []
 
@@ -557,12 +561,12 @@ class VegaDataSource(DataSource):
                 # column = self.service.get_view_column_by_id(view_id, headers=self.headers)
                 special_fields = []
                 # 指定字段必须保留
-                if self.special_data_view_fields is not  None and view_id in self.special_data_view_fields:
+                if self.special_data_view_fields is not None and view_id in self.special_data_view_fields:
                     special_fields = [field["technical_name"] for field in self.special_data_view_fields[view_id]]
                     logger.info("保留字段有{}".format(special_fields))
 
                 # column["fields"] = self.dimension_reduce.data_view_reduce_v3(input_query, column["fields"], dimension_num_limit, common_filed+special_fields)
-                column["fields"] = await self.dimension_reduce.adata_view_reduce_v3(input_query, column["fields"], dimension_num_limit, common_filed+special_fields)
+                column["fields"] = await self.dimension_reduce.adata_view_reduce_v3(input_query, column["fields"], dimension_num_limit, common_filed + special_fields)
 
                 # 分类分级过滤
                 if view_id in view_classifier_field_list and len(view_classifier_field_list[view_id]):
@@ -584,7 +588,8 @@ class VegaDataSource(DataSource):
                             n_column_fields.append(n_field)
                     column["fields"] = n_column_fields
                     logger.info("view_id {} 字段数量 {} 模型字段过滤后字段数量 {}".format(view_id, num_fields, len(n_column_fields)))
-                logger.info("view_id {} 字段最后保留字段为 {}".format(view_id, [_filed["technical_name"] for _filed in column["fields"]]))
+                logger.info("view_id {} 字段最后保留字段为 {}".format(
+                    view_id, [_filed["technical_name"] for _filed in column["fields"]]))
 
                 totype, column_name, table, zh_table = get_view_en2type(column)
                 asset: dict = {"index": view_id, "title": table.split(".")[2],
@@ -611,17 +616,16 @@ class VegaDataSource(DataSource):
 
                     logger.info("get sample data num {}".format(len(dict_sample)))
 
-
         except AfDataSourceError as e:
             raise FrontendColumnError(e) from e
 
-        result =  {
+        result = {
             "detail": details,
             "view_schema_infos": view_schema_infos
         }
 
         if view_white_list_sql_infos:
-            result["view_white_list_sql_infos"] = view_white_list_sql_infos 
+            result["view_white_list_sql_infos"] = view_white_list_sql_infos
 
         if with_sample:
             result["sample"] = samples
@@ -648,7 +652,6 @@ class VegaDataSource(DataSource):
         except FrontendSampleError as e:
             logger.error(e)
         return descriptions
-
 
     def get_catelog(self) -> list[str]:
         text2sql = Services()

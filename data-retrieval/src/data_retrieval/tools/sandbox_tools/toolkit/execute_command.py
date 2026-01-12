@@ -22,7 +22,7 @@ class ExecuteCommandInput(BaseSandboxToolInput):
 
 class ExecuteCommandTool(BaseSandboxTool):
     """执行命令工具，在沙箱环境中执行系统命令"""
-    
+
     name: str = "execute_command"
     description: str = "在沙箱环境中执行系统命令，如 ls、cat、grep 等 Linux 命令"
     args_schema: type[BaseSandboxToolInput] = ExecuteCommandInput
@@ -41,7 +41,7 @@ class ExecuteCommandTool(BaseSandboxTool):
         except Exception as e:
             logger.error(f"Execute command failed: {e}")
             raise SandboxError(reason="执行命令失败", detail=str(e)) from e
-    
+
     @async_construct_final_answer
     async def _arun(
         self,
@@ -64,7 +64,7 @@ class ExecuteCommandTool(BaseSandboxTool):
         except Exception as e:
             logger.error(f"Execute command failed: {e}")
             raise SandboxError(reason="执行命令失败", detail=str(e)) from e
-    
+
     async def _execute_command(
         self,
         command: str,
@@ -75,13 +75,13 @@ class ExecuteCommandTool(BaseSandboxTool):
             raise SandboxError(reason="执行命令失败", detail="command 参数不能为空")
 
         sandbox = self._get_sandbox()
-        
+
         try:
             result = await sandbox.execute(command, *args)
-            
+
             # 检查执行结果，处理异常情况
             self._check_execution_result(result, f"命令 {command} 执行")
-            
+
             return {
                 "action": "execute_command",
                 "result": result,
@@ -90,8 +90,6 @@ class ExecuteCommandTool(BaseSandboxTool):
         except Exception as e:
             logger.error(f"Execute command action failed: {e}")
             raise SandboxError(reason="命令执行失败", detail=str(e)) from e
-    
-
 
     @staticmethod
     async def get_api_schema():
@@ -99,7 +97,7 @@ class ExecuteCommandTool(BaseSandboxTool):
         base_schema = await BaseSandboxTool.get_api_schema()
         base_schema["post"]["summary"] = "execute_command"
         base_schema["post"]["description"] = "在沙箱环境中执行系统命令，如 ls、cat、grep 等 Linux 命令"
-        
+
         # 更新请求体 schema，添加工具特定参数
         base_schema["post"]["requestBody"]["content"]["application/json"]["schema"]["properties"].update({
             "command": {
@@ -113,7 +111,7 @@ class ExecuteCommandTool(BaseSandboxTool):
             }
         })
         base_schema["post"]["requestBody"]["content"]["application/json"]["schema"]["required"] = ["command"]
-        
+
         # 添加示例
         base_schema["post"]["requestBody"]["content"]["application/json"]["examples"] = {
             "list_files": {
@@ -147,5 +145,5 @@ class ExecuteCommandTool(BaseSandboxTool):
                 }
             }
         }
-        
-        return base_schema 
+
+        return base_schema

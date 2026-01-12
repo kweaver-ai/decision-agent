@@ -13,6 +13,7 @@ http_max_initial_line_length = 16384  # opensearch http.max_initial_line_length�
 logging.basicConfig(format='%(asctime)s %(name)s %(levelname)s %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+
 def keyword_proc(predicted_ngql):
     raw_ngql = predicted_ngql
     # Nebula3的关键词需要加上``
@@ -36,6 +37,8 @@ def keyword_proc(predicted_ngql):
     if raw_ngql != predicted_ngql:
         logger.info("keyword_proc: {} -> {}".format(raw_ngql, predicted_ngql))
     return predicted_ngql
+
+
 class NebulaConnector(object):
     """
     Nebula Graph Database Connect and Search API

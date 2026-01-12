@@ -26,7 +26,6 @@ from data_retrieval.utils.model_types import ModelType4Prompt
 from data_retrieval.parsers.base import BaseJsonParser
 
 
-
 class DataSourceDescSchema(BaseModel):
     id: str = Field(description="数据源的 id, 为一个字符串")
     title: str = Field(description="数据源的名称")
@@ -37,7 +36,8 @@ class DataSourceDescSchema(BaseModel):
 
 class ArgsModel(BaseModel):
     query: str = Field(default="", description="用户的完整查询需求，如果是追问，则需要根据上下文总结")
-    search_tool_cache_key: str = Field(default="", description=f"搜索工具的缓存 key, 不能编造该信息, 注意不是数据资源的 ID, 只能是 {ToolName.from_sailor.value} 工具的缓存 key")
+    search_tool_cache_key: str = Field(
+        default="", description=f"搜索工具的缓存 key, 不能编造该信息, 注意不是数据资源的 ID, 只能是 {ToolName.from_sailor.value} 工具的缓存 key")
     # data_source_list: Optional[List[str]] = Field(default=[], description=f"数据源的列表, 每个列表都是一个字典, 格式为: {DataSourceDescSchema.schema_json(ensure_ascii=False)}")
 
 
@@ -52,7 +52,7 @@ class DataSourceFilterTool(LLMTool):
 
 如果没有 search_tool_cache_key 信息, 则不要使用该工具, 否则会出现严重错误
 """
-    )
+                              )
     args_schema: Type[BaseModel] = ArgsModel
     with_sample: bool = False
     data_source_num_limit: int = -1
@@ -63,7 +63,6 @@ class DataSourceFilterTool(LLMTool):
     token: str = ""
     user_id: str = ""
     background: str = ""
-
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -111,7 +110,6 @@ class DataSourceFilterTool(LLMTool):
             | BaseJsonParser()
         )
         return chain
-        
 
     @construct_final_answer
     def _run(
@@ -191,7 +189,7 @@ class DataSourceFilterTool(LLMTool):
                 token=self.token,
                 user_id=self.user_id
             )
-            try:    
+            try:
                 metric_metadata = metric_source.get_details(
                     input_query=query,
                     indicator_num_limit=self.data_source_num_limit,
@@ -206,11 +204,11 @@ class DataSourceFilterTool(LLMTool):
                                 for dimension in detail.get("dimensions", [])
                             }
                             break
-            
+
             except Exception as e:
                 logger.error(f"获取指标元数据失败: {str(e)}")
                 # raise ToolFatalError(f"获取指标元数据失败: {e}")
-        
+
         if not data_view_list and not metric_list:
             return {
                 "result": "没有找到符合要求的数据源"
@@ -218,7 +216,7 @@ class DataSourceFilterTool(LLMTool):
             # raise ToolFatalError(f"没有找到符合要求的数据源")
 
         chain = self._config_chain(
-            data_source_list = list(data_view_list.values()) + list(metric_list.values()),
+            data_source_list=list(data_view_list.values()) + list(metric_list.values()),
             data_source_list_description=data_source_list_description
         )
 

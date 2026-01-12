@@ -102,5 +102,3 @@ async def rerank_instance_map(
     tasks = [rerank_one(obj_type_id, insts) for obj_type_id, insts in instance_map.items()]
     pairs = await asyncio.gather(*tasks)  # 不吞异常：任一失败直接抛
     return {obj_id: insts for obj_id, insts in pairs}
-
-

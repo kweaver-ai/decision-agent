@@ -2,14 +2,10 @@ from ..synthetic_data.template_synthetic import nGQLTemplateSynthetic
 import copy
 
 
-
 class QuestionRuleRetrieval:
     def __init__(self, params):
         self.template_synthetic = nGQLTemplateSynthetic()
         self.size = params["size"]
-        
-
-
 
     async def retrieval(self, intermediate_result, keywords):
         query = intermediate_result.query
@@ -29,11 +25,11 @@ class QuestionRuleRetrieval:
         """Convert nGQL query to cypher format"""
         # Replace == with =
         query = nGQL_query.replace("==", "=")
-        
+
         # Remove tag names from property references (v1.person.name -> v1.name)
         import re
         query = re.sub(r'(\w+)\.\w+\.(\w+)', r'\1.\2', query)
-        
+
         return query
 
     def get_schema(self, keywords):

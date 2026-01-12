@@ -74,5 +74,3 @@ async def filter_relation_types_by_query(
         max_k = min(limit, len(relation_types))
         log.warning(f"关系类型预筛选失败，改用前{max_k}个关系类型限流。原因: {e}")
         return relation_types[:max_k]
-
-

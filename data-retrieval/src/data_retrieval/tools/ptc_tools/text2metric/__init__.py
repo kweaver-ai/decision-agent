@@ -12,4 +12,3 @@ from data_retrieval.tools.ptc_tools.text2metric.text2metric import Text2Metric
 __all__ = [
     "Text2Metric"
 ]
-

@@ -35,7 +35,6 @@ from data_retrieval.utils.model_types import ModelType4Prompt
 from data_retrieval.api.agent_retrieval import get_datasource_from_agent_retrieval_async
 
 
-
 _SETTINGS = get_settings()
 
 _DESCS = {
@@ -85,7 +84,8 @@ class Text2DIPMetricInput(BaseModel):
 
 
 class Text2DIPMetricInputWithMetricList(Text2DIPMetricInput):
-    metric_list: List[DIPMetricDescSchema] = Field(default=[], description=f"指标列表，注意指标指的一个数据源，不是字段信息，当已经初始化过虚拟视图列表时，不需要填写该参数。如果需要填写该参数，请确保`上下文缓存的数据资源中存在`，不要随意生成。注意参数一定要准确。格式为 {DIPMetricDescSchema.schema_json(ensure_ascii=False)}")
+    metric_list: List[DIPMetricDescSchema] = Field(
+        default=[], description=f"指标列表，注意指标指的一个数据源，不是字段信息，当已经初始化过虚拟视图列表时，不需要填写该参数。如果需要填写该参数，请确保`上下文缓存的数据资源中存在`，不要随意生成。注意参数一定要准确。格式为 {DIPMetricDescSchema.schema_json(ensure_ascii=False)}")
 
 
 class Text2DIPMetricTool(LLMTool):
@@ -105,11 +105,11 @@ class Text2DIPMetricTool(LLMTool):
     rewrite_query: bool = bool(_SETTINGS.INDICATOR_REWRITE_QUERY)  # 是否重写指标查询语句
     model_type: str = _SETTINGS.TEXT2METRIC_MODEL_TYPE
     return_record_limit: int = _SETTINGS.RETURN_RECORD_LIMIT
-    return_data_limit: int = _SETTINGS.RETURN_DATA_LIMIT    
+    return_data_limit: int = _SETTINGS.RETURN_DATA_LIMIT
     api_mode: bool = False  # 是否为 API 模式
     force_limit: int = _SETTINGS.TEXT2METRIC_FORCE_LIMIT  # 限制指标查询的行数
 
-    _initial_metric_ids: List[str] = PrivateAttr(default=[]) # 工具初始化时设置的指标id列表
+    _initial_metric_ids: List[str] = PrivateAttr(default=[])  # 工具初始化时设置的指标id列表
     _result_cache_key: str = PrivateAttr(default="")  # 结果缓存键
 
     def __init__(self, *args, **kwargs):
@@ -117,12 +117,12 @@ class Text2DIPMetricTool(LLMTool):
 
         if kwargs.get("session") is None:
             self.session = CreateSession(self.session_type)
-        
+
         if self.dip_metric and self.dip_metric.get_data_list():
             self._initial_metric_ids = self.dip_metric.get_data_list()
         else:
             self.args_schema = Text2DIPMetricInputWithMetricList
-        
+
     def _init_dip_metric_details_and_samples(self, input_question=""):
         """初始化 DIP Metric 详情和样例数据"""
         coroutine = self._ainit_dip_metric_details_and_samples(input_question)
@@ -134,14 +134,14 @@ class Text2DIPMetricTool(LLMTool):
             if not self.dip_metric:
                 logger.warning("DIP Metric 数据源未初始化")
                 return
-            
+
             # 获取指标详情
             metric_details = []
             sample_data = {
                 "mapping": [],
                 "data": []
             }
-            
+
             # 异步获取可用指标列表
             details = await self.dip_metric.aget_details(input_question)
             if details:
@@ -158,9 +158,9 @@ class Text2DIPMetricTool(LLMTool):
                         "data_source": metric.get("data_source", {})
                     })
                 logger.info(f"异步获取到 {len(metric_details)} 个指标详情")
-            
+
             if self.with_sample_data and metric_details:
-                
+
                 for metric in metric_details:
                     data_source = metric.get("data_source", {})
                     if not data_source:
@@ -174,7 +174,7 @@ class Text2DIPMetricTool(LLMTool):
 
                     if data_view_id in sample_data:
                         continue
-                    
+
                     sample = await self.dip_metric.service.get_view_data_preview_async(
                         data_view_id,
                         fields=metric.get("analysis_dimensions")
@@ -225,27 +225,27 @@ class Text2DIPMetricTool(LLMTool):
                 )
 
             chain = (
-                    prompt
-                    | self.llm
+                prompt
+                | self.llm
             )
             return chain
         except Exception as e:
             logger.error(f"配置 LLM 链失败: {e}")
             raise e
 
-    def _add_extra_info(self, extra_info, knowledge_enhanced_information = ""):
+    def _add_extra_info(self, extra_info, knowledge_enhanced_information=""):
         """添加额外信息"""
         background = self.background
-        
+
         if extra_info:
             background += f"\n额外信息：{extra_info}"
-        
+
         if knowledge_enhanced_information:
             if isinstance(knowledge_enhanced_information, dict):
                 background += f"\n知识增强信息：{json.dumps(knowledge_enhanced_information, ensure_ascii=False)}"
             else:
                 background += f"\n知识增强信息：{knowledge_enhanced_information}"
-        
+
         return background
 
     def _get_configured_metrics_info(self):
@@ -256,29 +256,29 @@ class Text2DIPMetricTool(LLMTool):
                     "error": "DIP Metric 数据源未初始化",
                     "message": "无法获取配置的指标信息，因为 DIP Metric 数据源未初始化"
                 }
-            
+
             # 获取配置的指标列表
             metric_list = self.dip_metric.get_data_list()
-            
+
             if not metric_list:
                 return {
                     "message": "当前未配置任何指标",
                     "available_metrics": [],
                     "title": "配置的指标信息"
                 }
-            
+
             # 获取指标详细信息
             metric_details = self.dip_metric.get_description_by_ids(metric_list)
-            
+
             # 格式化指标信息
-            
+
             return {
                 "title": "配置的指标信息",
                 "message": f"当前配置了 {len(metric_details)} 个指标",
                 "metric_num": len(metric_details),
                 "metric_details": metric_details
             }
-            
+
         except Exception as e:
             logger.error(f"获取配置的指标信息失败: {e}")
             return {
@@ -294,29 +294,29 @@ class Text2DIPMetricTool(LLMTool):
                     "error": "DIP Metric 数据源未初始化",
                     "message": "无法获取配置的指标信息，因为 DIP Metric 数据源未初始化"
                 }
-            
+
             # 获取配置的指标列表
             metric_list = self.dip_metric.get_data_list()
-            
+
             if not metric_list:
                 return {
                     "message": "当前未配置任何指标",
                     "available_metrics": [],
                     "title": "配置的指标信息"
                 }
-            
+
             # 异步获取指标详细信息
             metric_details = await self.dip_metric.aget_description_by_ids(metric_list)
-            
+
             # 格式化指标信息
-            
+
             return {
                 "title": "配置的指标信息",
                 "message": f"当前配置了 {len(metric_details)} 个指标",
                 "metric_num": len(metric_details),
                 "metric_details": metric_details
             }
-            
+
         except Exception as e:
             logger.error(f"异步获取配置的指标信息失败: {e}")
             return {
@@ -348,32 +348,33 @@ class Text2DIPMetricTool(LLMTool):
         """异步运行"""
         return await self._aprocess_query(input, action, extra_info, knowledge_enhanced_information, run_manager)
 
-    def _process_query(self, input: str, action: str = "query", extra_info: str = "", knowledge_enhanced_information: Any = "", run_manager=None):
+    def _process_query(self, input: str, action: str = "query", extra_info: str = "",
+                       knowledge_enhanced_information: Any = "", run_manager=None):
         """处理查询，参考 text2metric.py 的实现"""
         try:
             # 如果 action 不是 show_ds，且 input 为空，则抛出异常
             if action != "show_ds" and (not input or not input.strip()):
                 raise Text2DIPMetricError(detail="输入问题不能为空", reason="输入问题不能为空")
-            
+
             # 根据 action 参数决定行为
             if action == "show_ds":
                 return self._get_configured_metrics_info()
-            
+
             # 添加额外信息
             background = self._add_extra_info(extra_info, knowledge_enhanced_information)
-            
+
             # 初始化指标详情和样例
             metric_details, sample_data = self._init_dip_metric_details_and_samples(input)
-            
+
             errors = {}
             res = {}
-            
+
             for i in range(self.retry_times):
                 logger.debug("============" * 10)
                 logger.debug(f"{i + 1} times to process DIP metric query......")
                 try:
                     llm_res, call_res = {}, {}
-                    
+
                     # 配置 LLM 链
                     chain = self._config_chain(
                         metric_details=metric_details,
@@ -381,20 +382,20 @@ class Text2DIPMetricTool(LLMTool):
                         errors=errors,
                         background=background
                     )
-                    
+
                     # 调用 LLM
                     response = chain.invoke({"input": input})
-                    
+
                     # 解析响应
                     llm_res = self._parse_response(response)
-                    
+
                     # 获取指标ID和查询参数
                     metric_id = llm_res.get("metric_id", "")
                     param = llm_res.get("query_params", {})
-                    
+
                     if metric_id == "":
                         raise Text2DIPMetricError(llm_res.get("explanation", "指标ID为空"))
-                    
+
                     # 添加引用信息
                     res["cites"] = [
                         {
@@ -404,17 +405,17 @@ class Text2DIPMetricTool(LLMTool):
                             "description": "DIP Metric 指标"
                         }
                     ]
-                    
+
                     res.update(llm_res)
 
                     # 执行查询
                     if metric_id and param:
                         call_res = self._execute_query(metric_id, param)
                         logger.info(f"DIP Metric 调用结果: {call_res}")
-                        
+
                         if call_res.get("error"):
                             raise Text2DIPMetricError(call_res["error"])
-                        
+
                         # 先拷贝一份给大模型的结果
                         res_for_llm = res.copy()
 
@@ -444,33 +445,34 @@ class Text2DIPMetricTool(LLMTool):
 
                         # 如果成功获取结果，跳出重试循环
                         break
-                    
+
                 except Exception as e:
                     logger.error(f"第 {i + 1} 次处理查询失败: {e}")
                     logger.error(f"错误详情: {traceback.format_exc()}")
                     errors[f"error_{i+1}"] = str(e)
-                    
+
                     # 如果是最后一次重试，抛出异常
                     if i == self.retry_times - 1:
                         logger.error(f"处理查询失败，已重试 {self.retry_times} 次")
                         raise Text2DIPMetricError(f"处理查询失败，已重试 {self.retry_times} 次: {errors}")
-                    
+
                     # 继续下一次重试
                     continue
-  
+
             if self.api_mode:
                 return {
                     "output": res_for_llm,
                     "full_output": res
                 }
-            else:   
+            else:
                 return res
-            
+
         except Exception as e:
             logger.error(f"处理查询失败: {e}")
             raise Text2DIPMetricError(f"处理查询失败: {e}")
 
-    async def _aprocess_query(self, input: str, action: str = "query", extra_info: str = "", knowledge_enhanced_information: Any = "", run_manager=None):
+    async def _aprocess_query(self, input: str, action: str = "query", extra_info: str = "",
+                              knowledge_enhanced_information: Any = "", run_manager=None):
         """异步处理查询，参考 text2metric.py 的实现"""
         try:
             if not self.dip_metric.get_data_list():
@@ -483,22 +485,22 @@ class Text2DIPMetricTool(LLMTool):
             # 根据 action 参数决定行为
             if action == "show_ds":
                 return await self._aget_configured_metrics_info()
-            
+
             # 添加额外信息
             background = self._add_extra_info(extra_info, knowledge_enhanced_information)
-            
+
             # 异步初始化指标详情和样例
             metric_details, sample_data = await self._ainit_dip_metric_details_and_samples(input)
-            
+
             errors = {}
             res = {}
-            
+
             for i in range(self.retry_times):
                 logger.debug("============" * 10)
                 logger.debug(f"{i + 1} times to process DIP metric query (async)......")
                 try:
                     llm_res, call_res = {}, {}
-                    
+
                     # 配置 LLM 链
                     chain = self._config_chain(
                         metric_details=metric_details,
@@ -506,28 +508,28 @@ class Text2DIPMetricTool(LLMTool):
                         errors=errors,
                         background=background
                     )
-                    
+
                     # 异步调用 LLM
                     response = await chain.ainvoke({"input": input})
                     logger.debug(f"LLM 响应: {response.content}")
-                    
+
                     # 解析响应
                     llm_res = self._parse_response(response.content)
                     logger.debug(f"解析后的结果: {llm_res}")
-                    
+
                     # 获取指标ID和查询参数
                     metric_id = llm_res.get("metric_id", "")
                     param = llm_res.get("query_params", {})
-                    
+
                     if metric_id == "":
                         if self.api_mode:
                             return {
                                 "output": llm_res,
                                 "full_output": llm_res
                             }
-                        else:   
+                        else:
                             return llm_res
-                    
+
                     metric_name = ""
                     for detail in metric_details:
                         if detail.get("id") == metric_id:
@@ -542,21 +544,20 @@ class Text2DIPMetricTool(LLMTool):
                             "type": "metric"
                         }
                     ]
-                    
+
                     res.update(llm_res)
 
                     # 执行查询
                     if metric_id and param:
                         call_res = await self._aexecute_query(metric_id, param)
                         logger.info(f"DIP Metric 调用结果: {call_res}")
-                        
+
                         if call_res.get("error"):
                             raise Text2DIPMetricError(call_res["error"])
-                        
+
                         # 先拷贝一份给大模型的结果
                         res_for_llm = res.copy()
 
-                       
                         # 处理执行结果
                         execution_result, raw_result = self._process_execution_result(call_res)
 
@@ -579,27 +580,27 @@ class Text2DIPMetricTool(LLMTool):
                         if self.session and raw_result.get("data"):
                             try:
                                 self.session.add_agent_logs(
-                                        self._result_cache_key,
-                                        logs=res
-                                    )
+                                    self._result_cache_key,
+                                    logs=res
+                                )
                             except Exception as e:
                                 logger.error(f"添加缓存失败: str{e}")
 
                         # 如果成功获取结果，跳出重试循环
                         break
-                    
+
                 except Exception as e:
                     logger.error(f"第 {i + 1} 次异步处理查询失败: {e}")
                     logger.error(f"错误详情: {traceback.format_exc()}")
                     errors[f"error_{i+1}"] = str(e)
-                    
+
                     print(traceback.format_exc())
 
                     # 如果是最后一次重试，抛出异常
                     if i == self.retry_times - 1:
                         logger.error(f"异步处理查询失败，已重试 {self.retry_times} 次, 错误详情: {errors}")
                         raise Text2DIPMetricError(reason=f"异步处理查询失败，已重试 {self.retry_times} 次", detail=errors)
-                    
+
                     # 继续下一次重试
                     continue
 
@@ -608,9 +609,9 @@ class Text2DIPMetricTool(LLMTool):
                     "output": res_for_llm,
                     "full_output": res
                 }
-            else:   
+            else:
                 return res
-            
+
         except Exception as e:
             logger.error(f"异步处理查询失败: {e}")
             print(traceback.format_exc())
@@ -640,9 +641,9 @@ class Text2DIPMetricTool(LLMTool):
                     "query_params": {},
                     "explanation": str(response)
                 }
-            
+
             return result
-            
+
         except Exception as e:
             logger.error(f"解析响应失败: {e}")
             return {
@@ -657,11 +658,11 @@ class Text2DIPMetricTool(LLMTool):
         try:
             if not self.dip_metric:
                 return {"error": "DIP Metric 数据源未初始化"}
-            
+
             # 调用指标查询
             result = self.dip_metric.call(metric_id, query_params)
             return result
-            
+
         except Exception as e:
             logger.error(f"执行指标查询失败: {e}")
             return {"error": f"执行指标查询失败: {e}"}
@@ -671,11 +672,11 @@ class Text2DIPMetricTool(LLMTool):
         try:
             if not self.dip_metric:
                 return {"error": "DIP Metric 数据源未初始化"}
-            
+
             # 异步调用指标查询
             result = await self.dip_metric.acall(metric_id, query_params)
             return result
-            
+
         except Exception as e:
             logger.error(f"异步执行指标查询失败: {e}")
             return {"error": f"异步执行指标查询失败: {e}"}
@@ -695,7 +696,7 @@ class Text2DIPMetricTool(LLMTool):
             }
 
             processed = {}
-            
+
             data = result["data"]
             total_records = len(data)
 
@@ -719,7 +720,7 @@ class Text2DIPMetricTool(LLMTool):
                 if self.force_limit > 0:
                     data = data[:self.force_limit]
                     total_records = min(self.force_limit, total_records)
-                
+
                 if self.return_record_limit > 0 or self.return_data_limit > 0:
                     limited_data = []
                     data_len = 0
@@ -748,7 +749,7 @@ class Text2DIPMetricTool(LLMTool):
                     }
 
             return processed, raw_result
-            
+
         except Exception as e:
             logger.error(f"处理执行结果失败: {e}")
             print(traceback.format_exc())
@@ -770,11 +771,11 @@ class Text2DIPMetricTool(LLMTool):
                 # 获取缓存的数据
                 full_result = tool_res.get("full_result", {})
                 data = full_result.get("data", [])
-                
+
                 # 添加到结果中
                 ans_multiple.table.append(full_result)
                 ans_multiple.new_table.append({"title": full_result.get("title", "DIP Metric 查询结果"), "data": data})
-                
+
                 # 设置缓存键信息
                 cache_result = {
                     "tool_name": "text2metric",
@@ -782,7 +783,7 @@ class Text2DIPMetricTool(LLMTool):
                     "is_empty": len(data) == 0,
                     "fields": list(data[0].keys()) if data else [],
                 }
-                
+
                 ans_multiple.cache_keys[self._result_cache_key] = cache_result
 
     @classmethod
@@ -869,7 +870,7 @@ class Text2DIPMetricTool(LLMTool):
                 }
                 if token:
                     headers["Authorization"] = token
-                
+
                 for kn_param in kn_params:
                     if isinstance(kn_param, dict):
                         kn_id = kn_param.get('knowledge_network_id', '')
@@ -903,15 +904,15 @@ class Text2DIPMetricTool(LLMTool):
                 "x-account-id": user_id,
                 "x-account-type": account_type
             }
- 
+
             # LLM Params
             llm_dict = parse_llm_from_model_factory(params.get("inner_llm", {}), headers=llm_headers)
             llm_dict.update(params.get("llm", {}))
             llm = CustomChatOpenAI(**llm_dict)
-            
+
             # Config Params
             config_dict = params.get("config", {}).copy()  # 复制一份，避免修改原始字典
-            
+
             # 提取并设置配置参数
             recall_top_k = config_dict.pop("recall_top_k", _SETTINGS.INDICATOR_RECALL_TOP_K)
             dimension_num_limit = config_dict.pop("dimension_num_limit", _SETTINGS.TEXT2METRIC_DIMENSION_NUM_LIMIT)
@@ -930,11 +931,11 @@ class Text2DIPMetricTool(LLMTool):
             infos = params.get("infos", {})
             infos['input'] = params.get('input', '')
             infos['action'] = params.get('action', 'query')
-            
+
             # 执行查询
             result = await tool.ainvoke(input=infos)
             return result
-            
+
         except Exception as e:
             logger.error(f"异步 API 调用失败: {e}")
             raise e
@@ -1321,15 +1322,15 @@ class Text2DIPMetricTool(LLMTool):
                 }
             }
         }
-    
+
     @staticmethod
     def get_mock_result():
-        res =  {
+        res = {
             "cites": [{
-                    "id": "mock",
-                    "name": "立白销量",
-                    "type": "metric"
-                }
+                "id": "mock",
+                "name": "立白销量",
+                "type": "metric"
+            }
             ],
             "unit": "件",
             "id": "mock",
@@ -1347,27 +1348,27 @@ class Text2DIPMetricTool(LLMTool):
             },
             "explanation": {
                 "立白销量": [{
-                        "指标": "使用 '立白销量' 指标，按 '时间' '2024年1月到2024年12月' 的数据，并设置过滤条件 '品牌为小白白品牌'"
-                    }, {
-                        "时间": "从 2024-01-01 到 2024-12-31"
-                    }, {
-                        "日期(按月)": "全部"
-                    }, {
-                        "品牌": "等于 小白白品牌"
-                    }
+                    "指标": "使用 '立白销量' 指标，按 '时间' '2024年1月到2024年12月' 的数据，并设置过滤条件 '品牌为小白白品牌'"
+                }, {
+                    "时间": "从 2024-01-01 到 2024-12-31"
+                }, {
+                    "日期(按月)": "全部"
+                }, {
+                    "品牌": "等于 小白白品牌"
+                }
                 ]
             },
             "title": "2024年小白白品牌每月销量",
             "data": [{
-                    "日期(月)": "2024-01",
-                    "立白销量": 1694.1372677178583
-                }, {
-                    "日期(月)": "2024-02",
-                    "立白销量": 1667.5650000348517
-                }, {
-                    "日期(月)": "2024-03",
-                    "立白销量": 1691.206653715858
-                }
+                "日期(月)": "2024-01",
+                "立白销量": 1694.1372677178583
+            }, {
+                "日期(月)": "2024-02",
+                "立白销量": 1667.5650000348517
+            }, {
+                "日期(月)": "2024-03",
+                "立白销量": 1691.206653715858
+            }
             ],
             "result_cache_key": "mock_result_key",
             "execution_result": {
@@ -1395,7 +1396,7 @@ class Text2DIPMetricTool(LLMTool):
             "output": res,
             "full_output": res
         }
-    
+
 
 if __name__ == '__main__':
     async def main():
@@ -1406,13 +1407,13 @@ if __name__ == '__main__':
 
         # 创建 Mock DIP Metric
         # from data_retrieval.datasource.dip_metric import MockDIPMetric
-        
+
         # dip_metric = MockDIPMetric(token="test_token")
         # dip_metric.set_data_list(["metric_1", "metric_2"])
-        
+
         # # 创建工具实例
         # tool = Text2DIPMetricTool.from_dip_metric(dip_metric)
-        
+
         # # 测试查询
         # result = await tool._aprocess_query(
         #     "查询最近1小时的CPU使用率",
@@ -1420,7 +1421,7 @@ if __name__ == '__main__':
         #     [],
         #     {}
         # )
-        
+
         # print("查询结果:", json.dumps(result, ensure_ascii=False, indent=2))
 
     import asyncio

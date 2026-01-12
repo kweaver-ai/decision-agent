@@ -81,6 +81,7 @@ _DESCS = {
     }
 }
 
+
 class DataViewDescSchema(BaseModel):
     id: str = Field(description="数据视图的 id, 格式为 uuid")
     name: str = Field(description="数据视图的名称")
@@ -98,12 +99,13 @@ class Text2SQLInput(BaseModel):
         default="gen_exec",
         description="工具的行为类型：gen(只生成SQL)、gen_exec(生成并执行SQL)、show_ds(只展示配置的数据源的元数据信息)"
     )
-    
+
     # call_count: int = Field(default=0, description="记录工具被调用的次数")
 
 
 class Text2SQLInputWithViewList(Text2SQLInput):
-    view_list: Optional[List[DataViewDescSchema]] = Field(default=[], description=f"数据视图的列表，当已经初始化过虚拟视图列表时，不需要填写该参数。如果需要填写该参数，请确保`上下文缓存的数据资源中存在`，不要随意生成。格式如下：{DataViewDescSchema.schema_json(ensure_ascii=False)}")
+    view_list: Optional[List[DataViewDescSchema]] = Field(
+        default=[], description=f"数据视图的列表，当已经初始化过虚拟视图列表时，不需要填写该参数。如果需要填写该参数，请确保`上下文缓存的数据资源中存在`，不要随意生成。格式如下：{DataViewDescSchema.schema_json(ensure_ascii=False)}")
 
 
 class ActionType(str, Enum):
@@ -154,17 +156,17 @@ class Text2SQLTool(LLMTool):
     return_data_limit: int = _SETTINGS.RETURN_DATA_LIMIT
     show_sql_graph: bool = _SETTINGS.SHOW_SQL_GRAPH
 
-    _initial_view_ids: List[str] = PrivateAttr(default=[]) # 工具初始化时设置的视图id列表
+    _initial_view_ids: List[str] = PrivateAttr(default=[])  # 工具初始化时设置的视图id列表
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+
         if not self.chat_history:
             self.chat_history = []
 
         if kwargs.get("session") is None:
             self.session = CreateSession(self.session_type)
-        
+
         # 保存初始化的视图id列表
         if self.data_source and self.data_source.get_tables():
             self._initial_view_ids = self.data_source.get_tables()
@@ -253,26 +255,28 @@ class Text2SQLTool(LLMTool):
             )
 
         chain = (
-                prompt
-                | self.llm
+            prompt
+            | self.llm
         )
         return chain
-    
+
     def _config_rewrite_query_chain(self, question: str, metadata_and_samples: dict):
         prompt = RewriteQueryPrompt(
             question=question,
             metadata_and_samples=metadata_and_samples,
             background=self.background
         )
-        
+
         if self.model_type == ModelType4Prompt.DEEPSEEK_R1.value:
             messages = [
-                HumanMessage(content=prompt.render(escape_braces=False), additional_kwargs={_TOOL_MESSAGE_KEY: "text2sql_rewrite_query"}),
+                HumanMessage(content=prompt.render(escape_braces=False), additional_kwargs={
+                             _TOOL_MESSAGE_KEY: "text2sql_rewrite_query"}),
                 HumanMessage(content=question)
             ]
         else:
             messages = [
-                SystemMessage(content=prompt.render(escape_braces=False), additional_kwargs={_TOOL_MESSAGE_KEY: "text2sql_rewrite_query"}),
+                SystemMessage(content=prompt.render(escape_braces=False), additional_kwargs={
+                              _TOOL_MESSAGE_KEY: "text2sql_rewrite_query"}),
                 HumanMessage(content=question)
             ]
 
@@ -284,7 +288,7 @@ class Text2SQLTool(LLMTool):
         new_question = chain.invoke(messages)
 
         return json.dumps(new_question, ensure_ascii=False)
-    
+
     async def _arewrite_sql_query(self, question: str, metadata_and_samples):
         chain, messages = self._config_rewrite_query_chain(question, metadata_and_samples)
         new_question = await chain.ainvoke(messages)
@@ -365,8 +369,6 @@ class Text2SQLTool(LLMTool):
                 break
         return new_sql
 
-
-
     def fetch(
             self,
             question: str,
@@ -375,7 +377,7 @@ class Text2SQLTool(LLMTool):
             extra_info: str = "",
             knowledge_enhanced_information: str = ""
     ):
-        
+
         data_info = self.data_source.get_meta_sample_data(
             "\n".join([question, extra_info, knowledge_enhanced_information]),
             self.view_num_limit,
@@ -454,7 +456,7 @@ class Text2SQLTool(LLMTool):
             self.view_num_limit,
             self.dimension_num_limit
         )
-        
+
         if self.rewrite_query:
             question = await self._arewrite_sql_query(question, data_info)
             logger.debug(f"重写后的问题->: {question}")
@@ -486,7 +488,7 @@ class Text2SQLTool(LLMTool):
         res['sql'] = n_sql
         if 'explanation' in generated_res:
             res['explanation'] = generated_res['explanation']
-        
+
         # 获取 title 和 message
         res['title'] = generated_res.get("title", "")
         res['message'] = generated_res.get("message", "")
@@ -542,14 +544,14 @@ class Text2SQLTool(LLMTool):
         parts = table_name.split(".")
         if len(parts) != 3:
             return table_name
-        
+
         part0, part1, part2 = parts[0], parts[1], parts[2]
 
         if not part1.startswith("\"") and not part1.endswith("\""):
             part1 = f"\"{part1}\""
         if not part2.startswith("\"") and not part2.endswith("\""):
             part2 = f"\"{part2}\""
-                
+
         return f"{part0}.{part1}.{part2}"
 
     def _run(
@@ -587,11 +589,11 @@ class Text2SQLTool(LLMTool):
         # 如果 action 不合法，则默认使用 gen_exec
         if action not in [ActionType.GEN.value, ActionType.GEN_EXEC.value, ActionType.SHOW_DS.value]:
             action = ActionType.GEN_EXEC.value
-        
+
         # 如果 action 不是 show_ds，且 input 为空，则抛出异常
         if action != ActionType.SHOW_DS.value and (not input or not input.strip()):
             raise Text2SQLException(detail="输入问题不能为空", reason="输入问题不能为空")
-        
+
         try:
             # 如果 view_list 不为空，则设置 data_source 的 tables
             if view_list:
@@ -612,16 +614,16 @@ class Text2SQLTool(LLMTool):
             # 如果数据源为空，则抛出异常
             if not self.data_source.get_tables():
                 raise Text2SQLException("数据源为空，请检查 view_list 参数。如果涉及知识网络，请检查 kn 参数。如果是老版本知识网络，请检查 kg 参数。")
-    
+
             self._get_desc_from_datasource(self.get_desc_from_datasource)
-            
+
             # 如果是 show_ds 模式，直接返回数据源信息
             if action == "show_ds":
                 if not self.data_source.get_tables():
                     return {
                         "data_sources": f"未设置数据资源，需要用 {ToolName.from_sailor.value} 工具设置数据资源"
                     }
-                
+
                 data_view_metadata = await self.data_source.get_meta_sample_data_async(
                     input,
                     self.view_num_limit,
@@ -647,7 +649,8 @@ class Text2SQLTool(LLMTool):
                     "title": input if input else "获取数据源信息"
                 }
 
-            extra_info, knowledge_enhanced_information = self._add_extra_info(extra_info, knowledge_enhanced_information)
+            extra_info, knowledge_enhanced_information = self._add_extra_info(
+                extra_info, knowledge_enhanced_information)
 
             question = input
             logger.debug(f"text2sql -> input: {input}")
@@ -735,7 +738,7 @@ class Text2SQLTool(LLMTool):
                 # 如果是 gen 模式，直接返回结果
                 if action == ActionType.GEN.value or not res.get("sql"):
                     return res
-                
+
                 # 转化为 graph
                 if self.show_sql_graph:
                     try:
@@ -750,10 +753,9 @@ class Text2SQLTool(LLMTool):
                                     node["data_source_id"] = v["id"]
                                     break
                         res["graph"] = graph
-                        
+
                     except Exception as e:
                         logger.error(f"转化为 graph 失败: {e}")
-                
 
                 # ==
                 # 补丁，如果data为空，大模型有可能会总结查询数据为0，这里添加一个提示
@@ -811,15 +813,15 @@ class Text2SQLTool(LLMTool):
                 llm_res.move_to_end("data")
 
                 logger.info(f"llm_res with ordered dict: {llm_res}")
-                
+
                 if self.api_mode:
                     return {
                         "output": llm_res,
                         "full_output": full_output
                     }
-                else:   
+                else:
                     return res
-            
+
         except Text2SQLException as e:
             raise ToolException(error_message2.format(error_info=e.json()))
 
@@ -911,7 +913,7 @@ class Text2SQLTool(LLMTool):
 
             max_retries = 5
             retry_count = 0
-            
+
             while retry_count < max_retries:
                 try:
                     data_source_dict["token"] = get_authorization(
@@ -927,7 +929,7 @@ class Text2SQLTool(LLMTool):
                         raise ToolFatalError(reason="获取 token 失败，已尝试 {} 次".format(max_retries), detail=e) from e
                     # 如果需要延迟重试，可以在这里添加 sleep
                     time.sleep(1)  # 例如，延迟 1 秒后重试
-        
+
         # 设置 data_source 参数
         data_source_dict['base_url'] = base_url
         data_source_dict['vega_type'] = vega_type
@@ -952,7 +954,6 @@ class Text2SQLTool(LLMTool):
             if not token.startswith("Bearer "):
                 token = f"Bearer {token}"
             headers["Authorization"] = token
-
 
         # 将 kg 参数配置到 data_source_dict 中，如果是 kg 默认全走内部的参数调用
         if kg_params:
@@ -1030,7 +1031,7 @@ class Text2SQLTool(LLMTool):
 
         # Input Params
         in_put_infos = params.get("infos", {})
-        
+
         in_put_infos['input'] = params.get('input', '')
         if not in_put_infos.get('action'):
             in_put_infos['action'] = params.get('action', ActionType.GEN_EXEC.value)
@@ -1038,7 +1039,7 @@ class Text2SQLTool(LLMTool):
         # invoke tool
         res = await tool.ainvoke(input=in_put_infos)
         return res
-    
+
     @staticmethod
     async def get_api_schema():
         inputs = {
@@ -1065,12 +1066,12 @@ class Text2SQLTool(LLMTool):
                 'temperature': 0.1
             },
             'inner_llm': {
-                'frequency_penalty': 0, 
-                'id': '1935601639213895680', 
-                'max_tokens': 1000, 
-                'name': 'doubao-seed-1.6-flash', 
-                'presence_penalty': 0, 
-                'temperature': 1, 
+                'frequency_penalty': 0,
+                'id': '1935601639213895680',
+                'max_tokens': 1000,
+                'name': 'doubao-seed-1.6-flash',
+                'presence_penalty': 0,
+                'temperature': 1,
                 'top_k': 1,
                 'top_p': 1
             },
@@ -1423,7 +1424,7 @@ class Text2SQLTool(LLMTool):
                 }
             }
         }
-    
+
 
 if __name__ == "__main__":
     # if not run_manager:
@@ -1464,8 +1465,7 @@ if __name__ == "__main__":
     #     llm=llm,
     #     background="电影表中的年份字段是年份，如果用户使用两位数的年份，要注意转换成四位数的年份。",
     # )
-    from data_retrieval.api.auth import get_authorization
-    from data_retrieval.datasource.vega_datasource import VegaDataSource
+    from data_retrieval.datasource.vega_datasource import VegaDataSource  # noqa: F811
 
     token = get_authorization("https://10.4.110.170", "xia", "111111")
     datasource = VegaDataSource(

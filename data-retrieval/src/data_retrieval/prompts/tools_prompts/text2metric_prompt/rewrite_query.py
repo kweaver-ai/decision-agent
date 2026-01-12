@@ -193,6 +193,7 @@ prompts = {
     "en": prompt_template_cn
 }
 
+
 class RewriteMetricQueryPrompt(BasePrompt):
     """RewriteMetricQuery Prompt
     There are three variables in the prompt:
@@ -218,9 +219,9 @@ class RewriteMetricQueryPrompt(BasePrompt):
         if isinstance(self.metrics, dict):
             self.metrics = json.dumps(self.metrics, ensure_ascii=False)
         elif isinstance(self.metrics, list):
-            if len(self.metrics) > 0:    
+            if len(self.metrics) > 0:
                 if isinstance(self.metrics[0], dict):
-                    self.metrics = '\n'.join([ json.dumps(metric, ensure_ascii=False) for metric in self.metrics ])
+                    self.metrics = '\n'.join([json.dumps(metric, ensure_ascii=False) for metric in self.metrics])
                 else:
                     self.metrics = '\n\n'.join(self.metrics)
             else:

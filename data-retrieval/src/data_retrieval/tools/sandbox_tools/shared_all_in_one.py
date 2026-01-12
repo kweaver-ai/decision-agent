@@ -75,7 +75,7 @@ class SandboxToolInput(BaseModel):
 
 class SandboxTool(AFTool):
     """Sandbox 工具，支持文件操作和代码执行"""
-    
+
     name: str = ToolName.sandbox.value
     description: str = "沙箱环境工具，支持文件操作、代码执行、命令执行等功能，注意沙箱环境是受限环境，也没有网络连接，不能使用 pip 安装第三方库"
     args_schema: type[BaseModel] = SandboxToolInput
@@ -94,7 +94,7 @@ class SandboxTool(AFTool):
             self.session_id = str(uuid.uuid4())
             self._random_session_id = True
             logger.info(f"Randomly generated session_id: {self.session_id}")
-        
+
         logger.info(f"SandboxTool initialized with session_id: {self.session_id}")
         logger.info(f"SandboxTool initialized with session_type: {self.session_type}")
         self.session = CreateSession(
@@ -104,7 +104,7 @@ class SandboxTool(AFTool):
         if not is_valid_url(self.server_url):
             self.server_url = _settings.SANDBOX_URL
             logger.warning(f"Invalid server URL: {self.server_url}, using default URL: {_settings.SANDBOX_URL}")
-    
+
     def _get_sandbox(self) -> SharedEnvSandbox:
         """获取或创建沙箱实例"""
         if self._sandbox is None:
@@ -114,18 +114,18 @@ class SandboxTool(AFTool):
                 selector_type=self._selector_type
             )
         return self._sandbox
-    
+
     def _check_execution_result(self, result: dict, operation_name: str):
         """检查执行结果，判断是否有错误"""
         if not isinstance(result, dict):
             return
-        
+
         # 检查 stderr
         stderr = result.get("stderr", "")
         if stderr and stderr.strip():
             logger.warning(f"{operation_name} 有错误输出: {stderr}")
             # 如果 stderr 不为空，记录警告但不抛出异常，因为有些警告不影响执行
-        
+
         # 检查 return_code
         return_code = result.get("return_code", 0)
         if return_code != 0:
@@ -134,19 +134,19 @@ class SandboxTool(AFTool):
                 error_msg += f", 错误信息: {stderr}"
             logger.error(error_msg)
             raise SandboxError(
-                reason=f"{operation_name}失败", 
+                reason=f"{operation_name}失败",
                 detail=f"退出码: {return_code}, 错误信息: {stderr}"
             )
-        
+
         # 检查是否有其他错误信息
         error = result.get("error")
         if error:
             logger.error(f"{operation_name} 返回错误: {error}")
             raise SandboxError(
-                reason=f"{operation_name}失败", 
+                reason=f"{operation_name}失败",
                 detail=str(error)
             )
-    
+
     @construct_final_answer
     def _run(
         self,
@@ -159,7 +159,7 @@ class SandboxTool(AFTool):
         output_params: List[str] = [],
         result_cache_key: str = "",
         run_manager: Optional[CallbackManagerForToolRun] = None
-    ):        
+    ):
         try:
             # 创建事件循环来运行异步操作
             result = run_blocking(self._execute_action(
@@ -169,7 +169,7 @@ class SandboxTool(AFTool):
         except Exception as e:
             logger.error(f"Sandbox operation failed: {e}")
             raise SandboxError(reason=f"沙箱操作失败: {action}", detail=str(e)) from e
-    
+
     @async_construct_final_answer
     async def _arun(
         self,
@@ -193,7 +193,7 @@ class SandboxTool(AFTool):
         except Exception as e:
             logger.error(f"Sandbox operation failed: {e}")
             raise SandboxError(reason=f"沙箱操作失败: {action}", detail=str(e)) from e
-    
+
     async def _execute_action(
         self,
         action: str,
@@ -207,7 +207,7 @@ class SandboxTool(AFTool):
     ) -> Dict[str, Any]:
         """执行具体的沙箱操作"""
         sandbox = self._get_sandbox()
-        
+
         try:
             add_content = ""
             if action == SandboxActionType.CREATE_FILE.value:
@@ -233,14 +233,14 @@ class SandboxTool(AFTool):
                     "result": result,
                     "message": message
                 }
-            
+
             elif action == SandboxActionType.READ_FILE.value:
                 if not filename:
                     filename = file_path.split("/")[-1]
 
                 if not filename:
                     raise SandboxError(reason="读取文件失败", detail="filename 参数不能为空")
-                
+
                 # 结果格式
                 # {
                 #     "content": text_content,
@@ -255,7 +255,7 @@ class SandboxTool(AFTool):
                     "action": action,
                     "result": result,
                     "message": f"文件 {filename} 读取成功"
-                }               
+                }
 
                 res_output = {
                     "action": action,
@@ -286,7 +286,7 @@ class SandboxTool(AFTool):
                     "output": res_output,
                     "full_output": res_full_output
                 }
-            
+
             elif action == SandboxActionType.LIST_FILES.value:
                 result = await sandbox.list_files()
                 return {
@@ -294,7 +294,7 @@ class SandboxTool(AFTool):
                     "result": result,
                     "message": "文件列表获取成功"
                 }
-            
+
             elif action == SandboxActionType.EXECUTE_CODE.value:
                 if not filename:
                     filename = file_path.split("/")[-1]
@@ -303,35 +303,35 @@ class SandboxTool(AFTool):
                     raise SandboxError(reason="执行代码失败", detail="content 参数不能为空")
 
                 result = await sandbox.execute_code(
-                    content, 
+                    content,
                     filename=filename if filename else None,
                     args=args if args else None,
                     output_params=output_params if output_params else None
                 )
-                
+
                 # 检查执行结果，处理异常情况
                 self._check_execution_result(result, "代码执行")
-                
+
                 return {
                     "action": action,
                     "result": result,
                     "message": "代码执行成功"
                 }
-            
+
             elif action == SandboxActionType.EXECUTE_COMMAND.value:
                 if not command:
                     raise SandboxError(reason="执行命令失败", detail="command 参数不能为空")
                 result = await sandbox.execute(command, *args)
-                
+
                 # 检查执行结果，处理异常情况
                 self._check_execution_result(result, f"命令 {command} 执行")
-                
+
                 return {
                     "action": action,
                     "result": result,
                     "message": f"命令 {command} 执行成功"
                 }
-            
+
             elif action == SandboxActionType.UPLOAD_FILE.value:
                 if not file_path:
                     raise SandboxError(reason="上传文件失败", detail="file_path 参数不能为空")
@@ -343,7 +343,7 @@ class SandboxTool(AFTool):
                     "result": result,
                     "message": f"文件 {file_path} 上传成功"
                 }
-            
+
             elif action == SandboxActionType.DOWNLOAD_FILE.value:
                 if not filename or not file_path:
                     raise SandboxError(reason="下载文件失败", detail="filename 和 file_path 参数不能为空")
@@ -353,7 +353,7 @@ class SandboxTool(AFTool):
                     "result": {"local_path": file_path},
                     "message": f"文件 {filename} 下载到 {file_path} 成功"
                 }
-            
+
             elif action == SandboxActionType.GET_STATUS.value:
                 result = await sandbox.get_status()
                 return {
@@ -361,7 +361,7 @@ class SandboxTool(AFTool):
                     "result": result,
                     "message": "沙箱状态获取成功"
                 }
-            
+
             elif action == SandboxActionType.CLOSE_SANDBOX.value:
                 result = await sandbox.close()
                 return {
@@ -369,15 +369,14 @@ class SandboxTool(AFTool):
                     "result": result,
                     "message": "工作区清理成功"
                 }
-            
+
             else:
                 raise SandboxError(reason="不支持的操作", detail=f"未知的操作类型: {action}")
-        
+
         except Exception as e:
             logger.error(f"Sandbox action {action} failed: {e}")
             raise SandboxError(reason=f"沙箱操作失败: {action}", detail=str(e)) from e
 
-    
     @staticmethod
     async def get_api_schema():
         """获取 API Schema"""
@@ -429,8 +428,8 @@ class SandboxTool(AFTool):
                                     "action": {
                                         "type": "string",
                                         "enum": [
-                                            "create_file", "read_file", "list_files", 
-                                            "execute_code", "execute_command", 
+                                            "create_file", "read_file", "list_files",
+                                            "execute_code", "execute_command",
                                             "upload_file", "download_file", "get_status",
                                             "close_sandbox"
                                         ],
@@ -680,7 +679,7 @@ class SandboxTool(AFTool):
                 }
             }
         }
-    
+
     @classmethod
     @api_tool_decorator
     async def as_async_api_cls(

@@ -9,7 +9,7 @@ import os
 
 class KnowledgeNetworkConfig:
     """知识网络工具配置类"""
-    
+
     # 知识网络管理接口 API_BASE
     # 用于获取知识网络列表和详情
     KNOWLEDGE_NETWORK_API_BASE = os.getenv(
@@ -17,7 +17,7 @@ class KnowledgeNetworkConfig:
         "http://ontology-manager-svc:13014/api/ontology-manager"
         # "http://192.168.232.11:13014/api/ontology-manager"
     )
-    
+
     # 知识网络查询接口 API_BASE
     # 用于对象检索和关系路径检索
     KNOWLEDGE_NETWORK_QUERY_API_BASE = os.getenv(
@@ -32,7 +32,7 @@ class KnowledgeNetworkConfig:
         "IGNORE_STORE_CACHE_DEFAULT",
         "true"
     ).lower() == "false"
-    
+
     # 大模型配置
     # 用于知识网络检索相关的 LLM 调用
     KN_RETRIEVAL_LLM_MODEL = os.getenv(
@@ -43,4 +43,3 @@ class KnowledgeNetworkConfig:
 
 # 创建配置实例
 config = KnowledgeNetworkConfig()
-

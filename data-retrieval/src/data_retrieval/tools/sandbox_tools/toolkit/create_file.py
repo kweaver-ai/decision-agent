@@ -33,7 +33,7 @@ class CreateFileInput(BaseSandboxToolInput):
 
 class CreateFileTool(BaseSandboxTool):
     """创建文件工具，在沙箱环境中创建新文件"""
-    
+
     name: str = "create_file"
     description: str = "在沙箱环境中创建新文件，支持文本内容或从缓存中获取内容"
     args_schema: type[BaseSandboxToolInput] = CreateFileInput
@@ -54,7 +54,7 @@ class CreateFileTool(BaseSandboxTool):
         except Exception as e:
             logger.error(f"Create file failed: {e}")
             raise SandboxError(reason="创建文件失败", detail=str(e)) from e
-    
+
     @async_construct_final_answer
     async def _arun(
         self,
@@ -68,7 +68,7 @@ class CreateFileTool(BaseSandboxTool):
             result = await self._create_file(filename=filename, content=content, result_cache_key=result_cache_key)
             if self._random_session_id:
                 result["session_id"] = self.session_id
-            
+
             if title:
                 result["title"] = title
             else:
@@ -78,7 +78,7 @@ class CreateFileTool(BaseSandboxTool):
         except Exception as e:
             logger.error(f"Create file failed: {e}")
             raise SandboxError(reason="创建文件失败", detail=str(e)) from e
-    
+
     async def _create_file(
         self,
         filename: str,
@@ -103,12 +103,12 @@ class CreateFileTool(BaseSandboxTool):
             raise SandboxError(reason="创建文件失败", detail="文件内容不能为空")
 
         sandbox = self._get_sandbox()
-        
+
         try:
             result = await sandbox.create_file(content, filename)
-            
+
             message = f"文件内容前100字符: {content[:100]}"
-            
+
             return {
                 "action": "create_file",
                 "result": result,
@@ -124,7 +124,7 @@ class CreateFileTool(BaseSandboxTool):
         base_schema = await BaseSandboxTool.get_api_schema()
         base_schema["post"]["summary"] = "create_file"
         base_schema["post"]["description"] = "在沙箱环境中创建新文件，支持文本内容或从缓存中获取内容"
-        
+
         # 更新请求体 schema，添加工具特定参数
         base_schema["post"]["requestBody"]["content"]["application/json"]["schema"]["properties"].update({
             "content": {
@@ -145,7 +145,7 @@ class CreateFileTool(BaseSandboxTool):
             }
         })
         base_schema["post"]["requestBody"]["content"]["application/json"]["schema"]["required"] = ["filename"]
-        
+
         # 添加示例
         base_schema["post"]["requestBody"]["content"]["application/json"]["examples"] = {
             "create_python_file": {
@@ -169,5 +169,5 @@ class CreateFileTool(BaseSandboxTool):
                 }
             }
         }
-        
-        return base_schema 
+
+        return base_schema

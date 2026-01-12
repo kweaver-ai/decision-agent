@@ -29,20 +29,22 @@ class SingleCondition(BaseModel):
 
 class ConditionConfig(BaseModel):
     """条件组配置（顶层条件）
-    
+
     顶层条件组只包含 operation 和 sub_conditions 两个字段。
     sub_conditions 是单个条件的数组，不支持嵌套。
     """
     operation: str = Field(description="逻辑操作符，如 'and', 'or'")
-    sub_conditions: List[SingleCondition] = Field(description="子条件列表，每个子条件是单个条件（包含 field, operation, value, value_from），不支持嵌套")
-    
+    sub_conditions: List[SingleCondition] = Field(
+        description="子条件列表，每个子条件是单个条件（包含 field, operation, value, value_from），不支持嵌套")
+
     model_config = ConfigDict(extra="forbid")  # 禁止额外字段，确保只有 operation 和 sub_conditions
 
 
 class ObjectTypeConfig(BaseModel):
     """对象类型配置"""
     id: str = Field(description="对象类型ID")
-    condition: Optional[Any] = Field(default=None, description="查询条件，统一使用sub_conditions结构。格式：{operation: 'and', sub_conditions: [{field: '...', operation: '==', value: '...', value_from: 'const'}]}。支持ConditionConfig对象或字典格式（字典格式可用于KNN等需要额外参数的操作符）")
+    condition: Optional[Any] = Field(
+        default=None, description="查询条件，统一使用sub_conditions结构。格式：{operation: 'and', sub_conditions: [{field: '...', operation: '==', value: '...', value_from: 'const'}]}。支持ConditionConfig对象或字典格式（字典格式可用于KNN等需要额外参数的操作符）")
     limit: Optional[int] = Field(default=50, description="返回结果数量限制（默认值50，最大不超过100，用于控制token消耗）")
     properties: Optional[List[str]] = Field(default=None, description="需要返回的属性列表，只有指定了properties的对象才会在结果中保留")
 
@@ -77,10 +79,10 @@ class RelationPathRetrievalTool:
     MAX_RETURN_ROWS: int = 100
     # 每个分组（每个 entry/path）最大参与汇总的行数（用于均衡多路径场景，避免单一路径占满全局行数）
     MAX_GROUP_RETURN_ROWS: int = 1000
-    
+
     def __init__(self):
         pass
-    
+
     @classmethod
     async def _call_relation_path_api(
         cls,
@@ -90,15 +92,15 @@ class RelationPathRetrievalTool:
     ) -> Dict[str, Any]:
         """
         调用关系路径检索API
-        
+
         Args:
             kn_id: 知识网络ID
             relation_type_paths: 关系类型路径列表
             headers: HTTP请求头
-            
+
         Returns:
             API返回结果
-            
+
         Raises:
             HTTPException: 当API调用失败时，原样返回API的错误响应
         """
@@ -106,7 +108,7 @@ class RelationPathRetrievalTool:
         request_body = {
             "relation_type_paths": relation_type_paths
         }
-        
+
         # 使用HTTP客户端的方法
         return await KnowledgeNetworkHTTPClient.query_relation_path_with_exception(
             kn_id=kn_id,
@@ -114,7 +116,7 @@ class RelationPathRetrievalTool:
             headers=headers,
             timeout=30.0
         )
-    
+
     @classmethod
     def _extract_properties_from_request(
         cls,
@@ -122,22 +124,22 @@ class RelationPathRetrievalTool:
     ) -> Dict[str, List[str]]:
         """
         从请求中提取每个对象类型需要返回的属性列表
-        
+
         Args:
             relation_type_paths: 关系类型路径列表
-            
+
         Returns:
             对象类型ID到属性列表的映射，格式: {object_type_id: [property1, property2, ...]}
         """
         properties_map = {}
-        
+
         for path in relation_type_paths:
             object_types = path.get("object_types", [])
             for obj_type in object_types:
                 object_type_id = obj_type.get("id")
                 # 使用properties字段名（与ObjectTypeConfig模型定义一致）
                 properties = obj_type.get("properties")
-                
+
                 if object_type_id and properties and isinstance(properties, list):
                     # 如果该对象类型已经有properties，合并（去重）
                     if object_type_id in properties_map:
@@ -146,7 +148,7 @@ class RelationPathRetrievalTool:
                         properties_map[object_type_id] = list(existing_props | new_props)
                     else:
                         properties_map[object_type_id] = properties
-        
+
         return properties_map
 
     @classmethod
@@ -203,7 +205,7 @@ class RelationPathRetrievalTool:
             columns_by_path.append(cols)
 
         return overall_columns, columns_by_path
-    
+
     @classmethod
     def _filter_and_transform_results(
         cls,
@@ -212,44 +214,44 @@ class RelationPathRetrievalTool:
     ) -> List[Dict[str, Any]]:
         """
         过滤和转换API返回结果，只保留有properties字段的对象和属性，转换为SQL格式
-        
+
         Args:
             api_result: API返回的原始结果
             properties_map: 对象类型ID到属性列表的映射
-            
+
         Returns:
             转换后的结果列表，格式: [{"object_type.property": value, ...}, ...]
         """
         results = []
-        
+
         # 如果没有指定任何properties，返回空列表
         if not properties_map:
             logger.warning("没有指定任何properties，返回空结果")
             return results
-        
+
         entries = api_result.get("entries", [])
         if not entries:
             logger.warning("API返回结果中没有entries")
             return results
-        
+
         # 遍历每个entry
         for entry in entries:
             objects = entry.get("objects", {})
             relation_paths = entry.get("relation_paths", [])
-            
+
             # 如果没有relation_paths，跳过
             if not relation_paths:
                 continue
-            
+
             # 遍历每个relation_path，每个path对应一行结果
             for relation_path in relation_paths:
                 relations = relation_path.get("relations", [])
                 if not relations:
                     continue
-                
+
                 # 构建该路径对应的结果行
                 result_row = {}
-                
+
                 # 遍历该路径中的所有关系，收集涉及的对象
                 involved_object_ids = set()
                 for relation in relations:
@@ -259,32 +261,32 @@ class RelationPathRetrievalTool:
                         involved_object_ids.add(source_object_id)
                     if target_object_id:
                         involved_object_ids.add(target_object_id)
-                
+
                 # 遍历涉及的对象，提取需要的属性
                 for object_id in involved_object_ids:
                     obj = objects.get(object_id)
                     if not obj:
                         continue
-                    
+
                     object_type_id = obj.get("object_type_id")
                     if not object_type_id:
                         continue
-                    
+
                     # 检查该对象类型是否在properties_map中
                     if object_type_id not in properties_map:
                         # 该对象类型没有指定properties，跳过
                         continue
-                    
+
                     # 获取该对象类型需要返回的属性列表
                     required_properties = properties_map[object_type_id]
                     if not required_properties:
                         continue
-                    
+
                     # 获取对象的properties
                     obj_properties = obj.get("properties", {})
                     if not isinstance(obj_properties, dict):
                         continue
-                    
+
                     # 提取需要的属性
                     for prop_name in required_properties:
                         if prop_name in obj_properties:
@@ -292,11 +294,11 @@ class RelationPathRetrievalTool:
                             key = f"{object_type_id}.{prop_name}"
                             value = obj_properties[prop_name]
                             result_row[key] = value
-                
+
                 # 只有当result_row不为空时才添加到结果中
                 if result_row:
                     results.append(result_row)
-        
+
         return results
 
     @classmethod
@@ -380,7 +382,7 @@ class RelationPathRetrievalTool:
             "columns": columns,
             "rows": [[r.get(c) for c in columns] for r in rows],
         }
-    
+
     @classmethod
     async def retrieve(
         cls,
@@ -390,12 +392,12 @@ class RelationPathRetrievalTool:
     ) -> Dict[str, Any]:
         """
         执行关系路径检索并过滤属性（精简返回：meta + table）
-        
+
         Args:
             kn_id: 知识网络ID
             relation_type_paths: 关系类型路径列表（Pydantic模型）
             headers: HTTP请求头
-            
+
         Returns:
             新返回结构（不兼容旧版）:
             {
@@ -417,7 +419,7 @@ class RelationPathRetrievalTool:
                 default=default_limit
             )
             actual_requested_limit = min(max_path_limit, cls.MAX_REQUEST_LIMIT)
-            
+
             meta = {
                 "row_count": 0,
                 "requested_limit": actual_requested_limit,
@@ -432,20 +434,20 @@ class RelationPathRetrievalTool:
         relation_type_paths_dict: List[Dict[str, Any]] = []
         limit_limited = False  # 是否有任何limit被限制
         max_requested_limit = None  # 记录最大的请求limit值
-        
+
         for path in relation_type_paths:
             # 对后端请求做上限保护（<= MAX_REQUEST_LIMIT）；未传时使用 DEFAULT_LIMIT（已由 Pydantic 默认给到）
             requested_path_limit = path.limit if path.limit is not None else default_limit
             if max_requested_limit is None or requested_path_limit > max_requested_limit:
                 max_requested_limit = requested_path_limit
-            
+
             safe_path_limit = min(int(requested_path_limit), int(cls.MAX_REQUEST_LIMIT))
             if requested_path_limit > cls.MAX_REQUEST_LIMIT:
                 limit_limited = True
                 logger.warning(
                     f"关系路径检索path limit={requested_path_limit}超过上限{cls.MAX_REQUEST_LIMIT}，已限制为{cls.MAX_REQUEST_LIMIT}"
                 )
-            
+
             relation_type_paths_dict.append(
                 {
                     "object_types": [
@@ -454,9 +456,9 @@ class RelationPathRetrievalTool:
                             # 其余字段中显式排除 limit，避免在对象级别向底层API传递limit，
                             # 只在路径级别使用 RelationTypePathConfig.limit 控制整体数量。
                             **({
-                                "condition": obj.condition if isinstance(obj.condition, dict) 
-                                            else obj.condition.model_dump(exclude_none=True) if obj.condition is not None 
-                                            else None,
+                                "condition": obj.condition if isinstance(obj.condition, dict)
+                                else obj.condition.model_dump(exclude_none=True) if obj.condition is not None
+                                else None,
                                 **{k: v for k, v in obj.model_dump(exclude_none=True).items() if k not in ("condition", "limit")}
                             } if obj.condition is not None else {k: v for k, v in obj.model_dump(exclude_none=True).items() if k != "condition" and k != "limit"}),
                         }
@@ -478,7 +480,7 @@ class RelationPathRetrievalTool:
 
         # 全局截断：限制在MAX_RETURN_ROWS内（与MAX_REQUEST_LIMIT保持一致）
         safe_overall_rows = merged_rows[: int(cls.MAX_RETURN_ROWS)]
-        
+
         # 关系路径检索的meta：统一返回row_count、requested_limit和limit_status（便于大模型理解）
         # 注意：已去掉truncated字段，因为MAX_RETURN_ROWS与MAX_REQUEST_LIMIT一致，不会触发截断
         # 计算实际查询使用的limit值（取路径limit和对象limit的最大值，但不超过MAX_REQUEST_LIMIT）
@@ -486,10 +488,10 @@ class RelationPathRetrievalTool:
             max_requested_limit if max_requested_limit is not None else default_limit,
             cls.MAX_REQUEST_LIMIT
         )
-        
+
         limit_status = (
-            f"查询数量已限制到上限{cls.MAX_REQUEST_LIMIT}" 
-            if limit_limited 
+            f"查询数量已限制到上限{cls.MAX_REQUEST_LIMIT}"
+            if limit_limited
             else "未限制"
         )
         meta = {
@@ -497,7 +499,7 @@ class RelationPathRetrievalTool:
             "requested_limit": actual_requested_limit,  # 实际查询使用的limit值
             "limit_status": limit_status  # 限制状态（文本描述，便于大模型理解）
         }
-        
+
         if len(merged_rows) > len(safe_overall_rows):
             logger.warning(
                 f"关系路径检索结果过大，已截断：before={len(merged_rows)} after={len(safe_overall_rows)} max_return_rows={cls.MAX_RETURN_ROWS}"
@@ -508,16 +510,16 @@ class RelationPathRetrievalTool:
             "meta": meta,
             "table": cls._rows_to_table(overall_columns, safe_overall_rows),
         }
-    
+
     @classmethod
     async def as_async_api_cls(cls, params: dict = Body(...), header_params: HeaderParams = Depends()):
         """
         API接口方法
-        
+
         Args:
             params: API请求参数
             header_params: 请求头参数对象
-            
+
         Returns:
             检索结果
         """
@@ -527,7 +529,7 @@ class RelationPathRetrievalTool:
                 # 验证参数
                 input_data = RelationPathRetrievalInput(**params)
                 logger.debug(f"参数验证通过: {input_data}")
-                
+
                 # 构建headers字典
                 headers_dict = {
                     "x-account-type": header_params.account_type,
@@ -541,14 +543,14 @@ class RelationPathRetrievalTool:
                     detail={"error": str(e)},
                     link="https://example.com/api-docs/relation-path-retrieval"
                 )
-            
+
             # 执行检索（如果API调用失败，_call_relation_path_api会抛出HTTPException，包含API的原始错误响应）
             result = await cls.retrieve(
                 kn_id=input_data.kn_id,
                 relation_type_paths=input_data.relation_type_paths,
                 headers=headers_dict
             )
-            
+
             logger.debug("关系路径检索执行完成")
             return result
         except HTTPException:
@@ -560,7 +562,7 @@ class RelationPathRetrievalTool:
                 status_code=400 if isinstance(e, KnowledgeNetworkParamError) else 500,
                 detail=e.json()
             )
-    
+
     @classmethod
     async def get_api_schema(cls):
         """获取API schema定义"""
@@ -798,4 +800,3 @@ class RelationPathRetrievalTool:
                 }
             }
         }
-

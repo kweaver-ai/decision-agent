@@ -31,9 +31,9 @@ _DESCS = {
     },
     'factors': {
         'cn': '根据用户问题，抽取到的电子运单号码、车牌号\n'
-          '示例1：{"veh_nos": ["浙A45639"], "bill_nos": ["310000523324060100231932"]}\n'
-          '示例2：{"veh_nos": ["浙A45639"]}\n'
-          '示例3：{"bill_nos": ["310000523324060100231932"]}\n',
+        '示例1：{"veh_nos": ["浙A45639"], "bill_nos": ["310000523324060100231932"]}\n'
+        '示例2：{"veh_nos": ["浙A45639"]}\n'
+        '示例3：{"bill_nos": ["310000523324060100231932"]}\n',
         'en': '',
     }
 }
@@ -50,8 +50,8 @@ class DetectionTool(AFTool):
     background: str = '--'
     args_schema: Type[BaseModel] = DetectionInput
     retry_times: int = 3
-    data_source: DataSource # 逻辑视图资源
-    catelogs: dict = None # 逻辑视图映射表
+    data_source: DataSource  # 逻辑视图资源
+    catelogs: dict = None  # 逻辑视图映射表
     session_id: Optional[Any] = None
     session: Optional[RedisHistorySession] = None
 
@@ -271,7 +271,6 @@ class DetectionTool(AFTool):
         #             hits.append(hit['_source'])
         #         res.append(hits)
         # return res[0] if len(res) > 0 else []
-
 
     def _search_goods_patterns(self, goods_name_and_types, origin_to_dests):
         all_datas = []
@@ -527,14 +526,14 @@ class DetectionTool(AFTool):
                         }
                     else:
                         item['与自身历史路线比较'] = {
-                                'status': '未知',
-                                'similarity': 0,
-                                'reason': f'没有该车辆 {veh_no} 在此起始-目的地({origin_to_dest})的历史轨迹数据',
-                                'actual_route': actural_route,
-                                'regular_routes': veh_routes,
-                                'out_top_roads': [],
-                                'out_all_roads': [],
-                                'over_duration_roads': []
+                            'status': '未知',
+                            'similarity': 0,
+                            'reason': f'没有该车辆 {veh_no} 在此起始-目的地({origin_to_dest})的历史轨迹数据',
+                            'actual_route': actural_route,
+                            'regular_routes': veh_routes,
+                            'out_top_roads': [],
+                            'out_all_roads': [],
+                            'over_duration_roads': []
                         }
 
                     # 和通用路线比较
@@ -631,7 +630,7 @@ class DetectionTool(AFTool):
         # 具体地址的流动模式、货物模式
         loc_flow_goods_patterns, loc_goods_patterns = {}, {}
         search_res = self._search_loc_patterns(goods_name_and_types=goods_name_and_types,
-                                                     origin_to_dests=origin_to_dests, locations=locations)
+                                               origin_to_dests=origin_to_dests, locations=locations)
         for item in search_res:
             origin_to_dest = item['origin_to_dest']
             goods_name_and_type = item['goods_name_and_type']
@@ -885,7 +884,6 @@ class DetectionTool(AFTool):
 
         return item, goods_datas
 
-
     def detect_all_anomalies(self, veh_no, bill_no) -> dict[str, dict[Any, dict[str, list[dict[str, Any]]]]]:
         gps_items, goods_items = {}, []
         if bill_no:
@@ -915,9 +913,9 @@ class DetectionTool(AFTool):
                 #         record['city'], record['county'], record['goods_time']
                 #     up_loc, up_provice, up_city, up_county, up_time = record['rel_goods_area'], record['rel_province'], \
                 #         record['rel_city'], record['rel_county'], record['rel_goods_time']
-                up_loc, up_provice, up_city, _up_county, _up_time = record['load_goods_area'], record['load_province'], \
-                        record['load_city'], record['load_county'], record['load_time']
-                down_loc, down_provice, down_city, _down_county, _down_time = record['unload_goods_area'], \
+                up_loc, up_provice, up_city, _, _ = record['load_goods_area'], record['load_province'], \
+                    record['load_city'], record['load_county'], record['load_time']
+                down_loc, down_provice, down_city, _, _ = record['unload_goods_area'], \
                     record['unload_province'], record['unload_city'], record['unload_county'], record['unload_time']
                 if up_city != down_city or up_provice != down_provice:
                     route = f'1_{up_provice}_{up_city}_to_{down_provice}_{down_city}'
@@ -1027,7 +1025,7 @@ class DetectionTool(AFTool):
             run_manager: Optional[AsyncCallbackManagerForToolRun] = None,
     ):
         return self._run(factors=factors)
-    
+
     def handle_result(
         self,
         log: Dict[str, Any],
@@ -1044,5 +1042,3 @@ class DetectionTool(AFTool):
                 "tool_name": "danger_goods_transport",
                 "title": log.get("title", "danger_goods_transport"),
             }
-
-

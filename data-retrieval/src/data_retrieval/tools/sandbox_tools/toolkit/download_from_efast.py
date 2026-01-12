@@ -78,7 +78,7 @@ class DownloadFromEfastTool(BaseSandboxTool):
             result = await self._download_from_efast(file_params, save_path, efast_url, timeout, token)
             if self._random_session_id:
                 result["session_id"] = self.session_id
-            
+
             if title:
                 result["title"] = title
             else:
@@ -138,13 +138,13 @@ class DownloadFromEfastTool(BaseSandboxTool):
             logger.error(f"Download from EFAST action failed: {e}")
             raise SandboxError(reason="从EFAST下载文件失败", detail=str(e)) from e
 
-
     @staticmethod
     async def get_api_schema():
         """获取 API Schema"""
         base_schema = await BaseSandboxTool.get_api_schema()
         base_schema["post"]["summary"] = "download_from_efast"
-        base_schema["post"]["description"] = "从文档库(EFAST)下载文件到沙箱环境，支持批量下载多个文件。需要提供文件参数列表，格式为[{'id': '...', 'type': 'doc', 'name': '...', 'details': {'docid': 'gns://...', 'size': ...}}]"
+        base_schema["post"][
+            "description"] = "从文档库(EFAST)下载文件到沙箱环境，支持批量下载多个文件。需要提供文件参数列表，格式为[{'id': '...', 'type': 'doc', 'name': '...', 'details': {'docid': 'gns://...', 'size': ...}}]"
 
         # 更新请求体 schema，添加工具特定参数
         base_schema["post"]["requestBody"]["content"]["application/json"]["schema"]["properties"].update({

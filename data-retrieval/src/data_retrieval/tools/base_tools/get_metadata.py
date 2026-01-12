@@ -37,7 +37,7 @@ class GetMetadataTool(AFTool):
     name: str = ToolName.from_get_metadata.value
     description: str = dedent("""
         """
-    )
+                              )
     args_schema: Type[BaseModel] = ArgsModel
     with_sample: bool = False
     data_source_num_limit: int = -1
@@ -53,11 +53,11 @@ class GetMetadataTool(AFTool):
         super().__init__(*args, **kwargs)
         if kwargs.get("session") is None:
             self.session = CreateSession(self.session_type)
-        
+
         # 如果提供了 data_source，直接使用
         if kwargs.get("data_source") is not None:
             self.data_source = kwargs.get("data_source")
-        
+
         # 如果提供了 dip_metric，直接使用
         if kwargs.get("dip_metric") is not None:
             self.dip_metric = kwargs.get("dip_metric")
@@ -97,7 +97,7 @@ class GetMetadataTool(AFTool):
                 # raise ToolFatalError(f"获取数据视图元数据失败: {e}")
 
         if self.dip_metric:
-            try:    
+            try:
                 result_data = await self.dip_metric.aget_details(
                     input_query=query,
                     metric_num_limit=self.data_source_num_limit,
@@ -112,15 +112,15 @@ class GetMetadataTool(AFTool):
                 elif isinstance(result_data, dict) and "details" in result_data:
                     for detail in result_data.get("details", []):
                         metric_metadata[detail["id"]] = detail
-            
+
             except Exception as e:
                 traceback.print_exc()
                 logger.error(f"获取指标元数据失败: {str(e)}")
                 errors.append(f"获取指标元数据失败: {str(e)}")
                 # raise ToolFatalError(f"获取指标元数据失败: {e}")
-        
+
         result = {}
-        
+
         # 生成数据视图 summary
         data_view_summary = []
         if data_view_metadata:
@@ -128,14 +128,14 @@ class GetMetadataTool(AFTool):
                 # 创建 summary 项，移除 en2cn 字段（如果存在）
                 detail_copy = detail.copy()
                 detail_copy.pop("en2cn", None)
-                
+
                 summary_item = {
                     "name": detail.get("name", ""),
                     "comment": detail.get("comment", ""),
                     "table_path": detail.get("path", "")
                 }
                 data_view_summary.append(summary_item)
-        
+
         # 生成指标 summary
         metric_summary = []
         if metric_metadata:
@@ -151,19 +151,19 @@ class GetMetadataTool(AFTool):
             result["data_view_summary"] = data_view_summary
         if metric_summary:
             result["metric_summary"] = metric_summary
-        
+
         if data_view_metadata:
             result["data_view_metadata"] = data_view_metadata
         if metric_metadata:
             result["metric_metadata"] = metric_metadata
-        
+
         if errors:
             result["errors"] = errors
 
         if not data_view_metadata and not metric_metadata:
             error_msg = '\n '.join(errors) if errors else "未获取到任何元数据"
             raise ToolFatalError(error_msg)
-        
+
         result["title"] = query if query else "获取数据源信息"
         return result
 
@@ -205,33 +205,33 @@ class GetMetadataTool(AFTool):
         """异步 API 调用方法，支持从 kg 和 kn 中获取数据源"""
         try:
             logger.info(f"get_metadata as_async_api_cls params: {params}")
-            
+
             # Data Source Params
             data_source_dict = params.get('data_source', {})
             kg_params = data_source_dict.get('kg', [])
             kn_params = data_source_dict.get('kn', [])
             search_scope = data_source_dict.get('search_scope', [])
             recall_mode = data_source_dict.get('recall_mode', _SETTINGS.DEFAULT_AGENT_RETRIEVAL_MODE)
-            
+
             base_url = data_source_dict.get('base_url', '')
             token = data_source_dict.get('token', '')
             user_id = data_source_dict.get('user_id', '')
             account_type = data_source_dict.get('account_type', 'user')
-            
+
             # Config Params (提前获取，后续会用到)
             config_dict = params.get("config", {})
-            
+
             # 获取数据源类型过滤参数 (ds_type: "data_view", "metric", "all" 或 None 表示获取所有类型)
             ds_type = config_dict.get("ds_type")
             # 如果 ds_type 为 "all"，则视为 None（获取全部）
             if ds_type == "all":
                 ds_type = None
-            
+
             # 获取是否获取数据样例参数 (with_sample)
             with_sample = params.get("with_sample")
             if with_sample is None:
                 with_sample = config_dict.get("with_sample", False)
-            
+
             # 构建 headers
             headers = {}
             if user_id:
@@ -244,15 +244,15 @@ class GetMetadataTool(AFTool):
             if token:
                 auth_token = token if token.startswith("Bearer ") else f"Bearer {token}"
                 headers["Authorization"] = auth_token
-            
+
             # 初始化数据源列表
             view_list = []
             metric_list = []
-            
+
             # 从 data_source 中获取直接指定的视图列表和指标列表
             direct_view_list = data_source_dict.get('view_list', [])
             direct_metric_list = data_source_dict.get('metric_list', [])
-            
+
             # 处理 view_list
             if direct_view_list:
                 if isinstance(direct_view_list, list):
@@ -261,7 +261,7 @@ class GetMetadataTool(AFTool):
                         view_list.extend(direct_view_list)
                 else:
                     logger.warning(f"view_list 格式不正确: {direct_view_list}")
-            
+
             # 处理 metric_list
             if direct_metric_list:
                 if isinstance(direct_metric_list, list):
@@ -284,9 +284,9 @@ class GetMetadataTool(AFTool):
                         headers=headers,
                         dip_type=dip_type
                     )
-                    
+
                     logger.info(f"从知识图谱获取到 {len(datasources_in_kg)} 个数据视图")
-                    
+
                     # 将 kg 中的数据源添加到 view_list
                     # 注意：kg 只能获取数据视图（data_view），不能获取指标（metric）
                     # 如果 ds_type 指定为 "metric"，则跳过 kg 的数据源
@@ -298,7 +298,7 @@ class GetMetadataTool(AFTool):
                 except Exception as e:
                     logger.error(f"从知识图谱获取数据源失败: {e}")
                     logger.error(traceback.format_exc())
-            
+
             # 从知识网络 (kn) 中获取数据源
             if kn_params:
                 try:
@@ -307,25 +307,26 @@ class GetMetadataTool(AFTool):
                             kn_id = kn_param.get('knowledge_network_id', '')
                         else:
                             kn_id = kn_param
-                        
+
                         if not kn_id:
                             continue
-                        
+
                         # 获取查询语句，如果没有则使用默认值
                         query = params.get('query', params.get('input', '所有数据'))
-                        
+
                         data_views, metrics, relations = await get_datasource_from_agent_retrieval_async(
                             kn_id=kn_id,
                             query=query,
                             search_scope=search_scope,
                             headers=headers,
                             base_url=base_url,
-                            max_concepts=config_dict.get('data_source_num_limit', _SETTINGS.DEFAULT_AGENT_RETRIEVAL_MAX_CONCEPTS),
+                            max_concepts=config_dict.get('data_source_num_limit',
+                                                         _SETTINGS.DEFAULT_AGENT_RETRIEVAL_MAX_CONCEPTS),
                             mode=recall_mode
                         )
-                        
+
                         logger.info(f"从知识网络获取到 {len(data_views)} 个数据视图和 {len(metrics)} 个指标")
-                        
+
                         # 根据 ds_type 过滤数据源类型
                         # 注意：kn 可以获取数据视图（data_view）和指标（metric）
                         # ds_type 为 None 表示获取全部类型
@@ -333,7 +334,7 @@ class GetMetadataTool(AFTool):
                         if ds_type is None or ds_type == "data_view":
                             for view in data_views:
                                 view_list.append(view.get("id"))
-                        
+
                         # 将 metrics 添加到 metric_list
                         if ds_type is None or ds_type == "metric":
                             for metric in metrics:
@@ -341,7 +342,7 @@ class GetMetadataTool(AFTool):
                 except Exception as e:
                     logger.error(f"从知识网络获取数据源失败: {e}")
                     logger.error(traceback.format_exc())
-            
+
             # 创建数据源实例
             data_source = None
             if view_list:
@@ -352,7 +353,7 @@ class GetMetadataTool(AFTool):
                     account_type=account_type,
                     base_url=base_url
                 )
-            
+
             dip_metric = None
             if metric_list:
                 dip_metric = DIPMetric(
@@ -362,7 +363,7 @@ class GetMetadataTool(AFTool):
                     base_url=base_url,
                     account_type=account_type
                 )
-            
+
             # 创建工具实例
             tool = cls(
                 data_source=data_source,
@@ -374,15 +375,15 @@ class GetMetadataTool(AFTool):
                 session_id=config_dict.get("session_id", ""),
                 api_mode=True
             )
-            
+
             # Input Params
             query = params.get('query', params.get('input', ''))
-            
+
             # 调用工具
             result = await tool._arun(query=query)
-            
+
             return result
-            
+
         except Exception as e:
             logger.error(f"get_metadata as_async_api_cls 失败: {e}")
             logger.error(traceback.format_exc())
@@ -730,37 +731,35 @@ class GetMetadataTool(AFTool):
 
 
 if __name__ == "__main__":
-    import asyncio
-    
     async def main():
         """测试 get_api_schema 并验证 OpenAPI 语法"""
         print("=" * 60)
         print("测试 GetMetadataTool.get_api_schema()")
         print("=" * 60)
-        
+
         try:
             # 获取 API Schema
             print("\n1. 获取 API Schema...")
             schema = await GetMetadataTool.get_api_schema()
             print("✅ 成功获取 API Schema")
-            
+
             # 验证 OpenAPI 语法
             print("\n2. 验证 OpenAPI 语法...")
             is_valid, error_msg = validate_openapi_schema(schema)
-            
+
             if is_valid:
                 print("✅ OpenAPI Schema 语法验证通过")
             else:
                 print(f"❌ OpenAPI Schema 语法验证失败: {error_msg}")
-            
+
             print("\n" + "=" * 60)
             print("测试完成")
             print("=" * 60)
-            
+
         except Exception as e:
             print(f"\n❌ 测试过程中出现错误: {e}")
             import traceback
             traceback.print_exc()
-    
+
     # 运行测试
     asyncio.run(main())

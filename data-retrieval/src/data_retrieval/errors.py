@@ -1,6 +1,7 @@
 from typing import Optional, Any
 from langchain_core.tools import ToolException
 
+
 class ErrorCode:
     DataSourceError = "DataSourceError"
     ExecuteSqlError = "ExecuteSqlError"
@@ -8,14 +9,14 @@ class ErrorCode:
     Text2DIPMetricError = "Text2DIPMetricError"
     Json2PlotError = "Json2PlotError"
     ResultParseError = "ResultParseError"
-    SDKRequestError="SDKRequestError"
-    OpenSearchRequestError='OpenSearchRequestError'
-    KnowledgeEnhancedError='KnowledgeEnhancedError'
-    PythonCodeError='PythonCodeError'
-    ToolFatalError='ToolFatalError'
-    SandboxError='SandboxError'
-    SQLHelperError='SQLHelperError'
-    KnowledgeItemError='KnowledgeItemError'
+    SDKRequestError = "SDKRequestError"
+    OpenSearchRequestError = 'OpenSearchRequestError'
+    KnowledgeEnhancedError = 'KnowledgeEnhancedError'
+    PythonCodeError = 'PythonCodeError'
+    ToolFatalError = 'ToolFatalError'
+    SandboxError = 'SandboxError'
+    SQLHelperError = 'SQLHelperError'
+    KnowledgeItemError = 'KnowledgeItemError'
     # nl2ngql 相关错误代码
     Text2NGQLError = "Text2NGQLError"
     NGQLSchemaError = "NGQLSchemaError"
@@ -26,7 +27,7 @@ class ErrorCode:
     KnowledgeNetworkRetrievalError = "KnowledgeNetworkRetrievalError"
     KnowledgeNetworkRerankError = "KnowledgeNetworkRerankError"
     KnowledgeNetworkLLMError = "KnowledgeNetworkLLMError"
-    KnowledgeNetworkParamError = "KnowledgeNetworkParamError" 
+    KnowledgeNetworkParamError = "KnowledgeNetworkParamError"
 
 
 class AgentBaseError(Exception):
@@ -84,6 +85,7 @@ class ExecuteSqlError(AgentBaseError):
             detail=detail
         )
 
+
 class Text2SQLException(AgentBaseError):
     def __init__(self, detail: Any, status: int = 500, reason: str = ""):
         super().__init__(
@@ -123,6 +125,7 @@ class Text2DIPMetricError(AgentBaseError):
             detail=detail
         )
 
+
 class KnowledgeItemError(AgentBaseError):
     def __init__(self, detail: Any, status: int = 500, reason: str = ""):
         super().__init__(
@@ -132,6 +135,7 @@ class KnowledgeItemError(AgentBaseError):
             detail=detail
         )
 
+
 class AgentInitError(Exception):
     def __init__(self, message, status: int = 500):
         self.message = message
@@ -139,6 +143,7 @@ class AgentInitError(Exception):
 
     def __str__(self):
         return self.message
+
 
 class ResultParseError(AgentBaseError):
     def __init__(self, detail: Any, status: int = 500, reason: str = ""):
@@ -148,6 +153,8 @@ class ResultParseError(AgentBaseError):
             reason=reason,
             detail=detail
         )
+
+
 class SDKRequestError(AgentBaseError):
     def __init__(self, detail: Any, status: int = 500, reason: str = ""):
         super().__init__(
@@ -156,6 +163,7 @@ class SDKRequestError(AgentBaseError):
             reason=reason,
             detail=detail
         )
+
 
 class OpenSearchRequestError(AgentBaseError):
     def __init__(self, detail: Any, status: int = 500, reason: str = ""):
@@ -178,6 +186,8 @@ class KnowledgeEnhancedError(AgentBaseError):
 
 # To comply with the ToolException of LangChain
 # inherit from both AgentBaseError and ToolException
+
+
 class ToolFatalError(AgentBaseError, ToolException):
     def __init__(self, detail: Any, status: int = 500, reason: str = ""):
         super().__init__(
@@ -196,6 +206,7 @@ class Json2PlotError(AgentBaseError):
             reason=reason,
             detail=detail
         )
+
 
 class PythonCodeError(AgentBaseError):
     def __init__(self, detail: Any, status: int = 500, reason: str = ""):
@@ -225,7 +236,7 @@ class ErrorResponse(Exception):
     _default_code: str = ""
     _default_description: str = ""
     _default_solution: str = "请稍后重试或联系技术支持"
-    
+
     def __init__(
         self,
         code: str = None,
@@ -236,17 +247,17 @@ class ErrorResponse(Exception):
     ):
         # 处理 detail 转换
         detail_dict = detail if isinstance(detail, dict) else {"error": str(detail) if detail else ""}
-        
+
         # 使用类默认值或传入值
         self.code = code if code is not None else self._default_code
         self.description = description or self._default_description
         self.detail = detail_dict
         self.solution = solution or self._default_solution
         self.link = link
-        
+
         # Exception 的 message 使用 description
         super().__init__(self.description)
-    
+
     def json(self):
         """返回错误响应的JSON格式"""
         return {
@@ -256,7 +267,7 @@ class ErrorResponse(Exception):
             "solution": self.solution,
             "link": self.link
         }
-    
+
     def to_error_response(self) -> 'ErrorResponse':
         """转换为 ErrorResponse 对象（返回自身）"""
         return self

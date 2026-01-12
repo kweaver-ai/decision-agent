@@ -75,6 +75,7 @@ value_type_name_mapping = {
     "growth_rate": "增长率"
 }
 
+
 class Text2MetricParser(BaseJsonParser):
     indicator: AFIndicator = None
     language: str = "cn"
@@ -85,8 +86,7 @@ class Text2MetricParser(BaseJsonParser):
             res.text = re.sub(r'//.*?(\r?\n|$)', '', res.text)
 
         return result
-    
-    
+
     def _fix_json_brackets(self, result):
         str_parser = StrOutputParser()
         text = str_parser.parse_result(result)
@@ -109,7 +109,7 @@ class Text2MetricParser(BaseJsonParser):
         return new_result
 
     def _transform_metric_params(self, metrics: Dict):
-        # 
+        #
         # metrics param required:
         # {
         #     "metrics":{
@@ -140,7 +140,6 @@ class Text2MetricParser(BaseJsonParser):
 
         return tranformed
 
-
     def _correct_params_and_explanation(self, result: Dict):
         #
         # explanation required:
@@ -162,7 +161,7 @@ class Text2MetricParser(BaseJsonParser):
         explanation = []
 
         indicator_id = result.get("id", "")
-                
+
         if indicator_id == "":
             return result
 
@@ -170,19 +169,18 @@ class Text2MetricParser(BaseJsonParser):
 
         # transform metrics params
         metrics = params.get("metrics", {})
-        
+
         if metrics:
             params["metrics"] = self._transform_metric_params(metrics)
         else:
             if "metrics" in params:
                 del params["metrics"]
-        
+
         # correct params
         params = self.indicator.params_correction(params, indicator_id)
         result["params"] = params
-        
-        desc = self.indicator.get_description_by_id(indicator_id)
 
+        desc = self.indicator.get_description_by_id(indicator_id)
 
         # add indicator explain
         indicator_explain = {
@@ -211,14 +209,14 @@ class Text2MetricParser(BaseJsonParser):
         dimenstion_dict = {}
         for dim_param in dimensions_in_params:
             field_info = self.indicator.get_field_info_by_id(indicator_id, dim_param["field_id"])
-            
+
             dim_param["business_name"] = field_info["business_name"]
             dim_param["technical_name"] = field_info["technical_name"]
             dimenstion_dict[dim_param["field_id"]] = dim_param
 
         # show explain for each dimension
         for dim in desc.get("analysis_dimensions", {}):
-            
+
             is_essential_dim = False
 
             # add display name for dimension
@@ -242,7 +240,7 @@ class Text2MetricParser(BaseJsonParser):
 
             if not self.essential_explain or is_essential_dim:
                 explanation.append(dimension_explain)
-        
+
         # add metrics explain
         metrics = params.get("metrics", {})
 
@@ -254,7 +252,7 @@ class Text2MetricParser(BaseJsonParser):
 
         indicator_name = desc.get("name", "")
 
-        if indicator_name != "":    
+        if indicator_name != "":
             res[indicator_name] = explanation
         else:
             res["指标"] = explanation
@@ -262,46 +260,46 @@ class Text2MetricParser(BaseJsonParser):
         result["explanation"] = res
 
         return result
-    
+
     def _format_dimension_name(self, dimension: Dict):
         if dimension.get("business_name") == "":
             return ""
-        
+
         if dimension.get("format", "") == "":
             return dimension["business_name"]
-        
+
         if dimension["format"] in date_format_mapping:
             dimension_format = date_format_mapping[dimension["format"]]
             return f"{dimension['business_name']}({dimension_format})"
-        
+
         return f"{dimension['business_name']} ({dimension['format']})"
-    
+
     def _format_time_constraint(self, time_constraint: Dict):
         if time_constraint.get("start_time", "") == "":
             return ""
-        
+
         if time_constraint.get("end_time", "") == "":
             return ""
-        
+
         return f"从 {time_constraint['start_time']} 到 {time_constraint['end_time']}"
-    
+
     def _format_filter(self, filter: Dict):
         res = ""
         if filter.get("field_id", "") == "":
             return res
-        
+
         operator = filter.get("operator")
         if operator is None:
             return res
-        
+
         res += operator_mapping.get(operator, "")
-        
+
         value = filter.get("value")
         if value == []:
             return res
-        
+
         res += " " + ", ".join(value)
-        
+
         return res
 
     def _format_metric_config(self, config: Dict):
@@ -310,13 +308,13 @@ class Text2MetricParser(BaseJsonParser):
         time_granularity = config.get("time_granularity", "")
         if time_granularity == "":
             return res
-        
+
         res += f"{metric_type_name_mapping.get(time_granularity)} "
 
         method = config.get("method", [])
         if method == []:
             return res
-        
+
         res += ", ".join([value_type_name_mapping.get(method) for method in method])
 
         offset = config.get("offset", 1)

@@ -109,7 +109,8 @@ def _truncate(s: str, max_chars: int) -> str:
     return s[: max_chars - 1] + "…"
 
 
-def _get_object_type_meta(schema_info: Optional[Dict[str, Any]], object_type_id: Optional[str]) -> Tuple[Optional[str], List[str]]:
+def _get_object_type_meta(schema_info: Optional[Dict[str, Any]],
+                          object_type_id: Optional[str]) -> Tuple[Optional[str], List[str]]:
     """
     从 schema_info 中提取 object_type_name / primary_keys
     """
@@ -184,7 +185,8 @@ def _pick_instance_name(
                 return v
 
     # 最后：类型名 + instance_id
-    ot_name = _safe_str(object_type_name_hint or "") or _safe_str(_get_object_type_meta(schema_info, object_type_id)[0] or "")
+    ot_name = _safe_str(object_type_name_hint or "") or _safe_str(
+        _get_object_type_meta(schema_info, object_type_id)[0] or "")
     if ot_name and instance_id:
         return f"{ot_name}实例 {instance_id}"
     if ot_name:
@@ -284,7 +286,8 @@ def build_instance_text(
         object_type_name_hint=object_type_name,
     )
 
-    ot_name = _safe_str(object_type_name or "") or _safe_str(_get_object_type_meta(schema_info, object_type_id)[0] or "")
+    ot_name = _safe_str(object_type_name or "") or _safe_str(
+        _get_object_type_meta(schema_info, object_type_id)[0] or "")
     inst_id = _safe_str(instance.get("instance_id") or instance.get("id") or "")
 
     kvs = _iter_property_kv(
@@ -326,5 +329,3 @@ def build_instance_text(
         parts.append(f"属性：{props_text}")
     text = opts.inline_sep.join([p for p in parts if p])
     return _truncate(text, opts.max_total_chars)
-
-

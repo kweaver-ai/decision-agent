@@ -14,6 +14,7 @@ urllib3.disable_warnings()
 
 settings = get_settings()
 
+
 class Services(object):
     vir_engine_url: str = settings.VIR_ENGINE_URL
     data_view_url: str = settings.DATA_VIEW_URL
@@ -39,9 +40,9 @@ class Services(object):
         self.view_data_preview_url = self.data_view_url + \
             "/api/data-view/v1/form-view/data-preview"
         self.view_white_policy_sql = self.data_view_url + \
-             "/api/data-view/v1/white-list-policy/{view_id}/where-sql"
+            "/api/data-view/v1/white-list-policy/{view_id}/where-sql"
         self.view_field_info = self.data_view_url + \
-             "/api/data-view/v1/desensitization/{view_id}/filed-info"
+            "/api/data-view/v1/desensitization/{view_id}/filed-info"
         self.indicator_details_url = self.indicator_management_url + \
             "/api/indicator-management/v1/indicator/{indicator_id}"
         self.indicator_query_url = self.indicator_management_url + \
@@ -211,7 +212,7 @@ class Services(object):
             return res
         except AfDataSourceError as e:
             raise VirEngineError(e) from e
-        
+
     def get_view_data_preview(self, view_id: str, headers: dict, fields: list[str]) -> dict:
         url = self.view_data_preview_url
         api = API(

@@ -18,7 +18,7 @@ class QueryType(Enum):
 
 class CypherTemplate:
     """Cypher查询模板定义"""
-    
+
     def __init__(
         self,
         template_type: str,
@@ -31,7 +31,7 @@ class CypherTemplate:
     ):
         """
         初始化模板
-        
+
         Args:
             template_type: 模板类型标识（如 "single_object", "relation_path"）
             query_type: 查询类型
@@ -52,16 +52,16 @@ class CypherTemplate:
 
 class CypherTemplateMatcher:
     """Cypher模板匹配器 - 优化版本"""
-    
+
     # 节点模式：\((\w+):(\w+)\)
     NODE_PATTERN = r"\((\w+):(\w+)\)"
-    
+
     # 关系模式：\[(\w+):(\w+)\]
     RELATION_PATTERN = r"\[(\w+):(\w+)\]"
-    
+
     # 关系路径查询支持的最大节点数（可根据实际需求调整）
     MAX_PATH_NODES = 10
-    
+
     # 支持的模板定义
     TEMPLATES: List[CypherTemplate] = [
         # 单个对象检索模板（支持可选的LIMIT子句）
@@ -74,7 +74,7 @@ class CypherTemplateMatcher:
             max_nodes=1,
             example="MATCH (a:disease) WHERE a.disease_name == '发烧' RETURN a.disease_name, a.age LIMIT 10"
         ),
-        
+
         # 通用关系路径模板（支持2-10节点，支持可选的LIMIT子句）
         # 模式：(节点)-[关系]->(节点) 重复1-9次（总共2-10节点）
         CypherTemplate(
@@ -91,27 +91,27 @@ class CypherTemplateMatcher:
             example="MATCH (a:disease)-[r:has_symptom]->(b:symptom) WHERE a.disease_name == '上气道梗阻' RETURN a.disease_name, b.symptom_name LIMIT 20"
         ),
     ]
-    
+
     @classmethod
     def match_template(cls, cypher: str) -> Optional[Dict[str, Any]]:
         """
         匹配Cypher查询到支持的模板
-        
+
         Args:
             cypher: Cypher查询语句
-            
+
         Returns:
             匹配结果字典，包含：
             - template: CypherTemplate对象
             - match: re.Match对象
             - query_type: 查询类型
             - node_count: 节点数量（关系路径查询时）
-            
+
         Raises:
             抛出详细的错误信息说明不匹配的原因
         """
         cypher = cypher.strip()
-        
+
         # 先尝试单个对象模板
         single_object_template = cls.TEMPLATES[0]
         match = single_object_template.pattern.search(cypher)
@@ -122,7 +122,7 @@ class CypherTemplateMatcher:
                 "query_type": QueryType.SINGLE_OBJECT,
                 "node_count": 1
             }
-        
+
         # 再尝试关系路径模板
         relation_path_template = cls.TEMPLATES[1]
         match = relation_path_template.pattern.search(cypher)
@@ -130,7 +130,7 @@ class CypherTemplateMatcher:
             # 计算实际节点数量
             match_str = match.group(0)
             node_count = cls._count_nodes_in_match(match_str)
-            
+
             # 验证节点数量是否在支持范围内
             if node_count < relation_path_template.min_nodes or \
                node_count > relation_path_template.max_nodes:
@@ -138,38 +138,38 @@ class CypherTemplateMatcher:
                     f"关系路径节点数量 {node_count} 不在支持范围内 "
                     f"({relation_path_template.min_nodes}-{relation_path_template.max_nodes}节点)。"
                 )
-            
+
             return {
                 "template": relation_path_template,
-                    "match": match,
+                "match": match,
                 "query_type": QueryType.RELATION_PATH,
                 "node_count": node_count
-                }
-        
+            }
+
         # 没有匹配到任何模板，生成详细的错误信息
         raise ValueError(
             cls._generate_error_message(cypher)
         )
-    
+
     @classmethod
     def _count_nodes_in_match(cls, matched_str: str) -> int:
         """
         计算匹配字符串中的节点数量
-        
+
         Args:
             matched_str: 匹配的字符串
-            
+
         Returns:
             节点数量
         """
         return len(re.findall(cls.NODE_PATTERN, matched_str))
-    
+
     @classmethod
     def _generate_error_message(cls, cypher: str) -> str:
         """生成详细的错误提示信息"""
         single_template = cls.TEMPLATES[0]
         path_template = cls.TEMPLATES[1]
-        
+
         return (
             "不支持的Cypher查询模式。\n\n"
             "支持的查询模板：\n\n"
@@ -187,20 +187,20 @@ class CypherTemplateMatcher:
             "3. 关系路径是否都是单向（箭头方向一致）\n"
             "4. RETURN子句是否存在且格式正确"
         )
-    
+
     @classmethod
     def get_supported_templates(cls) -> List[Dict[str, Any]]:
         """获取所有支持的模板信息（用于API文档）"""
         single_template = cls.TEMPLATES[0]
         path_template = cls.TEMPLATES[1]
-        
+
         # 为文档生成几个典型的关系路径示例
         path_examples = [
             "MATCH (a:disease)-[r:has_symptom]->(b:symptom) WHERE a.disease_name == '上气道梗阻' RETURN a.disease_name, b.symptom_name",
             "MATCH (a:person)-[r1:belongs_to]->(b:school)-[r2:has_major]->(c:major) WHERE a.name == '张三' RETURN a.name, b.school_name, c.major_name",
             "MATCH (a:person)-[r1:belongs_to]->(b:school)-[r2:has_major]->(c:major)-[r3:taught_by]->(d:teacher) WHERE a.name == '张三' RETURN a.name, b.school_name, c.major_name, d.teacher_name"
         ]
-        
+
         return [
             {
                 "template_type": single_template.template_type,
@@ -217,4 +217,3 @@ class CypherTemplateMatcher:
                 "examples": path_examples
             }
         ]
-

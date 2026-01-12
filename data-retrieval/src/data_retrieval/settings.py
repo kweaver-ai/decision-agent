@@ -6,6 +6,7 @@
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import computed_field
 
+
 class DIPSettings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
@@ -19,7 +20,7 @@ class DIPSettings(BaseSettings):
     AGENT_SESSION_TYPE: str = "redis"
     AGENT_SESSION_HISTORY_NUM_LIMIT: int = 10
     AGENT_SESSION_HISTORY_MAX: int = 5000
-    
+
     # MCP Session Settings
     MCP_SESSION_STORE: str = "memory"  # memory | redis
 
@@ -78,7 +79,7 @@ class DIPSettings(BaseSettings):
     OUTTER_VEGA_URL: str = ""
     VIR_ENGINE_URL: str = "http://vega-gateway:8099"
     DATA_VIEW_URL: str = "http://mdl-data-model-svc:13020"
-    
+
     # Embedding Settings
     EMB_URL: str = 'http://mf-model-api:9898/api/private/mf-model-api/v1/small-model/embedding'
     EMB_URL_suffix: str = ''
@@ -114,7 +115,7 @@ class DIPSettings(BaseSettings):
 
     DIP_DATA_MODEL_URL: str = "http://mdl-data-model-svc:13020"
     DIP_MODEL_QUERY_URL: str = "http://mdl-uniquery-svc:13011"
-    
+
     DIP_AGENT_RETRIEVAL_URL: str = "http://agent-retrieval:30779"
     DEFAULT_AGENT_RETRIEVAL_MAX_CONCEPTS: int = 10
     DEFAULT_AGENT_RETRIEVAL_MODE: str = "keyword_vector_retrieval"
@@ -158,17 +159,18 @@ class DIPSettings(BaseSettings):
             return self.REDISPORT
         return "26379"
 
-
     def __str__(self):
-        val =[f"{k}: {v}" for k, v in self.model_dump().items()]
-        
+        val = [f"{k}: {v}" for k, v in self.model_dump().items()]
+
         return "\n".join(val)
 
 
 _settings = DIPSettings()
 
+
 def get_settings() -> DIPSettings:
     return _settings
+
 
 def set_value(key, value):
     if hasattr(_settings, key):

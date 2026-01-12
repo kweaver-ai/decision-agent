@@ -20,6 +20,7 @@ class DataSourceErrno(Enum):
     DATA_MODEL_QUERY_ERROR = 13
     AGENT_RETRIEVAL_ERROR = 14
 
+
 Errors = {
     DataSourceErrno.BASE_ERROR: "RequestsError",
     DataSourceErrno.VIR_ENGINE_ERROR: "VirEngineError",
@@ -36,6 +37,7 @@ Errors = {
     DataSourceErrno.DATA_MODEL_QUERY_ERROR: "DataModelQueryError",
     DataSourceErrno.AGENT_RETRIEVAL_ERROR: "AgentRetrievalError"
 }
+
 
 class AfDataSourceError(Exception):
     code: Enum
@@ -76,7 +78,6 @@ class AfDataSourceError(Exception):
             "url": self.url,
             "detail": self.detail
         }
-
 
 
 class Text2SQLError(Exception):
@@ -250,6 +251,7 @@ class DataModelQueryError(AfDataSourceError):
             url=e.url,
             detail=e.detail
         )
+
 
 class AgentRetrievalError(AfDataSourceError):
     def __init__(self, e: AfDataSourceError):

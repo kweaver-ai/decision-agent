@@ -104,7 +104,7 @@ Some error might happened last time. If possible, please correct them:
 {{ errors }}
 Correct them without changing the user's question intent.
 {%- endif %}
-""".replace("##_func_description_##", func_description) # use replace to prevent errors from jinja
+""".replace("##_func_description_##", func_description)  # use replace to prevent errors from jinja
 
 prompt_template_cn = prompt_template_en + "\n请使用中文回答问题"
 

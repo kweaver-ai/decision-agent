@@ -78,7 +78,8 @@ def merge_semantic_instances_maps(
         for obj in schema_info.get("object_types", []):
             cid = obj.get("concept_id")
             if cid:
-                obj_schema_map[cid] = {"primary_keys": obj.get("primary_keys") or [], "display_key": obj.get("display_key")}
+                obj_schema_map[cid] = {"primary_keys": obj.get(
+                    "primary_keys") or [], "display_key": obj.get("display_key")}
 
     merged: Dict[str, Dict[str, Dict[str, Any]]] = {}
 
@@ -141,5 +142,3 @@ def merge_semantic_instances_maps(
                     existing["keyword_sources"] = list(existing_sources.union(kw_sources))
 
     return {obj_id: list(dedup_map.values()) for obj_id, dedup_map in merged.items()}
-
-

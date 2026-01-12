@@ -95,7 +95,7 @@ prompt_template_cn = """
 ## Table Metadata and Sample Data (数据库表信息及样例数据):
 请基于以下数据库表信息及样例数据生成 SQL 查询：
 {% for item in metadata %}
-{{ loop.index }}. **{{item.name}}** 
+{{ loop.index }}. **{{item.name}}**
 - 描述: {{item.description}}
 - 表结构 (DDL):
 {{ item.ddl }}

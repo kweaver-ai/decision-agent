@@ -37,9 +37,9 @@ _DESCS = {
     },
     'factors': {
         'cn': '根据用户问题，抽取到的道路名称、危险品名称或品类\n'
-          '示例1：{"factors": {"goods_names": ["爆炸品", "气体"], "road_names": ["联航路"]}}\n'
-          '示例2：{"factors": {"goods_names": ["爆炸品", "气体"]}}\n'
-          '示例3：{"factors": {"road_names": ["联航路"]}}\n',
+        '示例1：{"factors": {"goods_names": ["爆炸品", "气体"], "road_names": ["联航路"]}}\n'
+        '示例2：{"factors": {"goods_names": ["爆炸品", "气体"]}}\n'
+        '示例3：{"factors": {"road_names": ["联航路"]}}\n',
         'en': '',
     }
 }
@@ -64,7 +64,7 @@ class DecisionTool(AFTool):
     retry_times: int = 3
     data_source: DataSource  # 逻辑视图资源
     catelogs: dict = None  # 逻辑视图映射表
-    vectorstore: Optional[FAISS] = None # 向量数据库
+    vectorstore: Optional[FAISS] = None  # 向量数据库
     retriever_config: Optional[RetrieverConfig] = RetrieverConfig()   # 向量数据库检索配置
     session_id: Optional[Any] = None
     session: Optional[RedisHistorySession] = None
@@ -313,7 +313,7 @@ class DecisionTool(AFTool):
         run_manager: Optional[AsyncCallbackManagerForToolRun] = None,
     ):
         return self._run(factors=factors, run_manager=run_manager)
-    
+
     def handle_result(
         self,
         log: Dict[str, Any],
@@ -330,6 +330,3 @@ class DecisionTool(AFTool):
                 "tool_name": "decision_maker",
                 "title": log.get("title", "decision_maker"),
             }
-
-
-

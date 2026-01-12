@@ -33,17 +33,16 @@ class AfSailorTool(AFTool):
     name: str = ToolName.from_sailor.value
     description: str = dedent("""
 这是一个数据搜索工具：工具可以对问题进行数据资源搜索，并返回搜索结果，调用方式是：search(question, extraneous_information)
-特别注意: 
+特别注意:
 - 如果对话上下文中包含了引用的数据资源缓存，在用其他工具获取数据前，你需要根据数据资源的名称和描述判断当前的 Question 是否能用 `缓存的数据资源` 来回答，不满足或不确定时需要重新搜索数据
 - 本工具在结果输出时，可能会用类似 "<i slice_idx=0>1</i> 这样的格式来表示数据资源的编号，请保持这样的格式
 """)
-    
+
     args_schema: Type[BaseModel] = AfSailorToolModel
     # session: RedisHistorySession = RedisHistorySession()
-    parameter: dict ={}
+    parameter: dict = {}
     session: BaseChatHistorySession = None
     session_type: Optional[str] = "redis"
-
 
     def __init__(
         self,
@@ -101,7 +100,7 @@ class AfSailorTool(AFTool):
                 del cite["connected_subgraph"]
 
         return res_json
-                        
+
     @construct_final_answer
     def _run(
         self,
@@ -155,7 +154,7 @@ class AfSailorTool(AFTool):
             ).to_json()
         # result = json.dumps(result, ensure_ascii=False)
         return result
-    
+
     def handle_result(
             self,
             log: Dict[str, Any],
@@ -202,7 +201,7 @@ class AfSailorTool(AFTool):
             user = resources.get("user", "")
             password = resources.get("password", "")
             auth_url = resources.get("auth_url", settings.AF_DEBUG_IP)
-            parameters['user'] =user
+            parameters['user'] = user
             parameters['password'] = password
             parameters['auth_url'] = auth_url
 
@@ -300,7 +299,7 @@ class AfSailorTool(AFTool):
             },
             "required": ["resources", "input"]
         }
-    
+
 
 if __name__ == "__main__":
     # asset_type 资产分类，2 接口服务 3 逻辑视图 4 指标
@@ -377,8 +376,7 @@ if __name__ == "__main__":
         "token": get_authorization("https://10.4.134.26", "liberly", "111111"),
     }
     af_sailor_tool = AfSailorTool(parameter=from_af_sailor_service_params)
-    
+
     import asyncio
     result = asyncio.run(af_sailor_tool.ainvoke(input={"question": "3月小白白品牌的月销量"}))
     print("Search result", result)
-

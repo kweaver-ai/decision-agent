@@ -16,7 +16,7 @@ class ListFilesInput(BaseSandboxToolInput):
 
 class ListFilesTool(BaseSandboxTool):
     """列出文件工具，列出沙箱环境中的所有文件"""
-    
+
     name: str = "list_files"
     description: str = "列出沙箱环境中的所有文件和目录"
     args_schema: type[BaseSandboxToolInput] = ListFilesInput
@@ -33,7 +33,7 @@ class ListFilesTool(BaseSandboxTool):
         except Exception as e:
             logger.error(f"List files failed: {e}")
             raise SandboxError(reason="列出文件失败", detail=str(e)) from e
-    
+
     @async_construct_final_answer
     async def _arun(
         self,
@@ -54,11 +54,11 @@ class ListFilesTool(BaseSandboxTool):
         except Exception as e:
             logger.error(f"List files failed: {e}")
             raise SandboxError(reason="列出文件失败", detail=str(e)) from e
-    
+
     async def _list_files(self) -> dict:
         """执行具体的文件列表操作"""
         sandbox = self._get_sandbox()
-        
+
         try:
             result = await sandbox.list_files()
             return {
@@ -76,10 +76,10 @@ class ListFilesTool(BaseSandboxTool):
         base_schema = await BaseSandboxTool.get_api_schema()
         base_schema["post"]["summary"] = "list_files"
         base_schema["post"]["description"] = "列出沙箱环境中的所有文件和目录"
-        
+
         # 更新请求体 schema - 不需要额外参数
         base_schema["post"]["requestBody"]["content"]["application/json"]["schema"]["required"] = []
-        
+
         # 添加示例
         base_schema["post"]["requestBody"]["content"]["application/json"]["examples"] = {
             "list_all_files": {
@@ -91,5 +91,5 @@ class ListFilesTool(BaseSandboxTool):
                 }
             }
         }
-        
-        return base_schema 
+
+        return base_schema

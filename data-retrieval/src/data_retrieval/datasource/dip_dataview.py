@@ -28,7 +28,8 @@ CREATE_SCHEMA_TEMPLATE = """CREATE TABLE {source}.{schema}.{title}
 RESP_TEMPLATE = """根据<strong>"{table}"</strong><i slice_idx=0>{index}</i>，检索到如下数据："""
 
 
-async def get_datasource_from_kg_params(kg_params: Union[Dict, List], addr="", headers={}, dip_type=ServiceType.DIP.value):
+async def get_datasource_from_kg_params(
+        kg_params: Union[Dict, List], addr="", headers={}, dip_type=ServiceType.DIP.value):
     """
     解析 KG 参数
     """
@@ -61,9 +62,9 @@ async def get_datasource_from_kg_params(kg_params: Union[Dict, List], addr="", h
     # }
     if isinstance(kg_params, Dict):
         kg_params = kg_params.get("kg", [])
-    
+
     builder_service = Builder(addr=addr, headers=headers, type=dip_type)
-    
+
     for kg in kg_params:
         kg_id = kg.get("kg_id", "")
 
@@ -138,13 +139,12 @@ async def get_datasource_from_kg_params(kg_params: Union[Dict, List], addr="", h
             for s in source:
                 view_name = s.get("file_name", "")
                 view_id = s.get("file_source", "")
-            
 
                 res.append({
                     "name": view_name,
                     "id": view_id
                 })
-    
+
     return res
 
 
@@ -264,7 +264,6 @@ class DataView(DataSource):
     class Config:
         arbitrary_types_allowed = True
 
-
     def __init__(
         self,
         **kwargs
@@ -287,7 +286,7 @@ class DataView(DataSource):
         self.views_in_concept = self.views_in_concept
 
         self.service = DataModelService(base_url=self.base_url)
-        
+
         self.dimension_reduce = DimensionReduce(
             embedding_url=self.base_url,
             token=self.token,
@@ -310,7 +309,7 @@ class DataView(DataSource):
         details = self.service.get_view_details_by_id(view_id, headers=self.headers)
         self._view_details_cache[view_id] = deepcopy(details)
         return details
-    
+
     async def _get_view_details_async(self, view_id: str) -> dict:
         if view_id in self._view_details_cache.keys():
             return self._view_details_cache[view_id]
@@ -325,11 +324,11 @@ class DataView(DataSource):
         sample = self.service.get_view_data_preview(view_id, headers=self.headers, fields=fields, limit=1, offset=0)
         self._sample_cache[view_id] = deepcopy(sample)
         return sample
-    
+
     async def _get_sample_async(self, view_id: str, fields: list[str], limit: int = 1, offset: int = 0) -> dict:
         if view_id in self._sample_cache.keys():
             return self._sample_cache[view_id]
-        
+
         sample = await self.service.get_view_data_preview_async(view_id, headers=self.headers, fields=fields, limit=limit, offset=offset)
         self._sample_cache[view_id] = deepcopy(sample)
         return sample
@@ -351,7 +350,7 @@ class DataView(DataSource):
 
     def test_connection(self):
         return True
-    
+
     def set_tables(self, tables: List[str]):
         self.view_list = tables
 
@@ -361,11 +360,12 @@ class DataView(DataSource):
     def query(self, query: str, as_gen=True, as_dict=True) -> dict:
         try:
             vega_service = VegaServices(base_url=self.base_url)
-            table = vega_service.exec_vir_engine_by_sql(self.user, self.user_id, query, account_type=self.account_type, headers=self.headers)
+            table = vega_service.exec_vir_engine_by_sql(
+                self.user, self.user_id, query, account_type=self.account_type, headers=self.headers)
         except AfDataSourceError as e:
             raise VirEngineError(e) from e
         return table
-    
+
     async def query_async(self, query: str, as_gen=True, as_dict=True) -> dict:
         try:
             vega_service = VegaServices(base_url=self.base_url)
@@ -373,7 +373,6 @@ class DataView(DataSource):
         except AfDataSourceError as e:
             raise VirEngineError(e) from e
         return table
-
 
     def get_metadata(self, identities=None) -> list:
         details = []
@@ -386,8 +385,8 @@ class DataView(DataSource):
                     # 表名: 数据库.模式.表名
                     parts = table.split(".")
                     asset: dict = {"index": view_id, "title": parts[2],
-                                "view_source_catalog": parts[0],
-                                "schema": parts[1]}
+                                   "view_source_catalog": parts[0],
+                                   "schema": parts[1]}
                     source = view_source_reshape(asset)
                     detail = get_view_schema_of_table(source, view_detail, zh_table, view_detail.get("comment", ""))
                     details.append(detail)
@@ -395,7 +394,7 @@ class DataView(DataSource):
             traceback.print_exc()
             raise FrontendColumnError(e) from e
         return details
-    
+
     async def get_metadata_async(self, identities=None) -> list:
         details = []
         try:
@@ -407,8 +406,8 @@ class DataView(DataSource):
                     # 表名: 数据库.模式.表名
                     parts = table.split(".")
                     asset: dict = {"index": view_id, "title": parts[2],
-                                "view_source_catalog": parts[0],
-                                "schema": parts[1]}
+                                   "view_source_catalog": parts[0],
+                                   "schema": parts[1]}
                     source = view_source_reshape(asset)
                     detail = get_view_schema_of_table(source, view_detail, zh_table, view_detail.get("comment", ""))
                     details.append(detail)
@@ -434,7 +433,8 @@ class DataView(DataSource):
                 view_details = self._get_view_details(view_id)
 
                 for view_detail in view_details:
-                    sample = self._get_sample(view_id, [field["name"] for field in view_detail["fields"]], limit=num, offset=0)
+                    sample = self._get_sample(view_id, [field["name"]
+                                              for field in view_detail["fields"]], limit=num, offset=0)
 
                     samples[view_id] = sample
         except AfDataSourceError as e:
@@ -442,18 +442,20 @@ class DataView(DataSource):
             raise FrontendColumnError(e) from e
         return samples
 
-    def get_meta_sample_data(self, input_query="", view_limit=5, dimension_num_limit=30, with_sample=True)->dict:
+    def get_meta_sample_data(self, input_query="", view_limit=5, dimension_num_limit=30, with_sample=True) -> dict:
         coroutine = self.get_meta_sample_data_async(input_query, view_limit, dimension_num_limit, with_sample)
         return run_blocking(coroutine)
-    
-    async def get_meta_sample_data_async(self, input_query="", view_limit=5, dimension_num_limit=30, with_sample=True)->dict:
+
+    async def get_meta_sample_data_async(self, input_query="", view_limit=5,
+                                         dimension_num_limit=30, with_sample=True) -> dict:
         details = []
         samples = {}
-        logger.info("get meta sample data query {}, view_limit {}, dimension_num_limit {}".format(input_query, view_limit, dimension_num_limit))
+        logger.info("get meta sample data query {}, view_limit {}, dimension_num_limit {}".format(
+            input_query, view_limit, dimension_num_limit))
         try:
             view_infos = {}
             view_white_list_sql_infos = {}  # 白名单筛选sql
-            view_classifier_field_list = {} # 分类分级
+            view_classifier_field_list = {}  # 分类分级
             view_schema_infos = {}    # 表头名字
             for view_id in self.view_list:
                 view_details = await self._get_view_details_async(view_id)
@@ -468,7 +470,7 @@ class DataView(DataSource):
             # 降维
             # column_infos = {}
             common_filed = []
-            
+
             first = True
             for k, v in reduced_view.items():
                 if first:
@@ -480,21 +482,21 @@ class DataView(DataSource):
                         if filed["name"] in common_filed:
                             n_common_field.append(filed["name"])
                     common_filed = n_common_field
-            
+
             if len(reduced_view) < 2:
                 common_filed = []
 
             for view_id, detail in reduced_view.items():
                 special_fields = []
                 # 指定字段必须保留
-                if self.special_data_view_fields is not  None and view_id in self.special_data_view_fields:
+                if self.special_data_view_fields is not None and view_id in self.special_data_view_fields:
                     special_fields = [field["name"] for field in self.special_data_view_fields[view_id]]
                     logger.info("保留字段有{}".format(special_fields))
 
                 # test_fields = self.dimension_reduce.data_view_reduce(input_query, detail["fields"], dimension_num_limit, common_filed+special_fields)
                 # 用混合索引降维
                 # detail["fields"] = self.dimension_reduce.data_view_reduce_v3(input_query, detail["fields"], dimension_num_limit, common_filed+special_fields)
-                detail["fields"] = await self.dimension_reduce.adata_view_reduce_v3(input_query, detail["fields"], dimension_num_limit, common_filed+special_fields)
+                detail["fields"] = await self.dimension_reduce.adata_view_reduce_v3(input_query, detail["fields"], dimension_num_limit, common_filed + special_fields)
 
                 # 分类分级过滤
                 if view_id in view_classifier_field_list and len(view_classifier_field_list[view_id]):
@@ -550,7 +552,7 @@ class DataView(DataSource):
                     if "entries" in sample and len(sample["entries"]) > 0:
                         reduced_fields = [field["name"] for field in detail["fields"]]
                         sample_reduced = {}
-                        
+
                         for k, v in sample["entries"][0].items():
                             if k in reduced_fields:
                                 sample_reduced[k] = v
@@ -565,13 +567,13 @@ class DataView(DataSource):
             traceback.print_exc()
             raise FrontendColumnError(e) from e
 
-        result =  {
+        result = {
             "detail": details,
             "view_schema_infos": view_schema_infos
         }
 
         if view_white_list_sql_infos:
-            result["view_white_list_sql_infos"] = view_white_list_sql_infos 
+            result["view_white_list_sql_infos"] = view_white_list_sql_infos
 
         if with_sample:
             result["sample"] = samples
@@ -599,7 +601,6 @@ class DataView(DataSource):
         except FrontendSampleError as e:
             logger.error(e)
         return descriptions
-
 
     def get_catelog(self) -> list[str]:
         Services()

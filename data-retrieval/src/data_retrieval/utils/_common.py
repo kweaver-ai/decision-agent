@@ -2,7 +2,7 @@
 @File: utils.py
 @Date: 2024-09-13
 @Author: Danny.gao
-@Desc: 
+@Desc:
 """
 from urllib.parse import urlparse
 from concurrent.futures import ThreadPoolExecutor
@@ -50,6 +50,7 @@ def is_valid_url(url):
 
 
 _executor = ThreadPoolExecutor()
+
 
 def run_blocking(coro):
     return _executor.submit(lambda: asyncio.run(coro)).result()

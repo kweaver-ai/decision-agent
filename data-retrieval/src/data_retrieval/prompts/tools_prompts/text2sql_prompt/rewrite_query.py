@@ -70,6 +70,7 @@ prompts = {
     "en": prompt_template_cn
 }
 
+
 class RewriteQueryPrompt(BasePrompt):
     """RewriteQueryPrompt
     """
@@ -90,12 +91,9 @@ class RewriteQueryPrompt(BasePrompt):
         elif isinstance(self.metadata_and_samples, list):
             if len(self.metadata_and_samples) > 0:
                 if isinstance(self.metadata_and_samples[0], dict):
-                    self.metadata_and_samples = '\n'.join([ json.dumps(item, ensure_ascii=False) for item in self.metadata_and_samples ])
+                    self.metadata_and_samples = '\n'.join(
+                        [json.dumps(item, ensure_ascii=False) for item in self.metadata_and_samples])
                 else:
                     self.metadata_and_samples = '\n\n'.join(self.metadata_and_samples)
             else:
                 self.metadata_and_samples = ""
-
-
-
-
