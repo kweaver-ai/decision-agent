@@ -448,19 +448,19 @@ class DetectionTool(AFTool):
             routes = item['routes']
             try:
                 routes = json.loads(routes)
-            except Exception:
+            except:
                 routes = []
 
             top_roads = item['top_roads']
             try:
                 top_roads = json.loads(top_roads)
-            except Exception:
+            except:
                 top_roads = []
 
             all_roads = item['all_roads']
             try:
                 all_roads = json.loads(all_roads)
-            except Exception:
+            except:
                 all_roads = {}
 
             if veh_no and veh_no in vehicles:
@@ -666,7 +666,7 @@ class DetectionTool(AFTool):
             danger_goods_type = good_info['danger_goods_type']
             try:
                 goods_weight = float(good_info['goods_weight'])
-            except Exception:
+            except:
                 goods_weight = 0
             origin_to_dest = good_info['origin_to_dest']
             origin, dest = good_info['origin_to_dest'].split('_to_')
@@ -743,7 +743,7 @@ class DetectionTool(AFTool):
                     outflow_locations = pattern.get('outflow_locations', '{}')
                     try:
                         outflow_locations = json.loads(outflow_locations)
-                    except Exception:
+                    except:
                         outflow_locations = {}
                     if dest in outflow_locations:
                         outflow = outflow_locations[dest]
@@ -801,7 +801,7 @@ class DetectionTool(AFTool):
                     inflow_locations = pattern.get('inflow_locations', '{}')
                     try:
                         inflow_locations = json.loads(inflow_locations)
-                    except Exception:
+                    except:
                         inflow_locations = {}
                     if origin in inflow_locations:
                         inflow = inflow_locations[origin]

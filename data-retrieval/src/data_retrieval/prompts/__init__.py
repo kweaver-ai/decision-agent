@@ -5,6 +5,3 @@ __all__ = [
     "Text2SQLPrompt",
     "Context2QueryPrompt",
 ]
-
-class PromptManager:
-    pass
