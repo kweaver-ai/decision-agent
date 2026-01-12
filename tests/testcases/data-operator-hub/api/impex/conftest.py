@@ -28,6 +28,7 @@ host = config["server"]["host"]
 db_port = config["server"]["db_port"]
 db_user = config["server"]["db_user"]
 db_pwd = config["server"]["db_pwd"]
+admin_password = config["admin"]["admin_password"]
 
 @pytest.fixture(scope="session", autouse=True)
 def DeleteOperatorData():
@@ -79,6 +80,7 @@ def DeleteOperatorData():
         print(f"error: {str(e)}")
     finally:
         cursor.close()
+        conn.close()
 
 @pytest.fixture(scope="session", autouse=True)
 def DeletePolicyData():
@@ -94,6 +96,7 @@ def DeletePolicyData():
         print(f"error: {str(e)}")
     finally:
         cursor.close()
+        conn.close()
     
     os.system("kubectl -n anyshare delete pod $(kubectl get pod -n anyshare | grep authorization | awk '{print $1}')")
     command = "kubectl get pod -n anyshare | grep authorization | awk '{print $2}'"
@@ -126,7 +129,7 @@ def PermPrepare():
     yield deps, users
 
     '''删除用户、部门和组织'''
-    token = GetToken(host=host).get_token(host, "admin", "eisoo.com123")
+    token = GetToken(host=host).get_token(host, "admin", admin_password)
     admin_token = token[1] 
 
     client = DeleteUser(host=host)
