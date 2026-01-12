@@ -436,8 +436,8 @@ def handle_clear_identity(arguments: dict, use_session: bool = True) -> dict:
 
 # ============== Session 存储（支持内存/Redis）==============
 
-import contextvars
-from data_retrieval.tools.mcp.session_store import get_session_store, SessionStore
+import contextvars  # noqa: E402
+from data_retrieval.tools.mcp.session_store import get_session_store  # noqa: E402
 
 # 当前请求的 session_id 和 identity（请求级别，使用 contextvars）
 _current_session_id: contextvars.ContextVar[Optional[str]] = contextvars.ContextVar('current_session_id', default=None)

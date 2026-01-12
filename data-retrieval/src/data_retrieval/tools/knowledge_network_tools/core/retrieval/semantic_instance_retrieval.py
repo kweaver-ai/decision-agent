@@ -4,14 +4,10 @@
 实现基于语义检索（match/knn）的实例数据召回，包括评分、过滤和关联判定功能
 """
 
-import asyncio
 import math
-import time
 import re
 from typing import List, Dict, Any, Optional, Set, Tuple, Callable
-from collections import defaultdict
 from data_retrieval.logs.logger import logger
-from data_retrieval.tools.graph_tools.driven.external.rerank_client import RerankClient
 from ...config import config
 from ...core.scoring.instance_scorer import InstanceScorer
 from ...models import SemanticInstanceRetrievalConfig
@@ -812,27 +808,6 @@ class SemanticInstanceRetrieval:
             # 降级策略：使用关键词匹配分数
             return [UnifiedRankingUtils.compute_keyword_match_score(text, query) for text in texts]
 
-            try:
-                # rerank 返回格式: [{"relevance_score": 0.985, "index": 1, ...}, ...]
-                score_map: Dict[int, float] = {}
-                for item in (rerank_scores or []):
-                    if not isinstance(item, dict):
-                        continue
-                    idx = item.get("index")
-                    sc = item.get("relevance_score")
-                    if isinstance(idx, int) and isinstance(sc, (int, float)):
-                        score_map[idx] = float(sc)
-                # index 可能从0或1开始，这里按 batch 顺序兜底取 i 或 i+1
-                for j in range(len(batch)):
-                    if j in score_map:
-                        scores.append(score_map[j])
-                    elif (j + 1) in score_map:
-                        scores.append(score_map[j + 1])
-                    else:
-                        scores.append(0.0)
-            except Exception:
-                scores.extend([0.0 for _ in batch])
-
         # 保证长度一致
         if len(scores) != len(texts):
             if len(scores) > len(texts):
@@ -880,6 +855,7 @@ class SemanticInstanceRetrieval:
 
         # 构建属性描述文本并打分（单对象类型版本）
         field_texts = [cls._build_field_rerank_text(object_type, f) for f in searchable_fields]
+        object_type_id = object_type.get("concept_id") or object_type.get("id")
         logger.info(f"[向量重排序] 属性语义打分：enable_rerank={enable_rerank}，对象类型={object_type_id}，属性数量={len(field_texts)}")
         scores = await cls._rerank_texts(
             query=query,
@@ -1239,7 +1215,7 @@ class SemanticInstanceRetrieval:
         """
         object_type_id = object_type.get("concept_id") or object_type.get("id")
         if not object_type_id:
-            logger.warning(f"对象类型信息中没有找到ID，跳过实例召回")
+            logger.warning("对象类型信息中没有找到ID，跳过实例召回")
             return []
         
         # 步骤1: 识别语义检索字段
@@ -1418,6 +1394,7 @@ class SemanticInstanceRetrieval:
         max_concurrent: int = 5,
         timeout: float = 5.0,
         semantic_config: Optional[SemanticInstanceRetrievalConfig] = None,
+        enable_rerank: bool = True,
     ) -> Dict[str, List[Dict[str, Any]]]:
         """
         对所有对象类型进行“候选实例召回”（并发执行，不做rerank、不做过滤）。

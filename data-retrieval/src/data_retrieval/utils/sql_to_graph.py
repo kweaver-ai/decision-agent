@@ -2,7 +2,7 @@
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2025-5-27
 import sqlglot
-from sqlglot.expressions import Table, Column, Alias, Join, EQ, Star
+from sqlglot.expressions import Table, Column, Alias, Join, EQ
 import uuid
 import hashlib
 import json

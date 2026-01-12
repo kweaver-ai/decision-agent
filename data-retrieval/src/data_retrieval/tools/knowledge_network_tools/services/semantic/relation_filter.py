@@ -41,7 +41,7 @@ async def filter_relation_types_by_query(
 
         logger.info(f"[向量重排序] filter_relation_types_by_query：使用向量重排序进行关系类型筛选，关系类型数量={len(candidate_texts)}")
         rerank_client = RerankClient()
-        logger.debug(f"[向量重排序] 调用RerankClient.ado_rerank进行关系类型筛选")
+        logger.debug("[向量重排序] 调用RerankClient.ado_rerank进行关系类型筛选")
         rerank_scores = await rerank_client.ado_rerank(candidate_texts, query or "")
         logger.debug(f"[向量重排序] RerankClient.ado_rerank返回，分数数量={len(rerank_scores) if rerank_scores else 0}")
 

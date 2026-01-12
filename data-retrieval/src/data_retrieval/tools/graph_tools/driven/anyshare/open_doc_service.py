@@ -4,8 +4,6 @@ import sys
 import aiohttp
 
 import data_retrieval.tools.graph_tools.common.stand_log as log_oper
-from data_retrieval.tools.graph_tools.common import errors
-from data_retrieval.tools.graph_tools.common.errors import CodeException
 from data_retrieval.tools.graph_tools.common.stand_log import StandLogger
 
 

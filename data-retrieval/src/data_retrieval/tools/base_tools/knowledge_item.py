@@ -1,31 +1,23 @@
 # -*- coding: utf-8 -*-
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2024-5-23
-import json
 import traceback
-from typing import Any, Optional, Type, Dict, Union, List
-from enum import Enum
+from typing import Optional, Type
 from fastapi import Body
 from langchain.callbacks.manager import (AsyncCallbackManagerForToolRun,
                                          CallbackManagerForToolRun)
-from langchain.pydantic_v1 import BaseModel, Field, PrivateAttr
-from langchain_core.tools import ToolException
+from langchain.pydantic_v1 import BaseModel, Field
 
 from data_retrieval.logs.logger import logger
 from data_retrieval.tools.base import async_construct_final_answer, AFTool
 from data_retrieval.tools.base import api_tool_decorator
-from data_retrieval.utils.llm import CustomChatOpenAI
-from data_retrieval.api.auth import get_authorization
-from data_retrieval.errors import ToolFatalError, KnowledgeItemError
+from data_retrieval.errors import KnowledgeItemError
 from data_retrieval.settings import get_settings
-from data_retrieval.utils.func import JsonParse
 from data_retrieval.api.data_model import DataModelService
 from data_retrieval.utils._common import run_blocking
 from data_retrieval.utils.ranking import HybridRetriever
 from data_retrieval.utils.embeddings import EmbeddingServiceFactory
 
-import asyncio
-import time
 
 _SETTINGS = get_settings()
 
@@ -199,7 +191,7 @@ class KnowledgeItemTool(AFTool):
             return result
         except Exception as e:
             print(traceback.format_exc())
-            raise KnowledgeItemError(reason=f"获取知识条目信息失败", detail=e)
+            raise KnowledgeItemError(reason="获取知识条目信息失败", detail=e)
 
     @classmethod
     @api_tool_decorator
@@ -483,8 +475,6 @@ class KnowledgeItemTool(AFTool):
 
 
 if __name__ == "__main__":
-    from langchain_openai import ChatOpenAI
-    from data_retrieval.api.auth import get_authorization
     from data_retrieval.api.data_model import DataModelService
 
     data_model = DataModelService(base_url="https://localhost:13020", headers={"x-user": "any", "x-account-id": "any", "x-account-type": "user"})

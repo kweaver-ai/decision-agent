@@ -1,17 +1,13 @@
 import json
-import logging
-import os
 import redis
 from redis.sentinel import Sentinel
 import re
-from abc import ABC
 from typing import Any
 
 from langchain.schema import HumanMessage, SystemMessage, BaseChatMessageHistory
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.messages import AIMessage
 from typing import Union, Awaitable
-from pydantic_settings import BaseSettings
 
 from data_retrieval.sessions.base import BaseChatHistorySession
 from data_retrieval.settings import get_settings
@@ -19,7 +15,6 @@ from data_retrieval.logs.logger import logger
 
 settings = get_settings()
 empty = ""
-from data_retrieval.sessions.base import BaseChatHistorySession
 
 
 class RedisHistorySession(BaseChatHistorySession):

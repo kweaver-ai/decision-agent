@@ -4,13 +4,11 @@ from textwrap import dedent
 from typing import Optional, Type, Any, Dict
 from collections import OrderedDict
 from langchain.pydantic_v1 import BaseModel, Field
-from langchain.tools import BaseTool
 from langchain_core.callbacks import CallbackManagerForToolRun, AsyncCallbackManagerForToolRun
 
 from data_retrieval.api.base import API, HTTPMethod
 from data_retrieval.logs.logger import logger
 from data_retrieval.sessions import BaseChatHistorySession, CreateSession
-from data_retrieval.sessions.redis_session import RedisHistorySession
 from data_retrieval.tools.base import ToolName
 from data_retrieval.tools.base import ToolResult, ToolMultipleResult, AFTool
 from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer
@@ -120,7 +118,7 @@ class AfSailorTool(AFTool):
             # result = result["result"]["res"]
             result = ToolResult(**result["result"]["res"])
             result = self._parser(result)
-        except Exception as e:
+        except Exception:
             tb_str = traceback.format_exc()
             logger.info(f"Sailor工具执行错误，实际错误为{tb_str}")
             result = ToolResult(
@@ -149,7 +147,7 @@ class AfSailorTool(AFTool):
             # result = result["result"]["res"]
             result = ToolResult(**result.get("result", {}).get("res", {}))
             result = self._parser(result)
-        except Exception as e:
+        except Exception:
             tb_str = traceback.format_exc()
             logger.info(f"Sailor工具执行错误，实际错误为{tb_str}")
             result = ToolResult(
@@ -229,80 +227,6 @@ class AfSailorTool(AFTool):
 
     @staticmethod
     async def get_api_schema():
-        inputs = {
-            'resources': {
-                'parameters': {
-                    "ad_appid": "OIZ6_KHCKIk-ASpNLg5",
-                    "af_editions": "resource",
-                    "entity2service": {},
-                    "filter": {
-                        "asset_type": [
-                            -1
-                        ],
-                        "data_kind": "0",
-                        "department_id": [
-                            -1
-                        ],
-                        "end_time": "1800122122",
-                        "info_system_id": [
-                            -1
-                        ],
-                        "owner_id": [
-                            -1
-                        ],
-                        "publish_status_category": [
-                            -1
-                        ],
-                        "shared_type": [
-                            -1
-                        ],
-                        "start_time": "1600122122",
-                        "stop_entity_infos": [],
-                        "subject_id": [
-                            -1
-                        ],
-                        "update_cycle": [
-                            -1
-                        ]
-                    },
-                    "kg_id": 1693,
-                    "limit": 100,
-                    "required_resource": {
-                        "lexicon_actrie": {
-                            "lexicon_id": "196"
-                        },
-                        "stopwords": {
-                            "lexicon_id": "197"
-                        }
-                    },
-                    "roles": [
-                        "normal",
-                        "data-owner",
-                        "data-butler",
-                        "data-development-engineer",
-                        "tc-system-mgm"
-                    ],
-                    "stop_entities": [],
-                    "stopwords": [],
-                    "stream": False,
-                    "subject_id": "1a5df062-e2e9-11ee-bc25-de01d9e8c5c1",
-                    "subject_type": "user",
-                },
-                'auth_url': 'https://10.4.134.26',
-                'user': 'liberly',
-                'password': '',
-                'token': ''
-            },
-            'config': {
-                'direct_qa': '',
-                'session_type': 'in_memory',  # session
-                'session_id': '123',
-            },
-            'input': {
-                'question': '6月份的运量',
-                'extraneous_information': ''
-            }
-        }
 
         return {
             "type": "object",

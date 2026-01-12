@@ -6,7 +6,6 @@
 """
 
 from typing import Any, Optional, Type, Dict
-from enum import Enum
 import pandas as pd
 from langchain.callbacks.manager import (AsyncCallbackManagerForToolRun,
                                          CallbackManagerForToolRun)
@@ -18,7 +17,6 @@ import faiss
 from langchain_community.vectorstores import FAISS
 from langchain_community.docstore.in_memory import InMemoryDocstore
 from langchain.pydantic_v1 import BaseModel, Field
-from langchain.tools import BaseTool
 from data_retrieval.datasource.db_base import DataSource
 from data_retrieval.utils._common import format_table_datas
 from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer, ToolMultipleResult, AFTool
@@ -125,7 +123,7 @@ class DecisionTool(AFTool):
             query,
             k=self.retriever_config.top_k
         )
-        sorted_docs = sorted(search_res, key=lambda x: x[1], reverse=True)
+        sorted(search_res, key=lambda x: x[1], reverse=True)
         # print(sorted_docs, type(sorted_docs))
         res = {
             doc.metadata.get('source', '').split('/')[-1]: doc.page_content for doc, score in search_res
@@ -253,7 +251,6 @@ class DecisionTool(AFTool):
 
         types = set()
         for day, top_roads in day_road_infos.items():
-            items = []
             for road_info in top_roads:
                 goods_infos = road_info['道路货物信息']
                 for goods_info in goods_infos:

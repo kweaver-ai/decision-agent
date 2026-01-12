@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2024-5-23
-import json
 import traceback
 import uuid
-from typing import Any, Optional, Type, Dict, Union, List
+from typing import Any, Optional, Type, Dict, List
 from enum import Enum
-from collections import OrderedDict
 from langchain.callbacks.manager import (AsyncCallbackManagerForToolRun,
                                          CallbackManagerForToolRun)
 from langchain.pydantic_v1 import BaseModel, Field, PrivateAttr
@@ -15,23 +13,18 @@ from fastapi import Body
 
 from data_retrieval.api.error import VirEngineError
 from data_retrieval.errors import SQLHelperException
-from data_retrieval.datasource.db_base import DataSource
 from data_retrieval.datasource.dip_dataview import DataView, get_datasource_from_kg_params
 from data_retrieval.api.agent_retrieval import get_datasource_from_agent_retrieval_async
 from data_retrieval.logs.logger import logger
 from data_retrieval.sessions import CreateSession, BaseChatHistorySession # 重新导入 session 相关模块
 from data_retrieval.tools.base import ToolMultipleResult, ToolName
-from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer
-from data_retrieval.tools.base import AFTool, _TOOL_MESSAGE_KEY
+from data_retrieval.tools.base import async_construct_final_answer
+from data_retrieval.tools.base import AFTool
 from data_retrieval.tools.base import api_tool_decorator
-from data_retrieval.errors import ToolFatalError
-from data_retrieval.api import VegaType
 from data_retrieval.settings import get_settings
 from data_retrieval.utils.func import JsonParse
 from data_retrieval.utils._common import run_blocking
 
-import asyncio
-import time
 
 _SETTINGS = get_settings()
 
@@ -189,7 +182,7 @@ class SQLHelperTool(AFTool):
         try:
             logger.info(f"sql_helper _arun command: {command}, sql: {sql}, title: {title}")
             if not title:
-                logger.warning(f"sql_helper _arun title is empty, set to 所有数据")
+                logger.warning("sql_helper _arun title is empty, set to 所有数据")
                 title = "所有数据"
             self._get_desc_from_datasource(self.get_desc_from_datasource)        
             # 根据命令类型执行不同操作
@@ -487,7 +480,7 @@ class SQLHelperTool(AFTool):
             # 业务知识网络的配置
             if kn_params:
                 for kn_param in kn_params:
-                    if type(kn_param) == dict:
+                    if isinstance(kn_param, dict):
                         kn_id = kn_param.get('knowledge_network_id', '')
                     else:
                         kn_id = kn_param

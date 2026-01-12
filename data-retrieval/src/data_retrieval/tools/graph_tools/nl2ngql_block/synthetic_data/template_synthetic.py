@@ -1,14 +1,11 @@
-import random, copy, json, os
+import random
+import copy
 import regex as re
-import uuid
-import asyncio
-import aiohttp
 from data_retrieval.tools.graph_tools.common.stand_log import StandLogger
 from .config import MethodConfig
-from .utils import letterCombinations, uniqueletterCombinations, string_to_unique_id
+from .utils import letterCombinations, uniqueletterCombinations
 from .ngql_template import generic_template_strict
-from .find_path import find_simple_edges, find_converging_paths, find_two_hop_paths, find_three_hop_paths, \
-    find_unique_nodes, find_diverging_paths, search_path_func, search_path_template
+from .find_path import search_path_func, search_path_template
 from .utils import find_keys_with_multiple_values, permutations
 # 设置随机数生成器的种子
 random.seed(10)
@@ -62,7 +59,8 @@ class nGQLTemplateSynthetic:
     def synthetic_by_schema(self, schema):
         # 设置随机数生成器的种子
         random.seed(10)
-        if not schema: return {}
+        if not schema:
+            return {}
         nGQL_template = {}
 
         count_freq = {}
@@ -75,7 +73,7 @@ class nGQLTemplateSynthetic:
             # if index > 10: continue
             # if index == 1000: break
             rel_path = ngql_templates["path1"]
-            nGQL, category = ngql_templates["nggl_template"], ngql_templates
+            nGQL, _category = ngql_templates["nggl_template"], ngql_templates
             # if nGQL.count("match") > 1:
             #     continue
             # StandLogger.debug("rel_path:", rel_path)
@@ -119,7 +117,8 @@ class nGQLTemplateSynthetic:
                     # agg_index = re.findall(r"(?:sum|min|max|avg|SUM|MIN|MAX|AVG)\(v(\d+)\.", nGQL)
                     all_candidate_combination = {}
                     for entity_i, entity_name in enumerate(edge_with_entity_name, 1):
-                        if not entity_name2props[entity_name]: break  # 如果某个节点没有值，就跳过
+                        if not entity_name2props[entity_name]:  # 如果某个节点没有值，就跳过
+                            break
                         # 抽取label实体在nGQL的属性类型要求有哪些，比如有的需要int或datetime类型。
                         all_params.update({"label_{}".format(entity_i): entity_name})
                         special_idx = None
@@ -155,7 +154,6 @@ class nGQLTemplateSynthetic:
                         count_freq[len(all_candidate_combination_idx)] += 1
                         if len(all_candidate_combination_idx) > self.sample_size:
                             all_candidate_combination_idx = random.sample(all_candidate_combination_idx, self.sample_size)
-                        sample_index = 0
                         for comb_index, candidate_combination in enumerate(all_candidate_combination_idx):
                             # 每次换模板需要初始化
                             all_params.update({"connector": random.choice(["AND"])})
@@ -173,7 +171,7 @@ class nGQLTemplateSynthetic:
                             entity_params = {}
                             self.get_entity_params(entity_params, candidate_combination, all_candidate_combination,
                                                    entity_i_list)
-                            nGQL_new = re.sub(f"(prop_(\d)" + "_(\d))_[^}]+", r"\1", nGQL)
+                            nGQL_new = re.sub("(prop_(\d)" + "_(\d))_[^}]+", r"\1", nGQL)
                             nGQL_new = re.sub(r'\s+', ' ', nGQL_new).strip()
                             example = nGQL_new.format(**all_params, **entity_params)
                             # print(example)
@@ -203,7 +201,7 @@ class nGQLTemplateSynthetic:
                 template_count.setdefault(ngql_template, 0)
                 try:
                     path1 = template_params.pop("path1")
-                    path2 = template_params.pop("path2") if "path2" in template_params else []  # TODO 可能有path2的场景
+                    template_params.pop("path2") if "path2" in template_params else []  # TODO 可能有path2的场景
                 except:
                     raise
                 letter_combination = uniqueletterCombinations(template_params)
@@ -267,7 +265,6 @@ class nGQLTemplateSynthetic:
                             if nggl_raw in check:
                                 raise "有重复样本"
                             check.add(nggl_raw)
-                            v_template = []
 
                             nggl_raw = self.completion_prop_value(nggl_raw)
                             # StandLogger.debug(nggl_raw)
@@ -290,11 +287,12 @@ class nGQLTemplateSynthetic:
 
     def completion_prop_value(self, nggl_raw):
         v_template = []
-        for n in [1, 2, 3, 4]: v_template.append(
-            ["v{n}.{{label_{n}}}.{{prop_{n}_{m}date_type}} {{operator_{n}_{m}_1}} {{val_{n}_{m}_1}}".format(n=n,
-                                                                                                            m=m) for
-             m
-             in [1, 2, 3, 4]])
+        for n in [1, 2, 3, 4]:
+            v_template.append(
+                ["v{n}.{{label_{n}}}.{{prop_{n}_{m}date_type}} {{operator_{n}_{m}_1}} {{val_{n}_{m}_1}}".format(n=n,
+                                                                                                                m=m) for
+                 m
+                 in [1, 2, 3, 4]])
         povc_enum = {}
         povc_enum.update(
             {"v{}.POV_int".format(n): {"index": n, "date_type": "int", "prefix": "POV", "postfix": "_int"} for n in

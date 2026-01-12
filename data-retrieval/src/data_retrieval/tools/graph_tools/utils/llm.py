@@ -1,5 +1,5 @@
 from data_retrieval.tools.graph_tools.driven.dip.model_manager_service import model_manager_service
-import asyncio, aiohttp
+import asyncio
 
 
 async def llm_chat(inner_llm, messages, max_retries=3, initial_delay=1, backoff_factor=2):

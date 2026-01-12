@@ -1,10 +1,8 @@
 import base64
-import json
 from typing import List
 from urllib.parse import urljoin
 from data_retrieval.utils.dip_services import Builder, OpenSearch, CogEngine
 from data_retrieval.utils.dip_services.sdk_error import DIPServiceError, BuilderError
-from pydantic_settings import BaseSettings
 
 from data_retrieval.api.base import API, HTTPMethod
 from data_retrieval.logs.logger import logger

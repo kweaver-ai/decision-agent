@@ -18,7 +18,6 @@ from langchain.callbacks.manager import (
 from data_retrieval.logs.logger import logger
 from data_retrieval.tools.base import (
     LLMTool,
-    ToolName,
     construct_final_answer,
     async_construct_final_answer,
 )
@@ -304,7 +303,7 @@ class ToolSearchTool(LLMTool):
         logger.info(f"Building filtered description search index for scope: {tool_scope}, language: {language} ({len(filtered_desc_corpus_kv)} tools)")
         desc_retriever.build()
         
-        logger.info(f"Filtered search indexes built successfully")
+        logger.info("Filtered search indexes built successfully")
         
         return name_retriever, desc_retriever, filtered_tool_index
     

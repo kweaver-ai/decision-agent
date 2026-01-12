@@ -11,10 +11,7 @@ from data_retrieval.logs.logger import logger
 from data_retrieval.parsers.text2sql_parser import RuleBaseSource
 from data_retrieval.datasource.dimension_reduce import DimensionReduce
 from data_retrieval.api import VegaType
-from data_retrieval.api.vega import VegaServices
-from data_retrieval.api.af_api import Services
-from pydantic import PrivateAttr
-from typing import Dict, List
+from typing import Dict
 from data_retrieval.utils.dip_services import Builder
 from data_retrieval.utils.dip_services.base import ServiceType
 
@@ -391,7 +388,6 @@ class VegaDataSource(DataSource):
         try:
             view_infos = {}
             view_white_list_sql_infos = {}  # 白名单筛选sql
-            view_desensitization_field_infos = {}  # 字段脱敏
             view_classifier_field_list = {} # 分类分级
             view_schema_infos = {}    # 表头名字
             for view_id in self.view_list:
@@ -515,7 +511,6 @@ class VegaDataSource(DataSource):
         try:
             view_infos = {}
             view_white_list_sql_infos = {}  # 白名单筛选sql
-            view_desensitization_field_infos = {}  # 字段脱敏
             view_classifier_field_list = {} # 分类分级
             view_schema_infos = {}    # 表头名字
             for view_id in self.view_list:

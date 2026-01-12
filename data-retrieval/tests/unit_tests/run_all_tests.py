@@ -1,13 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-运行所有自动化测试
+运行所有自动化单元测试
 
 使用方法:
-    python tests/run_all_tests.py
+    python tests/unit_tests/run_all_tests.py
     
     或者使用 uv:
-    uv run python tests/run_all_tests.py
+    uv run python tests/unit_tests/run_all_tests.py
+    
+    或者使用 pytest:
+    uv run python -m pytest tests/unit_tests/ -v
 """
 
 import sys
@@ -16,7 +19,7 @@ import time
 import importlib.util
 
 # 添加项目路径
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'src'))
 
 # 测试模块列表
 TEST_MODULES = [
@@ -56,7 +59,7 @@ def run_module_tests(module):
 def main():
     """主函数"""
     print("=" * 70)
-    print("  Data Retrieval 自动化测试套件")
+    print("  Data Retrieval 单元测试套件")
     print("=" * 70)
     print(f"\n开始时间: {time.strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"测试模块数: {len(TEST_MODULES)}")

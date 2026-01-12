@@ -2,10 +2,8 @@ from data_retrieval.api.error import (
     AfDataSourceError, DataModelDetailError, DataModelQueryError
 )
 from data_retrieval.api.base import API, HTTPMethod
-from typing import Any
 
 import urllib3
-import os
 import traceback
 
 from data_retrieval.settings import get_settings
@@ -280,9 +278,8 @@ class DataModelService:
 
 if __name__ == '__main__':
     def main():
-        from auth import get_authorization
         # 示例用法
-        service = DataModelService()
+        DataModelService()
         # 这里需要根据实际情况获取认证信息
         # token = get_authorization("https://localhost:13020", "user", "password")
         # headers = {"Authorization": f"Bearer {token}"}

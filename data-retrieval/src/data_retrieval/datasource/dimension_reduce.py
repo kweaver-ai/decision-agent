@@ -1,11 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author:  jack.li@aishu.cn
 # @Date: 2025-01-13
-import requests
 import numpy as np
 import concurrent.futures
-import asyncio
-from urllib.parse import urljoin
 from data_retrieval.settings import get_settings
 from data_retrieval.logs.logger import logger
 from data_retrieval.utils.embeddings import EmbeddingServiceFactory

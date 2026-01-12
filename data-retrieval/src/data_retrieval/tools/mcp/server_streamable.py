@@ -7,13 +7,10 @@
 """
 
 import contextlib
-from typing import Optional, Callable, Dict, List, Any, AsyncIterator
+from typing import Optional, Callable, Dict
 from urllib.parse import parse_qs
 
-from starlette.applications import Starlette
-from starlette.routing import Route, Mount
 from starlette.responses import JSONResponse
-from starlette.requests import Request
 
 from mcp.server.streamable_http_manager import StreamableHTTPSessionManager
 
@@ -24,7 +21,6 @@ from data_retrieval.tools.mcp.registry import (
 from data_retrieval.tools.mcp.server_common import (
     build_server,
     register_identity,
-    get_current_identity,
     TOOL_SETS,
 )
 
@@ -218,13 +214,13 @@ def run_server(
     """启动 StreamableHTTP MCP 服务器。"""
     import uvicorn
     
-    print(f"[Start] MCP StreamableHTTP Server")
+    print("[Start] MCP StreamableHTTP Server")
     print(f"   Address: http://{host}:{port}")
-    print(f"   Endpoints:")
-    print(f"      - /mcp           -> all tools")
-    print(f"      - /base/mcp      -> base tools")
-    print(f"      - /sandbox/mcp   -> sandbox tools")
-    print(f"      - /knowledge/mcp -> knowledge tools")
+    print("   Endpoints:")
+    print("      - /mcp           -> all tools")
+    print("      - /base/mcp      -> base tools")
+    print("      - /sandbox/mcp   -> sandbox tools")
+    print("      - /knowledge/mcp -> knowledge tools")
     print()
     
     if param_provider:

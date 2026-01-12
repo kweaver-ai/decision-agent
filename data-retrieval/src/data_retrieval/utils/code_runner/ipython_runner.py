@@ -2,7 +2,7 @@
 import traceback
 import importlib.util
 import uuid
-from typing import Any, Optional, Dict, Union
+from typing import Any, Optional, Dict
 
 from data_retrieval.logs.logger import logger
 from data_retrieval.errors import PythonCodeError

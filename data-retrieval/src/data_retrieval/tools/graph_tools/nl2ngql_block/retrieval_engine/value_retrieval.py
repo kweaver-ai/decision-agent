@@ -1,8 +1,9 @@
-import copy, yaml, os
-from pprint import pprint
+import copy
+import yaml
 import asyncio
 from .config import MethodConfig
-import json, aiohttp
+import json
+import aiohttp
 from data_retrieval.tools.graph_tools.common.stand_log import StandLogger
 from data_retrieval.tools.graph_tools.common.config import Config
 from data_retrieval.tools.graph_tools.utils.opensearch import OpenSearchConnector
@@ -104,9 +105,8 @@ class VectorRetrieval:
                 results = await response.json()
 
             
-            same_value = False
             if results and results.get("hits"):
-                max_score = results["hits"]["max_score"]
+                results["hits"]["max_score"]
                 for hit in results["hits"]["hits"]:
                     source = hit["_source"]
                     score = hit["_score"]
@@ -309,7 +309,6 @@ class KGNestedNodeRetrieval:
         return node_dic
 
     async def retrieval(self, intermediate_result, keywords, values):
-        question = intermediate_result.query
         self.schema = intermediate_result.schema
         self.space_name = intermediate_result.nebula_params["dbname"]
         self.nebula_engine = intermediate_result.nebula_params["nebula_engine"]
@@ -420,7 +419,7 @@ class KGNestedNodeRetrieval:
 
     def search_properties(self, entity_name):
         # 获取当前实体的邻居实体信息
-        neighbor_entity_info = self.cache_nested_nodes[entity_name].get("neighbor_entity", {})
+        self.cache_nested_nodes[entity_name].get("neighbor_entity", {})
 
         # 返回当前实体的信息
         return {entity_name: {
@@ -450,7 +449,8 @@ class KGNestedNodeRetrieval:
         return count
 
     def search_down_nested_node(self, question, node_name, entity_name, current_node):
-        if entity_name in self.use_node_names and (entity_name not in self.nested_entity): return
+        if entity_name in self.use_node_names and (entity_name not in self.nested_entity):
+            return
         # if entity_name
         self.use_node_names.add(entity_name)
         # if not self.has_overlapping_substring(question, entity_name, min_length=2): return

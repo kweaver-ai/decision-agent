@@ -7,7 +7,7 @@ from typing import Any, Dict
 from datetime import datetime
 from data_retrieval.datasource.api_base import APIDataSource
 from data_retrieval.api.af_api import Services
-from data_retrieval.api.error import AfDataSourceError, IndicatorDescError, IndicatorDetailError, IndicatorQueryError
+from data_retrieval.api.error import AfDataSourceError, IndicatorDescError, IndicatorDetailError
 from data_retrieval.logs.logger import logger
 from data_retrieval.datasource.vega_datasource import get_view_en2type, view_source_reshape
 from data_retrieval.datasource.vega_datasource import FrontendColumnError

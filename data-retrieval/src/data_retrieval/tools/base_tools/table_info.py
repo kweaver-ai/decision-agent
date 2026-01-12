@@ -1,11 +1,9 @@
 # -*- coding:utf-8 -*-
-from dataclasses import dataclass, field
-from typing import List, Union
 
 from fastapi import Body
-from typing import List, Dict, Optional, Any
 from pydantic import BaseModel
-import pymysql, re
+import pymysql
+import re
 
 class TableRequest(BaseModel):
     host: str

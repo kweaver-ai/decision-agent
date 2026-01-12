@@ -1,24 +1,19 @@
 import json
 import traceback
-from io import StringIO
 import asyncio
 from textwrap import dedent
 from typing import Optional, Type, Any, List, Dict
 from enum import Enum
-import re
-from collections import OrderedDict
 
 import pandas as pd
-from langchain.tools import BaseTool
 from langchain_core.callbacks import CallbackManagerForToolRun, AsyncCallbackManagerForToolRun
 from langchain_core.pydantic_v1 import BaseModel, Field, PrivateAttr
-from pandas import Timestamp
 from data_retrieval.logs.logger import logger
 from data_retrieval.sessions import BaseChatHistorySession, CreateSession
 from data_retrieval.tools.base import ToolName
-from data_retrieval.tools.base import ToolResult, ToolMultipleResult, AFTool
-from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer
-from data_retrieval.errors import Json2PlotError, ToolFatalError
+from data_retrieval.tools.base import ToolMultipleResult, AFTool
+from data_retrieval.tools.base import async_construct_final_answer
+from data_retrieval.errors import Json2PlotError
 from data_retrieval.tools.base import api_tool_decorator
 
 from fastapi import FastAPI, HTTPException, Body

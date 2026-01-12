@@ -1,1 +1,1 @@
-from .pipeline import Text2nGQLSystem
+from .pipeline import Text2nGQLSystem as Text2nGQLSystem

@@ -1,6 +1,5 @@
 import uuid
 import base64
-import re
 from decimal import Decimal, getcontext
 
 

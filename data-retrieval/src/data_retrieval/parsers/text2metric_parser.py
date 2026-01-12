@@ -1,12 +1,9 @@
-import json
 import re
-from json import JSONDecodeError
-from typing import Optional, Dict, List
+from typing import Dict, List
 
 from langchain_core.outputs import Generation
 
 from langchain_core.output_parsers import StrOutputParser
-from langchain_core.pydantic_v1 import BaseModel, Field
 
 from data_retrieval.datasource.af_indicator import AFIndicator
 from data_retrieval.logs.logger import logger

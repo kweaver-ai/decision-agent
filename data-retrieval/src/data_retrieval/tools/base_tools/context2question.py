@@ -17,7 +17,7 @@ from langchain_core.prompts import (
     ChatPromptTemplate,
 )
 
-from langchain_core.messages import HumanMessage, BaseMessage, SystemMessage, AIMessage
+from langchain_core.messages import HumanMessage, BaseMessage, AIMessage
 
 from data_retrieval.prompts.tools_prompts \
     .context2question_prompt import Context2QueryPrompt

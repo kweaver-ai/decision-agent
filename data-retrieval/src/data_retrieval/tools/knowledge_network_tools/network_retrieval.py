@@ -10,7 +10,6 @@
 import json
 import asyncio
 from typing import List, Dict, Any, Optional, Tuple
-from langchain.pydantic_v1 import BaseModel, Field
 
 # 导入LLM客户端
 from .llm_client import LLMClient
@@ -255,7 +254,7 @@ class KnowledgeNetworkRetrieval:
             (提示词, 编号到ID的映射字典)
         """
         # 构建提示词
-        prompt = f"请分析以下知识网络列表，只返回与问题相关的知识网络数字编号，按相关性从高到低排序。\n\n知识网络列表:\n"
+        prompt = "请分析以下知识网络列表，只返回与问题相关的知识网络数字编号，按相关性从高到低排序。\n\n知识网络列表:\n"
         
         # 一次性对所有知识网络的关系路径进行向量重排序
         filtered_relations_by_kn = await cls._filter_all_relation_paths_with_rerank(
@@ -361,7 +360,7 @@ class KnowledgeNetworkRetrieval:
                     return network_details[first_kn_id]
             
             # 如果没有找到明确的列表或结果为空，返回
-            logger.debug(f"LLM返回结果无效，返回空列表")
+            logger.debug("LLM返回结果无效，返回空列表")
             return {}
                 
         except Exception as e:

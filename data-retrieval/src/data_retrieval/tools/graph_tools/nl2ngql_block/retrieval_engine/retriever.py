@@ -1,11 +1,9 @@
 import asyncio
-import time
 from .config import MethodConfig
 from .value_retrieval import ValueRetrieval, BaseValueRetrieval
 from .keyword_extract import KeywordsExtract
 from .qq_retrieval import QuestionRuleRetrieval
 from ..common.structs import RetrievalResponse
-from data_retrieval.tools.graph_tools.common.stand_log import StandLogger
 
 
 class RetrievalEngine:

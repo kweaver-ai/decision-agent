@@ -1,4 +1,3 @@
-import json, aiohttp
 from .prompt import keyword_schema, prompt_extract_keywords
 from data_retrieval.tools.graph_tools.common.stand_log import StandLogger
 from data_retrieval.tools.graph_tools.utils.llm import llm_chat
@@ -39,7 +38,7 @@ class KeywordsExtract:
             # response = response.replace(response.split("}")[-1], "")
             response = response.replace("```", "").replace("json", "")
             keywords = eval(response.strip())
-        except:
+        except Exception:
             StandLogger.warn("抽取关键词格式错误:{}".format(response))
             keywords = {}
         StandLogger.debug("关键词抽取response：{}".format(response))

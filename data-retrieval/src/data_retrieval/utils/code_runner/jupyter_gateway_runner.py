@@ -5,7 +5,7 @@ import uuid
 import requests
 import json
 import time
-from typing import Any, Optional, Dict, Union, List
+from typing import Any, Optional, Dict, List
 import websocket
 
 from data_retrieval.logs.logger import logger
@@ -346,7 +346,8 @@ class JupyterGatewayRunner(BaseCodeRunner):
                                     try:
                                         import ast
                                         result = ast.literal_eval(text_result)
-                                    except: result = text_result # Keep original if eval fails
+                                    except Exception:
+                                        result = text_result  # Keep original if eval fails
                             elif msg_type == "stream":
                                 if parent.get("msg_id") == msg_id:
                                     text = content.get("text", "")
@@ -354,7 +355,8 @@ class JupyterGatewayRunner(BaseCodeRunner):
                             elif msg_type == "display_data":
                                 if parent.get("msg_id") == msg_id:
                                     result_data = content.get("data", {})
-                                    if "text/plain" in result_data: collected_outputs.append(result_data["text/plain"])
+                                    if "text/plain" in result_data:
+                                        collected_outputs.append(result_data["text/plain"])
                             elif msg_type == "status" and content.get("execution_state") == "idle":
                                 if parent.get("msg_id") == msg_id:
                                     break # Exit inner loop on idle

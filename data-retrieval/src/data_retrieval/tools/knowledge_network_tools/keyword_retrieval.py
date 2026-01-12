@@ -453,7 +453,7 @@ class KeywordRetrieval:
         # 6. 获取一度邻居信息
         relation_types = schema_info.get("relation_types", [])
         all_neighbors = []
-        source_instance_ids = {inst["instance_id"] for inst in instances}
+        {inst["instance_id"] for inst in instances}
         
         # 限制实例数量，避免查询过多
         instances_to_query = instances[:10]  # 最多查询10个实例

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2025-4-10
-from typing import Any, Dict, Optional, Union, List
+from typing import Any, Dict, Optional
 import json
 import pandas as pd
 import numpy as np
@@ -140,7 +140,7 @@ def to_json(obj: Any, indent: Optional[int] = None, ensure_ascii: bool = False) 
     """
     try:
         return json.dumps(to_dict(obj), indent=indent, ensure_ascii=ensure_ascii)
-    except Exception as e:
+    except Exception:
         # 处理 DataFrame 特殊情况
         if isinstance(obj, pd.DataFrame):
             df_copy = obj.copy()

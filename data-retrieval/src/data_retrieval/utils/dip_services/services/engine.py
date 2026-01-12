@@ -344,7 +344,6 @@ class CogEngine(Service):
 
 
 if __name__ == "__main__":
-    import asyncio
     import json
 
     from data_retrieval.utils.dip_services.base import ConnectionData

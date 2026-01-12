@@ -1,1 +1,1 @@
-from .fixer import QueryFixer
+from .fixer import QueryFixer as QueryFixer

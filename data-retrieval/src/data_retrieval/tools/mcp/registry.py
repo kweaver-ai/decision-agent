@@ -14,7 +14,7 @@ Key Design:
 
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, List, Optional, Type, Set, Protocol, Awaitable, Union
+from typing import Any, Callable, Dict, List, Optional, Type, Set, Awaitable, Union
 import inspect
 import copy
 from abc import ABC, abstractmethod

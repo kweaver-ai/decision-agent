@@ -1,7 +1,5 @@
 from typing import Optional
-import asyncio
 from langchain_core.callbacks import CallbackManagerForToolRun, AsyncCallbackManagerForToolRun
-from langchain_core.pydantic_v1 import BaseModel
 
 from data_retrieval.logs.logger import logger
 from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer
@@ -70,7 +68,7 @@ class GetStatusTool(BaseSandboxTool):
             }
         except Exception as e:
             logger.error(f"Get status action failed: {e}")
-            raise SandboxError(reason=f"状态获取失败", detail=str(e)) from e
+            raise SandboxError(reason="状态获取失败", detail=str(e)) from e
 
     @staticmethod
     async def get_api_schema():

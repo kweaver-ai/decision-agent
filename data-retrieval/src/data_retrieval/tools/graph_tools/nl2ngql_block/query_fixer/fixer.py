@@ -44,11 +44,10 @@ class QueryFixer:
         self.space_name = intermediate_result.nebula_params["dbname"]
         self.nebula_engine = intermediate_result.nebula_params["nebula_engine"]
         query = queries["response"]
-        messages = queries["messages"]
+        queries["messages"]
         queries_fix = []
         res, query = await self.execute(query)
         queries_fix.append({"executed_res": res, "ngql": query})
-        retry = 1
         # is_null = self.rule_fixer.check_null_values(res)
         # while is_null:
         #     query = await self.cot_fix_generator.generate(intermediate_result, messages, queries_fix[-1])

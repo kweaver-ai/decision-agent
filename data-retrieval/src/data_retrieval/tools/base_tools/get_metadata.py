@@ -1,23 +1,15 @@
-import json
 import traceback
-from io import StringIO
 from textwrap import dedent
-from typing import Optional, Type, Any, List, Dict
-from enum import Enum
-import re
+from typing import Optional, Type
 import asyncio
 
-import pandas as pd
-from langchain.tools import BaseTool
-from langchain_core.callbacks import CallbackManagerForToolRun, AsyncCallbackManagerForToolRun
-from langchain_core.pydantic_v1 import BaseModel, Field, PrivateAttr
-from pandas import Timestamp
+from langchain_core.callbacks import AsyncCallbackManagerForToolRun
+from langchain_core.pydantic_v1 import BaseModel, Field
 from data_retrieval.logs.logger import logger
 from data_retrieval.sessions import BaseChatHistorySession, CreateSession
 from data_retrieval.tools.base import ToolName
-from data_retrieval.tools.base import ToolResult, ToolMultipleResult, AFTool
-from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer
-from data_retrieval.errors import Json2PlotError, ToolFatalError
+from data_retrieval.tools.base import AFTool
+from data_retrieval.errors import ToolFatalError
 from data_retrieval.tools.base import api_tool_decorator, validate_openapi_schema
 
 from data_retrieval.datasource.dip_metric import DIPMetric
@@ -302,7 +294,7 @@ class GetMetadataTool(AFTool):
                         for ds in datasources_in_kg:
                             view_list.append(ds.get("id"))
                     elif ds_type == "metric":
-                        logger.info(f"ds_type 为 'metric'，跳过从知识图谱获取的数据源（kg 只能获取数据视图）")
+                        logger.info("ds_type 为 'metric'，跳过从知识图谱获取的数据源（kg 只能获取数据视图）")
                 except Exception as e:
                     logger.error(f"从知识图谱获取数据源失败: {e}")
                     logger.error(traceback.format_exc())

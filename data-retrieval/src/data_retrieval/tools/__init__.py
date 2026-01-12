@@ -17,11 +17,11 @@ __all__ = [
     "Text2MetricTool",
     "Text2SQLTool",
     "AfSailorTool",
+    "KnowledgeEnhancedTool",
     "ToolName",
     "ToolMultipleResult",
     "ToolResult",
     "LogResult",
     "construct_final_answer",
-    "async_construct_final_answer"
-    "KnowledgeEnhancedTool"
+    "async_construct_final_answer",
 ]

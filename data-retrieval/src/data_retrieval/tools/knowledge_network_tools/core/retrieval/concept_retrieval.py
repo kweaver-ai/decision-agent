@@ -4,25 +4,14 @@
 专注于关系类型和对象类型的检索逻辑
 """
 
-import json
-import os
-import time
 from typing import List, Dict, Any, Optional, Tuple, Union
-from fastapi import Body, HTTPException, Header, Depends
-from pydantic import BaseModel, Field
-import asyncio
-from datetime import datetime, timedelta
-import numpy as np
-from collections import defaultdict
 
 # 导入LLM客户端
 from ...infra.clients.llm_client import LLMClient
 # 导入日志模块
 from data_retrieval.logs.logger import logger
 # 导入重排序客户端
-from data_retrieval.tools.graph_tools.driven.external.rerank_client import RerankClient
 # 导入标准错误响应类
-from data_retrieval.errors import ErrorResponse
 # 导入会话管理器
 from ...services.session.session_manager import RetrievalSessionManager
 # 导入统一排序工具
@@ -232,7 +221,7 @@ class ConceptRetrieval:
                     relevant_relations = relevant_relations[:top_k]
             else:
                 # 如果没有找到明确的列表或结果为空，返回所有关系类型（应用top_k限制）
-                logger.debug(f"LLM返回结果无效，返回所有关系类型")
+                logger.debug("LLM返回结果无效，返回所有关系类型")
                 relevant_relations = relations_mapping[:top_k]
                 
         except Exception as e:
@@ -581,9 +570,9 @@ class ConceptRetrieval:
                 # 按轮次组织记录
                 round_records = {}
                 for record in retrieved_concept_ids:
-                    concept_id = record.get("concept_id", "")
+                    record.get("concept_id", "")
                     concept_name = record.get("concept_name", "")
-                    concept_type = record.get("concept_type", "")
+                    record.get("concept_type", "")
                     
                     # 记录信息（简化显示格式）
                     # 由于对象类型不再有编号，所以不再显示编号

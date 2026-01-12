@@ -7,10 +7,8 @@ Jupyter Gateway Runner 使用示例
 """
 
 import time
-import sys
 
 from data_retrieval.utils.code_runner.jupyter_gateway_runner import JupyterGatewayRunner
-from data_retrieval.settings import get_settings, set_value
 import json
 
 def main():

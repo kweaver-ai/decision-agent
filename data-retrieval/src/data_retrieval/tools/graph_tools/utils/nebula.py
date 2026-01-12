@@ -1,11 +1,12 @@
 import asyncio
 import json
 from typing import List
-import re, requests, aiohttp
+import re
+import requests
+import aiohttp
 from nebula3.Config import Config
 from nebula3.gclient.net import ConnectionPool
-from collections import defaultdict, Counter
-import re
+from collections import defaultdict
 import logging
 
 http_max_initial_line_length = 16384  # opensearch http.max_initial_line_length配置

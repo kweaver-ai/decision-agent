@@ -3,7 +3,7 @@ import aiohttp
 import json
 from typing import Optional, Union, Any
 from pydantic import BaseModel
-from data_retrieval.api.error import Text2SQLError, AfDataSourceError
+from data_retrieval.api.error import AfDataSourceError
 from enum import Enum, unique
 
 class HTTPMethod:

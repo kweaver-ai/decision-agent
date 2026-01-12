@@ -2,7 +2,7 @@
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2024-08-26
 from datetime import datetime
-from typing import Optional, List, Any
+from typing import Optional, Any
 import json
 
 from data_retrieval.prompts.base import BasePrompt

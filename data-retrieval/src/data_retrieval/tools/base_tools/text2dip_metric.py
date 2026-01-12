@@ -2,19 +2,13 @@
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2024-08-26
 import json
-import os
 import traceback
-from textwrap import dedent
 from typing import Any, Optional, Type, Dict, List
-from enum import Enum
-from collections import OrderedDict
 
 from langchain.callbacks.manager import (AsyncCallbackManagerForToolRun,
                                          CallbackManagerForToolRun)
 
 from langchain.pydantic_v1 import BaseModel, Field, PrivateAttr
-from langchain.pydantic_v1.dataclasses import dataclass
-from langchain.tools import BaseTool
 from fastapi import Body
 
 from langchain_core.prompts import (
@@ -23,23 +17,19 @@ from langchain_core.prompts import (
 )
 from langchain_core.messages import SystemMessage, HumanMessage
 
-from data_retrieval.errors import Text2DIPMetricError, ToolFatalError
+from data_retrieval.errors import Text2DIPMetricError
 from data_retrieval.logs.logger import logger
 from data_retrieval.prompts.tools_prompts.text2dip_metric_prompt import Text2DIPMetricPrompt
 
 from data_retrieval.sessions import CreateSession, BaseChatHistorySession
-from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer, ToolCallbackHandler
+from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer
 from data_retrieval.tools.base import LLMTool, ToolMultipleResult, ToolName
-from data_retrieval.tools.base_tools.context2question import achat_history_to_question, chat_history_to_question
-from data_retrieval.utils.func import JsonParse, json_to_markdown
-from data_retrieval.tools.base import LLMTool, _TOOL_MESSAGE_KEY
+from data_retrieval.tools.base import _TOOL_MESSAGE_KEY
 from data_retrieval.settings import get_settings
-from data_retrieval.tools.base import api_tool_decorator, _TOOL_MESSAGE_KEY
+from data_retrieval.tools.base import api_tool_decorator
 from data_retrieval.utils.llm import CustomChatOpenAI
-from data_retrieval.api.auth import get_authorization
 from data_retrieval.datasource.dip_metric import DIPMetric
 from data_retrieval.tools.base import parse_llm_from_model_factory
-from data_retrieval.api.data_model import DataModelService
 from data_retrieval.utils._common import run_blocking
 from data_retrieval.utils.model_types import ModelType4Prompt
 from data_retrieval.api.agent_retrieval import get_datasource_from_agent_retrieval_async
@@ -379,7 +369,7 @@ class Text2DIPMetricTool(LLMTool):
             res = {}
             
             for i in range(self.retry_times):
-                logger.debug(f"============" * 10)
+                logger.debug("============" * 10)
                 logger.debug(f"{i + 1} times to process DIP metric query......")
                 try:
                     llm_res, call_res = {}, {}
@@ -504,7 +494,7 @@ class Text2DIPMetricTool(LLMTool):
             res = {}
             
             for i in range(self.retry_times):
-                logger.debug(f"============" * 10)
+                logger.debug("============" * 10)
                 logger.debug(f"{i + 1} times to process DIP metric query (async)......")
                 try:
                     llm_res, call_res = {}, {}
@@ -881,7 +871,7 @@ class Text2DIPMetricTool(LLMTool):
                     headers["Authorization"] = token
                 
                 for kn_param in kn_params:
-                    if type(kn_param) == dict:
+                    if isinstance(kn_param, dict):
                         kn_id = kn_param.get('knowledge_network_id', '')
                     else:
                         kn_id = kn_param

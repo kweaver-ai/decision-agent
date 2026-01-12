@@ -1,4 +1,4 @@
-import json, aiohttp, yaml
+import yaml
 from .prompt import prompt_generate_nGQL, prompt_generate_nGQL_with_history, retrieval_content
 from data_retrieval.tools.graph_tools.common.stand_log import StandLogger
 from data_retrieval.tools.graph_tools.utils.llm import llm_chat

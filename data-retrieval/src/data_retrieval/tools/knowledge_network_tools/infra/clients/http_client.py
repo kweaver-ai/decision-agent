@@ -11,7 +11,7 @@ from urllib.parse import urlparse
 from fastapi import HTTPException
 from data_retrieval.logs.logger import logger
 from ...config import config
-from ...infra.utils.timing_utils import api_timer, add_cost
+from ...infra.utils.timing_utils import api_timer
 
 # 知识网络API基础URL（从配置文件读取）
 KNOWLEDGE_NETWORK_API_BASE = config.KNOWLEDGE_NETWORK_API_BASE

@@ -52,14 +52,14 @@ Cursor 配置示例（连接不同工具集）：
 from __future__ import annotations
 
 import argparse
-from typing import Callable, Dict, List, Optional
-from urllib.parse import parse_qs, urlparse
+from typing import Callable, Dict, Optional
+from urllib.parse import parse_qs
 
 from mcp.server import Server
 from mcp.server.sse import SseServerTransport
 from starlette.responses import JSONResponse
 
-from data_retrieval.tools.mcp.registry import get_params_provider, list_mcp_tools, DictParamsProvider
+from data_retrieval.tools.mcp.registry import list_mcp_tools
 from data_retrieval.tools.mcp.server_common import (
     build_server,
     get_initialization_options,
@@ -71,9 +71,6 @@ from data_retrieval.tools.mcp.server_common import (
     SERVER_NAME,
     IdentityParamsProvider,
     # 工具集定义
-    BASE_TOOLS,
-    SANDBOX_TOOLS,
-    KNOWLEDGE_TOOLS,
     TOOL_SETS,
 )
 
@@ -319,7 +316,7 @@ class MultiToolSetApp:
                 identity = get_current_identity()
                 print(f"   📨 Session: {session_ids[0][:8]}..., Identity: {identity}")
             else:
-                print(f"   ⚠️ 未找到 session_id")
+                print("   ⚠️ 未找到 session_id")
             
             await transport.handle_post_message(scope, receive, send)
             return
@@ -441,17 +438,17 @@ def run_server(
     print(f"   - 健康检查:    http://{host}:{port}/health")
     
     if multi_toolset:
-        print(f"\n📦 多工具集模式（同一服务，不同 URL）：")
-        print(f"   全部工具 (17):")
+        print("\n📦 多工具集模式（同一服务，不同 URL）：")
+        print("   全部工具 (17):")
         print(f"       - SSE:   http://{host}:{port}/sse")
         print(f"       - 工具:  http://{host}:{port}/tools")
-        print(f"   基础工具 (7):")
+        print("   基础工具 (7):")
         print(f"       - SSE:   http://{host}:{port}/base/sse")
         print(f"       - 工具:  http://{host}:{port}/base/tools")
-        print(f"   沙箱工具 (8):")
+        print("   沙箱工具 (8):")
         print(f"       - SSE:   http://{host}:{port}/sandbox/sse")
         print(f"       - 工具:  http://{host}:{port}/sandbox/tools")
-        print(f"   知识网络 (2):")
+        print("   知识网络 (2):")
         print(f"       - SSE:   http://{host}:{port}/knowledge/sse")
         print(f"       - 工具:  http://{host}:{port}/knowledge/tools")
         
@@ -485,7 +482,7 @@ def run_server(
 
 
 if __name__ == "__main__":
-    from data_retrieval.tools.mcp.registry import MockParamsProvider, set_params_provider
+    from data_retrieval.tools.mcp.registry import MockParamsProvider
 
     def main():
         """命令行主入口。"""

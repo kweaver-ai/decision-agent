@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2024-6-1
-from abc import ABC, abstractmethod
-from typing import Dict, List, Any
+from abc import ABC
+from typing import Dict
 
 from jinja2 import environment, meta
 from langchain.pydantic_v1 import BaseModel

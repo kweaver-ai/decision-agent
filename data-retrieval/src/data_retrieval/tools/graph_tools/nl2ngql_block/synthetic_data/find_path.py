@@ -82,9 +82,11 @@ def find_two_hop_paths(edges):
         for e2 in edges:
             if e2['subject'] == v2:  # e2 的起点要是 e1 的终点
                 v3 = e2['object']
-                if v3 == v2: continue # 去掉嵌套的关系，后面自己拼接
-                if v3 == v1: continue # 去掉嵌套的关系，后面自己拼接
-                if e1['name'] == e2['name']: # TODO 去重嵌套关系
+                if v3 == v2:  # 去掉嵌套的关系，后面自己拼接
+                    continue
+                if v3 == v1:  # 去掉嵌套的关系，后面自己拼接
+                    continue
+                if e1['name'] == e2['name']:  # TODO 去重嵌套关系
                     continue
 
                 paths.append({
@@ -111,19 +113,26 @@ def find_three_hop_paths(edges):
     paths = []
     for e1 in edges:
         v1, v2 = e1['subject'], e1['object']
-        if v1 == v2: continue
+        if v1 == v2:
+            continue
         for e2 in edges:
             if e2['subject'] == v2:  # e2 的起点要是 e1 的终点
                 v3 = e2['object']
-                if v3 == v2: continue # 去掉嵌套的关系，后面自己拼接
-                if v3 == v1: continue # 去掉嵌套的关系，后面自己拼接
+                if v3 == v2:  # 去掉嵌套的关系，后面自己拼接
+                    continue
+                if v3 == v1:  # 去掉嵌套的关系，后面自己拼接
+                    continue
                 for e3 in edges:
                     if e3['subject'] == v3:  # e3 的起点要是 e2 的终点
                         v4 = e3['object']
-                        if v4 == v3: continue # 去掉嵌套的关系，后面自己拼接
-                        if v4 == v2: continue # 去掉嵌套的关系，后面自己拼接
-                        if v4 == v1: continue # 去掉嵌套的关系，后面自己拼接
-                        if e1['name'] == e2['name'] or e1['name'] == e3['name'] or e3['name'] == e2['name']: continue
+                        if v4 == v3:  # 去掉嵌套的关系，后面自己拼接
+                            continue
+                        if v4 == v2:  # 去掉嵌套的关系，后面自己拼接
+                            continue
+                        if v4 == v1:  # 去掉嵌套的关系，后面自己拼接
+                            continue
+                        if e1['name'] == e2['name'] or e1['name'] == e3['name'] or e3['name'] == e2['name']:
+                            continue
                         paths.append({
                             'v1': v1,
                             'e1': e1['name'],
@@ -151,11 +160,14 @@ def find_converging_paths(edges):
     paths = []
     for e1 in edges:
         v1, v2_from_e1 = e1['subject'], e1['object']  # e1 的起点和终点
-        if v1 == v2_from_e1: continue # 去掉嵌套的关系，后面自己拼接
+        if v1 == v2_from_e1:  # 去掉嵌套的关系，后面自己拼接
+            continue
         for e2 in edges:
             v3, v2_from_e2 = e2['subject'], e2['object']  # e2 的起点和终点
-            if v3 == v2_from_e1: continue # 去掉嵌套的关系，后面自己拼接
-            if v3 == v1: continue  # 去掉嵌套的关系，后面自己拼接
+            if v3 == v2_from_e1:  # 去掉嵌套的关系，后面自己拼接
+                continue
+            if v3 == v1:  # 去掉嵌套的关系，后面自己拼接
+                continue
             # 条件：两条边指向同一个 v2，且 v1 != v3，e1 != e2
             if v2_from_e1 == v2_from_e2 and v1 != v3 and e1['name'] != e2['name']:
                 paths.append({
@@ -172,11 +184,14 @@ def find_diverging_paths(edges):
     paths = []
     for e1 in edges:
         v1, v2_from_e1 = e1['object'], e1['subject']  # e1 的终点是 v1，起点是 v2
-        if v1 == v2_from_e1: continue  # 去掉嵌套的关系，后面自己拼接
+        if v1 == v2_from_e1:  # 去掉嵌套的关系，后面自己拼接
+            continue
         for e2 in edges:
             v2_from_e2, v3 = e2['subject'], e2['object']  # e2 的起点是 v2，终点是 v3
-            if v3 == v2_from_e1: continue  # 去掉嵌套的关系，后面自己拼接
-            if v3 == v1: continue  # 去掉嵌套的关系，后面自己拼接
+            if v3 == v2_from_e1:  # 去掉嵌套的关系，后面自己拼接
+                continue
+            if v3 == v1:  # 去掉嵌套的关系，后面自己拼接
+                continue
             # 条件：两条边的起点相同为 v2，且 v1 != v3，e1 != e2
             if v2_from_e1 == v2_from_e2 and v1 != v3 and e1['name'] != e2['name']:
                 paths.append({

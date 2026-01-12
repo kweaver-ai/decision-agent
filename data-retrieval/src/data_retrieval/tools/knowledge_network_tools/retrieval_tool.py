@@ -9,32 +9,20 @@
 5. 构建最终的检索结果
 """
 
-import json
-import os
 import time
 import yaml
 from typing import List, Dict, Any, Optional, Tuple, Union
-from fastapi import Body, HTTPException, Header, Depends
-from langchain.pydantic_v1 import BaseModel, Field
-import asyncio
-from datetime import datetime, timedelta
-import numpy as np
-from collections import defaultdict
+from fastapi import Body, HTTPException, Depends
 
 # 导入LLM客户端
-from .llm_client import LLMClient
 # 导入日志模块
 from data_retrieval.logs.logger import logger
 # 导入重排序客户端
-from data_retrieval.tools.graph_tools.driven.external.rerank_client import RerankClient
 # 导入标准错误响应类
 from data_retrieval.errors import KnowledgeNetworkRetrievalError, KnowledgeNetworkParamError
 # 导入Pydantic模型
 from .models import (
     KnowledgeNetworkRetrievalInput,
-    KnowledgeNetworkInfo,
-    ObjectTypeInfo,
-    RelationTypeInfo,
     KnowledgeNetworkRetrievalResult,
     KnowledgeNetworkRetrievalResponse,
     CompactRetrievalResponse,
@@ -43,7 +31,6 @@ from .models import (
 # 导入会话管理器
 from .session_manager import RetrievalSessionManager
 # 导入HTTP客户端
-from .http_client import KnowledgeNetworkHTTPClient
 # 导入知识网络检索模块
 from .network_retrieval import KnowledgeNetworkRetrieval
 # 导入概念检索模块
@@ -534,7 +521,7 @@ class KnowledgeNetworkRetrievalTool:
             network_details = await KnowledgeNetworkRetrieval._rank_knowledge_networks(
                 query, top_k, additional_context, headers, session_id, kn_id_list, account_id=account_id, account_type=account_type
             )
-            logger.info(f"获取知识网络详情")
+            logger.info("获取知识网络详情")
             
             
             # 步骤4: 使用LLM判断相关的关系类型
@@ -542,7 +529,7 @@ class KnowledgeNetworkRetrievalTool:
             # 调用ConceptRetrieval.rank_relation_types方法，但跳过LLM处理，直接返回前top_k个关系
             relevant_concepts = await ConceptRetrieval.rank_relation_types(query, network_details, top_k, additional_context, session_id, skip_llm=skip_llm, account_id=account_id, account_type=account_type)
             
-            logger.info(f"筛选出相关概念")
+            logger.info("筛选出相关概念")
             
             # 步骤5: 构建最终的检索结果
             final_result = await cls._build_final_result(relevant_concepts, network_details, session_id, skip_llm, return_union)

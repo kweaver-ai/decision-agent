@@ -1,7 +1,5 @@
 import regex as re
 
-from .config import MethodConfig
-from data_retrieval.tools.graph_tools.common.stand_log import StandLogger
 
 
 class RuleFixer:
@@ -147,7 +145,8 @@ class RuleFixer:
             #     continue
             # 获取orgnization和district的编号
             node_index = re.findall(r"v(\d+):{}".format(node_name), query)
-            if not node_index: continue
+            if not node_index:
+                continue
 
             # 先替换
             node_index = node_index[0]

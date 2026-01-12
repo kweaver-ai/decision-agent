@@ -160,7 +160,6 @@ class OpenSearchConnector(object):
         results = await self.execute(url=url, body=body)
         total = min(max_return_num, results.get("hits", {}).get("total", {}).get("value", 0))
         min_rescore = 1
-        hit_val = ''
         for hit_rank, line in enumerate(results.get("hits", {}).get("hits", [])):
             # 因为性能问题,最大支持前300重排
             if hit_rank < 300:

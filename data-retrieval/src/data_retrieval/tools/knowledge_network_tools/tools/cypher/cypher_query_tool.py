@@ -7,7 +7,7 @@ Cypher查询工具
 import json
 from typing import Dict, Any, Optional
 
-from fastapi import Body, HTTPException, Header, Depends
+from fastapi import Body, HTTPException, Depends
 from pydantic import BaseModel, Field
 
 from data_retrieval.logs.logger import logger

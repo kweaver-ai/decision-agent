@@ -2,8 +2,6 @@
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2025-03-12
 
-from typing import Callable, Union, Dict, List
-from functools import wraps
 import os
 import sys
 
@@ -13,11 +11,10 @@ grandparent_dir = os.path.abspath(os.path.join(current_file_path, '../../../'))
 # 将上上级目录添加到sys.path中
 sys.path.append(grandparent_dir)
 
-from fastapi import APIRouter, FastAPI
-from data_retrieval.tools.registry import BASE_TOOLS_MAPPING, ALL_TOOLS_MAPPING
+from fastapi import APIRouter, FastAPI  # noqa: E402
+from data_retrieval.tools.registry import BASE_TOOLS_MAPPING, ALL_TOOLS_MAPPING  # noqa: E402
 
 
-from data_retrieval.logs import logger
 
 
 _BASE_TOOLS_MAPPING = BASE_TOOLS_MAPPING

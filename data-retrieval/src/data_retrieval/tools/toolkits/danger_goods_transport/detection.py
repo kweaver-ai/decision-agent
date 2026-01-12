@@ -5,15 +5,13 @@
 @Desc:
 """
 
-from enum import Enum
 import json
 import pandas as pd
-from typing import Any, Optional, Type, Tuple, Dict
+from typing import Any, Optional, Type, Dict
 
 from langchain.callbacks.manager import (AsyncCallbackManagerForToolRun,
                                          CallbackManagerForToolRun)
 from langchain.pydantic_v1 import BaseModel, Field
-from langchain.tools import BaseTool
 
 from data_retrieval.utils._common import _route_similarity, format_table_datas
 from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer, ToolMultipleResult, AFTool
@@ -450,19 +448,19 @@ class DetectionTool(AFTool):
             routes = item['routes']
             try:
                 routes = json.loads(routes)
-            except:
+            except Exception:
                 routes = []
 
             top_roads = item['top_roads']
             try:
                 top_roads = json.loads(top_roads)
-            except:
+            except Exception:
                 top_roads = []
 
             all_roads = item['all_roads']
             try:
                 all_roads = json.loads(all_roads)
-            except:
+            except Exception:
                 all_roads = {}
 
             if veh_no and veh_no in vehicles:
@@ -668,7 +666,7 @@ class DetectionTool(AFTool):
             danger_goods_type = good_info['danger_goods_type']
             try:
                 goods_weight = float(good_info['goods_weight'])
-            except:
+            except Exception:
                 goods_weight = 0
             origin_to_dest = good_info['origin_to_dest']
             origin, dest = good_info['origin_to_dest'].split('_to_')
@@ -745,7 +743,7 @@ class DetectionTool(AFTool):
                     outflow_locations = pattern.get('outflow_locations', '{}')
                     try:
                         outflow_locations = json.loads(outflow_locations)
-                    except:
+                    except Exception:
                         outflow_locations = {}
                     if dest in outflow_locations:
                         outflow = outflow_locations[dest]
@@ -803,7 +801,7 @@ class DetectionTool(AFTool):
                     inflow_locations = pattern.get('inflow_locations', '{}')
                     try:
                         inflow_locations = json.loads(inflow_locations)
-                    except:
+                    except Exception:
                         inflow_locations = {}
                     if origin in inflow_locations:
                         inflow = inflow_locations[origin]
@@ -894,7 +892,6 @@ class DetectionTool(AFTool):
             goods_df = self._search_goods(dispatch_ids=[bill_no] if bill_no else [], veh_nos=[veh_no] if veh_no else [])
             if 'start_gps_time' in goods_df:
                 goods_df = goods_df.sort_values(by=['start_gps_time'])
-            goods_ids = []
             for record in goods_df.to_dict(orient='records'):
                 # goods_id = str(record['goods_id']).split('.')[0]
                 # rel_goods_id = str(record['rel_goods_id']).split('.')[0]
@@ -918,9 +915,9 @@ class DetectionTool(AFTool):
                 #         record['city'], record['county'], record['goods_time']
                 #     up_loc, up_provice, up_city, up_county, up_time = record['rel_goods_area'], record['rel_province'], \
                 #         record['rel_city'], record['rel_county'], record['rel_goods_time']
-                up_loc, up_provice, up_city, up_county, up_time = record['load_goods_area'], record['load_province'], \
+                up_loc, up_provice, up_city, _up_county, _up_time = record['load_goods_area'], record['load_province'], \
                         record['load_city'], record['load_county'], record['load_time']
-                down_loc, down_provice, down_city, down_county, down_time = record['unload_goods_area'], \
+                down_loc, down_provice, down_city, _down_county, _down_time = record['unload_goods_area'], \
                     record['unload_province'], record['unload_city'], record['unload_county'], record['unload_time']
                 if up_city != down_city or up_provice != down_provice:
                     route = f'1_{up_provice}_{up_city}_to_{down_provice}_{down_city}'
@@ -930,7 +927,6 @@ class DetectionTool(AFTool):
                 danger_goods_type = record['danger_goods_type']
                 # goods_weight = record['goods_weight']
                 goods_weight = record['weight']
-                good = f'{goods_name}_{danger_goods_type}'
                 # 轨迹信息
                 # if up_time and down_time:
                 #     gps_item = self._search_gps(dispatch_id=dispatch_id, start_time=up_time,

@@ -16,7 +16,6 @@ from ..relation_path_retrieval_tool import (
     RelationTypePathConfig,
     ObjectTypeConfig,
     RelationTypeConfig,
-    ConditionConfig,
     SingleCondition
 )
 

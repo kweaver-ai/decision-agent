@@ -2,7 +2,6 @@
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2024-8-26
 
-import os
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from pydantic import computed_field

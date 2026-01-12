@@ -2,23 +2,20 @@
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2024-8-26
 
-from typing import Any, Dict, List, Optional
-from datetime import datetime, timezone
+from typing import Any, Dict, List
+from datetime import datetime
 import pandas as pd
-import asyncio
 from typing import Tuple
 import traceback
 
 from data_retrieval.datasource.api_base import APIDataSource
 from data_retrieval.api.data_model import DataModelService
-from data_retrieval.api.error import AfDataSourceError, DataModelDetailError, DataModelQueryError
+from data_retrieval.api.error import DataModelDetailError, DataModelQueryError
 from data_retrieval.logs.logger import logger
 from data_retrieval.datasource.dimension_reduce import DimensionReduce
-from data_retrieval.api.vega import VegaServices
 from data_retrieval.utils._common import run_blocking
 
 
-from pydantic import PrivateAttr
 from copy import deepcopy
 
 
@@ -214,7 +211,7 @@ class DIPMetric(APIDataSource):
             else:
                 corrected_params["end"] = int(datetime.now().timestamp() * 1000)
         
-        if corrected_params["instant"] == False:
+        if not corrected_params["instant"]:
             # 验证步长参数
             if "step" in corrected_params:
                 if query_type == "promsql":

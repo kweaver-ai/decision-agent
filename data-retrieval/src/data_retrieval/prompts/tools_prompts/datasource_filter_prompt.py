@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2024-5-29
-from typing import Optional, List
+from typing import List
 
 from data_retrieval.prompts.base import BasePrompt
 from datetime import datetime

@@ -1,13 +1,11 @@
 from data_retrieval.api.error import (
-    VirEngineError, FrontendColumnError, AfDataSourceError, FrontendSampleError,
-    IndicatorDescError, IndicatorDetailError, IndicatorQueryError
+    VirEngineError, AfDataSourceError
 )
 from data_retrieval.api.base import API, HTTPMethod
 import traceback
 from typing import Any
 
 import urllib3
-import os
 
 from data_retrieval.settings import get_settings
 
@@ -160,7 +158,7 @@ class VegaServices(object):
 if __name__ == '__main__':
     def main():
         from auth import get_authorization
-        token = get_authorization("https://10.4.109.234", "liberly", "111111")
+        get_authorization("https://10.4.109.234", "liberly", "111111")
         service = VegaServices()
         res = service.exec_vir_engine_by_sql(
             user="admin",

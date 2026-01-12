@@ -5,7 +5,7 @@ Cypher查询解析器
 """
 
 import re
-from typing import Dict, Any, List, Optional
+from typing import List, Optional
 
 from data_retrieval.errors import KnowledgeNetworkParamError
 

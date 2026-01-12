@@ -12,7 +12,7 @@
 """
 
 import uuid
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 from fastapi import Header
 from pydantic import BaseModel, Field, model_validator, ConfigDict
@@ -401,7 +401,6 @@ class KnowledgeNetworkRetrievalInput(BaseModel):
         # session_id 处理策略：
         # - 未提供或提供空串，都视为需要自动生成会话ID（保持有状态能力）
         # - 提供非空 session_id 则按传入值使用
-        provided_session_id = "session_id" in (data or {})
         super().__init__(**data)
         if not self.session_id:
             # 包含：未传、传 None、传空串

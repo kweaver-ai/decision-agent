@@ -63,7 +63,8 @@ def uniqueletterCombinations(phoneMap: dict):  # TODO
         letter_str = phoneMap[digits[index]]
         # 第三步，循环
         for letter in letter_str:
-            if letter in combination:continue
+            if letter in combination:
+                continue
             # 第四步，主要的更新逻辑，更新深度和目标
             new_combination = combination + [letter]
             new_index = index + 1
@@ -117,7 +118,6 @@ def string_to_unique_id(input_string):
 # unique_id = string_to_unique_id(input_string)
 # print(unique_id)
 if __name__ == "__main__":
-    import inspect
 
     # print(len(letterCombinations({0: list(range(25)), 1: list(range(25)), 2: list(range(25)), 3: list(range(25))})))
     print(letterCombinations({0: list(range(1,3)), 1: list(range(1,3)), 2: list(range(1,3))}))

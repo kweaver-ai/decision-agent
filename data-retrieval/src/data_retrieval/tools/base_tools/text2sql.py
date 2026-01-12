@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2024-5-23
-import json, time
+import json
+import time
 import traceback
 from textwrap import dedent
-from typing import Any, Optional, Type, Dict, Union, List
+from typing import Any, Optional, Type, Dict, List
 from enum import Enum
 from collections import OrderedDict
 from langchain.callbacks.manager import (AsyncCallbackManagerForToolRun,
@@ -16,7 +17,6 @@ from langchain_core.prompts import (
 )
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.tools import ToolException
-from sql_metadata.compat import get_query_tables
 from fastapi import Body
 
 from data_retrieval.api.error import (
@@ -35,8 +35,7 @@ from data_retrieval.prompts.tools_prompts.text2sql_prompt.rewrite_query import R
 
 from data_retrieval.sessions import CreateSession, BaseChatHistorySession
 from data_retrieval.tools.base import ToolMultipleResult, ToolName
-from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer
-from data_retrieval.tools.base_tools.context2question import achat_history_to_question, chat_history_to_question
+from data_retrieval.tools.base import async_construct_final_answer
 from data_retrieval.utils.func import JsonParse
 from data_retrieval.utils.func import add_quotes_to_fields_with_data_self
 from data_retrieval.tools.base import LLMTool, _TOOL_MESSAGE_KEY
@@ -686,7 +685,7 @@ class Text2SQLTool(LLMTool):
 
                         fixed_table_name = self._fix_table_name(table)
                         logger.warning(f"try to fix table {table} to {fixed_table_name}")
-                        if not fixed_table_name in dataview:
+                        if fixed_table_name not in dataview:
                             logger.warning("datavire still not found in dataview")
                             continue
                         else:
@@ -969,7 +968,7 @@ class Text2SQLTool(LLMTool):
 
         if kn_params:
             for kn_param in kn_params:
-                if type(kn_param) == dict:
+                if isinstance(kn_param, dict):
                     kn_id = kn_param.get('knowledge_network_id', '')
                 else:
                     kn_id = kn_param
@@ -1088,7 +1087,6 @@ class Text2SQLTool(LLMTool):
                 'view_num_limit': 5,
                 'rewrite_query': False,
                 'show_sql_graph': False,
-                'force_limit': 1000,
                 'recall_mode': 'keyword_vector_retrieval'
             },
             'infos': {

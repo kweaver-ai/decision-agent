@@ -2,15 +2,12 @@
 # @Author:  AI Assistant
 # @Date: 2025-04-05
 
-import json
 import os
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from fastapi import Body, HTTPException
-from langchain.pydantic_v1 import BaseModel, Field
-import asyncio
 
 # 导入LLM工具
-from data_retrieval.tools.graph_tools.utils.llm import llm_chat, llm_chat_stream
+from data_retrieval.tools.graph_tools.utils.llm import llm_chat_stream
 # 导入重排序客户端
 from data_retrieval.tools.graph_tools.driven.external.rerank_client import RerankClient
 # 导入日志模块
@@ -18,7 +15,7 @@ from data_retrieval.logs.logger import logger
 # 导入标准错误响应类
 from data_retrieval.errors import KnowledgeNetworkRerankError, KnowledgeNetworkLLMError, KnowledgeNetworkParamError
 # 导入Pydantic模型
-from .models import QueryUnderstanding, RerankInput
+from .models import RerankInput
 
 rerank_llm_model = os.getenv("RERANK_LLM_MODEL", "Tome-pro")
 
@@ -287,7 +284,6 @@ class KnowledgeNetworkRerankTool:
                 detail={"error": str(e)},
                 link="https://example.com/api-docs/rerank"
             )
-            raise error_response
 
     @classmethod
     async def _call_vector_for_rerank(cls, question: str, concepts: List[Dict[str, Any]], batch_size: int = 128) -> List[tuple]:
@@ -363,7 +359,7 @@ class KnowledgeNetworkRerankTool:
             # 调用重排序服务
             logger.debug(f"开始调用向量重排序服务，问题: {question}")
             # 使用更清晰的格式打印slices数据
-            logger.debug(f"slices数据为:\n" + "\n".join([f"  [{i}]: {slice}" for i, slice in enumerate(slices)]))
+            logger.debug("slices数据为:\n" + "\n".join([f"  [{i}]: {slice}" for i, slice in enumerate(slices)]))
             rerank_scores = await rerank_client.ado_rerank(slices, question)
             logger.debug(f"向量重排序服务调用完成，返回分数数量: {len(rerank_scores) if rerank_scores else 0}")
             

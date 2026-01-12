@@ -7,7 +7,6 @@
 
 import re
 import json
-from enum import Enum
 import numpy as np
 import pandas as pd
 from typing import Any, Optional, Type, Dict
@@ -253,7 +252,7 @@ class ArimaTool(AFTool):
                     break
             if not explanation:
                 is_stable = False
-                explanation = f'在10%的显著性水平下不显著拒绝原假设，该时序数据不是稳定的数据。'
+                explanation = '在10%的显著性水平下不显著拒绝原假设，该时序数据不是稳定的数据。'
             item = {
                 't统计量': ads_res[0],
                 't统计量p值': ads_res[1],
@@ -345,9 +344,9 @@ class ArimaTool(AFTool):
             redis_normal = stats.normaltest(resid)
             p = redis_normal.pvalue
             if p > 0.05:
-                explanation = f'在0.05的显著性水平下，残差不服从原假设，即残差不是随机白噪声，可能模型拟合的规律不够充分，需要进一步处理。'
+                explanation = '在0.05的显著性水平下，残差不服从原假设，即残差不是随机白噪声，可能模型拟合的规律不够充分，需要进一步处理。'
             else:
-                explanation = f'在0.05的显著性水平下，残差服从原假设（随机游走），说明残差是纯随机序列，模型已经充分提取了数据里面的规律，拟合良好。'
+                explanation = '在0.05的显著性水平下，残差服从原假设（随机游走），说明残差是纯随机序列，模型已经充分提取了数据里面的规律，拟合良好。'
             item = {
                 'redis': resid.to_dict(orient='records') if isinstance(resid, pd.DataFrame) else resid,
                 'redis_normal': redis_normal,

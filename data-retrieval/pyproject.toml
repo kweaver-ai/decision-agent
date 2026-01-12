@@ -63,3 +63,10 @@ exclude = ["tests", "tests.*"]
 
 [tool.setuptools.package-data]
 "data_retrieval.prompts.tools_prompts.text2metric_prompt" = ["params_json.txt"]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
+    "ruff>=0.14.11",
+]

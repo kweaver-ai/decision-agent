@@ -96,7 +96,7 @@ class ModelManagerService(object):
                             resp = json.loads(event_data)
                             if resp.get("choices"):
                                 yield resp["choices"][0]["delta"]
-                        except Exception as e:
+                        except Exception:
                             continue
 
     async def call_stream(

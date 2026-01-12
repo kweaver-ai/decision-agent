@@ -6,11 +6,10 @@
 @Desc: 内存存储会话记录，重启项目会清除
 """
 import time
-import json
 import threading
 
 from langchain_core.chat_history import BaseChatMessageHistory
-from langchain.schema import HumanMessage, SystemMessage, BaseChatMessageHistory
+from langchain.schema import HumanMessage, SystemMessage
 from langchain_community.chat_message_histories import ChatMessageHistory
 from langchain_core.messages import AIMessage
 from data_retrieval.sessions.base import BaseChatHistorySession

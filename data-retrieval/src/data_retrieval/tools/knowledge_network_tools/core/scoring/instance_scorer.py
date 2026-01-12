@@ -5,7 +5,6 @@
 """
 
 from typing import List, Dict, Any, Optional, Set, Tuple
-from collections import defaultdict
 from data_retrieval.logs.logger import logger
 from data_retrieval.tools.graph_tools.driven.external.rerank_client import RerankClient
 from ...infra.utils.instance_text_builder import UNIFIED_INSTANCE_TEXT_OPTIONS, build_instance_text

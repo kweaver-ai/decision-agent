@@ -1,5 +1,4 @@
 import asyncio
-import httpx
 from src.data_retrieval.utils.password import get_authorization
 import traceback
 
@@ -7,7 +6,7 @@ async def fetch_authorization(ip, username, password, attempt_counter):
     try:
         token = await asyncio.to_thread(get_authorization, ip, username, password)
         print(f"Token received: {token}")
-    except Exception as e:
+    except Exception:
         print(f"Error occurred after {attempt_counter} attempts:")
         traceback.print_exc()
         raise  # 重新抛出异常以停止压测

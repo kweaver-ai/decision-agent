@@ -5,10 +5,9 @@
 from data_retrieval.prompts.base import BasePrompt
 
 from datetime import datetime
-from typing import Optional, List, Any
+from typing import Any
 import json
 
-from data_retrieval.prompts.base import BasePrompt
 
 prompt_template_cn = """# ROLE
 你是一个用户需求理解的专家，你的下一步是去查询数据库，但是用户的问题可能比较模糊和潦草，你的工作是改写问题，将用户问的一个相对简单或者模糊的问题，改写成一个具体且清晰的，方便进行 SQL 查询的问题。

@@ -4,9 +4,9 @@ import asyncio
 from enum import Enum
 from functools import wraps
 from textwrap import dedent
-from typing import Any, Callable, List, Dict, Optional, OrderedDict, Union, Tuple
+from typing import Any, Callable, List, Dict, Optional, OrderedDict, Tuple
 
-from abc import ABC, abstractmethod
+from abc import ABC
 from dataclasses import dataclass
 
 from langchain_community.callbacks import get_openai_callback
@@ -18,13 +18,11 @@ from fastapi import HTTPException
 
 from data_retrieval.settings import get_settings
 from data_retrieval.utils.model_types import get_standard_model_type
-from langchain.callbacks.base import AsyncCallbackHandler, BaseCallbackHandler
+from langchain.callbacks.base import AsyncCallbackHandler
 
 from data_retrieval.utils.id_gen import generate_task_id
 
-from data_retrieval.utils.dip_services.services.builder import Builder
 from data_retrieval.logs.logger import logger
-from data_retrieval.settings import get_settings
 
 
 _settings = get_settings()
@@ -96,7 +94,7 @@ def make_json_response(result: Any):
         if isinstance(result, str):
             try:
                 result = json.loads(result)
-            except ValueError as e:
+            except ValueError:
                 pass
 
         if isinstance(result, dict):

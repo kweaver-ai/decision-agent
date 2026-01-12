@@ -9,9 +9,8 @@
 3. 运行: python test_retrieval_scenarios.py
 """
 
-import asyncio
 import json
-from typing import Dict, Any, List
+from typing import Dict, Any
 
 # 测试配置
 TEST_CONFIG = {
@@ -67,13 +66,13 @@ def print_test_result(result: Dict[str, Any], execution_time: float = None):
         print(f"总邻居数: {stats.get('total_neighbors', 0)}")
         if instances:
             first = instances[0]
-            print(f"\n第一个实例:")
+            print("\n第一个实例:")
             print(f"  ID: {first.get('instance_id')}")
             print(f"  名称: {first.get('instance_name')}")
             neighbors = first.get('neighbors', [])
             print(f"  邻居数量: {len(neighbors)}")
             if neighbors:
-                print(f"  前3个邻居:")
+                print("  前3个邻居:")
                 for n in neighbors[:3]:
                     print(f"    - {n.get('instance_name')} ({n.get('object_type_id')})")
     

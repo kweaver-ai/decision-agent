@@ -1,5 +1,4 @@
 from typing import Optional
-import asyncio
 from langchain_core.callbacks import CallbackManagerForToolRun, AsyncCallbackManagerForToolRun
 
 from data_retrieval.logs.logger import logger
@@ -76,7 +75,7 @@ class CloseSandboxTool(BaseSandboxTool):
             }
         except Exception as e:
             logger.error(f"Close sandbox action failed: {e}")
-            raise SandboxError(reason=f"沙箱关闭失败", detail=str(e)) from e
+            raise SandboxError(reason="沙箱关闭失败", detail=str(e)) from e
 
     @staticmethod
     async def get_api_schema():

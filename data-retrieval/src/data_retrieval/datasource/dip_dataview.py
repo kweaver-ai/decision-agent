@@ -2,8 +2,6 @@
 # @Author:  Lareina.guo@aishu.cn
 # @Date: 2024-6-7
 from typing import Any, List, Optional, Union
-import re
-import asyncio
 import traceback
 
 from data_retrieval.api.af_api import Services
@@ -13,15 +11,10 @@ from data_retrieval.datasource.db_base import DataSource
 from data_retrieval.logs.logger import logger
 from data_retrieval.parsers.text2sql_parser import RuleBaseSource
 from data_retrieval.datasource.dimension_reduce import DimensionReduce
-from data_retrieval.api import VegaType
-from data_retrieval.api.vega import VegaServices
-from data_retrieval.api.af_api import Services
-from pydantic import PrivateAttr
-from typing import Dict, List
+from typing import Dict
 from data_retrieval.utils.dip_services import Builder
 from data_retrieval.utils.dip_services.base import ServiceType
 from data_retrieval.api.data_model import DataModelService
-from data_retrieval.api.agent_retrieval import AgentRetrievalService
 
 from copy import deepcopy
 from data_retrieval.utils._common import run_blocking
@@ -460,7 +453,6 @@ class DataView(DataSource):
         try:
             view_infos = {}
             view_white_list_sql_infos = {}  # 白名单筛选sql
-            view_desensitization_field_infos = {}  # 字段脱敏
             view_classifier_field_list = {} # 分类分级
             view_schema_infos = {}    # 表头名字
             for view_id in self.view_list:
@@ -610,7 +602,7 @@ class DataView(DataSource):
 
 
     def get_catelog(self) -> list[str]:
-        text2sql = Services()
+        Services()
         catelogs = []
         try:
             for view_id in self.view_list:

@@ -1,12 +1,9 @@
-import requests
 from urllib.parse import urlparse
-import json
 import asyncio
 
 # from data_retrieval.datasource.vega_datasource import VegaDataSource, get_datasource_from_kg_params
 from data_retrieval.datasource.dip_dataview import DataView, get_datasource_from_kg_params
 from data_retrieval.api.auth import get_authorization
-from data_retrieval.api import VegaType
 from data_retrieval.utils.dip_services.base import ServiceType
 
 # apilevel = "2.0"

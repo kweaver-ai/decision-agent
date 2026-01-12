@@ -7,11 +7,9 @@
 3. 获取知识网络详情
 """
 
-import json
 import time
 import asyncio
 from typing import List, Dict, Any, Optional, Tuple
-from pydantic import BaseModel, Field
 
 # 导入LLM客户端
 from ...infra.clients.llm_client import LLMClient
@@ -26,7 +24,9 @@ from ...infra.clients.http_client import KnowledgeNetworkHTTPClient
 # 导入标准错误响应类
 from data_retrieval.errors import KnowledgeNetworkRetrievalError
 # 导入统一排序工具
-from ...infra.utils.ranking_utils import UnifiedRankingUtils, RankingStrategy
+from ...infra.utils.ranking_utils import UnifiedRankingUtils
+# 导入配置模型
+from ...models import ConceptRetrievalConfig
 
 
 class KnowledgeNetworkRetrieval:
@@ -152,7 +152,7 @@ class KnowledgeNetworkRetrieval:
                     score_lines = []
                     for idx, (rel_text, score) in enumerate(top_scores, 1):
                         score_lines.append(f"  {idx}. {rel_text}: {score:.6f}")
-                    logger.debug(f"关系路径分数映射（前5个）:\n" + "\n".join(score_lines))
+                    logger.debug("关系路径分数映射（前5个）:\n" + "\n".join(score_lines))
                 else:
                     logger.debug("关系路径分数映射: 无数据")
                 
@@ -269,7 +269,7 @@ class KnowledgeNetworkRetrieval:
         # 为每个关系类型计算分数
         scored_relations = []
         query_lower = (query or "").lower()
-        query_words = set(query_lower.split()) if query_lower else set()
+        set(query_lower.split()) if query_lower else set()
         
         for rel_type in all_relation_types:
             score = 0.0
@@ -409,7 +409,7 @@ class KnowledgeNetworkRetrieval:
             (提示词, 编号到ID的映射字典)
         """
         # 构建提示词
-        prompt = f"请分析以下知识网络列表，只返回与问题相关的知识网络数字编号，按相关性从高到低排序。\n\n知识网络列表:\n"
+        prompt = "请分析以下知识网络列表，只返回与问题相关的知识网络数字编号，按相关性从高到低排序。\n\n知识网络列表:\n"
         
         # 如果未提供 filtered_relations_by_kn，则进行重排序
         if not filtered_relations_by_kn:
@@ -658,7 +658,7 @@ class KnowledgeNetworkRetrieval:
                     return network_details[first_kn_id]
             
             # 如果没有找到明确的列表或结果为空，返回
-            logger.debug(f"LLM返回结果无效，返回空列表")
+            logger.debug("LLM返回结果无效，返回空列表")
             return {}
                 
         except Exception as e:

@@ -7,7 +7,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional
 
 from data_retrieval.logs.logger import logger
 

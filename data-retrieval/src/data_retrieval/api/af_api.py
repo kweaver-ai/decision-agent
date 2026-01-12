@@ -1,12 +1,11 @@
 from data_retrieval.api.error import (
-    Text2SQLError, VirEngineError, FrontendColumnError, AfDataSourceError, FrontendSampleError,
+    VirEngineError, FrontendColumnError, AfDataSourceError, FrontendSampleError,
     IndicatorDescError, IndicatorDetailError, IndicatorQueryError
 )
 from data_retrieval.api.base import API, HTTPMethod
 from typing import Any
 
 import urllib3
-import os
 
 from data_retrieval.settings import get_settings
 
@@ -333,7 +332,7 @@ class Services(object):
 if __name__ == '__main__':
     def main():
         from auth import get_authorization
-        token = get_authorization("https://10.4.109.234", "liberly", "111111")
+        get_authorization("https://10.4.109.234", "liberly", "111111")
         service = Services()
         res = service.exec_vir_engine_by_sql(
             user="admin",

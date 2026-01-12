@@ -1,8 +1,6 @@
-from typing import Any
 from urllib.parse import urljoin
 
 import urllib3
-import os
 import traceback
 
 from data_retrieval.api.error import (
@@ -14,8 +12,6 @@ from data_retrieval.logs.logger import logger
 from data_retrieval.settings import get_settings
 
 import json
-import os
-from datetime import datetime
 
 urllib3.disable_warnings()
 
@@ -222,9 +218,9 @@ async def get_datasource_from_agent_retrieval_async(
                     })
 
         return data_views, metrics, relations
-    except AfDataSourceError as e:
+    except AfDataSourceError:
         traceback.print_exc()
         raise
-    except Exception as e:
+    except Exception:
         traceback.print_exc()
         raise

@@ -3,7 +3,6 @@
 检索会话管理器，用于存储和管理多轮对话的历史召回记录
 """
 
-import logging
 from typing import List, Dict, Any, Optional
 from datetime import datetime, timedelta
 

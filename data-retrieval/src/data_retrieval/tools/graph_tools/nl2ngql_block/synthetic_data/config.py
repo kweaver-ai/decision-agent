@@ -53,7 +53,6 @@ if __name__ == "__main__":
                     print(keywords )
 
     def get_all_example():
-        import regex as re
         config = MethodConfig.user_base["params"]["user_data_template"]
         for question_type, examples in config.items():
             for index, (template, question_examples) in enumerate(examples["question_template"].items()):

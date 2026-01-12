@@ -5,9 +5,8 @@
 # @Author: Xavier.chen
 # @File: error.py
 from urllib.parse import urljoin
-from data_retrieval.utils.dip_services.base import Service, API, VER_3_0_0_1, ServiceType, ConnectionData
+from data_retrieval.utils.dip_services.base import Service, API, ServiceType, ConnectionData
 from data_retrieval.utils.dip_services.sdk_error import ModelFactoryError, DIPServiceError, handle_sdk_error, handle_sdk_error_async
-from traceback import print_exc
 from data_retrieval.utils.dip_services.base import HTTPMethod
 from functools import wraps
 
@@ -291,7 +290,6 @@ class ModelFactory(Service):
 
 if __name__ == "__main__":
     import asyncio
-    import json
     # connData = ConnectionData(
     #     addr="https://124.70.219.13:8444/",
     #     access_key="NPPbNqNKbiNasSuCO2t"

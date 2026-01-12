@@ -66,12 +66,12 @@ class BaseEmbeddingsService:
 
     def embed_texts_with_idx(self, texts: List[str], idx: List) -> List[List[float]]:
         if len(texts) != len(idx):
-            raise ValueError(f"texts and idx must have the same length")
+            raise ValueError("texts and idx must have the same length")
         return zip(idx, self.embed_texts(texts))
 
     async def aembed_texts_with_idx(self, texts: List[str], idx: List) -> List[List[float]]:
         if len(texts) != len(idx):
-            raise ValueError(f"texts and idx must have the same length")
+            raise ValueError("texts and idx must have the same length")
         return zip(idx, await self.aembed_texts(texts))
 
 

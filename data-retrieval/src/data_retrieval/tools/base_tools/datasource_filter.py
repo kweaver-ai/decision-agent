@@ -1,31 +1,22 @@
-import json
-import traceback
-from io import StringIO
 from textwrap import dedent
 from typing import Optional, Type, Any, List, Dict
 from collections import OrderedDict
-from enum import Enum
-import re
 import asyncio
 
-import pandas as pd
-from langchain.tools import BaseTool
 from langchain_core.callbacks import CallbackManagerForToolRun, AsyncCallbackManagerForToolRun
-from langchain_core.pydantic_v1 import BaseModel, Field, PrivateAttr
+from langchain_core.pydantic_v1 import BaseModel, Field
 from langchain_core.prompts import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate
 )
 from langchain_core.messages import HumanMessage, SystemMessage
 
-from pandas import Timestamp
 from data_retrieval.logs.logger import logger
 from data_retrieval.sessions import BaseChatHistorySession, CreateSession
 from data_retrieval.tools.base import ToolName
-from data_retrieval.tools.base import ToolResult, ToolMultipleResult, LLMTool, _TOOL_MESSAGE_KEY
+from data_retrieval.tools.base import ToolMultipleResult, LLMTool, _TOOL_MESSAGE_KEY
 from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer
-from data_retrieval.errors import Json2PlotError, ToolFatalError
-from data_retrieval.tools.base import api_tool_decorator
+from data_retrieval.errors import ToolFatalError
 
 from data_retrieval.datasource.vega_datasource import VegaDataSource
 from data_retrieval.datasource.af_indicator import AFIndicator
@@ -34,7 +25,6 @@ from data_retrieval.prompts.tools_prompts.datasource_filter_prompt import DataSo
 from data_retrieval.utils.model_types import ModelType4Prompt
 from data_retrieval.parsers.base import BaseJsonParser
 
-from fastapi import FastAPI, HTTPException
 
 
 class DataSourceDescSchema(BaseModel):
@@ -223,7 +213,7 @@ class DataSourceFilterTool(LLMTool):
         
         if not data_view_list and not metric_list:
             return {
-                "result": f"没有找到符合要求的数据源"
+                "result": "没有找到符合要求的数据源"
             }
             # raise ToolFatalError(f"没有找到符合要求的数据源")
 

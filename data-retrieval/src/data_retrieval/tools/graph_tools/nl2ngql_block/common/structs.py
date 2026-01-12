@@ -1,9 +1,8 @@
 # -*- coding:utf-8 -*-
-from dataclasses import dataclass, field
-from typing import List, Union
+from typing import List
 
-from fastapi import Body, Header
-from typing import List, Dict, Optional, Any
+from fastapi import Header
+from typing import Dict, Optional, Any
 from pydantic import BaseModel, model_validator
 
 class Text2nGQLRequest(BaseModel):

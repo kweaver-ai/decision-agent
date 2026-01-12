@@ -1,9 +1,8 @@
-import asyncio
 import json
 import traceback
 from typing import Optional
 from langchain_core.callbacks import CallbackManagerForToolRun, AsyncCallbackManagerForToolRun
-from langchain_core.pydantic_v1 import BaseModel, Field
+from langchain_core.pydantic_v1 import Field
 
 from data_retrieval.logs.logger import logger
 from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer
@@ -155,7 +154,7 @@ class ReadFileTool(BaseSandboxTool):
             }
         except Exception as e:
             logger.error(f"Read file action failed: {e}")
-            raise SandboxError(reason=f"文件读取失败", detail=str(e)) from e
+            raise SandboxError(reason="文件读取失败", detail=str(e)) from e
 
     @staticmethod
     async def get_api_schema():

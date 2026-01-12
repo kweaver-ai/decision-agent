@@ -5,9 +5,6 @@ import json
 import traceback
 from textwrap import dedent
 from typing import Any, Optional, Type, Dict, Union, List
-from enum import Enum
-from langchain.callbacks.manager import (AsyncCallbackManagerForToolRun,
-                                         CallbackManagerForToolRun)
 from langchain.pydantic_v1 import BaseModel, Field
 from langchain_core.prompts import (
     ChatPromptTemplate,
@@ -17,8 +14,6 @@ from langchain_core.prompts import (
 from langchain_core.messages import HumanMessage, SystemMessage
 from jinja2.sandbox import SandboxedEnvironment
 
-import pandas as pd
-import numpy as np
 # IPython导入放在这里，但保持注释状态，需要时取消注释
 # from IPython.core.interactiveshell import InteractiveShell
 
@@ -32,10 +27,9 @@ from data_retrieval.utils.llm import CustomChatOpenAI
 from data_retrieval.errors import ToolFatalError, PythonCodeError
 from data_retrieval.utils.model_types import ModelType4Prompt
 from data_retrieval.settings import get_settings
-from langchain_core.output_parsers import JsonOutputParser
 from data_retrieval.prompts.tools_prompts.analyzer_with_code_prompt import AnalyzerWithCodePrompt
 from data_retrieval.utils import convert
-from data_retrieval.utils.code_runner import ExecRunner, IPythonRunner, JupyterGatewayRunner, BaseCodeRunner
+from data_retrieval.utils.code_runner import ExecRunner, BaseCodeRunner
 from data_retrieval.utils.code_runner.jupyter_gateway_runner import get_runner
 from data_retrieval.parsers.base import BaseJsonParser
 
@@ -245,7 +239,7 @@ class AnalyzerWithCodeTool(LLMTool):
             res = {}
 
             for i in range(self.retry_times):
-                logger.debug(f"============" * 10)
+                logger.debug("============" * 10)
                 logger.debug(f"{i + 1} times to generate analysis code......")
                 
                 try:
@@ -365,7 +359,7 @@ class AnalyzerWithCodeTool(LLMTool):
                 # 尝试重新执行代码
                 for i in range(self.retry_times):
                     try:
-                        logger.debug(f"============" * 10)
+                        logger.debug("============" * 10)
                         logger.debug(f"{i + 1} times to generate analysis code......")
                                         
                         code_runner = self._get_code_runner(kernel_id=kernel_id)

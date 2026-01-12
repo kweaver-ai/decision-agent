@@ -20,7 +20,8 @@ from typing import Dict, List, Tuple, Optional
 import time
 import asyncio
 from rank_bm25 import BM25Okapi, BM25L
-import numpy as np, re
+import numpy as np
+import re
 import concurrent.futures
 import jieba
 

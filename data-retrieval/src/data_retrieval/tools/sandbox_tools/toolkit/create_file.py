@@ -1,4 +1,3 @@
-import asyncio
 import json
 from typing import Optional
 from langchain_core.callbacks import CallbackManagerForToolRun, AsyncCallbackManagerForToolRun
@@ -91,7 +90,6 @@ class CreateFileTool(BaseSandboxTool):
             raise SandboxError(reason="创建文件失败", detail="filename 参数不能为空")
 
         # 处理缓存内容
-        add_content = ""
         if result_cache_key and self.session:
             result = self.session.get_agent_logs(result_cache_key)
             if result:
@@ -118,7 +116,7 @@ class CreateFileTool(BaseSandboxTool):
             }
         except Exception as e:
             logger.error(f"Create file action failed: {e}")
-            raise SandboxError(reason=f"文件创建失败", detail=str(e)) from e
+            raise SandboxError(reason="文件创建失败", detail=str(e)) from e
 
     @staticmethod
     async def get_api_schema():

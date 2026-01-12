@@ -10,8 +10,6 @@ from typing import (
     AsyncIterator,
 )
 
-from langchain_core.pydantic_v1 import Field
-from httpx import Client, AsyncClient
 import openai
 
 from langchain_community.chat_models.openai import (
@@ -23,7 +21,6 @@ from langchain_community.chat_models.openai import (
 
 from langchain_core.callbacks import (
     AsyncCallbackManagerForLLMRun,
-    CallbackManagerForLLMRun,
 )
 from langchain_core.messages import BaseMessage
 from langchain_core.outputs import ChatGeneration, ChatGenerationChunk, ChatResult

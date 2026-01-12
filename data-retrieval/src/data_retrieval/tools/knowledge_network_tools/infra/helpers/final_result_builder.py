@@ -402,7 +402,7 @@ async def build_final_result(
         if action_types and isinstance(action_types, list):
             logger.debug(f"从network_details中提取到 {len(action_types)} 个action_types")
         else:
-            logger.debug(f"network_details中未找到action_types字段或格式不正确")
+            logger.debug("network_details中未找到action_types字段或格式不正确")
 
     result = {"object_types": object_types, "relation_types": relation_types, "action_types": action_types}
 

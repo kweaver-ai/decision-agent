@@ -7,9 +7,7 @@ from typing import Optional
 import sqlparse
 from pydantic import BaseModel, Field
 from sql_metadata import Parser
-from sql_metadata.compat import get_query_tables
 
-from data_retrieval.errors import ResultParseError
 from data_retrieval.logs.logger import logger
 from data_retrieval.parsers.base import BaseJsonParser
 
@@ -297,7 +295,7 @@ class JsonText2SQLRuleBaseParser(BaseJsonParser):
                 logger.debug("rule base after: {}".format(json_res.get("explanation", "")))
                 logger.debug("rule base after:\n {}".format(format_sql))
 
-        except Exception as e:
+        except Exception:
             logger.error(traceback.format_exc())
         return json_res
 

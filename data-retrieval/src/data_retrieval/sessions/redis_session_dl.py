@@ -1,7 +1,7 @@
 import json
 import redis
 from redis.sentinel import Sentinel
-from typing import Any, Union
+from typing import Union
 from enum import Enum
 
 from data_retrieval.settings import get_settings
@@ -92,7 +92,7 @@ class RedisHistorySession:
     def check_and_try_reconnect(self):
         if self.client:
             return True
-        logger.info(f'Redis连接失败！！重新连接中......')
+        logger.info('Redis连接失败！！重新连接中......')
         idx = 1
         while idx < 3:
             try:

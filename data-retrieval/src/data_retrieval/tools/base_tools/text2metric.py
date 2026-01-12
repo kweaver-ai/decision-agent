@@ -2,11 +2,9 @@
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2024-08-26
 import json
-import os
 import traceback
 from textwrap import dedent
 from typing import Any, Optional, Type, Dict, List
-from enum import Enum
 from collections import OrderedDict
 
 # import faiss
@@ -14,36 +12,27 @@ from langchain.callbacks.manager import (AsyncCallbackManagerForToolRun,
                                          CallbackManagerForToolRun)
 
 from langchain.pydantic_v1 import BaseModel, Field, PrivateAttr
-from langchain.pydantic_v1.dataclasses import dataclass
-from langchain.tools import BaseTool
 
-from langchain_community.docstore.in_memory import InMemoryDocstore
-from langchain_community.vectorstores import FAISS
-from langchain_community.vectorstores.utils import DistanceStrategy
 
-from langchain_core.documents import Document
 from langchain_core.prompts import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate
 )
 from langchain_core.messages import SystemMessage, HumanMessage
-from langchain_core.messages import SystemMessage, HumanMessage
 from data_retrieval.errors import Text2MetricError, ToolFatalError
 from data_retrieval.logs.logger import logger
 from data_retrieval.parsers.text2metric_parser import Text2MetricParser
-from data_retrieval.prompts.tools_prompts.text2metric_prompt import Text2MetricPrompt, Text2MetricPromptFunc
+from data_retrieval.prompts.tools_prompts.text2metric_prompt import Text2MetricPrompt
 from data_retrieval.prompts.tools_prompts.text2metric_prompt.rewrite_query import RewriteMetricQueryPrompt
 from data_retrieval.parsers.base import BaseJsonParser
 
 from data_retrieval.sessions import CreateSession, BaseChatHistorySession
-from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer, ToolCallbackHandler
+from data_retrieval.tools.base import async_construct_final_answer
 from data_retrieval.tools.base import LLMTool, ToolMultipleResult, ToolName
-from data_retrieval.tools.base_tools.context2question import achat_history_to_question, chat_history_to_question
-from data_retrieval.utils.embeddings import M3EEmbeddings, MSE_EMBEDDING_SIZE
 from data_retrieval.utils.func import JsonParse, json_to_markdown
-from data_retrieval.tools.base import LLMTool, _TOOL_MESSAGE_KEY
+from data_retrieval.tools.base import _TOOL_MESSAGE_KEY
 from data_retrieval.settings import get_settings
-from data_retrieval.tools.base import api_tool_decorator, _TOOL_MESSAGE_KEY
+from data_retrieval.tools.base import api_tool_decorator
 from data_retrieval.utils.llm import CustomChatOpenAI
 from data_retrieval.api.auth import get_authorization
 from data_retrieval.datasource.af_indicator import AFIndicator
@@ -492,7 +481,7 @@ class Text2MetricTool(LLMTool):
             res = {}
 
             for i in range(self.retry_times):
-                logger.debug(f"============" * 10)
+                logger.debug("============" * 10)
                 logger.debug(f"{i + 1} times to generate indicator......")
                 try:
                     llm_res, call_res = {}, {}
@@ -530,7 +519,6 @@ class Text2MetricTool(LLMTool):
 
                     # Add cites and text to res
                     indicators = self.indicator.get_description()
-                    indicator_name = ""
 
                     for indicator in indicators["description"]:
                         if indicator["id"] == indicator_id:

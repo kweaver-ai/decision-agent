@@ -7,7 +7,6 @@
 import asyncio
 import sys
 import os
-import json
 
 # 添加项目根目录到路径
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../../'))
@@ -137,7 +136,7 @@ def test_core_logic():
                     source_object_id = relation.get("source_object_id", "")
                     target_object_id = relation.get("target_object_id", "")
                     source_instance_id = source_object_id.split("-", 1)[1] if "-" in source_object_id else None
-                    target_instance_id = target_object_id.split("-", 1)[1] if "-" in target_object_id else None
+                    target_object_id.split("-", 1)[1] if "-" in target_object_id else None
                     if source_instance_id in source_instance_ids:
                         neighbor_obj = objects.get(target_object_id)
                         if neighbor_obj:
@@ -452,13 +451,13 @@ async def test_keyword_retrieval_basic():
         
         if instances:
             first = instances[0]
-            print(f"\n第一个实例:")
+            print("\n第一个实例:")
             print(f"  ID: {first.get('instance_id')}")
             print(f"  名称: {first.get('instance_name')}")
             neighbors = first.get('neighbors', [])
             print(f"  邻居数量: {len(neighbors)}")
             if neighbors:
-                print(f"  前3个邻居:")
+                print("  前3个邻居:")
                 for n in neighbors[:3]:
                     print(f"    - {n.get('instance_name')} ({n.get('object_type_id')})")
         
@@ -518,7 +517,7 @@ async def test_keyword_retrieval_multiple():
             object_type_id="disease"
         )
         
-        print(f"\n第一个关键词召回完成")
+        print("\n第一个关键词召回完成")
         ctx1 = result1.get("keyword_context", {})
         print(f"  关键词: {ctx1.get('keyword')}")
         print(f"  实例数: {len(ctx1.get('instances', []))}")
@@ -538,7 +537,7 @@ async def test_keyword_retrieval_multiple():
                 object_type_id="symptom"
             )
             
-            print(f"\n第二个关键词召回完成")
+            print("\n第二个关键词召回完成")
             ctx2 = result2.get("keyword_context", {})
             print(f"  关键词: {ctx2.get('keyword')}")
             print(f"  实例数: {len(ctx2.get('instances', []))}")

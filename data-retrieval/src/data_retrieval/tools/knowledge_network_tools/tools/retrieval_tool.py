@@ -9,16 +9,10 @@
 5. 构建最终的检索结果
 """
 
-import json
-import os
 import time
-import yaml
-from typing import List, Dict, Any, Optional, Tuple, Union, Set
-from fastapi import Body, HTTPException, Header, Depends
-from pydantic import BaseModel, Field
+from typing import List, Dict, Any, Optional, Tuple, Union
+from fastapi import Body, HTTPException, Depends
 import asyncio
-from datetime import datetime, timedelta
-from collections import defaultdict
 
 # 样例数据获取逻辑（从本文件抽离）
 from ..infra.helpers.sample_data import fetch_sample_data_for_object_type, fetch_all_sample_data
@@ -38,20 +32,15 @@ from ..infra.helpers.schema_info import get_schema_info
 from ..infra.helpers.final_result_builder import build_final_result
 from ..services.pipeline.request_prep import normalize_kn_ids, normalize_retrieval_config
 # 导入LLM客户端
-from ..infra.clients.llm_client import LLMClient
 # 导入日志模块
 from data_retrieval.logs.logger import logger
 # 导入重排序客户端
-from data_retrieval.tools.graph_tools.driven.external.rerank_client import RerankClient
-from ..infra.utils.timing_utils import set_timing_ctx, clear_timing_ctx, add_cost, compute_api_union_ms
+from ..infra.utils.timing_utils import set_timing_ctx, clear_timing_ctx, compute_api_union_ms
 # 导入标准错误响应类
 from data_retrieval.errors import KnowledgeNetworkRetrievalError, KnowledgeNetworkParamError
 # 导入Pydantic模型
 from ..models import (
     KnowledgeNetworkRetrievalInput,
-    KnowledgeNetworkInfo,
-    ObjectTypeInfo,
-    RelationTypeInfo,
     KnowledgeNetworkRetrievalResult,
     KnowledgeNetworkRetrievalResponse,
     HeaderParams,
@@ -62,7 +51,6 @@ from ..models import (
 # 导入会话管理器
 from ..services.session.session_manager import RetrievalSessionManager
 # 导入HTTP客户端
-from ..infra.clients.http_client import KnowledgeNetworkHTTPClient
 # 导入知识网络检索模块
 from ..core.retrieval.network_retrieval import KnowledgeNetworkRetrieval
 # 导入概念检索模块
@@ -305,10 +293,10 @@ class KnowledgeNetworkRetrievalTool:
                 # 检查session中是否有schema信息，判断是首次召回还是多轮召回
                 if session_id and RetrievalSessionManager.has_schema_info(session_id, kn_id):
                     # 已有schema信息，这是多轮的概念召回
-                    logger.info(f"Session中已有schema信息，进行多轮概念召回")
+                    logger.info("Session中已有schema信息，进行多轮概念召回")
                 else:
                     # 没有schema信息，这是首次概念召回
-                    logger.info(f"Session中没有schema信息，进行首次概念召回")
+                    logger.info("Session中没有schema信息，进行首次概念召回")
                 
                 # 使用KnowledgeNetworkRetrieval获取相关知识网络和详情，目前只会获取一个知识网络
                 network_details = await KnowledgeNetworkRetrieval._rank_knowledge_networks(
@@ -323,13 +311,13 @@ class KnowledgeNetworkRetrievalTool:
                     concept_config=concept_config,
                     enable_rerank=enable_rerank,
                 )
-                logger.info(f"获取知识网络详情")
+                logger.info("获取知识网络详情")
                 
                 # 如果需要获取样例数据，在概念召回之前先获取并存储到session
                 if include_sample_data and session_id:
                     # 检查session中是否已有样例数据
                     if not RetrievalSessionManager.has_sample_data(session_id, kn_id):
-                        logger.info(f"Session中没有样例数据，开始获取所有对象类型的样例数据")
+                        logger.info("Session中没有样例数据，开始获取所有对象类型的样例数据")
                         # 获取所有对象类型
                         object_types = network_details.get("object_types", [])
                         if object_types:
@@ -346,7 +334,7 @@ class KnowledgeNetworkRetrievalTool:
                         else:
                             logger.warning(f"知识网络 {kn_id} 没有对象类型，跳过样例数据获取")
                     else:
-                        logger.info(f"Session中已有样例数据，跳过样例数据获取")
+                        logger.info("Session中已有样例数据，跳过样例数据获取")
                 
                 # 步骤4: 使用LLM判断相关的关系类型
                 logger.info(f"跳过关系类型的LLM检索，直接使用前{top_k}个关系类型")
@@ -365,14 +353,14 @@ class KnowledgeNetworkRetrievalTool:
                     enable_rerank=enable_rerank,
                 )
                 
-                logger.info(f"筛选出相关概念")
+                logger.info("筛选出相关概念")
                 
                 # 存储到缓存
                 if session_id:
                     RetrievalSessionManager.set_concept_retrieval_cache(
                         session_id, kn_id, query, relevant_concepts, network_details
                     )
-                    logger.info(f"概念召回结果已缓存")
+                    logger.info("概念召回结果已缓存")
             
             # 步骤5: 语义实例召回（与 schema 统一返回）
             # 对召回的对象类型进行语义实例召回；若没有对象类型则自然为空。
@@ -579,7 +567,7 @@ class KnowledgeNetworkRetrievalTool:
                             RetrievalSessionManager.set_semantic_instance_cache(
                                 session_id, kn_id, query, semantic_instances_map
                             )
-                            logger.info(f"语义实例召回结果已缓存")
+                            logger.info("语义实例召回结果已缓存")
                         elif semantic_instances_map is not None:
                             # 全局分数过滤（抑制低质尾部噪声）
                             try:

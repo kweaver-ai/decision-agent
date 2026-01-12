@@ -4,9 +4,8 @@
 基于关系路径检索接口，根据properties字段过滤结果，返回SQL格式的数据
 """
 
-import json
 from typing import List, Dict, Any, Optional, Set, Tuple
-from fastapi import Body, HTTPException, Header, Depends
+from fastapi import Body, HTTPException, Depends
 from pydantic import BaseModel, Field, ConfigDict
 
 # 导入日志模块
@@ -14,7 +13,6 @@ from data_retrieval.logs.logger import logger
 # 导入标准错误响应类
 from data_retrieval.errors import KnowledgeNetworkRetrievalError, KnowledgeNetworkParamError
 # 导入配置
-from ..config import config
 # 导入HeaderParams
 from ..models import HeaderParams
 # 导入HTTP客户端

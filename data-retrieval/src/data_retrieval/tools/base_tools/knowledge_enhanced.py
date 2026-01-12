@@ -1,10 +1,8 @@
 import traceback
-from enum import Enum
-from typing import Any, Optional, Union, List
+from typing import Optional, Union, List
 from data_retrieval.errors import KnowledgeEnhancedError
 from data_retrieval.logs.logger import logger
-from data_retrieval.api.ad_api import ad_builder_get_kg_info, ad_builder_download_lexicon, ad_opensearch_connector, \
-    AD_CONNECT, ad_builder_get_kg_info_async, ad_opensearch_with_kgid_connector_async, \
+from data_retrieval.api.ad_api import ad_builder_get_kg_info, ad_builder_download_lexicon, AD_CONNECT, ad_builder_get_kg_info_async, ad_opensearch_with_kgid_connector_async, \
     ad_opensearch_with_kgid_connector
 from data_retrieval.tools.base import (
     ToolName,
@@ -80,7 +78,7 @@ class KnowledgeEnhancedTool(AFTool):
         self.query = query
         try:
             result = self.finally_fun()
-        except Exception as e:
+        except Exception:
             tb_str = traceback.format_exc()
             logger.info(f"Sailor工具执行错误，实际错误为{tb_str}")
             result = [{}]
@@ -103,7 +101,7 @@ class KnowledgeEnhancedTool(AFTool):
         self.query = query
         try:
             result = await self.finally_fun_async()
-        except Exception as e:
+        except Exception:
             tb_str = traceback.format_exc()
             logger.info(f"Sailor工具执行错误，实际错误为{tb_str}")
             result = [{}]
@@ -302,7 +300,7 @@ class KnowledgeEnhancedTool(AFTool):
                     else:
                         space_name = kg_otl['graph_baseInfo']['graph_DBName']
                     kg_info[kg_id] = {"space_name": space_name}
-            except Exception as e:
+            except Exception:
                 traceback.print_exc()
                 logger.error("获取图谱本体信息失败")
         return kg_info
@@ -595,7 +593,7 @@ async def search_by_keyword_async_with_kgid(kg_id, space_name, cal_query, appid=
             entity_classes=["dimensioncombinations"]
         )
         hits = res['hits']['hits']
-    except:
+    except Exception:
         hits = []
         logger.info('opensearch查询报错')
     find_num = []
@@ -639,11 +637,9 @@ async def search_by_keyword_async_with_kgid_with_model(kg_id, space_name, cal_qu
         logger.info("model query {}".format(body1))
         # {"terms": {"name.keyword": ["客户", "电商","中部大区", "北部大区"]}}
         res = ad_opensearch_with_kgid_connector(kg_id, appid, token, body1, ["*"])
-        query_vertice = {}
         hits = res['hits']['hits']
 
         # logger.info("query result {}".format(hits))
-        hits_keys = []
         if hits:
             for hit in hits:
                 re = {}
@@ -714,7 +710,7 @@ def search_by_keyword_with_kgid(kg_id, space_name, cal_query, appid="", token=""
     try:
         res = ad_opensearch_with_kgid_connector(kg_id, appid, token, body2, entity_classes=["dimensioncombinations"])
         hits = res['hits']['hits']
-    except:
+    except Exception:
         hits = []
         logger.info('opensearch查询报错')
     find_num = []
@@ -758,11 +754,9 @@ def search_by_keyword_with_kgid_with_model(kg_id, space_name, cal_query, appid="
         logger.info("model query {}".format(body1))
         # {"terms": {"name.keyword": ["客户", "电商","中部大区", "北部大区"]}}
         res = ad_opensearch_with_kgid_connector(kg_id, appid, token, body1, ["*"])
-        query_vertice = {}
         hits = res['hits']['hits']
 
         logger.info("query result {}".format(hits))
-        hits_keys = []
         if hits:
             for hit in hits:
                 re = {}

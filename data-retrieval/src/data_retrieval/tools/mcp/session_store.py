@@ -228,7 +228,7 @@ class RedisSessionStore(SessionStore):
 
 _store_instance: Optional[SessionStore] = None
 
-from data_retrieval.settings import get_settings
+from data_retrieval.settings import get_settings  # noqa: E402
 _settings = get_settings()
 
 

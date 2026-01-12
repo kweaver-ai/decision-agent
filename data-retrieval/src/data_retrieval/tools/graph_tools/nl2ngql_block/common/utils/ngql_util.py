@@ -1,8 +1,6 @@
-import regex as re
-import os, json, copy
+import json
 import hashlib
 from data_retrieval.tools.graph_tools.common.stand_log import StandLogger
-from data_retrieval.errors import NGQLSchemaError
 
 
 class SchemaParser(object):
@@ -317,12 +315,14 @@ class SchemaParser(object):
         filter_values = []
         total_word = 0
         for value in values:
-            if total_word > 50: continue
+            if total_word > 50:
+                continue
             if isinstance(value, str):
                 if len(value) > 10:
                     value = value[:10] + "..."
                     total_word += 10
-            if not value: continue
+            if not value:
+                continue
             if isinstance(value, str):
                 if not value.strip():
                     continue
