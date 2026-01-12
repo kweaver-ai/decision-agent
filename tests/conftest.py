@@ -20,7 +20,6 @@ file = GetContent(configfile)
 config = file.config()
 
 host = config["server"]["host"]
-admin_password = config["admin"]["admin_password"]
 
 @pytest.fixture(scope="session", autouse=True)
 def APrepare():
@@ -57,7 +56,7 @@ def APrepare():
     yield orgId, depId, userId
 
     '''删除用户、部门和组织'''
-    token = GetToken(host=host).get_token(host, "admin", admin_password)
+    token = GetToken(host=host).get_token(host, "admin", "eisoo.com123")
     # admin_id = token[0]
     admin_token = token[1]
 
@@ -98,7 +97,7 @@ def UserHeaders():
 def RoleMember(APrepare):
     # 将A0设置为AI管理员，角色ID：3fb94948-5169-11f0-b662-3a7bdba2913f
     try:
-        token = GetToken(host=host).get_token(host, "admin", admin_password)
+        token = GetToken(host=host).get_token(host, "admin", "eisoo.com123")
         headers = {
             "Authorization": f"Bearer {token[1]}"
             }

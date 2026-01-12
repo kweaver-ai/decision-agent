@@ -37,7 +37,6 @@ host = config["server"]["host"]
 db_port = config["server"]["db_port"]
 db_user = config["server"]["db_user"]
 db_pwd = config["server"]["db_pwd"]
-admin_password = config["admin"]["admin_password"]
 
 mcp_client = MCP()
 mcp_internal = InternalMCP()
@@ -52,8 +51,8 @@ def DeleteDatabaseData():
 
 @pytest.fixture(scope="session", autouse=True)
 def DomainPrepare():
-    token = GetToken(host=host).get_token(host, "admin", admin_password)
-    admin_token = token[1]
+    token = GetToken(host=host).get_token(host, "admin", "eisoo.com123")
+    admin_token = token[1]    
     headers = {
         "Authorization": f"Bearer {admin_token}"
     }

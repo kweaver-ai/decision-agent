@@ -2,8 +2,7 @@
 
 import requests
 import json
-import warnings
-import os
+import warnings 
 warnings.filterwarnings("ignore")
 
 from eisoo import tclients
@@ -11,7 +10,6 @@ from eisoo.tclients import TClient
 from ShareMgnt.ttypes import *
 
 from common.get_token import GetToken
-from common.get_content import GetContent
 
 class DeleteUser:
     def __init__(self, host):
@@ -58,13 +56,7 @@ class DeleteUser:
             return r.status_code, json.loads(r.content)
         
 if __name__ == '__main__':
-    # Read admin password from config file
-    configfile = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config/env.ini")
-    file = GetContent(configfile)
-    config = file.config()
-    admin_password = config["admin"]["admin_password"]
-
-    token = GetToken("192.168.232.15").get_token("192.168.232.15", "admin", admin_password)
+    token = GetToken("192.168.232.15").get_token("192.168.232.15", "admin", "eisoo.com123")
     admin_id = token[0]
     admin_token = token[1] 
 

@@ -29,9 +29,3 @@ data/data-agent/zhipu_search_tool_config.json
 # Fetch log AI configuration and logs
 .fetch_log/
 .fetch_log_ai_config.json
-
-# Backup files (should not be committed)
-*_bak_*
-*_backup*
-*.bak
-*~
