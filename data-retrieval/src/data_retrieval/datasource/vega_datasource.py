@@ -3,7 +3,6 @@
 # @Date: 2024-6-7
 from typing import Any, List, Optional, Union
 
-from data_retrieval.api.af_api import Services
 from data_retrieval.api.vega import VegaServices
 from data_retrieval.api.error import AfDataSourceError, VirEngineError, FrontendColumnError, FrontendSampleError
 from data_retrieval.datasource.db_base import DataSource
@@ -238,7 +237,7 @@ class VegaDataSource(DataSource):
     base_url: str = ""
     model_data_view_fields: dict = None  # 主题模型、专题模型字段，筛选专用
     special_data_view_fields: dict = None  # 指定字段必须保留
-    service: Union[VegaServices, Services] = None
+    service: VegaServices = None
     dimension_reduce: Optional[DimensionReduce] = None
 
     class Config:
@@ -265,12 +264,8 @@ class VegaDataSource(DataSource):
 
         self.view_list = self.view_list
 
-        if self.vega_type.lower() == VegaType.AF.value:
-            self.service = Services(base_url=self.base_url)
-        elif self.vega_type.lower() == VegaType.DIP.value:
-            self.service = VegaServices(base_url=self.base_url)
-        else:
-            raise VirEngineError(f"Invalid vega type: {self.vega_type}")
+        # 统一使用 VegaServices
+        self.service = VegaServices(base_url=self.base_url)
 
         self.dimension_reduce = DimensionReduce(
             embedding_url=self.base_url,
@@ -654,11 +649,10 @@ class VegaDataSource(DataSource):
         return descriptions
 
     def get_catelog(self) -> list[str]:
-        text2sql = Services()
         catelogs = []
         try:
             for view_id in self.view_list:
-                column = text2sql.get_view_column_by_id(view_id, headers=self.headers)
+                column = self.service.get_view_column_by_id(view_id, headers=self.headers)
                 totype, column_name, table, zh_table = get_view_en2type(column)
                 catelogs.append(table)
         except FrontendColumnError as e:

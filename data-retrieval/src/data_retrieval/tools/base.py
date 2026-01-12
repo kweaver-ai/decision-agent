@@ -183,12 +183,10 @@ class ToolName(Enum):
     from_json2plot = "json2plot"
     from_human = "询问用户"
     from_text2sql = "text2sql"
-    from_text2metric = "text2metric"
+    from_text2dip_metric = "text2dip_metric"
     from_get_tool_cache = "get_tool_cache"
     GetTableDDLAndSampleToolName = "get_ddl_and_sample"
     VirtualizationEngineToolName = "execute"
-    from_knowledge_enhanced = "knowledge_enhanced"
-    context2question = "context2question"
     from_text2ngql = "text2ngql"
     from_sql_helper = "sql_helper"
 

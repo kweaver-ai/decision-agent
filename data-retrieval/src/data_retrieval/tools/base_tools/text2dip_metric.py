@@ -20,6 +20,8 @@ from langchain_core.messages import SystemMessage, HumanMessage
 from data_retrieval.errors import Text2DIPMetricError
 from data_retrieval.logs.logger import logger
 from data_retrieval.prompts.tools_prompts.text2dip_metric_prompt import Text2DIPMetricPrompt
+from data_retrieval.prompts.tools_prompts.text2metric_prompt.rewrite_query import RewriteMetricQueryPrompt
+from data_retrieval.parsers.base import BaseJsonParser
 
 from data_retrieval.sessions import CreateSession, BaseChatHistorySession
 from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer
@@ -39,8 +41,18 @@ _SETTINGS = get_settings()
 
 _DESCS = {
     "tool_description": {
-        "cn": "根据文本，以及DIP指标的列表来生成指标调用参数，每次工具只能调用一个指标但是可以设置不同的查询条件。如果获取的数据太长的话，只返回局部数据，全部数据在缓存中。结果中有一个 data_desc 的对象来记录返回数据条数和实际结果条数，请告知用户查看详细数据，应用程序会获取。",
-        "en": "call corresponding DIP indicators based on user input text, only one indicator at a time, if the question contains multiple indicators, please call multiple times, the result has a data_desc object to record the number of returned data and the actual number of results, please tell the user to check the detailed data, the application will get it.",
+        "cn": (
+            "根据文本，以及DIP指标的列表来生成指标调用参数，每次工具只能调用一个指标但是可以设置不同的查询条件。"
+            "如果获取的数据太长的话，只返回局部数据，全部数据在缓存中。"
+            "结果中有一个 data_desc 的对象来记录返回数据条数和实际结果条数，请告知用户查看详细数据，应用程序会获取。"
+        ),
+        "en": (
+            "call corresponding DIP indicators based on user input text, "
+            "only one indicator at a time, if the question contains multiple indicators, "
+            "please call multiple times, the result has a data_desc object to record "
+            "the number of returned data and the actual number of results, "
+            "please tell the user to check the detailed data, the application will get it."
+        ),
     },
     "chat_history": {
         "cn": "对话历史",
@@ -85,11 +97,17 @@ class Text2DIPMetricInput(BaseModel):
 
 class Text2DIPMetricInputWithMetricList(Text2DIPMetricInput):
     metric_list: List[DIPMetricDescSchema] = Field(
-        default=[], description=f"指标列表，注意指标指的一个数据源，不是字段信息，当已经初始化过虚拟视图列表时，不需要填写该参数。如果需要填写该参数，请确保`上下文缓存的数据资源中存在`，不要随意生成。注意参数一定要准确。格式为 {DIPMetricDescSchema.schema_json(ensure_ascii=False)}")
+        default=[],
+        description=(
+            "指标列表，注意指标指的一个数据源，不是字段信息，当已经初始化过虚拟视图列表时，"
+            "不需要填写该参数。如果需要填写该参数，请确保`上下文缓存的数据资源中存在`，"
+            f"不要随意生成。注意参数一定要准确。格式为 {DIPMetricDescSchema.schema_json(ensure_ascii=False)}"
+        )
+    )
 
 
 class Text2DIPMetricTool(LLMTool):
-    name: str = ToolName.from_text2metric.value
+    name: str = ToolName.from_text2dip_metric.value
     description: str = _DESCS["tool_description"]["cn"]
     background: str = ""
     args_schema: Type[BaseModel] = Text2DIPMetricInput
@@ -104,6 +122,7 @@ class Text2DIPMetricTool(LLMTool):
     recall_top_k: int = int(_SETTINGS.INDICATOR_RECALL_TOP_K)
     rewrite_query: bool = bool(_SETTINGS.INDICATOR_REWRITE_QUERY)  # 是否重写指标查询语句
     model_type: str = _SETTINGS.TEXT2METRIC_MODEL_TYPE
+    language: str = "cn"  # 语言设置
     return_record_limit: int = _SETTINGS.RETURN_RECORD_LIMIT
     return_data_limit: int = _SETTINGS.RETURN_DATA_LIMIT
     api_mode: bool = False  # 是否为 API 模式
@@ -248,6 +267,47 @@ class Text2DIPMetricTool(LLMTool):
 
         return background
 
+    def _config_rewrite_metric_query_chain(self, question: str, background: str, metrics: list, samples: list):
+        """配置重写指标查询语句的 LLM 链"""
+        prompt = RewriteMetricQueryPrompt(
+            question=question,
+            metrics=metrics,
+            samples=samples,
+            language=self.language,
+            background=background
+        )
+
+        if self.model_type == ModelType4Prompt.DEEPSEEK_R1.value:
+            messages = [
+                HumanMessage(content=prompt.render(escape_braces=False), additional_kwargs={
+                             _TOOL_MESSAGE_KEY: "text2metric_rewrite_query"}),
+                HumanMessage(content=question)
+            ]
+        else:
+            messages = [
+                SystemMessage(content=prompt.render(escape_braces=False), additional_kwargs={
+                              _TOOL_MESSAGE_KEY: "text2metric_rewrite_query"}),
+                HumanMessage(content=question)
+            ]
+
+        chain = self.llm | BaseJsonParser()
+        return chain, messages
+
+    async def _arewrite_metric_query(self, question: str, background: str, metrics: list, samples: list):
+        """异步重写指标查询语句"""
+        chain, messages = self._config_rewrite_metric_query_chain(question, background, metrics, samples)
+        new_question = await chain.ainvoke(messages)
+
+        # 输出是字符串，帮助后续问题理解
+        return json.dumps(new_question, ensure_ascii=False)
+
+    def _rewrite_metric_query(self, question: str, background: str, metrics: list, samples: list):
+        """同步重写指标查询语句"""
+        chain, messages = self._config_rewrite_metric_query_chain(question, background, metrics, samples)
+        new_question = chain.invoke(messages)
+
+        return json.dumps(new_question, ensure_ascii=False)
+
     def _get_configured_metrics_info(self):
         """获取配置的指标信息"""
         try:
@@ -369,6 +429,12 @@ class Text2DIPMetricTool(LLMTool):
             errors = {}
             res = {}
 
+            # 重写指标查询语句，提高指标查询的准确性
+            question = input
+            if self.rewrite_query:
+                question = self._rewrite_metric_query(input, background, metric_details, sample_data)
+                logger.debug(f"重写后的指标查询语句->: {question}")
+
             for i in range(self.retry_times):
                 logger.debug("============" * 10)
                 logger.debug(f"{i + 1} times to process DIP metric query......")
@@ -384,7 +450,7 @@ class Text2DIPMetricTool(LLMTool):
                     )
 
                     # 调用 LLM
-                    response = chain.invoke({"input": input})
+                    response = chain.invoke({"input": question})
 
                     # 解析响应
                     llm_res = self._parse_response(response)
@@ -495,6 +561,12 @@ class Text2DIPMetricTool(LLMTool):
             errors = {}
             res = {}
 
+            # 重写指标查询语句，提高指标查询的准确性
+            question = input
+            if self.rewrite_query:
+                question = await self._arewrite_metric_query(input, background, metric_details, sample_data)
+                logger.debug(f"重写后的指标查询语句->: {question}")
+
             for i in range(self.retry_times):
                 logger.debug("============" * 10)
                 logger.debug(f"{i + 1} times to process DIP metric query (async)......")
@@ -510,7 +582,7 @@ class Text2DIPMetricTool(LLMTool):
                     )
 
                     # 异步调用 LLM
-                    response = await chain.ainvoke({"input": input})
+                    response = await chain.ainvoke({"input": question})
                     logger.debug(f"LLM 响应: {response.content}")
 
                     # 解析响应
@@ -1033,8 +1105,15 @@ class Text2DIPMetricTool(LLMTool):
                                             },
                                             "recall_mode": {
                                                 "type": "string",
-                                                "description": "召回模式，支持 keyword_vector_retrieval(默认), agent_intent_planning, agent_intent_retrieval",
-                                                "enum": ["keyword_vector_retrieval", "agent_intent_planning", "agent_intent_retrieval"],
+                                                "description": (
+                                                    "召回模式，支持 keyword_vector_retrieval(默认), "
+                                                    "agent_intent_planning, agent_intent_retrieval"
+                                                ),
+                                                "enum": [
+                                                    "keyword_vector_retrieval",
+                                                    "agent_intent_planning",
+                                                    "agent_intent_retrieval"
+                                                ],
                                                 "default": "keyword_vector_retrieval"
                                             }
                                         }
@@ -1092,27 +1171,47 @@ class Text2DIPMetricTool(LLMTool):
                                             },
                                             "force_limit": {
                                                 "type": "integer",
-                                                "description": f"查询指标时，如果没有设置返回数据条数限制，在采用该参数设置的值作为限制, -1表示不限制, 系统默认为 {_SETTINGS.TEXT2METRIC_FORCE_LIMIT}",
+                                                "description": (
+                                                    "查询指标时，如果没有设置返回数据条数限制，"
+                                                    "在采用该参数设置的值作为限制, -1表示不限制, "
+                                                    f"系统默认为 {_SETTINGS.TEXT2METRIC_FORCE_LIMIT}"
+                                                ),
                                                 "default": _SETTINGS.TEXT2METRIC_FORCE_LIMIT
                                             },
                                             "recall_top_k": {
                                                 "type": "integer",
-                                                "description": f"指标召回数量限制，用于限制从数据源中召回的指标数量，-1表示不限制, 系统默认为 {_SETTINGS.INDICATOR_RECALL_TOP_K}",
+                                                "description": (
+                                                    "指标召回数量限制，用于限制从数据源中召回的指标数量，"
+                                                    f"-1表示不限制, 系统默认为 {_SETTINGS.INDICATOR_RECALL_TOP_K}"
+                                                ),
                                                 "default": _SETTINGS.INDICATOR_RECALL_TOP_K
                                             },
                                             "dimension_num_limit": {
                                                 "type": "integer",
-                                                "description": f"给大模型选择时维度数量限制，-1表示不限制, 系统默认为 {_SETTINGS.TEXT2METRIC_DIMENSION_NUM_LIMIT}",
+                                                "description": (
+                                                    "给大模型选择时维度数量限制，-1表示不限制, "
+                                                    f"系统默认为 {_SETTINGS.TEXT2METRIC_DIMENSION_NUM_LIMIT}"
+                                                ),
                                                 "default": _SETTINGS.TEXT2METRIC_DIMENSION_NUM_LIMIT
                                             },
                                             "return_record_limit": {
                                                 "type": "integer",
-                                                "description": f"结果返回时数据条数限制，-1表示不限制, 原因是指标查询执行后返回大量数据，可能导致大模型上下文token超限。系统默认为 {_SETTINGS.RETURN_RECORD_LIMIT}",
+                                                "description": (
+                                                    "结果返回时数据条数限制，-1表示不限制, "
+                                                    "原因是指标查询执行后返回大量数据，"
+                                                    "可能导致大模型上下文token超限。"
+                                                    f"系统默认为 {_SETTINGS.RETURN_RECORD_LIMIT}"
+                                                ),
                                                 "default": _SETTINGS.RETURN_RECORD_LIMIT
                                             },
                                             "return_data_limit": {
                                                 "type": "integer",
-                                                "description": f"结果返回时数据总量限制，单位是字节，-1表示不限制, 原因是指标查询执行后返回大量数据，可能导致大模型上下文token超限。系统默认为 {_SETTINGS.RETURN_DATA_LIMIT}",
+                                                "description": (
+                                                    "结果返回时数据总量限制，单位是字节，-1表示不限制, "
+                                                    "原因是指标查询执行后返回大量数据，"
+                                                    "可能导致大模型上下文token超限。"
+                                                    f"系统默认为 {_SETTINGS.RETURN_DATA_LIMIT}"
+                                                ),
                                                 "default": _SETTINGS.RETURN_DATA_LIMIT
                                             },
                                         }
@@ -1242,7 +1341,10 @@ class Text2DIPMetricTool(LLMTool):
                                         "explanation": {
                                             "CPU使用率": [
                                                 {
-                                                    "指标": "使用 'CPU使用率' 指标，按 '时间' '最近1小时' 的数据，并设置过滤条件 '主机为server-1和server-2'"
+                                                    "指标": (
+                                                        "使用 'CPU使用率' 指标，按 '时间' '最近1小时' 的数据，"
+                                                        "并设置过滤条件 '主机为server-1和server-2'"
+                                                    )
                                                 },
                                                 {
                                                     "时间": "从 2024-01-01 到 2024-01-02"

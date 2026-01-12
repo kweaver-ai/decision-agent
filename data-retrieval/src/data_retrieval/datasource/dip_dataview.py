@@ -4,7 +4,6 @@
 from typing import Any, List, Optional, Union
 import traceback
 
-from data_retrieval.api.af_api import Services
 from data_retrieval.api.vega import VegaServices
 from data_retrieval.api.error import AfDataSourceError, VirEngineError, FrontendColumnError, FrontendSampleError
 from data_retrieval.datasource.db_base import DataSource
@@ -255,7 +254,7 @@ class DataView(DataSource):
     base_url: str = ""
     model_data_view_fields: dict = None  # 主题模型、专题模型字段，筛选专用
     special_data_view_fields: dict = None  # 指定字段必须保留
-    service: Union[DataModelService, Services] = None
+    service: DataModelService = None
     dimension_reduce: Optional[DimensionReduce] = None
 
     _view_details_cache: dict[str, Any] = {}
@@ -603,7 +602,6 @@ class DataView(DataSource):
         return descriptions
 
     def get_catelog(self) -> list[str]:
-        Services()
         catelogs = []
         try:
             for view_id in self.view_list:

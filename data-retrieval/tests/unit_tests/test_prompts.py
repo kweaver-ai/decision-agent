@@ -136,65 +136,9 @@ class TestText2MetricPrompt:
         assert len(rendered) > 0
 
 
-class TestContext2QueryPrompt:
-    """测试 Context2QueryPrompt"""
-    
-    def test_initialization(self):
-        """测试初始化"""
-        from data_retrieval.prompts.tools_prompts.context2question_prompt import Context2QueryPrompt
-        
-        prompt = Context2QueryPrompt(language="cn")
-        assert prompt.language == "cn"
-    
-    def test_render(self):
-        """测试渲染功能"""
-        from data_retrieval.prompts.tools_prompts.context2question_prompt import Context2QueryPrompt
-        
-        prompt = Context2QueryPrompt(language="cn")
-        rendered = prompt.render()
-        
-        assert rendered is not None
-        assert len(rendered) > 0
-    
-    def test_render_english(self):
-        """测试英文渲染"""
-        from data_retrieval.prompts.tools_prompts.context2question_prompt import Context2QueryPrompt
-        
-        prompt = Context2QueryPrompt(language="en")
-        rendered = prompt.render()
-        
-        assert rendered is not None
+# TestContext2QueryPrompt 已移除（context2question_prompt.py 已删除）
 
-
-class TestDataSourceFilterPrompt:
-    """测试 DataSourceFilterPrompt"""
-    
-    def test_initialization(self):
-        """测试初始化"""
-        from data_retrieval.prompts.tools_prompts.datasource_filter_prompt import DataSourceFilterPrompt
-        
-        prompt = DataSourceFilterPrompt(
-            data_source_list=[{"name": "test_ds", "type": "mysql"}],
-            language="cn",
-            data_source_list_description="测试数据源",
-            background=""
-        )
-        
-        assert prompt.language == "cn"
-    
-    def test_render(self):
-        """测试渲染功能"""
-        from data_retrieval.prompts.tools_prompts.datasource_filter_prompt import DataSourceFilterPrompt
-        
-        prompt = DataSourceFilterPrompt(
-            data_source_list=[{"name": "test_ds", "type": "mysql"}],
-            language="cn",
-            data_source_list_description="测试数据源",
-            background=""
-        )
-        
-        rendered = prompt.render()
-        assert rendered is not None
+# TestDataSourceFilterPrompt 已移除（datasource_filter_prompt.py 已删除）
 
 
 class TestText2DIPMetricPrompt:
@@ -237,8 +181,6 @@ def run_tests():
         TestBasePrompt,
         TestText2SQLPrompt,
         TestText2MetricPrompt,
-        TestContext2QueryPrompt,
-        TestDataSourceFilterPrompt,
         TestText2DIPMetricPrompt,
     ]
     

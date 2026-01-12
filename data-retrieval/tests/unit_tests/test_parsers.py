@@ -31,21 +31,7 @@ class TestBaseJsonParser:
         assert parser is not None
 
 
-class TestText2MetricParser:
-    """测试 Text2MetricParser"""
-    
-    def test_import(self):
-        """测试导入"""
-        from data_retrieval.parsers.text2metric_parser import Text2MetricParser
-        
-        assert Text2MetricParser is not None
-    
-    def test_inheritance(self):
-        """测试继承关系"""
-        from data_retrieval.parsers.text2metric_parser import Text2MetricParser
-        from data_retrieval.parsers.base import BaseJsonParser
-        
-        assert issubclass(Text2MetricParser, BaseJsonParser)
+# TestText2MetricParser 已移除（text2metric_parser.py 已删除）
 
 
 class TestText2SQLParser:

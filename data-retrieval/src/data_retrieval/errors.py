@@ -11,7 +11,6 @@ class ErrorCode:
     ResultParseError = "ResultParseError"
     SDKRequestError = "SDKRequestError"
     OpenSearchRequestError = 'OpenSearchRequestError'
-    KnowledgeEnhancedError = 'KnowledgeEnhancedError'
     PythonCodeError = 'PythonCodeError'
     ToolFatalError = 'ToolFatalError'
     SandboxError = 'SandboxError'
@@ -174,15 +173,6 @@ class OpenSearchRequestError(AgentBaseError):
             detail=detail
         )
 
-
-class KnowledgeEnhancedError(AgentBaseError):
-    def __init__(self, detail: Any, status: int = 500, reason: str = ""):
-        super().__init__(
-            code=ErrorCode.KnowledgeEnhancedError,
-            status=status,
-            reason=reason,
-            detail=detail
-        )
 
 # To comply with the ToolException of LangChain
 # inherit from both AgentBaseError and ToolException

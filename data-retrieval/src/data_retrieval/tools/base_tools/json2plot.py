@@ -116,7 +116,7 @@ class ArgsModel(BaseModel):
         default=[], description="用于作图的 JSON 数据，与 tool_result_cache_key 参数不能同时设置, 如果 tool_result_cache_key 为空, 才是用")
     data_field: str = Field(default="", description="数据字段，注意设置的 group_by 和 data_field 必须和数据匹配，不要自己生成，如果数据中没有，可以询问用户")
     tool_result_cache_key: str = Field(
-        default="", description=f"{ToolName.from_text2metric.value} 或 {ToolName.from_text2sql.value}工具缓存 key, 其他工具的结果没有意义，key 是一个字符串, 与 data 不能同时设置")
+        default="", description=f"{ToolName.from_text2dip_metric.value} 或 {ToolName.from_text2sql.value}工具缓存 key, 其他工具的结果没有意义，key 是一个字符串, 与 data 不能同时设置")
 
 
 _SCHEMA = {

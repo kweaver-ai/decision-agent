@@ -118,26 +118,7 @@ class TestText2SQLTool:
         assert 'prompt_manager' not in params
 
 
-class TestText2MetricTool:
-    """测试 Text2MetricTool"""
-    
-    def test_tool_class(self):
-        """测试工具类"""
-        from data_retrieval.tools.base_tools.text2metric import Text2MetricTool
-        
-        assert Text2MetricTool is not None
-        assert hasattr(Text2MetricTool, 'from_indicator')
-    
-    def test_from_indicator_signature(self):
-        """测试 from_indicator 方法签名"""
-        from data_retrieval.tools.base_tools.text2metric import Text2MetricTool
-        
-        sig = inspect.signature(Text2MetricTool.from_indicator)
-        params = list(sig.parameters.keys())
-        
-        assert 'indicator' in params
-        assert 'llm' in params
-        assert 'prompt_manager' not in params
+# TestText2MetricTool 已移除（text2metric.py 已删除）
 
 
 class TestText2DIPMetricTool:
@@ -162,43 +143,7 @@ class TestText2DIPMetricTool:
         assert 'prompt_manager' not in params
 
 
-class TestContext2QuestionTool:
-    """测试 Context2QuestionTool"""
-    
-    def test_tool_class(self):
-        """测试工具类"""
-        from data_retrieval.tools.base_tools.context2question import Context2QuestionTool
-        
-        assert Context2QuestionTool is not None
-        assert hasattr(Context2QuestionTool, 'from_llm')
-    
-    def test_from_llm_signature(self):
-        """测试 from_llm 方法签名"""
-        from data_retrieval.tools.base_tools.context2question import Context2QuestionTool
-        
-        sig = inspect.signature(Context2QuestionTool.from_llm)
-        params = list(sig.parameters.keys())
-        
-        assert 'llm' in params
-        assert 'prompt_manager' not in params
-    
-    def test_helper_functions(self):
-        """测试辅助函数"""
-        from data_retrieval.tools.base_tools.context2question import (
-            chat_history_to_question,
-            achat_history_to_question
-        )
-        
-        # 验证函数存在
-        assert callable(chat_history_to_question)
-        assert callable(achat_history_to_question)
-        
-        # 验证签名
-        sig1 = inspect.signature(chat_history_to_question)
-        sig2 = inspect.signature(achat_history_to_question)
-        
-        assert 'prompt_manager' not in sig1.parameters
-        assert 'prompt_manager' not in sig2.parameters
+# TestContext2QuestionTool 已移除（context2question.py 已删除）
 
 
 class TestJson2Plot:
@@ -221,14 +166,7 @@ class TestSQLHelper:
         assert SQLHelperTool is not None
 
 
-class TestDataSourceFilter:
-    """测试 DataSourceFilter 工具"""
-    
-    def test_tool_class(self):
-        """测试工具类"""
-        from data_retrieval.tools.base_tools.datasource_filter import DataSourceFilterTool
-        
-        assert DataSourceFilterTool is not None
+# TestDataSourceFilter 已移除（datasource_filter.py 已删除）
 
 
 def run_tests():
@@ -243,12 +181,9 @@ def run_tests():
         TestToolRegistry,
         TestToolAPIRouter,
         TestText2SQLTool,
-        TestText2MetricTool,
         TestText2DIPMetricTool,
-        TestContext2QuestionTool,
         TestJson2Plot,
         TestSQLHelper,
-        TestDataSourceFilter,
     ]
     
     total = 0
