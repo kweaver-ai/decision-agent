@@ -1,0 +1,17 @@
+include README.pypi.md
+include pyproject.toml
+recursive-include src *.py *.txt *.yaml *.md
+
+prune tests
+prune from_intranet
+prune docs
+prune examples
+prune logs
+prune tmp
+prune helm
+prune scripts
+
+global-exclude __pycache__
+global-exclude *.pyc
+global-exclude *.pyo
+global-exclude .git*

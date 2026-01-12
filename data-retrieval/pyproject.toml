@@ -2,16 +2,18 @@
 requires = ["setuptools"]
 
 [project]
-name = "data-retrieval"
-version = "0.1.0"
+name = "kweaver-data-retrieval"
+version = "0.1.2"
 authors = [
   { name="Chen Xiao", email="xavier.chen@aishu.cn" },
 ]
-description = "A library for building AF agent"
-readme = "README.md"
+description = "A library for Kweaver data retrieval"
+readme = "README.pypi.md"
+license = {text = "Apache-2.0"}
 requires-python = ">=3.10"
 classifiers = [
     "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent"
 ]
 dependencies = [
@@ -57,6 +59,7 @@ windows = []
 
 [tool.setuptools.packages.find]
 where = ["src"]
+exclude = ["tests", "tests.*"]
 
 [tool.setuptools.package-data]
 "data_retrieval.prompts.tools_prompts.text2metric_prompt" = ["params_json.txt"]
