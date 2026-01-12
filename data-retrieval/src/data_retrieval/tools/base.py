@@ -184,7 +184,6 @@ class ToolName(Enum):
     GetTableDDLAndSampleToolName = "get_ddl_and_sample"
     VirtualizationEngineToolName = "execute"
     from_knowledge_enhanced = "knowledge_enhanced"
-    from_analyzer_with_code = "analyzer_with_code"
     context2question = "context2question"
     from_text2ngql = "text2ngql"
     from_sql_helper = "sql_helper"

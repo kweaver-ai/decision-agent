@@ -52,9 +52,6 @@ class DIPSettings(BaseSettings):
 
     KNOWLEDGE_ITEM_RETURN_RECORD_LIMIT: int = 30
     KNOWLEDGE_ITEM_HARD_LIMIT: int = 2000
-    
-    CODE_RUNNER_OUTPUT_LIMIT: int = 2000
-    CODE_RUNNER_OUTPUT_LINES_LIMIT: int = 10
 
     CACHE_SIZE_LIMIT: int = 2000
 
@@ -90,9 +87,6 @@ class DIPSettings(BaseSettings):
     # Debug Settings
     AF_DEBUG_IP: str = ""
     SAILOR_URL: str = "http://af-sailor:9797"
-
-    # Jupyter Gateway Settings
-    JUPYTER_GATEWAY_URL: str = "http://127.0.0.1:8888"
 
     # Sandbox Settings
     SANDBOX_URL: str = "http://sandbox-runtime:9101"
