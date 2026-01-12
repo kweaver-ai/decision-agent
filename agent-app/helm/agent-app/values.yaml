@@ -22,7 +22,6 @@ image:
     pullPolicy: IfNotPresent
 
 service:
-  ingressclassname: "class-443"
   agentApp:
     type: ClusterIP
     port: 30777
@@ -56,6 +55,8 @@ env:
   timezone: Asia/Shanghai
 
 depServices:
+  class-443:
+    ingressClass: class-443
   hydra:
     userMgnt:
       host: user-management-private

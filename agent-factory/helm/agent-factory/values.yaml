@@ -21,7 +21,6 @@ image:
     pullPolicy: IfNotPresent
 
 service:
-  ingressclassname: "class-443"
   agentFactory:
     type: ClusterIP
     port: 13020
@@ -52,6 +51,8 @@ env:
   disable_pms_check: false
 
 depServices:
+  class-443:
+    ingressClass: class-443
   hydra:
     userMgnt:
       host: user-management-private
