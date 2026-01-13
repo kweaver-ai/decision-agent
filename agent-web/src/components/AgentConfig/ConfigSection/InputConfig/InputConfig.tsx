@@ -260,7 +260,7 @@ const InputConfig: React.FC = () => {
   };
 
   // 更新字段类型
-  const handleTypeChange = (value: string, record: any, index: number) => {
+  const handleTypeChange = (value: string, _record: any, index: number) => {
     if (!canEditInputConfig) return;
 
     // 内置变量的展开/收起，之间的index差了3
@@ -311,7 +311,7 @@ const InputConfig: React.FC = () => {
 
     // 内置变量的展开/收起，之间的index差了3
     const actualIndex = builtInVariablesExpanded ? index : index + 3;
-    const updatedFields = inputConfig.fields.filter((field: any, i: number) => i !== actualIndex);
+    const updatedFields = inputConfig.fields.filter((_field: any, i: number) => i !== actualIndex);
 
     setInputConfig((prev: any) => ({
       ...prev,
@@ -469,16 +469,18 @@ const InputConfig: React.FC = () => {
                   </div>
                 }
                 placement="left"
-                overlayStyle={{
-                  maxWidth: '450px',
-                }}
-                overlayInnerStyle={{
-                  backgroundColor: '#fff',
-                  color: '#333',
-                  border: '1px solid #d9d9d9',
-                  borderRadius: '6px',
-                  boxShadow:
-                    '0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05)',
+                styles={{
+                  root: {
+                    maxWidth: '450px',
+                  },
+                  body: {
+                    backgroundColor: '#fff',
+                    color: '#333',
+                    border: '1px solid #d9d9d9',
+                    borderRadius: '6px',
+                    boxShadow:
+                      '0 6px 16px 0 rgba(0, 0, 0, 0.08), 0 3px 6px -4px rgba(0, 0, 0, 0.12), 0 9px 28px 8px rgba(0, 0, 0, 0.05)',
+                  },
                 }}
               >
                 <QuestionCircleOutlined className="dip-c-subtext" style={{ marginLeft: '8px', cursor: 'pointer' }} />
@@ -534,7 +536,7 @@ const InputConfig: React.FC = () => {
               dataSource={displayFields}
               columns={columns}
               pagination={false}
-              rowKey={(record, index) => `${index}`}
+              rowKey={(_record, index) => `${index}`}
               size="middle"
             />
             {fileSettingsVisible && (
