@@ -1,4 +1,4 @@
-import { useMemo, memo } from 'react';
+import { useMemo } from 'react';
 import { Avatar } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import Agent from '@/assets/icons/agent';
@@ -8,7 +8,7 @@ import BuildInAgentAvatarWrapper from './BuildInAgentAvatarWrapper';
 export const AVATAR_OPTIONS = Object.keys(Agent).map(key => ({
   type: 1,
   value: key,
-  img: Agent[key],
+  img: (Agent as any)[key],
 }));
 
 // 获取当前头像显示
