@@ -12,7 +12,6 @@ image:
   name: agent-executor
 
 service:
-  ingressclassname: ""
   AgentExecutor:
     type: ClusterIP
     port: 30778
@@ -92,6 +91,8 @@ probe:
 nodeSelector: { }
 
 depServices:
+  class-443:
+    ingressClass: class-443
   rds:
     host: "rds-proton-rds-mariadb-cluster"
     port: "3320"

@@ -10,9 +10,7 @@ metadata:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/service-upstream: "true" # 使用客户端源ip
 spec:
-{{- if .Values.service.ingressclassname }}
-  ingressClassName: "{{.Values.service.ingressclassname}}"
-{{- end }}
+  ingressClassName: {{ index .Values.depServices "class-443" "ingressClass" }}
   rules:
   - http:
       paths:
