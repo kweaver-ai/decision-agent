@@ -1,12 +1,10 @@
 import { Bubble } from '@ant-design/x';
 import styles from './index.module.less';
-import PlanPanel from './PlanPanel';
 import UserPanel from './UserPanel';
-import PlanReportPanel from './PlanReportPanel';
 import ErrorPanel from './ErrorPanel';
 import CommonPanel from './CommonPanel';
 import { useDipChatStore } from '@/components/DipChat/store';
-import { DipChatItem } from '@/components/DipChat/interface';
+import type { DipChatItem } from '@/components/DipChat/interface';
 type BubbleListProps = {
   readOnly?: boolean;
 };
@@ -33,25 +31,7 @@ const BubbleList = ({ readOnly = false }: BubbleListProps) => {
         },
       };
     }
-    if (chatItem.role === 'plan') {
-      return {
-        placement: 'start',
-        variant: 'borderless',
-        messageRender: () => {
-          return <PlanPanel type="chat" chatItemIndex={chatItemIndex} />;
-        },
-      };
-    }
-    if (chatItem.role === 'plan-report') {
-      return {
-        placement: 'start',
-        variant: 'borderless',
-        messageRender: () => {
-          return <PlanReportPanel chatItemIndex={chatItemIndex} />;
-        },
-      };
-    }
-    if (chatItem.role === 'wenshu' || chatItem.role === 'common' || chatItem.role === 'net') {
+    if (chatItem.role === 'common' || chatItem.role === 'net') {
       return {
         placement: 'start',
         variant: 'borderless',
