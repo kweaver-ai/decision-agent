@@ -18,7 +18,6 @@ env:
   embedding_model_dims: 768
 
 service:
-  ingressclassname: "class-443"
   agentMemory:
     type: ClusterIP
     port: 30790
@@ -80,6 +79,8 @@ probe:
 nodeSelector: { }
 
 depServices:
+  class-443:
+    ingressClass: class-443
   rds:
     type: MYSQL
     host: mariadb-mariadb-cluster.resource

@@ -11,3 +11,5 @@ Thumbs.db
 .vscode
 .idea
 from_intranet/
+tests/config/env.ini
+tests/data/data-agent/zhipu_search_tool_config.json
