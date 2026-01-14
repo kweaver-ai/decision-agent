@@ -1,0 +1,21 @@
+package datasetdbacc
+
+import (
+	"database/sql"
+
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/dbhelper2"
+)
+
+func (r *DatasetRepo) DeleteObj(tx *sql.Tx, datasetId string) (err error) {
+	sr := dbhelper2.TxSr(tx, r.logger)
+
+	_, err = sr.FromPo(&dapo.DsDatasetObjPo{}).
+		WhereEqual("f_dataset_id", datasetId).
+		Delete()
+	if err != nil {
+		return
+	}
+
+	return
+}
