@@ -1,14 +1,13 @@
 import { useRef, useState } from 'react';
 import { message, Select } from 'antd';
 import intl from 'react-intl-universal';
-import { Editor } from '@wangeditor/editor-for-react';
 import { useSize, useMicroWidgetProps } from '@/hooks';
 import TitleBox from '@/components/TitleBox';
 import IconFont from '@/components/IconFont';
 import { copyToBoard } from '@/utils/handle-function';
 import { FilterEnum } from '../types';
-import { defaultEditorConfig } from './utils';
 import './style.less';
+import Markdown from '@/components/Markdown';
 
 const ApiTitle = ({ url, description, method, onUpdateFilter }: any) => {
   const [showDes, setShowDes] = useState<boolean>(false);
@@ -29,12 +28,7 @@ const ApiTitle = ({ url, description, method, onUpdateFilter }: any) => {
         <>
           <div style={{ maxHeight: showDes ? 'none' : 132, overflow: 'hidden' }}>
             <div ref={desRef} className="dip-mb-32">
-              <Editor
-                className="ad-c-wang-editor dip-rich-text-wrap"
-                defaultConfig={{ ...defaultEditorConfig, readOnly: true }}
-                value={description}
-                mode="simple"
-              />
+              <Markdown value={description} readOnly />
             </div>
           </div>
 
