@@ -27,7 +27,7 @@
     "@vavt/rt-extension": "3.0.0",
     "ahooks": "3.7.8",
     "antd": "5.26.2",
-    "axios": "^0.26.1",
+    "axios": "1.13.2",
     "classnames": "2.5.1",
     "cropperjs": "1",
     "dayjs": "^1.11.13",
