@@ -1,9 +1,9 @@
-import { SuggestionProps, SenderProps } from '@ant-design/x';
-import { AgentAppType, FileItem } from '@/components/DipChat/interface';
+import type { SuggestionProps, SenderProps } from '@ant-design/x';
+import type { AgentAppType, FileItem } from '@/components/DipChat/interface';
 
 export type SuggestionItems = SuggestionProps['items'];
 
-export type AiInputMode = 'normal' | 'networking' | 'deep-search';
+export type AiInputMode = 'normal';
 
 export type AiInputValue = {
   fileList: FileItem[];

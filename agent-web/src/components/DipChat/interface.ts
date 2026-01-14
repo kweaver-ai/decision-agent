@@ -19,7 +19,7 @@ export type InterruptDataType = {
   tool_args: ToolArgsType[];
 };
 
-export type DipChatItemRole = 'user' | 'plan' | 'plan-report' | 'net' | 'common' | 'wenshu';
+export type DipChatItemRole = 'user' | 'net' | 'common';
 
 export type DipChatItemContentProgressType = {
   title?: string; // 工具的标题 大模型的回答没有标题
@@ -117,8 +117,6 @@ export type DipChatItem = {
   generating?: boolean; // 是否正在生成中
   // 用于控制聊天中断的情况
   interrupt?: InterruptDataType; // 中断数据的原始结构（和后端保持一致，中断后再次发起请求，使用这个结构，向接口传参）
-  // confirm 是role 为 plan 专用
-  confirm?: boolean; // 是否开启二次确认，对于plan来说，可用于判断是否确认剩余未执行的计划
   error?: string; // 储存对话过程接口报错信息
   fileList?: FileItem[]; // role 为user的时候 fileList可能会存在数据
   sourceData?: any; // 流式接口返回的原始数据
@@ -163,22 +161,11 @@ export type DipChatState = {
   aiInputValue: AiInputValue;
   streamGenerating: boolean; // 流式输出中,
   conversationCollapsed: boolean; // 会话列表是否折叠
-  botIds: Record<string, any>;
-  dipChatDisabled: boolean; // 超级助手是否处于禁用状态
-  deepThinkHidden: boolean; // 深度思考隐藏
-  deepThinkDisabledForNormal: boolean; // 深度思考禁用
-  deepThinkDisabledForNetworking: boolean; // 深度思考禁用
-  deepThinkSelectedForNormal: boolean; // 深度思考始终高亮
-  deepThinkSelectedForNetworking: boolean; // 深度思考始终高亮
   previewFile?: PreviewFileType; // 预览的文件
-  // 深度搜索模式专用state
-  executePlanItemIndex: number; // 正在执行的计划的id
-  expandedExploreItemId: string; // 展开的探索Item的ID
-  scrollIntoViewPlanId: string; // 滚动到可显示的计划id
   // 5.0.0.1新加
   agentDetails: any; // Agent的详情（接口的返回结果）
   agentAppType: AgentAppType;
-  agentAppKey: string; // Agent应用的key。超级助手是supper_assistant, 普通Agent是Agent的id
+  agentAppKey: string; // Agent应用的key。 默认是Agent的id
   debug: boolean; // 是否处于调试模式
   showDebuggerArea: boolean; // 是否显示调试区域
   tempFileList: FileItem[]; // 临时文件列表
@@ -242,7 +229,6 @@ export type DipChatContextType = {
     | {
         recoverConversation: boolean;
         chatList: DipChatItem[];
-        executePlanItemIndex: number;
         read_message_index: number;
         message_index: number;
       }
@@ -250,10 +236,8 @@ export type DipChatContextType = {
   >; // 获取会话详情
 };
 
-// super-assistant 超级助手场景应用
-// wenshu 问数场景应用
 // common 普通agent应用
-export type AgentAppType = 'super-assistant' | 'wenshu' | 'common';
+export type AgentAppType = 'common';
 
 export type DipChatProps = {
   agentId?: string;

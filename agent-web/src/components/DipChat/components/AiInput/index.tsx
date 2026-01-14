@@ -2,20 +2,18 @@ import styles from './index.module.less';
 import classNames from 'classnames';
 import { Attachments, Sender, Suggestion } from '@ant-design/x';
 import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
-import { AiInputProps, AiInputRef, AiInputValue } from './interface';
+import type { AiInputProps, AiInputRef, AiInputValue } from './interface';
 import _ from 'lodash';
-import { Col, GetRef, message, Row, Tooltip } from 'antd';
+import { Col, type GetRef, Row, Tooltip } from 'antd';
 import { CloseCircleFilled, LoadingOutlined } from '@ant-design/icons';
 import { useLatestState } from '@/hooks';
-import DipIcon from '@/components/DipIcon';
 import { FileTypeIcon, getFileExtension } from '@/utils/doc';
 import { TempFileTypeEnum } from '@/apis/intelli-search/type';
 import FileUploadBtn from '../FileUploadBtn';
 import { getFileUploadEnable, getTempAreaEnable } from '../../utils';
-// import { FileItem } from '@/components/DipChat/interface';
 import { checkFileStatus } from '@/apis/agent-app';
 import ResizeObserver from '@/components/ResizeObserver';
-import { FileItem } from '@/components/DipChat/interface';
+import type { FileItem } from '@/components/DipChat/interface';
 import intl from 'react-intl-universal';
 const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
   const {
@@ -35,13 +33,11 @@ const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
       selectedForNetworking: false,
     },
     agentConfig,
-    agentAppType,
     tempFileList = [],
     autoSize = { minRows: 3, maxRows: 6 },
     onPreviewFile,
     ...restProps
   } = props;
-  const [messageApi, contextHolder] = message.useMessage();
 
   const senderRef = React.useRef<GetRef<typeof Sender>>(null);
   const valueRef = useRef<AiInputValue>(value);
@@ -82,7 +78,7 @@ const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
       id: file.id,
       type: TempFileTypeEnum.Doc,
     }));
-    checkFileIndexStatus(reqParams, (process: number, fileStatusData: any) => {
+    checkFileIndexStatus(reqParams, (_process: number, fileStatusData: any) => {
       const newValue = _.cloneDeep(valueRef.current);
       newValue.fileList = newValue.fileList.map(file => {
         const target = fileStatusData.find((item: any) => item.id === file.id);
@@ -109,7 +105,7 @@ const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
     senderRef.current?.focus();
   };
 
-  const suggestionSelect = (selectValue: string) => {
+  const suggestionSelect = () => {
     const cursorPosition = (document.activeElement as HTMLInputElement)?.selectionStart || 0;
     const triggerCharIndex = currentSuggestion.current.triggerCharIndex;
     // 将输入值从触发字符索引到光标位置替换为空字符串
@@ -212,59 +208,7 @@ const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
     </Sender.Header>
   );
 
-  const getDeepThinkDisabled = () => {
-    if (!deepThink.hidden) {
-      if (disabled) {
-        return true;
-      }
-      return value.mode === 'networking' ? deepThink.disabledForNetworking : deepThink.disabledForNormal;
-    }
-    return false;
-  };
-
-  const options = [
-    {
-      label: intl.get('dipChat.deepSearch'),
-      icon: 'icon-dip-deep-thinking',
-      value: 'deep-search',
-      disabled: disabled,
-      visible: agentAppType === 'super-assistant',
-      active: value.mode === 'deep-search',
-    },
-    {
-      label: intl.get('dipChat.networking'),
-      icon: 'icon-dip-net',
-      value: 'networking',
-      disabled: disabled,
-      visible: agentAppType === 'super-assistant',
-      active: value.mode === 'networking',
-    },
-    {
-      label: intl.get('dipChat.deepThinking'),
-      icon: 'icon-dip-think',
-      value: 'deepThink',
-      disabled: getDeepThinkDisabled(),
-      disabledTip:
-        value.mode === 'networking'
-          ? intl.get('dipChat.networkingModeNotConfigured')
-          : intl.get('dipChat.normalModeNotConfigured'),
-      visible: agentAppType === 'super-assistant' && !deepThink.hidden,
-      active: value.deepThink,
-    },
-  ];
-
   const fileBtnDisabled = disabled || value.mode !== 'normal';
-
-  const renderFileBtnTip = () => {
-    if (fileBtnDisabled) {
-      if (value.mode === 'networking') {
-        return intl.get('dipChat.networkingModeNoFileUpload');
-      }
-      if (value.mode === 'deep-search') {
-        return intl.get('dipChat.deepSearchNoFileUpload');
-      }
-    }
-  };
 
   const renderFileBtn = () => {
     let show = false;
@@ -281,7 +225,6 @@ const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
         <FileUploadBtn
           agentConfig={agentConfig}
           disabled={fileBtnDisabled}
-          tip={renderFileBtnTip()}
           value={value.fileList}
           onChange={fileData => {
             const newValue = _.cloneDeep(value);
@@ -294,36 +237,8 @@ const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
     }
   };
 
-  const getModeBtnTip = (item: any) => {
-    if (item.disabled) {
-      return item.disabledTip ?? '';
-    }
-    if (item.active && item.value === 'deepThink') {
-      if (value.mode === 'normal' && deepThink.selectedForNormal) {
-        return intl.get('dipChat.rlmModelRequired');
-      }
-      if (value.mode === 'networking' && deepThink.selectedForNetworking) {
-        return intl.get('dipChat.rlmModelRequired');
-      }
-    }
-    return '';
-  };
-  const getModeBtnTipOpen = (item: any) => {
-    if (item.disabled) {
-      return undefined;
-    }
-    if (value.mode === 'normal' && deepThink.selectedForNormal) {
-      return undefined;
-    }
-    if (value.mode === 'networking' && deepThink.selectedForNetworking) {
-      return undefined;
-    }
-    return false;
-  };
-
   return (
     <div className={classNames(styles.container, 'ai-input')}>
-      {contextHolder}
       <Suggestion
         block
         items={items => items}
@@ -391,66 +306,7 @@ const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
                 const { SendButton, LoadingButton } = components;
                 return (
                   <div className="dip-flex-space-between">
-                    <span className="dip-flex-align-center">
-                      {renderFileBtn()}
-
-                      <div className={classNames(styles.menu)}>
-                        {options
-                          .filter((item: any) => item.visible)
-                          .map((item: any) => (
-                            <Tooltip key={item.value} title={getModeBtnTip(item)} open={getModeBtnTipOpen(item)}>
-                              <div
-                                className={classNames(styles.menuItem, 'dip-flex-align-center', {
-                                  [styles.active]: item.active,
-                                  [styles.disabled]: item.disabled,
-                                })}
-                                onClick={() => {
-                                  if (!item.disabled) {
-                                    const newValue = _.cloneDeep(value);
-                                    if (item.value === 'deepThink') {
-                                      newValue.deepThink = !newValue.deepThink;
-                                      if (newValue.mode === 'normal' && deepThink.selectedForNormal) {
-                                        newValue.deepThink = true;
-                                      }
-                                      if (newValue.mode === 'networking' && deepThink.selectedForNetworking) {
-                                        newValue.deepThink = true;
-                                      }
-                                      if (newValue.deepThink && newValue.mode === 'deep-search') {
-                                        newValue.mode = 'normal';
-                                      }
-                                    } else {
-                                      newValue.mode = newValue.mode === item.value ? 'normal' : item.value;
-                                      if (newValue.mode === 'deep-search') {
-                                        newValue.fileList = [];
-                                        newValue.deepThink = false;
-                                      }
-                                      if (newValue.mode === 'networking') {
-                                        newValue.fileList = [];
-                                        if (deepThink.disabledForNetworking) {
-                                          newValue.deepThink = false;
-                                        } else if (deepThink.selectedForNetworking) {
-                                          newValue.deepThink = true;
-                                        }
-                                      }
-                                      if (newValue.mode === 'normal') {
-                                        if (deepThink.disabledForNormal) {
-                                          newValue.deepThink = false;
-                                        } else if (deepThink.selectedForNormal) {
-                                          newValue.deepThink = true;
-                                        }
-                                      }
-                                    }
-                                    handleChange(newValue);
-                                  }
-                                }}
-                              >
-                                <DipIcon type={item.icon} />
-                                <span className="dip-ml-8">{item.label}</span>
-                              </div>
-                            </Tooltip>
-                          ))}
-                      </div>
-                    </span>
+                    <span className="dip-flex-align-center">{renderFileBtn()}</span>
                     <span>
                       {loading ? (
                         <Tooltip title="停止输出">

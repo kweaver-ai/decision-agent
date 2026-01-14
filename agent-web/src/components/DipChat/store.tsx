@@ -26,27 +26,13 @@ import { getParam, isJSONString } from '@/utils/handle-function';
 import ViewStore from './components/ViewStore';
 import {
   getCommentAgentConfig,
-  getSuperAssistantConfig,
   handleConversationGroup,
   handleResponseError,
   handleStreamingError,
   handleChatItemContent,
-  handleDeepSearch,
 } from './assistant';
-import {
-  getChatItemContent,
-  getChatItemRoleByMode,
-  getDeepSearchModePlanReport,
-  getPlanExecuteProcess,
-  getPlanExecuteResult,
-  getPlanList,
-  getPlanType,
-  getTempAreaEnable,
-  handleAgentConfigFileExt,
-} from '@/components/DipChat/utils';
+import { getChatItemContent, getTempAreaEnable, handleAgentConfigFileExt } from '@/components/DipChat/utils';
 import { getAgentsByPost, getAllFileExt } from '@/apis/agent-factory';
-import type { PlanItemType } from '@/components/DipChat/Chat/BubbleList/PlanPanel';
-import { nanoid } from 'nanoid';
 import AgentNotExist from '@/components/AgentNotExist';
 
 const initStoreData: DipChatState = {
@@ -57,30 +43,20 @@ const initStoreData: DipChatState = {
   conversationCollapsed: false,
   chatList: [],
   chatListAutoScroll: false,
-  executePlanItemIndex: -1,
   activeChatItemIndex: -1,
   aiInputValue: {
     inputValue: '',
     fileList: [],
-    mode: 'deep-search',
+    mode: 'normal',
     deepThink: false,
   },
   streamGenerating: false,
-  scrollIntoViewPlanId: '',
-  botIds: {},
-  dipChatDisabled: false,
-  deepThinkHidden: false,
-  deepThinkDisabledForNormal: true,
-  deepThinkDisabledForNetworking: true,
-  deepThinkSelectedForNormal: false,
-  deepThinkSelectedForNetworking: false,
-  expandedExploreItemId: '',
   agentDetails: {},
-  agentAppType: 'super-assistant',
+  agentAppType: 'common',
   debug: false,
   showDebuggerArea: false,
   tempFileList: [],
-  agentAppKey: 'super_assistant',
+  agentAppKey: '',
   activeProgressIndex: -1,
   showAgentInputParamsDrawer: false,
   agentInputParamForm: null,
@@ -135,7 +111,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
     agentAppType,
     agentDetails: agentDetails ? agentDetails : {},
     debug,
-    conversationCollapsed: agentAppType !== 'super-assistant',
+    conversationCollapsed: true,
   });
   const [allFileExtData, setAllFileExtData] = useState({});
   const [agentDetailsLoading, setAgentDetailsLoading] = useState(true);
@@ -208,12 +184,8 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
       });
       setAgentDetailsLoading(false);
     } else {
-      // 超级助手应用场景
-      if (agentAppType === 'super-assistant') {
-        initSuperAssistantBotId();
-      }
       // 普通Agent应用场景
-      if (agentAppType === 'common' || agentAppType === 'wenshu') {
+      if (agentAppType === 'common') {
         if (agentId && agentVersion) {
           initAgentConfig();
         }
@@ -224,16 +196,6 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
       microWidgetProps.changeCustomPathComponent?.(null);
     };
   }, [agentDetails, allFileExtData]);
-
-  /** 初始化超级助手应用场景 */
-  const initSuperAssistantBotId = async () => {
-    const res = await getSuperAssistantConfig();
-    setAgentDetailsLoading(false);
-    if (res) {
-      setDipChatStore(res);
-      defaultSendChatOnce();
-    }
-  };
 
   /** 初始化普通场景的Agent 普通场景的Agent对应超级助手的常规模式 */
   const initAgentConfig = async () => {
@@ -297,7 +259,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
       mounted.current = true;
       return;
     }
-    const { chatList, botIds, agentAppType, agentAppKey, activeConversationKey, toolAutoExpand } = getStore();
+    const { chatList, agentAppKey, activeConversationKey, toolAutoExpand } = getStore();
     let currentConversationId: string = '';
     newChatListRef.current = _.cloneDeep(chatList);
     const newSingleStreamResult = [];
@@ -314,39 +276,13 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
         if (!_.isEmpty(error)) {
           handleStreamingError(newChatListRef.current, response, error);
         } else if (message && _.isObject(message)) {
-          const {
-            agent_info: { agent_id },
-          } = message as any;
-          if (agentAppType === 'super-assistant') {
-            const botData = Object.keys(botIds).map(key => {
-              return {
-                mode: key,
-                ...botIds[key],
-              };
-            });
-            const targetBot = botData.find(bot => bot.botId === agent_id);
-            if (targetBot) {
-              const currentMode = targetBot.mode;
-              if (currentMode === 'deep-search') {
-                handleDeepSearch({
-                  newChatList: newChatListRef.current,
-                  response,
-                  getStore,
-                  setDipChatStore,
-                });
-              } else {
-                handleChatItemContent(newChatListRef.current, response, debug);
-              }
-            }
-          } else {
-            handleChatItemContent(newChatListRef.current, response, debug);
-          }
+          handleChatItemContent(newChatListRef.current, response, debug);
         }
       }
     }
     // 通用Agent 如果有调用工具的话，需要自动展开工具的侧边栏
     const toolAutoExpandUpdateObj: any = {};
-    if (toolAutoExpand && !debug && agentAppType !== 'super-assistant') {
+    if (toolAutoExpand && !debug) {
       if (newChatListRef.current.length > 1) {
         const activeChatItemIndex = newChatListRef.current.length - 1;
         const chatItem = newChatListRef.current[activeChatItemIndex];
@@ -431,11 +367,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
   };
 
   const getTempAreaEnabled = () => {
-    const { agentAppType, agentDetails } = getStore();
-    // 超级助手没有临时区
-    if (agentAppType === 'super-assistant') {
-      return false;
-    }
+    const { agentDetails } = getStore();
     const agentConfig = agentDetails.config;
     return getTempAreaEnable(agentConfig);
   };
@@ -480,8 +412,6 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
       activeChatItemIndex,
       activeConversationKey,
       aiInputValue,
-      botIds,
-      agentAppType,
       agentDetails,
       agentAppKey,
       tempFileList,
@@ -550,22 +480,13 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
       // 是否更新聊天列表
       if (params.chatList) {
         let chatItemIndex = -1;
-        if (activeChatItemIndex !== -1 && aiInputValue.mode === 'deep-search') {
+        if (activeChatItemIndex !== -1) {
           chatItemIndex = params.activeChatItemIndex ?? params.chatList.length - 1;
         }
         setDipChatStore({
           chatList: params.chatList,
           activeChatItemIndex: chatItemIndex,
         });
-      }
-
-      // 超级助手模式下深度思考参数处理
-      if (agentAppType === 'super-assistant' && aiInputValue.mode !== 'deep-search') {
-        if (aiInputValue.deepThink) {
-          params.body.chat_mode = 'deep_thinking';
-        } else {
-          params.body.chat_mode = 'normal';
-        }
       }
 
       const getReqBody = () => {
@@ -586,7 +507,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
             conversation_id,
             stream: true,
             inc_stream: true,
-            executor_version: agentAppType === 'super-assistant' ? 'v1' : 'v2',
+            executor_version: 'v2',
             chat_option: {
               is_need_history: true,
               is_need_doc_retrival_post_process: true,
@@ -601,20 +522,15 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
             conversation_id: params.body.conversation_id,
           };
         }
-        let agent_id = agentDetails?.id;
-        let agent_version = agentDetails?.version;
-        if (agentAppType === 'super-assistant') {
-          const botInfo = botIds[aiInputValue.mode];
-          agent_id = botInfo.botId;
-          agent_version = botInfo.version;
-        }
+        const agent_id = agentDetails?.id;
+        const agent_version = agentDetails?.version;
         return {
           ...params.body,
           agent_id,
           agent_version,
           stream: true,
           inc_stream: true,
-          executor_version: agentAppType === 'super-assistant' ? 'v1' : 'v2',
+          executor_version: 'v2',
           chat_option: {
             is_need_history: true,
             is_need_doc_retrival_post_process: true,
@@ -688,10 +604,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
   };
 
   const renderChildren = () => {
-    if (agentAppType === 'super-assistant') {
-      return !_.isEmpty(store.botIds) && children;
-    }
-    if ((agentAppType === 'common' || agentAppType === 'wenshu') && !agentDetailsLoading) {
+    if (agentAppType === 'common' && !agentDetailsLoading) {
       if (_.isEmpty(store.agentDetails)) {
         return <AgentNotExist />;
       }
@@ -709,10 +622,6 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
     setDipChatStore({
       activeChatItemIndex: -1,
       activeProgressIndex: -1,
-      // 关闭侧边栏的时候，如果是计划侧边栏，需要重置计划的所有state
-      executePlanItemIndex: -1,
-      expandedExploreItemId: '',
-      scrollIntoViewPlanId: '',
       toolAutoExpand: false,
     });
   };
@@ -735,31 +644,15 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
   const getConversationDetailsByKey: DipChatContextType['getConversationDetailsByKey'] = (key: string) =>
     // eslint-disable-next-line no-async-promise-executor
     new Promise(async resolve => {
-      const { agentAppKey, botIds } = getStore();
+      const { agentAppKey } = getStore();
       const res: any = await getConversationDetailsById(agentAppKey, key);
       if (res && res.Messages) {
         let recoverConversation = false;
-        let executePlanItemIndex = -1;
-        let data = res.Messages.map((item: any) => ({
+        const data = res.Messages.map((item: any) => ({
           ...item,
           content: isJSONString(item.content) ? JSON.parse(item.content) : {},
         }));
-        if (agentAppType === 'super-assistant') {
-          const botData = Object.keys(botIds).map(key => {
-            return {
-              mode: key,
-              ...botIds[key],
-            };
-          });
-          data = data.map((item: any) => {
-            const targetBot = botData.find(bot => bot.botId === item.agent_id);
-            return {
-              ...item,
-              mode: targetBot?.mode,
-            };
-          });
-        }
-        let newChatList: DipChatItem[] = [];
+        const newChatList: DipChatItem[] = [];
         console.log(data, '会话详情');
         data.forEach((item: any, index: number) => {
           if (item.origin === 'user') {
@@ -789,94 +682,18 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
             }
             const ext = isJSONString(item.ext) ? JSON.parse(item.ext) : {};
             const ask = _.get(ext, ['ask']);
-            switch (agentAppType) {
-              case 'super-assistant': {
-                const isLastItem = index === data.length - 1;
-                if (item.mode === 'normal' || item.mode === 'networking') {
-                  newChatList.push({
-                    key: item.id,
-                    role: getChatItemRoleByMode(item.mode, agentAppType),
-                    content: getChatItemContent(item),
-                  });
-                }
-                if (item.mode === 'deep-search') {
-                  const content = item.content;
-                  const ext = isJSONString(item.ext) ? JSON.parse(item.ext) : {};
-                  const ask = _.get(ext, ['ask']);
-                  const total_time = _.get(ext, ['total_time']);
-                  const total_tokens = _.get(ext, ['total_tokens']);
-                  console.log(content, 'deep-search-content');
-                  const other_variables = _.get(content, ['middle_answer', 'other_variables']);
-                  const final_answer = _.get(content, ['final_answer']);
-                  const plan_list = getPlanList(other_variables);
-                  const planListData = isJSONString(plan_list) ? JSON.parse(plan_list) : plan_list;
-                  if (Array.isArray(planListData)) {
-                    let hasUnFinishedPlan = false;
-                    const planList: PlanItemType[] = planListData.map((planItem: any, planIndex: number) => {
-                      const executeResult = getPlanExecuteResult(other_variables, planIndex) ?? '';
-                      const finished = !!executeResult;
-                      if (!finished) {
-                        hasUnFinishedPlan = true;
-                      }
-                      return {
-                        id: nanoid(),
-                        text: planItem,
-                        finished,
-                        loading: false,
-                        processData: getPlanExecuteProcess(other_variables, planIndex) ?? [],
-                        executeResult,
-                        searchType: getPlanType(other_variables, planIndex),
-                      };
-                    });
-
-                    // 当前中断处在什么操作，confirm_plan是确认剩余未执行的计划，task_result是确认计划执行的结果
-                    const argsItem = ask?.tool_args?.find((arg: any) => arg.key === 'field');
-                    if (isLastItem && argsItem?.value === 'task_result') {
-                      executePlanItemIndex = planList.findLastIndex(plan => plan.finished);
-                    }
-                    const tempArr: DipChatItem[] = [
-                      {
-                        key: item.id,
-                        role: 'plan',
-                        content: planList,
-                        interrupt: ask,
-                        confirm:
-                          isLastItem && hasUnFinishedPlan && argsItem?.value === 'confirm_plan' ? true : undefined, // 最后一条聊天项并且有未完成的计划
-                      },
-                    ];
-                    const report = getDeepSearchModePlanReport(final_answer);
-                    if (report) {
-                      tempArr.push({
-                        key: nanoid(),
-                        role: 'plan-report',
-                        content: {
-                          markdownText: report,
-                          totalTime: total_time,
-                          totalTokens: total_tokens,
-                        },
-                      });
-                    }
-                    newChatList = [...newChatList, ...tempArr];
-                  }
-                }
-                break;
-              }
-              default:
-                newChatList.push({
-                  key: item.id,
-                  role: 'common',
-                  content: getChatItemContent(item),
-                  interrupt: ask,
-                  error: item.status === 'failed' ? '{}' : undefined,
-                });
-                break;
-            }
+            newChatList.push({
+              key: item.id,
+              role: 'common',
+              content: getChatItemContent(item),
+              interrupt: ask,
+              error: item.status === 'failed' ? '{}' : undefined,
+            });
           }
         });
         resolve({
           recoverConversation,
           chatList: newChatList,
-          executePlanItemIndex,
           read_message_index: res.read_message_index,
           message_index: res.message_index,
         });
