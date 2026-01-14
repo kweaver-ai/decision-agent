@@ -18,7 +18,6 @@ from data_retrieval.tools.base_tools.text2dip_metric import Text2DIPMetricTool
 from data_retrieval.tools.base_tools.sql_helper import SQLHelperTool
 from data_retrieval.tools.base_tools.knowledge_item import KnowledgeItemTool
 from data_retrieval.tools.base_tools.get_metadata import GetMetadataTool
-from data_retrieval.tools.graph_tools.nl2ngql_qq import Text2nGQLTool
 
 # Sandbox + knowledge network tools (dict mappings)
 from data_retrieval.tools.sandbox_tools.toolkit import SANDBOX_TOOLS_MAPPING
@@ -28,7 +27,6 @@ from data_retrieval.tools.knowledge_network_tools import KNOWLEDGE_NETWORK_TOOLS
 # NOTE: keep keys stable; they are part of API contracts (FastAPI, future MCP).
 BASE_TOOLS_MAPPING: Dict[str, Type] = {
     "text2sql": Text2SQLTool,
-    "text2ngql": Text2nGQLTool,
     "text2metric": Text2DIPMetricTool,
     "sql_helper": SQLHelperTool,
     "knowledge_item": KnowledgeItemTool,

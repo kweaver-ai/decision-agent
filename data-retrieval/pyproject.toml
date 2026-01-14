@@ -49,7 +49,6 @@ dependencies = [
   "httpx==0.27.2",
   "jupyter-kernel-gateway==3.0.1",
   "sqlglot[rs]==26.21.0",
-  "nebula3-python==3.5.0",
   "rank-bm25==0.2.2",
   "circuitbreaker>=2.0.0"
 ]
