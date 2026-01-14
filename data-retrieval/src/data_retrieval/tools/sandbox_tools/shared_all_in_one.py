@@ -16,8 +16,8 @@ from data_retrieval.tools.base import construct_final_answer, async_construct_fi
 from data_retrieval.errors import SandboxError
 from data_retrieval.tools.base import api_tool_decorator
 
-from sandbox_env.sdk.shared_env import SharedEnvSandbox
-from sandbox_env.sdk.base import ServerSelectorType
+from sandbox_runtime.sdk.shared_env import SharedEnvSandbox
+from sandbox_runtime.sdk.base import ServerSelectorType
 from data_retrieval.settings import get_settings
 from data_retrieval.utils._common import run_blocking, is_valid_url
 

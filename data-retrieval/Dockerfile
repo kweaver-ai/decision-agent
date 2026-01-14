@@ -13,7 +13,7 @@ COPY ./ /data_retrieval
 WORKDIR /data_retrieval
 
 # 安装Python依赖（合并为单层减少镜像体积）
-RUN pip install --no-cache-dir ./tmp/sandbox_env-0.1.0-py3-none-any.whl && \
+RUN pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple kweaver-sandbox-runtime==0.1.1 && \
     pip install --no-cache-dir -i https://pypi.tuna.tsinghua.edu.cn/simple -r requirements.txt
 
 # 设置子目录为工作目录

@@ -1,4 +1,4 @@
-aiohttp==3.9.4
+aiohttp==3.12.0
 altair==5.4.0
 async-timeout==4.0.3
 commentjson==0.9.0
@@ -16,8 +16,8 @@ pandas==2.2.2
 plotly==5.23.0
 pyahocorasick==2.0.0
 pycryptodome==3.20.0
-pydantic==2.7.3
-pydantic-settings==2.1.0
+pydantic==2.11.5
+pydantic-settings==2.12.0
 pymysql==1.1.1
 redis==5.0.8
 Requests==2.32.3
@@ -28,6 +28,7 @@ urllib3==2.1.0
 vegafusion==1.6.9
 httpx==0.27.2
 fastapi>=0.115.0
+kweaver-sandbox-runtime==0.1.1
 matplotlib==3.10.1
 scipy==1.15.2
 statsmodels==0.14.4
