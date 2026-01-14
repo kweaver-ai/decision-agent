@@ -1,13 +1,13 @@
 import { Button, message, Tooltip } from 'antd';
 import DipIcon from '@/components/DipIcon';
-import React, { ReactNode, useEffect, useState } from 'react';
+import { type ReactNode, useEffect, useState } from 'react';
 import { getFileUploadEnable, getTempAreaConfigFromAgent, getTempAreaEnable } from '../../utils';
 import { createDir, getDocInfoByName, getEntryDocLibs } from '@/apis/efast';
 import { DocLibTypeEnum, getFileExtension, getLastDocId } from '@/utils/doc';
 import { apis } from '@aishu-tech/components/dist/dip-components.min';
 import _ from 'lodash';
 import { TempFileTypeEnum } from '@/apis/intelli-search/type';
-import { FileItem } from '../../interface';
+import type { FileItem } from '../../interface';
 
 export type FileUploadBtnProps = {
   agentConfig: any;
