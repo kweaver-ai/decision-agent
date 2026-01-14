@@ -17,15 +17,17 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/httphandler/releasehandler"
 
 	// "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/httphandler/spacehandler"
+	v3agentconfighandler "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/httphandler/agentconfighandler"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/httphandler/squarehandler"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/httphandler/testhandler"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/httphandler/tplhandler"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/httphandler/agentconfighandler"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/ihandlerportdriver"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capimiddleware"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/ihandlerportdriver"
+
 	"github.com/gin-gonic/gin"
+	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
 type httpServer struct {
@@ -173,6 +175,11 @@ func (s *httpServer) v3PubRouter(engine *gin.Engine) {
 		// 业务域
 		capimiddleware.HandleBizDomain(isUseDefaultBizDomain),
 		apimiddleware.VisitorTypeCheck(),
+
+		// 注入OpenTelemetry中间件
+		otelgin.Middleware(global.GConfig.OtelConfig.ServiceName),
+		// 注入logs和metrics
+		global.GDependencyInjector.Middleware(),
 	)
 
 	s.v3AgentConfigHandler.RegPubRouter(router)
@@ -207,6 +214,11 @@ func (s *httpServer) v3PriRouter(engine *gin.Engine) {
 		capimiddleware.RequestLoggerV2Middleware(),
 		capimiddleware.Language(),
 		capimiddleware.HandleBizDomain(isUseDefaultBizDomain),
+
+		// 注入OpenTelemetry中间件
+		otelgin.Middleware(global.GConfig.OtelConfig.ServiceName),
+		// 注入logs和metrics
+		global.GDependencyInjector.Middleware(),
 	)
 
 	s.releaseHandler.RegPriRouter(internalRouterG)

@@ -42,6 +42,9 @@ type Config struct {
     UniqueryConf      *UniqueryConf      `yaml:"uniquery"`
     // 流式响应配置
     StreamDiffFrequency int `yaml:"stream_diff_frequency"`
+
+    // OpenTelemetry 配置
+    OtelConfig *OtelConfig `yaml:"opentelemetry"`
 }
 
 func (c Config) IsDebug() bool {
@@ -57,9 +60,12 @@ func NewConfig() *Config {
     configOnce.Do(func() {
         configImpl = &Config{}
         configImpl.Config = cconf.BaseDefConfig()
+        configImpl.OtelConfig = &OtelConfig{}
 
         bys := cconf.GetConfigBys("agent-factory.yaml")
         cconf.LoadConfig(bys, configImpl.Config)
+
+        setOtelDefaults(configImpl.OtelConfig)
 
         secretBys := cconf.GetConfigBys("secret/agent-factory-secret.yaml")
         cconf.LoadConfig(secretBys, configImpl.Config)

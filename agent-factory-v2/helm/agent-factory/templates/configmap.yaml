@@ -73,6 +73,8 @@ data:
       {{- toYaml .Values.depServices.agentFactory | nindent 6 }}
     biz_domain:
       {{- toYaml .Values.depServices.bizDomain | nindent 6 }}
+    opentelemetry:
+      {{- toYaml .Values.opentelemetry | nindent 6 }}
   mq_config.yaml: |
     {{- toYaml .Values.depServices.mq | nindent 4 }}
 

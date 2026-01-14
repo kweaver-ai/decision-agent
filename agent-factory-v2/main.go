@@ -9,11 +9,31 @@ import (
 	"time"
 
 	_ "github.com/kweaver-ai/decision-agent/agent-factory/src/boot"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/server"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/server"
 )
 
 func main() {
+	// 初始化OpenTelemetry provider
+	otelProvider, err := opentelemetry.NewProvider(global.GConfig.OtelConfig)
+	if err != nil {
+		log.Fatalf("Failed to initialize OpenTelemetry provider: %v", err)
+	}
+	defer func() {
+		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+		defer cancel()
+		if err := otelProvider.Shutdown(ctx); err != nil {
+			log.Printf("Failed to shutdown OpenTelemetry provider: %v", err)
+		}
+	}()
+
+	// 初始化OpenTelemetry相关全局变量
+	if err := global.InitOpenTelemetry(otelProvider); err != nil {
+		log.Fatalf("Failed to initialize OpenTelemetry globals: %v", err)
+	}
+
 	s := server.NewHTTPServer()
 	s.Start()
 

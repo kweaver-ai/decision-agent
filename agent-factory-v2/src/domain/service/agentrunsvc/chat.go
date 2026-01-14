@@ -22,8 +22,11 @@ import (
 	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/session/sessionreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/logs"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 
+	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cenum"
@@ -32,7 +35,6 @@ import (
 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
-	"github.com/bytedance/sonic"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -58,11 +60,11 @@ const (
 func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan []byte, error) {
 	var err error
 
-	newCtx, _ := o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(newCtx, err)
-	o11y.SetAttributes(newCtx, attribute.String("agent_id", req.AgentID))
-	o11y.SetAttributes(newCtx, attribute.String("agent_run_id", req.AgentRunID))
-	o11y.SetAttributes(newCtx, attribute.String("user_id", req.UserID))
+	newCtx, _ := otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(newCtx, err)
+	otelTrace.SetAttributes(newCtx, attribute.String("agent_id", req.AgentID))
+	otelTrace.SetAttributes(newCtx, attribute.String("agent_run_id", req.AgentRunID))
+	otelTrace.SetAttributes(newCtx, attribute.String("user_id", req.UserID))
 
 	defer func() {
 		if err != nil {
@@ -75,6 +77,9 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	agent, err := agentSvc.agentFactory.GetAgent(newCtx, req.AgentID, req.AgentVersion)
 	if err != nil {
 		o11y.Error(newCtx, fmt.Sprintf("[chat] get agent failed: %v", err))
+		attributes := []attribute.KeyValue{}
+		attributes = append(attributes, attribute.String("error", err.Error()))
+		logs.LoggerFromContext(newCtx).Error(newCtx, "[chat] get agent failed: ", attributes...)
 		return nil, rest.NewHTTPError(newCtx, http.StatusInternalServerError,
 			apierr.AgentAPP_Agent_GetAgentFailed).WithErrorDetails(fmt.Sprintf("[chat] get agent failed: %v", err))
 	}
