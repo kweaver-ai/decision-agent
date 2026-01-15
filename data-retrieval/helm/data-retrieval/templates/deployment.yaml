@@ -214,42 +214,5 @@ spec:
                 configMapKeyRef:
                   name: {{ .Release.Name }}-yaml
                   key: USERMANAGEMENTPRIVATEPORT
-            - name: GRAPHDB_TYPE
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Release.Name }}-yaml
-                  key: GRAPHDB_TYPE
-            - name: GRAPHDB_HOST
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Release.Name }}-yaml
-                  key: GRAPHDB_HOST
-            - name: GRAPHDB_PORT
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Release.Name }}-yaml
-                  key: GRAPHDB_PORT
-            - name: GRAPHDB_USER
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Release.Name }}-yaml
-                  key: GRAPHDB_USER
-            - name: GRAPHDB_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Release.Name }}-yaml
-                  key: GRAPHDB_PASSWORD
-            {{- if eq .Values.depServices.graphDatabase.type "nebulaGraph" }}
-            - name: GRAPHDB_READ_ONLY_USER
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Release.Name }}-yaml
-                  key: GRAPHDB_READ_ONLY_USER
-            - name: GRAPHDB_READ_ONLY_PASSWORD
-              valueFrom:
-                configMapKeyRef:
-                  name: {{ .Release.Name }}-yaml
-                  key: GRAPHDB_READ_ONLY_PASSWORD
-            {{- end }}
             - name: RERANK_LLM_MODEL
               value: {{ .Values.appConfig.rerank_llm_model.name }}
