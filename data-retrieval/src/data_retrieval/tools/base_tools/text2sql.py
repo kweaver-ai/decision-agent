@@ -2,7 +2,6 @@
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2024-5-23
 import json
-import time
 import traceback
 from textwrap import dedent
 from typing import Any, Optional, Type, Dict, List
@@ -26,7 +25,6 @@ from data_retrieval.errors import Text2SQLException
 from data_retrieval.datasource.db_base import DataSource
 from data_retrieval.datasource.dip_dataview import DataView
 from data_retrieval.api.agent_retrieval import get_datasource_from_agent_retrieval_async
-from data_retrieval.utils.dip_services.base import ServiceType
 from data_retrieval.logs.logger import logger
 from data_retrieval.parsers.base import BaseJsonParser
 from data_retrieval.parsers.text2sql_parser import JsonText2SQLRuleBaseParser
@@ -41,7 +39,6 @@ from data_retrieval.utils.func import add_quotes_to_fields_with_data_self
 from data_retrieval.tools.base import LLMTool, _TOOL_MESSAGE_KEY
 from data_retrieval.tools.base import api_tool_decorator
 from data_retrieval.utils.llm import CustomChatOpenAI
-from data_retrieval.errors import ToolFatalError
 from data_retrieval.utils.model_types import ModelType4Prompt
 from data_retrieval.utils.sql_to_graph import build_graph
 from data_retrieval.api import VegaType
@@ -906,12 +903,6 @@ class Text2SQLTool(LLMTool):
         data_source_dict['base_url'] = base_url
         data_source_dict['vega_type'] = vega_type
 
-        # 如果指定了地址，则说明是外部的 DIP 服务，需要使用 OUTTER_DIP 类型
-        if base_url and vega_type == VegaType.DIP.value:
-            dip_type = ServiceType.OUTTER_DIP.value
-        else:
-            dip_type = ServiceType.DIP.value
-
         headers = {}
         userid = data_source_dict.get("user_id", "")
         account_type = data_source_dict.get("account_type", "user")
@@ -1404,5 +1395,3 @@ if __name__ == "__main__":
     #     llm=llm,
     #     background="电影表中的年份字段是年份，如果用户使用两位数的年份，要注意转换成四位数的年份。",
     # )
-    from data_retrieval.datasource.vega_datasource import VegaDataSource  # noqa: F811
-

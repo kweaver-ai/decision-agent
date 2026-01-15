@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @Author:  Lareina.guo@aishu.cn
 # @Date: 2024-6-7
-from typing import Any, List, Optional, Union
+from typing import Any, List, Optional
 import traceback
 
 from data_retrieval.api.vega import VegaServices
@@ -10,9 +10,6 @@ from data_retrieval.datasource.db_base import DataSource
 from data_retrieval.logs.logger import logger
 from data_retrieval.parsers.text2sql_parser import RuleBaseSource
 from data_retrieval.datasource.dimension_reduce import DimensionReduce
-from typing import Dict
-from data_retrieval.utils.dip_services import Builder
-from data_retrieval.utils.dip_services.base import ServiceType
 from data_retrieval.api.data_model import DataModelService
 
 from copy import deepcopy

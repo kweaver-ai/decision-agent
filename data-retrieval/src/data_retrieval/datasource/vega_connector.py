@@ -75,6 +75,7 @@ class Connection:
 
     def _init_datasource(self):
         if not self.af_datasource:
+            token = self.auth[2]
             self.view_list = self.view_list
 
             if not self.view_list:
