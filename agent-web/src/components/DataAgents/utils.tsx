@@ -27,7 +27,7 @@ export const getUserInfo = (agent: Agent) => {
       };
 };
 
-// Data Agent-操作菜单
+// Decision Agent-操作菜单
 const getDataAgentMenuItems = ({
   agent,
 }: {

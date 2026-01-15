@@ -36,9 +36,9 @@ spec:
                   "parent": "root",
                   "orderIndex": 1000,
                   "app": {
-                    "textZHCN": "Data Agent",
-                    "textZHTW": "Data Agent",
-                    "textENUS": "Data Agent",
+                    "textZHCN": "Decision Agent",
+                    "textZHTW": "Decision Agent",
+                    "textENUS": "Decision Agent",
                     "type": "group"
                   },
                   "subapp": {
@@ -85,9 +85,9 @@ spec:
                   "parent": "agent-web-all",
                   "orderIndex": 1000,
                   "app": {
-                    "textZHCN": "Data Agent",
-                    "textZHTW": "Data Agent",
-                    "textENUS": "Data Agent",
+                    "textZHCN": "Decision Agent",
+                    "textZHTW": "Decision Agent",
+                    "textENUS": "Decision Agent",
                     "icon": "//ip:port/agent-web/public/icons/data-agent.svg",
                     "type": "directory"
                   },
@@ -136,9 +136,9 @@ spec:
                   "parent": "agent-web-space",
                   "orderIndex": 1000,
                   "app": {
-                    "textZHCN": "Data Agent",
-                    "textZHTW": "Data Agent",
-                    "textENUS": "Data Agent",
+                    "textZHCN": "Decision Agent",
+                    "textZHTW": "Decision Agent",
+                    "textENUS": "Decision Agent",
                     "icon": "//ip:port/agent-web/public/icons/data-agent.svg",
                     "type": "directory"
                   },

@@ -176,13 +176,13 @@ const DataAgents = ({ mode: modeFromProps = ModeEnum.DataAgent }: DataAgentsProp
   const recentAgentSlideRef = useRef<CarouselRef | null>(null);
   const [recentAgentSlideIndex, setRecentAgentSlideIndex] = useState<number>(-1);
 
-  // 是否显示最近访问：只有Data Agent页面显示
+  // 是否显示最近访问：只有Decision Agent页面显示
   const showRecent = useMemo(() => mode === ModeEnum.DataAgent, [mode]);
 
   const pageContainerRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLElement>(null);
 
-  // 是否显示分类: Data Agent、模板、自定义空间、API Agent页面显示
+  // 是否显示分类: Decision Agent、模板、自定义空间、API Agent页面显示
   const showCategory = useMemo(
     () => [ModeEnum.DataAgent, ModeEnum.AllTemplate, ModeEnum.CustomSpace, ModeEnum.API].includes(mode),
     [mode]
@@ -286,7 +286,7 @@ const DataAgents = ({ mode: modeFromProps = ModeEnum.DataAgent }: DataAgentsProp
         setRecentAgents(entries);
         // 批量获取用户头像
         if ([ModeEnum.DataAgent, ModeEnum.AllTemplate].includes(mode)) {
-          // Data Agent、全部模板，要显示用户头像
+          // Decision Agent、全部模板，要显示用户头像
           const userIds = uniq(entries.map(agent => getUserInfo(agent).user_id).filter(userId => userId));
           addUserIds(userIds);
         }
@@ -1013,7 +1013,7 @@ const DataAgents = ({ mode: modeFromProps = ModeEnum.DataAgent }: DataAgentsProp
       // 2. 选中分类，或者 筛选：暂无数据
       // 3. 我的创建：暂无创建
       // 4. 我的模板 或者 全部模板：暂无模板
-      // 5. 广场：当前没有可用的 Data Agent \n 立即新建一个，开启您的智能体验。
+      // 5. 广场：当前没有可用的 Decision Agent \n 立即新建一个，开启您的智能体验。
       const emptyText = searchName ? (
         intl.get('dataAgent.searchResultIsEmpty')
       ) : selectedCategory?.category_id ||
