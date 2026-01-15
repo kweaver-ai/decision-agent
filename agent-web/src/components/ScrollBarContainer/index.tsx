@@ -1,5 +1,5 @@
-import React, { forwardRef, PropsWithChildren } from 'react';
-import { MacScrollbar, MacScrollbarProps } from 'mac-scrollbar';
+import { forwardRef, type PropsWithChildren } from 'react';
+import { MacScrollbar, type MacScrollbarProps } from 'mac-scrollbar';
 import 'mac-scrollbar/dist/mac-scrollbar.css';
 
 const ScrollBarContainer = forwardRef<any, PropsWithChildren<MacScrollbarProps>>(({ children, ...restProps }, ref) => {

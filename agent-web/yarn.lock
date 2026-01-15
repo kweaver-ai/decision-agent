@@ -1664,17 +1664,17 @@
     jiti "^2.6.1"
 
 "@rsbuild/plugin-less@^1.5.0":
-  version "1.5.0"
-  resolved "https://registry.npmmirror.com/@rsbuild/plugin-less/-/plugin-less-1.5.0.tgz#57c468498f902bf80917932545356ed4fccd8879"
-  integrity sha512-l+/J4/ZQl6UtCUqAaymo9H917ZJiqX8uxTYesG/xdyYJP2H3dn7fznjDP3d29eQhoY0wc3rcCvvjTYtpYG9OxQ==
+  version "1.5.1"
+  resolved "https://registry.npmmirror.com/@rsbuild/plugin-less/-/plugin-less-1.5.1.tgz#ee5de47892adbb9072f2d5b647cfd7a5a3bcd005"
+  integrity sha512-rDtx2RkWEAeKiXOMY6ULX8K/2t+FcL2uLdSm1eC/srdyzkn0uhtsxduUS0t4pqUm2Bb+c5GOh5O69SXyPPhmpg==
   dependencies:
     deepmerge "^4.3.1"
     reduce-configs "^1.1.1"
 
 "@rsbuild/plugin-node-polyfill@^1.4.2":
-  version "1.4.2"
-  resolved "https://registry.npmmirror.com/@rsbuild/plugin-node-polyfill/-/plugin-node-polyfill-1.4.2.tgz#e4450005febba3e0bdc77f91ccf6c855946b3d03"
-  integrity sha512-Vq1So9ZQa0nz9scgDfAa/t7bLPl7lYBQw6n3Qhd8hGUpPXacSjr0xLdJ2c20EDihOO4qJKN4zlomBYVjCHPy0A==
+  version "1.4.3"
+  resolved "https://registry.npmmirror.com/@rsbuild/plugin-node-polyfill/-/plugin-node-polyfill-1.4.3.tgz#efdf0b11a5c90eb0fca5e68e2b40c89e0904a3bb"
+  integrity sha512-VzJCgv5UxI0JZDC/UhAQ6Bzu3JaY7LPw18S6yrJFtvfF3Qn3SCLJILspeV1VolbfvfdfomhmdQkcFgliczLcSw==
   dependencies:
     assert "^2.1.0"
     browserify-zlib "^0.2.0"
@@ -1701,17 +1701,17 @@
     vm-browserify "^1.1.2"
 
 "@rsbuild/plugin-react@^1.1.0", "@rsbuild/plugin-react@^1.4.0":
-  version "1.4.2"
-  resolved "https://registry.npmmirror.com/@rsbuild/plugin-react/-/plugin-react-1.4.2.tgz#8d7083b86aebad63707006abd08797f1326b2701"
-  integrity sha512-2rJb5mOuqVof2aDq4SbB1E65+0n1vjhAADipC88jvZRNuTOulg79fh7R4tsCiBMI4VWq46gSpwekiK8G5bq6jg==
+  version "1.4.3"
+  resolved "https://registry.npmmirror.com/@rsbuild/plugin-react/-/plugin-react-1.4.3.tgz#b1e9f8af64314f12e233fd923267d575a4dbd032"
+  integrity sha512-Uf9FkKk2TqYDbsypXHgjdivPmEoYFvBTHJT5fPmjCf0Sc3lR2BHtlc0WMdZTCKUJ5jTxREygMs9LbnehX98L8g==
   dependencies:
-    "@rspack/plugin-react-refresh" "^1.5.2"
+    "@rspack/plugin-react-refresh" "^1.5.3"
     react-refresh "^0.18.0"
 
 "@rsbuild/plugin-svgr@^1.2.2":
-  version "1.2.3"
-  resolved "https://registry.npmmirror.com/@rsbuild/plugin-svgr/-/plugin-svgr-1.2.3.tgz#403fcd621011697b203706f1eaa9aaabe7cd7bba"
-  integrity sha512-ehcEqRGuWqjVkF96Ibz9czFGJJQptl3E2kBC11f9oq81d8xZAFQYqP3gC4Ns9B/G/YSVVlmykfrqAyf7XGoIAQ==
+  version "1.2.4"
+  resolved "https://registry.npmmirror.com/@rsbuild/plugin-svgr/-/plugin-svgr-1.2.4.tgz#610a954a596f9dc6eea6eeca7167691153a5a570"
+  integrity sha512-QkjwEaoJ4HrZP8TEW+7x7U9EJ1EhAuV8cmnZg3nQ0UwSJgEhQ7Dfbpv6fjnex5aKtZioh/xu0XXU+CE9DIH1xA==
   dependencies:
     "@rsbuild/plugin-react" "^1.1.0"
     "@svgr/core" "8.1.0"
@@ -1802,7 +1802,7 @@
   resolved "https://registry.npmmirror.com/@rspack/lite-tapable/-/lite-tapable-1.1.0.tgz#3cfdafeed01078e116bd4f191b684c8b484de425"
   integrity sha512-E2B0JhYFmVAwdDiG14+DW0Di4Ze4Jg10Pc4/lILUrd5DRCaklduz2OvJ5HYQ6G+hd+WTzqQb3QnDNfK4yvAFYw==
 
-"@rspack/plugin-react-refresh@^1.5.2":
+"@rspack/plugin-react-refresh@^1.5.3":
   version "1.6.0"
   resolved "https://registry.npmmirror.com/@rspack/plugin-react-refresh/-/plugin-react-refresh-1.6.0.tgz#839b70feb99d33857c3069cdfae16e3378a6db52"
   integrity sha512-OO53gkrte/Ty4iRXxxM6lkwPGxsSsupFKdrPFnjwFIYrPvFLjeolAl5cTx+FzO5hYygJiGnw7iEKTmD+ptxqDA==
@@ -4270,9 +4270,9 @@ d3-force@3:
     d3-timer "1 - 3"
 
 "d3-format@1 - 3", d3-format@3:
-  version "3.1.1"
-  resolved "https://registry.npmmirror.com/d3-format/-/d3-format-3.1.1.tgz#9703346c5c6743163c59cea3d9efd056120810cf"
-  integrity sha512-ryitBnaRbXQtgZ/gU50GSn6jQRwinSCQclpakXymvLd8ytTgE5bmSfgYcUxD7XYL34qHhFDyVk71qqKsfSyvmA==
+  version "3.1.2"
+  resolved "https://registry.npmmirror.com/d3-format/-/d3-format-3.1.2.tgz#01fdb46b58beb1f55b10b42ad70b6e344d5eb2ae"
+  integrity sha512-AJDdYOdnyRDV5b6ArilzCPPwc1ejkHcoyFarqlPqT7zRYjhavcT3uSrqcMvsgh2CgoPbK3RCwyHaVyxYcP2Arg==
 
 d3-geo@3:
   version "3.1.1"
@@ -7103,23 +7103,6 @@ mlly@^1.7.4:
     pkg-types "^1.3.1"
     ufo "^1.6.1"
 
-mobx-react-lite@4.1.0:
-  version "4.1.0"
-  resolved "https://registry.npmmirror.com/mobx-react-lite/-/mobx-react-lite-4.1.0.tgz#6a03ed2d94150848213cfebd7d172e123528a972"
-  integrity sha512-QEP10dpHHBeQNv1pks3WnHRCem2Zp636lq54M2nKO2Sarr13pL4u6diQXf65yzXUn0mkk18SyIDCm9UOJYTi1w==
-  dependencies:
-    use-sync-external-store "^1.4.0"
-
-mobx@6.13.7:
-  version "6.13.7"
-  resolved "https://registry.npmmirror.com/mobx/-/mobx-6.13.7.tgz#70e5dda7a45da947f773b3cd3b065dfe7c8a75de"
-  integrity sha512-aChaVU/DO5aRPmk1GX8L+whocagUUpBQqoPtJk+cm7UOXUk87J4PeWCh6nNmTTIfEhiR9DI/+FnA8dln/hTK7g==
-
-moment@^2.30.1:
-  version "2.30.1"
-  resolved "https://registry.npmmirror.com/moment/-/moment-2.30.1.tgz#f8c91c07b7a786e30c59926df530b4eac96974ae"
-  integrity sha512-uEmtNhbDOrWPFS+hdjFCBfy9f2YoyzRpwcl+DqpC6taX21FzsTLQVbMV/W7PzNSX6x/bhC1zA3c2UQ5NzH6how==
-
 moo-color@^1.0.2:
   version "1.0.3"
   resolved "https://registry.npmmirror.com/moo-color/-/moo-color-1.0.3.tgz#d56435f8359c8284d83ac58016df7427febece74"
@@ -9432,9 +9415,9 @@ uc.micro@^2.0.0, uc.micro@^2.1.0:
   integrity sha512-ARDJmphmdvUk6Glw7y9DQ2bFkKBHwQHLi2lsaH6PPmz/Ka9sFOBsBluozhDltWmnv9u/cF6Rt87znRTPV+yp/A==
 
 ufo@^1.6.1:
-  version "1.6.2"
-  resolved "https://registry.npmmirror.com/ufo/-/ufo-1.6.2.tgz#aaf4d46b98425b2fb5031abe8d65ca069e93e755"
-  integrity sha512-heMioaxBcG9+Znsda5Q8sQbWnLJSl98AFDXTO80wELWEzX3hordXsTdxrIfMQoO9IY1MEnoGoPjpoKpMj+Yx0Q==
+  version "1.6.3"
+  resolved "https://registry.npmmirror.com/ufo/-/ufo-1.6.3.tgz#799666e4e88c122a9659805e30b9dc071c3aed4f"
+  integrity sha512-yDJTmhydvl5lJzBmy/hyOAA0d+aqCBuwl818haVdYCRrWV84o7YyeVm4QlVHStqNrrJSTb6jKuFAVqAFsr+K3Q==
 
 unbox-primitive@^1.1.0:
   version "1.1.0"
@@ -9502,7 +9485,7 @@ url@^0.11.4:
     punycode "^1.4.1"
     qs "^6.12.3"
 
-use-sync-external-store@^1.0.0, use-sync-external-store@^1.4.0:
+use-sync-external-store@^1.0.0:
   version "1.6.0"
   resolved "https://registry.npmmirror.com/use-sync-external-store/-/use-sync-external-store-1.6.0.tgz#b174bfa65cb2b526732d9f2ac0a408027876f32d"
   integrity sha512-Pp6GSwGP/NrPIrxVFAIkOQeyw8lFenOHijQWkUTrDvrF4ALqylP2C/KCkeS9dpUM3KvYRQhna5vt7IL95+ZQ9w==
@@ -9677,9 +9660,9 @@ which-collection@^1.0.2:
     is-weakset "^2.0.3"
 
 which-typed-array@^1.1.16, which-typed-array@^1.1.19, which-typed-array@^1.1.2:
-  version "1.1.19"
-  resolved "https://registry.npmmirror.com/which-typed-array/-/which-typed-array-1.1.19.tgz#df03842e870b6b88e117524a4b364b6fc689f956"
-  integrity sha512-rEvr90Bck4WZt9HHFC4DJMsjvu7x+r6bImz0/BrbWb7A2djJ8hnZMrWnHo9F8ssv0OMErasDhftrfROTyqSDrw==
+  version "1.1.20"
+  resolved "https://registry.npmmirror.com/which-typed-array/-/which-typed-array-1.1.20.tgz#3fdb7adfafe0ea69157b1509f3a1cd892bd1d122"
+  integrity sha512-LYfpUkmqwl0h9A2HL09Mms427Q1RZWuOHsukfVcKRq9q95iQxdw0ix1JQrqbcDR9PH1QDwf5Qo8OZb5lksZ8Xg==
   dependencies:
     available-typed-arrays "^1.0.7"
     call-bind "^1.0.8"

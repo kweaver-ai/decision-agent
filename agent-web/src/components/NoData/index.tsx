@@ -1,4 +1,4 @@
-import { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import emptyIcon from '@/assets/images/empty.png';
 
 type NoDataProps = {
