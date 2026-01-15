@@ -15,13 +15,6 @@ class GetSchemaRequest(BaseModel):
     database: str = Field(..., description="数据库名称", example="test_db")
 
 
-class CheckRequest(BaseModel):
-    """检查工具请求"""
-
-    value: Any = Field(..., description="检查值", example="test_value")
-    field: str = Field(..., description="检查字段", example="test_field")
-
-
 class DocQARequest(BaseModel):
     """文档问答请求"""
 

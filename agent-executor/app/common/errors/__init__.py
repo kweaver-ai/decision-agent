@@ -23,12 +23,6 @@ from app.common.errors.custom_errors_pkg import (
 )
 from app.common.errors.external_errors import ExternalServiceError
 from app.common.errors.file_errors import AgentExecutor_File_ParseError
-from app.common.errors.function_errors import (
-    AgentExecutor_Function_CodeError,
-    AgentExecutor_Function_InputError,
-    AgentExecutor_Function_RunError,
-    AgentExecutor_Function_OutputError,
-)
 
 # 导入新的异常类（推荐使用）
 from app.common.exceptions import (
@@ -51,10 +45,6 @@ __all__ = [
     "ConversationRunningError",
     "ExternalServiceError",
     "AgentExecutor_File_ParseError",
-    "AgentExecutor_Function_CodeError",
-    "AgentExecutor_Function_InputError",
-    "AgentExecutor_Function_RunError",
-    "AgentExecutor_Function_OutputError",
     # 异常类
     "BaseException",
     "CodeException",

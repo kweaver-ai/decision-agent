@@ -25,9 +25,9 @@ requires-python = ">=3.10"
     "structlog==24.1.0",
     "tika==3.1.0",
     "uvicorn==0.38.0",
-    "mq-sdk@git+ssh://devops.aishu.cn:22/AISHUDevOps/One-Architecture/_git/proton-mq-python@1.7.4",
-    "telemetrysdk-python@git+ssh://devops.aishu.cn:22/AISHUDevOps/One-Architecture/_git/TelemetrySDK-Python@2.6.1",
-    "dolphinlanguagesdk@git+ssh://devops.aishu.cn:22/AISHUDevOps/DIP/_git/dolphin-language@release/0.3.7",
+    "mq-sdk@git+https://github.com/kweaver-ai/proton-mq-sdk-py",
+    "tlogging",
+    "kweaver-dolphin",
 ]
 
 
@@ -54,4 +54,7 @@ test = [
 [tool.uv]
 index-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 
+
 [tool.uv.sources]
+mq-sdk = { git = "https://github.com/kweaver-ai/proton-mq-sdk-py", rev = "release/1.9.0" }
+tlogging = { git = "https://github.com/kweaver-ai/TelemetrySDK-Python" }

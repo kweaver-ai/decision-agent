@@ -41,18 +41,8 @@ WORKDIR /app
 # 从构建阶段复制已构建的二进制
 COPY --from=builder /build/dist/agent-executor /app/agent-executor
 
-# 从构建阶段复制mq-sdk-lib 依赖的 so 文件
-COPY --from=builder /build/mq-sdk-lib /app/mq-sdk-lib
 
 RUN cd /app; \
-    if [ "$ARCH_TYPE" = "amd64" ]; then \
-        mv /app/mq-sdk-lib/x86/* /usr/lib/; \
-    elif [ "$ARCH_TYPE" = "arm64" ]; then \
-        mv /app/mq-sdk-lib/arm/* /usr/lib/; \
-    else \
-        echo "Unsupported architecture: $ARCH_TYPE"; exit 1; \
-    fi; \
-    rm -rf /app/mq-sdk-lib; \
     chown -R $UID:$GID /usr/lib/; \
     useradd -m -r -s /bin/bash aishu; \
     chown -R aishu:aishu /app;

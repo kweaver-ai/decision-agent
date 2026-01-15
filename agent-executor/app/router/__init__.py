@@ -1,15 +1,17 @@
 # -*- coding:utf-8 -*-
 import asyncio
 import os
-from typing import Any
+from typing import Any, Callable
+
 from fastapi import FastAPI, Request, Response
 from fastapi.openapi.utils import get_openapi
-
 from limiter import Limiter
+from opentelemetry.instrumentation.aiohttp_client import AioHttpClientInstrumentor
 from pydantic import BaseModel, Field
 
 from app.common.config import Config, observability_config, server_info
-
+from app.common.stand_log import StandLogger
+from app.common.struct_logger import struct_logger
 from app.logic.sensitive_word_detection import build_sensitive_detector
 from app.utils.observability.observability import (
     init_observability,
@@ -17,18 +19,8 @@ from app.utils.observability.observability import (
 )
 from app.utils.observability.observability_log import get_logger as o11y_logger
 
-# from data_migrations.init.manage_built_in_agent_and_tool import (
-#     main as init_built_in_agent_and_tool,
-# )
-from opentelemetry.instrumentation.aiohttp_client import AioHttpClientInstrumentor
-
-from app.common.stand_log import StandLogger
-from app.common.struct_logger import struct_logger
-from typing import Callable
-
 # 导入中间件
 from .middleware_pkg import before_request, o11y_trace, log_requests
-
 
 app = FastAPI()
 
@@ -70,47 +62,32 @@ async def ready():
 
 @app.on_event("startup")
 async def startup_event():
-    # 在应用启动时调用
-    # load_executors()
-    # start_scheduler_async()
     build_sensitive_detector()
-    # 初始化可观测模块
     init_observability(server_info, observability_config)
-    # 启用 aiohttp 客户端自动注入
     AioHttpClientInstrumentor().instrument()
-
-    # if not Config.is_debug_mode() and not Config.LOCAL_DEV:
-    #     init_built_in_agent_and_tool()
 
 
 @app.on_event("shutdown")
 async def shutdown_event():
-    # 在应用关闭时调用
-    # 关闭可观测模块
     shutdown_observability()
 
 
-# 路由
+# 导入路由
 from app.router.agent_controller_pkg.common_v2 import router_v2 as agent_router_v2
-
-# 导入 v2 路由模块以确保路由被注册
 from app.router.agent_controller_pkg import (
     run_agent_v2,
     run_agent_debug_v2,
     agent_cache_manage,
 )
-
-# 异常处理
 from app.router.exception_handler import register_exception_handlers
-
-register_exception_handlers(app)
-from app.router.function_controller import router as function_router
 from app.router.tool_controller import router as tool_router
 
+# 注册异常处理器
+register_exception_handlers(app)
 
+# 注册路由
 app.include_router(agent_router_v2)
 app.include_router(tool_router)
-app.include_router(function_router)
 
 
 class ErrorResponse(BaseModel):

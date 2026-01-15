@@ -8,7 +8,7 @@ import traceback
 from concurrent.futures import ThreadPoolExecutor
 from enum import Enum
 from gettext import gettext as _l
-from typing import Callable, Tuple
+from typing import Any, Callable, Dict, Tuple
 from urllib.parse import urlparse
 
 import pandas as pd
@@ -17,14 +17,13 @@ from pandas import DataFrame
 from pydantic import BaseModel
 
 from app.domain.enum.common.user_account_header_key import get_user_account_id
-
 from DolphinLanguageSDK.var.var_output import VarOutput
 
 
 cur_pwd = os.getcwd()
 
 
-def GetCallerInfo() -> Tuple[str, int]:
+def get_caller_info() -> Tuple[str, int]:
     """获取调用者文件项目相对位置以及行号"""
     caller_frame = inspect.stack()[2]
     caller_filename = caller_frame.filename.split(cur_pwd)[-1][1:]
@@ -32,7 +31,8 @@ def GetCallerInfo() -> Tuple[str, int]:
     return caller_filename, caller_lineno
 
 
-def IsInPod() -> bool:
+def is_in_pod() -> bool:
+    """检查是否在 Kubernetes Pod 中运行"""
     return (
         "KUBERNETES_SERVICE_HOST" in os.environ
         and "KUBERNETES_SERVICE_PORT" in os.environ
@@ -40,48 +40,48 @@ def IsInPod() -> bool:
 
 
 # 触发熔断的失败次数
-failureThreshold = 10
+_failure_threshold = 10
 
 
-def GetFailureThreshold() -> int:
-    return failureThreshold
+def get_failure_threshold() -> int:
+    return _failure_threshold
 
 
-def SetFailureThreshold(time: int):
-    global failureThreshold
-    failureThreshold = time
+def set_failure_threshold(threshold: int) -> None:
+    global _failure_threshold
+    _failure_threshold = threshold
 
 
 # 熔断触发后的再次重试间隔，单位：秒
-recoveryTimeout = 5
+_recovery_timeout = 5
 
 
-def GetRecoveryTimeout() -> int:
-    return recoveryTimeout
+def get_recovery_timeout() -> int:
+    return _recovery_timeout
 
 
-def SetRecoveryTimeout(time: int):
-    global recoveryTimeout
-    recoveryTimeout = time
+def set_recovery_timeout(timeout: int) -> None:
+    global _recovery_timeout
+    _recovery_timeout = timeout
 
 
 _l = gettext.gettext
 
 
-def set_lang(lang):
+def set_lang(lang: Callable[..., str]) -> None:
     global _l
     _l = lang
 
 
-def get_lang():
+def get_lang() -> Callable[..., str]:
     return _l
 
 
-def GetRequestLangFunc(request: Request) -> Callable[..., str]:
-    return GetRequestLangFromHeader(request.headers)
+def get_request_lang_func(request: Request) -> Callable[..., str]:
+    return get_request_lang_from_header(request.headers)
 
 
-def GetRequestLangFromHeader(header: dict) -> Callable[..., str]:
+def get_request_lang_from_header(header: Dict[str, str]) -> Callable[..., str]:
     lang = header.get("x-language", "en")
 
     if lang.startswith("zh"):
@@ -92,20 +92,19 @@ def GetRequestLangFromHeader(header: dict) -> Callable[..., str]:
     return gettext.gettext
 
 
-def GetUnknowError(
-    fileName: str, funcName: str, details: str, _l: Callable[..., str]
-) -> dict:
-    errorRes = {
-        "description": _l("Unknown error occurred!"),
-        "solution": _l("Please check the service."),
+def get_unknown_error(
+    file_name: str, func_name: str, details: str, lang_func: Callable[..., str]
+) -> Dict[str, str]:
+    return {
+        "description": lang_func("Unknown error occurred!"),
+        "solution": lang_func("Please check the service."),
         "error_code": "AgentExecutor.InternalServerError.UnknownError",
         "error_details": details,
         "error_link": "",
     }
-    return errorRes
 
 
-def ConvertToCamelCase(string: str):
+def convert_to_camel_case(string: str) -> str | None:
     """字符串的下划线格式，小驼峰格式转为大驼峰模式，不支持非下划线全小写(helloworld)转大驼峰"""
     if not isinstance(string, str):
         return None
@@ -120,7 +119,8 @@ def ConvertToCamelCase(string: str):
     return "".join(capitalized_words)
 
 
-def GetUserIDByRequest(request: Request) -> str:
+def get_user_id_by_request(request: Request) -> str:
+    """从请求中获取用户ID"""
     return get_user_account_id(request.headers) or ""
 
 
@@ -128,7 +128,6 @@ def convert_to_valid_class_name(name: str) -> str:
     """将字符串转换为合法的类名"""
     if not name:
         return ""
-    # 将特殊字符替换为下划线
     name = "".join(c if c.isalnum() else "_" for c in name)
     if name[0].isdigit():
         name = "_" + name
@@ -139,42 +138,36 @@ def truncate_by_byte_len(text: str, length: int = 65535) -> str:
     """
     将文本按照指定字节长度进行截断
     Args:
-        text: str, 待截断的文本
-        length: int, 截断的字节长度，默认值65535是数据库text类型的长度
+        text: 待截断的文本
+        length: 截断的字节长度，默认值65535是数据库text类型的长度
     """
     char_length = min(len(text), length)
-    # 计算截断的位置
     while len(text[:char_length].encode("utf-8")) > length:
         char_length -= 1
     return text[:char_length]
 
 
-def create_subclass(base_class, class_name, class_attributes):
+def create_subclass(base_class: type, class_name: str, class_attributes: Dict[str, Any]) -> type:
     """使用type动态创建子类"""
-    return type(
-        class_name,  # 新子类的名称
-        (base_class,),  # 继承的父类元组
-        class_attributes,  # 子类属性和方法
-    )
+    return type(class_name, (base_class,), class_attributes)
 
 
-def is_valid_url(url):
+def is_valid_url(url: str) -> bool:
     """判断是否为有效的URL地址"""
     try:
         result = urlparse(url)
         return all([result.scheme, result.netloc])
-    except:
+    except (ValueError, AttributeError):
         return False
 
 
-def func_judgment(func: object):
+def func_judgment(func: object) -> Tuple[bool, bool]:
     """
-    Determine whether a function is streamed back and whether it is asynchronous.
+    判断函数是否流式返回以及是否异步
     Args:
-        func: object, Function object.
+        func: 函数对象
     Returns:
-        asynchronous: Bool
-        stream: Bool
+        (asynchronous, stream): 异步标志和流式标志
     """
     asynchronous = False
     stream = False
@@ -191,72 +184,72 @@ def func_judgment(func: object):
     return asynchronous, stream
 
 
-def sync_wrapper(async_func, *args, **kwargs):
+def sync_wrapper(async_func: Callable, *args: Any, **kwargs: Any) -> Any:
     """在同步函数中调用异步函数"""
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
-    result = loop.run_until_complete(async_func(*args, **kwargs))
-    loop.close()
-    return result
+    try:
+        result = loop.run_until_complete(async_func(*args, **kwargs))
+        return result
+    finally:
+        loop.close()
 
 
-def run_async_in_thread(async_func, *args, **kwargs):
+def run_async_in_thread(async_func: Callable, *args: Any, **kwargs: Any) -> Any:
     """在单独的线程中运行异步函数"""
     with ThreadPoolExecutor() as executor:
         future = executor.submit(sync_wrapper, async_func, *args, **kwargs)
         return future.result()
 
 
-def make_json_serializable(o):
+def make_json_serializable(obj: Any) -> Any:
     """将不可json序列化的对象转为可json序列化的对象"""
-    if isinstance(o, list):
-        for i, item in enumerate(o):
-            o[i] = make_json_serializable(item)
-    elif isinstance(o, tuple):
-        o = make_json_serializable(list(o))
-    elif isinstance(o, dict):
-        for k, v in o.items():
+    if isinstance(obj, list):
+        return [make_json_serializable(item) for item in obj]
+    elif isinstance(obj, tuple):
+        return make_json_serializable(list(obj))
+    elif isinstance(obj, dict):
+        result = {}
+        for k, v in obj.items():
             if k == "embedding" and isinstance(v, list):
-                o[k] = None
-                continue
-            o[k] = make_json_serializable(v)
-    elif isinstance(o, BaseModel):
-        o = o.model_dump()
-        o = make_json_serializable(o)
-    elif isinstance(o, Enum):
-        o = o.value
-        o = make_json_serializable(o)
-    elif isinstance(o, DataFrame):
-        o = o.to_dict(orient="records")
-        o = make_json_serializable(o)
-    elif isinstance(o, float):
-        if pd.isna(o):
-            o = None
-    return o
+                result[k] = None
+            else:
+                result[k] = make_json_serializable(v)
+        return result
+    elif isinstance(obj, BaseModel):
+        return make_json_serializable(obj.model_dump())
+    elif isinstance(obj, Enum):
+        return make_json_serializable(obj.value)
+    elif isinstance(obj, DataFrame):
+        return make_json_serializable(obj.to_dict(orient="records"))
+    elif isinstance(obj, float) and pd.isna(obj):
+        return None
+    return obj
 
 
-async def get_format_error_info(header: dict, exc: Exception):
-    tr = GetRequestLangFromHeader(header)
+async def get_format_error_info(header: Dict[str, str], exc: Exception) -> Dict[str, str]:
+    """获取格式化的错误信息"""
+    lang_func = get_request_lang_from_header(header)
     if hasattr(exc, "FormatHttpError"):
-        return exc.FormatHttpError(tr)
+        return exc.FormatHttpError(lang_func)
+
+    traceback_list = traceback.extract_tb(sys.exc_info()[2])
+    if traceback_list:
+        file_name, line_number, func_name, line_text = traceback_list[-1]
+        file_name = os.path.basename(file_name).split(".")[0]
     else:
-        traceback_list = traceback.extract_tb(sys.exc_info()[2])
-        # 异常抛出位置
-        if traceback_list:
-            file_name, line_number, func_name, line_text = traceback_list[-1]
-            file_name = os.path.basename(file_name).split(".")[0]
-        else:
-            file_name = "common"
-            func_name = "common"
-        return GetUnknowError(file_name, func_name, repr(exc), tr)
+        file_name = "common"
+        func_name = "common"
+    return get_unknown_error(file_name, func_name, repr(exc), lang_func)
 
 
-def is_dolphin_var(var) -> bool:
+def is_dolphin_var(var: Any) -> bool:
+    """检查是否为 Dolphin 变量"""
     return VarOutput.is_serialized_dict(var)
-    # return isinstance(var, dict) and var.get("__type__") == "VarOutput"
 
 
-def get_dolphin_var_value(var):
+def get_dolphin_var_value(var: Any) -> Any:
+    """获取 Dolphin 变量的值"""
     if is_dolphin_var(var):
         if isinstance(var.get("value"), list):
             return [get_dolphin_var_value(item) for item in var.get("value")]
@@ -265,18 +258,18 @@ def get_dolphin_var_value(var):
     return var
 
 
-def get_dolphin_var_final_value(var):
+def get_dolphin_var_final_value(var: Any) -> Any:
+    """获取 Dolphin 变量的最终值"""
     if is_dolphin_var(var):
-        if var.get("source_type") == "EXPLORE":
-            if isinstance(var.get("value"), list) and len(var.get("value")) > 0:
-                return get_dolphin_var_final_value(var.get("value")[-1]["answer"])
-            elif isinstance(var.get("value"), dict):
-                return get_dolphin_var_final_value(var.get("value")["answer"])
-
-        elif var.get("source_type") == "LLM":
-            return var.get("value").get("answer")
-
+        source_type = var.get("source_type")
+        if source_type == "EXPLORE":
+            value = var.get("value")
+            if isinstance(value, list) and len(value) > 0:
+                return get_dolphin_var_final_value(value[-1]["answer"])
+            elif isinstance(value, dict):
+                return get_dolphin_var_final_value(value["answer"])
+        elif source_type == "LLM":
+            return var.get("value", {}).get("answer")
         else:
             return get_dolphin_var_value(var)
-
     return var
