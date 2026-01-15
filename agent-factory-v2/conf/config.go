@@ -45,6 +45,9 @@ type Config struct {
 
     // OpenTelemetry 配置
     OtelConfig *OtelConfig `yaml:"opentelemetry"`
+
+    // 是否保留老的APP路径，默认false
+    KeepLegacyAppPath bool `yaml:"keep_legacy_app_path"`
 }
 
 func (c Config) IsDebug() bool {
@@ -64,6 +67,8 @@ func NewConfig() *Config {
 
         bys := cconf.GetConfigBys("agent-factory.yaml")
         cconf.LoadConfig(bys, configImpl.Config)
+        // 同时加载扩展字段（AgentFactoryConf等）
+        cconf.LoadConfig(bys, configImpl)
 
         setOtelDefaults(configImpl.OtelConfig)
 

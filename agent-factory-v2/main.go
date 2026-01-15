@@ -12,7 +12,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/server"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/server/httpserver"
 )
 
 func main() {
@@ -34,7 +34,7 @@ func main() {
 		log.Fatalf("Failed to initialize OpenTelemetry globals: %v", err)
 	}
 
-	s := server.NewHTTPServer()
+	s := httpserver.NewHTTPServer()
 	s.Start()
 
 	// 创建一个通道来接收操作系统信号

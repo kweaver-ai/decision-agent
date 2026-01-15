@@ -42,6 +42,8 @@ service:
   businessTimeOffset: 0
   # APP 配置
   streamDiffFrequency: 5
+  # 是否保留老的APP路径
+  keep_legacy_app_path: false
   sessionAffinity: ClientIP
   sessionAffinityConfig:
     clientIP:

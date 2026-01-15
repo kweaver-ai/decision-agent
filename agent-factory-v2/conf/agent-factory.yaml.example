@@ -1,4 +1,7 @@
 
+# 是否保留老的APP路径
+keep_legacy_app_path: false
+
 # 这个文件只有本地调试用，打包是打不进去的，
 db:
   user_name: anyshare

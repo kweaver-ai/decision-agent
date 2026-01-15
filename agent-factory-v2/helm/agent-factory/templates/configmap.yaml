@@ -51,6 +51,7 @@ data:
       host: "0.0.0.0"
       port: {{ .Values.service.port }}
       logger_level: {{ .Values.service.loggerLevel }}
+      keep_legacy_app_path: {{ .Values.service.keep_legacy_app_path }}
     hydra:
       user-mgnt:
         host: {{ .Values.depServices.hydra.userMgnt.host }}
