@@ -249,7 +249,6 @@ class VegaDataSource(DataSource):
     ):
         super().__init__(**kwargs)
 
-        # self.token = get_authorization(self.af_ip, self.user, self.password)
         if self.token:
             if not self.token.startswith("Bearer "):
                 self.token = f"Bearer {self.token}"

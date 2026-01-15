@@ -83,16 +83,6 @@ class TestDataModelAPI:
         assert DataModelService is not None
 
 
-class TestAuthAPI:
-    """测试认证 API"""
-    
-    def test_auth_import(self):
-        """测试认证模块导入"""
-        from data_retrieval.api import auth
-        
-        assert auth is not None
-
-
 def run_tests():
     """运行所有测试"""
     print("=" * 60)
@@ -104,7 +94,6 @@ def run_tests():
         TestAPIErrors,
         TestAgentRetrievalService,
         TestDataModelAPI,
-        TestAuthAPI,
     ]
     
     total = 0

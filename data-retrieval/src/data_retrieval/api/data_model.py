@@ -279,12 +279,6 @@ class DataModelService:
 
 if __name__ == '__main__':
     def main():
-        # 示例用法
         DataModelService()
-        # 这里需要根据实际情况获取认证信息
-        # token = get_authorization("https://localhost:13020", "user", "password")
-        # headers = {"Authorization": f"Bearer {token}"}
-        # res = service.get_metric_models_detail("metric_id_1,metric_id_2", headers)
-        # print(res)
 
     main()

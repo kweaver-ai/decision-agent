@@ -41,7 +41,6 @@ from data_retrieval.utils.func import add_quotes_to_fields_with_data_self
 from data_retrieval.tools.base import LLMTool, _TOOL_MESSAGE_KEY
 from data_retrieval.tools.base import api_tool_decorator
 from data_retrieval.utils.llm import CustomChatOpenAI
-from data_retrieval.api.auth import get_authorization
 from data_retrieval.errors import ToolFatalError
 from data_retrieval.utils.model_types import ModelType4Prompt
 from data_retrieval.utils.sql_to_graph import build_graph
@@ -904,32 +903,6 @@ class Text2SQLTool(LLMTool):
         base_url = data_source_dict.get('base_url', auth_url)
         token = data_source_dict.get('token', '')
 
-        # 如果 base_url 不为空 或 token 为空，则获取 token,
-        # 如果 base_url 为空，则说明调用的是内部的 vega 服务，不需要获取 token
-        # 只有 AF 才去获取
-        if base_url and (not token or token == "''") and vega_type == VegaType.AF.value:
-            user = data_source_dict.get("user", "")
-            password = data_source_dict.get("password", "")
-
-            max_retries = 5
-            retry_count = 0
-
-            while retry_count < max_retries:
-                try:
-                    data_source_dict["token"] = get_authorization(
-                        base_url,
-                        user,
-                        password
-                    )
-                    break  # 如果成功获取 token，跳出循环
-                except Exception as e:
-                    retry_count += 1
-                    logger.error(f"获取 token 失败，尝试第 {retry_count} 次，报错信息: {e}\n{traceback.format_exc()}")
-                    if retry_count == max_retries:
-                        raise ToolFatalError(reason="获取 token 失败，已尝试 {} 次".format(max_retries), detail=e) from e
-                    # 如果需要延迟重试，可以在这里添加 sleep
-                    time.sleep(1)  # 例如，延迟 1 秒后重试
-
         # 设置 data_source 参数
         data_source_dict['base_url'] = base_url
         data_source_dict['vega_type'] = vega_type
@@ -1467,23 +1440,3 @@ if __name__ == "__main__":
     # )
     from data_retrieval.datasource.vega_datasource import VegaDataSource  # noqa: F811
 
-    token = get_authorization("https://10.4.110.170", "xia", "111111")
-    datasource = VegaDataSource(
-        view_list=[
-            "330755ad-6126-415e-adb5-79adb12a0455",
-            "ee4aaa09-498c-4126-ae29-8a8590c2d1f0",
-        ],
-        token=token,
-        user_id="fa1ee91a-643d-11ef-8405-a214ef0d99c8"
-    )
-
-    tool = Text2SQLTool.from_data_source(
-        language="cn",
-        data_source=datasource,
-        llm=llm,
-        get_desc_from_datasource=True
-    )
-
-    # print(tool.description)
-
-    print(tool.invoke({"input": "各种苹果的销量分组", }))

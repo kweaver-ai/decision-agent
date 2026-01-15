@@ -161,14 +161,11 @@ class VegaServices(object):
 
 if __name__ == '__main__':
     def main():
-        from auth import get_authorization
-        get_authorization("https://10.4.109.234", "liberly", "111111")
         service = VegaServices()
         res = service.exec_vir_engine_by_sql(
             user="admin",
-            sql="SELECT DISTINCT area_1_region FROM vdm_maria_et0hnz6q.default.t_sales_0821 LIMIT 100",
-            user_id="bc1e5d48-cfbf-11ee-ac16-f26894970da0"
-
+            sql="SELECT 1",
+            user_id="demo-user"
         )
         print(res)
 

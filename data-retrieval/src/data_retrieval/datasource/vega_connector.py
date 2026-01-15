@@ -3,7 +3,6 @@ import asyncio
 
 # from data_retrieval.datasource.vega_datasource import VegaDataSource, get_datasource_from_kg_params
 from data_retrieval.datasource.dip_dataview import DataView, get_datasource_from_kg_params
-from data_retrieval.api.auth import get_authorization
 from data_retrieval.utils.dip_services.base import ServiceType
 
 # apilevel = "2.0"
@@ -71,10 +70,7 @@ class Connection:
     ):
         self.base_url = base_url
 
-        if not token:
-            self.auth = (username, password, get_authorization(self.base_url, username, password))
-        else:
-            self.auth = (username, password, token)
+        self.auth = (username, password, token)
 
         self.user_id = user_id
         self.account_type = account_type

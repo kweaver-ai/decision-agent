@@ -11,7 +11,6 @@ import asyncio
 from langchain_openai import ChatOpenAI
 from data_retrieval.tools.base_tools.sql_helper import SQLHelperTool
 from data_retrieval.datasource.vega_datasource import VegaDataSource
-from data_retrieval.api.auth import get_authorization
 
 
 async def main():
@@ -29,28 +28,19 @@ async def main():
         temperature=0.01,
     )
     
-    # 2. 获取认证令牌
-    print("2. 获取认证令牌...")
-    try:
-        token = get_authorization("https://10.4.110.170", "xia", "111111")
-        print("✓ 认证成功")
-    except Exception as e:
-        print(f"✗ 认证失败: {e}")
-        return
-    
-    # 3. 创建数据源
-    print("3. 创建数据源...")
+    # 2. 创建数据源（令牌需外部获取并传入）
+    print("2. 创建数据源...")
     datasource = VegaDataSource(
         view_list=[
             "330755ad-6126-415e-adb5-79adb12a0455",
             "ee4aaa09-498c-4126-ae29-8a8590c2d1f0",
         ],
-        token=token,
+        token="your_bearer_token",
         user_id="fa1ee91a-643d-11ef-8405-a214ef0d99c8"
     )
     
-    # 4. 创建 SQL Helper 工具
-    print("4. 创建 SQL Helper 工具...")
+    # 3. 创建 SQL Helper 工具
+    print("3. 创建 SQL Helper 工具...")
     tool = SQLHelperTool.from_data_source(
         language="cn",
         data_source=datasource,
@@ -60,8 +50,8 @@ async def main():
     
     print("✓ 工具初始化完成\n")
     
-    # 5. 测试获取元数据
-    print("5. 测试获取元数据信息...")
+    # 4. 测试获取元数据
+    print("4. 测试获取元数据信息...")
     try:
         metadata_result = tool.invoke({"command": "get_metadata"})
         print("✓ 元数据获取成功")
@@ -73,8 +63,8 @@ async def main():
     
     print()
     
-    # 6. 测试执行 SQL（不带 data_title）
-    print("6. 测试执行 SQL（不带 data_title）...")
+    # 5. 测试执行 SQL（不带 data_title）
+    print("5. 测试执行 SQL（不带 data_title）...")
     try:
         sql_result = tool.invoke({
             "command": "execute_sql", 
@@ -87,8 +77,8 @@ async def main():
     
     print()
     
-    # 7. 测试执行 SQL（带 data_title）
-    print("7. 测试执行 SQL（带 data_title）...")
+    # 6. 测试执行 SQL（带 data_title）
+    print("6. 测试执行 SQL（带 data_title）...")
     try:
         sql_result_with_title = tool.invoke({
             "command": "execute_sql", 
@@ -103,15 +93,14 @@ async def main():
     
     print()
     
-    # 8. 演示 API 调用方式
-    print("8. 演示 API 调用方式...")
+    # 7. 演示 API 调用方式
+    print("7. 演示 API 调用方式...")
     try:
         api_params = {
             'data_source': {
                 'view_list': ['330755ad-6126-415e-adb5-79adb12a0455'],
                 'base_url': 'https://10.4.110.170',
-                'user': 'xia',
-                'password': '111111',
+                'token': 'your_bearer_token',
                 'vega_type': 'dip'
             },
             'llm': {

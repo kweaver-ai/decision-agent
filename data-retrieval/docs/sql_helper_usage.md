@@ -37,13 +37,11 @@ SQL Helper 是一个专门用于调用 SQL 语句的工具，支持获取元数�
 ```python
 from data_retrieval.tools.base_tools.sql_helper import SQLHelperTool
 from data_retrieval.datasource.vega_datasource import VegaDataSource
-from data_retrieval.api.auth import get_authorization
 
-# 创建数据源
-token = get_authorization("https://your-server.com", "username", "password")
+# 创建数据源（令牌需外部获取并传入）
 datasource = VegaDataSource(
     view_list=["view_id_1", "view_id_2"],
-    token=token,
+    token="your_bearer_token",
     user_id="your_user_id"
 )
 
@@ -84,9 +82,8 @@ async def call_sql_helper_api():
     params = {
         'data_source': {
             'view_list': ['your_view_id'],
-            'base_url': 'https://your-server.com',
-            'user': 'username',
-            'password': 'password',
+            'base_url': 'https://your-server.com',  # 可选，外部 Vega/DIP 服务地址
+            'token': 'your_bearer_token',
             'vega_type': 'dip'
         },
         'llm': {
@@ -124,10 +121,8 @@ print(result)
 ### 数据源配置
 
 - `view_list`: 逻辑视图 ID 列表
-- `base_url`: 认证服务 URL
-- `user`: 用户名
-- `password`: 密码
-- `token`: 认证令牌
+- `base_url`: 可选，外部 Vega/DIP 服务地址；内部服务可留空
+- `token`: 认证令牌（必填，需外部获取）
 - `user_id`: 用户 ID
 - `vega_type`: Vega 类型，可选 "af" 或 "dip"
 
