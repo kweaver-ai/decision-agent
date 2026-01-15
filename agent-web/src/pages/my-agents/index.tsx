@@ -1,9 +1,9 @@
 import { lazy } from 'react';
-import { ModeEnum } from '@/components/DataAgents/types';
+import { ModeEnum } from '@/components/DecisionAgent/types';
 import { createRouteApp } from '@/utils/qiankun-entry-generator';
 
 const routeComponents = {
-  DataAgents: lazy(() => import('@/components/DataAgents')),
+  DecisionAgent: lazy(() => import('@/components/DecisionAgent')),
   AgentConfig: lazy(() => import('@/components/AgentConfig')),
   AgentUsage: lazy(() => import('./AgentUsage')),
   AgentDetail: lazy(() => import('@/components/AgentDetail')),
@@ -12,7 +12,7 @@ const routeComponents = {
 const routes = [
   {
     path: '/',
-    element: <routeComponents.DataAgents mode={ModeEnum.MyAgent} />,
+    element: <routeComponents.DecisionAgent mode={ModeEnum.MyAgent} />,
   },
   {
     path: '/config',
