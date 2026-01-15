@@ -273,3 +273,17 @@ def get_dolphin_var_final_value(var: Any) -> Any:
         else:
             return get_dolphin_var_value(var)
     return var
+
+
+# 兼容老版命名的别名
+GetCallerInfo = get_caller_info
+IsInPod = is_in_pod
+GetFailureThreshold = get_failure_threshold
+SetFailureThreshold = set_failure_threshold
+GetRecoveryTimeout = get_recovery_timeout
+SetRecoveryTimeout = set_recovery_timeout
+GetRequestLangFunc = get_request_lang_func
+GetRequestLangFromHeader = get_request_lang_from_header
+GetUnknowError = get_unknown_error
+ConvertToCamelCase = convert_to_camel_case
+GetUserIDByRequest = get_user_id_by_request
