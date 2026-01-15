@@ -3,12 +3,16 @@ from data_retrieval.utils.dip_services.services.common import Common
 from data_retrieval.utils.dip_services.services.engine import CogEngine
 
 from data_retrieval.utils.dip_services.infra.opensearch import OpenSearch
-from data_retrieval.utils.dip_services.infra.nebula import NebulaGraph
+
+# nebula3 依赖可选，若未安装则跳过
+try:
+    from data_retrieval.utils.dip_services.infra.nebula import NebulaGraph
+except Exception:
+    NebulaGraph = None
 
 __all__ = [
     "Builder",
     "Common",
     "CogEngine",
-    "OpenSearch",
-    "NebulaGraph"
+    "OpenSearch"
 ]

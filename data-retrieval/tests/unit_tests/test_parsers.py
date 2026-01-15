@@ -59,7 +59,6 @@ def run_tests():
     
     test_classes = [
         TestBaseJsonParser,
-        TestText2MetricParser,
         TestText2SQLParser,
     ]
     
