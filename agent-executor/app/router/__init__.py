@@ -91,7 +91,6 @@ async def shutdown_event():
 
 
 # 路由
-from app.router.agent_controller_pkg.common import router as agent_router
 from app.router.agent_controller_pkg.common_v2 import router_v2 as agent_router_v2
 
 # 导入 v2 路由模块以确保路由被注册
@@ -109,7 +108,6 @@ from app.router.function_controller import router as function_router
 from app.router.tool_controller import router as tool_router
 
 
-app.include_router(agent_router)
 app.include_router(agent_router_v2)
 app.include_router(tool_router)
 app.include_router(function_router)

@@ -17,7 +17,6 @@ COPY ./last_commit_info.txt /build/last_commit_info.txt
 COPY ./last_commit_info.txt /build/app/last_commit_info.txt
 COPY ./data_migrations /build/data_migrations
 COPY ./main.py /build/main.py
-COPY ./mq-sdk-lib /build/mq-sdk-lib
 
 # 安装依赖
 

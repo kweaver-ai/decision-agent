@@ -41,18 +41,6 @@ tool_box_configs = [
         "content_type": "application/json",
     },
     {
-        "box_id": "c1ad888b-2591-4e33-804b-66face219c4b",
-        "box_name": "数据处理工具",
-        "box_desc": "包含 通过工具、检查工具 两个工具",
-        # "box_category": "data_process",
-        "metadata_type": "openapi",
-        "source": "internal",
-        "config_version": "1.0.0",
-        "config_source": "auto",
-        "file_path": openapi_file_path / "data_process_tools.json",
-        "content_type": "application/json",
-    },
-    {
         "box_id": "55cd6b6c-b546-4236-961a-4d09571fc931",
         "box_name": "记忆管理",
         "box_desc": "包含 记忆构建&召回 两个工具",

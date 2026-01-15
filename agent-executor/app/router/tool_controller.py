@@ -11,290 +11,25 @@ from app.router.agent_controller_pkg.dependencies import (
     get_biz_domain_id,
 )
 from app.models.tool_requests import (
-    ArxivSearchRequest,
-    BaiduSearchRequest,
-    CalculateExpressionRequest,
     CheckRequest,
-    CheckStockRequest,
-    CompanyProfileRequest,
     DocQARequest,
-    GenerateImageRequest,
     GetFileDownloadUrlRequest,
     GetFileFullContentRequest,
     GraphQARequest,
-    PaperSearchRequest,
     ProcessFileIntelligentRequest,
     SearchFileSnippetsRequest,
-    SendEmailRequest,
     ZhipuSearchRequest,
     OnlineSearchCiteRequest,
 )
 from app.models.tool_responses import (
-    BaiduSearchResponse,
-    CalculateExpressionResponse,
-    CheckStockResponse,
-    CompanyProfileResponse,
     FileUrlInfo,
-    GenerateImageResponse,
-    GetDateResponse,
     GetFileDownloadUrlResponse,
-    PaperSearchResponse,
-    PassResponse,
-    SendEmailResponse,
     ZhipuSearchResponse,
     OnlineSearchCiteResponse,
 )
 
 
 router = APIRouter(prefix=Config.app.host_prefix + "/tools", tags=["internal-tools"])
-
-
-# ==================== 搜索工具 ====================
-
-
-@router.post(
-    "/baidu_search",
-    response_model=BaiduSearchResponse,
-    summary="百度搜索",
-    include_in_schema=False,
-)
-async def baidu_search(
-    request: BaiduSearchRequest,
-) -> BaiduSearchResponse:
-    """
-    执行百度搜索
-
-    - **query**: 搜索查询词
-    - **num_results**: 返回结果数量（默认10）
-
-    返回搜索结果列表，包含标题、链接和描述
-    """
-    from app.logic.tool.baidu_search import baidu_search
-
-    param = request.model_dump()
-    res = await baidu_search(param, {}, None, None, None)
-
-    return BaiduSearchResponse(**res)
-
-
-@router.post(
-    "/paper_with_code_full",
-    response_model=PaperSearchResponse,
-    summary="Papers with Code搜索",
-    include_in_schema=False,
-)
-async def paper_with_code_search(
-    request: PaperSearchRequest,
-) -> PaperSearchResponse:
-    """
-    搜索Papers with Code网站的最新论文
-
-    - **nums**: 返回论文数量（默认10，最大30）
-    - **params_format**: 是否返回参数格式
-
-    返回论文信息列表，包含标题、作者、摘要、星标数等
-    """
-    from app.logic.tool.paper_with_code_full import paper_with_code_search_full
-
-    param = request.model_dump()
-    papers = await paper_with_code_search_full(param["nums"], param["params_format"])
-
-    return PaperSearchResponse(papers=papers)
-
-
-@router.post(
-    "/arxiv_search",
-    response_model=PaperSearchResponse,
-    summary="Arxiv论文搜索",
-    include_in_schema=False,
-)
-async def arxiv_search(
-    request: ArxivSearchRequest,
-) -> PaperSearchResponse:
-    """
-    搜索Arxiv论文
-
-    - **keyword**: 搜索关键词
-    - **nums**: 返回论文数量（默认10）
-    - **params_format**: 是否返回参数格式
-
-    返回论文信息列表
-    """
-    from app.logic.tool.arxiv_search import arxiv_search
-
-    param = request.model_dump()
-    papers = await arxiv_search(param["keyword"], param["nums"], param["params_format"])
-
-    return PaperSearchResponse(papers=papers)
-
-
-# ==================== 工具类 ====================
-
-
-@router.post(
-    "/calculate_expression",
-    response_model=CalculateExpressionResponse,
-    summary="计算表达式",
-    include_in_schema=False,
-)
-async def calculate_expression(
-    request: CalculateExpressionRequest,
-) -> CalculateExpressionResponse:
-    """
-    计算数学表达式
-
-    - **expression**: 要计算的数学表达式（支持基本运算）
-
-    返回计算结果
-    """
-    from app.logic.tool.calculate_expression import calculate_expression
-
-    param = request.model_dump()
-    res = await calculate_expression(param, {}, None, None, None)
-
-    return CalculateExpressionResponse(**res)
-
-
-@router.post(
-    "/generate_image",
-    response_model=GenerateImageResponse,
-    summary="生成图片",
-    include_in_schema=False,
-)
-async def generate_image(
-    request: GenerateImageRequest,
-    api_key: str = Header(..., description="图片生成API密钥"),
-) -> GenerateImageResponse:
-    """
-    生成图片
-
-    - **model**: 模型名称
-    - **prompt**: 图片生成提示词
-    - **size**: 图片尺寸（默认1024x1024）
-    - **user_id**: 用户ID（可选）
-
-    返回生成的图片数据
-    """
-    from app.logic.tool.generate_image import generate_image
-
-    param = request.model_dump()
-    res = await generate_image(param, {"api_key": api_key}, None, None, None)
-
-    return GenerateImageResponse(**res)
-
-
-@router.post(
-    "/get_date",
-    response_model=GetDateResponse,
-    summary="获取当前日期时间",
-    include_in_schema=False,
-)
-async def get_date() -> GetDateResponse:
-    """
-    获取当前日期和时间
-
-    返回当前日期和时间信息
-    """
-    from app.logic.tool.get_date import get_date
-
-    res = await get_date({}, {}, None, None, None)
-
-    return GetDateResponse(**res)
-
-
-# ==================== 金融工具 ====================
-
-
-@router.post(
-    "/check_stock",
-    response_model=CheckStockResponse,
-    summary="股票查询",
-    include_in_schema=False,
-)
-async def check_stock(
-    request: CheckStockRequest,
-    tushare_token: str = Header(..., description="Tushare API令牌"),
-) -> CheckStockResponse:
-    """
-    查询股票信息
-
-    - **stock_codes**: 股票代码列表
-
-    返回股票信息，包含代码、名称、价格、涨跌幅等
-    """
-    from app.logic.tool.check_stock import check_stock
-
-    param = request.model_dump()
-    res = await check_stock(param, {"tushare_token": tushare_token}, None, None, None)
-
-    return CheckStockResponse(**res)
-
-
-@router.post(
-    "/get_company_profile",
-    response_model=CompanyProfileResponse,
-    summary="公司信息查询",
-    include_in_schema=False,
-)
-async def get_company_profile(
-    request: CompanyProfileRequest,
-) -> CompanyProfileResponse:
-    """
-    查询公司基本信息
-
-    - **token**: API令牌
-    - **stock_codes**: 股票代码列表
-
-    返回公司信息，包含股票代码、公司名称、所属行业、市值等
-    """
-    from app.logic.tool.stock_new import get_company_profile
-
-    param = request.model_dump()
-    res = await get_company_profile(param["token"], param["stock_codes"])
-
-    return CompanyProfileResponse(**res)
-
-
-@router.post(
-    "/send_email",
-    response_model=SendEmailResponse,
-    summary="发送邮件",
-    include_in_schema=False,
-)
-async def send_email(
-    request: SendEmailRequest,
-    smtp_server: str = Header(..., description="SMTP服务器地址"),
-    smtp_port: int = Header(..., description="SMTP端口"),
-    smtp_user: str = Header(..., description="SMTP用户名"),
-    smtp_password: str = Header(..., description="SMTP密码"),
-) -> SendEmailResponse:
-    """
-    发送邮件
-
-    - **to**: 收件人邮箱
-    - **subject**: 邮件主题
-    - **content**: 邮件内容
-    - **from_email**: 发件人邮箱（可选）
-
-    返回发送结果
-    """
-    from app.logic.tool.send_email import send_email_tool
-
-    param = request.model_dump()
-    res = await send_email_tool(
-        param,
-        {
-            "smtp_server": smtp_server,
-            "smtp_port": smtp_port,
-            "smtp_user": smtp_user,
-            "smtp_password": smtp_password,
-        },
-        None,
-        None,
-        None,
-    )
-
-    return SendEmailResponse(**res)
 
 
 @router.post("/graph_qa", summary="图数据库问答")
@@ -342,16 +77,6 @@ async def doc_qa(request: DocQARequest):
         "result": res.get("text", ""),
         "full_result": res,
     }
-
-
-@router.post("/pass", response_model=PassResponse, summary="通过工具")
-async def pass_tool() -> PassResponse:
-    """
-    通过工具，用于测试或占位
-
-    返回通过消息
-    """
-    return PassResponse(message="通过")
 
 
 @router.post(

@@ -3,73 +3,10 @@ from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
 
 
-class BaiduSearchRequest(BaseModel):
-    """百度搜索请求"""
-
-    query: str = Field(..., description="搜索查询词", example="人工智能")
-    num_results: int = Field(default=10, description="返回结果数量", example=10)
-
-
-class CalculateExpressionRequest(BaseModel):
-    """计算表达式请求"""
-
-    expression: str = Field(..., description="要计算的数学表达式", example="2 + 3 * 4")
-
-
 class ZhipuSearchRequest(BaseModel):
     """智谱搜索请求"""
 
     query: str = Field(..., description="搜索查询词", example="机器学习")
-
-
-class GenerateImageRequest(BaseModel):
-    """生成图片请求"""
-
-    model: str = Field(..., description="模型名称", example="cogview-3")
-    prompt: str = Field(..., description="图片生成提示词", example="一只可爱的小猫")
-    size: str = Field(default="1024x1024", description="图片尺寸", example="1024x1024")
-    user_id: Optional[str] = Field(None, description="用户ID")
-
-
-class CheckStockRequest(BaseModel):
-    """股票查询请求"""
-
-    stock_codes: List[str] = Field(
-        ..., description="股票代码列表", example=["000001", "600000"]
-    )
-
-
-class SendEmailRequest(BaseModel):
-    """发送邮件请求"""
-
-    to: str = Field(..., description="收件人邮箱", example="user@example.com")
-    subject: str = Field(..., description="邮件主题", example="测试邮件")
-    content: str = Field(..., description="邮件内容", example="这是一封测试邮件")
-    from_email: Optional[str] = Field(None, description="发件人邮箱")
-
-
-class PaperSearchRequest(BaseModel):
-    """论文搜索请求"""
-
-    nums: int = Field(default=10, description="返回论文数量", example=10)
-    params_format: bool = Field(default=False, description="是否返回参数格式")
-
-
-class ArxivSearchRequest(BaseModel):
-    """Arxiv搜索请求"""
-
-    keyword: str = Field(..., description="搜索关键词", example="machine learning")
-    nums: int = Field(default=10, description="返回论文数量", example=10)
-    params_format: bool = Field(default=False, description="是否返回参数格式")
-
-
-class CompanyProfileRequest(BaseModel):
-    """公司信息查询请求"""
-
-    token: str = Field(..., description="API令牌")
-    stock_codes: List[str] = Field(
-        ..., description="股票代码列表", example=["000001", "600000"]
-    )
 
 
 class GetSchemaRequest(BaseModel):
