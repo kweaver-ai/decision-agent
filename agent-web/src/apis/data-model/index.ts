@@ -1,5 +1,5 @@
 import { get } from '@/utils/http';
-import {
+import type {
   GetMetricModalGroupsParamsType,
   GetMetricModalGroupsResponseType,
   MetricModalGroupType,
