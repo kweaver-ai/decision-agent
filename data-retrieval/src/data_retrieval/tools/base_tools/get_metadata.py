@@ -13,9 +13,8 @@ from data_retrieval.errors import ToolFatalError
 from data_retrieval.tools.base import api_tool_decorator, validate_openapi_schema
 
 from data_retrieval.datasource.dip_metric import DIPMetric
-from data_retrieval.datasource.dip_dataview import DataView, get_datasource_from_kg_params
+from data_retrieval.datasource.dip_dataview import DataView
 from data_retrieval.api.agent_retrieval import get_datasource_from_agent_retrieval_async
-from data_retrieval.utils.dip_services.base import ServiceType
 from data_retrieval.settings import get_settings
 from fastapi import Body
 
@@ -202,13 +201,12 @@ class GetMetadataTool(AFTool):
         stream: bool = False,
         mode: str = "http"
     ):
-        """异步 API 调用方法，支持从 kg 和 kn 中获取数据源"""
+        """异步 API 调用方法，支持从知识网络中获取数据源"""
         try:
             logger.info(f"get_metadata as_async_api_cls params: {params}")
 
             # Data Source Params
             data_source_dict = params.get('data_source', {})
-            kg_params = data_source_dict.get('kg', [])
             kn_params = data_source_dict.get('kn', [])
             search_scope = data_source_dict.get('search_scope', [])
             recall_mode = data_source_dict.get('recall_mode', _SETTINGS.DEFAULT_AGENT_RETRIEVAL_MODE)
@@ -270,34 +268,6 @@ class GetMetadataTool(AFTool):
                         metric_list.extend(direct_metric_list)
                 else:
                     logger.warning(f"metric_list 格式不正确: {direct_metric_list}")
-
-            # 从知识图谱 (kg) 中获取数据源
-            if kg_params:
-                try:
-                    if base_url:
-                        dip_type = ServiceType.OUTTER_DIP.value
-                    else:
-                        dip_type = ServiceType.DIP.value
-                    datasources_in_kg = await get_datasource_from_kg_params(
-                        addr=base_url,
-                        kg_params=kg_params,
-                        headers=headers,
-                        dip_type=dip_type
-                    )
-
-                    logger.info(f"从知识图谱获取到 {len(datasources_in_kg)} 个数据视图")
-
-                    # 将 kg 中的数据源添加到 view_list
-                    # 注意：kg 只能获取数据视图（data_view），不能获取指标（metric）
-                    # 如果 ds_type 指定为 "metric"，则跳过 kg 的数据源
-                    if ds_type is None or ds_type == "data_view":
-                        for ds in datasources_in_kg:
-                            view_list.append(ds.get("id"))
-                    elif ds_type == "metric":
-                        logger.info("ds_type 为 'metric'，跳过从知识图谱获取的数据源（kg 只能获取数据视图）")
-                except Exception as e:
-                    logger.error(f"从知识图谱获取数据源失败: {e}")
-                    logger.error(traceback.format_exc())
 
             # 从知识网络 (kn) 中获取数据源
             if kn_params:
@@ -400,12 +370,6 @@ class GetMetadataTool(AFTool):
                 'token': '',
                 'user_id': '',
                 'account_type': 'user',
-                'kg': [
-                    {
-                        'kg_id': '129',
-                        'fields': ['regions', 'comments'],
-                    }
-                ],
                 'kn': [
                     {
                         'knowledge_network_id': 'kn_id_1'
@@ -470,7 +434,7 @@ class GetMetadataTool(AFTool):
         return {
             "post": {
                 "summary": ToolName.from_get_metadata.value,
-                "description": "获取数据视图和指标的元数据信息，支持从知识图谱(kg)和知识网络(kn)中获取数据源",
+                "description": "获取数据视图和指标的元数据信息，支持从知识网络(kn)中获取数据源",
                 "parameters": [
                     {
                         "name": "stream",
@@ -533,27 +497,6 @@ class GetMetadataTool(AFTool):
                                                 "description": "指标ID列表",
                                                 "items": {
                                                     "type": "string"
-                                                }
-                                            },
-                                            "kg": {
-                                                "type": "array",
-                                                "description": "知识图谱配置参数（老版本），用于从知识图谱中获取数据源。注意：kg 只能获取数据视图（data_view），不能获取指标（metric）",
-                                                "items": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "kg_id": {
-                                                            "type": "string",
-                                                            "description": "知识图谱ID"
-                                                        },
-                                                        "fields": {
-                                                            "type": "array",
-                                                            "description": "用户选中的实体字段列表",
-                                                            "items": {
-                                                                "type": "string"
-                                                            }
-                                                        }
-                                                    },
-                                                    "required": ["kg_id", "fields"]
                                                 }
                                             },
                                             "kn": {

@@ -1,9 +1,7 @@
 from urllib.parse import urlparse
-import asyncio
 
-# from data_retrieval.datasource.vega_datasource import VegaDataSource, get_datasource_from_kg_params
-from data_retrieval.datasource.dip_dataview import DataView, get_datasource_from_kg_params
-from data_retrieval.utils.dip_services.base import ServiceType
+# from data_retrieval.datasource.vega_datasource import VegaDataSource
+from data_retrieval.datasource.dip_dataview import DataView
 
 # apilevel = "2.0"
 # threadsafety = 1
@@ -18,7 +16,6 @@ def connect(
     port=None,
     user_id="",
     view_list=None,
-    kg_params=None,
     **kwargs
 ):
     if not url:
@@ -39,7 +36,6 @@ def connect(
         token=kwargs.get("token", ""),
         user_id=user_id,
         view_list=view_list,
-        kg_params=kg_params
     )
 
 
@@ -65,7 +61,6 @@ class Connection:
         user_id: str = "dip",
         account_type: str = "user",
         view_list: list = None,
-        kg_params: dict = None,
         vega_type: str = ""
     ):
         self.base_url = base_url
@@ -74,42 +69,13 @@ class Connection:
 
         self.user_id = user_id
         self.account_type = account_type
-        self.kg_params = kg_params
         self.view_list = view_list
         self.af_datasource = None
         self.vega_type = vega_type
 
     def _init_datasource(self):
-        # 如果设置了地址，则默认为外部的 DIP 服务, 也有可能是 AF 服务
-        if self.base_url:
-            dip_type = self.vega_type.lower() or ServiceType.OUTTER_DIP.value
-        else:
-            dip_type = self.vega_type.lower() or ServiceType.DIP.value
-
         if not self.af_datasource:
-            if self.kg_params:
-                headers = {
-                    "x-user": self.user_id,
-                    "x-account-id": self.user_id,
-                    "x-account-type": self.account_type
-                }
-                token = self.auth[2]
-                if token:
-                    if not token.startswith("Bearer "):
-                        token = f"Bearer {token}"
-                    headers["Authorization"] = token
-
-                datasources_in_kg = asyncio.run(get_datasource_from_kg_params(
-                    addr=self.base_url,
-                    kg_params=self.kg_params,
-                    dip_type=dip_type,
-                    headers=headers
-                )
-                )
-
-                self.view_list = [ds.get("id") for ds in datasources_in_kg]
-            else:
-                self.view_list = self.view_list
+            self.view_list = self.view_list
 
             if not self.view_list:
                 raise ValueError("Missing view_list")

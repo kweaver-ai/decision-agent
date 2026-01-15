@@ -13,7 +13,7 @@ from fastapi import Body
 
 from data_retrieval.api.error import VirEngineError
 from data_retrieval.errors import SQLHelperException
-from data_retrieval.datasource.dip_dataview import DataView, get_datasource_from_kg_params
+from data_retrieval.datasource.dip_dataview import DataView
 from data_retrieval.api.agent_retrieval import get_datasource_from_agent_retrieval_async
 from data_retrieval.logs.logger import logger
 from data_retrieval.sessions import CreateSession, BaseChatHistorySession  # 重新导入 session 相关模块
@@ -193,7 +193,7 @@ class SQLHelperTool(AFTool):
 
                 # 如果数据源为空，则抛出异常
                 if not self.data_source.get_tables():
-                    raise SQLHelperException("数据源为空，请检查 view_list 参数。如果涉及知识网络，请检查 kn 参数。如果是老版本知识网络，请检查 kg 参数。")
+                    raise SQLHelperException("数据源为空，请检查 view_list 参数。如涉及知识网络，请检查 kn 参数。")
 
                 return await self._get_meta_sample_data(
                     input_query=title,
@@ -436,7 +436,6 @@ class SQLHelperTool(AFTool):
         logger.info(f"sql_helper as_async_api_cls params: {params}")
         # data_source Params
         data_source_dict = params.get('data_source', {})
-        kg_params = data_source_dict.get('kg', {})
         config_dict = params.get("config", {})
 
         base_url = data_source_dict.get('base_url', '')  # 直接获取 base_url
@@ -465,18 +464,6 @@ class SQLHelperTool(AFTool):
         command = params.get('command', CommandType.EXECUTE_SQL.value)
 
         if command == CommandType.GET_METADATA.value:
-            # 将 kg 参数配置到 data_source_dict 中
-            if kg_params:
-                datasources_in_kg = await get_datasource_from_kg_params(
-                    addr=base_url,
-                    kg_params=kg_params,
-                    headers=headers,
-                )
-
-                logger.info(f"datasources_in_kg: {datasources_in_kg}")
-                view_list = [ds.get("id") for ds in datasources_in_kg]
-                data_source_dict['view_list'] = view_list
-
             # 业务知识网络的配置
             if kn_params:
                 for kn_param in kn_params:
@@ -633,27 +620,6 @@ class SQLHelperTool(AFTool):
                                                 "description": "调用者的类型，user 代表普通用户，app 代表应用账号, anonymous 代表匿名用户",
                                                 "enum": ["user", "app", "anonymous"],
                                                 "default": "user"
-                                            },
-                                            "kg": {
-                                                "type": "array",
-                                                "description": "知识图谱配置参数，用于从知识图谱中获取数据源",
-                                                "items": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "kg_id": {
-                                                            "type": "string",
-                                                            "description": "知识图谱ID"
-                                                        },
-                                                        "fields": {
-                                                            "type": "array",
-                                                            "description": "用户选中的实体字段列表",
-                                                            "items": {
-                                                                "type": "string"
-                                                            }
-                                                        }
-                                                    },
-                                                    "required": ["kg_id", "fields"]
-                                                }
                                             },
                                             "kn": {
                                                 "type": "array",

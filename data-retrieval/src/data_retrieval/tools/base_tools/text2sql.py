@@ -24,7 +24,7 @@ from data_retrieval.api.error import (
 )
 from data_retrieval.errors import Text2SQLException
 from data_retrieval.datasource.db_base import DataSource
-from data_retrieval.datasource.dip_dataview import DataView, get_datasource_from_kg_params
+from data_retrieval.datasource.dip_dataview import DataView
 from data_retrieval.api.agent_retrieval import get_datasource_from_agent_retrieval_async
 from data_retrieval.utils.dip_services.base import ServiceType
 from data_retrieval.logs.logger import logger
@@ -880,7 +880,6 @@ class Text2SQLTool(LLMTool):
         # return {'text2sql': '测试接口'}
         # data_source Params
         data_source_dict = params.get('data_source', {})
-        kg_params = data_source_dict.get('kg', {})
         vega_type = data_source_dict.get('vega_type', VegaType.DIP.value)
         config_dict = params.get("config", {})
 
@@ -927,18 +926,6 @@ class Text2SQLTool(LLMTool):
             if not token.startswith("Bearer "):
                 token = f"Bearer {token}"
             headers["Authorization"] = token
-
-        # 将 kg 参数配置到 data_source_dict 中，如果是 kg 默认全走内部的参数调用
-        if kg_params:
-            datasources_in_kg = await get_datasource_from_kg_params(
-                addr=base_url,
-                kg_params=kg_params,
-                headers=headers,
-                dip_type=dip_type
-            )
-
-            logger.info(f"datasources_in_kg: {datasources_in_kg}")
-            view_list = [ds.get("id") for ds in datasources_in_kg]
 
         if kn_params:
             for kn_param in kn_params:
@@ -1150,27 +1137,6 @@ class Text2SQLTool(LLMTool):
                                                 "description": "调用者的类型，user 代表普通用户，app 代表应用账号，anonymous 代表匿名用户",
                                                 "enum": ["user", "app", "anonymous"],
                                                 "default": "user"
-                                            },
-                                            "kg": {
-                                                "type": "array",
-                                                "description": "知识图谱配置参数，用于从知识图谱中获取数据源",
-                                                "items": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "kg_id": {
-                                                            "type": "string",
-                                                            "description": "知识图谱ID"
-                                                        },
-                                                        "fields": {
-                                                            "type": "array",
-                                                            "description": "用户选中的实体字段列表",
-                                                            "items": {
-                                                                "type": "string"
-                                                            }
-                                                        }
-                                                    },
-                                                    "required": ["kg_id", "fields"]
-                                                }
                                             },
                                             "kn": {
                                                 "type": "array",

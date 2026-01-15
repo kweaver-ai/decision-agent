@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # @Author:  Lareina.guo@aishu.cn
 # @Date: 2024-6-7
-from typing import Any, List, Optional, Union
+from typing import Any, List, Optional
 
 from data_retrieval.api.vega import VegaServices
 from data_retrieval.api.error import AfDataSourceError, VirEngineError, FrontendColumnError, FrontendSampleError
@@ -10,9 +10,6 @@ from data_retrieval.logs.logger import logger
 from data_retrieval.parsers.text2sql_parser import RuleBaseSource
 from data_retrieval.datasource.dimension_reduce import DimensionReduce
 from data_retrieval.api import VegaType
-from typing import Dict
-from data_retrieval.utils.dip_services import Builder
-from data_retrieval.utils.dip_services.base import ServiceType
 
 
 CREATE_SCHEMA_TEMPLATE = """CREATE TABLE {source}.{schema}.{title}
@@ -22,126 +19,6 @@ CREATE_SCHEMA_TEMPLATE = """CREATE TABLE {source}.{schema}.{title}
 """
 
 RESP_TEMPLATE = """根据<strong>"{table}"</strong><i slice_idx=0>{index}</i>，检索到如下数据："""
-
-
-async def get_datasource_from_kg_params(
-        kg_params: Union[Dict, List], addr="", headers={}, dip_type=ServiceType.DIP.value):
-    """
-    解析 KG 参数
-    """
-    # example:
-    # {
-    #     "kg": [
-    #         {
-    #             "kg_id": "129",
-    #             "fields": [
-    #                 "regions",
-    #                 "comments"
-    #             ],
-    #             "output_fields": [
-    #                 "comments"
-    #             ],
-    #             "field_properties": {
-    #                 "regions": [
-    #                     "@vid",
-    #                     "regions"
-    #                 ],
-    #                 "comments": [
-    #                     "@vid",
-    #                     "CONTENT",
-    #                     "VOTES",
-    #                     "COMMENT_TIME"
-    #                 ]
-    #             }
-    #         }
-    #     ]
-    # }
-    if isinstance(kg_params, Dict):
-        kg_params = kg_params.get("kg", [])
-
-    builder_service = Builder(addr=addr, headers=headers, type=dip_type)
-
-    for kg in kg_params:
-        kg_id = kg.get("kg_id", "")
-
-        # 用户选中的实体，用于过滤数据源
-        fields = kg.get("fields", [])
-
-        kg_info = await builder_service.get_kg_info(kg_id)
-
-        KMap = kg_info.get("res", {}).get("graph_KMap", {})
-        datasources_in_kmap = KMap.get("files", [])
-        entities_in_kmap = KMap.get("entity", [])
-
-        res = []
-        for ds in datasources_in_kmap:
-            # 数据样例参考
-            # '{
-            #     'ds_id': 5,
-            #     'data_source': 'DataPlatform',
-            #     'ds_path': None,
-            #     'extract_type': 'standardExtraction',
-            #     'extract_rules': [{
-            #             'entity_type': '订单商品信息宽表主键FINAL_SUB_ORDER_IDITEM_IDBA_CODESTAFF_ID_2',
-            #             'property': [{
-            #                     'column_name': 'aftersale_apply_time',
-            #                     'property_field': 'aftersale_apply_time'
-            #                 }
-            #             ]
-            #         }
-            #     ],
-            #     'files': [{
-            #             'file_name': '订单商品信息宽表(主键:FINAL_SUB_ORDER_ID+ITEM_ID+BA_CODE+STAFF_ID+IS_POS)',
-            #             'file_path': '',
-            #             'file_source': '4d94ab8c-e545-444e-9143-94636d11a240',
-            #             'start_time': None,
-            #             'end_time': None
-            #         }
-            #     ],
-            #     'ds_name': 'DataPlatform'
-            # }
-            if ds.get("data_source") != "DataPlatform":
-                logger.warning(f"不应该出现这种情况: {ds.get('data_source')}")
-                continue
-
-            # 过滤不在列表中的实体
-            # 例子:
-            # {
-            #     "entity":  [{
-            #         'name': 'DWS_ORDER_ITEM_STAFF_ORDER_BY_DAY',
-            #         'entity_type': '订单商品信息宽表主键FINAL_SUB_ORDER_IDITEM_IDBA_CODESTAFF_ID_2',
-            #         ...
-            #     }]
-            # }
-
-            # 规则比较负责
-            # 1. 用户的选择在 Fields 中， Fields 是 Entity Name
-            # 2. KMap 知识映射中，Entity 保存了 Entity Type 和 Entity Name
-            #    而 Files 中保存了 Entity Type 和 数据源的对应关系
-            # 3. 所以需要先根据 Entity Type 在 KMap 中找到对应的 Entity Name，
-            #    然后根据 Entity Name 在 Fields 中找到对应的 Entity Type，
-            #    如果 Entity Name 在 Fields 中，则认为该数据源是选中的，否则过滤掉
-            selected_ds = False
-            entity_types = [rule.get("entity_type", "") for rule in ds.get("extract_rules", [])]
-            for entity in entities_in_kmap:
-                if entity.get("name") in fields and entity.get("entity_type") in entity_types:
-                    selected_ds = True
-                    break
-
-            if not selected_ds:
-                continue
-
-            source = ds.get("files", [])
-            for s in source:
-                view_name = s.get("file_name", "")
-                view_id = s.get("file_source", "")
-
-                res.append({
-                    "name": view_name,
-                    "id": view_id
-                })
-
-    return res
 
 
 def get_view_en2type(resp_column):
