@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import React, { type CSSProperties } from 'react';
 import './index.less';
 import DipLogo from '@/assets/icons/logo.svg';
 import classNames from 'classnames';

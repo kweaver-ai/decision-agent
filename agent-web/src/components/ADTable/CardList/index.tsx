@@ -1,6 +1,5 @@
-import React, { CSSProperties, useMemo, useRef, useState } from 'react';
+import { type CSSProperties, useMemo, useRef, useState } from 'react';
 import _ from 'lodash';
-import moment from 'moment';
 import classNames from 'classnames';
 import intl from 'react-intl-universal';
 import { Divider, Dropdown, Menu, Pagination, Typography } from 'antd';
@@ -13,11 +12,12 @@ import IconFont from '@/components/IconFont';
 import LoadingMask from '@/components/LoadingMask';
 import AdResizeObserver from '@/components/AdResizeObserver/AdResizeObserver';
 
-import { ADTableProps, CardItemMenuItemType, CardItemType, CardProps } from '../types';
+import type { ADTableProps, CardItemMenuItemType, CardItemType, CardProps } from '../types';
 
 import EmptyIcon from '@/assets/icons/empty.svg';
 import NoResultIcon from '@/assets/icons/no-result.svg';
 import './style.less';
+import dayjs from 'dayjs';
 
 const { Paragraph } = Typography;
 const AdTableCardList = (props: ADTableProps & { isFilter: boolean }) => {
@@ -238,7 +238,7 @@ const AdTableCardList = (props: ADTableProps & { isFilter: boolean }) => {
                   if (cardWidth < 280 && footer.length > 2) {
                     format = 'YYYY-MM-DD';
                   }
-                  const timeValue = footerItem.field && moment(record[footerItem.field]).format(format);
+                  const timeValue = footerItem.field && dayjs(record[footerItem.field]).format(format);
                   dom = timeValue && (
                     <span title={timeValue}>
                       <IconFont type="icon-gengxinshijian" className="dip-mr-4" />

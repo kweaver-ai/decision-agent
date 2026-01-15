@@ -25,10 +25,9 @@ axiosInstance.interceptors.response.use(
 
             return axiosInstance.request({
               ...err.config,
-              headers: {
-                ...(err.config.headers || {}),
+              headers: Object.assign({}, err.config.headers, {
                 Authorization: `Bearer ${newToken}`,
-              },
+              }),
             });
           }
 
@@ -43,15 +42,14 @@ axiosInstance.interceptors.response.use(
               resolve(
                 axiosInstance.request({
                   ...err.config,
-                  headers: {
-                    ...(err.config.headers || {}),
+                  headers: Object.assign({}, err.config.headers, {
                     Authorization: `Bearer ${token}`,
-                  },
+                  }),
                 })
               ),
           ];
         });
-      } catch (e) {
+      } catch {
         isRefreshing = false;
         throw err;
       } finally {

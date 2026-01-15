@@ -9,7 +9,7 @@ import {
   List,
   Tooltip,
   Popover,
-  TreeDataNode,
+  type TreeDataNode,
   Modal,
   InputNumber,
   Row,

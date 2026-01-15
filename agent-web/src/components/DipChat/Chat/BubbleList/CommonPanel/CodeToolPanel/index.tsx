@@ -1,8 +1,7 @@
 import styles from './index.module.less';
 import { useDipChatStore } from '@/components/DipChat/store';
-import React from 'react';
 import DipIcon from '@/components/DipIcon';
-import { DipChatItemContentProgressType } from '@/components/DipChat/interface';
+import type { DipChatItemContentProgressType } from '@/components/DipChat/interface';
 import SkillBar from '@/components/DipChat/components/SkillBar';
 type CodeToolPanelProps = {
   progressItem: DipChatItemContentProgressType;

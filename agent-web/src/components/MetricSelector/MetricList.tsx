@@ -4,7 +4,6 @@ import classNames from 'classnames';
 import { debounce, throttle } from 'lodash';
 import { FixedSizeList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { observer } from 'mobx-react-lite';
 import { Input, message, Spin, Tooltip } from 'antd';
 import { CheckOutlined } from '@ant-design/icons';
 import { getMetricModels } from '@/apis/data-model';
@@ -17,8 +16,14 @@ import DipIcon from '@/components/DipIcon';
 
 const limit = 20;
 
-const MetricList = observer(() => {
-  const store = useMetricSelectorStore();
+const MetricList = () => {
+  const {
+    metricSelectorStore,
+    removeSelectedMetric,
+    appendSelectedMetric,
+    updateAllMetricGroup,
+    isAllMetricGroupSetted,
+  } = useMetricSelectorStore();
 
   // 懒加载的offset
   const offsetRef = useRef<number>(0);
@@ -39,7 +44,7 @@ const MetricList = observer(() => {
 
   // 搜索
   const fetchMetric = useCallback(async () => {
-    if (!store.selectedGroup) return;
+    if (!metricSelectorStore.selectedGroup) return;
     if (!hasMoreRef.current) return;
 
     try {
@@ -55,7 +60,11 @@ const MetricList = observer(() => {
         name_pattern: searchKeyRef.current,
         offset: offsetRef.current,
         limit,
-        group_id: store.selectedGroup.id,
+        ...(metricSelectorStore.selectedGroup.id !== '__all'
+          ? {
+              group_id: metricSelectorStore.selectedGroup.id as unknown as number,
+            }
+          : {}),
       });
 
       const { entries, total_count } = await requestRef.current;
@@ -74,8 +83,8 @@ const MetricList = observer(() => {
       }
 
       // 更新所有指标分组内指标模型数量
-      if (store.selectedGroup.id === '__all' && !store.isAllMetricGroupSetted) {
-        store.updateAllMetricGroup({ [MetricConstants.MetricModelCount]: total_count });
+      if (metricSelectorStore.selectedGroup.id === '__all' && !isAllMetricGroupSetted) {
+        updateAllMetricGroup({ [MetricConstants.MetricModelCount]: total_count });
       }
 
       isLoadingMoreRef.current = false;
@@ -94,7 +103,7 @@ const MetricList = observer(() => {
 
       isLoadingMoreRef.current = false;
     }
-  }, [store]);
+  }, [metricSelectorStore.selectedGroup, isAllMetricGroupSetted, updateAllMetricGroup]);
 
   // 搜索（防抖）
   const searchMetricDebounce = useMemo(() => debounce(fetchMetric, 300), [fetchMetric]);
@@ -120,10 +129,10 @@ const MetricList = observer(() => {
     );
   }, [fetchMetric]);
 
-  const getRow = observer(({ index, style, data }) => {
+  const getRow = ({ index, style, data }: any) => {
     const item = data[index];
     // 是否选中
-    const isSelected = store.selectedMetrics.some(metric => metric.id === item.id);
+    const isSelected = metricSelectorStore.selectedMetrics.some(metric => metric.id === item.id);
 
     return (
       <div
@@ -133,9 +142,9 @@ const MetricList = observer(() => {
         })}
         onClick={() => {
           if (isSelected) {
-            store.removeSelectedMetric(item);
+            removeSelectedMetric(item);
           } else {
-            store.appendSelectedMetric(item);
+            appendSelectedMetric(item);
           }
         }}
       >
@@ -151,12 +160,12 @@ const MetricList = observer(() => {
         {isSelected && <CheckOutlined className={styles['check-icon']} />}
       </div>
     );
-  });
+  };
 
   // 当选中的分组id发生变化时，获取该分组下的指标模型列表
   useEffect(() => {
     // 特殊情况：未分组的id是空字符串
-    if (store.selectedGroup && 'id' in store.selectedGroup) {
+    if (metricSelectorStore.selectedGroup && 'id' in metricSelectorStore.selectedGroup) {
       offsetRef.current = 0;
       hasMoreRef.current = true;
       // 切换分组时，清空搜索关键字
@@ -164,7 +173,7 @@ const MetricList = observer(() => {
       setSearchKey('');
       fetchMetric();
     }
-  }, [store.selectedGroup?.id]);
+  }, [metricSelectorStore.selectedGroup?.id]);
 
   // 组件卸载时取消防抖
   useEffect(() => {
@@ -184,7 +193,7 @@ const MetricList = observer(() => {
         className={classNames(styles['input'], 'dip-mt-16 dip-mr-16 dip-mb-8')}
         value={searchKey}
         // 未选中分组时，输入框禁用
-        disabled={!store.selectedGroup}
+        disabled={!metricSelectorStore.selectedGroup}
         onChange={e => {
           const value = e.target.value;
           offsetRef.current = 0;
@@ -236,6 +245,6 @@ const MetricList = observer(() => {
       </div>
     </div>
   );
-});
+};
 
 export default MetricList;

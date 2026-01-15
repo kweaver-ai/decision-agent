@@ -2,9 +2,13 @@ import { useState } from 'react';
 import intl from 'react-intl-universal';
 import { Modal, Button } from 'antd';
 import classNames from 'classnames';
-import { observer } from 'mobx-react-lite';
-import { type MetricModelType } from '@/apis/data-model';
-import { MetricSelectorStore, MetricSelectorContext } from './store';
+import { type MetricModelType, type MetricModalGroupType } from '@/apis/data-model';
+import {
+  MetricSelectorContext,
+  type MetricSelectorState,
+  type MetricSelectorContextType,
+} from './store';
+import { MetricConstants } from './types';
 import GroupList from './GroupList';
 import MetricList from './MetricList';
 import styles from './index.module.less';
@@ -14,11 +18,58 @@ interface MetricSelectorProps {
   onConfirm: (metrics: Array<MetricModelType>) => void;
 }
 
-const MetricSelector = observer(({ onCancel, onConfirm }: MetricSelectorProps) => {
-  const [store] = useState(new MetricSelectorStore());
+const MetricSelector = ({ onCancel, onConfirm }: MetricSelectorProps) => {
+  const [metricSelectorStore, setMetricSelectorStore] = useState<MetricSelectorState>({
+    allMetricGroup: {
+      id: '__all',
+      name: intl.get('dataAgent.allIndicatorModels'),
+    } as MetricModalGroupType,
+    selectedGroup: undefined,
+    selectedMetrics: [],
+  });
+
+  const updateAllMetricGroup = (updates: Record<MetricConstants.MetricModelCount, number>) => {
+    setMetricSelectorStore(prev => ({
+      ...prev,
+      allMetricGroup: {
+        ...prev.allMetricGroup,
+        ...updates,
+      },
+    }));
+  };
+
+  const setSelectedGroup = (group: MetricModalGroupType) => {
+    setMetricSelectorStore(prev => ({ ...prev, selectedGroup: group }));
+  };
+
+  const setSelectedMetrics = (metrics: MetricModelType[]) => {
+    setMetricSelectorStore(prev => ({ ...prev, selectedMetrics: metrics }));
+  };
+
+  const appendSelectedMetric = (metric: MetricModelType) => {
+    setMetricSelectorStore(prev => ({ ...prev, selectedMetrics: [...prev.selectedMetrics, metric] }));
+  };
+
+  const removeSelectedMetric = (metric: MetricModelType) => {
+    setMetricSelectorStore(prev => ({
+      ...prev,
+      selectedMetrics: prev.selectedMetrics.filter(item => item.id !== metric.id),
+    }));
+  };
+
+  const contextValue: MetricSelectorContextType = {
+    metricSelectorStore,
+    setMetricSelectorStore,
+    isAllMetricGroupSetted: MetricConstants.MetricModelCount in metricSelectorStore.allMetricGroup,
+    updateAllMetricGroup,
+    setSelectedGroup,
+    setSelectedMetrics,
+    appendSelectedMetric,
+    removeSelectedMetric,
+  };
 
   return (
-    <MetricSelectorContext.Provider value={store}>
+    <MetricSelectorContext.Provider value={contextValue}>
       <Modal
         title={intl.get('dataAgent.selectIndicator')}
         open
@@ -32,8 +83,8 @@ const MetricSelector = observer(({ onCancel, onConfirm }: MetricSelectorProps) =
             key="submit"
             type="primary"
             className="dip-min-width-72"
-            disabled={!store.selectedMetrics.length}
-            onClick={() => onConfirm(store.selectedMetrics)}
+            disabled={!metricSelectorStore.selectedMetrics.length}
+            onClick={() => onConfirm(metricSelectorStore.selectedMetrics)}
           >
             {intl.get('dataAgent.ok')}
           </Button>,
@@ -53,6 +104,6 @@ const MetricSelector = observer(({ onCancel, onConfirm }: MetricSelectorProps) =
       </Modal>
     </MetricSelectorContext.Provider>
   );
-});
+};
 
 export default MetricSelector;

@@ -6,7 +6,7 @@ import {
   getCommonHttpHeaders,
   getHttpBaseUrl,
 } from './http-request';
-import { OptionsType, businessDomainHeaderKey } from './types';
+import { type OptionsType, businessDomainHeaderKey } from './types';
 export * from './streaming-http';
 export const get = (url: string, options?: OptionsType) => createHttpRequest('GET', url, options);
 export const post = (url: string, options?: OptionsType) => createHttpRequest('POST', url, options);
