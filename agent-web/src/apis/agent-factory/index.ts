@@ -150,7 +150,7 @@ export const getPublishedAgentInfo = (agentId: string): Promise<PublisheAgentInf
 export const updateAgentPublishInfo = (agentId: string, publishData: PublishData): Promise<{ published_at: number }> =>
   put(`${agentConfigBaseUrl}/${agentId}/publish-info`, { body: publishData });
 
-// =================== Data Agent市场页面相关API =================== //
+// =================== Decision Agent市场页面相关API =================== //
 
 // 获取最近访问的智能体
 export const getRecentVisitAgents = ({

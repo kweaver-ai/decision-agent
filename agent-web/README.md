@@ -1,6 +1,6 @@
-# ADP Data Agent Web
+# ADP Decision Agent Web
 
-ADP Data Agent前端项目，基于React + TypeScript + Ant Design构建的现代化Web应用。
+ADP Decision Agent前端项目，基于React + TypeScript + Ant Design构建的现代化Web应用。
 
 ## ✨ 特性
 
@@ -23,7 +23,7 @@ ADP Data Agent前端项目，基于React + TypeScript + Ant Design构建的现�
 │   │   ├── icons/        # 应用图标
 │   │   └── images/       # 图片资源
 │   ├── components/       # React组件
-│   │   ├── AgentConfig/  # Data Agent配置组件
+│   │   ├── AgentConfig/  # Decision Agent配置组件
 │   │   ├── DipChat/      # 聊天组件
 │   │   └── ...
 │   ├── hooks/            # 自定义Hooks
@@ -31,10 +31,10 @@ ADP Data Agent前端项目，基于React + TypeScript + Ant Design构建的现�
 │   │   ├── useDeepCompareEffect.ts
 │   │   └── ...
 │   ├── pages/            # 页面入口
-│   │   ├── agent-template/# Data Agent模板页面
+│   │   ├── agent-template/# Decision Agent模板页面
 │   │   ├── api/          # API页面
-│   │   ├── data-agent/   # Data Agent页面
-│   │   └── my-agents/    # 我的Data Agent页面
+│   │   ├── data-agent/   # Decision Agent页面
+│   │   └── my-agents/    # 我的Decision Agent页面
 │   ├── styles/           # 样式文件
 │   │   ├── main.less     # 主样式文件
 │   │   └── ...
@@ -143,11 +143,11 @@ yarn test
 
 ## 🎯 主要功能模块
 
-### Data Agent管理
+### Decision Agent管理
 
-- Data Agent创建和配置
-- Data Agent模板管理
-- Data Agent发布
+- Decision Agent创建和配置
+- Decision Agent模板管理
+- Decision Agent发布
 
 ### 聊天交互
 
@@ -183,4 +183,4 @@ yarn test
 
 ---
 
-**ADP Data Agent Web** - 构建智能Data Agent应用的前端解决方案
+**ADP Decision Agent Web** - 构建智能Decision Agent应用的前端解决方案
