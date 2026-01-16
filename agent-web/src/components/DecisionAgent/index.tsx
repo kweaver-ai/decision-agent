@@ -61,7 +61,7 @@ interface DataAgentsProps {
   mode?: ModeEnum;
 }
 
-const DataAgents = ({ mode: modeFromProps = ModeEnum.DataAgent }: DataAgentsProps) => {
+const DecisionAgent = ({ mode: modeFromProps = ModeEnum.DataAgent }: DataAgentsProps) => {
   const filterParams = useMemo(() => {
     const data = getParam('filterParams');
     const decodedData = decodeURIComponent(data);
@@ -1616,4 +1616,4 @@ const DataAgents = ({ mode: modeFromProps = ModeEnum.DataAgent }: DataAgentsProp
   );
 };
 
-export default DataAgents;
+export default DecisionAgent;

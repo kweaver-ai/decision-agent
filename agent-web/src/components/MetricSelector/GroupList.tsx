@@ -4,7 +4,6 @@ import { throttle } from 'lodash';
 import classNames from 'classnames';
 import { FixedSizeList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { observer } from 'mobx-react-lite';
 import { message, Spin, Tooltip } from 'antd';
 import { getMetricModalGroups, type MetricModalGroupType } from '@/apis/data-model';
 import LoadFailed from '@/components/LoadFailed';
@@ -15,8 +14,8 @@ import styles from './GroupList.module.less';
 // 每一页获取的数量
 const limit = 20;
 
-const GroupList = observer(() => {
-  const store = useMetricSelectorStore();
+const GroupList = () => {
+  const { metricSelectorStore, setSelectedGroup } = useMetricSelectorStore();
 
   // 懒加载的offset
   const offsetRef = useRef<number>(0);
@@ -30,7 +29,10 @@ const GroupList = observer(() => {
   // 分组数据
   const [data, setData] = useState<MetricModalGroupType[]>([]);
   // 界面上显示的数据列表，第一位永远是【所有指标模型】
-  const displayData = useMemo(() => [store.allMetricGroup, ...data], [store.allMetricGroup, data]);
+  const displayData = useMemo(
+    () => [metricSelectorStore.allMetricGroup, ...data],
+    [metricSelectorStore.allMetricGroup, data]
+  );
 
   // 获取分组数据
   const fetchGroups = useCallback(async () => {
@@ -58,7 +60,7 @@ const GroupList = observer(() => {
         setData(entries);
         setLoadStatus(LoadStatus.Normal);
         // 默认选中全部指标组
-        store.setSelectedGroup(store.allMetricGroup);
+        setSelectedGroup(metricSelectorStore.allMetricGroup);
       }
     } catch (ex: any) {
       if (ex?.description) {
@@ -72,7 +74,7 @@ const GroupList = observer(() => {
     } finally {
       isLoadingMoreRef.current = false;
     }
-  }, []);
+  }, [metricSelectorStore.allMetricGroup, setSelectedGroup]);
 
   // 滑动（节流）
   const handleScroll = useMemo(() => {
@@ -96,7 +98,7 @@ const GroupList = observer(() => {
     );
   }, [fetchGroups]);
 
-  const getRow = observer(({ index, style, data }) => {
+  const getRow = ({ index, style, data }: any) => {
     const item = data[index];
     const name = item.name || intl.get('dataAgent.ungrouped');
 
@@ -104,10 +106,10 @@ const GroupList = observer(() => {
       <div
         style={style}
         className={classNames('dip-pointer dip-flex-align-center dip-pl-20', styles['item'], {
-          [styles['selected']]: store.selectedGroup?.id === item.id,
+          [styles['selected']]: metricSelectorStore.selectedGroup?.id === item.id,
         })}
         onClick={() => {
-          store.setSelectedGroup(item);
+          setSelectedGroup(item);
         }}
       >
         <Tooltip title={name}>
@@ -118,7 +120,7 @@ const GroupList = observer(() => {
         )}
       </div>
     );
-  });
+  };
 
   useEffect(() => {
     fetchGroups();
@@ -165,6 +167,6 @@ const GroupList = observer(() => {
       </div>
     </div>
   );
-});
+};
 
 export default GroupList;

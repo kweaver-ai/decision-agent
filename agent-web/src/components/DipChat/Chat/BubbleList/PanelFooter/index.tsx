@@ -7,7 +7,6 @@ import classNames from 'classnames';
 import _ from 'lodash';
 import { nanoid } from 'nanoid';
 import '@vavt/rt-extension/lib/asset/ExportPDF.css';
-import { getChatItemRoleByMode } from '@/components/DipChat/utils';
 import { getConversationDetailsById } from '@/apis/super-assistant';
 import dayjs from 'dayjs';
 
@@ -18,9 +17,9 @@ type PanelFooterProps = {
   onEdit?: () => void;
   style?: CSSProperties;
 };
-const PanelFooter = ({ chatItemIndex, className, onExport, onEdit }: PanelFooterProps) => {
+const PanelFooter = ({ chatItemIndex, className, onEdit }: PanelFooterProps) => {
   const {
-    dipChatStore: { chatList, aiInputValue, streamGenerating, agentAppType, debug, agentAppKey, activeConversationKey },
+    dipChatStore: { chatList, streamGenerating, debug, agentAppKey, activeConversationKey },
     sendChat,
     closeSideBar,
   } = useDipChatStore();
@@ -59,7 +58,7 @@ const PanelFooter = ({ chatItemIndex, className, onExport, onEdit }: PanelFooter
     });
     newChatList.push({
       key: nanoid(),
-      role: getChatItemRoleByMode(aiInputValue.mode, agentAppType),
+      role: 'common',
       content: '',
       loading: true,
     });
@@ -87,12 +86,6 @@ const PanelFooter = ({ chatItemIndex, className, onExport, onEdit }: PanelFooter
     if (res) {
       messageApi.success('复制成功');
     }
-  };
-
-  const exportBtn = async () => {
-    // const markdownContent = chatItem.content;
-    // console.log(markdownContent, 'markdownContent');
-    onExport?.();
   };
 
   const renderRestartBtn = () => {
@@ -127,7 +120,7 @@ const PanelFooter = ({ chatItemIndex, className, onExport, onEdit }: PanelFooter
   };
 
   const renderCopyBtn = () => {
-    if (chatItem.role !== 'plan' && !chatItem.error) {
+    if (!chatItem.error) {
       let text = '';
       if (chatItem.role === 'net') {
         text = chatItem.content.result;
@@ -138,9 +131,6 @@ const PanelFooter = ({ chatItemIndex, className, onExport, onEdit }: PanelFooter
             text += `${text ? '\n' : ''}${item.llmResult?.text}`;
           }
         });
-      }
-      if (chatItem.role === 'plan-report') {
-        text = chatItem.content;
       }
       if (chatItem.role === 'user') {
         text = chatItem.content;
@@ -157,22 +147,6 @@ const PanelFooter = ({ chatItemIndex, className, onExport, onEdit }: PanelFooter
           </Tooltip>
         );
       }
-    }
-  };
-
-  const renderExportBtn = () => {
-    if (chatItem.role === 'plan-report') {
-      return (
-        <Tooltip title="导出">
-          {/* <ExportPDF value={chatItem.content} />*/}
-          <Button
-            onClick={exportBtn}
-            size="small"
-            type="text"
-            icon={<DipIcon className="dip-text-color-65" type="icon-dip-daochu" />}
-          />
-        </Tooltip>
-      );
     }
   };
 
@@ -210,8 +184,6 @@ const PanelFooter = ({ chatItemIndex, className, onExport, onEdit }: PanelFooter
           {!debug && renderEditBtn()}
 
           {renderCopyBtn()}
-
-          {renderExportBtn()}
         </span>
         {renderTimeTokens()}
         {contextHolder}

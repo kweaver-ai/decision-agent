@@ -97,14 +97,7 @@ const ConversationListModal = ({ onClose, agentAppKey, startNewConversation }: a
     setDipChatStore({
       activeConversationKey: activeKey,
     });
-    resetDipChatStore([
-      'activeChatItemIndex',
-      'executePlanItemIndex',
-      'chatListAutoScroll',
-      'scrollIntoViewPlanId',
-      'expandedExploreItemId',
-      'activeProgressIndex',
-    ]);
+    resetDipChatStore(['activeChatItemIndex', 'executePlanItemIndex', 'chatListAutoScroll', 'activeProgressIndex']);
     const res: any = await getConversationDetailsByKey(activeKey);
     if (res) {
       const { recoverConversation, chatList, executePlanItemIndex, read_message_index, message_index } = res;

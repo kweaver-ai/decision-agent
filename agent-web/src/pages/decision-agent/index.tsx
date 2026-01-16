@@ -2,7 +2,7 @@ import { lazy } from 'react';
 import { createRouteApp } from '@/utils/qiankun-entry-generator';
 
 const routeComponents = {
-  DataAgents: lazy(() => import('@/components/DataAgents')),
+  DecisionAgent: lazy(() => import('@/components/DecisionAgent')),
   AgentConfig: lazy(() => import('@/components/AgentConfig')),
   AgentUsage: lazy(() => import('./AgentUsage')),
   DolphinLanguageDoc: lazy(() => import('./DolphinLanguageDoc')),
@@ -12,7 +12,7 @@ const routeComponents = {
 const routes = [
   {
     path: '/',
-    element: <routeComponents.DataAgents />,
+    element: <routeComponents.DecisionAgent />,
   },
   {
     path: '/config',

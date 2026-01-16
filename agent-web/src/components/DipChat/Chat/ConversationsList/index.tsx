@@ -135,8 +135,6 @@ const ConversationList = ({ startNewConversation, className }: any) => {
                   'activeChatItemIndex',
                   'executePlanItemIndex',
                   'chatListAutoScroll',
-                  'scrollIntoViewPlanId',
-                  'expandedExploreItemId',
                   'activeProgressIndex',
                 ]);
                 getDetailsById(item.key);

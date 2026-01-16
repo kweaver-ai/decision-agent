@@ -80,8 +80,8 @@ const AgentApiDocument = () => {
     !isEmpty(apiDocData) && (
       <div className={styles['container']}>
         <AgentSwaggerDoc
-          title={agent_name}
-          id={agent_id}
+          title={agent_name as string}
+          id={agent_id as string}
           description={apiDocData.info.description}
           method={method}
           url={url}

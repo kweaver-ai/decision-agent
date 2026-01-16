@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import AdTree from '@/components/AdTree';
-import { AdTreeDataNode, adTreeUtils } from '@/utils/handle-function';
+import { type AdTreeDataNode, adTreeUtils } from '@/utils/handle-function';
 import DipIcon from '@/components/DipIcon';
 import { getMetricInfoByIds } from '@/apis/data-model';
-import useDeepCompareEffect from 'use-deep-compare-effect';
 import { flatToTreeData } from '@/utils/handle-function';
 import { nanoid } from 'nanoid';
+import { useDeepCompareEffect } from '@/hooks';
 
 const MetricTree = ({ dataSource = [] }: any) => {
   const [treeProps, setTreeProps] = useState({

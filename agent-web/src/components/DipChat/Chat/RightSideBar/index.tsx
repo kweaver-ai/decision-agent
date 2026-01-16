@@ -1,9 +1,8 @@
 import styles from './index.module.less';
 import classNames from 'classnames';
 import { useDipChatStore } from '@/components/DipChat/store';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import NetSearchList from './NetSearchList';
-import Explore from './Explore';
 import _ from 'lodash';
 import FadeInFromRight from '@/components/animation/FadeInFromRight';
 import FilePreview from '../../components/FilePreview';
@@ -14,7 +13,7 @@ import NGQLToolSide from './NGQLToolSide';
 import CommonToolSide from './CommonToolSide';
 import DocQAToolSide from './DocQAToolSide';
 import MetricToolSide from './MetricToolSide';
-import { PreviewFileType } from '@/components/DipChat/interface';
+import type { PreviewFileType } from '@/components/DipChat/interface';
 
 const RightSideBar = () => {
   const {
@@ -26,9 +25,6 @@ const RightSideBar = () => {
   const [previewFile, setPreviewFile] = useState<PreviewFileType>();
 
   const renderContent = () => {
-    if (chatItem?.role === 'plan') {
-      return <Explore />;
-    }
     if (!_.isEmpty(activeContent.cites)) {
       return <NetSearchList />;
     }
