@@ -146,13 +146,6 @@ class AFTool(BaseTool, ABC):
         self._task_id = generate_task_id()
         self._result_cache_key = self.session_id + "_" + self._task_id
 
-    def handle_result(self,
-                      log,
-                      ans_multiple):
-        """ A abstract method to deal with tool answers
-        """
-        pass
-
     def refresh_result_cache_key(self):
         self._result_cache_key = self.session_id + "_" + self._task_id
 

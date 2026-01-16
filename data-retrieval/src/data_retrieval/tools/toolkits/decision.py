@@ -5,7 +5,7 @@
 @Desc:
 """
 
-from typing import Any, Optional, Type, Dict
+from typing import Any, Optional, Type
 import pandas as pd
 from langchain.callbacks.manager import (AsyncCallbackManagerForToolRun,
                                          CallbackManagerForToolRun)
@@ -19,7 +19,7 @@ from langchain_community.docstore.in_memory import InMemoryDocstore
 from langchain.pydantic_v1 import BaseModel, Field
 from data_retrieval.datasource.db_base import DataSource
 from data_retrieval.utils._common import format_table_datas
-from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer, ToolMultipleResult, AFTool
+from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer, AFTool
 
 from data_retrieval.logs.logger import logger
 from data_retrieval.sessions.redis_session import RedisHistorySession
@@ -313,20 +313,3 @@ class DecisionTool(AFTool):
         run_manager: Optional[AsyncCallbackManagerForToolRun] = None,
     ):
         return self._run(factors=factors, run_manager=run_manager)
-
-    def handle_result(
-        self,
-        log: Dict[str, Any],
-        ans_multiple: ToolMultipleResult
-    ) -> None:
-        if self.session:
-            tool_res = self.session.get_agent_logs(
-                self._result_cache_key
-            )
-            if tool_res:
-                log['result'] = tool_res
-
-            ans_multiple.cache_keys[self._result_cache_key] = {
-                "tool_name": "decision_maker",
-                "title": log.get("title", "decision_maker"),
-            }

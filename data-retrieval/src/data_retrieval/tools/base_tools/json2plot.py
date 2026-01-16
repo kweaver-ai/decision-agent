@@ -11,7 +11,7 @@ from langchain_core.pydantic_v1 import BaseModel, Field, PrivateAttr
 from data_retrieval.logs.logger import logger
 from data_retrieval.sessions import BaseChatHistorySession, CreateSession
 from data_retrieval.tools.base import ToolName
-from data_retrieval.tools.base import ToolMultipleResult, AFTool
+from data_retrieval.tools.base import AFTool
 from data_retrieval.tools.base import async_construct_final_answer
 from data_retrieval.errors import Json2PlotError
 from data_retrieval.tools.base import api_tool_decorator
@@ -294,35 +294,6 @@ class Json2Plot(AFTool):
             logger.error(f"Json2Plot工具执行错误，实际错误为:{e}")
             traceback.print_exc()
             raise
-
-    def handle_result(
-        self,
-        log: Dict[str, Any],
-        ans_multiple: ToolMultipleResult
-    ) -> None:
-        if self.session:
-            tool_res = self.session.get_agent_logs(
-                self._result_cache_key
-            )
-            if tool_res:
-                log["result"] = tool_res
-                chart_data = tool_res["data"]
-                if len(chart_data) > 0 and len(chart_data[0]) > 1:
-                    ans_multiple.chart.append(tool_res)
-                    ans_multiple.new_chart.append({
-                        "title": tool_res["title"],
-                        "data": {
-                            "data": tool_res["data"],
-                            "config": tool_res["config"],
-                            "chart_config": tool_res["chart_config"]
-                        }
-                    })
-
-                ans_multiple.cache_keys[self._result_cache_key] = {
-                    "title": tool_res.get("title", "json2plot"),
-                    "tool_name": "json2plot",
-                    "chart_config": tool_res.get("chart_config", {}),
-                }
 
     @classmethod
     @api_tool_decorator

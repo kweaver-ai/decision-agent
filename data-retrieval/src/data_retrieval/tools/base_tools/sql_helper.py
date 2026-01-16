@@ -3,7 +3,7 @@
 # @Date: 2024-5-23
 import traceback
 import uuid
-from typing import Any, Optional, Type, Dict, List
+from typing import Optional, Type, List
 from enum import Enum
 from langchain.callbacks.manager import (AsyncCallbackManagerForToolRun,
                                          CallbackManagerForToolRun)
@@ -17,7 +17,7 @@ from data_retrieval.datasource.dip_dataview import DataView
 from data_retrieval.api.agent_retrieval import get_datasource_from_agent_retrieval_async
 from data_retrieval.logs.logger import logger
 from data_retrieval.sessions import CreateSession, BaseChatHistorySession  # 重新导入 session 相关模块
-from data_retrieval.tools.base import ToolMultipleResult, ToolName
+from data_retrieval.tools.base import ToolName
 from data_retrieval.tools.base import async_construct_final_answer
 from data_retrieval.tools.base import AFTool
 from data_retrieval.tools.base import api_tool_decorator
@@ -379,51 +379,6 @@ class SQLHelperTool(AFTool):
         except Exception as e:
             logger.error(f"SQL 执行失败: {e}")
             raise SQLHelperException(f"SQL 执行失败: {str(e)}")
-
-    def handle_result(
-        self,
-        log: Dict[str, Any],
-        ans_multiple: ToolMultipleResult
-    ) -> None:
-        if self.session:
-            tool_res = self.session.get_agent_logs(
-                self._result_cache_key
-            )
-            if tool_res:
-                log["result"] = tool_res
-
-                if tool_res.get("command") == CommandType.GET_METADATA.value:
-                    # 处理元数据信息
-                    ans_multiple.text.append(f"元数据信息: {tool_res.get('message', '')}")
-                    ans_multiple.cites = tool_res.get("metadata", [])
-                elif tool_res.get("command") == CommandType.EXECUTE_SQL.value:
-                    # 处理 SQL 执行结果
-                    data = tool_res.get("data", [])
-                    title = tool_res.get("title", "")
-                    sql = tool_res.get("sql", "")
-
-                    ans_multiple.table.append(sql)
-
-                    # 如果有title，使用它作为标题，否则使用默认标题
-                    if title:
-                        table_title = f"{title}: {sql}"
-                    else:
-                        table_title = f"SQL 执行结果: {sql}"
-
-                    ans_multiple.new_table.append({
-                        "title": table_title,
-                        "data": data
-                    })
-                    ans_multiple.text.append(tool_res.get("message", ""))
-
-                ans_multiple.cache_keys[self._result_cache_key] = {
-                    "tool_name": "sql_helper",
-                    "title": f"SQL Helper - {tool_res.get('command', '')}",
-                    "sql": tool_res.get("sql", ""),
-                    "is_empty": len(tool_res.get("data", [])) == 0,
-                    "fields": list(tool_res.get("data", [{}])[0].keys()) if tool_res.get("data") else [],
-                }
-        # pass # 暂时不做任何处理
 
     @classmethod
     @api_tool_decorator

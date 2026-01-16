@@ -166,17 +166,6 @@ class GetMetadataTool(AFTool):
         result["title"] = query if query else "获取数据源信息"
         return result
 
-    # def handle_result(
-    #     self,
-    #     log: Dict[str, Any],
-    #     ans_multiple: ToolMultipleResult
-    # ) -> None:
-    #     tool_res = self.session.get_agent_logs(
-    #         self._result_cache_key
-    #     )
-    #     if tool_res:
-    #         log["result"] = tool_res
-
     #         ans_multiple.cites = []
     #         for data_view in tool_res["data_view_metadata"]:
     #             ans_multiple.cites.append({

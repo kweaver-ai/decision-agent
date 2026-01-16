@@ -9,7 +9,7 @@ import re
 import json
 import numpy as np
 import pandas as pd
-from typing import Any, Optional, Type, Dict
+from typing import Any, Optional, Type
 import matplotlib.pyplot as plt
 from scipy import stats
 from statsmodels.tsa.arima.model import ARIMA
@@ -22,7 +22,7 @@ from langchain.callbacks.manager import (AsyncCallbackManagerForToolRun,
 from langchain.pydantic_v1 import BaseModel, Field
 
 from data_retrieval.logs.logger import logger
-from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer, AFTool, ToolMultipleResult
+from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer, AFTool
 from data_retrieval.sessions.redis_session import RedisHistorySession
 from data_retrieval.tools import ToolName
 from datetime import datetime, timedelta
@@ -510,23 +510,6 @@ class ArimaTool(AFTool):
         run_manager: Optional[AsyncCallbackManagerForToolRun] = None,
     ):
         return self._run(input=input)
-
-    def handle_result(
-        self,
-        log: Dict[str, Any],
-        ans_multiple: ToolMultipleResult
-    ) -> None:
-        if self.session:
-            tool_res = self.session.get_agent_logs(
-                self._result_cache_key
-            )
-            if tool_res:
-                log['result'] = tool_res
-
-            ans_multiple.cache_keys[self._result_cache_key] = {
-                "tool_name": "arima",
-                "title": log.get("title", "arima"),
-            }
 
 
 if __name__ == '__main__':

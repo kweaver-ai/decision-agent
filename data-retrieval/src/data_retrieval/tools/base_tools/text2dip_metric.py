@@ -3,7 +3,7 @@
 # @Date: 2024-08-26
 import json
 import traceback
-from typing import Any, Optional, Type, Dict, List
+from typing import Any, Optional, Type, List
 
 from langchain.callbacks.manager import (AsyncCallbackManagerForToolRun,
                                          CallbackManagerForToolRun)
@@ -25,7 +25,7 @@ from data_retrieval.parsers.base import BaseJsonParser
 
 from data_retrieval.sessions import CreateSession, BaseChatHistorySession
 from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer
-from data_retrieval.tools.base import LLMTool, ToolMultipleResult, ToolName
+from data_retrieval.tools.base import LLMTool, ToolName
 from data_retrieval.tools.base import _TOOL_MESSAGE_KEY
 from data_retrieval.settings import get_settings
 from data_retrieval.tools.base import api_tool_decorator
@@ -826,37 +826,6 @@ class Text2DIPMetricTool(LLMTool):
             logger.error(f"处理执行结果失败: {e}")
             print(traceback.format_exc())
             return {"error": f"处理执行结果失败: {e}"}
-
-    def handle_result(
-        self,
-        log: Dict[str, Any],
-        ans_multiple: ToolMultipleResult
-    ) -> None:
-        """处理结果，参考 text2metric.py 的实现"""
-        if self.session:
-            tool_res = self.session.get_agent_logs(
-                self._result_cache_key
-            )
-            if tool_res:
-                log["result"] = tool_res
-
-                # 获取缓存的数据
-                full_result = tool_res.get("full_result", {})
-                data = full_result.get("data", [])
-
-                # 添加到结果中
-                ans_multiple.table.append(full_result)
-                ans_multiple.new_table.append({"title": full_result.get("title", "DIP Metric 查询结果"), "data": data})
-
-                # 设置缓存键信息
-                cache_result = {
-                    "tool_name": "text2metric",
-                    "title": full_result.get("title", "text2metric"),
-                    "is_empty": len(data) == 0,
-                    "fields": list(data[0].keys()) if data else [],
-                }
-
-                ans_multiple.cache_keys[self._result_cache_key] = cache_result
 
     @classmethod
     def from_dip_metric(

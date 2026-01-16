@@ -4,7 +4,7 @@
 import json
 import traceback
 from textwrap import dedent
-from typing import Any, Optional, Type, Dict, List
+from typing import Any, Optional, Type, List
 from enum import Enum
 from collections import OrderedDict
 from langchain.callbacks.manager import (AsyncCallbackManagerForToolRun,
@@ -32,7 +32,7 @@ from data_retrieval.prompts.tools_prompts.text2sql_prompt.text2sql import Text2S
 from data_retrieval.prompts.tools_prompts.text2sql_prompt.rewrite_query import RewriteQueryPrompt
 
 from data_retrieval.sessions import CreateSession, BaseChatHistorySession
-from data_retrieval.tools.base import ToolMultipleResult, ToolName
+from data_retrieval.tools.base import ToolName
 from data_retrieval.tools.base import async_construct_final_answer
 from data_retrieval.utils.func import JsonParse
 from data_retrieval.utils.func import add_quotes_to_fields_with_data_self
@@ -824,46 +824,6 @@ class Text2SQLTool(LLMTool):
         except Exception as e:
             print(traceback.format_exc())
             raise ToolException(error_message2.format(error_info=e))
-
-    def handle_result(
-        self,
-        log: Dict[str, Any],
-        ans_multiple: ToolMultipleResult
-    ) -> None:
-        if self.session:
-            tool_res = self.session.get_agent_logs(
-                self._result_cache_key
-            )
-            if tool_res:
-                log["result"] = tool_res
-                ans_multiple.table.append(tool_res.get("res", ""))
-
-                # This is wrong, because the res is a markdown string
-                # ans_multiple.new_table.append({"title": tool_res["title"], "data": tool_res.get("data", [])})
-                data = tool_res.get("data", [])
-                ans_multiple.new_table.append({"title": tool_res["title"], "data": data})
-
-                ans_multiple.cites = tool_res.get("cites", [])
-                ans_multiple.explain.append(
-                    {
-                        "sql": tool_res["sql"],
-                        "explanation": tool_res["explanation"]
-                    }
-                )
-
-                ans_multiple.cache_keys[self._result_cache_key] = {
-                    "tool_name": "text2sql",
-                    "title": tool_res.get("title", "text2sql"),
-                    "sql": tool_res.get("sql", ""),
-                    "is_empty": tool_res.get("is_empty", len(data) == 0),
-                    "fields": tool_res.get("fields", list(data[0].keys()) if data else []),
-                }
-
-                if tool_res.get("graph"):
-                    ans_multiple.graph.append({
-                        "title": tool_res["title"],
-                        "graph": tool_res["graph"]
-                    })
 
     @classmethod
     @api_tool_decorator
