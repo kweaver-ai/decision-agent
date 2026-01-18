@@ -7,7 +7,7 @@ import (
 	iecoConfighttp "github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iecoconfighttp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iefasthttp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iportdriver"
-	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/icmp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp"
 )
 
 type tempareaSvc struct {

@@ -6,8 +6,8 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/redisaccess/sessionredisacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/session/sessionreq"
-	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper/grhelper"
-	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/ctype"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/grhelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/ctype"
 )
 
 // HandleGetInfoOrCreate 处理get_info_or_create操作

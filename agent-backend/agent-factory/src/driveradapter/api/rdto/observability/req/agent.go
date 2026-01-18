@@ -1,7 +1,7 @@
 package observabilityreq
 
 import (
-	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 )
 
 // POST /api/agent-app/v1/observability/agent/:agent_id/detail

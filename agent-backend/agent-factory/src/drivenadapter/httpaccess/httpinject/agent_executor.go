@@ -10,7 +10,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iagentexecutorhttp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iv2agentexecutorhttp"
-	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/cmphelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/cmphelper"
 	"github.com/kweaver-ai/kweaver-go-lib/logger"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )

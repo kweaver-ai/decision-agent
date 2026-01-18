@@ -1,7 +1,7 @@
 package conf
 
 import (
-	"github.com/kweaver-ai/agent-go-common-pkg/cconf"
+	"github.com/kweaver-ai/decision-agent/agent-factory/cconf"
 )
 
 type AgentExecutorConf struct {

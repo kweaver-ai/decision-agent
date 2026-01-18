@@ -7,8 +7,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iagentfactoryhttp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iv2agentexecutorhttp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iportdriver"
-	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/icmp"
-	"github.com/kweaver-ai/agent-go-common-pkg/src/port/driven/ihttpaccess/iusermanagementacc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iusermanagementacc"
 )
 
 type conversationSvc struct {

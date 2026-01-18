@@ -1,7 +1,7 @@
 package agentexecutoraccreq
 
 import (
-	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/valueobject/daconfvalobj"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 )
 
 type ConversationSessionInitReq struct {

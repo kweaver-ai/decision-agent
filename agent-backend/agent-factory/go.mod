@@ -8,7 +8,6 @@ require (
 	github.com/getkin/kin-openapi v0.133.0
 	github.com/go-redis/redismock/v8 v8.11.5
 	github.com/go-redsync/redsync/v4 v4.12.1
-	github.com/kweaver-ai/agent-go-common-pkg v1.1.8
 	github.com/kweaver-ai/kweaver-go-lib v1.0.2
 	github.com/kweaver-ai/proton-rds-sdk-go v1.4.2
 	github.com/opensearch-project/opensearch-go v1.1.0
@@ -201,5 +200,3 @@ require (
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.1 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
-
-//replace github.com/kweaver-ai/agent-go-common-pkg => /Users/Zhuanz/Work/as/dip_ws/agent-go-common-pkg

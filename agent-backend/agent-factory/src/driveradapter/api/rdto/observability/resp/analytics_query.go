@@ -2,7 +2,7 @@ package observabilityresp
 
 import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo"
-	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/valueobject/daconfvalobj"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 )
 
 // AnalyticsQueryResp 查询可观测数据响应

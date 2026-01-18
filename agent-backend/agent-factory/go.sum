@@ -242,8 +242,6 @@ github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2 v2.10.3 h1:pE+nTrolc4ddaflWHFa
 github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2 v2.10.3/go.mod h1:UFxm9Z8IHeiOGJwW1ZFtBUGp1UamOBakmMYKqniKpwM=
 github.com/kweaver-ai/TelemetrySDK-Go/span/v2 v2.10.3 h1:RfDAVWBrQ9Beu5kNBCga3HcwWnTjoUSHDX5cxw6DZfI=
 github.com/kweaver-ai/TelemetrySDK-Go/span/v2 v2.10.3/go.mod h1:JrfEsKeZEQG5cic8RTCYqk9L2jBr/T9GhtS9gYini0A=
-github.com/kweaver-ai/agent-go-common-pkg v1.1.8 h1:OO0aqGG4h9WLCXjAol0uMZFYrBqQHd4MRGNgsFTTYRo=
-github.com/kweaver-ai/agent-go-common-pkg v1.1.8/go.mod h1:619kdV6SkeEpm+ecZvphWfI+r5De5PmWcnkkvraruWo=
 github.com/kweaver-ai/kweaver-go-lib v1.0.2 h1:sjRBwi+6GzmMr+PJIgtMxLJ1r9YVmvT7qs+oKrGZuUE=
 github.com/kweaver-ai/kweaver-go-lib v1.0.2/go.mod h1:XBaZZakJdbd7cWDLvgcwn2yVDbhKu2oZe3rfykZs3DY=
 github.com/kweaver-ai/proton-mq-sdk-go v1.9.1 h1:pYRw/GS2lqdY41V8W2Kpj0H2Y9mx0aNMzxl36xIgy5Q=
@@ -326,8 +324,8 @@ github.com/quic-go/quic-go v0.58.0 h1:ggY2pvZaVdB9EyojxL1p+5mptkuHyX5MOSv4dgWF4U
 github.com/quic-go/quic-go v0.58.0/go.mod h1:upnsH4Ju1YkqpLXC305eW3yDZ4NfnNbmQRCMWS58IKU=
 github.com/rcrowley/go-metrics v0.0.0-20250401214520-65e299d6c5c9 h1:bsUq1dX0N8AOIL7EB/X911+m4EHsnWEHeJ0c+3TTBrg=
 github.com/rcrowley/go-metrics v0.0.0-20250401214520-65e299d6c5c9/go.mod h1:bCqnVzQkZxMG4s8nGwiZ5l3QUCyqpo9Y+/ZMZ9VjZe4=
-github.com/redis/go-redis/v9 v9.6.1 h1:HHDteefn6ZkTtY5fGUE8tj8uy85AHk6zP7CpzIAM0y4=
-github.com/redis/go-redis/v9 v9.6.1/go.mod h1:0C0c6ycQsdpVNQpxb1njEQIqkx5UcsM8FJCQLgE9+RA=
+github.com/redis/go-redis/v9 v9.4.0 h1:Yzoz33UZw9I/mFhx4MNrB6Fk+XHO1VukNcCa1+lwyKk=
+github.com/redis/go-redis/v9 v9.4.0/go.mod h1:hdY0cQFCN4fnSYT6TkisLufl/4W5UIXyv0b/CLO2V2M=
 github.com/redis/rueidis v1.0.19 h1:s65oWtotzlIFN8eMPhyYwxlwLR1lUdhza2KtWprKYSo=
 github.com/redis/rueidis v1.0.19/go.mod h1:8B+r5wdnjwK3lTFml5VtxjzGOQAC+5UmujoD12pDrEo=
 github.com/rivo/uniseg v0.2.0/go.mod h1:J6wj4VEh+S6ZtnVlnTBMWIodfgj8LQOQFoIToxlJtxc=

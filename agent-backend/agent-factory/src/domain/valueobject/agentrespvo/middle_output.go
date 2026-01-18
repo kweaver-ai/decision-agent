@@ -4,7 +4,7 @@ import (
 	"errors"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/chat_enum/chatresenum"
-	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	"github.com/bytedance/sonic"
 	"github.com/tidwall/gjson"
 )

@@ -6,8 +6,8 @@ package agentsvc
 // 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutoraccreq"
 // 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 // 	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
-// 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cenum"
-// 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/ctype"
+// 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
+// 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/ctype"
 // 	"github.com/pkg/errors"
 // )
 

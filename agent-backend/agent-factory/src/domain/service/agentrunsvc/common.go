@@ -9,9 +9,9 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/conversationmsgvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutordto"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
-	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/valueobject/daconfvalobj"
-	"github.com/kweaver-ai/agent-go-common-pkg/src/domain/valueobject/daconfvalobj/skillvalobj"
-	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj/skillvalobj"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 )
 
 // NOTE: 将agent配置转换为agent call请求配置，支持用户传入llm配置和数据源配置代替agent配置中的llm配置和数据源配置

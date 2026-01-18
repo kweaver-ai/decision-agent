@@ -1,6 +1,6 @@
 package agentfactorydto
 
-import "github.com/kweaver-ai/agent-go-common-pkg/src/domain/valueobject/daconfvalobj"
+import "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 
 type Field struct {
 	Name string `json:"name"`

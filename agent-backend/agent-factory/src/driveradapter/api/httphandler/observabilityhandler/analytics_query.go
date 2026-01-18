@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	observabilityreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/observability/req"
-	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"
-	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 

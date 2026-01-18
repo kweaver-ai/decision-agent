@@ -6,7 +6,7 @@ import (
 	tempareareq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/temparea/req"
 	temparearesp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/temparea/resp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
-	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	"github.com/pkg/errors"
 )
 

@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
-	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/gin-gonic/gin"

@@ -8,8 +8,8 @@ package agentexecutoraccess
 
 // 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutoraccreq"
 // 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutoraccres"
-// 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/chelper"
-// 	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/ctype"
+// 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
+// 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/ctype"
 // )
 
 // // ConversationSessionInit 只有 v1 接口，没有 v2 接口

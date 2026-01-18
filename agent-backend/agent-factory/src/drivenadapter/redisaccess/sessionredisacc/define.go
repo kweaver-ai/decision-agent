@@ -4,8 +4,8 @@ import (
 	"fmt"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/iredisaccess/isessionredis"
-	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/icmp"
-	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/rediscmp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/rediscmp"
 )
 
 const (

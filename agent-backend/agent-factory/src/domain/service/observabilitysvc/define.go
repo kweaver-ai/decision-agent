@@ -4,7 +4,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iagentfactoryhttp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iuniqueryhttp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iportdriver"
-	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/cmp/icmp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp"
 )
 
 // NewObservabilitySvcDto 可观测性服务构造参数

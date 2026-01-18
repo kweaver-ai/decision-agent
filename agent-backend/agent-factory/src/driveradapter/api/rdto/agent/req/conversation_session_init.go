@@ -3,7 +3,7 @@ package agentreq
 import (
 	"errors"
 
-	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/cenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 )
 
 type ConversationSessionInitReq struct {

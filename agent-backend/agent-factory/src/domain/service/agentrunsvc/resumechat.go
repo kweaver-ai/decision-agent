@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/kweaver-ai/agent-go-common-pkg/src/infra/common/capierr"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/bytedance/sonic"
 	"go.opentelemetry.io/otel/attribute"

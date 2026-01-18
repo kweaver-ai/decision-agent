@@ -1,6 +1,6 @@
 package conf
 
-import "github.com/kweaver-ai/agent-go-common-pkg/cconf"
+import "github.com/kweaver-ai/decision-agent/agent-factory/cconf"
 
 type EcoConfigConf struct {
 	PublicSvc  cconf.SvcConf `yaml:"public_svc"`

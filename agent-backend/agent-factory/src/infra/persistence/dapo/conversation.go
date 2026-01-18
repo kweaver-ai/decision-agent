@@ -1,6 +1,6 @@
 package dapo
 
-import "github.com/kweaver-ai/agent-go-common-pkg/src/domain/enum/cdaenum"
+import "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 
 type ConversationPO struct {
 	ID          string `json:"id" db:"f_id"`
