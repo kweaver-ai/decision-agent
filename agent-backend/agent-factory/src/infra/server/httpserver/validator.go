@@ -1,9 +1,9 @@
-package server
+package httpserver
 
 import (
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/customvalidator"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/customvalidator"
 )
 
 func init() {

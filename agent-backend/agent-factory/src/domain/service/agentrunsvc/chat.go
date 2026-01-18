@@ -215,6 +215,14 @@ func (agentSvc *agentSvc) Process(req *agentreq.ChatReq, agent agentfactorydto.A
 	// NOTE: 记录开始时间
 	startTime := time.Now()
 
+	// NOTE: 创建流式日志记录器（仅 DEBUG 模式）
+	streamLogger, _ := NewStreamingResponseLogger(req.ConversationID)
+	defer func() {
+		if streamLogger != nil {
+			streamLogger.Complete()
+		}
+	}()
+
 	var err error
 	// NOTE: 使用新的ctx，确保process协程能独立完成请求，不受外界影响
 	ctx := context.Background()
@@ -254,6 +262,10 @@ looplabel:
 			} else {
 				agentSvc.logger.Errorf("[Process] the format of message is invalid,  msg: %v", msg)
 				continue
+			}
+			// NOTE: 记录流式日志（仅 DEBUG 模式）
+			if streamLogger != nil {
+				streamLogger.LogChunk([]byte(message))
 			}
 			// NOTE: message 是原始数据
 			// currentData, isEnd, err = agentSvc.CallResult2MsgResp(ctx, []byte(message), req)
