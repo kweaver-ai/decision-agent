@@ -1,4 +1,4 @@
-from DolphinLanguageSDK.utils.tools import Tool
+from dolphin.core.utils.tools import Tool
 
 
 class APIToolOutputHandler(Tool):

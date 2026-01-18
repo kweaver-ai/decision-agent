@@ -10,7 +10,7 @@ from app.common.errors.custom_errors_pkg import (
     DolphinSDKSkillError,
     DolphinSDKBaseError,
 )
-from DolphinLanguageSDK.exceptions import (
+from dolphin.core.common.exceptions import (
     ModelException,
     SkillException,
     DolphinException,

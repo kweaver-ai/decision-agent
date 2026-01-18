@@ -16,7 +16,7 @@ from app.common.exceptions import (
 )
 from app.common.errors.custom_errors_pkg import ParamError
 from app.common.errors.api_error_class import APIError
-from DolphinLanguageSDK.exceptions import ModelException, SkillException
+from dolphin.core.common.exceptions import ModelException, SkillException
 
 
 class TestBaseException:

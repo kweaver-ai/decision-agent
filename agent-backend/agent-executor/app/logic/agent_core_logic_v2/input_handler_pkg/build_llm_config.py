@@ -34,7 +34,7 @@ def _configure_local_dev_llm(llm: Dict[str, Any], llm_config: Dict[str, Any]) ->
         llm["llm_config"]["model_name"] = Config.outer_llm.model
         llm_config["default"] = Config.outer_llm.model
 
-    from DolphinLanguageSDK.config.global_config import TypeAPI
+    from dolphin.core.config.global_config import TypeAPI
 
     llm["llm_config"]["type_api"] = TypeAPI.OPENAI.value
     llm["llm_config"]["name"] = llm["llm_config"]["model_name"]

@@ -1,8 +1,8 @@
 from typing import Any, AsyncGenerator, Dict, Optional
-from DolphinLanguageSDK import flags
-from DolphinLanguageSDK.utils.tools import ToolInterrupt
-from DolphinLanguageSDK.constant import KEY_SESSION_ID, KEY_USER_ID
-from DolphinLanguageSDK.exceptions import (
+from dolphin.core import flags
+from dolphin.core.utils.tools import ToolInterrupt
+from dolphin.core.common.constants import KEY_SESSION_ID, KEY_USER_ID
+from dolphin.core.common.exceptions import (
     ModelException,
     SkillException,
     DolphinException,
@@ -43,7 +43,7 @@ from .run_dolphin import run_dolphin
 
 # AgentConfigVo
 
-from DolphinLanguageSDK.dolphin_language import DolphinExecutor
+from dolphin.core.executor.executor import Executor as DolphinExecutor
 
 
 class AgentCoreV2:

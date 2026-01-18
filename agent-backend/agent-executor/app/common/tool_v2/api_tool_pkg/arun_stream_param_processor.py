@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Tuple
 
-from DolphinLanguageSDK.context import Context
+from dolphin.core.context.context import Context
 from app.domain.enum.common.user_account_header_key import (
     get_user_account_id,
     get_user_account_type,

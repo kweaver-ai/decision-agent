@@ -1,6 +1,6 @@
 from typing import Dict, TYPE_CHECKING
 
-from DolphinLanguageSDK.utils.tools import Tool
+from dolphin.core.utils.tools import Tool
 from app.common.stand_log import StandLogger
 from app.domain.vo.agentvo.agent_config_vos import SkillVo
 from app.utils.observability.trace_wrapper import internal_span

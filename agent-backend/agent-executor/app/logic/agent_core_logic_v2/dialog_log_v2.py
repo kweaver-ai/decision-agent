@@ -23,7 +23,7 @@ from typing import Dict, Optional
 import os
 import datetime
 
-from DolphinLanguageSDK.trajectory import Trajectory
+from dolphin.core.trajectory.trajectory import Trajectory
 
 from app.common.config import Config
 from app.common.stand_log import StandLogger

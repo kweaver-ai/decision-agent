@@ -17,7 +17,7 @@ from pandas import DataFrame
 from pydantic import BaseModel
 
 from app.domain.enum.common.user_account_header_key import get_user_account_id
-from DolphinLanguageSDK.var.var_output import VarOutput
+from dolphin.core.context.var_output import VarOutput
 
 
 cur_pwd = os.getcwd()

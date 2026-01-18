@@ -3,8 +3,8 @@ import json
 
 import aiohttp
 
-from DolphinLanguageSDK.utils.tools import Tool
-from DolphinLanguageSDK.context import Context
+from dolphin.core.utils.tools import Tool
+from dolphin.core.context.context import Context
 from app.common.stand_log import StandLogger
 from app.domain.enum.common.user_account_header_key import (
     get_user_account_id,

@@ -4,8 +4,8 @@ import json
 import asyncio
 import aiohttp
 
-from DolphinLanguageSDK.utils.tools import ToolInterrupt
-from DolphinLanguageSDK.context import Context
+from dolphin.core.utils.tools import ToolInterrupt
+from dolphin.core.context.context import Context
 from app.common.stand_log import StandLogger
 
 # Import from common module using relative import

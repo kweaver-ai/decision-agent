@@ -1,9 +1,9 @@
 import json
 from typing import Any, AsyncGenerator, Dict, Optional, TYPE_CHECKING
-from DolphinLanguageSDK.agent import DolphinAgent
-from DolphinLanguageSDK.config.global_config import GlobalConfig
-from DolphinLanguageSDK.skill.triditional_toolkit import TriditionalToolkit
-from DolphinLanguageSDK.utils.tools import ToolInterrupt
+from dolphin.sdk.agent.dolphin_agent import DolphinAgent
+from dolphin.core.config.global_config import GlobalConfig
+from dolphin.sdk.skill.traditional_toolkit import TriditionalToolkit
+from dolphin.core.utils.tools import ToolInterrupt
 
 # from DolphinLanguageSDK.context_engineer.core.context_manager import (
 #     ContextManager,

@@ -8,7 +8,7 @@ from app.driven.infrastructure.redis import redis_pool
 from app.utils.observability.trace_wrapper import internal_span
 from opentelemetry.trace import Span
 
-from DolphinLanguageSDK.common import (
+from dolphin.core.common.enums import (
     Messages,
 )
 

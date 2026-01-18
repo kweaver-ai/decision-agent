@@ -2,7 +2,7 @@ from typing import Any, Dict
 import json
 
 from app.utils.dict_util import get_dict_val_by_path
-from DolphinLanguageSDK.context import Context
+from dolphin.core.context.context import Context
 from app.common.stand_log import StandLogger
 
 from app.utils.common import (

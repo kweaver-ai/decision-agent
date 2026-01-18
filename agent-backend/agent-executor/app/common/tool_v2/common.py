@@ -3,7 +3,7 @@ import json
 
 from pydantic import BaseModel, Field
 
-from DolphinLanguageSDK.utils.tools import Tool
+from dolphin.core.utils.tools import Tool
 
 # 定义ANSI颜色码 ,用于日志展示
 COLORS = {

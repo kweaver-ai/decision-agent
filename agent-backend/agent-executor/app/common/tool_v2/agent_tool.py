@@ -5,10 +5,10 @@ from typing import TYPE_CHECKING
 
 import aiohttp
 
-from DolphinLanguageSDK.utils.handle_progress import handle_progress, cleanup_progress
+from dolphin.lib.utils.handle_progress import handle_progress, cleanup_progress
 from app.utils.dict_util import get_dict_val_by_path
-from DolphinLanguageSDK.utils.tools import Tool, ToolInterrupt
-from DolphinLanguageSDK.context import Context
+from dolphin.core.utils.tools import Tool, ToolInterrupt
+from dolphin.core.context.context import Context
 from app.common.stand_log import StandLogger
 from app.domain.enum.common.user_account_header_key import (
     get_user_account_id,

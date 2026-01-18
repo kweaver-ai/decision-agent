@@ -1,6 +1,6 @@
 import json
 from typing import Any, Dict, Optional
-from DolphinLanguageSDK.utils.tools import ToolInterrupt
+from dolphin.core.utils.tools import ToolInterrupt
 
 from app.common.stand_log import StandLogger
 from app.driven.infrastructure.redis import redis_pool

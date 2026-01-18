@@ -1,5 +1,5 @@
-from DolphinLanguageSDK.skill_results.strategies import BaseStrategy
-from DolphinLanguageSDK.skill_results.result_reference import ResultReference
+from dolphin.lib.skill_results.strategies import BaseStrategy
+from dolphin.lib.skill_results.result_reference import ResultReference
 from typing import Any, Dict
 
 
