@@ -1,4 +1,5 @@
 import pytest
+from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
 from data_retrieval.tools.registry import ALL_TOOLS_MAPPING
@@ -29,3 +30,70 @@ def test_tool_schema(tool_name):
     assert resp.status_code == 200
     data = resp.json()
     assert isinstance(data, dict)
+
+
+class _DummyTool:
+    @staticmethod
+    async def get_api_schema():
+        return {"get": {"summary": "dummy schema"}}
+
+    @staticmethod
+    async def as_async_api_cls():
+        return {"ok": True}
+
+
+class _NoSchemaTool:
+    @staticmethod
+    async def as_async_api_cls():
+        return {"ok": True}
+
+
+def _make_app(router):
+    app = FastAPI()
+    app.include_router(router)
+    return TestClient(app)
+
+
+def test_docs_filters_tools_without_api_docs():
+    from data_retrieval.tools.tool_api_router import BaseToolAPIRouter
+
+    tools_mapping = {
+        "dummy": _DummyTool,
+        "hidden": _DummyTool,
+    }
+    router = BaseToolAPIRouter(
+        prefix="/tools",
+        tools_mapping=tools_mapping,
+        tools_without_api_docs=["hidden"],
+    )
+    custom_client = _make_app(router)
+
+    resp = custom_client.get("/tools/docs", params={"server_url": "http://example.com"})
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["servers"][0]["url"] == "http://example.com"
+    assert "/tools/dummy" in data["paths"]
+    assert "/tools/hidden" not in data["paths"]
+    assert "dummy" in data["info"]["description"]
+    assert "hidden" not in data["info"]["description"]
+
+
+def test_router_routes_respect_tool_capabilities():
+    from data_retrieval.tools.tool_api_router import BaseToolAPIRouter
+
+    tools_mapping = {
+        "dummy": _DummyTool,
+        "no_schema": _NoSchemaTool,
+    }
+    router = BaseToolAPIRouter(prefix="/tools", tools_mapping=tools_mapping)
+    custom_client = _make_app(router)
+
+    resp = custom_client.post("/tools/dummy")
+    assert resp.status_code == 200
+    resp = custom_client.get("/tools/dummy/schema")
+    assert resp.status_code == 200
+
+    resp = custom_client.post("/tools/no_schema")
+    assert resp.status_code == 200
+    resp = custom_client.get("/tools/no_schema/schema")
+    assert resp.status_code == 404

@@ -13,7 +13,7 @@ sys.path.append(grandparent_dir)
 
 from fastapi import APIRouter, FastAPI  # noqa: E402
 from data_retrieval.tools.registry import BASE_TOOLS_MAPPING, ALL_TOOLS_MAPPING  # noqa: E402
-
+from data_retrieval.tools.knowledge_network_tools import KNOWLEDGE_NETWORK_TOOLS_MAPPING  # noqa: E402
 
 _BASE_TOOLS_MAPPING = BASE_TOOLS_MAPPING
 
@@ -22,9 +22,10 @@ class BaseToolAPIRouter(APIRouter):
     name: str = "基础结构化数据分析工具箱"
     description: str = "支持对结构话数据进行处理的工具箱"
 
-    def __init__(self, tools_mapping: dict = None, *args, **kwargs):
+    def __init__(self, tools_mapping: dict = None, tools_without_api_docs: list = [], *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tools_mapping = tools_mapping
+        self.tools_without_api_docs = tools_without_api_docs
 
         if not self.tools_mapping:
             self.tools_mapping = _BASE_TOOLS_MAPPING
@@ -64,6 +65,9 @@ class BaseToolAPIRouter(APIRouter):
             符合OpenAPI 3.0规范的API文档
         """
         tools = list(self.tools_mapping.keys())
+
+        # 过滤掉不显示API文档的工具, 即内部工具
+        tools = [tool_name for tool_name in tools if tool_name not in self.tools_without_api_docs]
         if self.description:
             toolbox_desc = self.description + "，工具包含: \n"
         else:
@@ -105,8 +109,11 @@ class BaseToolAPIRouter(APIRouter):
 
 
 def create_app():
-    router = BaseToolAPIRouter(prefix="/tools", tools_mapping=ALL_TOOLS_MAPPING)
-
+    router = BaseToolAPIRouter(
+        prefix="/tools",
+        tools_mapping=ALL_TOOLS_MAPPING,
+        tools_without_api_docs=list(KNOWLEDGE_NETWORK_TOOLS_MAPPING.keys())
+    )
     app = FastAPI(
         title="AF Agent Tools API",
         description="AF Agent Tools API",
@@ -123,10 +130,6 @@ DEFAULT_APP = create_app()
 
 if __name__ == "__main__":
     import uvicorn
-
-    router = BaseToolAPIRouter(prefix="/tools", tools_mapping=ALL_TOOLS_MAPPING)
-    # sandbox_router = SandboxToolAPIRouter(prefix="/sandbox_tools")
-    # router.include_router(sandbox_router)
 
     app = create_app()
 
