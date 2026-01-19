@@ -56,6 +56,23 @@ class BaseToolAPIRouter(APIRouter):
             methods=["GET"]
         )
 
+        self.add_api_route(
+            path="/",
+            endpoint=self.list_tools,
+            methods=["GET"]
+        )
+
+    def list_tools(self):
+        return {
+            "tools": [
+                {
+                    "name": tool_name,
+                    "show_api_docs": True if tool_name not in self.tools_without_api_docs else False
+                }
+                for tool_name in self.tools_mapping.keys()
+            ]
+        }
+
     async def get_api_docs(self, server_url: str = "http://data-retrieval:9100"):
         """获取工具的API文档, 符合OpenAPI 3.0规范
         Parameters:

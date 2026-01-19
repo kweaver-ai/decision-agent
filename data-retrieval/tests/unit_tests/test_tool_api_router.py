@@ -1,6 +1,7 @@
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
+from langchain.pydantic_v1 import BaseModel, Field
 
 from data_retrieval.tools.registry import ALL_TOOLS_MAPPING
 from data_retrieval.tools.tool_api_router import DEFAULT_APP
@@ -33,6 +34,11 @@ def test_tool_schema(tool_name):
 
 
 class _DummyTool:
+    class ArgsSchema(BaseModel):
+        name: str = Field(description="dummy name")
+
+    args_schema = ArgsSchema
+
     @staticmethod
     async def get_api_schema():
         return {"get": {"summary": "dummy schema"}}
@@ -97,3 +103,18 @@ def test_router_routes_respect_tool_capabilities():
     assert resp.status_code == 200
     resp = custom_client.get("/tools/no_schema/schema")
     assert resp.status_code == 404
+
+
+def test_get_tool_pydantic_class():
+    from data_retrieval.tools.tool_api_router import BaseToolAPIRouter
+
+    tools_mapping = {
+        "dummy": _DummyTool,
+        "no_schema": _NoSchemaTool,
+    }
+    router = BaseToolAPIRouter(prefix="/tools", tools_mapping=tools_mapping)
+
+    model_cls = router.get_tool_pydantic_class("dummy")
+    assert model_cls is _DummyTool.ArgsSchema
+    assert router.get_tool_pydantic_class("no_schema") is None
+    assert router.get_tool_pydantic_class("missing") is None
