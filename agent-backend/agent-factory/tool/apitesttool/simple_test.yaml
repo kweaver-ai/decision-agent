@@ -1,0 +1,175 @@
+name: 简单API测试
+description: 测试YAML配置文件支持和高级功能
+variables:
+  base_url: https://jsonplaceholder.typicode.com
+  test_user_id: "1"
+
+variable_config:
+  random_number_min: 1
+  random_number_max: 100
+  random_string_length: 8
+  random_name_length: 6
+
+tests:
+  - name: 测试获取用户
+    description: 简单的GET请求测试，使用变量和动态变量
+    request:
+      method: GET
+      url: "{{base_url}}/users/{{test_user_id}}"
+      headers:
+        Accept: application/json
+        X-Request-ID: "${uuid}"
+        X-Timestamp: "${timestamp}"
+    expected:
+      status_code: 200
+      assertions:
+        - type: exists
+          field: body.id
+          message: 用户应该有ID
+        - type: equals
+          field: body.id
+          value: 1
+          message: 用户ID应该是1
+        - type: contains
+          field: body.email
+          value: "@"
+          message: 邮箱应该包含@符号
+        - type: type
+          field: body.id
+          value: "integer"
+          message: 用户ID应该是整数类型
+        - type: type
+          field: body.name
+          value: "string"
+          message: 用户名应该是字符串类型
+    variable_extraction:
+      - name: user_name
+        source: body
+        path: name
+      - name: user_email
+        source: body
+        path: email
+      - name: email_domain
+        source: body
+        path: email
+        regex: "@(.+)$"
+    timeout: 10s
+    retry: 1
+
+  - name: 测试创建文章
+    description: 使用动态变量和提取的变量创建文章
+    request:
+      method: POST
+      url: "{{base_url}}/posts"
+      headers:
+        Content-Type: application/json
+        X-Request-ID: "${uuid}"
+        X-Author: "{{user_name}}"
+        X-Domain: "{{email_domain}}"
+      body:
+        title: "YAML测试文章 - ${random_string:6}"
+        body: "这是通过YAML配置创建的测试文章，作者: {{user_name}}，邮箱: {{user_email}}，时间: ${timestamp}"
+        userId: 1
+        metadata:
+          created_at: "${timestamp_ms}"
+          random_id: "${random_number:1000-9999}"
+          author_name: "{{user_name}}"
+          session_id: "${uuid}"
+    expected:
+      status_code: 201
+      assertions:
+        - type: exists
+          field: body.id
+          message: 创建的文章应该有ID
+        - type: contains
+          field: body.title
+          value: "YAML测试文章"
+          message: 文章标题应该包含'YAML测试文章'
+        - type: contains
+          field: body.body
+          value: "{{user_name}}"
+          message: 文章内容应该包含用户名
+    variable_extraction:
+      - name: created_post_id
+        source: body
+        path: id
+      - name: created_post_title
+        source: body
+        path: title
+    timeout: 15s
+
+  - name: 测试动态变量功能
+    description: 展示各种动态变量的使用
+    request:
+      method: POST
+      url: "{{base_url}}/posts"
+      headers:
+        Content-Type: application/json
+        X-UUID: "${uuid}"
+        X-Timestamp: "${timestamp}"
+        X-Random-Token: "${random_string:16}"
+      body:
+        title: "动态变量测试 - ${random_name:8}"
+        body: "随机内容: ${random_string:20}，随机数: ${random_number:1-1000}，时间戳: ${timestamp_ms}"
+        userId: "${random_number:1-10}"
+        tags:
+          - "test"
+          - "${random_string:4}"
+          - "yaml"
+        metadata:
+          uuid: "${uuid}"
+          timestamp: "${timestamp}"
+          random_name: "${random_name:10}"
+          random_number: "${random_number:100-999}"
+    expected:
+      status_code: 201
+      assertions:
+        - type: exists
+          field: body.id
+          message: 创建的文章应该有ID
+        - type: contains
+          field: body.title
+          value: "动态变量测试"
+          message: 文章标题应该包含'动态变量测试'
+        - type: greater_than
+          field: body.userId
+          value: 0
+          message: 用户ID应该大于0
+    timeout: 10s
+
+  - name: 测试链式操作
+    description: 使用前面提取的变量进行操作
+    request:
+      method: PUT
+      url: "{{base_url}}/posts/{{created_post_id}}"
+      headers:
+        Content-Type: application/json
+        X-Request-ID: "${uuid}"
+        X-Original-Title: "{{created_post_title}}"
+      body:
+        id: "{{created_post_id}}"
+        title: "{{created_post_title}} - 已更新"
+        body: "更新内容，原作者: {{user_name}}，更新时间: ${timestamp}"
+        userId: 1
+        updated_by: "${random_name:8}"
+        update_metadata:
+          original_author: "{{user_name}}"
+          original_email: "{{user_email}}"
+          update_time: "${timestamp_ms}"
+          update_id: "${uuid}"
+    expected:
+      status_code: 200
+      assertions:
+        - type: equals
+          field: body.id
+          value: "{{created_post_id}}"
+          message: 文章ID应该匹配
+        - type: contains
+          field: body.title
+          value: "已更新"
+          message: 文章标题应该包含'已更新'
+        - type: contains
+          field: body.body
+          value: "{{user_name}}"
+          message: 文章内容应该包含原作者名称
+    timeout: 10s 

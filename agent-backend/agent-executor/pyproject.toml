@@ -1,0 +1,60 @@
+[project]
+name = "agent-executor"
+version = "0.1.0"
+description = "Agent executor is an executor for agents"
+readme = "README.md"
+requires-python = ">=3.10"
+ dependencies = [
+    "aiohttp==3.9.3",
+    "apscheduler==3.11.0",
+    "arrow==0.15.8",
+    "circuitbreaker==2.0.0",
+    "fastapi==0.119.1",
+    "jieba==0.42.1",
+    "jsonschema==4.17.0",
+    "limiter==0.5.0",
+    "numpy==1.26.0",
+    "opentelemetry-instrumentation-aiohttp-client==0.42b0",
+    "pandas==2.2.1",
+    "pycryptodome==3.20.0",
+    "pydantic==2.12.2",
+    "python-multipart==0.0.20",
+    "pyyaml==6.0.1",
+    "redis==4.6.0",
+    "requests==2.31.0",
+    "structlog==24.1.0",
+    "tika==3.1.0",
+    "uvicorn==0.38.0",
+    "mq-sdk@git+https://github.com/kweaver-ai/proton-mq-sdk-py",
+    "tlogging",
+    "kweaver-dolphin",
+]
+
+
+[dependency-groups]
+
+ dev = [
+    "ruff>=0.14.1",
+    "mypy>=1.0.0",
+    "pyinstaller>=6.16.0",
+    "pylint>=3.0.3",
+]
+test = [
+    "pytest>=7.0.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.0.0",
+    "pylint==3.0.3",
+    "pylint-junit==0.3.3",
+    "xmlrunner==1.7.7",
+]
+
+
+
+
+[tool.uv]
+index-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+
+
+[tool.uv.sources]
+mq-sdk = { git = "https://github.com/kweaver-ai/proton-mq-sdk-py", rev = "release/1.9.0" }
+tlogging = { git = "https://github.com/kweaver-ai/TelemetrySDK-Python" }
