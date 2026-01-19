@@ -43,6 +43,9 @@ class ToolSkillVo(BaseModel):
         default_factory=list, description="输入参数配置"
     )
     intervention: Optional[bool] = Field(False, description="是否启用干预")
+    intervention_confirmation_message: Optional[str] = Field(
+        None, description="人工干预确认消息"
+    )
     result_process_strategies: Optional[List[ResultProcessStrategyVo]] = Field(
         default_factory=list, description="结果处理策略"
     )

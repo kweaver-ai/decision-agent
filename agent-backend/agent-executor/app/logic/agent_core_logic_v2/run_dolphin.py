@@ -37,6 +37,8 @@ from app.domain.enum.common.user_account_header_key import (
 if TYPE_CHECKING:
     from .agent_core_v2 import AgentCoreV2
 
+from .agent_instance_manager import agent_instance_manager
+
 
 @internal_span()
 async def run_dolphin(
@@ -200,6 +202,11 @@ async def run_dolphin(
     # 11. 保存到ac中以便后续使用
     ac.agent = agent
     ac.executor = agent.executor  # 保持向后兼容，某些代码可能需要访问executor
+
+    # 11.1 注册到实例管理器（用于后续 resume/terminate）
+    agent_run_id = ac.agent_run_id
+    if agent_run_id:
+        agent_instance_manager.register(agent_run_id, agent, ac)
 
     
     # 12. 执行agent

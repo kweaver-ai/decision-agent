@@ -90,7 +90,7 @@ class AgentCoreV2:
 
     def cleanup(self):
         if self.executor:
-            self.executor.shutdown()
+            # self.executor.shutdown()
             self.executor = None
         if self.tool_dict:
             for tool_name, tool_instance in self.tool_dict.items():
@@ -147,6 +147,9 @@ class AgentCoreV2:
         self.agent_input = agent_input
 
         event_key = agent_config.agent_run_id or "agent-session-" + str(snow_id())
+
+        # 保存到实例变量，供外部访问
+        self.agent_run_id = event_key
 
         res = {}
 
@@ -205,8 +208,10 @@ class AgentCoreV2:
                     )
 
                 async for res in output_generator:
-                    # 在yield前移除context键
-                    yield self.remove_context_from_response(res)
+                    # 在yield前移除context键并添加 agent_run_id
+                    res_with_run_id = self.remove_context_from_response(res)
+                    res_with_run_id["agent_run_id"] = event_key
+                    yield res_with_run_id
 
                 StandLogger.info("AgentCore run end")
 
@@ -216,8 +221,10 @@ class AgentCoreV2:
                 await InterruptHandler.handle_tool_interrupt(
                     tool_interrupt, res, context_variables, event_key
                 )
-                # 在yield前移除context键
-                yield self.remove_context_from_response(res)
+                # 在yield前移除context键并添加 agent_run_id
+                res_with_run_id = self.remove_context_from_response(res)
+                res_with_run_id["agent_run_id"] = event_key
+                yield res_with_run_id
 
             except (ModelException, SkillException, DolphinException) as e:
                 dolphin_except = DolphinSDKException(
@@ -228,18 +235,24 @@ class AgentCoreV2:
                 )
                 await ExceptionHandler.handle_exception(dolphin_except, res, headers)
                 o11y_logger().error(f"agent run failed: {e}")
-                # 在yield前移除context键
-                yield self.remove_context_from_response(res)
+                # 在yield前移除context键并添加 agent_run_id
+                res_with_run_id = self.remove_context_from_response(res)
+                res_with_run_id["agent_run_id"] = event_key
+                yield res_with_run_id
             except Exception as e:
                 # 处理其他异常
                 await ExceptionHandler.handle_exception(e, res, headers)
                 o11y_logger().error(f"agent run failed: {e}")
-                # 在yield前移除context键
-                yield self.remove_context_from_response(res)
+                # 在yield前移除context键并添加 agent_run_id
+                res_with_run_id = self.remove_context_from_response(res)
+                res_with_run_id["agent_run_id"] = event_key
+                yield res_with_run_id
 
         except Exception as e:
             # 处理整体异常
             await ExceptionHandler.handle_exception(e, res, headers)
             o11y_logger().error(f"agent run failed: {e}")
-            # 在yield前移除context键
-            yield self.remove_context_from_response(res)
+            # 在yield前移除context键并添加 agent_run_id
+            res_with_run_id = self.remove_context_from_response(res)
+            res_with_run_id["agent_run_id"] = event_key
+            yield res_with_run_id

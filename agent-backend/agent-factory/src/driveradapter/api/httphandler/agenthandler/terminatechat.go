@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
-	"github.com/gin-gonic/gin"
 )
 
 func (h *agentHTTPHandler) TerminateChat(c *gin.Context) {
@@ -29,7 +29,7 @@ func (h *agentHTTPHandler) TerminateChat(c *gin.Context) {
 		return
 	}
 
-	err := h.agentSvc.TerminateChat(c.Request.Context(), req.ConversationID)
+	err := h.agentSvc.TerminateChat(c.Request.Context(), req.ConversationID, req.AgentRunID)
 	if err != nil {
 		h.logger.Errorf("[TerminateChat] terminate chat error: %v", err)
 		o11y.Error(c, fmt.Sprintf("[TerminateChat] terminate chat error: %v", err))

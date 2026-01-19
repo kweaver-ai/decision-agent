@@ -8,12 +8,13 @@ import (
 
 // Tool 表示工具配置
 type SkillTool struct {
-	ToolID                  string                  `json:"tool_id" binding:"required"`     // 工具ID
-	ToolBoxID               string                  `json:"tool_box_id" binding:"required"` // 工具箱ID
-	ToolTimeout             int                     `json:"tool_timeout" `                  // 工具调用超时时间
-	ToolInput               json.RawMessage         `json:"tool_input"`                     // 工具输入
-	Intervention            bool                    `json:"intervention"`                   // 是否启用干预
-	ResultProcessStrategies []ResultProcessStrategy `json:"result_process_strategies"`      // 结果处理策略
+	ToolID                          string                  `json:"tool_id" binding:"required"`        // 工具ID
+	ToolBoxID                       string                  `json:"tool_box_id" binding:"required"`    // 工具箱ID
+	ToolTimeout                     int                     `json:"tool_timeout" `                     // 工具调用超时时间
+	ToolInput                       json.RawMessage         `json:"tool_input"`                        // 工具输入
+	Intervention                    bool                    `json:"intervention"`                      // 是否启用干预
+	InterventionConfirmationMessage string                  `json:"intervention_confirmation_message"` // 人工干预确认消息
+	ResultProcessStrategies         []ResultProcessStrategy `json:"result_process_strategies"`         // 结果处理策略
 }
 
 type ResultProcessStrategy struct {

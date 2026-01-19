@@ -99,6 +99,9 @@ class AgentSkillVo(BaseModel):
         default_factory=list, description="输入参数配置"
     )
     intervention: Optional[bool] = Field(False, description="是否启用干预")
+    intervention_confirmation_message: Optional[str] = Field(
+        None, description="人工干预确认消息"
+    )
     data_source_config: Optional[DataSourceConfigVo] = Field(
         None, description="数据源配置"
     )
