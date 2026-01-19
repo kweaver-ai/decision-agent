@@ -28,8 +28,15 @@ spec:
             - "sh"
             - "-c"
             - >
+              # 删除 0.1.0 版本菜单
               curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-myagents &&
               curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-dataagent &&
               curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-customspace &&
               curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-agenttemplate &&
-              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-api
+              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-api &&
+              # 删除 最新版本菜单
+              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-list &&
+              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-template &&
+              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-api &&
+              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/my-agent-list
+

@@ -15,15 +15,15 @@ import SkillsIcon from '@/assets/icons/skill.svg';
 import {
   getMCPServerDetail,
   getMCPServerTools,
-  MCPServerReleaseInfo,
-  MCPTool,
+  type MCPServerReleaseInfo,
+  type MCPTool,
 } from '@/apis/agent-operator-integration/mcp';
 import { getToolBoxMarketList, getBoxToolList } from '@/apis/agent-operator-integration';
 import { getAgentsByPost, getPublishedAgentInfoList } from '@/apis/agent-factory';
 import {
-  Agent,
-  SkillAgentDataSourceConfig,
-  SkillAgentLLMConfig,
+  type Agent,
+  type SkillAgentDataSourceConfig,
+  type SkillAgentLLMConfig,
   DatasourceConfigTypeEnum,
   LLMConfigTypeEnum,
 } from '@/apis/agent-factory/type';

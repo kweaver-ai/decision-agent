@@ -1114,7 +1114,6 @@ const ToolModal = ({ agentKey, onCancel, value, onConfirm, retrieverBlockOptions
     try {
       const mcpId = nodeData.sourceData.mcp_id as string;
       const response = await getMCPServerTools(mcpId, publicAndCurrentDomainIdsRef.current);
-
       if (response && response.tools) {
         // 将MCP工具数据转换为组件期望的格式
         const toolData = response.tools.map((item: MCPTool) => {
@@ -1140,7 +1139,7 @@ const ToolModal = ({ agentKey, onCancel, value, onConfirm, retrieverBlockOptions
           parentKey: nodeData.key as string,
           keyPath: nodeData.keyPath,
         });
-
+        console.log('getMcpToolTreeNode ---- childTreeData', childTreeData);
         return childTreeData;
       }
     } catch (error: any) {

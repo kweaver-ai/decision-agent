@@ -28,124 +28,131 @@ spec:
             - "sh"
             - "-c"
             - >
-              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-customspace &&
-              curl -f -H "Content-Type:application/json" -X PUT -d '
-              [
-                {
-                  "name": "dataagent",
-                  "parent": "root",
-                  "orderIndex": 1000,
-                  "app": {
-                    "textZHCN": "Decision Agent",
-                    "textZHTW": "Decision Agent",
-                    "textENUS": "Decision Agent",
-                    "type": "group"
-                  },
-                  "subapp": {
-                    "children": {
-                    }
-                  }
-                },
-                {
-                  "name": "agent-web-space",
-                  "parent": "dataagent",
-                  "orderIndex": 1000,
-                  "app": {
-                    "textZHCN": "开发",
-                    "textZHTW": "開發",
-                    "textENUS": "Development",
-                    "icon": "//ip:port/agent-web/public/icons/development.svg",
-                    "type": "directory",
-                    "isDefaultOpen": true
-                  },
-                  "subapp": {
-                    "children": {
-                    }
-                  }
-                },
-                {
-                  "name": "agent-web-all",
-                  "parent": "dataagent",
-                  "orderIndex": 2000,
-                  "app": {
-                    "textZHCN": "广场",
-                    "textZHTW": "廣場",
-                    "textENUS": "Square",
-                    "icon": "//ip:port/agent-web/public/icons/square.svg",
-                    "type": "directory",
-                    "isDefaultOpen": true
-                  },
-                  "subapp": {
-                    "children": {
-                    }
-                  }
-                },
-                {
-                  "name": "agent-web-dataagent",
-                  "parent": "agent-web-all",
-                  "orderIndex": 1000,
-                  "app": {
-                    "textZHCN": "Decision Agent",
-                    "textZHTW": "Decision Agent",
-                    "textENUS": "Decision Agent",
-                    "icon": "//ip:port/agent-web/public/icons/data-agent.svg",
-                    "type": "directory"
-                  },
-                  "subapp": {
-                    "entry": "//ip:port/agent-web/data-agent.html",
-                    "activeRule": "/",
-                    "baseRouter": ""
-                  }
-                },
-                {
-                  "name": "agent-web-agenttemplate",
-                  "parent": "agent-web-all",
-                  "orderIndex": 2000,
-                  "app": {
-                    "textZHCN": "模板",
-                    "textZHTW": "模板",
-                    "textENUS": "Template",
-                    "icon": "//ip:port/agent-web/public/icons/agent-template.svg",
-                    "type": "directory"
-                  },
-                  "subapp": {
-                    "entry": "//ip:port/agent-web/agent-template.html",
-                    "activeRule": "/",
-                    "baseRouter": ""
-                  }
-                },
-                {
-                  "name": "agent-web-api",
-                  "parent": "agent-web-all",
-                  "orderIndex": 3000,
-                  "app": {
-                    "textZHCN": "API",
-                    "textZHTW": "API",
-                    "textENUS": "API",
-                    "icon": "//ip:port/agent-web/public/icons/api.svg",
-                    "type": "directory"
-                  },
-                  "subapp": {
-                    "entry": "//ip:port/agent-web/api.html",
-                    "activeRule": "/",
-                    "baseRouter": ""
-                  }
-                },
-                {
-                  "name": "agent-web-myagents",
-                  "parent": "agent-web-space",
-                  "orderIndex": 1000,
-                  "app": {
-                    "textZHCN": "Decision Agent",
-                    "textZHTW": "Decision Agent",
-                    "textENUS": "Decision Agent",
-                    "icon": "//ip:port/agent-web/public/icons/data-agent.svg",
-                    "type": "directory"
-                  },
-                  "subapp": {
-                    "entry": "//ip:port/agent-web/my-agents.html",
-                    "activeRule": "/",
-                    "baseRouter": ""
-                  }
+            # 为了防止在部署控制台上，使用大包直接升级，不会走 post-delete-job.yaml的情况，先删一下旧版本的菜单
+            # 删除0.1.0版本的菜单
+            curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-myagents &&
+            curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-dataagent &&
+            curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-customspace &&
+            curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-agenttemplate &&
+            curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-api &&
+            # 注册新菜单
+            curl -f -H "Content-Type:application/json" -X PUT -d '
+            [
+            {
+              "parent": "root",
+              "name": "decision-agent",
+              "orderIndex": 1000,
+              "app": {
+                "textZHCN": "Decision Agent",
+                "textZHTW": "Decision Agent",
+                "textENUS": "Decision Agent",
+                "type": "group"
+              },
+              "subapp": {
+                "children": {
                 }
-              ]' http://studio-web-service:8877/api/workstation/v1/webapp
+              }
+            },
+            {
+              "parent": "decision-agent",
+              "name": "development",
+              "orderIndex": 1000,
+              "app": {
+                "textZHCN": "开发",
+                "textZHTW": "開發",
+                "textENUS": "Development",
+                "icon": "//ip:port/agent-web/public/icons/development.svg",
+                "type": "directory",
+                "isDefaultOpen": true
+              },
+              "subapp": {
+                "children": {
+                }
+              }
+            },
+            {
+              "parent": "decision-agent",
+              "name": "square",
+              "orderIndex": 2000,
+              "app": {
+                "textZHCN": "广场",
+                "textZHTW": "廣場",
+                "textENUS": "Square",
+                "icon": "//ip:port/agent-web/public/icons/square.svg",
+                "type": "directory",
+                "isDefaultOpen": true
+              },
+              "subapp": {
+                "children": {
+                }
+              }
+            },
+            {
+              "parent": "square",
+              "name": "agent-list",
+              "orderIndex": 1000,
+              "app": {
+                "textZHCN": "Decision Agent",
+                "textZHTW": "Decision Agent",
+                "textENUS": "Decision Agent",
+                "icon": "//ip:port/agent-web/public/icons/decision-agent.svg",
+                "type": "directory"
+              },
+              "subapp": {
+                "entry": "//ip:port/agent-web/decision-agent.html",
+                "activeRule": "/",
+                "baseRouter": ""
+              }
+            },
+            {
+              "parent": "square",
+              "name": "agent-template",
+              "orderIndex": 2000,
+              "app": {
+                "textZHCN": "模板",
+                "textZHTW": "模板",
+                "textENUS": "Template",
+                "icon": "//ip:port/agent-web/public/icons/agent-template.svg",
+                "type": "directory"
+              },
+              "subapp": {
+                "entry": "//ip:port/agent-web/agent-template.html",
+                "activeRule": "/",
+                "baseRouter": ""
+              }
+            },
+            {
+              "parent": "square",
+              "name": "agent-api",
+              "orderIndex": 3000,
+              "app": {
+                "textZHCN": "API",
+                "textZHTW": "API",
+                "textENUS": "API",
+                "icon": "//ip:port/agent-web/public/icons/api.svg",
+                "type": "directory"
+              },
+              "subapp": {
+                "entry": "//ip:port/agent-web/api.html",
+                "activeRule": "/",
+                "baseRouter": ""
+              }
+            },
+            {
+              "parent": "development",
+              "name": "my-agent-list",
+              "orderIndex": 1000,
+              "app": {
+                "textZHCN": "Decision Agent",
+                "textZHTW": "Decision Agent",
+                "textENUS": "Decision Agent",
+                "icon": "//ip:port/agent-web/public/icons/decision-agent.svg",
+                "type": "directory"
+              },
+              "subapp": {
+                "entry": "//ip:port/agent-web/my-agents.html",
+                "activeRule": "/",
+                "baseRouter": ""
+              }
+            }
+          ]' http://studio-web-service:8877/api/workstation/v1/webapp
