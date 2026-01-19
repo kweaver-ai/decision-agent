@@ -30,6 +30,25 @@ class AgentInstanceManager:
         self._instance_lock = Lock()
         # 实例过期时间（秒）
         self._expire_seconds = 30 * 60  # 30分钟
+        # 启动后台清理线程
+        self._start_cleanup_thread()
+
+    def _start_cleanup_thread(self):
+        """启动后台清理线程"""
+        import threading
+
+        def cleanup_loop():
+            while True:
+                time.sleep(60)  # 每分钟清理一次
+                try:
+                    self.cleanup_expired()
+                except Exception:
+                    pass  # 忽略清理异常
+
+        thread = threading.Thread(
+            target=cleanup_loop, daemon=True, name="agent-instance-cleanup"
+        )
+        thread.start()
 
     def register(
         self,

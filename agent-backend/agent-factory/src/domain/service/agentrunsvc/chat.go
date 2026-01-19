@@ -216,10 +216,16 @@ func (agentSvc *agentSvc) Process(req *agentreq.ChatReq, agent agentfactorydto.A
 	startTime := time.Now()
 
 	// NOTE: 创建流式日志记录器（仅 DEBUG 模式）
-	streamLogger, _ := NewStreamingResponseLogger(req.ConversationID)
+	// executorResLogger: 记录 Executor 返回的原始响应
+	// processedResLogger: 记录处理后返回给前端的响应
+	executorResLogger, _ := NewStreamingResponseLogger(req.ConversationID, ExecutorResponse)
+	processedResLogger, _ := NewStreamingResponseLogger(req.ConversationID, ProcessedResponse)
 	defer func() {
-		if streamLogger != nil {
-			streamLogger.Complete()
+		if executorResLogger != nil {
+			executorResLogger.Complete()
+		}
+		if processedResLogger != nil {
+			processedResLogger.Complete()
 		}
 	}()
 
@@ -263,9 +269,9 @@ looplabel:
 				agentSvc.logger.Errorf("[Process] the format of message is invalid,  msg: %v", msg)
 				continue
 			}
-			// NOTE: 记录流式日志（仅 DEBUG 模式）
-			if streamLogger != nil {
-				streamLogger.LogChunk([]byte(message))
+			// NOTE: 记录 Executor 返回的原始响应（仅 DEBUG 模式）
+			if executorResLogger != nil {
+				executorResLogger.LogChunk([]byte(message))
 			}
 			// NOTE: message 是原始数据
 			// currentData, isEnd, err = agentSvc.CallResult2MsgResp(ctx, []byte(message), req)
@@ -275,6 +281,10 @@ looplabel:
 				o11y.Error(ctx, fmt.Sprintf("[Process] after process err: %v", err))
 				isEnd = true
 				break looplabel
+			}
+			// NOTE: 记录处理后的响应（仅 DEBUG 模式）
+			if processedResLogger != nil && len(currentData) > 0 {
+				processedResLogger.LogChunk(currentData)
 			}
 			counter++
 			if counter%agentSvc.streamDiffFrequency == 0 || isEnd {

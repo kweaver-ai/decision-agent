@@ -191,4 +191,6 @@ var errCodeList = []string{
 func init() {
 	locale.Register()
 	rest.Register(errCodeList)
+	// 注册 APP 相关错误码（来自合并的 agent-app）
+	rest.Register(GetAppErrorCodeList())
 }

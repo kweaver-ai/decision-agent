@@ -3,7 +3,6 @@ from typing import Any, Dict, Optional
 from dolphin.core.utils.tools import ToolInterrupt
 
 from app.common.stand_log import StandLogger
-from app.driven.infrastructure.redis import redis_pool
 from app.utils.json import custom_serializer
 from app.utils.observability.trace_wrapper import internal_span
 from opentelemetry.trace import Span
@@ -19,7 +18,6 @@ class InterruptHandler:
         tool_interrupt: ToolInterrupt,
         res: Dict[str, Any],
         context_variables: Dict[str, Any],
-        event_key: str,
         span: Optional[Span] = None,
     ) -> None:
         """处理工具中断
@@ -28,7 +26,7 @@ class InterruptHandler:
             tool_interrupt: 工具中断异常
             res: 结果字典
             context_variables: 上下文变量
-            event_key: 事件键
+            event_key: 事件键（agent_run_id）
         """
 
         span_set_attrs(
@@ -39,28 +37,22 @@ class InterruptHandler:
 
         StandLogger.info(f"ToolInterrupt: {tool_interrupt}")
 
-        context_variables = res.get("context", {})
-        context_variables.update(res.get("answer", {}))
-        async with redis_pool.acquire(3, "write") as redis_write_client:
-            redis_key_context = f"dip:agent-executor:{event_key}:context"
+        # 直接使用整体 handle（从 ToolInterrupt 获取）
+        handle = getattr(tool_interrupt, 'handle', None)
+        
+        # 构建中断数据
+        interrupt_data = {
+            "tool_name": tool_interrupt.tool_name,
+            "tool_args": tool_interrupt.tool_args,
+        }
 
-            # 确保使用※tool而非tool
-            if "tool" in context_variables:
-                context_variables.pop("tool")
+        # 设置 interrupt_info（替代原来的 ask）
+        res["interrupt_info"] = {
+            "handle": handle,
+            "data": interrupt_data,
+        }
 
-            await redis_write_client.set(
-                redis_key_context,
-                json.dumps(context_variables, ensure_ascii=False),
-                ex=30 * 60,
-            )
-
-            res["ask"] = {
-                "session_id": event_key,
-                "tool_name": tool_interrupt.tool_name,
-                "tool_args": tool_interrupt.tool_args,
-            }
-
-            res["status"] = "True"
+        res["status"] = "True"
 
         StandLogger.info(
             f"ToolInterrupt res: {json.dumps(res, ensure_ascii=False, default=custom_serializer)}"

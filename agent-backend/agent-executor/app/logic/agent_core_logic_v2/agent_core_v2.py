@@ -219,7 +219,7 @@ class AgentCoreV2:
                 # 处理工具中断
 
                 await InterruptHandler.handle_tool_interrupt(
-                    tool_interrupt, res, context_variables, event_key
+                    tool_interrupt, res, context_variables
                 )
                 # 在yield前移除context键并添加 agent_run_id
                 res_with_run_id = self.remove_context_from_response(res)

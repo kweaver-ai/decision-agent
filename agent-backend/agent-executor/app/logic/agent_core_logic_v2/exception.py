@@ -1,6 +1,8 @@
 from typing import Any, Dict
+from datetime import datetime
 
 from app.common.struct_logger import struct_logger
+from app.common.exception_logger import exception_logger
 import app.common.stand_log as log_oper
 import sys
 import traceback
@@ -22,6 +24,13 @@ class ExceptionHandler:
             res: 结果字典
             headers: HTTP请求头
         """
+
+        # 使用 exception_logger 记录异常（增强日志）
+        exception_logger.log_exception(
+            exc, 
+            {"context": "agent_core_v2", "source": "ExceptionHandler"}, 
+            datetime.now()
+        )
 
         message = "agent run failed: {}".format(repr(exc))
 

@@ -3,10 +3,11 @@ package daresvo
 import (
 	"context"
 
+	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentconfigvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
-	"github.com/bytedance/sonic"
 	"github.com/pkg/errors"
 )
 
@@ -23,9 +24,10 @@ var DefOutputConf = &agentconfigvo.OutputVariablesS{
 type DataAgentRes struct {
 	Answer *agentrespvo.AnswerS `json:"answer"`
 	// UserDefine map[string]interface{} `json:"user_define,omitempty"`
-	Ask    interface{} `json:"ask"`
-	Status string      `json:"status"`
-	Error  interface{} `json:"error"`
+	InterruptInfo *v2agentexecutordto.ToolInterruptInfo `json:"interrupt_info,omitempty"`
+	AgentRunID    string                                `json:"agent_run_id,omitempty"` // Agent 运行 ID（从 Executor 返回）
+	Status        string                                `json:"status"`
+	Error         interface{}                           `json:"error"`
 
 	finalAnswerVarHelper      *ResHelper
 	docRetrievalVarHelper     *ResHelper

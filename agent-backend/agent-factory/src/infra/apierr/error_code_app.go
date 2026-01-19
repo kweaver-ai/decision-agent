@@ -51,3 +51,50 @@ const (
 	TempAreaCreateFailed = "AgentAPP.Temparea.Createfailed"
 	TempAreaAppendFailed = "AgentAPP.Temparea.AppendFailed"
 )
+
+// errCodeAppList APP 相关错误码列表
+var errCodeAppList = []string{
+	// APP 公共错误码
+	AgentAPP_InvalidParameter_RequestBody,
+	AgentAPP_InvalidRequestHeader_Authorization,
+	AgentAPP_Forbidden_FilterField,
+	AgentAPP_Forbidden_PermissionDenied,
+	AgentAPP_InvalidRequestHeader_ContentType,
+	AgentAPP_InternalError,
+
+	// Agent 相关错误码
+	AgentAPP_Agent_GetAgentFailed,
+	AgentAPP_Agent_CreateConversationFailed,
+	AgentAPP_Agent_GetConversationFailed,
+	AgentAPP_Agent_GetMaxIndexFailed,
+	AgentAPP_Agent_GetHistoryFailed,
+	AgentAPP_Agent_CreateMessageFailed,
+	AgentAPP_Agent_UpdateConversationFailed,
+	AgentAPP_Agent_GetMessageFailed,
+	AgentAPP_Agent_UpdateMessageFailed,
+	AgentAPP_Agent_CallAgentExecutorFailed,
+	AgentAPP_Agent_ModelExecption,
+	AgentAPP_Agent_SkillExecption,
+	AgentAPP_Agent_DolphinSDKExecption,
+	AgentAPP_Agent_ExecutorExecption,
+	AgentAPP_Agent_ResumeFailed,
+	AgentAPP_Agent_SessionInitFailed,
+
+	// 会话相关错误码
+	ConversationNotFound,
+	ConversationDeleteFailed,
+	ConversationDetailFailed,
+	ConversationInitFailed,
+	ConversationGetListFailed,
+
+	// 临时区相关错误码
+	TempAreaRemoveFailed,
+	TempAreaGetFailed,
+	TempAreaCreateFailed,
+	TempAreaAppendFailed,
+}
+
+// GetAppErrorCodeList 返回 APP 错误码列表，供 error_code.go 注册使用
+func GetAppErrorCodeList() []string {
+	return errCodeAppList
+}

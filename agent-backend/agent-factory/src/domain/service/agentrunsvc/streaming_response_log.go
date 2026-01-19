@@ -10,6 +10,14 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
 )
 
+// ResponseLoggerType 日志类型
+type ResponseLoggerType string
+
+const (
+	ExecutorResponse  ResponseLoggerType = "executor_res"  // Executor 返回的原始响应
+	ProcessedResponse ResponseLoggerType = "processed_res" // 处理后返回给前端的响应
+)
+
 // StreamingResponseLogger 流式响应日志记录器
 type StreamingResponseLogger struct {
 	file           *os.File
@@ -17,11 +25,12 @@ type StreamingResponseLogger struct {
 	totalBytes     int
 	startTime      time.Time
 	conversationID string
+	logType        ResponseLoggerType
 	mutex          sync.Mutex
 }
 
 // NewStreamingResponseLogger 创建流式响应日志记录器（仅 DEBUG 模式）
-func NewStreamingResponseLogger(conversationID string) (*StreamingResponseLogger, error) {
+func NewStreamingResponseLogger(conversationID string, logType ResponseLoggerType) (*StreamingResponseLogger, error) {
 	// 仅在 DEBUG 模式下启用
 	if !cenvhelper.IsDebugMode() {
 		return nil, nil
@@ -33,7 +42,8 @@ func NewStreamingResponseLogger(conversationID string) (*StreamingResponseLogger
 		logRootDir = "log"
 	}
 
-	logDir := filepath.Join(logRootDir, "streaming_responses")
+	// 根据日志类型创建不同的子目录
+	logDir := filepath.Join(logRootDir, "streaming_responses", string(logType))
 	if err := os.MkdirAll(logDir, 0755); err != nil {
 		return nil, err
 	}
@@ -51,8 +61,10 @@ func NewStreamingResponseLogger(conversationID string) (*StreamingResponseLogger
 		file:           file,
 		startTime:      time.Now(),
 		conversationID: conversationID,
+		logType:        logType,
 	}, nil
 }
+
 
 // LogChunk 记录一个数据块
 func (l *StreamingResponseLogger) LogChunk(chunk []byte) {

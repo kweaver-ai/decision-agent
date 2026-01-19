@@ -52,27 +52,14 @@ async def create_resume_generator(
         resume_handle_dict = resume_info.resume_handle.dict()
         await agent.resume(updates=updates, resume_handle=resume_handle_dict)
 
-        # 3. 继续执行 arun
-        async for item in agent.arun():
-            if isinstance(item, dict) and item.get("status") == "interrupted":
-                # 再次中断
-                interrupted_info = agent.get_intervention_data()
-                handle = item.get("handle")
-                interrupt_response = {
-                    "answer": {},
-                    "status": "interrupted",
-                    "agent_run_id": agent_run_id,
-                    "interrupt_info": {"handle": handle, "data": interrupted_info},
-                }
-                yield await json_serialize_async(interrupt_response)
-                return
-            else:
-                output = {
-                    "answer": item,
-                    "status": "False",
-                    "agent_run_id": agent_run_id,
-                }
-                yield await json_serialize_async(output)
+        # 3. 继续执行 arun（使用公共方法）
+        from .interrupt_utils import process_arun_loop
+        
+        async for output in process_arun_loop(agent, is_debug=False):
+            # 添加 resume 特有的字段
+            output["status"] = "False"
+            output["agent_run_id"] = agent_run_id
+            yield await json_serialize_async(output)
 
         # 4. 完成，清理实例
         agent_instance_manager.remove(agent_run_id)

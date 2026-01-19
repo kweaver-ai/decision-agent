@@ -20,11 +20,11 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 
+	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
-	"github.com/bytedance/sonic"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -160,18 +160,8 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 		}
 	}
 
-	// 9. ask
-	var ask interface{}
-
-	ask, err = agentSvc.ask(result)
-	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[AfterProcess] ask err: %v", err))
-		httpErr := rest.NewHTTPError(ctx, http.StatusInternalServerError, apierr.AgentAPP_InternalError).WithErrorDetails(err.Error())
-		chatResponse.Error = httpErr
-		bytes, _ := sonic.Marshal(chatResponse)
-
-		return bytes, false, errors.Wrapf(err, "[AfterProcess] ask err: %v", err)
-	}
+	// 9. 中断信息（从 Executor 响应中获取）
+	interruptInfo := result.InterruptInfo
 
 	// 10. 相关问题
 	var qs []string
@@ -270,7 +260,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 		},
 		Index: req.AssistantMessageIndex,
 		Ext: map[string]interface{}{
-			"ask":             ask,
+			"interrupt_info":  interruptInfo,
 			"related_queries": qs,
 			"total_time":      totalTime,
 			"total_tokens":    totalTokens,
@@ -279,6 +269,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 	}
 	chatResponse = agentresp.ChatResp{
 		ConversationID:     req.ConversationID,
+		AgentRunID:         result.AgentRunID, // 从 Executor 响应中传递到顶层
 		UserMessageID:      req.UserMessageID,
 		AssistantMessageID: req.AssistantMessageID,
 		Message:            messageVO,

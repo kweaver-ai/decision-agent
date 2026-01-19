@@ -211,65 +211,12 @@ async def run_dolphin(
     
     # 12. 执行agent
     output = {"answer": {}}
-    async for item in agent.arun():
-        if isinstance(item, dict) and item.get("status") == "interrupted":
-            # 处理工具中断
-
-            # a. 获取中断信息
-            # handle = item["handle"]
-            # frame = agent.executor.state_registry.get_frame(handle.frame_id)
-            # interrupted_info = copy.deepcopy(frame.error)
-            interrupted_info = agent.get_intervention_data()
-
-            # b. 终止agent
-            await agent.terminate()
-
-            # c. 抛出工具中断异常
-            raise ToolInterrupt(
-                tool_name=interrupted_info.get("tool_name"),
-                tool_args=interrupted_info.get("tool_args"),
-            )
-        else:
-            # 正常的
-
-            # # 仅输出不在context_variables中的变量
-            # output_item = {}
-            # for key, value in item.items():
-            #     if key not in context_variables:
-            #         output_item[key] = value
-            if not is_debug and item.get("_progress"):
-                item["_progress"] = [
-                    item for item in item["_progress"] if item.get("stage") != "assign"
-                ]
-
-            # 记录处理前的 item，当有相关问题时才记录
-            # if item.get("related_questions"):
-            #     struct_logger.console_logger.debug(
-            #         "处理前的 item 数据",
-            #         related_questions=item.get("related_questions"),
-            #         item_keys=list(item.keys()),
-            #         caller="run_dolphin.py:220_before"
-            #     )
-
-            item_value = {
-                key: get_dolphin_var_value(value) for key, value in item.items()
-            }
-
-            # 记录处理后的 item_value，当有相关问题时才记录
-            # if item_value.get("related_questions"):
-            #     struct_logger.console_logger.debug(
-            #         "处理后的 item_value 数据",
-            #         related_questions=item_value.get("related_questions"),
-            #         item_value_keys=list(item_value.keys()),
-            #         caller="run_dolphin.py:220_after"
-            #     )
-
-            output = {
-                "answer": item_value,
-                "context": ac.agent.executor.context.get_all_variables_values(),
-            }
-
-            yield output
+    
+    # 使用公共的 arun 循环处理方法
+    from .interrupt_utils import process_arun_loop
+    
+    async for output in process_arun_loop(agent, is_debug):
+        yield output
 
     yield output
     # StandLogger.debug_log(

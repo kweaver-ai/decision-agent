@@ -40,16 +40,16 @@ func (agentSvc *agentSvc) resumeFromInterrupt(ctx context.Context, agentRunID st
 	o11y.Info(ctx, fmt.Sprintf("[resumeFromInterrupt] agent_run_id: %s, action: %s", agentRunID, resumeInterruptInfo.Action))
 
 	// 构造 Executor Resume 请求
-	req := &v2agentexecutordto.V2AgentResumeReq{
+	req := &v2agentexecutordto.AgentResumeReq{
 		AgentRunID: agentRunID,
-		ResumeInfo: &v2agentexecutordto.V2AgentResumeInfo{
+		ResumeInfo: &v2agentexecutordto.AgentResumeInfo{
 			Action: resumeInterruptInfo.Action,
 		},
 	}
 
-	// 转换 ResumeHandle
+	// 转换 ResumeHandle（复用 InterruptHandle）
 	if resumeInterruptInfo.ResumeHandle != nil {
-		req.ResumeInfo.ResumeHandle = &v2agentexecutordto.V2ResumeHandle{
+		req.ResumeInfo.ResumeHandle = &v2agentexecutordto.InterruptHandle{
 			FrameID:       resumeInterruptInfo.ResumeHandle.FrameID,
 			SnapshotID:    resumeInterruptInfo.ResumeHandle.SnapshotID,
 			ResumeToken:   resumeInterruptInfo.ResumeHandle.ResumeToken,
@@ -61,14 +61,15 @@ func (agentSvc *agentSvc) resumeFromInterrupt(ctx context.Context, agentRunID st
 
 	// 转换 ModifiedArgs
 	if len(resumeInterruptInfo.ModifiedArgs) > 0 {
-		req.ResumeInfo.ModifiedArgs = make([]v2agentexecutordto.V2ModifiedArg, len(resumeInterruptInfo.ModifiedArgs))
+		req.ResumeInfo.ModifiedArgs = make([]v2agentexecutordto.ModifiedArg, len(resumeInterruptInfo.ModifiedArgs))
 		for i, arg := range resumeInterruptInfo.ModifiedArgs {
-			req.ResumeInfo.ModifiedArgs[i] = v2agentexecutordto.V2ModifiedArg{
+			req.ResumeInfo.ModifiedArgs[i] = v2agentexecutordto.ModifiedArg{
 				Key:   arg.Key,
 				Value: arg.Value,
 			}
 		}
 	}
+
 
 	// 调用 Executor Resume 接口
 	messages, errs, err := agentSvc.agentExecutorV2.Resume(ctx, req)
@@ -77,21 +78,40 @@ func (agentSvc *agentSvc) resumeFromInterrupt(ctx context.Context, agentRunID st
 		return nil, capierr.New500Err(ctx, fmt.Sprintf("resume failed: %v", err))
 	}
 
-	// 转换 channel 类型
+	// 转换 channel 类型，添加 StreamDiff 增量处理
 	channel := make(chan []byte)
 	go func() {
 		defer close(channel)
+
+		oldResp := []byte(`{}`)
+		seq := new(int)
+		*seq = 0
+
 		for {
 			select {
 			case msg, ok := <-messages:
 				if !ok {
+					// 流结束，发送结束标记
+					emitJSON(seq, channel, []interface{}{}, nil, "end")
 					return
 				}
-				channel <- []byte(msg)
+
+				newResp := []byte(msg)
+				// 使用 StreamDiff 进行增量处理
+				if err := StreamDiff(ctx, seq, oldResp, newResp, channel); err != nil {
+					o11y.Error(ctx, fmt.Sprintf("[resumeFromInterrupt] stream diff err: %v", err))
+					agentSvc.logger.Errorf("[resumeFromInterrupt] stream diff err: %v", err)
+					return
+				}
+				oldResp = newResp
+
 			case err, ok := <-errs:
 				if ok && err != nil {
 					o11y.Error(ctx, fmt.Sprintf("[resumeFromInterrupt] stream error: %v", err))
+					agentSvc.logger.Errorf("[resumeFromInterrupt] stream error: %v", err)
 				}
+				// 发送结束标记
+				emitJSON(seq, channel, []interface{}{}, nil, "end")
 				return
 			}
 		}
