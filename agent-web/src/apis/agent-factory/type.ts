@@ -647,7 +647,7 @@ export enum AgentPublishToBeEnum {
 export enum AgentPublishToWhereEnum {
   // 发布到自定义空间
   CustomSpace = 'custom_space',
-  // 发布到Data Agent
+  // 发布到Decision Agent
   Square = 'square',
 }
 

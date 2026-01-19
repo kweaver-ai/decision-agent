@@ -39,16 +39,6 @@ data:
   USERMANAGEMENTPRIVATEHOST: {{ .Values.depServices.user_management.privateHost | quote }}
   USERMANAGEMENTPRIVATEPORT: {{ .Values.depServices.user_management.privatePort | quote }}
 
-  # 图数据库服务
-  GRAPHDB_TYPE: {{ quote .Values.depServices.graphDatabase.type }}
-  GRAPHDB_HOST: {{ quote .Values.depServices.graphDatabase.host }}
-  GRAPHDB_PORT: {{ quote .Values.depServices.graphDatabase.port }}
-  GRAPHDB_USER: {{ quote .Values.depServices.graphDatabase.user }}
-  GRAPHDB_PASSWORD: {{ quote .Values.depServices.graphDatabase.password }}
-  {{- if eq .Values.depServices.graphDatabase.type "nebulaGraph" }}
-  GRAPHDB_READ_ONLY_USER: {{ quote .Values.depServices.graphDatabase.readonlyuser }}
-  GRAPHDB_READ_ONLY_PASSWORD: {{ quote .Values.depServices.graphDatabase.readonlypassword }}
-  {{- end }}
   #embeddings
   EMB_URL: {{ .Values.depServices.mf_model_api.embeddingUrl | quote }}
   EMBEDDING_DIMENSION: {{ .Values.depServices.mf_model_api.embeddingDimension | quote }}
