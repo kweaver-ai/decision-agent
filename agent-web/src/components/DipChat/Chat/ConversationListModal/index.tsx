@@ -97,10 +97,10 @@ const ConversationListModal = ({ onClose, agentAppKey, startNewConversation }: a
     setDipChatStore({
       activeConversationKey: activeKey,
     });
-    resetDipChatStore(['activeChatItemIndex', 'executePlanItemIndex', 'chatListAutoScroll', 'activeProgressIndex']);
+    resetDipChatStore(['activeChatItemIndex', 'chatListAutoScroll', 'activeProgressIndex']);
     const res: any = await getConversationDetailsByKey(activeKey);
     if (res) {
-      const { recoverConversation, chatList, executePlanItemIndex, read_message_index, message_index } = res;
+      const { recoverConversation, chatList, read_message_index, message_index } = res;
       if (recoverConversation) {
         setDipChatStore({
           activeConversationKey: activeKey,
@@ -111,7 +111,7 @@ const ConversationListModal = ({ onClose, agentAppKey, startNewConversation }: a
           recoverConversation: true,
         });
       } else {
-        setDipChatStore({ chatList, executePlanItemIndex: executePlanItemIndex });
+        setDipChatStore({ chatList });
         if (read_message_index !== message_index) {
           // 标记会话已读
           await markReadConversation(agentAppKey, activeKey, message_index);

@@ -40,11 +40,6 @@ const DipChat = () => {
       aiInputValue,
       streamGenerating,
       conversationCollapsed,
-      deepThinkHidden,
-      deepThinkDisabledForNetworking,
-      deepThinkDisabledForNormal,
-      deepThinkSelectedForNormal,
-      deepThinkSelectedForNetworking,
       agentAppType,
       agentDetails,
       debug,
@@ -69,6 +64,7 @@ const DipChat = () => {
   const navigate = useNavigate();
   const [showBackBottom, setShowBackBottom] = useState(false);
   const [size, setSize] = React.useState<number>(280);
+  const isInterrupt = _.get(chatList[chatList.length - 1], 'interrupt');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -97,7 +93,6 @@ const DipChat = () => {
         'chatList',
         'activeChatItemIndex',
         'streamGenerating',
-        'scrollIntoViewPlanId',
         'conversationCollapsed',
         'activeProgressIndex',
       ]);
@@ -342,14 +337,7 @@ const DipChat = () => {
                 </div>
               </div>
               <AiInput
-                deepThink={{
-                  hidden: deepThinkHidden,
-                  disabledForNormal: deepThinkDisabledForNormal,
-                  disabledForNetworking: deepThinkDisabledForNetworking,
-                  selectedForNormal: deepThinkSelectedForNormal,
-                  selectedForNetworking: deepThinkSelectedForNetworking,
-                }}
-                loading={streamGenerating}
+                loading={streamGenerating || !!isInterrupt}
                 value={aiInputValue}
                 ref={aiInputRef}
                 onSubmit={onSubmit}

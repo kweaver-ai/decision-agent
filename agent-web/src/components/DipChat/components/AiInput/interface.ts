@@ -23,13 +23,6 @@ export interface AiInputProps extends Omit<SenderProps, 'onSubmit' | 'value' | '
   clearAfterSend?: boolean; // 发送触发后 清空输入框的内容
   value: AiInputValue;
   onChange?: (value: AiInputValue) => void;
-  deepThink?: {
-    hidden: boolean;
-    disabledForNormal: boolean;
-    disabledForNetworking: boolean;
-    selectedForNormal: boolean;
-    selectedForNetworking: boolean;
-  };
   agentConfig: any; // Agent的配置信息
   agentAppType: AgentAppType; // Agent应用类型
   tempFileList?: FileItem[];

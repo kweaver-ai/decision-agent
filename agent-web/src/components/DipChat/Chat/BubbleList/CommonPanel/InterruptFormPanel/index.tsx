@@ -3,7 +3,6 @@ import { Button, Form, Input } from 'antd';
 import { useDeepCompareMemo } from '@/hooks';
 import _ from 'lodash';
 import { AdMonacoEditor } from '@/components/Editor/AdMonacoEditor';
-import React from 'react';
 
 const FormItem = Form.Item;
 type FieldType = {
@@ -15,7 +14,6 @@ const InterruptFormPanel = ({ chatItemIndex }: any) => {
   const {
     dipChatStore: { chatList },
     sendChat,
-    getDipChatStore,
   } = useDipChatStore();
   const chatItem = chatList[chatItemIndex];
   const { interrupt } = chatItem;
@@ -105,15 +103,7 @@ const InterruptFormPanel = ({ chatItemIndex }: any) => {
       }
     };
     loop(newInterrupt!.tool_args);
-    // console.log(newInterrupt, 'newInterrupt');
     const userChatItem = chatList[chatItemIndex - 1];
-    // console.log(userChatItem, 'userChatItem');
-    // newChatList.push({
-    //   key: nanoid(),
-    //   role: getChatItemRoleByMode(aiInputValue.mode, agentAppType),
-    //   content: '',
-    //   loading: true,
-    // });
     const reqBody: any = {
       query: chatList[chatItemIndex - 1].content,
       tool: newInterrupt,
@@ -127,7 +117,6 @@ const InterruptFormPanel = ({ chatItemIndex }: any) => {
       }));
     }
     sendChat({
-      // chatList: newChatList,
       body: reqBody,
     });
   };
@@ -141,14 +130,20 @@ const InterruptFormPanel = ({ chatItemIndex }: any) => {
       ))}
       <div className="dip-flex-space-between">
         <span />
-        <Button
-          type="primary"
-          onClick={() => {
-            form.submit();
-          }}
-        >
-          确认
-        </Button>
+        <span>
+          <Button type="default" onClick={() => {}}>
+            跳过
+          </Button>
+          <Button
+            className={'dip-ml-8'}
+            type="primary"
+            onClick={() => {
+              form.submit();
+            }}
+          >
+            确认
+          </Button>
+        </span>
       </div>
     </Form>
   );

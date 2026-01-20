@@ -416,6 +416,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
       agentAppKey,
       tempFileList,
       debug,
+      chatList
     } = getStore();
 
     if (!streamGenerating) {
@@ -518,9 +519,17 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
         }
         // 说明要恢复对话
         if (params.recoverConversation) {
-          return {
+          const lastChatItem = chatList[chatList.length - 1];
+          const tempObj: any = {
             conversation_id: params.body.conversation_id,
-          };
+            agent_run_id: lastChatItem.agentRunId,
+          }
+          if(lastChatItem.interrupt) {
+            tempObj.resume_interrupt_info = {
+              resume_handle: '',
+            }
+          }
+          return tempObj;
         }
         const agent_id = agentDetails?.id;
         const agent_version = agentDetails?.version;
@@ -564,7 +573,8 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
         setDipChatStore({
           chatList: newChatList,
         });
-        stopConversation(agentAppKey, activeConversationKey);
+        const agentRunId = newChatList[lastIndex].agentRunId!;
+        stopConversation(agentAppKey, activeConversationKey, agentRunId);
       }
     }
   };
@@ -681,13 +691,14 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
               recoverConversation = true;
             }
             const ext = isJSONString(item.ext) ? JSON.parse(item.ext) : {};
-            const ask = _.get(ext, ['ask']);
+            const interrupt_info = _.get(ext, ['interrupt_info']);
             newChatList.push({
               key: item.id,
               role: 'common',
               content: getChatItemContent(item),
-              interrupt: ask,
+              interrupt: interrupt_info,
               error: item.status === 'failed' ? '{}' : undefined,
+              agentRunId: _.get(ext, 'agent_run_id'),
             });
           }
         });

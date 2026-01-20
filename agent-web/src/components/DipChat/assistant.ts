@@ -15,6 +15,7 @@ export const getCommentAgentConfig = ({
   agentVersion,
   customSpaceId,
 }: any): Promise<Partial<DipChatState> | false> =>
+  // eslint-disable-next-line no-async-promise-executor
   new Promise(async resolve => {
     const res: any = await getAgentDetailInUsagePage({
       id: agentId,
@@ -25,9 +26,6 @@ export const getCommentAgentConfig = ({
     if (res) {
       resolve({
         agentDetails: res,
-        deepThinkHidden: true,
-        deepThinkDisabledForNormal: false,
-        deepThinkDisabledForNetworking: false,
         agentAppKey: res.key,
       });
     } else {
@@ -39,7 +37,6 @@ export const getCommentAgentConfig = ({
 export const handleChatItemContent = (
   newChatList: DipChatItem[],
   response: UseTypeOutResponse,
-  // options: GetChatItemContentOption
   debug: boolean = false
 ) => {
   const lastIndex = newChatList.length - 1;
@@ -63,7 +60,8 @@ export const handleChatItemContent = (
     newChatList[lastIndex - 1].key = user_message_id;
   }
   newChatList[lastIndex].content = _.get(message, 'content') ? getChatItemContent(message) : {};
-  newChatList[lastIndex].interrupt = _.get(message, 'ext.ask');
+  newChatList[lastIndex].interrupt = _.get(message, 'ext.interrupt_info');
+  newChatList[lastIndex].agentRunId = _.get(message, 'ext.agent_run_id');
   // debug模式下记录原始数据，方便调试区展示原始输出结果
   if (debug) {
     // 把之前的sourceData移除，只保留最后一次的sourceData

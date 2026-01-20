@@ -25,13 +25,6 @@ const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
     clearAfterSend = true,
     onCancel,
     disabled,
-    deepThink = {
-      hidden: true,
-      disabledForNormal: true,
-      disabledForNetworking: true,
-      selectedForNormal: false,
-      selectedForNetworking: false,
-    },
     agentConfig,
     tempFileList = [],
     autoSize = { minRows: 3, maxRows: 6 },

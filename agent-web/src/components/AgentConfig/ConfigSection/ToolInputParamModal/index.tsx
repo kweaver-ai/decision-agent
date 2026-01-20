@@ -1,8 +1,7 @@
 import { useEffect, useState, useRef, useMemo } from 'react';
 import UniversalModal from '@/components/UniversalModal';
 import intl from 'react-intl-universal';
-import { Divider, Input, InputNumber, message, Switch, TableColumnsType, Tooltip } from 'antd';
-import AdPromptInput from '@/components/AdPromptInput';
+import { Divider, Input, InputNumber, message, Switch, type TableColumnsType, Tooltip } from 'antd';
 import ADTable from '@/components/ADTable';
 import classNames from 'classnames';
 import ErrorTip from '@/components/ErrorTip';

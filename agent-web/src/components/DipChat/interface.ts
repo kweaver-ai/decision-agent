@@ -17,6 +17,8 @@ export type InterruptDataType = {
   session_id: string;
   tool_name: string;
   tool_args: ToolArgsType[];
+  handle?: any;
+  data?: any;
 };
 
 export type DipChatItemRole = 'user' | 'net' | 'common';
@@ -121,6 +123,7 @@ export type DipChatItem = {
   fileList?: FileItem[]; // role 为user的时候 fileList可能会存在数据
   sourceData?: any; // 流式接口返回的原始数据
   updateTime?: number;
+  agentRunId?: string;
 };
 
 export type ConversationItemType = {
