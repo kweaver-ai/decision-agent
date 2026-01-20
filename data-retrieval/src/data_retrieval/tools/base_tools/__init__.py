@@ -1,6 +1,6 @@
 from .json2plot import Json2Plot
 from .text2sql import Text2SQLTool
-from .text2dip_metric import Text2Metric
+from .text2metric import Text2Metric
 from .get_metadata import GetMetadataTool
 from .sql_helper import SQLHelperTool
 from .knowledge_item import KnowledgeItemTool

@@ -126,14 +126,14 @@ class TestText2MetricTool:
     
     def test_tool_class(self):
         """测试工具类"""
-        from data_retrieval.tools.base_tools.text2dip_metric import Text2Metric
+        from data_retrieval.tools.base_tools.text2metric import Text2Metric
         
         assert Text2Metric is not None
         assert hasattr(Text2Metric, 'from_dip_metric')
     
     def test_from_dip_metric_signature(self):
         """测试 from_dip_metric 方法签名"""
-        from data_retrieval.tools.base_tools.text2dip_metric import Text2Metric
+        from data_retrieval.tools.base_tools.text2metric import Text2Metric
         
         sig = inspect.signature(Text2Metric.from_dip_metric)
         params = list(sig.parameters.keys())

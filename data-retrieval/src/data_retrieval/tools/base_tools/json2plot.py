@@ -124,7 +124,7 @@ class ArgsModel(BaseModel):
     tool_result_cache_key: str = Field(
         default="",
         description=(
-            f"{ToolName.from_text2dip_metric.value} 或 {ToolName.from_text2sql.value}"
+            f"{ToolName.from_text2metric.value} 或 {ToolName.from_text2sql.value}"
             "工具缓存 key, 其他工具的结果没有意义，key 是一个字符串, 与 data 不能同时设置"
         ))
 

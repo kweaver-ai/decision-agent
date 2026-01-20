@@ -215,7 +215,7 @@ async def set_identity(session: ClientSession, identity: str, params: dict):
                 data = json.loads(content.text)
                 print(f"  状态: {data.get('status')}")
                 print(f"  消息: {data.get('message')}")
-            except Exception:
+            except json.JSONDecodeError:
                 print(f"  {content.text}")
     
     return result
@@ -238,7 +238,7 @@ async def call_tool(session: ClientSession, tool_name: str, arguments: dict):
                 try:
                     data = json.loads(content.text)
                     print(json.dumps(data, ensure_ascii=False, indent=2))
-                except Exception:
+                except json.JSONDecodeError:
                     print(content.text)
         
         return result

@@ -131,6 +131,82 @@ def api_tool_decorator(func: Callable):
     return wrapper
 
 
+def retry_with_backoff(
+    max_retries: int = 3,
+    error_handler: Optional[Callable[[Exception, int, Dict], None]] = None,
+    should_retry: Optional[Callable[[Exception], bool]] = None,
+) -> Callable:
+    """
+    通用重试装饰器，支持同步和异步函数。
+
+    Args:
+        max_retries: 最大重试次数
+        error_handler: 错误处理回调函数 (exception, attempt, errors_dict) -> None
+        should_retry: 判断是否应该重试的函数 (exception) -> bool，默认总是重试
+
+    Usage:
+        @retry_with_backoff(max_retries=3)
+        def my_func():
+            ...
+
+        @retry_with_backoff(max_retries=3)
+        async def my_async_func():
+            ...
+    """
+    def decorator(func: Callable) -> Callable:
+        @wraps(func)
+        def sync_wrapper(*args, **kwargs):
+            errors: Dict[str, str] = {}
+            last_exception = None
+
+            for attempt in range(max_retries):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    last_exception = e
+                    errors[f"error_{attempt + 1}"] = str(e)
+
+                    if error_handler:
+                        error_handler(e, attempt + 1, errors)
+
+                    if should_retry and not should_retry(e):
+                        raise
+
+                    if attempt == max_retries - 1:
+                        raise
+
+            raise last_exception  # Should never reach here
+
+        @wraps(func)
+        async def async_wrapper(*args, **kwargs):
+            errors: Dict[str, str] = {}
+            last_exception = None
+
+            for attempt in range(max_retries):
+                try:
+                    return await func(*args, **kwargs)
+                except Exception as e:
+                    last_exception = e
+                    errors[f"error_{attempt + 1}"] = str(e)
+
+                    if error_handler:
+                        error_handler(e, attempt + 1, errors)
+
+                    if should_retry and not should_retry(e):
+                        raise
+
+                    if attempt == max_retries - 1:
+                        raise
+
+            raise last_exception  # Should never reach here
+
+        if asyncio.iscoroutinefunction(func):
+            return async_wrapper
+        return sync_wrapper
+
+    return decorator
+
+
 class AFTool(BaseTool, ABC):
     return_record_limit: int = -1  # 返回数据条数，与字节数相互作用, -1 代表不限制
     return_data_limit: int = -1  # 返回数据总量，与字节数相互作用, -1
@@ -176,7 +252,7 @@ class ToolName(Enum):
     from_json2plot = "json2plot"
     from_human = "询问用户"
     from_text2sql = "text2sql"
-    from_text2dip_metric = "text2dip_metric"
+    from_text2metric = "text2metric"
     from_get_tool_cache = "get_tool_cache"
     GetTableDDLAndSampleToolName = "get_ddl_and_sample"
     VirtualizationEngineToolName = "execute"
@@ -325,8 +401,8 @@ def construct_final_answer(func):
         start = time.time()
         with get_openai_callback() as cb:
             output = func(*args, **kwargs)
-            print(cb)
-        print(f"time: {time.time() - start}")
+            logger.debug(f"OpenAI callback: {cb}")
+        logger.debug(f"Execution time: {time.time() - start}s")
 
         if "full_output" in output:
             full_output = output.pop("full_output")
@@ -354,8 +430,8 @@ def async_construct_final_answer(func):
         start = time.time()
         with get_openai_callback() as cb:
             output = await func(*args, **kwargs)
-            print(cb)
-        print(f"time: {time.time() - start}")
+            logger.debug(f"OpenAI callback: {cb}")
+        logger.debug(f"Execution time: {time.time() - start}s")
 
         if "full_output" in output:
             full_output = output.pop("full_output")

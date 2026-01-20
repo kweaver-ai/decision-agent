@@ -3,7 +3,7 @@
 # @Date: 2024-08-26
 import json
 import traceback
-from typing import Any, Optional, Type, List
+from typing import Any, Dict, Optional, Type, List
 
 from langchain.callbacks.manager import (AsyncCallbackManagerForToolRun,
                                          CallbackManagerForToolRun)
@@ -107,7 +107,7 @@ class Text2DIPMetricInputWithMetricList(Text2DIPMetricInput):
 
 
 class Text2Metric(LLMTool):
-    name: str = ToolName.from_text2dip_metric.value
+    name: str = ToolName.from_text2metric.value
     description: str = _DESCS["tool_description"]["cn"]
     background: str = ""
     args_schema: Type[BaseModel] = Text2DIPMetricInput
@@ -220,7 +220,7 @@ class Text2Metric(LLMTool):
                 errors=errors
             )
 
-            logger.debug(f"text2dip_metric -> system_prompt: {system_prompt.render()}")
+            logger.debug(f"text2metric -> system_prompt: {system_prompt.render()}")
 
             if self.model_type == ModelType4Prompt.DEEPSEEK_R1.value:
                 prompt = ChatPromptTemplate.from_messages(
@@ -429,6 +429,8 @@ class Text2Metric(LLMTool):
             errors = {}
             res = {}
             res_for_llm = {}
+            llm_res = {}  # Initialize before retry loop to avoid undefined variable
+            call_res = {}
 
             # 重写指标查询语句，提高指标查询的准确性
             question = input
@@ -440,7 +442,7 @@ class Text2Metric(LLMTool):
                 logger.debug("============" * 10)
                 logger.debug(f"{i + 1} times to process DIP metric query......")
                 try:
-                    llm_res, call_res = {}, {}
+                    llm_res, call_res = {}, {}  # Reset for each retry
 
                     # 配置 LLM 链
                     chain = self._config_chain(
@@ -563,6 +565,8 @@ class Text2Metric(LLMTool):
             errors = {}
             res = {}
             res_for_llm = {}
+            llm_res = {}  # Initialize before retry loop to avoid undefined variable
+            call_res = {}
 
             # 重写指标查询语句，提高指标查询的准确性
             question = input
@@ -574,7 +578,7 @@ class Text2Metric(LLMTool):
                 logger.debug("============" * 10)
                 logger.debug(f"{i + 1} times to process DIP metric query (async)......")
                 try:
-                    llm_res, call_res = {}, {}
+                    llm_res, call_res = {}, {}  # Reset for each retry
 
                     # 配置 LLM 链
                     chain = self._config_chain(
@@ -693,7 +697,7 @@ class Text2Metric(LLMTool):
             logger.error(traceback.format_exc())
             raise Text2DIPMetricError(f"异步处理查询失败: {e}")
 
-    def _parse_response(self, response):
+    def _parse_response(self, response) -> Dict[str, Any]:
         """解析 LLM 响应"""
         try:
             # 尝试解析 JSON

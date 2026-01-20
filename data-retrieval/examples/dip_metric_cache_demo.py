@@ -12,7 +12,7 @@ import os
 import sys
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
-from src.data_retrieval.tools.base_tools.text2dip_metric import Text2Metric  # noqa: E402
+from src.data_retrieval.tools.base_tools.text2metric import Text2Metric  # noqa: E402
 from src.data_retrieval.datasource.dip_metric import DIPMetric  # noqa: E402
 from src.data_retrieval.utils.llm import CustomChatOpenAI  # noqa: E402
 

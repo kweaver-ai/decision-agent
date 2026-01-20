@@ -51,8 +51,20 @@ from data_retrieval.settings import get_settings
 _SETTINGS = get_settings()
 
 # from data_retrieval.api.error import DataSourceNum, Errors
-error_message1 = "textsql 工具无法回答此问题，请尝试更换其它工具，并不再使用 text2sql 工具"
-error_message2 = "工具调用失败，请再次尝试，或者更换其它工具, 异常信息: {error_info}"
+_ERROR_MESSAGES = {
+    "cannot_answer": {
+        "cn": "textsql 工具无法回答此问题，请尝试更换其它工具，并不再使用 text2sql 工具",
+        "en": "The text2sql tool cannot answer this question. Please try another tool and do not use text2sql again."
+    },
+    "tool_call_failed": {
+        "cn": "工具调用失败，请再次尝试，或者更换其它工具, 异常信息: {error_info}",
+        "en": "Tool call failed. Please try again or use another tool. Error: {error_info}"
+    }
+}
+
+# Default language fallback
+error_message1 = _ERROR_MESSAGES["cannot_answer"]["cn"]
+error_message2 = _ERROR_MESSAGES["tool_call_failed"]["cn"]
 
 _DESCS = {
     "table_list": {
@@ -554,6 +566,7 @@ class Text2SQLTool(LLMTool):
 
     @staticmethod
     def _fix_table_name(table_name: str) -> str:
+        """修复表名格式，确保 schema 和表名部分被正确引用"""
         parts = table_name.split(".")
         if len(parts) != 3:
             return table_name
@@ -577,7 +590,13 @@ class Text2SQLTool(LLMTool):
             errors: Optional[dict] = None,
             run_manager: Optional[CallbackManagerForToolRun] = None
     ):
-        """同步运行方法，直接调用异步版本"""
+        """同步运行方法，直接调用异步版本。
+
+        WARNING: This method must only be called from synchronous contexts.
+        Do NOT call this from within an async function or event loop,
+        as it creates a new event loop internally via run_blocking().
+        Use _arun() directly in async contexts instead.
+        """
         return run_blocking(self._arun(
             input=input,
             action=action,
@@ -839,7 +858,7 @@ class Text2SQLTool(LLMTool):
             raise ToolException(error_message2.format(error_info=e.json()))
 
         except Exception as e:
-            print(traceback.format_exc())
+            logger.error(traceback.format_exc())
             raise ToolException(error_message2.format(error_info=e))
 
     @classmethod

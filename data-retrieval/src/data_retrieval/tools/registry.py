@@ -14,7 +14,7 @@ from typing import Dict, Type
 # Base tools
 from data_retrieval.tools.base_tools.json2plot import Json2Plot
 from data_retrieval.tools.base_tools.text2sql import Text2SQLTool
-from data_retrieval.tools.base_tools.text2dip_metric import Text2Metric
+from data_retrieval.tools.base_tools.text2metric import Text2Metric
 from data_retrieval.tools.base_tools.sql_helper import SQLHelperTool
 from data_retrieval.tools.base_tools.knowledge_item import KnowledgeItemTool
 from data_retrieval.tools.base_tools.get_metadata import GetMetadataTool
