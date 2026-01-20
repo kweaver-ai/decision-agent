@@ -308,13 +308,13 @@ if __name__ == "__main__":
         token="Bearer ory_at_nrj_KBORymr5dbAQXC2TqjYLeIM41wExj_WKlH3-C40.beJ_xcHDa9sQbbWBm2LYZcerYwlGhWUf6-0qWFd0GLc",
         user_id="450dd110-5bba-11f0-b8d9-1688e6ea28e2",
     )
-    print(embedding.embed_documents(["你好", "世界"]))
-    print(embedding.embed_query("你好"))
+    logger.info(embedding.embed_documents(["你好", "世界"]))
+    logger.info(embedding.embed_query("你好"))
 
     import asyncio
     asyncio.run(embedding.aembed_documents(["你好", "世界"]))
     res = asyncio.run(embedding.aembed_query("你好"))
-    print(res)
+    logger.info(res)
 
     # import faiss
     # from langchain_community.docstore.in_memory import InMemoryDocstore

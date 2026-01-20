@@ -12,6 +12,7 @@ grandparent_dir = os.path.abspath(os.path.join(current_file_path, '../../../'))
 sys.path.append(grandparent_dir)
 
 from fastapi import APIRouter, FastAPI  # noqa: E402
+from langchain.pydantic_v1 import BaseModel  # noqa: E402
 from data_retrieval.tools.registry import BASE_TOOLS_MAPPING, ALL_TOOLS_MAPPING  # noqa: E402
 from data_retrieval.tools.knowledge_network_tools import KNOWLEDGE_NETWORK_TOOLS_MAPPING  # noqa: E402
 
@@ -45,6 +46,16 @@ class BaseToolAPIRouter(APIRouter):
                 endpoint=tool_cls.get_api_schema,
                 methods=["GET"]
             )
+
+    def get_tool_pydantic_class(self, tool_name: str):
+        tool_cls = self.tools_mapping.get(tool_name)
+        if not tool_cls:
+            return None
+
+        args_schema = getattr(tool_cls, "args_schema", None)
+        if isinstance(args_schema, type) and issubclass(args_schema, BaseModel):
+            return args_schema
+        return None
 
     def _init_tools(self):
         for tool_name, tool_cls in self.tools_mapping.items():

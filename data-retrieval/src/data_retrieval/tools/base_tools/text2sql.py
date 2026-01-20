@@ -43,10 +43,10 @@ from data_retrieval.utils.model_types import ModelType4Prompt
 from data_retrieval.utils.sql_to_graph import build_graph
 from data_retrieval.api import VegaType
 from data_retrieval.tools.base import parse_llm_from_model_factory
+from data_retrieval.utils._common import run_blocking
 
 from data_retrieval.settings import get_settings
 
-import asyncio
 
 _SETTINGS = get_settings()
 
@@ -561,7 +561,7 @@ class Text2SQLTool(LLMTool):
             run_manager: Optional[CallbackManagerForToolRun] = None
     ):
         """同步运行方法，直接调用异步版本"""
-        return asyncio.run(self._arun(
+        return run_blocking(self._arun(
             input=input,
             action=action,
             extra_info=extra_info,

@@ -4,6 +4,8 @@ from typing import List
 
 import pandas as pd
 
+from data_retrieval.logs.logger import logger
+
 
 class JsonParse(object):
 
@@ -249,17 +251,17 @@ if __name__ == '__main__':
     }
 
     parse = JsonParse(data)
-    print(parse.to_markdown())
-    print(parse.to_json())
-    print(parse.to_dict())
+    logger.info(parse.to_markdown())
+    logger.info(parse.to_json())
+    logger.info(parse.to_dict())
 
     data = "SELECT aaa.first-name, bb.last-name, age FROM users WHERE xxx.first-name = 'John' AND last-name = 'Doe';"
 
-    print(add_quotes_to_fields_with_dash(data))
+    logger.info(add_quotes_to_fields_with_dash(data))
 
     data = 'SELECT aaa.first-a, bb.last_a,  age FROM users WHERE h.first_b = "J-ohn" AND have(h.b-b) = "Doe";'
 
-    print(add_quotes_to_fields_with_data_self(data))
+    logger.info(add_quotes_to_fields_with_data_self(data))
     #
     # data = 'year(first-a)'
     # pattern = r"([a-zA-Z0-9_]+-[a-zA-Z0-9_]+)"
@@ -273,7 +275,7 @@ LIMIT 100
     """
 
     res = add_quotes_to_fields_with_data_self(test_data)
-    print(res)
+    logger.info(res)
 
     t_res = """SELECT "comprehensive-unit-price" FROM vdm_mysql_znc5em0v.default._select_from_ti_assets_ta_inner_join_tv_assets_ta2_on_ta_code_ta AS T1
 WHERE T1."maintenance-END-TIME" LIKE '2024/%'
@@ -289,4 +291,4 @@ WHERE T1.maintenance-END-TIME LIKE '2024/%'
 LIMIT 100
     """
 
-    print(add_quotes_to_fields_with_data_self(data))
+    logger.info(add_quotes_to_fields_with_data_self(data))

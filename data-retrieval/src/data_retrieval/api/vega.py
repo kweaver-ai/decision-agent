@@ -8,6 +8,7 @@ from typing import Any
 import urllib3
 
 from data_retrieval.settings import get_settings
+from data_retrieval.logs.logger import logger
 
 urllib3.disable_warnings()
 
@@ -167,6 +168,6 @@ if __name__ == '__main__':
             sql="SELECT 1",
             user_id="demo-user"
         )
-        print(res)
+        logger.info(res)
 
     main()

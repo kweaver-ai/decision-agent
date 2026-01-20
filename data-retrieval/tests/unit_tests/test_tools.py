@@ -121,21 +121,21 @@ class TestText2SQLTool:
 # TestText2MetricTool 已移除（text2metric.py 已删除）
 
 
-class TestText2DIPMetricTool:
-    """测试 Text2DIPMetricTool"""
+class TestText2MetricTool:
+    """测试 Text2Metric"""
     
     def test_tool_class(self):
         """测试工具类"""
-        from data_retrieval.tools.base_tools.text2dip_metric import Text2DIPMetricTool
+        from data_retrieval.tools.base_tools.text2dip_metric import Text2Metric
         
-        assert Text2DIPMetricTool is not None
-        assert hasattr(Text2DIPMetricTool, 'from_dip_metric')
+        assert Text2Metric is not None
+        assert hasattr(Text2Metric, 'from_dip_metric')
     
     def test_from_dip_metric_signature(self):
         """测试 from_dip_metric 方法签名"""
-        from data_retrieval.tools.base_tools.text2dip_metric import Text2DIPMetricTool
+        from data_retrieval.tools.base_tools.text2dip_metric import Text2Metric
         
-        sig = inspect.signature(Text2DIPMetricTool.from_dip_metric)
+        sig = inspect.signature(Text2Metric.from_dip_metric)
         params = list(sig.parameters.keys())
         
         assert 'dip_metric' in params
@@ -181,7 +181,7 @@ def run_tests():
         TestToolRegistry,
         TestToolAPIRouter,
         TestText2SQLTool,
-        TestText2DIPMetricTool,
+        TestText2MetricTool,
         TestJson2Plot,
         TestSQLHelper,
     ]

@@ -106,7 +106,7 @@ class Text2DIPMetricInputWithMetricList(Text2DIPMetricInput):
     )
 
 
-class Text2DIPMetricTool(LLMTool):
+class Text2Metric(LLMTool):
     name: str = ToolName.from_text2dip_metric.value
     description: str = _DESCS["tool_description"]["cn"]
     background: str = ""
@@ -428,6 +428,7 @@ class Text2DIPMetricTool(LLMTool):
 
             errors = {}
             res = {}
+            res_for_llm = {}
 
             # 重写指标查询语句，提高指标查询的准确性
             question = input
@@ -473,6 +474,7 @@ class Text2DIPMetricTool(LLMTool):
                     ]
 
                     res.update(llm_res)
+                    res_for_llm = res.copy()
 
                     # 执行查询
                     if metric_id and param:
@@ -496,7 +498,7 @@ class Text2DIPMetricTool(LLMTool):
                             res["title"] = input
 
                         if not raw_result.get("data"):
-                            res_for_llm.pop("result_cache_key")
+                            res_for_llm.pop("result_cache_key", None)
                             res_for_llm["message"] = "查询结果为空"
 
                             res.pop("result_cache_key")
@@ -560,6 +562,7 @@ class Text2DIPMetricTool(LLMTool):
 
             errors = {}
             res = {}
+            res_for_llm = {}
 
             # 重写指标查询语句，提高指标查询的准确性
             question = input
@@ -618,6 +621,7 @@ class Text2DIPMetricTool(LLMTool):
                     ]
 
                     res.update(llm_res)
+                    res_for_llm = res.copy()
 
                     # 执行查询
                     if metric_id and param:
@@ -666,7 +670,7 @@ class Text2DIPMetricTool(LLMTool):
                     logger.error(f"错误详情: {traceback.format_exc()}")
                     errors[f"error_{i+1}"] = str(e)
 
-                    print(traceback.format_exc())
+                    logger.error(traceback.format_exc())
 
                     # 如果是最后一次重试，抛出异常
                     if i == self.retry_times - 1:
@@ -686,7 +690,7 @@ class Text2DIPMetricTool(LLMTool):
 
         except Exception as e:
             logger.error(f"异步处理查询失败: {e}")
-            print(traceback.format_exc())
+            logger.error(traceback.format_exc())
             raise Text2DIPMetricError(f"异步处理查询失败: {e}")
 
     def _parse_response(self, response):
@@ -824,7 +828,7 @@ class Text2DIPMetricTool(LLMTool):
 
         except Exception as e:
             logger.error(f"处理执行结果失败: {e}")
-            print(traceback.format_exc())
+            logger.error(traceback.format_exc())
             return {"error": f"处理执行结果失败: {e}"}
 
     @classmethod
@@ -1473,8 +1477,8 @@ if __name__ == '__main__':
     async def main():
         """测试函数"""
         from data_retrieval.tools.base import validate_openapi_schema
-        is_valid, error_msg = validate_openapi_schema(await Text2DIPMetricTool.get_api_schema())
-        print(f"验证结果: {is_valid}, 错误信息: {error_msg}")
+        is_valid, error_msg = validate_openapi_schema(await Text2Metric.get_api_schema())
+        logger.info(f"验证结果: {is_valid}, 错误信息: {error_msg}")
 
         # 创建 Mock DIP Metric
         # from data_retrieval.datasource.dip_metric import MockDIPMetric
@@ -1483,7 +1487,7 @@ if __name__ == '__main__':
         # dip_metric.set_data_list(["metric_1", "metric_2"])
 
         # # 创建工具实例
-        # tool = Text2DIPMetricTool.from_dip_metric(dip_metric)
+        # tool = Text2Metric.from_dip_metric(dip_metric)
 
         # # 测试查询
         # result = await tool._aprocess_query(

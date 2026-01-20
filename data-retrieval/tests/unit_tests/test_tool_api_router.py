@@ -1,3 +1,4 @@
+import json
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
@@ -118,3 +119,20 @@ def test_get_tool_pydantic_class():
     assert model_cls is _DummyTool.ArgsSchema
     assert router.get_tool_pydantic_class("no_schema") is None
     assert router.get_tool_pydantic_class("missing") is None
+
+
+def test_generate_api_json_and_validate_format(tmp_path):
+    resp = client.get("/tools/docs")
+    assert resp.status_code == 200
+    data = resp.json()
+
+    api_json_path = tmp_path / "api.json"
+    api_json_path.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+
+    loaded = json.loads(api_json_path.read_text(encoding="utf-8"))
+    assert loaded["openapi"] == "3.0.3"
+    assert isinstance(loaded["info"], dict)
+    assert "title" in loaded["info"]
+    assert "version" in loaded["info"]
+    assert isinstance(loaded.get("servers"), list)
+    assert isinstance(loaded.get("paths"), dict)

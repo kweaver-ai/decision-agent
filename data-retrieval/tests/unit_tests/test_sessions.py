@@ -63,7 +63,7 @@ class TestInMemoryChatSession:
         # 清理可能存在的旧数据
         try:
             session.delete_chat_history(test_session_id)
-        except:
+        except Exception:
             pass
         
         history = session.get_chat_history(test_session_id)
@@ -81,7 +81,7 @@ class TestInMemoryChatSession:
         # 清理旧数据
         try:
             session.delete_chat_history(test_session_id)
-        except:
+        except Exception:
             pass
         
         session.add_chat_history(test_session_id, "human", "你好")
@@ -99,7 +99,7 @@ class TestInMemoryChatSession:
         
         try:
             session.delete_chat_history(test_session_id)
-        except:
+        except Exception:
             pass
         
         session.add_chat_history(test_session_id, "ai", "你好，我是 AI 助手")
@@ -116,7 +116,7 @@ class TestInMemoryChatSession:
         
         try:
             session.delete_chat_history(test_session_id)
-        except:
+        except Exception:
             pass
         
         session.add_chat_history(test_session_id, "human", "问题1")

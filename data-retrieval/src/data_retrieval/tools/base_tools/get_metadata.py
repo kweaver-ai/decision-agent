@@ -166,22 +166,6 @@ class GetMetadataTool(AFTool):
         result["title"] = query if query else "获取数据源信息"
         return result
 
-    #         ans_multiple.cites = []
-    #         for data_view in tool_res["data_view_metadata"]:
-    #             ans_multiple.cites.append({
-    #                 "id": data_view["id"],
-    #                 "type": "data_view",
-    #                 "title": data_view["title"],
-    #                 "description": data_view["description"]
-    #             })
-    #         for metric in tool_res["metric_metadata"]:
-    #             ans_multiple.cites.append({
-    #                 "id": metric["id"],
-    #                 "type": "metric",
-    #                 "title": metric["title"],
-    #                 "description": metric["description"]
-    #             })
-
     @classmethod
     @api_tool_decorator
     async def as_async_api_cls(
