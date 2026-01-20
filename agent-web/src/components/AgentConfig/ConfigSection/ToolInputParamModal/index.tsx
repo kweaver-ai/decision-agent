@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef, useMemo } from 'react';
 import UniversalModal from '@/components/UniversalModal';
 import intl from 'react-intl-universal';
-import { Divider, InputNumber, message, Switch, TableColumnsType, Tooltip } from 'antd';
+import { Divider, Input, InputNumber, message, Switch, TableColumnsType, Tooltip } from 'antd';
+import AdPromptInput from '@/components/AdPromptInput';
 import ADTable from '@/components/ADTable';
 import classNames from 'classnames';
 import ErrorTip from '@/components/ErrorTip';
@@ -17,6 +18,9 @@ import { useLatestState, useBusinessDomain } from '@/hooks';
 import { getToolById } from '@/apis/agent-operator-integration';
 import AgentDataSourceSettings from './AgentDataSourceSettings';
 import ResultHandlingStrategy from './ResultHandlingStrategy';
+import DipModal from '@/components/DipModal';
+import DipButton from '@/components/DipButton';
+import DipIcon from '@/components/DipIcon';
 
 // 用于拼接字符串的特殊字段，以下特殊字符并不能直接在键盘上输入
 const stringSeparator1 = '※';
@@ -55,6 +59,10 @@ const ToolInputParamModal = ({
   const [errorData, setErrorData, getErrorData] = useLatestState([]);
   const [intervention, setIntervention] = useState(false);
   const [timeout, setTimeout] = useState<number>(0);
+  // intervention 确认 Modal 相关状态
+  const [interventionModalVisible, setInterventionModalVisible] = useState(false);
+  const [interventionConfirmationMessage, setInterventionConfirmationMessage] = useState<string | null>(null);
+  const [tempInterventionMessage, setTempInterventionMessage] = useState<string>('');
 
   const dataSourceConfigRef = useRef(tool?.data_source_config);
   const llmConfigRef = useRef(tool?.llm_config);
@@ -195,6 +203,7 @@ const ToolInputParamModal = ({
         }
 
         setIntervention(tool.intervention || false);
+        setInterventionConfirmationMessage(tool.intervention_confirmation_message || null);
         setTimeout(tool.agent_timeout || 1800);
         return;
       }
@@ -425,6 +434,7 @@ const ToolInputParamModal = ({
         }
 
         setIntervention(tool.intervention);
+        setInterventionConfirmationMessage(tool.intervention_confirmation_message || null);
         setTimeout(tool.tool_timeout || 300);
       }
     } catch (error: any) {
@@ -462,6 +472,7 @@ const ToolInputParamModal = ({
     const cloneTool = _.cloneDeep(tool);
     cloneTool.tool_input = loop(inputList);
     cloneTool.intervention = intervention;
+    cloneTool.intervention_confirmation_message = intervention ? interventionConfirmationMessage : null;
     if (isAgent) {
       cloneTool.data_source_config = dataSourceConfigRef.current;
       cloneTool.llm_config = llmConfigRef.current;
@@ -764,28 +775,59 @@ const ToolInputParamModal = ({
                 {intl.get('agentCommonConfig.llm.timeoutParameters')}
               </span>
             </div>
-            <div className="dip-flex-align-center">
-              {disabledIntervention || readonly ? (
-                <Tooltip title={readonly ? '' : intl.get('agentCommonConfig.llm.disabledInterventionTip')}>
+            <div>
+              <div className="dip-flex-align-center">
+                {disabledIntervention || readonly ? (
+                  <Tooltip title={readonly ? '' : intl.get('agentCommonConfig.llm.disabledInterventionTip')}>
+                    <Switch
+                      size="small"
+                      checked={intervention}
+                      onChange={checked => {
+                        if (checked) {
+                          setTempInterventionMessage(interventionConfirmationMessage || '是否确认参数并继续执行?');
+                          setInterventionModalVisible(true);
+                        } else {
+                          setIntervention(false);
+                          setInterventionConfirmationMessage(null);
+                        }
+                      }}
+                      disabled
+                    />
+                  </Tooltip>
+                ) : (
                   <Switch
                     size="small"
                     checked={intervention}
                     onChange={checked => {
-                      setIntervention(checked);
+                      if (checked) {
+                        // 打开确认 Modal，设置默认值
+                        setTempInterventionMessage(interventionConfirmationMessage || '是否确认参数并继续执行?');
+                        setInterventionModalVisible(true);
+                      } else {
+                        // 关闭时清空确认消息
+                        setIntervention(false);
+                        setInterventionConfirmationMessage(null);
+                      }
                     }}
-                    disabled
                   />
-                </Tooltip>
-              ) : (
-                <Switch
-                  size="small"
-                  checked={intervention}
-                  onChange={checked => {
-                    setIntervention(checked);
-                  }}
-                />
+                )}
+                <span className="dip-ml-12">{intl.get('agentCommonConfig.llm.intervention')}</span>
+              </div>
+              {intervention && (
+                <div className="dip-mt-4">
+                  <DipButton
+                    icon={<DipIcon type="icon-dip-bianji" />}
+                    size="small"
+                    type="link"
+                    onClick={() => {
+                      setTempInterventionMessage(interventionConfirmationMessage || '是否确认参数并继续执行?');
+                      setInterventionModalVisible(true);
+                    }}
+                  >
+                    编辑确认提示
+                  </DipButton>
+                </div>
               )}
-              <span className="dip-ml-12">{intl.get('agentCommonConfig.llm.intervention')}</span>
             </div>
           </div>
           <div className="dip-mt-20" style={isAgent ? { maxHeight: 238, minHeight: 95 } : { height: 368 }}>
@@ -864,6 +906,48 @@ const ToolInputParamModal = ({
           )}
         </div>
       )}
+
+      {/* intervention 确认提示配置 Modal */}
+      <DipModal
+        title="确认提示配置"
+        open={interventionModalVisible}
+        onCancel={() => {
+          setInterventionModalVisible(false);
+          setTempInterventionMessage('');
+        }}
+        onOk={() => {
+          setIntervention(true);
+          setInterventionConfirmationMessage(tempInterventionMessage || null);
+          setInterventionModalVisible(false);
+        }}
+        okText="确认"
+        cancelText="取消"
+        destroyOnHidden
+      >
+        <div className="dip-mb-8">确认提示文案</div>
+        <Input.TextArea
+          autoSize={{ minRows: 2, maxRows: 6 }}
+          value={tempInterventionMessage}
+          onChange={e => setTempInterventionMessage(e.target.value)}
+        />
+        {/*<AdPromptInput*/}
+        {/*  style={{ minHeight: 80 }}*/}
+        {/*  placeholder="请输入确认提示文案"*/}
+        {/*  value={tempInterventionMessage}*/}
+        {/*  onChange={(val: string) => setTempInterventionMessage(val)}*/}
+        {/*  trigger={[*/}
+        {/*    {*/}
+        {/*      character: '$',*/}
+        {/*      options: varOptions.map((field: any) => ({*/}
+        {/*        ...field,*/}
+        {/*        value: `$${field.value}`, // 使用{{field.name}}格式*/}
+        {/*        // type: 'text',*/}
+        {/*      })),*/}
+        {/*    },*/}
+        {/*  ]}*/}
+        {/*/>*/}
+        {/*<div className="dip-font-12 dip-text-color-45 dip-mt-8">输入 $ 可快速插入变量</div>*/}
+      </DipModal>
     </UniversalModal>
   );
 };

@@ -1,15 +1,15 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import './style.less';
 import classNames from 'classnames';
 import { getVarTextFromPromptVar } from '@/components/AdPromptInput/assitant';
-import { AdPromptInputProps } from '@/components/AdPromptInput/interface';
+import type { VarOptions } from '@/components/AdPromptInput/interface.ts';
 export type VarElementProps = {
   className?: string;
   error?: boolean;
   value: string;
   type?: string;
   autoFocus?: boolean; // 是否自动聚焦到可编辑的变量标签上
-  options: AdPromptInputProps['options'];
+  options: VarOptions[];
   editable?: boolean; // 是否可编辑
 };
 const VarElement = (props: VarElementProps) => {
@@ -83,7 +83,7 @@ const VarElement = (props: VarElementProps) => {
     <span
       contentEditable={false}
       className={classNames(prefixCls, className, {
-        [`${prefixCls}-error`]: varError
+        [`${prefixCls}-error`]: varError,
       })}
       onClick={() => {
         if (type === 'object') {
@@ -94,13 +94,13 @@ const VarElement = (props: VarElementProps) => {
         }
       }}
     >
-      <span contentEditable={false} style={{ opacity: 0 }}>
+      <span className={`${prefixCls}-block`} contentEditable={false}>
         {arr[0]}
       </span>
       <span
         ref={editableSpanRef}
         className={classNames(`${prefixCls}-text`, {
-          [`${prefixCls}-text-editable`]: type === 'object'
+          [`${prefixCls}-text-editable`]: type === 'object',
         })}
         // contentEditable={type === 'object'}
         contentEditable={contentEditable}
@@ -121,7 +121,7 @@ const VarElement = (props: VarElementProps) => {
       >
         {arr[1]}
       </span>
-      <span contentEditable={false} style={{ opacity: 0 }}>
+      <span style={{ padding: arr[2] ? 0 : '0 4px' }} className={`${prefixCls}-block`} contentEditable={false}>
         {arr[2]}
       </span>
     </span>
