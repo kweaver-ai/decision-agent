@@ -1,5 +1,4 @@
 import ipaddress
-import logging
 import os
 
 
@@ -59,7 +58,7 @@ class ConfigClass:
     # AD
     HOST_MF_MODEL_FACTORY = "mf-model-factory"
     PORT_MF_MODEL_FACTORY = "9898"
-    
+
     # DIP
     HOST_MF_MODEL_API = "mf-model-api"
     PORT_MF_MODEL_API = "9898"
@@ -68,8 +67,6 @@ class ConfigClass:
     EMB_URL = os.getenv("EMB_URL", "")
     EMBEDDING_DIMENSION = int(os.getenv("EMBEDDING_DIMENSION", 768))
     RERANK_URL = os.getenv("RERANKER_URL", "")
-
-
 
     # DEBUG = True
     if DEBUG:
@@ -109,10 +106,8 @@ class ConfigClass:
         HOST_ECOINDEX_PUBLIC = DIPHOST
         # 依赖的外部接入的服务
 
-
         EMB_URL = "http://192.168.152.11:18302/v1/embeddings"
         # EMB_URL = f"http://{DIPHOST}:9898/api/private/mf-model-api/v1/small-model/embedding"
-
 
         # RERANK_URL = "http://192.168.152.11:8343/v1/reranker"
         RERANK_URL = "http://192.168.152.11:18343/v1/rerank"
@@ -133,7 +128,7 @@ class ConfigClass:
         REDISPORT = 6379
         REDISUSER = "root"
         REDISPASS = ""
-        
+
         # 图谱opensearch
         OPENSEARCH_HOST = DIPHOST
         OPENSEARCH_PORT = "9200"
@@ -227,6 +222,7 @@ class BuiltinIdsConfig:
     def get_all_tool_box_ids(self):
         """获取所有工具箱的ID"""
         return self.tool_box_ids.copy()
+
 
 # 创建内置ID配置实例
 BuiltinIds = BuiltinIdsConfig()

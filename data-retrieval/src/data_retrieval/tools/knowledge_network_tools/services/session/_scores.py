@@ -5,7 +5,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Dict, Optional
 
 from data_retrieval.logs.logger import logger
 
@@ -76,5 +76,3 @@ class _ScoresMixin(_SessionBase):
             return {}
         cls._update_session_access_time(session_id)
         return cls._session_records[session_id][kn_id]["property_scores"].copy()
-
-

@@ -67,5 +67,3 @@ async def call_object_retrieval_api(
             exc_info=True,
         )
         return None
-
-

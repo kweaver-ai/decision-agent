@@ -40,10 +40,10 @@ def get_all_resource_templates() -> List[Dict[str, Any]]:
 async def read_resource(uri: str) -> Optional[str]:
     """
     读取资源内容。
-    
+
     Args:
         uri: 资源 URI
-        
+
     Returns:
         资源内容（字符串），未找到返回 None
     """
@@ -56,7 +56,7 @@ async def read_resource(uri: str) -> Optional[str]:
             "version": "1.0.0",
             "tools": tools,
         }, ensure_ascii=False, indent=2)
-    
+
     # 数据源 Schema
     if uri.startswith("schema://"):
         identity = uri.replace("schema://", "")
@@ -66,5 +66,5 @@ async def read_resource(uri: str) -> Optional[str]:
             return json.dumps(result, ensure_ascii=False, indent=2) if isinstance(result, (dict, list)) else str(result)
         except Exception as e:
             return json.dumps({"error": str(e)}, ensure_ascii=False)
-    
+
     return None

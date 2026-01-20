@@ -56,9 +56,6 @@ def SetRecoveryTimeout(time: int):
     recoveryTimeout = time
 
 
-_l = gettext.gettext
-
-
 def set_lang(lang):
     global _l
     _l = lang
@@ -144,7 +141,7 @@ def is_valid_url(url):
     try:
         result = urlparse(url)
         return all([result.scheme, result.netloc])
-    except:
+    except Exception:
         return False
 
 

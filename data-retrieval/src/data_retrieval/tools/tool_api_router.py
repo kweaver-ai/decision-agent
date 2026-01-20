@@ -2,8 +2,6 @@
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2025-03-12
 
-from typing import Callable, Union, Dict, List
-from functools import wraps
 import os
 import sys
 
@@ -13,29 +11,28 @@ grandparent_dir = os.path.abspath(os.path.join(current_file_path, '../../../'))
 # 将上上级目录添加到sys.path中
 sys.path.append(grandparent_dir)
 
-from fastapi import APIRouter, FastAPI
-from data_retrieval.tools.registry import BASE_TOOLS_MAPPING, ALL_TOOLS_MAPPING
-
-
-from data_retrieval.logs import logger
-
+from fastapi import APIRouter, FastAPI  # noqa: E402
+from langchain.pydantic_v1 import BaseModel  # noqa: E402
+from data_retrieval.tools.registry import BASE_TOOLS_MAPPING, ALL_TOOLS_MAPPING  # noqa: E402
+from data_retrieval.tools.knowledge_network_tools import KNOWLEDGE_NETWORK_TOOLS_MAPPING  # noqa: E402
 
 _BASE_TOOLS_MAPPING = BASE_TOOLS_MAPPING
 
-class BaseToolAPIRouter(APIRouter): 
+
+class BaseToolAPIRouter(APIRouter):
     name: str = "基础结构化数据分析工具箱"
     description: str = "支持对结构话数据进行处理的工具箱"
 
-    def __init__(self, tools_mapping: dict = None, *args, **kwargs):
+    def __init__(self, tools_mapping: dict = None, tools_without_api_docs: list = [], *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tools_mapping = tools_mapping
+        self.tools_without_api_docs = tools_without_api_docs
 
         if not self.tools_mapping:
             self.tools_mapping = _BASE_TOOLS_MAPPING
-        
+
         self._init_tools()
 
-    
     def add_tool(self, tool_name: str, tool_cls):
         if hasattr(tool_cls, "as_async_api_cls"):
             self.add_api_route(
@@ -50,26 +47,55 @@ class BaseToolAPIRouter(APIRouter):
                 methods=["GET"]
             )
 
+    def get_tool_pydantic_class(self, tool_name: str):
+        tool_cls = self.tools_mapping.get(tool_name)
+        if not tool_cls:
+            return None
+
+        args_schema = getattr(tool_cls, "args_schema", None)
+        if isinstance(args_schema, type) and issubclass(args_schema, BaseModel):
+            return args_schema
+        return None
+
     def _init_tools(self):
         for tool_name, tool_cls in self.tools_mapping.items():
             self.add_tool(tool_name, tool_cls)
-        
+
         self.add_api_route(
             path="/docs",
             endpoint=self.get_api_docs,
             methods=["GET"]
         )
 
+        self.add_api_route(
+            path="/",
+            endpoint=self.list_tools,
+            methods=["GET"]
+        )
+
+    def list_tools(self):
+        return {
+            "tools": [
+                {
+                    "name": tool_name,
+                    "show_api_docs": True if tool_name not in self.tools_without_api_docs else False
+                }
+                for tool_name in self.tools_mapping.keys()
+            ]
+        }
 
     async def get_api_docs(self, server_url: str = "http://data-retrieval:9100"):
         """获取工具的API文档, 符合OpenAPI 3.0规范
         Parameters:
             server_url: 服务地址
             tools: 工具列表, 为空时返回所有工具的API文档
-        Returns: 
+        Returns:
             符合OpenAPI 3.0规范的API文档
         """
         tools = list(self.tools_mapping.keys())
+
+        # 过滤掉不显示API文档的工具, 即内部工具
+        tools = [tool_name for tool_name in tools if tool_name not in self.tools_without_api_docs]
         if self.description:
             toolbox_desc = self.description + "，工具包含: \n"
         else:
@@ -92,14 +118,14 @@ class BaseToolAPIRouter(APIRouter):
             ],
             "paths": {}
         }
-        
+
         for tool_name in tools:
             schemas["paths"][f"{self.prefix}/{tool_name}"] = await self.tools_mapping[tool_name].get_api_schema()
-        
+
         # schemas["paths"][f"{self.prefix}/result"] = await self.get_tool_result_schema()
 
         return schemas
-    
+
 
 # class SandboxToolAPIRouter(BaseToolAPIRouter):
 #     name: str = "沙箱环境工具箱"
@@ -111,8 +137,11 @@ class BaseToolAPIRouter(APIRouter):
 
 
 def create_app():
-    router = BaseToolAPIRouter(prefix="/tools", tools_mapping=ALL_TOOLS_MAPPING)
-
+    router = BaseToolAPIRouter(
+        prefix="/tools",
+        tools_mapping=ALL_TOOLS_MAPPING,
+        tools_without_api_docs=list(KNOWLEDGE_NETWORK_TOOLS_MAPPING.keys())
+    )
     app = FastAPI(
         title="AF Agent Tools API",
         description="AF Agent Tools API",
@@ -129,10 +158,6 @@ DEFAULT_APP = create_app()
 
 if __name__ == "__main__":
     import uvicorn
-    
-    router = BaseToolAPIRouter(prefix="/tools", tools_mapping=ALL_TOOLS_MAPPING)
-    # sandbox_router = SandboxToolAPIRouter(prefix="/sandbox_tools")
-    # router.include_router(sandbox_router)
 
     app = create_app()
 

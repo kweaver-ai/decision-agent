@@ -19,7 +19,7 @@ MCP stdio 服务器
 编程方式使用（自定义 param_provider）：
     from data_retrieval.tools.mcp.server_stdio import run_stdio_with_provider
     from my_provider import MyRedisParamsProvider
-    
+
     anyio.run(run_stdio_with_provider, MyRedisParamsProvider())
 """
 
@@ -43,12 +43,12 @@ async def run_stdio_with_provider(
 ) -> None:
     """
     运行 stdio 模式的 MCP 服务器（支持自定义参数提供者）。
-    
+
     Args:
         param_provider: 可选的自定义参数提供者
     """
     server = build_server(param_provider=param_provider)
-    
+
     async with stdio_server() as (read_stream, write_stream):
         await server.run(
             read_stream,

@@ -66,7 +66,7 @@ async def run_stdio(param_provider: Optional[IdentityParamsProvider] = None) -> 
         tool_names=SANDBOX_TOOLS,
         server_name=SERVER_NAME,
     )
-    
+
     async with stdio_server() as (read_stream, write_stream):
         await server.run(
             read_stream,
@@ -93,7 +93,7 @@ def main() -> None:
     parser.add_argument("--host", default="0.0.0.0", help="SSE 模式绑定地址")
     parser.add_argument("--port", type=int, default=9112, help="SSE 模式端口")
     args = parser.parse_args()
-    
+
     if args.sse:
         run_sse(host=args.host, port=args.port)
     else:

@@ -66,11 +66,11 @@ def to_brief_schema(result: Dict[str, Any]) -> Dict[str, Any]:
 
         # 过滤空值，但保留 sample_data 字段（在过滤后单独添加）
         brief_obj = {k: v for k, v in brief_obj.items() if v not in (None, [], {}, "")}
-        
+
         # 如果原对象中有 sample_data 字段，则保留它（即使为 None 或空字典，表示 include_sample_data=True）
         if "sample_data" in obj:
             brief_obj["sample_data"] = sample_data
-        
+
         object_types.append(brief_obj)
 
     relation_types = []
@@ -87,7 +87,7 @@ def to_brief_schema(result: Dict[str, Any]) -> Dict[str, Any]:
     brief_action_types = []
     for action in result.get("action_types", []):
         brief_action = {}
-        
+
         # 核心字段：始终保留（即使为空）
         if "id" in action:
             brief_action["id"] = action.get("id")
@@ -97,32 +97,33 @@ def to_brief_schema(result: Dict[str, Any]) -> Dict[str, Any]:
             brief_action["action_type"] = action.get("action_type")
         if "object_type_id" in action:
             brief_action["object_type_id"] = action.get("object_type_id")
-        
+
         # 从object_type对象中提取object_type_name
         object_type = action.get("object_type")
         if object_type and isinstance(object_type, dict):
             object_type_name = object_type.get("name")
             if object_type_name:
                 brief_action["object_type_name"] = object_type_name
-        
+
         # 保留comment字段（仅非空时保留）
         comment = action.get("comment")
         if comment:
             brief_action["comment"] = comment
-        
+
         # 保留tags字段（仅非空时保留）
         tags = action.get("tags")
         if tags:
             brief_action["tags"] = tags
-        
+
         # 保留kn_id字段（仅非空时保留）
         kn_id = action.get("kn_id")
         if kn_id:
             brief_action["kn_id"] = kn_id
-        
+
         brief_action_types.append(brief_action)
-    
-    out: Dict[str, Any] = {"object_types": object_types, "relation_types": relation_types, "action_types": brief_action_types}
+
+    out: Dict[str, Any] = {"object_types": object_types,
+                           "relation_types": relation_types, "action_types": brief_action_types}
 
     # 兼容字段：保留扁平 nodes/message（由上游生成，便于旧消费方）
     if "nodes" in result:
@@ -131,5 +132,3 @@ def to_brief_schema(result: Dict[str, Any]) -> Dict[str, Any]:
         out["message"] = result.get("message")
 
     return out
-
-

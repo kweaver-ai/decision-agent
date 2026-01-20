@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 # @Author:  jack.li@aishu.cn
 # @Date: 2025-01-13
-import requests
 import numpy as np
 import concurrent.futures
-import asyncio
-from urllib.parse import urljoin
 from data_retrieval.settings import get_settings
 from data_retrieval.logs.logger import logger
 from data_retrieval.utils.embeddings import EmbeddingServiceFactory
 from data_retrieval.utils.ranking import HybridRetriever
 import traceback
+
 
 def cosine_similarity(vec1, vec2):
     dot_product = np.dot(vec1, vec2)
@@ -18,21 +16,22 @@ def cosine_similarity(vec1, vec2):
     norm_vec2 = np.linalg.norm(vec2)
     return dot_product / (norm_vec1 * norm_vec2)
 
+
 class DimensionReduce(object):
 
     def __init__(
-            self,
-            source_type="data-view",
-            input_llm=None,
-            embedding_url="",
-            token="",
-            user_id="",
-            batch_size=64
-        ):
+        self,
+        source_type="data-view",
+        input_llm=None,
+        embedding_url="",
+        token="",
+        user_id="",
+        batch_size=64
+    ):
         settings = get_settings()
         self.source_type = source_type
         self.batch_size = batch_size
-    
+
         factory = EmbeddingServiceFactory(
             embedding_type=settings.EMB_TYPE,
             base_url=embedding_url,
@@ -50,11 +49,11 @@ class DimensionReduce(object):
     def get_more_embedding(self, input_text, input_id):
         vec = self.embedding.embed_texts([input_text])
         return input_id, vec[0]
-    
+
     def get_embedding_by_batch(self, input_texts):
         vec = self.embedding.embed_texts(input_texts)
         return vec
-    
+
     def get_more_embedding_by_batch(self, input_texts, input_ids):
         vec = self.embedding.embed_texts(input_texts)
         return zip(input_ids, vec)
@@ -83,22 +82,24 @@ class DimensionReduce(object):
         pass
 
     def datasource_reduce(
-            self,
-            input_query,
-            input_data_source: dict,
-            num=4,
-            datasource_type: str = "dataview"
-        ):
+        self,
+        input_query,
+        input_data_source: dict,
+        num=4,
+        datasource_type: str = "dataview"
+    ):
         if num < 1:
             return input_data_source
         if len(input_query) == 0:
             return input_data_source
         if len(input_data_source) <= num:
             return input_data_source
-        logger.info("reduce datasource by query {} before datasource num {}".format(input_query, len(input_data_source)))
+        logger.info(
+            "reduce datasource by query {} before datasource num {}".format(
+                input_query, len(input_data_source)))
 
         datasource_list = []
-        
+
         try:
             q_embed = self.get_embedding(input_query)
 
@@ -110,7 +111,11 @@ class DimensionReduce(object):
                 input_ids = []
                 if datasource_type == "dataview":
                     for datasource_id, datasource in input_data_source.items():
-                        input_text = f"{datasource['technical_name']}|{datasource['name']}|{datasource['comment']}".strip("|")
+                        input_text = (
+                            f"{datasource['technical_name']}|"
+                            f"{datasource['name']}|"
+                            f"{datasource['comment']}"
+                        ).strip("|")
                         input_texts.append(input_text)
                         input_ids.append(datasource_id)
 
@@ -121,8 +126,8 @@ class DimensionReduce(object):
                         input_ids.append(datasource_id)
 
                 for i in range(0, len(input_texts), self.batch_size):
-                    batch_texts = input_texts[i:i+self.batch_size]
-                    batch_ids = input_ids[i:i+self.batch_size]
+                    batch_texts = input_texts[i:i + self.batch_size]
+                    batch_ids = input_ids[i:i + self.batch_size]
                     if batch_texts:
                         futures.append(executor.submit(self.get_more_embedding_by_batch, batch_texts, batch_ids))
 
@@ -137,7 +142,9 @@ class DimensionReduce(object):
             datasource_res = {}
             for i_datasource in datasource_list[:num]:
                 datasource_res[i_datasource[1]] = input_data_source[i_datasource[1]]
-            logger.info("reduce datasource by query {} after datasource num {}".format(input_query, len(datasource_res)))
+            logger.info(
+                "reduce datasource by query {} after datasource num {}".format(
+                    input_query, len(datasource_res)))
 
             return datasource_res
 
@@ -145,7 +152,7 @@ class DimensionReduce(object):
             logger.error(e)
             logger.error("向量索引可能有问题， 对query {} 不做降维处理".format(input_query))
             return input_data_source
-    
+
     def datasource_reduce_v2(self, input_query, input_data_source, num=4, datasource_type: str = "dataview"):
         if num < 1:
             return input_data_source
@@ -153,19 +160,22 @@ class DimensionReduce(object):
             return input_data_source
         if len(input_data_source) <= num:
             return input_data_source
-        logger.info("reduce datasource by query {} before datasource num {}".format(input_query, len(input_data_source)))
+        logger.info(
+            "reduce datasource by query {} before datasource num {}".format(
+                input_query, len(input_data_source)))
         datasource_map = dict()
         try:
             if datasource_type == "dataview":
                 for datasource_id, datasource in input_data_source.items():
-                    input_text = f"{datasource['technical_name']}|{datasource['name']}|{datasource['comment']}".strip("|")
+                    input_text = f"{datasource['technical_name']}|{datasource['name']}|{datasource['comment']}".strip(
+                        "|")
                     datasource_map[datasource_id] = input_text
 
             elif datasource_type == "metric":
                 for datasource_id, datasource in input_data_source.items():
                     input_text = f"{datasource['name']}|{datasource['comment']}".strip("|")
                     datasource_map[datasource_id] = input_text
-            
+
             logger.info(f"datasource_map: {datasource_map}")
             retriever = HybridRetriever(self.embedding, datasource_map)
             retriever.build()
@@ -173,14 +183,16 @@ class DimensionReduce(object):
             logger.info(f"input_query: {input_query}, num: {num}, bm25mode: okapi")
             results = retriever.search(input_query, num, bm25mode="okapi")
             logger.info(f"results: {results}")
-           
+
             datasource_res = {}
             # results 是 List[Tuple[str, float, int, int]]
             for i_datasource in results:
                 # i_datasource[0] 是文档ID，i_datasource[1] 是分数
                 datasource_id = i_datasource[0]
                 datasource_res[datasource_id] = input_data_source[datasource_id]
-            logger.info("reduce datasource by query {} after datasource num {}".format(input_query, len(datasource_res)))
+            logger.info(
+                "reduce datasource by query {} after datasource num {}".format(
+                    input_query, len(datasource_res)))
 
             return datasource_res
 
@@ -198,12 +210,14 @@ class DimensionReduce(object):
             return input_data_source
         if len(input_data_source) <= num:
             return input_data_source
-        logger.info("async reduce datasource by query {} before datasource num {}".format(input_query, len(input_data_source)))
+        logger.info("async reduce datasource by query {} before datasource num {}".format(
+            input_query, len(input_data_source)))
         datasource_map = dict()
         try:
             if datasource_type == "dataview":
                 for datasource_id, datasource in input_data_source.items():
-                    input_text = f"{datasource['technical_name']}|{datasource['name']}|{datasource['comment']}".strip("|")
+                    input_text = f"{datasource['technical_name']}|{datasource['name']}|{datasource['comment']}".strip(
+                        "|")
                     datasource_map[datasource_id] = input_text
 
             elif datasource_type == "metric":
@@ -225,7 +239,8 @@ class DimensionReduce(object):
                 # i_datasource[0] 是文档ID，i_datasource[1] 是分数
                 datasource_id = i_datasource[0]
                 datasource_res[datasource_id] = input_data_source[datasource_id]
-            logger.info("async reduce datasource by query {} after datasource num {}".format(input_query, len(datasource_res)))
+            logger.info("async reduce datasource by query {} after datasource num {}".format(
+                input_query, len(datasource_res)))
 
             return datasource_res
 
@@ -256,15 +271,15 @@ class DimensionReduce(object):
             q_embed = self.get_embedding(input_query)
 
             with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
-                
+
                 # 批量提交 embedding 请求
                 input_texts = [f"{field['original_name']} {field['display_name']}" for field in input_fields]
                 input_ids = [field["original_name"] for field in input_fields]
 
                 futures = []
                 for i in range(0, len(input_texts), self.batch_size):
-                    batch_texts = input_texts[i:i+self.batch_size]
-                    batch_ids = input_ids[i:i+self.batch_size]
+                    batch_texts = input_texts[i:i + self.batch_size]
+                    batch_ids = input_ids[i:i + self.batch_size]
                     if batch_texts:
                         futures.append(executor.submit(self.get_more_embedding_by_batch, batch_texts, batch_ids))
 
@@ -290,10 +305,10 @@ class DimensionReduce(object):
 
     def data_view_reduce_by_llm(self, input_query, input_data_view_map, num=30):
 
-
         # logger.info("reduce dimension query {} before filed num {}".format(input_query, len(input_fields)))
 
         return 0
+
     def data_view_reduce_v2(self, input_query, input_fields, num=30):
         if num < 1:
             return input_fields
@@ -395,13 +410,14 @@ class DimensionReduce(object):
             return input_analysis_dimensions
         if len(input_analysis_dimensions) <= num:
             return input_analysis_dimensions
-        logger.info("async reduce dimension query {} before filed num {}".format(input_query, len(input_analysis_dimensions)))
+        logger.info("async reduce dimension query {} before filed num {}".format(
+            input_query, len(input_analysis_dimensions)))
         logger.info("async date_mark_field_id {}".format(date_mark_field_id))
         reduced_dimensions = []
         input_dimensions_map = dict()
         input_texts = {}
         force_retrieval_keys = []
-        
+
         for dimension in input_analysis_dimensions:
             # 使用 field_id 作为唯一标识，参考 indicator_reduce 的实现
             field_id = dimension.get("field_id") or dimension.get("id") or dimension.get("name")
@@ -411,7 +427,7 @@ class DimensionReduce(object):
             display_name = dimension.get("display_name", "")
             input_text = f"{business_name} {display_name}".strip()
             input_texts[field_id] = input_text
-            
+
             # 如果是指定的日期字段，添加到强制检索列表中
             if date_mark_field_id and field_id == date_mark_field_id:
                 force_retrieval_keys.append(field_id)
@@ -454,21 +470,21 @@ class DimensionReduce(object):
                 analysis_dimensions_info_list.append((score, analysis_dimensions))
             analysis_dimensions_info_list.sort(key=lambda x: x[0], reverse=True)
             analysis_dimensions_info_res = [filed[1] for filed in analysis_dimensions_info_list[:num]]
-            logger.info("reduce dimension  query {} after filed num {}".format(input_query, len(analysis_dimensions_info_res)))
+            logger.info("reduce dimension  query {} after filed num {}".format(
+                input_query, len(analysis_dimensions_info_res)))
         except Exception as e:
             logger.error(e)
             logger.error("向量索引可能有问题， 对query {} 不做降维处理".format(input_query))
             return input_analysis_dimensions
         return analysis_dimensions_info_res
 
-
     def indicator_reduce(
-            self,
-            input_query,
-            input_analysis_dimensions,
-            num=30,
-            date_mark_field_id=""
-        ):
+        self,
+        input_query,
+        input_analysis_dimensions,
+        num=30,
+        date_mark_field_id=""
+    ):
         if num < 1:
             return input_analysis_dimensions
         if len(input_query) == 0:
@@ -489,8 +505,8 @@ class DimensionReduce(object):
             with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
                 futures = []
                 for i in range(0, len(input_texts), self.batch_size):
-                    batch_texts = input_texts[i:i+self.batch_size]
-                    batch_ids = input_ids[i:i+self.batch_size]
+                    batch_texts = input_texts[i:i + self.batch_size]
+                    batch_ids = input_ids[i:i + self.batch_size]
                     if batch_texts:
                         futures.append(executor.submit(self.get_more_embedding_by_batch, batch_texts, batch_ids))
 
@@ -504,8 +520,10 @@ class DimensionReduce(object):
                     analysis_dimensions_info_list.append((score, field_id))
 
             analysis_dimensions_info_list.sort(key=lambda x: x[0], reverse=True)
-            analysis_dimensions_info_res = [input_analysis_dimensions_map[field[1]] for field in analysis_dimensions_info_list[:num]]
-            logger.info("reduce dimension  query {} after filed num {}".format(input_query, len(analysis_dimensions_info_res)))
+            analysis_dimensions_info_res = [input_analysis_dimensions_map[field[1]]
+                                            for field in analysis_dimensions_info_list[:num]]
+            logger.info("reduce dimension  query {} after filed num {}".format(
+                input_query, len(analysis_dimensions_info_res)))
         except Exception as e:
             logger.error(e)
             logger.error("向量索引可能有问题， 对query {} 不做降维处理".format(input_query))

@@ -1,12 +1,12 @@
-import copy, yaml, os
-from pprint import pprint
+import copy
+import yaml
 import asyncio
 from .config import MethodConfig
-import json, aiohttp
+import json
+import aiohttp
 from data_retrieval.tools.graph_tools.common.stand_log import StandLogger
 from data_retrieval.tools.graph_tools.common.config import Config
 from data_retrieval.tools.graph_tools.utils.opensearch import OpenSearchConnector
-
 
 
 class VectorRetrieval:
@@ -47,9 +47,9 @@ class VectorRetrieval:
         StandLogger.info("embedding_url:{}".format(self.embedding_url))
         StandLogger.info("关键词检索text:{}".format(text))
         pyload = {
-                "model": "embedding",
-                "input": [text.strip()]
-            }
+            "model": "embedding",
+            "input": [text.strip()]
+        }
         retrieval_values = {}
         # 问题编码
         # 问题编码
@@ -103,10 +103,8 @@ class VectorRetrieval:
                 response = await session.post(url=search_url, json=requests_body, ssl=False)
                 results = await response.json()
 
-            
-            same_value = False
             if results and results.get("hits"):
-                max_score = results["hits"]["max_score"]
+                results["hits"]["max_score"]
                 for hit in results["hits"]["hits"]:
                     source = hit["_source"]
                     score = hit["_score"]
@@ -143,13 +141,14 @@ class VectorRetrieval:
 
         # print(float_results)
 
+
 class BaseValueRetrieval:
     """
     只做关键词检索
     """
+
     def __init__(self, params):
         self.vector_retrieval = VectorRetrieval(params)
-
 
     async def retrieval(self, intermediate_result, keywords):
         self.schema = intermediate_result.schema
@@ -166,7 +165,8 @@ class BaseValueRetrieval:
             keywords = [intermediate_result.query]
         retrieve_results = await self.vector_retrieval.retrieval(intermediate_result, keywords)
         return retrieve_results
-    
+
+
 class ValueRetrieval:
     def __init__(self, params):
         self.vector_retrieval = VectorRetrieval(params)
@@ -269,7 +269,8 @@ class KGNestedNodeRetrieval:
                 # # 获取嵌套节点的邻居信息，假设嵌套节点是A，只获取指向A的邻居节点（*->A）。从A指出的暂不考虑
                 for neighbor_entity, _ in self.neighbor_entitys.items():
                     query = """
-                    match (v1:{neighbor_entity})-[e1]->(v2:{center_node}) return distinct v1, v2.{center_node}.name""".format(
+                    match (v1:{neighbor_entity})-[e1]->(v2:{center_node})
+                    return distinct v1, v2.{center_node}.name""".format(
                         neighbor_entity=neighbor_entity, center_node=center_node)
                     executed_res1, error_info = self.nebula_engine.execute_any_ngql(self.space_name, query)
 
@@ -309,7 +310,6 @@ class KGNestedNodeRetrieval:
         return node_dic
 
     async def retrieval(self, intermediate_result, keywords, values):
-        question = intermediate_result.query
         self.schema = intermediate_result.schema
         self.space_name = intermediate_result.nebula_params["dbname"]
         self.nebula_engine = intermediate_result.nebula_params["nebula_engine"]
@@ -409,7 +409,8 @@ class KGNestedNodeRetrieval:
                 parent_nested_node, nearest_parent_node = self.search_up_nested_node(node_name, parent_entity_name)
                 # 将当前实体添加到父级实体的 child 中
                 # parent_nested_node.setdefault(parent_entity_name, {}).setdefault("child", {}).update(parent_entity_info)
-                # nearest_parent_node[parent_entity_name]["child"].update(entity_info) # update是地址复制，不是引用
+                # nearest_parent_node[parent_entity_name]["child"].update(entity_info)
+                # update是地址复制，不是引用
                 nearest_parent_node[parent_entity_name]["child"] = entity_info  # update是地址复制，不是引用
 
                 # 返回构建好的嵌套字典
@@ -420,7 +421,7 @@ class KGNestedNodeRetrieval:
 
     def search_properties(self, entity_name):
         # 获取当前实体的邻居实体信息
-        neighbor_entity_info = self.cache_nested_nodes[entity_name].get("neighbor_entity", {})
+        self.cache_nested_nodes[entity_name].get("neighbor_entity", {})
 
         # 返回当前实体的信息
         return {entity_name: {
@@ -450,7 +451,8 @@ class KGNestedNodeRetrieval:
         return count
 
     def search_down_nested_node(self, question, node_name, entity_name, current_node):
-        if entity_name in self.use_node_names and (entity_name not in self.nested_entity): return
+        if entity_name in self.use_node_names and (entity_name not in self.nested_entity):
+            return
         # if entity_name
         self.use_node_names.add(entity_name)
         # if not self.has_overlapping_substring(question, entity_name, min_length=2): return

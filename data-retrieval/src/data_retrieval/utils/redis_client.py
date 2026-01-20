@@ -9,9 +9,9 @@ from data_retrieval.settings import get_settings
 
 class RedisConnect:
     """Redis 连接管理器，支持主从模式和哨兵模式。"""
-    
+
     _instance: Optional[redis.Redis] = None
-    
+
     def __init__(self):
         settings = get_settings()
         self.redis_cluster_mode = settings.REDISCLUSTERMODE
@@ -39,7 +39,7 @@ class RedisConnect:
             )
             client = redis.StrictRedis(connection_pool=pool)
             return client
-        
+
         if self.redis_cluster_mode == "sentinel":
             sentinel = Sentinel(
                 [(self.sentinel_host, self.sentinel_port)],
@@ -56,9 +56,9 @@ class RedisConnect:
                 db=self.db
             )
             return client
-        
+
         raise ValueError(f"不支持的 Redis 集群模式: {self.redis_cluster_mode}")
-    
+
     @classmethod
     def get_client(cls) -> redis.Redis:
         """获取单例 Redis 客户端。"""

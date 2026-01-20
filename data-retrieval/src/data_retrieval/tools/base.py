@@ -4,9 +4,9 @@ import asyncio
 from enum import Enum
 from functools import wraps
 from textwrap import dedent
-from typing import Any, Callable, List, Dict, Optional, OrderedDict, Union, Tuple
+from typing import Any, Callable, List, Dict, Optional, Tuple
 
-from abc import ABC, abstractmethod
+from abc import ABC
 from dataclasses import dataclass
 
 from langchain_community.callbacks import get_openai_callback
@@ -16,44 +16,44 @@ from langchain.schema import BaseMessage
 
 from fastapi import HTTPException
 
-from data_retrieval.prompts.manager.base import BasePromptManager
 from data_retrieval.settings import get_settings
 from data_retrieval.utils.model_types import get_standard_model_type
-from langchain.callbacks.base import AsyncCallbackHandler, BaseCallbackHandler
+from langchain.callbacks.base import AsyncCallbackHandler
 
 from data_retrieval.utils.id_gen import generate_task_id
 
-from data_retrieval.utils.dip_services.services.builder import Builder
 from data_retrieval.logs.logger import logger
-from data_retrieval.settings import get_settings
 
 
 _settings = get_settings()
 _TOOL_MESSAGE_KEY = "tool_type"
+
 
 def is_tool_message(message: BaseMessage) -> bool:
     if message.additional_kwargs.get(_TOOL_MESSAGE_KEY, ""):
         return True
     return False
 
-def parse_llm_from_model_factory(inner_llm_dict: dict, headers: dict = {"x-user": "any", "x-account-id": "any", "x-account-type": "user"}) -> dict:
+
+def parse_llm_from_model_factory(inner_llm_dict: dict, headers: dict = {
+                                 "x-user": "any", "x-account-id": "any", "x-account-type": "user"}) -> dict:
     """
     解析模型工厂调用参数
     """
     # {
     #      'frequency_penalty': 0,
-    #      'id': '1935601639213895680', 
-    #      'max_tokens': 1000, 
-    #      'name': 'doubao-seed-1.6-flash', 
-    #      'presence_penalty': 0, 
-    #      'temperature': 1, 
-    #      'top_k': 1, 
+    #      'id': '1935601639213895680',
+    #      'max_tokens': 1000,
+    #      'name': 'doubao-seed-1.6-flash',
+    #      'presence_penalty': 0,
+    #      'temperature': 1,
+    #      'top_k': 1,
     #      'top_p': 1
     # }
     llm_dict = {}
     if inner_llm_dict:
         logger.info(f"inner_llm_dict: {inner_llm_dict}")
-        
+
         inner_llm_dict.pop("id", "")
         llm_dict["model_name"] = inner_llm_dict.pop("name", "")
         llm_dict["openai_api_key"] = "EMPTY"
@@ -78,15 +78,15 @@ def parse_llm_from_model_factory(inner_llm_dict: dict, headers: dict = {"x-user"
         # llm_dict["model_kwargs"] = inner_llm_dict
 
         llm_dict["default_headers"] = headers
-    
+
     else:
-            # 不设置时, 从内部获取
+        # 不设置时, 从内部获取
         llm_dict = {
             "model_name": _settings.TOOL_LLM_MODEL_NAME,
             "openai_api_key": _settings.TOOL_LLM_OPENAI_API_KEY,
             "openai_api_base": _settings.TOOL_LLM_OPENAI_API_BASE,
         }
-        
+
     return llm_dict
 
 
@@ -97,7 +97,7 @@ def make_json_response(result: Any):
         if isinstance(result, str):
             try:
                 result = json.loads(result)
-            except ValueError as e:
+            except ValueError:
                 pass
 
         if isinstance(result, dict):
@@ -131,9 +131,85 @@ def api_tool_decorator(func: Callable):
     return wrapper
 
 
+def retry_with_backoff(
+    max_retries: int = 3,
+    error_handler: Optional[Callable[[Exception, int, Dict], None]] = None,
+    should_retry: Optional[Callable[[Exception], bool]] = None,
+) -> Callable:
+    """
+    通用重试装饰器，支持同步和异步函数。
+
+    Args:
+        max_retries: 最大重试次数
+        error_handler: 错误处理回调函数 (exception, attempt, errors_dict) -> None
+        should_retry: 判断是否应该重试的函数 (exception) -> bool，默认总是重试
+
+    Usage:
+        @retry_with_backoff(max_retries=3)
+        def my_func():
+            ...
+
+        @retry_with_backoff(max_retries=3)
+        async def my_async_func():
+            ...
+    """
+    def decorator(func: Callable) -> Callable:
+        @wraps(func)
+        def sync_wrapper(*args, **kwargs):
+            errors: Dict[str, str] = {}
+            last_exception = None
+
+            for attempt in range(max_retries):
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    last_exception = e
+                    errors[f"error_{attempt + 1}"] = str(e)
+
+                    if error_handler:
+                        error_handler(e, attempt + 1, errors)
+
+                    if should_retry and not should_retry(e):
+                        raise
+
+                    if attempt == max_retries - 1:
+                        raise
+
+            raise last_exception  # Should never reach here
+
+        @wraps(func)
+        async def async_wrapper(*args, **kwargs):
+            errors: Dict[str, str] = {}
+            last_exception = None
+
+            for attempt in range(max_retries):
+                try:
+                    return await func(*args, **kwargs)
+                except Exception as e:
+                    last_exception = e
+                    errors[f"error_{attempt + 1}"] = str(e)
+
+                    if error_handler:
+                        error_handler(e, attempt + 1, errors)
+
+                    if should_retry and not should_retry(e):
+                        raise
+
+                    if attempt == max_retries - 1:
+                        raise
+
+            raise last_exception  # Should never reach here
+
+        if asyncio.iscoroutinefunction(func):
+            return async_wrapper
+        return sync_wrapper
+
+    return decorator
+
+
 class AFTool(BaseTool, ABC):
     return_record_limit: int = -1  # 返回数据条数，与字节数相互作用, -1 代表不限制
-    return_data_limit: int = -1  # 返回数据总量，与字节数相互作用, -1 
+    return_data_limit: int = -1  # 返回数据总量，与字节数相互作用, -1
     session_id: str = ""
     api_mode: bool = False
     timeout: int = 120
@@ -146,13 +222,6 @@ class AFTool(BaseTool, ABC):
         self._task_id = generate_task_id()
         self._result_cache_key = self.session_id + "_" + self._task_id
 
-    def handle_result(self,
-                      log,
-                      ans_multiple):
-        """ A abstract method to deal with tool answers
-        """
-        pass
-
     def refresh_result_cache_key(self):
         self._result_cache_key = self.session_id + "_" + self._task_id
 
@@ -163,16 +232,16 @@ class AFTool(BaseTool, ABC):
         """
         tool = cls(*args, **kwargs, api_mode=True)
         return tool._arun(*args, **kwargs)
-    
+
     # def as_function(self, *args, **kwargs):
     #     """将工具转换为同步函数
     #     """
     #     pass
 
+
 class LLMTool(AFTool):
     language: str = "cn"
     llm: Any = None
-    prompt_manager: BasePromptManager = None
     model_type: str = get_standard_model_type(_settings.MODEL_TYPE)
 
 
@@ -187,9 +256,6 @@ class ToolName(Enum):
     from_get_tool_cache = "get_tool_cache"
     GetTableDDLAndSampleToolName = "get_ddl_and_sample"
     VirtualizationEngineToolName = "execute"
-    from_knowledge_enhanced = "knowledge_enhanced"
-    from_analyzer_with_code = "analyzer_with_code"
-    context2question = "context2question"
     from_text2ngql = "text2ngql"
     from_sql_helper = "sql_helper"
 
@@ -203,6 +269,7 @@ class ToolName(Enum):
     # sandbox tools
     sandbox = "sandbox"
 
+
 @dataclass
 class RetrieverConfig:
     """Use vector store to retrieve information
@@ -213,6 +280,7 @@ class RetrieverConfig:
     """
     top_k: int = 0
     threshold: float = 0.5
+
 
 class ToolResult:
     def __init__(
@@ -234,15 +302,15 @@ class ToolResult:
         self.explain = explain
         self.chart = chart
         self.new_chart = new_chart
-        
+
     def __repr__(self):
         return dedent(
             f"""
              ToolResult(
                  cites={self.cites},
-                 table={self.table}, 
-                 df2json={self.df2json}, 
-                 text={self.text}, 
+                 table={self.table},
+                 df2json={self.df2json},
+                 text={self.text},
                  explain={self.explain},
                  chart={self.chart},
                  new_table={self.new_table},
@@ -281,113 +349,6 @@ class ToolResult:
         }
 
 
-class ToolMultipleResult:
-
-    def __init__(
-        self,
-        cites: Any = [],
-        table: list = [],  # 表名
-        df2json: list = [],  # 表数据
-        text: list = [],  # 文本
-        explain: list = [],  # 解释
-        chart: list = [],  # 图表
-        new_table: list = [],  # 新表，由于超市和数据应用的 节奏不一样，通过定义一个新表来过度，主要存储包含 title 的表
-        new_chart: list = [],  # 新图，同理
-        sailor_search_result: list = [],  # 搜索结果
-        cache_keys: OrderedDict = OrderedDict(),
-        graph: list = [],  # 图表
-    ):
-        print("=============== 进入 ToolMultipleResult 初始化 ===============")
-        if cites:
-            cites = []
-        if table:
-            table = []
-        if df2json:
-            df2json = []
-        if text:
-            text = []
-        if explain:
-            explain = []
-        if chart:
-            chart = []
-        if new_table:
-            new_table = []
-        if new_chart:
-            new_chart = []
-        if cache_keys:
-            cache_keys = OrderedDict()
-        if sailor_search_result:
-            sailor_search_result = []
-        if graph:
-            graph = []
-
-        self.cites = cites
-        self.table = table
-        self.df2json = df2json
-        self.text = text
-        self.explain = explain
-        self.chart = chart
-        self.new_table = new_table
-        self.new_chart = new_chart
-        self.cache_keys = cache_keys
-        self.sailor_search_result = sailor_search_result
-        self.graph = graph
-
-    def __repr__(self):
-        return dedent(
-            f"""
-             ToolMultipleResult(
-                 cites={self.cites},
-                 table={self.table}, 
-                 df2json={self.df2json}, 
-                 text={self.text}, 
-                 explain={self.explain},
-                 chart={self.chart},
-                 new_table={self.new_table},
-                 new_chart={self.new_chart},
-                 cache_keys={self.cache_keys},
-                 sailor_search_result={self.sailor_search_result},
-                 graph={self.graph}
-             )
-        """
-        )
-
-    def to_ori_json(self):
-        return {
-            "cites": self.cites,
-            "table": self.table,
-            "chart": self.chart,
-            "df2json": self.df2json,
-            "text": self.text,
-            "explain": self.explain,
-            "new_table": self.new_table,
-            "new_chart": self.new_chart,
-            "cache_keys": self.cache_keys,
-            "sailor_search_result": self.sailor_search_result,
-            "graph": self.graph
-        }
-
-    def to_json(self):
-        return {
-            "result": {
-                "status": "answer",
-                "res": {
-                    "cites": self.cites,
-                    "table": self.table,
-                    "chart": self.chart,
-                    "df2json": self.df2json,
-                    "text": self.text,
-                    "explain": self.explain,
-                    "new_table": self.new_table,
-                    "new_chart": self.new_chart,
-                    "cache_keys": self.cache_keys,
-                    "sailor_search_result": self.sailor_search_result,
-                    "graph": self.graph
-                }
-            }
-        }
-
-
 class LogResult:
     def __init__(
         self,
@@ -410,9 +371,9 @@ class LogResult:
     def __repr__(self):
         return dedent(
             f"""
-             LogResult(  
-                 observation={self.observation},               
-                 tool_name={self.tool_name}, 
+             LogResult(
+                 observation={self.observation},
+                 tool_name={self.tool_name},
                  tool_input={self.tool_input},
                  thought={self.thought},
                  result={self.result},
@@ -440,8 +401,8 @@ def construct_final_answer(func):
         start = time.time()
         with get_openai_callback() as cb:
             output = func(*args, **kwargs)
-            print(cb)
-        print(f"time: {time.time() - start}")
+            logger.debug(f"OpenAI callback: {cb}")
+        logger.debug(f"Execution time: {time.time() - start}s")
 
         if "full_output" in output:
             full_output = output.pop("full_output")
@@ -469,8 +430,8 @@ def async_construct_final_answer(func):
         start = time.time()
         with get_openai_callback() as cb:
             output = await func(*args, **kwargs)
-            print(cb)
-        print(f"time: {time.time() - start}")
+            logger.debug(f"OpenAI callback: {cb}")
+        logger.debug(f"Execution time: {time.time() - start}s")
 
         if "full_output" in output:
             full_output = output.pop("full_output")
@@ -491,6 +452,7 @@ def async_construct_final_answer(func):
 
     return wrapper
 
+
 class ToolCallbackHandler(AsyncCallbackHandler):
     messages: List = []
     llm_response: Any = None
@@ -501,7 +463,7 @@ class ToolCallbackHandler(AsyncCallbackHandler):
 
     async def on_llm_start(self, **kwargs):
         self.messages = kwargs.get("messages", [])
-    
+
     async def on_chat_model_start(
         self,
         serialized: Dict[str, Any],
@@ -538,7 +500,7 @@ class ToolCallbackHandler(AsyncCallbackHandler):
         **kwargs: Any
     ):
         pass
-    
+
     async def on_chain_end(
         self,
         outputs: Dict[str, Any],
@@ -554,10 +516,10 @@ class ToolCallbackHandler(AsyncCallbackHandler):
 def validate_openapi_schema(schema: dict) -> Tuple[bool, Optional[str]]:
     """
     验证 OpenAPI Schema 语法
-    
+
     Args:
         schema: API Schema 字典
-        
+
     Returns:
         (is_valid, error_message): (是否合法, 错误信息)
     """

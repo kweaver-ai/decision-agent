@@ -1,8 +1,6 @@
-from typing import Any
 from urllib.parse import urljoin
 
 import urllib3
-import os
 import traceback
 
 from data_retrieval.api.error import (
@@ -14,8 +12,6 @@ from data_retrieval.logs.logger import logger
 from data_retrieval.settings import get_settings
 
 import json
-import os
-from datetime import datetime
 
 urllib3.disable_warnings()
 
@@ -59,7 +55,7 @@ class AgentRetrievalService:
             payload=params
         )
         try:
-            result =  api.call()
+            result = api.call()
             return result
         except AfDataSourceError as e:
             raise AgentRetrievalError(e) from e
@@ -122,12 +118,15 @@ async def get_datasource_from_agent_retrieval_async(
     #         }
     #     }]
     # }
-    
-    logger.info(f"get_datasource_from_agent_retrieval_async kn_id: {kn_id}, query: {query}, prev_queries: {prev_queries}, headers: {headers}, base_url: {base_url}, max_concepts: {max_concepts}")
-    
+
+    logger.info(
+        f"get_datasource_from_agent_retrieval_async kn_id: {kn_id}, query: {query}, "
+        f"prev_queries: {prev_queries}, headers: {headers}, base_url: {base_url}, "
+        f"max_concepts: {max_concepts}")
+
     if not kn_id:
         return [], [], []
-    
+
     if max_concepts <= 0:
         max_concepts = 10
 
@@ -154,8 +153,8 @@ async def get_datasource_from_agent_retrieval_async(
 
     try:
         agent_retrieval_service = AgentRetrievalService(base_url=base_url, headers=headers)
-        params={
-            "kn_id": kn_id, 
+        params = {
+            "kn_id": kn_id,
             "query": query if query else "所有数据",
             "prev_queries": prev_queries,
             "max_concepts": max_concepts,
@@ -164,14 +163,14 @@ async def get_datasource_from_agent_retrieval_async(
         }
         logger.info(f"semantic_search_async params: {params}")
         result = await agent_retrieval_service.semantic_search_async(params=params)
-        
+
         logger.info(f"semantic_search_async result: {json.dumps(result, indent=2, ensure_ascii=False)}")
 
         data_views = []
         metrics = []
         relations = []
         concept_data_view_mapping = {}
-        
+
         concept_map = {}
         concepts = result.get("concepts", [])
         if not isinstance(concepts, list):
@@ -194,7 +193,7 @@ async def get_datasource_from_agent_retrieval_async(
                     "concept_detail": concept_detail
                 })
                 concept_data_view_mapping[concept.get("concept_id")] = ds.get("id")
-            
+
             # 处理逻辑属性(指标)
             logic_properties = concept_detail.get("logic_properties", [])
             for logic_property in logic_properties:
@@ -222,9 +221,9 @@ async def get_datasource_from_agent_retrieval_async(
                     })
 
         return data_views, metrics, relations
-    except AfDataSourceError as e:
+    except AfDataSourceError:
         traceback.print_exc()
         raise
-    except Exception as e:
+    except Exception:
         traceback.print_exc()
         raise

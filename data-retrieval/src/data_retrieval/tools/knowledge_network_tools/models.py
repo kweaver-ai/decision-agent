@@ -12,7 +12,7 @@
 """
 
 import uuid
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional
 
 from fastapi import Header
 from pydantic import BaseModel, Field, model_validator, ConfigDict
@@ -34,19 +34,31 @@ class KnowledgeNetworkIdConfig(BaseModel):
 class SemanticInstanceRetrievalConfig(BaseModel):
     """
     语义实例召回配置参数
-    
+
     用于控制语义实例召回（当不提供conditions参数时）的实例数据阈值和数量。
     """
     # 核心配置项
     initial_candidate_count: int = Field(
         default=50,
         ge=1,
-        description="语义实例召回的初始召回数量上限（重排序前的候选数量）。作用阶段：基础召回阶段，在调用API时使用。作用：控制从知识网络API中初始召回多少个候选实例，这些候选实例会经过向量重排序后筛选出per_type_instance_limit个。建议值：一般设置为per_type_instance_limit的3-5倍，确保有足够的候选进行重排序。"
+        description=(
+            "语义实例召回的初始召回数量上限（重排序前的候选数量）。"
+            "作用阶段：基础召回阶段，在调用API时使用。"
+            "作用：控制从知识网络API中初始召回多少个候选实例，"
+            "这些候选实例会经过向量重排序后筛选出per_type_instance_limit个。"
+            "建议值：一般设置为per_type_instance_limit的3-5倍，确保有足够的候选进行重排序。"
+        )
     )
     per_type_instance_limit: int = Field(
         default=5,
         ge=1,
-        description="每个对象类型最终返回的实例数量上限（重排序后的数量）。作用阶段：基础召回阶段。作用范围：每个对象类型单独控制。例如：如果有3个对象类型，每个对象类型最多返回per_type_instance_limit个实例，总共最多返回3×per_type_instance_limit个实例。注意：此参数在基础模式和增强模式的基础召回阶段都会使用。"
+        description=(
+            "每个对象类型最终返回的实例数量上限（重排序后的数量）。"
+            "作用阶段：基础召回阶段。作用范围：每个对象类型单独控制。"
+            "例如：如果有3个对象类型，每个对象类型最多返回per_type_instance_limit个实例，"
+            "总共最多返回3×per_type_instance_limit个实例。"
+            "注意：此参数在基础模式和增强模式的基础召回阶段都会使用。"
+        )
     )
 
     # -----------------------------------------------------
@@ -86,14 +98,20 @@ class SemanticInstanceRetrievalConfig(BaseModel):
         le=1024,
         description="字段语义打分（rerank）时的批处理大小，字段数很大时会分批调用重排序服务。",
     )
-    
+
     # 实例过滤配置参数（扁平化，直接放在semantic_instance_retrieval层级）
     # 过滤阈值
     min_direct_relevance: float = Field(
         default=0.3,
         ge=0.0,
         le=1.0,
-        description="直接相关性最低阈值（0-1之间）。作用：过滤掉直接相关性分数低于此阈值的实例。直接相关性分数是使用Rerank模型计算的实例与查询的语义相似度。增大此值会过滤更严格，只保留高相关性实例；减小此值会过滤更宽松，保留更多实例。"
+        description=(
+            "直接相关性最低阈值（0-1之间）。"
+            "作用：过滤掉直接相关性分数低于此阈值的实例。"
+            "直接相关性分数是使用Rerank模型计算的实例与查询的语义相似度。"
+            "增大此值会过滤更严格，只保留高相关性实例；"
+            "减小此值会过滤更宽松，保留更多实例。"
+        )
     )
 
     # -----------------------------------------------------
@@ -134,7 +152,7 @@ class SemanticInstanceRetrievalConfig(BaseModel):
 
     # 注意：返回格式（是否包含 instance_id/instance_name、是否保留主键字段）当前在实现中固定为"精简输出"，
     # 以减少与类型字段重复；如需改回可自行调整输出阶段的字段处理逻辑。
-    
+
     @model_validator(mode='before')
     @classmethod
     def validate_candidate_limit(cls, values):
@@ -151,7 +169,7 @@ class SemanticInstanceRetrievalConfig(BaseModel):
 class InstancePropertyFilterConfig(BaseModel):
     """
     实例属性过滤配置（通用，适用于所有实例召回）
-    
+
     用于控制实例属性字段的过滤，减少返回结果大小。
     """
     max_properties_per_instance: int = Field(
@@ -240,12 +258,12 @@ class ConceptRetrievalConfig(BaseModel):
 class RetrievalConfig(BaseModel):
     """
     召回配置参数类，用于控制不同类型的召回场景。
-    
+
     结构说明：
     - concept_retrieval: 概念召回/概念流程配置（原最外层参数收敛）
     - semantic_instance_retrieval: 语义实例召回配置
     - property_filter: 实例属性过滤配置（通用，适用于所有实例召回）
-    
+
     参数说明：
     - 如果semantic_instance_retrieval未配置，使用默认值
     - 如果property_filter未配置，使用默认值
@@ -255,20 +273,19 @@ class RetrievalConfig(BaseModel):
         default=None,
         description="概念召回/概念流程配置参数。如果不提供，使用默认值。"
     )
-    
+
     # 语义实例召回配置
     semantic_instance_retrieval: Optional[SemanticInstanceRetrievalConfig] = Field(
         default=None,
         description="语义实例召回配置参数。如果不提供，使用默认值。"
     )
-    
+
     # 实例属性过滤配置（通用）
     property_filter: Optional[InstancePropertyFilterConfig] = Field(
         default=None,
         description="实例属性过滤配置。如果不提供，使用默认值。"
     )
-    
-    
+
     @model_validator(mode='before')
     @classmethod
     def compute_defaults(cls, values):
@@ -281,54 +298,55 @@ class RetrievalConfig(BaseModel):
                 values['concept_retrieval'] = ConceptRetrievalConfig()
             elif isinstance(values.get('concept_retrieval'), dict):
                 values['concept_retrieval'] = ConceptRetrievalConfig(**values['concept_retrieval'])
-            
+
             # 如果semantic_instance_retrieval未提供，创建默认配置
             if values.get('semantic_instance_retrieval') is None:
                 values['semantic_instance_retrieval'] = SemanticInstanceRetrievalConfig()
             elif isinstance(values.get('semantic_instance_retrieval'), dict):
                 # 如果是字典，转换为SemanticInstanceRetrievalConfig对象
-                values['semantic_instance_retrieval'] = SemanticInstanceRetrievalConfig(**values['semantic_instance_retrieval'])
-            
+                values['semantic_instance_retrieval'] = SemanticInstanceRetrievalConfig(
+                    **values['semantic_instance_retrieval'])
+
             # 如果property_filter未提供，创建默认配置
             if values.get('property_filter') is None:
                 values['property_filter'] = InstancePropertyFilterConfig()
             elif isinstance(values.get('property_filter'), dict):
                 # 如果是字典，转换为InstancePropertyFilterConfig对象
                 values['property_filter'] = InstancePropertyFilterConfig(**values['property_filter'])
-        
+
         return values
 
     def get_concept_config(self) -> ConceptRetrievalConfig:
         """获取概念召回配置"""
         return self.concept_retrieval or ConceptRetrievalConfig()
-    
+
     def get_semantic_config(self) -> SemanticInstanceRetrievalConfig:
         """获取语义实例召回配置"""
         return self.semantic_instance_retrieval or SemanticInstanceRetrievalConfig()
-    
+
     def get_property_filter_config(self) -> InstancePropertyFilterConfig:
         """获取属性过滤配置"""
         return self.property_filter or InstancePropertyFilterConfig()
-    
+
     @classmethod
     def from_dict(cls, data: Optional[Dict[str, Any]]) -> Optional['RetrievalConfig']:
         """
         从字典创建RetrievalConfig实例
-        
+
         Args:
             data: 配置字典，如果为None则返回None
-            
+
         Returns:
             RetrievalConfig实例或None
         """
         if data is None:
             return None
         return cls(**data)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """
         转换为字典格式，用于向后兼容。
-        
+
         Returns:
             配置字典
         """
@@ -348,11 +366,11 @@ class KnowledgeNetworkRetrievalInput(BaseModel):
     )
     kn_ids: List[KnowledgeNetworkIdConfig] = Field(description="指定的知识网络配置列表，必须传递，每个配置包含knowledge_network_id字段")
     session_id: Optional[str] = Field(
-        default=None, 
+        default=None,
         description="会话ID，用于维护多轮对话存储的历史召回记录。如果不提供，将自动生成一个随机ID"
     )
     additional_context: Optional[str] = Field(
-        default=None, 
+        default=None,
         description="""
         当需要多轮召回使用，当第一轮召回的结果，用于下游任务时，发现错误，或查不到信息，就需要将问题query进行重写，
         然后额外提供对召回有任何帮助的上下文信息，越丰富越好"""
@@ -363,7 +381,7 @@ class KnowledgeNetworkRetrievalInput(BaseModel):
         召回配置参数，用于控制不同类型的召回场景。
         可以传入RetrievalConfig对象或字典（Pydantic会自动将字典转换为RetrievalConfig对象）。
         如果不提供，将使用系统默认配置。
-        
+
         配置结构：
         {
           "semantic_instance_retrieval": {
@@ -377,7 +395,7 @@ class KnowledgeNetworkRetrievalInput(BaseModel):
             "enable_property_filter": true      // 是否启用属性过滤（可选）
           }
         }
-        
+
         使用示例（HTTP API JSON格式）：
         {
           "retrieval_config": {
@@ -387,7 +405,7 @@ class KnowledgeNetworkRetrievalInput(BaseModel):
             }
           }
         }
-        
+
         注意：
         - 概念召回参数已收敛到 retrieval_config.concept_retrieval
         """
@@ -396,12 +414,11 @@ class KnowledgeNetworkRetrievalInput(BaseModel):
         default=False,
         description="是否只召回概念（schema），不召回语义实例。如果为True，则只返回object_types和relation_types，不返回nodes。默认为False。"
     )
-    
+
     def __init__(self, **data):
         # session_id 处理策略：
         # - 未提供或提供空串，都视为需要自动生成会话ID（保持有状态能力）
         # - 提供非空 session_id 则按传入值使用
-        provided_session_id = "session_id" in (data or {})
         super().__init__(**data)
         if not self.session_id:
             # 包含：未传、传 None、传空串
@@ -446,10 +463,12 @@ class KnowledgeNetworkRetrievalResult(BaseModel):
     comment: Optional[str] = Field(default=None, description="概念描述（对象/关系）")
     source_object_type_id: Optional[str] = Field(default=None, description="源对象类型ID（仅关系类型有）")
     target_object_type_id: Optional[str] = Field(default=None, description="目标对象类型ID（仅关系类型有）")
-    data_properties: Optional[List[Dict[str, Any]]] = Field(default=None, description="对象属性列表（仅对象类型有），对象类型返回列表，关系类型不包含此字段")
+    data_properties: Optional[List[Dict[str, Any]]] = Field(
+        default=None, description="对象属性列表（仅对象类型有），对象类型返回列表，关系类型不包含此字段")
     logic_properties: Optional[List[Dict[str, Any]]] = Field(default=None, description="逻辑属性列表（仅对象类型有），非精简模式返回")
     primary_keys: Optional[List[str]] = Field(default=None, description="主键字段列表（仅对象类型有，支持多个主键）")
-    sample_data: Optional[Dict[str, Any]] = Field(default=None, description="样例数据（仅对象类型有），当include_sample_data=True时返回，展示对象类型的实际数据样例")
+    sample_data: Optional[Dict[str, Any]] = Field(
+        default=None, description="样例数据（仅对象类型有），当include_sample_data=True时返回，展示对象类型的实际数据样例")
 
 
 class KnowledgeNetworkRetrievalResponse(BaseModel):
@@ -468,7 +487,7 @@ class KnowledgeNetworkRetrievalResponse(BaseModel):
 
 class HeaderParams:
     """请求头参数依赖类"""
-    
+
     def __init__(
         self,
         # x_user: str = Header(None, alias="x-user"),
@@ -482,7 +501,7 @@ class HeaderParams:
         self.content_type = content_type
         self.account_type = account_type
         self.account_id = account_id
-            # self.authorization = authorization
+        # self.authorization = authorization
         # self.user_agent = user_agent
 
 

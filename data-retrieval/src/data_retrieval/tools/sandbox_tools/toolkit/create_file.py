@@ -1,4 +1,3 @@
-import asyncio
 import json
 from typing import Optional
 from langchain_core.callbacks import CallbackManagerForToolRun, AsyncCallbackManagerForToolRun
@@ -34,7 +33,7 @@ class CreateFileInput(BaseSandboxToolInput):
 
 class CreateFileTool(BaseSandboxTool):
     """创建文件工具，在沙箱环境中创建新文件"""
-    
+
     name: str = "create_file"
     description: str = "在沙箱环境中创建新文件，支持文本内容或从缓存中获取内容"
     args_schema: type[BaseSandboxToolInput] = CreateFileInput
@@ -55,7 +54,7 @@ class CreateFileTool(BaseSandboxTool):
         except Exception as e:
             logger.error(f"Create file failed: {e}")
             raise SandboxError(reason="创建文件失败", detail=str(e)) from e
-    
+
     @async_construct_final_answer
     async def _arun(
         self,
@@ -69,7 +68,7 @@ class CreateFileTool(BaseSandboxTool):
             result = await self._create_file(filename=filename, content=content, result_cache_key=result_cache_key)
             if self._random_session_id:
                 result["session_id"] = self.session_id
-            
+
             if title:
                 result["title"] = title
             else:
@@ -79,7 +78,7 @@ class CreateFileTool(BaseSandboxTool):
         except Exception as e:
             logger.error(f"Create file failed: {e}")
             raise SandboxError(reason="创建文件失败", detail=str(e)) from e
-    
+
     async def _create_file(
         self,
         filename: str,
@@ -91,7 +90,6 @@ class CreateFileTool(BaseSandboxTool):
             raise SandboxError(reason="创建文件失败", detail="filename 参数不能为空")
 
         # 处理缓存内容
-        add_content = ""
         if result_cache_key and self.session:
             result = self.session.get_agent_logs(result_cache_key)
             if result:
@@ -105,12 +103,12 @@ class CreateFileTool(BaseSandboxTool):
             raise SandboxError(reason="创建文件失败", detail="文件内容不能为空")
 
         sandbox = self._get_sandbox()
-        
+
         try:
             result = await sandbox.create_file(content, filename)
-            
+
             message = f"文件内容前100字符: {content[:100]}"
-            
+
             return {
                 "action": "create_file",
                 "result": result,
@@ -118,7 +116,7 @@ class CreateFileTool(BaseSandboxTool):
             }
         except Exception as e:
             logger.error(f"Create file action failed: {e}")
-            raise SandboxError(reason=f"文件创建失败", detail=str(e)) from e
+            raise SandboxError(reason="文件创建失败", detail=str(e)) from e
 
     @staticmethod
     async def get_api_schema():
@@ -126,7 +124,7 @@ class CreateFileTool(BaseSandboxTool):
         base_schema = await BaseSandboxTool.get_api_schema()
         base_schema["post"]["summary"] = "create_file"
         base_schema["post"]["description"] = "在沙箱环境中创建新文件，支持文本内容或从缓存中获取内容"
-        
+
         # 更新请求体 schema，添加工具特定参数
         base_schema["post"]["requestBody"]["content"]["application/json"]["schema"]["properties"].update({
             "content": {
@@ -147,7 +145,7 @@ class CreateFileTool(BaseSandboxTool):
             }
         })
         base_schema["post"]["requestBody"]["content"]["application/json"]["schema"]["required"] = ["filename"]
-        
+
         # 添加示例
         base_schema["post"]["requestBody"]["content"]["application/json"]["examples"] = {
             "create_python_file": {
@@ -157,9 +155,7 @@ class CreateFileTool(BaseSandboxTool):
                     "content": "def fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)\n\n# 计算前10个斐波那契数\nfor i in range(10):\n    print(f'F({i}) = {fibonacci(i)}')",
                     "filename": "fibonacci.py",
                     "server_url": "http://localhost:8080",
-                    "session_id": "test_session_123"
-                }
-            },
+                    "session_id": "test_session_123"}},
             "create_from_cache": {
                 "summary": "从缓存创建文件",
                 "description": "使用缓存中的数据创建文件",
@@ -167,9 +163,6 @@ class CreateFileTool(BaseSandboxTool):
                     "filename": "data.json",
                     "result_cache_key": "cached_data_123",
                     "server_url": "http://localhost:8080",
-                    "session_id": "test_session_123"
-                }
-            }
-        }
-        
-        return base_schema 
+                    "session_id": "test_session_123"}}}
+
+        return base_schema

@@ -7,9 +7,7 @@ from typing import Optional
 import sqlparse
 from pydantic import BaseModel, Field
 from sql_metadata import Parser
-from sql_metadata.compat import get_query_tables
 
-from data_retrieval.errors import ResultParseError
 from data_retrieval.logs.logger import logger
 from data_retrieval.parsers.base import BaseJsonParser
 
@@ -46,21 +44,13 @@ class JsonText2SQLRuleBaseParser(BaseJsonParser):
         self.en2types = source.en2types
         self.sql_limit = sql_limit
 
-    @staticmethod
-    def _check_limit(
-        sql: str,
-        limit: int = 100
-    ) -> str:
-        lower_sql = sql.lower()
-        if lower_sql.endswith("where"):
-            sql = sql.replace("WHERE", "").replace("where", "")
-        if "limit" not in lower_sql:
-            sql += " LIMIT {}".format(limit)
-        return sql
-
     def _parse_str_2_json(self, result):
         # 字符串的格式如下
-        # '```sql\nSELECT COUNT(*) \nFROM vdm_maria_31sn42r0.default.fruittypes \nWHERE name LIKE \'%葡萄%\';\n```\n\n\n{\n    "sql": "SELECT COUNT(*) \\nFROM `vdm_maria_31sn42r0.default.fruittypes` \\nWHERE `name` LIKE \'%葡萄%\'",\n    "explanation": "这条SQL语句的目的是查询`fruittypes`表中所有包含\\"葡萄\\"字样的记录数量。使用了LIKE关键字和百分号通配符（%）来匹配包含\\"葡萄\\"的水果种类名称。"\n}'
+        # '```sql\nSELECT COUNT(*) \nFROM vdm_maria_31sn42r0.default.fruittypes \n
+        # WHERE name LIKE \'%葡萄%\';\n```\n\n\n{\n    "sql": "SELECT COUNT(*) \\n
+        # FROM `vdm_maria_31sn42r0.default.fruittypes` \\nWHERE `name` LIKE \'%葡萄%\'",
+        # \n    "explanation": "这条SQL语句的目的是查询`fruittypes`表中所有包含\\"葡萄\\"
+        # 字样的记录数量。使用了LIKE关键字和百分号通配符（%）来匹配包含\\"葡萄\\"的水果种类名称。"\n}'
 
         res = {
             "sql": "",
@@ -159,7 +149,7 @@ class JsonText2SQLRuleBaseParser(BaseJsonParser):
         query: str,
     ) -> str:
         pattern = re.compile(
-            r'\b(?:FROM|JOIN)\s+([`"]?[\w]+[`"]?(?:\.[`"]?[\w]+[`"]?)+)', 
+            r'\b(?:FROM|JOIN)\s+([`"]?[\w]+[`"]?(?:\.[`"]?[\w]+[`"]?)+)',
             re.IGNORECASE
         )
         tables = pattern.findall(query)
@@ -185,7 +175,8 @@ class JsonText2SQLRuleBaseParser(BaseJsonParser):
                         index = two_dim_tables.index(table)
                     except ValueError:
                         break
-                # 如果直接 replace 可能会替换错误，因为字段可能包含表名：'SELECT penaltiestype, COUNT(*) AS count FROM penalties GROUP BY penaltiestype LIMIT 10'
+                # 如果直接 replace 可能会替换错误，因为字段可能包含表名：'SELECT penaltiestype, COUNT(*) AS count
+                # FROM penalties GROUP BY penaltiestype LIMIT 10'
                 for i, chunk in enumerate(chunks):
                     if chunk == table:
                         chunks[i] = ori_tables[index]
@@ -297,7 +288,7 @@ class JsonText2SQLRuleBaseParser(BaseJsonParser):
                 logger.debug("rule base after: {}".format(json_res.get("explanation", "")))
                 logger.debug("rule base after:\n {}".format(format_sql))
 
-        except Exception as e:
+        except Exception:
             logger.error(traceback.format_exc())
         return json_res
 

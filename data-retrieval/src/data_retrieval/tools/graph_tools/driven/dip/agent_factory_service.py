@@ -57,7 +57,10 @@ class AgentFactoryService:
                 {
                     "tool_id": "1",
                     "tool_name": "fulltext_search",
-                    "tool_path": "https://pre.anydata.aishu.cn:8444/api/search-engine/v1/open/services/b3264bda37114355ab8211af5463354a",
+                    "tool_path": (
+                        "https://pre.anydata.aishu.cn:8444/api/search-engine/"
+                        "v1/open/services/b3264bda37114355ab8211af5463354a"
+                    ),
                     "tool_desc": "在图谱中搜索相关实体",
                     "tool_method": "POST",
                     "tool_input": [{

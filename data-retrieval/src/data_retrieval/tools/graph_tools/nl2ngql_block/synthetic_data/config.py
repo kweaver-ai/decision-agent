@@ -1,6 +1,5 @@
 
 
-
 class MethodConfig:  # 只配置当前模块的参数
     enable_template_base = True
 
@@ -11,7 +10,6 @@ class MethodConfig:  # 只配置当前模块的参数
 
     rewrite = True
 
-
     template_base = {
         "name": "nGQLTemplateBaseSynthetic",
         "params": {
@@ -19,8 +17,6 @@ class MethodConfig:  # 只配置当前模块的参数
             "sample_size": 1,
         },
     }
-
-
 
 
 if __name__ == "__main__":
@@ -39,7 +35,8 @@ if __name__ == "__main__":
                     keywords_dic = {}
                     print("Question: {}".format(question))
                     # print("keywords: {}".format(question))
-                    result = re.findall("\.([^. ]+)\.([^. ]+) ?(?:==|contains|CONTAINS) ?['\"]([^'\"]+)['\"]", example)
+                    result = re.findall(
+                        "\\.([^. ]+)\\.([^. ]+) ?(?:==|contains|CONTAINS) ?['\"]([^'\"]+)['\"]", example)
                     if result:
                         result = list(set(result))
                         prop_values = []
@@ -50,17 +47,15 @@ if __name__ == "__main__":
                             keywords_dic.setdefault(res[2], label_name + "." + prop_name)
                     # print(keywords_dic)
                     keywords = "keywords: {}".format(keywords_dic).replace("{", "{{").replace("}", "}}")
-                    print(keywords )
+                    print(keywords)
 
     def get_all_example():
-        import regex as re
         config = MethodConfig.user_base["params"]["user_data_template"]
         for question_type, examples in config.items():
             for index, (template, question_examples) in enumerate(examples["question_template"].items()):
                 for question, example in question_examples:
                     print("Question: {}".format(question))
                     print("nGQL: {}".format(example))
-
 
     get_keyword_example()
     # get_all_example()

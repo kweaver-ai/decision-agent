@@ -2,7 +2,7 @@
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2025-3-19
 from datetime import datetime
-from typing import Optional, List, Any
+from typing import Any
 import json
 
 from data_retrieval.prompts.base import BasePrompt
@@ -33,7 +33,7 @@ prompt_template_cn = """
         - 指标描述：利润指标
         - 维度列表：[事业部-bu_name, 时间-time, ....]
 - 样例数据:
-    XXXX
+    (参考实际数据)
 
 - 输出:
 ```json
@@ -49,7 +49,9 @@ prompt_template_cn = """
 
 维度下钻是需要 **特别注意** 的，需要根据用户的问题选择是否需要选择下钻维度, 下钻维度支持多个:
 1. 注意 "分别"、"分组"、"各是"、"各"这类关键词，需要设置下钻维度，比如: 2003年各产品的销量，1月份每天的销量
-2. 如果用户的问题中提到了多个同类实体，且没有明确要求聚合，则设置筛选条件的同时还需要设置下钻维度，例如: 产品A和产品B在X时间段、不同事业部的销量，这时需要按照 `产品`、`事业部`、`时间`三个维度下钻，但是用户问X时间段产品A和产品B的销量在各事业部总和是多少，这时只需要按 `时间` 和 `事业部` 两个维度下钻
+2. 如果用户的问题中提到了多个同类实体，且没有明确要求聚合，则设置筛选条件的同时还需要设置下钻维度，\
+例如: 产品A和产品B在X时间段、不同事业部的销量，这时需要按照 `产品`、`事业部`、`时间`三个维度下钻，\
+但是用户问X时间段产品A和产品B的销量在各事业部总和是多少，这时只需要按 `时间` 和 `事业部` 两个维度下钻
 
 指标维度过滤支持很多的过滤条件，包含但不限于：
 - 等于 =
@@ -97,7 +99,7 @@ prompt_template_cn = """
         - 指标描述：利润指标
         - 维度列表：[事业部(bu_name), 时间(time), 产品(product_name)]
 - 样例数据:
-    XXXX
+    (参考实际数据)
 
 - 输出:
 ```json
@@ -122,7 +124,7 @@ prompt_template_cn = """
         - 指标描述：利润指标
         - 维度列表：[事业部(bu_name), 时间(time), 产品(product_name)]
 - 样例数据:
-    XXXX
+    (参考实际数据)
 
 - 输出:
 ```json
@@ -140,9 +142,9 @@ prompt_template_cn = """
 
 - 问题: 2014年X产品和Y产品在各事业部的销量
 - 给定的指标列表
-    XXXX
+    (参考实际指标列表)
 - 样例数据:
-    XXXX
+    (参考实际数据)
 
 - 输出:
 ```json
@@ -193,6 +195,7 @@ prompts = {
     "en": prompt_template_cn
 }
 
+
 class RewriteMetricQueryPrompt(BasePrompt):
     """RewriteMetricQuery Prompt
     There are three variables in the prompt:
@@ -218,9 +221,9 @@ class RewriteMetricQueryPrompt(BasePrompt):
         if isinstance(self.metrics, dict):
             self.metrics = json.dumps(self.metrics, ensure_ascii=False)
         elif isinstance(self.metrics, list):
-            if len(self.metrics) > 0:    
+            if len(self.metrics) > 0:
                 if isinstance(self.metrics[0], dict):
-                    self.metrics = '\n'.join([ json.dumps(metric, ensure_ascii=False) for metric in self.metrics ])
+                    self.metrics = '\n'.join([json.dumps(metric, ensure_ascii=False) for metric in self.metrics])
                 else:
                     self.metrics = '\n\n'.join(self.metrics)
             else:

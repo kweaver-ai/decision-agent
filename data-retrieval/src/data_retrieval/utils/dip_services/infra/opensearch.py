@@ -36,7 +36,7 @@ class OpenSearch(object):
         :param user: username to connect the service
         :param password: user password to connect the service
         """
-        
+
         self.ip = settings.AD_OPENSEARCH_HOST if ip is None else ip
         self.port = settings.AD_OPENSEARCH_PORT if port is None else port
         self.user = settings.AD_OPENSEARCH_USER if user is None else user
@@ -70,7 +70,7 @@ class OpenSearch(object):
             result = await response.content.read()
 
             result = json.loads(result.decode(), strict=False)
-            
+
             if int(response.status / 100) != 2:
                 raise DIPServiceError(
                     response.status,
@@ -100,9 +100,9 @@ class OpenSearch(object):
                 data=body
             )
         elif body:
-            response = requests.get(url, auth=auth,timeout=timeout, json=body, verify=verify, headers=self.headers)
+            response = requests.get(url, auth=auth, timeout=timeout, json=body, verify=verify, headers=self.headers)
         else:
-            response = requests.get(url, auth=auth,timeout=timeout, verify=verify, headers=self.headers)
+            response = requests.get(url, auth=auth, timeout=timeout, verify=verify, headers=self.headers)
         if int(response.status_code / 100) == 2:
             return response.json()
         try:
@@ -111,12 +111,13 @@ class OpenSearch(object):
             detail = {}
 
         raise DIPServiceError(
-                response.status_code,
-                Errno.OPEN_SEARCH_ERROR,
-                response.reason,
-                url=url,
-                detail=detail
-            )
+            response.status_code,
+            Errno.OPEN_SEARCH_ERROR,
+            response.reason,
+            url=url,
+            detail=detail
+        )
+
     async def search(self, query="", page=1, size=10, indexs=None, fields=None, max_return_num=1000):
         outputs = {}
         if indexs is None:
@@ -174,7 +175,7 @@ if __name__ == "__main__":
         password=""
     )
     # opensearch = OpenSearch()
-    
+
     # body = {
     #     "query": {
     #         "multi_match": {
@@ -187,7 +188,7 @@ if __name__ == "__main__":
     #     "size": 10
     # }
 
-    body={
+    body = {
         "query": {
             "bool": {
                 "must": [

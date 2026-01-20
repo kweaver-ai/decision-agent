@@ -2,63 +2,57 @@
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2024-08-26
 import json
-import os
 import traceback
-from textwrap import dedent
-from typing import Any, Optional, Type, Dict, List
-from enum import Enum
-from collections import OrderedDict
+from typing import Any, Dict, Optional, Type, List
 
-# import faiss
 from langchain.callbacks.manager import (AsyncCallbackManagerForToolRun,
                                          CallbackManagerForToolRun)
 
 from langchain.pydantic_v1 import BaseModel, Field, PrivateAttr
-from langchain.pydantic_v1.dataclasses import dataclass
-from langchain.tools import BaseTool
+from fastapi import Body
 
-from langchain_community.docstore.in_memory import InMemoryDocstore
-from langchain_community.vectorstores import FAISS
-from langchain_community.vectorstores.utils import DistanceStrategy
-
-from langchain_core.documents import Document
 from langchain_core.prompts import (
     ChatPromptTemplate,
     HumanMessagePromptTemplate
 )
 from langchain_core.messages import SystemMessage, HumanMessage
-from langchain_core.messages import SystemMessage, HumanMessage
-from data_retrieval.errors import Text2MetricError, ToolFatalError
+
+from data_retrieval.errors import Text2DIPMetricError
 from data_retrieval.logs.logger import logger
-from data_retrieval.parsers.text2metric_parser import Text2MetricParser
-from data_retrieval.prompts.tools_prompts.text2metric_prompt import Text2MetricPrompt, Text2MetricPromptFunc
+from data_retrieval.prompts.tools_prompts.text2dip_metric_prompt import Text2DIPMetricPrompt
 from data_retrieval.prompts.tools_prompts.text2metric_prompt.rewrite_query import RewriteMetricQueryPrompt
 from data_retrieval.parsers.base import BaseJsonParser
 
 from data_retrieval.sessions import CreateSession, BaseChatHistorySession
-from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer, ToolCallbackHandler
-from data_retrieval.tools.base import LLMTool, ToolMultipleResult, ToolName
-from data_retrieval.tools.base_tools.context2question import achat_history_to_question, chat_history_to_question
-from data_retrieval.utils.embeddings import M3EEmbeddings, MSE_EMBEDDING_SIZE
-from data_retrieval.utils.func import JsonParse, json_to_markdown
-from data_retrieval.tools.base import LLMTool, _TOOL_MESSAGE_KEY
-from data_retrieval.prompts.manager.base import BasePromptManager
+from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer
+from data_retrieval.tools.base import LLMTool, ToolName
+from data_retrieval.tools.base import _TOOL_MESSAGE_KEY
 from data_retrieval.settings import get_settings
-from data_retrieval.tools.base import api_tool_decorator, _TOOL_MESSAGE_KEY
+from data_retrieval.tools.base import api_tool_decorator
 from data_retrieval.utils.llm import CustomChatOpenAI
-from data_retrieval.api.auth import get_authorization
-from data_retrieval.datasource.af_indicator import AFIndicator
+from data_retrieval.datasource.dip_metric import DIPMetric
 from data_retrieval.tools.base import parse_llm_from_model_factory
-
+from data_retrieval.utils._common import run_blocking
 from data_retrieval.utils.model_types import ModelType4Prompt
+from data_retrieval.api.agent_retrieval import get_datasource_from_agent_retrieval_async
 
 
 _SETTINGS = get_settings()
 
 _DESCS = {
     "tool_description": {
-        "cn": "根据文本，以及指标的列表来生成指标调用参数，每次工具只能调用一个指标但是可以设置不同的查询条件。如果获取的数据太长的话，只返回局部数据，全部数据在缓存中。结果中有一个 data_desc 的对象来记录返回数据条数和实际结果条数，请告知用户查看详细数据，应用程序会获取",
-        "en": "call corresponding indicators based on user input text, only one indicator at a time, if the question contains multiple indicators, please call multiple times, the result has a data_desc object to record the number of returned data and the actual number of results, please tell the user to check the detailed data, the application will get it",
+        "cn": (
+            "根据文本，以及DIP指标的列表来生成指标调用参数，每次工具只能调用一个指标但是可以设置不同的查询条件。"
+            "如果获取的数据太长的话，只返回局部数据，全部数据在缓存中。"
+            "结果中有一个 data_desc 的对象来记录返回数据条数和实际结果条数，请告知用户查看详细数据，应用程序会获取。"
+        ),
+        "en": (
+            "call corresponding DIP indicators based on user input text, "
+            "only one indicator at a time, if the question contains multiple indicators, "
+            "please call multiple times, the result has a data_desc object to record "
+            "the number of returned data and the actual number of results, "
+            "please tell the user to check the detailed data, the application will get it."
+        ),
     },
     "chat_history": {
         "cn": "对话历史",
@@ -68,9 +62,9 @@ _DESCS = {
         "cn": "一个清晰完整的文本",
         "en": "A clear and complete question",
     },
-    "desc_for_yoy_or_mom": {
-        "cn": "\n支持同比环比计算，直接输入包含同环比计算的问题，不需要调用多次获取不同统计周期的数据",
-        "en": "\nSupport period-on-period calculation, it can be called directly without calling multiple times to get data of different periods",
+    "action": {
+        "cn": "操作类型：show_ds 显示数据源信息，query 执行查询（默认）",
+        "en": "Action type: show_ds to show data source info, query to execute query (default)",
     },
     "desc_from_datasource": {
         "cn": "\n- 包含的指标信息：{desc}",
@@ -79,14 +73,20 @@ _DESCS = {
 }
 
 
-class MetricDescSchema(BaseModel):
+class DIPMetricDescSchema(BaseModel):
     id: str = Field(description="指标的 id, 格式为 str")
     name: str = Field(description="指标的名称")
-    type: str = Field(description="指标的类型")
+    metric_type: str = Field(description="指标的类型")
+    query_type: str = Field(description="查询类型")
+    unit: str = Field(description="单位")
 
 
-class Text2MetricInput(BaseModel):
+class Text2DIPMetricInput(BaseModel):
     input: str = Field(description=_DESCS["input"]["cn"])
+    action: str = Field(
+        default="query",
+        description=_DESCS["action"]["cn"]
+    )
     knowledge_enhanced_information: Optional[Any] = Field(default={}, description="调用知识增强工具获取的信息，如果调用知识增强工具，请填写该参数")
 
     extra_info: Optional[str] = Field(
@@ -95,801 +95,1013 @@ class Text2MetricInput(BaseModel):
     )
 
 
-class Text2MetricInputWithMetricList(Text2MetricInput):
-    metric_list: List[MetricDescSchema] = Field(default=[], description=f"指标列表，注意指标指的一个数据源，不是字段信息，当已经初始化过虚拟视图列表时，不需要填写该参数。如果需要填写该参数，请确保`上下文缓存的数据资源中存在`，不要随意生成。注意参数一定要准确。格式为 {MetricDescSchema.schema_json(ensure_ascii=False)}")
+class Text2DIPMetricInputWithMetricList(Text2DIPMetricInput):
+    metric_list: List[DIPMetricDescSchema] = Field(
+        default=[],
+        description=(
+            "指标列表，注意指标指的一个数据源，不是字段信息，当已经初始化过虚拟视图列表时，"
+            "不需要填写该参数。如果需要填写该参数，请确保`上下文缓存的数据资源中存在`，"
+            f"不要随意生成。注意参数一定要准确。格式为 {DIPMetricDescSchema.schema_json(ensure_ascii=False)}"
+        )
+    )
 
 
-class Text2MetricTool(LLMTool):
+class Text2Metric(LLMTool):
     name: str = ToolName.from_text2metric.value
     description: str = _DESCS["tool_description"]["cn"]
     background: str = ""
-    args_schema: Type[BaseModel] = Text2MetricInput
-    indicator: AFIndicator = None
+    args_schema: Type[BaseModel] = Text2DIPMetricInput
+    dip_metric: DIPMetric = None
     retry_times: int = 3
     session_type: str = "redis"
     session_id: Optional[str] = ""
     session: Optional[BaseChatHistorySession] = None
-    # with_context: bool = False  # 是否使用上下文
-    with_execution: bool = True  # 是否执行指标函数
     get_desc_from_datasource: bool = False  # 是否从数据源获取描述
-    enable_yoy_or_mom: bool = False  # 是否启用同比环比
-    essential_explain: bool = True  # 是否只展示必要的解释
-    with_sample_data: bool = True   # 是否从逻辑是同中获取样例数据
+    with_sample_data: bool = True   # 是否从逻辑视图中获取样例数据
     dimension_num_limit: int = int(_SETTINGS.TEXT2METRIC_DIMENSION_NUM_LIMIT)
     recall_top_k: int = int(_SETTINGS.INDICATOR_RECALL_TOP_K)
     rewrite_query: bool = bool(_SETTINGS.INDICATOR_REWRITE_QUERY)  # 是否重写指标查询语句
     model_type: str = _SETTINGS.TEXT2METRIC_MODEL_TYPE
+    language: str = "cn"  # 语言设置
     return_record_limit: int = _SETTINGS.RETURN_RECORD_LIMIT
-    return_data_limit: int = _SETTINGS.RETURN_DATA_LIMIT    
+    return_data_limit: int = _SETTINGS.RETURN_DATA_LIMIT
+    api_mode: bool = False  # 是否为 API 模式
+    force_limit: int = _SETTINGS.TEXT2METRIC_FORCE_LIMIT  # 限制指标查询的行数
 
-    _initial_metric_ids: List[str] = PrivateAttr(default=[]) # 工具初始化时设置的指标id列表
+    _initial_metric_ids: List[str] = PrivateAttr(default=[])  # 工具初始化时设置的指标id列表
+    _result_cache_key: str = PrivateAttr(default="")  # 结果缓存键
 
     def __init__(self, *args, **kwargs):
-
         super().__init__(*args, **kwargs)
-        if self.enable_yoy_or_mom:
-            self.description += _DESCS["desc_for_yoy_or_mom"][self.language]
 
         if kwargs.get("session") is None:
             self.session = CreateSession(self.session_type)
-        
-        if kwargs.get("manager") is not None:
-            self.prompt_manager = kwargs.get("manager")
-        
-        if self.indicator and self.indicator.get_data_list():
-            self._initial_metric_ids = self.indicator.get_data_list()
+
+        if self.dip_metric and self.dip_metric.get_data_list():
+            self._initial_metric_ids = self.dip_metric.get_data_list()
         else:
-            self.args_schema = Text2MetricInputWithMetricList
+            self.args_schema = Text2DIPMetricInputWithMetricList
 
-        # 如果 get_desc_from_datasource 为 True，则获取数据源的描述
-        self._get_desc_from_datasource(self.get_desc_from_datasource)
+    def _init_dip_metric_details_and_samples(self, input_question=""):
+        """初始化 DIP Metric 详情和样例数据"""
+        coroutine = self._ainit_dip_metric_details_and_samples(input_question)
+        return run_blocking(coroutine)
 
-    def _get_desc_from_datasource(self, get_desc_from_datasource: bool):
-        
-        if get_desc_from_datasource:
-            if self.indicator:
-                desc = self.indicator.get_description()
-                if desc:
-                    self.description += _DESCS["desc_from_datasource"][self.language].format(
-                        desc=desc
-                )
-        if not self.indicator.get_data_list():
-            self.description += _DESCS["desc_from_datasource"]["cn"].format(
-                desc=f"工具初始化时没有提供指标数据源，调用前需要使用 `{ToolName.from_sailor.value}` 工具搜索，并基于结果初始化"
-            )
+    async def _ainit_dip_metric_details_and_samples(self, input_question=""):
+        """异步初始化 DIP Metric 详情和样例数据"""
+        try:
+            if not self.dip_metric:
+                logger.warning("DIP Metric 数据源未初始化")
+                return
 
-    @classmethod
-    def from_indicator(
-        cls,
-        indicator: AFIndicator,
-        llm: Optional[Any] = None,
-        prompt_manager: Optional[BasePromptManager] = None,
-        session_id: Optional[str] = "",
-        *args,
-        **kwargs
-    ):
-        """Create a new instance of Text2MetricTool
-
-        Args:
-            indicator (AFIndicator): AFIndicator instance
-            llm (Optional[Any], optional): Language model instance. Defaults to None.
-
-        Returns:
-            Text2MetricTool: Text2MetricTool instance
-        """
-        return cls(indicator=indicator, llm=llm, manager=prompt_manager, session_id=session_id, *args, **kwargs)
-
-    def get_chat_history(
-        self,
-        session_id,
-    ):
-        history = self.session.get_chat_history(
-            session_id=session_id
-        )
-        return history
-
-    def _init_indicator_details_and_samples(self, input_question=""):
-        details = self.indicator.get_details(
-            input_question,
-            self.recall_top_k,
-            self.dimension_num_limit).get("details", [])
-
-        indicator_details = []
-        # docs_in_vectorstore = []
-
-        samples_dict = {}
-        samples = []
-        for i, detail in enumerate(details):
-            desc = {
-                "id": detail["id"],
-                "name": detail["name"],
-                "description": detail["description"],
+            # 获取指标详情
+            metric_details = []
+            sample_data = {
+                "mapping": [],
+                "data": []
             }
 
-            if self.with_sample_data:
-                desc["refer_view_name"] = detail["refer_view_name"]
+            # 异步获取可用指标列表
+            details = await self.dip_metric.aget_details(input_question)
+            if details:
+                for metric in details:
+                    metric_details.append({
+                        "id": metric.get("id"),
+                        "name": metric.get("name"),
+                        "comment": metric.get("comment"),
+                        "formula_config": metric.get("formula_config"),
+                        "analysis_dimensions": metric.get("analysis_dimensions"),
+                        "date_field": metric.get("date_field"),
+                        "unit_type": metric.get("unit_type"),
+                        "unit": metric.get("unit"),
+                        "data_source": metric.get("data_source", {})
+                    })
+                logger.info(f"异步获取到 {len(metric_details)} 个指标详情")
 
-                if desc["refer_view_name"] != "" and desc["refer_view_name"] not in samples_dict:
-                    refer_view_id = detail["refer_view_id"]
-                    old_sample = samples_dict.get(desc["refer_view_name"], {})
+            if self.with_sample_data and metric_details:
 
-                    sample = self.indicator.get_sample_from_data_view(
-                        refer_view_id,
-                        [ dim["technical_name"] for dim in detail["dimensions"] ]
+                for metric in metric_details:
+                    data_source = metric.get("data_source", {})
+                    if not data_source:
+                        continue
+
+                    sample_data["mapping"].append({
+                        "metric_id": metric.get("id"),
+                        "data_view_id": metric.get("data_source", {}).get("id"),
+                    })
+                    data_view_id = metric.get("data_source", {}).get("id")
+
+                    if data_view_id in sample_data:
+                        continue
+
+                    sample = await self.dip_metric.service.get_view_data_preview_async(
+                        data_view_id,
+                        fields=metric.get("analysis_dimensions")
                     )
+                    sample_data["data"].append({
+                        "view_id": data_view_id,
+                        "data": sample.get("entries", [])
+                    })
 
-                    samples_dict[desc["refer_view_name"]] = sample | old_sample
+            return metric_details, sample_data
 
-            # Markdown can be more confusing for some model
-            detail_str = f"#### Inidcator - {i+1}: \n"
-            detail_str += json_to_markdown([desc]) + '\n'
-            detail_str += "**Dimensions Details**: \n" + json_to_markdown(detail["dimensions"]) + '\n\n'
+        except Exception as e:
+            logger.error(f"异步初始化 DIP Metric 详情和样例数据失败: {e}")
+            raise e
 
-
-            # desc["dimensions"] = detail["dimensions"]
-            # detail_str = json.dumps(desc, ensure_ascii=False)
-
-            # Use metadata to store detail_str, use name + description to search
-            # to prevent additional information from affecting the search results
-            indicator_details.append(detail_str)
-            
-            # 如果 input_question 为空，说明是第一次调用，需要将指标详情添加到向量存储中
-            # if not input_question:
-            #     docs_in_vectorstore.append(
-            #         Document(
-            #             page_content=f"{desc['name']}\n{desc['description']}",
-            #         metadata={
-            #             "detail": detail_str
-            #         }
-            #         )
-            #     )
-
-        # try:
-        #     if not input_question and self.vectorstore:
-        #         # Clear vector store before add new docs
-        #         assert len(docs_in_vectorstore) > 0
-        #         if len(docs_in_vectorstore) > 0:
-        #             self.vectorstore.add_documents(docs_in_vectorstore)
-        #         else:
-        #             raise ToolFatalError(reason="未获取到指标详情", detail="")
-        # # TODO i18n
-        # except Exception as e:
-        #     logger.error(f"Error: {e}, traceback: {traceback.format_exc()}")
-        #     self.vectorstore = None
-        #     # raise ToolFatalError(reason="指标描述向量存储失败", detail=e) from e
-
-        for k, v in samples_dict.items():
-            samples.append({
-                "refer_view_name": k,
-                "sample_data": v
-            })
-        logger.debug(f"indicator_details: {indicator_details}\n, samples: {samples}")
-
-        # self._indicator_details, self._sample_data = indicator_details, samples
-        return indicator_details, samples
-
-    # def _search_indicator_details(self, question: str):
-    #     res = []
-    #     if self.vectorstore:
-    #         search_res = self.vectorstore.similarity_search_with_score(
-    #             question,
-    #             k=self.retriever_config.top_k
-    #         )
-    #         res = [
-    #             doc.metadata["detail"]
-    #             for doc, score in search_res
-    #             #    if score > self.retriever_config.threshold
-    #         ]
-
-    #     return res
-
-    # async def _asearch_indicator_details(self, question: str):
-    #     res = []
-    #     if self.vectorstore:
-    #         search_res = await self.vectorstore.asimilarity_search_with_score(
-    #             question,
-    #             k=self.retriever_config.top_k
-    #         )
-    #         res = [
-    #             doc.metadata["detail"]
-    #             for doc, score in search_res
-    #             #    if score > self.retriever_config.threshold
-    #         ]
-    #     return res
-
-    def _config_chain(self, indicator_details: list, samples: list, errors: dict, background: str = ''):
-        if background == '':
-            background = self.background
-
-        system_prompt = Text2MetricPrompt(
-            indicators=indicator_details,
-            samples=samples,
-            background=background,
-            errors=errors,
-            language=self.language,
-            enable_yoy_or_mom=self.enable_yoy_or_mom,
-            prompt_manager=self.prompt_manager,
-        )
-
-        logger.debug(f"text2metric -> model_type: {self.model_type}")
-        logger.debug(f"text2metric -> system_prompt: {system_prompt.render()}")
-
-        if self.model_type == ModelType4Prompt.DEEPSEEK_R1.value:
-            prompt = ChatPromptTemplate.from_messages(
-                [
-                    HumanMessage(
-                        content="下面是你的任务，请务必牢记\n" + system_prompt.render(),
-                        additional_kwargs={_TOOL_MESSAGE_KEY: "text2metric"}
-                    ),
-                    HumanMessagePromptTemplate.from_template("{input}"),
-                ]
-            )
-        else:
-            prompt = ChatPromptTemplate.from_messages(
-                [
-                    SystemMessage(
-                        content=system_prompt.render(),
-                        additional_kwargs={_TOOL_MESSAGE_KEY: "text2metric"}
-                    ),
-                    HumanMessagePromptTemplate.from_template("{input}")
-                ]
+    def _config_chain(self, metric_details: list, samples: list, errors: dict, background: str = ''):
+        """配置 LLM 链"""
+        try:
+            # 获取 prompt
+            system_prompt = Text2DIPMetricPrompt(
+                metrics=metric_details,
+                samples=samples,
+                background=background,
+                errors=errors
             )
 
-        chain = (
-            prompt
-            | self.llm
-            | Text2MetricParser(indicator=self.indicator, essential_explain=self.essential_explain)
-        )
+            logger.debug(f"text2metric -> system_prompt: {system_prompt.render()}")
 
-        return chain
+            if self.model_type == ModelType4Prompt.DEEPSEEK_R1.value:
+                prompt = ChatPromptTemplate.from_messages(
+                    [
+                        HumanMessage(
+                            content="下面是你的任务，请务必牢记" + system_prompt.render(),
+                            additional_kwargs={_TOOL_MESSAGE_KEY: "text2metric"}
+                        ),
+                        HumanMessagePromptTemplate.from_template("{input}")
+                    ]
+                )
+            else:
+                prompt = ChatPromptTemplate.from_messages(
+                    [
+                        SystemMessage(
+                            content=system_prompt.render(),
+                            additional_kwargs={_TOOL_MESSAGE_KEY: "text2metric"}
+                        ),
+                        HumanMessagePromptTemplate.from_template("{input}")
+                    ]
+                )
 
-    def _add_extra_info(self, extra_info, knowledge_enhanced_information):
-        new_background = self.background
+            chain = (
+                prompt
+                | self.llm
+            )
+            return chain
+        except Exception as e:
+            logger.error(f"配置 LLM 链失败: {e}")
+            raise e
+
+    def _add_extra_info(self, extra_info, knowledge_enhanced_information=""):
+        """添加额外信息"""
+        background = self.background
+
         if extra_info:
-            if isinstance(extra_info, dict):
-                extra_info = json.dumps(extra_info, ensure_ascii=False)
-
-            new_background = dedent(
-                "\n"
-                + new_background
-                + extra_info
-            )
-        else:
-            extra_info = ""
+            background += f"\n额外信息：{extra_info}"
 
         if knowledge_enhanced_information:
             if isinstance(knowledge_enhanced_information, dict):
-                if knowledge_enhanced_information.get("output"):
-                    knowledge_enhanced_information = json.dumps(knowledge_enhanced_information.get("output"))
-                else:
-                    knowledge_enhanced_information = json.dumps(knowledge_enhanced_information)
-            elif isinstance(knowledge_enhanced_information, list):
-                knowledge_enhanced_information = json.dumps(knowledge_enhanced_information)
+                background += f"\n知识增强信息：{json.dumps(knowledge_enhanced_information, ensure_ascii=False)}"
+            else:
+                background += f"\n知识增强信息：{knowledge_enhanced_information}"
 
-            try:
-                if isinstance(knowledge_enhanced_information, str):
-                    info = json.loads(knowledge_enhanced_information)
-                    knowledge_enhanced_information = json.dumps(info, ensure_ascii=False)
-            except Exception as e:
-                logger.debug(f"Convert Error, use original str. Error: {e}\n, Original str:{knowledge_enhanced_information}")
+        return background
 
+    def _config_rewrite_metric_query_chain(self, question: str, background: str, metrics: list, samples: list):
+        """配置重写指标查询语句的 LLM 链"""
+        prompt = RewriteMetricQueryPrompt(
+            question=question,
+            metrics=metrics,
+            samples=samples,
+            language=self.language,
+            background=background
+        )
 
-            if knowledge_enhanced_information:
-                new_background += dedent("\n"
-                + "知识增强工具中包含了维度相关的信息, 请在条件允许的情况下，与现有 filter 合并:\n"
-                + knowledge_enhanced_information
-            )
+        if self.model_type == ModelType4Prompt.DEEPSEEK_R1.value:
+            messages = [
+                HumanMessage(content=prompt.render(escape_braces=False), additional_kwargs={
+                             _TOOL_MESSAGE_KEY: "text2metric_rewrite_query"}),
+                HumanMessage(content=question)
+            ]
         else:
-            knowledge_enhanced_information = ""
+            messages = [
+                SystemMessage(content=prompt.render(escape_braces=False), additional_kwargs={
+                              _TOOL_MESSAGE_KEY: "text2metric_rewrite_query"}),
+                HumanMessage(content=question)
+            ]
 
-        return new_background, extra_info, knowledge_enhanced_information
+        chain = self.llm | BaseJsonParser()
+        return chain, messages
 
-    def _map_column_name(self, indicator_id: str, columns: list, dimension_params: list) -> dict:
-        # just in case
-        if len(columns) == 0:
-            return columns
-        
-        def _is_default_name(name: str):
-            if name.startswith("_col"):
-                return True
-            return False
+    async def _arewrite_metric_query(self, question: str, background: str, metrics: list, samples: list):
+        """异步重写指标查询语句"""
+        chain, messages = self._config_rewrite_metric_query_chain(question, background, metrics, samples)
+        new_question = await chain.ainvoke(messages)
 
-        indicator_info = self.indicator.get_description_by_id(indicator_id)
-        indicator_name = indicator_info.get("name", "")
-        # last column is indicator name
+        # 输出是字符串，帮助后续问题理解
+        return json.dumps(new_question, ensure_ascii=False)
 
-        if _is_default_name(columns[-1]["name"]):
-            columns[-1]["name"] = indicator_name
+    def _rewrite_metric_query(self, question: str, background: str, metrics: list, samples: list):
+        """同步重写指标查询语句"""
+        chain, messages = self._config_rewrite_metric_query_chain(question, background, metrics, samples)
+        new_question = chain.invoke(messages)
 
-        if len(columns) == 1:
-            return columns
+        return json.dumps(new_question, ensure_ascii=False)
 
-        for i, col in enumerate(columns):
-            if i >= len(dimension_params):
-                break
+    def _get_configured_metrics_info(self):
+        """获取配置的指标信息"""
+        try:
+            if not self.dip_metric:
+                return {
+                    "error": "DIP Metric 数据源未初始化",
+                    "message": "无法获取配置的指标信息，因为 DIP Metric 数据源未初始化"
+                }
 
-            if not _is_default_name(col.get("name", "_col")):
-                continue
+            # 获取配置的指标列表
+            metric_list = self.dip_metric.get_data_list()
 
-            dim = dimension_params[i]
+            if not metric_list:
+                return {
+                    "message": "当前未配置任何指标",
+                    "available_metrics": [],
+                    "title": "配置的指标信息"
+                }
 
-            if dim.get("display_name"):
-                col["name"] = dim["display_name"]
-            elif dim.get("business_name"):
-                col["name"] = dim["business_name"]
+            # 获取指标详细信息
+            metric_details = self.dip_metric.get_description_by_ids(metric_list)
 
-        # expression is like sum(\"sales_std\"), sum(\"target_std\")
-        if indicator_info.get("indicator_type") == "atomic":
-            indicator_expressions = indicator_info.get("expression","").replace("\"", "").split(",")
-            if len(indicator_expressions) > 1:
-                for i, exp in enumerate(indicator_expressions):
-                    if i + len(dimension_params) < len(columns):
-                        columns[i + len(dimension_params)]["name"] = exp
+            # 格式化指标信息
 
+            return {
+                "title": "配置的指标信息",
+                "message": f"当前配置了 {len(metric_details)} 个指标",
+                "metric_num": len(metric_details),
+                "metric_details": metric_details
+            }
 
-        return columns
+        except Exception as e:
+            logger.error(f"获取配置的指标信息失败: {e}")
+            return {
+                "error": f"获取配置的指标信息失败: {e}",
+                "message": "无法获取配置的指标信息"
+            }
 
+    async def _aget_configured_metrics_info(self):
+        """异步获取配置的指标信息"""
+        try:
+            if not self.dip_metric:
+                return {
+                    "error": "DIP Metric 数据源未初始化",
+                    "message": "无法获取配置的指标信息，因为 DIP Metric 数据源未初始化"
+                }
+
+            # 获取配置的指标列表
+            metric_list = self.dip_metric.get_data_list()
+
+            if not metric_list:
+                return {
+                    "message": "当前未配置任何指标",
+                    "available_metrics": [],
+                    "title": "配置的指标信息"
+                }
+
+            # 异步获取指标详细信息
+            metric_details = await self.dip_metric.aget_description_by_ids(metric_list)
+
+            # 格式化指标信息
+
+            return {
+                "title": "配置的指标信息",
+                "message": f"当前配置了 {len(metric_details)} 个指标",
+                "metric_num": len(metric_details),
+                "metric_details": metric_details
+            }
+
+        except Exception as e:
+            logger.error(f"异步获取配置的指标信息失败: {e}")
+            return {
+                "error": f"异步获取配置的指标信息失败: {e}",
+                "message": "无法获取配置的指标信息"
+            }
+
+    @construct_final_answer
     def _run(
         self,
         input: str,
+        action: str = "query",
         extra_info: str = "",
-        metric_list: list = [],
-        knowledge_enhanced_information: str = "",
+        knowledge_enhanced_information: str = "",  # 知识增强信息，暂时不用
         run_manager: Optional[CallbackManagerForToolRun] = None,
     ):
-        asyncio.run(self._arun(input, extra_info, metric_list, knowledge_enhanced_information, run_manager))
+        """同步运行"""
+        return self._process_query(input, action, extra_info, knowledge_enhanced_information, run_manager)
 
     @async_construct_final_answer
     async def _arun(
         self,
         input: str,
+        action: str = "query",
         extra_info: str = "",
-        metric_list: list = [],
-        knowledge_enhanced_information: Any = "",
+        knowledge_enhanced_information: Any = "",  # 知识增强信息，暂时不用
         run_manager: Optional[AsyncCallbackManagerForToolRun] = None,
-        # sessions: RedisHistorySession = RedisHistorySession(),
     ):
-        """
-        Run the tool asynchronously with the given text and chat history.
+        """异步运行"""
+        return await self._aprocess_query(input, action, extra_info, knowledge_enhanced_information, run_manager)
 
-        Args:
-            input (str): The text to run the tool with.
-        """
+    def _process_query(self, input: str, action: str = "query", extra_info: str = "",
+                       knowledge_enhanced_information: Any = "", run_manager=None):
+        """处理查询，参考 text2metric.py 的实现"""
         try:
-            if metric_list:
-                # 如果已经初始化过，则该参数不合法
-                if self._initial_metric_ids:
-                    logger.warning("已经初始化过指标列表，请不要随意生成")
-                else:
-                    metric_ids = []
-                    for metric in metric_list:
-                        if isinstance(metric, str):
-                            metric_ids.append(metric)
-                        elif isinstance(metric, dict):
-                            metric_ids.append(metric.get("id"))
-                        elif isinstance(metric, MetricDescSchema):
-                            metric_ids.append(metric.id)
-                    if metric_ids:
-                        self.indicator.set_data_list(metric_ids)
+            # 如果 action 不是 show_ds，且 input 为空，则抛出异常
+            if action != "show_ds" and (not input or not input.strip()):
+                raise Text2DIPMetricError(detail="输入问题不能为空", reason="输入问题不能为空")
 
-            # 如果指标为空，则抛出异常
-            if not self.indicator.get_data_list():
-                raise Text2MetricError("指标为空，请先设置指标")
+            # 根据 action 参数决定行为
+            if action == "show_ds":
+                return self._get_configured_metrics_info()
 
-            # 根据问题重新筛选字段，因为indicator 已经做了缓存，不会重复请求数据
-            new_background, extra_info, knowledge_enhanced_information = self._add_extra_info(extra_info, knowledge_enhanced_information)
-            indicator_details, sample_data = self._init_indicator_details_and_samples(
-                ("\n".join([input, extra_info, knowledge_enhanced_information]))
-            )
+            # 添加额外信息
+            background = self._add_extra_info(extra_info, knowledge_enhanced_information)
 
-            question = input
-            logger.debug(f"text2metric -> input: {input}")
-
-            # if we add chat history, the question could be changed
-            # if self.with_context:
-            #     logger.debug("尝试使用上下文去总结问题")
-            #     chat_history = self.get_chat_history(self.session_id)
-            #     question = await achat_history_to_question(self.llm, input, chat_history, self.language)
-
-            if isinstance(question, dict):
-                question = question.get("question", "")
+            # 初始化指标详情和样例
+            metric_details, sample_data = self._init_dip_metric_details_and_samples(input)
 
             errors = {}
             res = {}
+            res_for_llm = {}
+            llm_res = {}  # Initialize before retry loop to avoid undefined variable
+            call_res = {}
+
+            # 重写指标查询语句，提高指标查询的准确性
+            question = input
+            if self.rewrite_query:
+                question = self._rewrite_metric_query(input, background, metric_details, sample_data)
+                logger.debug(f"重写后的指标查询语句->: {question}")
 
             for i in range(self.retry_times):
-                logger.debug(f"============" * 10)
-                logger.debug(f"{i + 1} times to generate indicator......")
+                logger.debug("============" * 10)
+                logger.debug(f"{i + 1} times to process DIP metric query......")
                 try:
-                    llm_res, call_res = {}, {}
+                    llm_res, call_res = {}, {}  # Reset for each retry
 
-                    # 如果 top_k 不为 0，则使用向量检索
-                    # if self.retriever_config.top_k != 0:
-                    #     indicator_details = await self._asearch_indicator_details(question)
-                    #     logger.debug("============" * 10)
-                    #     logger.debug(f"indicator_details: {indicator_details}")
-                    #     if not indicator_details:
-                    #         indicator_details = self.indicator_details
-                    # else:
-                    #     indicator_details = self.indicator_details
+                    # 配置 LLM 链
+                    chain = self._config_chain(
+                        metric_details=metric_details,
+                        samples=sample_data,
+                        errors=errors,
+                        background=background
+                    )
 
-                    chain = self._config_chain(indicator_details, sample_data, errors, new_background)
-                    
-                    # callback_handler = ToolCallbackHandler()
+                    # 调用 LLM
+                    response = chain.invoke({"input": question})
 
-                    # 重写指标查询语句，提高指标查询的准确性
-                    # 这里必须分开调用，否则会让 deepseek 误以为已经结束了
-                    if self.rewrite_query:
-                        question = await self._arewrite_metric_query(question, new_background, indicator_details, sample_data)
-                        logger.debug(f"重写后的指标查询语句->: {question}")
+                    # 解析响应
+                    llm_res = self._parse_response(response)
 
-                    llm_res = await chain.ainvoke({"input": question})
+                    # 获取指标ID和查询参数
+                    metric_id = llm_res.get("metric_id", "")
+                    param = llm_res.get("query_params", {})
 
-                    logger.info(f"LLM res: {llm_res}")
+                    if metric_id == "":
+                        raise Text2DIPMetricError(llm_res.get("explanation", "指标ID为空"))
 
-                    indicator_id = llm_res.get("id", "")
-                    param = llm_res.get("params", {})
-
-                    # 屏蔽这个错误后，反而不会出结果
-                    if indicator_id == "":
-                        raise Text2MetricError(llm_res.get("explanation", ""))
-
-                    # Add cites and text to res
-                    indicators = self.indicator.get_description()
-                    indicator_name = ""
-
-                    for indicator in indicators["description"]:
-                        if indicator["id"] == indicator_id:
-                            res["cites"] = [
-                                {
-                                    "id": indicator_id,
-                                    "name": indicator["name"],
-                                    "type": "indicator",
-                                    "description": indicator["description"]
-                                }
-                            ]
-
-                            res["indicator_unit"] = indicator.get("indicator_unit", "")
-                            break
+                    # 添加引用信息
+                    res["cites"] = [
+                        {
+                            "id": metric_id,
+                            "name": metric_id,
+                            "type": "metric",
+                            "description": "DIP Metric 指标"
+                        }
+                    ]
 
                     res.update(llm_res)
+                    res_for_llm = res.copy()
 
-                    # if not with execution, add logs and return
-                    if not self.with_execution:
-                        self.session.add_agent_logs(
-                            self._result_cache_key,
-                            logs=res
-                        )
-                        return res
+                    # 执行查询
+                    if metric_id and param:
+                        call_res = self._execute_query(metric_id, param)
+                        logger.info(f"DIP Metric 调用结果: {call_res}")
 
-                    # get call result
-                    res["res"] = []     # Markdown format
-                    res["data"] = {}    # JSON Format
-                    if self.with_execution:
-                        if indicator_id:
-                            call_res = await self.indicator.acall(indicator_id, param)
+                        if call_res.get("error"):
+                            raise Text2DIPMetricError(call_res["error"])
 
-                            if call_res.get("columns"):
-                                call_res["columns"] = self._map_column_name(
-                                    indicator_id,
-                                    call_res["columns"],
-                                    param["dimensions"]
-                                )
-                            logger.info(f"Indicator call res: {call_res}")
-                        else:
-                            return res["res"]["未找到合适的指标"]
+                        # 先拷贝一份给大模型的结果
+                        res_for_llm = res.copy()
 
-                        if call_res.get("data"):
-                            if len(call_res["data"]) == 0:
-                                res["data"] = {}
-                            elif len(call_res["data"]) == 1 and call_res["data"][0][0] is None:
-                                res["data"] = {}
-                            else:
-                                # convert result to json
-                                parse = JsonParse(call_res)
-                                md_res = parse.to_markdown()
-                                res["res"] = md_res  # markdown 数据用于 前端做
-                                res["data"] = parse.to_dict()
+                        # 处理执行结果
+                        execution_result, raw_result = self._process_execution_result(call_res)
 
+                        res_for_llm.update(execution_result)
+                        res.update(raw_result)
+
+                        # 设置标题
                         if res.get("title", "") == "":
-                            # res["title"] = question.get("question", input) if self.with_context else question
-                            res["title"] = question
+                            res["title"] = input
 
-                        res["result_cache_key"] = self._result_cache_key
+                        if not raw_result.get("data"):
+                            res_for_llm.pop("result_cache_key", None)
+                            res_for_llm["message"] = "查询结果为空"
 
-                        full_output = res.copy()
-                        if self.session:
+                            res.pop("result_cache_key")
+                            break
+
+                        # 将完整结果写入缓存, 如果数据为空，则不写入缓存
+                        if self.session and raw_result.get("data"):
                             self.session.add_agent_logs(
                                 self._result_cache_key,
-                                logs=full_output
+                                logs=res
                             )
 
-                        # result for LLM
-                        res["data_desc"] = {
-                            "return_records_num": 0,
-                            "real_records_num": 0
-                        }
-                        if res["data"]:
-                            res["data"] = parse.to_dict(
-                                self.return_record_limit, self.return_data_limit
-                            )   # 给大模型返回的数据量
+                        # 如果成功获取结果，跳出重试循环
+                        break
 
-                            res["data_desc"] = {
-                                "return_records_num": len(res["data"]),
-                                "real_records_num": parse.get_records_num()
-                            }
-                                                # 转完换后，删除 res 字段
-                        del res["res"]
-                        
-                        # 将包含大量数据的字段移动到末尾
-                        llm_res = OrderedDict(res)
-                        llm_res.move_to_end("data")
+                except Exception as e:
+                    logger.error(f"第 {i + 1} 次处理查询失败: {e}")
+                    logger.error(f"错误详情: {traceback.format_exc()}")
+                    errors[f"error_{i+1}"] = str(e)
 
+                    # 如果是最后一次重试，抛出异常
+                    if i == self.retry_times - 1:
+                        logger.error(f"处理查询失败，已重试 {self.retry_times} 次")
+                        raise Text2DIPMetricError(f"处理查询失败，已重试 {self.retry_times} 次: {errors}")
+
+                    # 继续下一次重试
+                    continue
+
+            if self.api_mode:
+                return {
+                    "output": res_for_llm,
+                    "full_output": res
+                }
+            else:
+                return res
+
+        except Exception as e:
+            logger.error(f"处理查询失败: {e}")
+            raise Text2DIPMetricError(f"处理查询失败: {e}")
+
+    async def _aprocess_query(self, input: str, action: str = "query", extra_info: str = "",
+                              knowledge_enhanced_information: Any = "", run_manager=None):
+        """异步处理查询，参考 text2metric.py 的实现"""
+        try:
+            if not self.dip_metric.get_data_list():
+                raise Text2DIPMetricError(detail="DIP Metric 数据源未初始化", reason="DIP Metric 数据源未初始化, 当前任务无法使用该工具")
+
+            # 如果 action 不是 show_ds，且 input 为空，则抛出异常
+            if action != "show_ds" and (not input or not input.strip()):
+                raise Text2DIPMetricError(detail="输入问题不能为空", reason="输入问题不能为空")
+
+            # 根据 action 参数决定行为
+            if action == "show_ds":
+                return await self._aget_configured_metrics_info()
+
+            # 添加额外信息
+            background = self._add_extra_info(extra_info, knowledge_enhanced_information)
+
+            # 异步初始化指标详情和样例
+            metric_details, sample_data = await self._ainit_dip_metric_details_and_samples(input)
+
+            errors = {}
+            res = {}
+            res_for_llm = {}
+            llm_res = {}  # Initialize before retry loop to avoid undefined variable
+            call_res = {}
+
+            # 重写指标查询语句，提高指标查询的准确性
+            question = input
+            if self.rewrite_query:
+                question = await self._arewrite_metric_query(input, background, metric_details, sample_data)
+                logger.debug(f"重写后的指标查询语句->: {question}")
+
+            for i in range(self.retry_times):
+                logger.debug("============" * 10)
+                logger.debug(f"{i + 1} times to process DIP metric query (async)......")
+                try:
+                    llm_res, call_res = {}, {}  # Reset for each retry
+
+                    # 配置 LLM 链
+                    chain = self._config_chain(
+                        metric_details=metric_details,
+                        samples=sample_data,
+                        errors=errors,
+                        background=background
+                    )
+
+                    # 异步调用 LLM
+                    response = await chain.ainvoke({"input": question})
+                    logger.debug(f"LLM 响应: {response.content}")
+
+                    # 解析响应
+                    llm_res = self._parse_response(response.content)
+                    logger.debug(f"解析后的结果: {llm_res}")
+
+                    # 获取指标ID和查询参数
+                    metric_id = llm_res.get("metric_id", "")
+                    param = llm_res.get("query_params", {})
+
+                    if metric_id == "":
                         if self.api_mode:
                             return {
                                 "output": llm_res,
-                                "full_output": full_output
+                                "full_output": llm_res
                             }
                         else:
-                            return res  
+                            return llm_res
+
+                    metric_name = ""
+                    for detail in metric_details:
+                        if detail.get("id") == metric_id:
+                            metric_name = detail.get("name")
+                            break
+
+                    # 添加引用信息
+                    res["cites"] = [
+                        {
+                            "id": metric_id,
+                            "name": metric_name,
+                            "type": "metric"
+                        }
+                    ]
+
+                    res.update(llm_res)
+                    res_for_llm = res.copy()
+
+                    # 执行查询
+                    if metric_id and param:
+                        call_res = await self._aexecute_query(metric_id, param)
+                        logger.info(f"DIP Metric 调用结果: {call_res}")
+
+                        if call_res.get("error"):
+                            raise Text2DIPMetricError(call_res["error"])
+
+                        # 先拷贝一份给大模型的结果
+                        res_for_llm = res.copy()
+
+                        # 处理执行结果
+                        execution_result, raw_result = self._process_execution_result(call_res)
+
+                        # 更新给大模型的结果和原始结果
+                        res_for_llm.update(execution_result)
+                        res.update(raw_result)
+
+                        # 设置标题
+                        if res.get("title", "") == "":
+                            res["title"] = input
+
+                        if not raw_result.get("data"):
+                            res_for_llm.pop("result_cache_key", None)
+                            res_for_llm["message"] = "查询结果为空"
+
+                            res.pop("result_cache_key", None)
+                            break
+
+                        # 将完整结果写入缓存, 如果数据为空，则不写入缓存
+                        if self.session and raw_result.get("data"):
+                            try:
+                                self.session.add_agent_logs(
+                                    self._result_cache_key,
+                                    logs=res
+                                )
+                            except Exception as e:
+                                logger.error(f"添加缓存失败: str{e}")
+
+                        # 如果成功获取结果，跳出重试循环
+                        break
 
                 except Exception as e:
-                    print("=====")
-                    print(traceback.format_exc())
-                    if llm_res:
-                        res.update(llm_res)
-                    if call_res:
-                        res.update(call_res)
-                    errors["error"] = e.__str__()
-                    if param:
-                        errors["params"] = param
-                        logger.error(f"Error: {errors}, params: {param}")
-                    else:
-                        logger.error(f"Error: {errors}")
+                    logger.error(f"第 {i + 1} 次异步处理查询失败: {e}")
+                    logger.error(f"错误详情: {traceback.format_exc()}")
+                    errors[f"error_{i+1}"] = str(e)
 
-            # has tried retry_times times, but still not success
-            if errors:
-                res["error"] = errors
-                raise ToolFatalError(reason=f"调用指标错误达到 {self.retry_times} 次", detail=errors)
+                    logger.error(traceback.format_exc())
+
+                    # 如果是最后一次重试，抛出异常
+                    if i == self.retry_times - 1:
+                        logger.error(f"异步处理查询失败，已重试 {self.retry_times} 次, 错误详情: {errors}")
+                        raise Text2DIPMetricError(reason=f"异步处理查询失败，已重试 {self.retry_times} 次", detail=errors)
+
+                    # 继续下一次重试
+                    continue
+
+            if self.api_mode:
+                return {
+                    "output": res_for_llm,
+                    "full_output": res
+                }
+            else:
+                return res
 
         except Exception as e:
-            logger.error(f"Error: {e}")
-            raise ToolFatalError(reason="指标调用失败", detail=e) from e
-            
-    def handle_result(
-        self,
-        log: Dict[str, Any],
-        ans_multiple: ToolMultipleResult
-    ) -> None:
-        if self.session:
-            tool_res = self.session.get_agent_logs(
-                self._result_cache_key
-            )
-            if tool_res:
-                log["result"] = tool_res
+            logger.error(f"异步处理查询失败: {e}")
+            logger.error(traceback.format_exc())
+            raise Text2DIPMetricError(f"异步处理查询失败: {e}")
 
-                # tool_data = tool_res.get("res", "")
-                ans_multiple.table.append(tool_res.get("res", ""))
-
-                # if tool_data:
-                data = tool_res.get("data", [])
-                ans_multiple.new_table.append({"title": tool_res["title"], "data": data})
-                # else:
-                # ans_multiple.new_table.append({})
-                ans_multiple.cites = tool_res.get("cites", [])
-                ans_multiple.explain.append(
-                    {"explanation": tool_res["explanation"]})
-
-                cache_result = {
-                    "tool_name": "text2metric",
-                    "title": tool_res.get("title", "text2metric"),
-                    "is_empty": tool_res.get("is_empty", len(data) == 0),
-                    "fields": tool_res.get("fields", list(data[0].keys()) if data else []),
+    def _parse_response(self, response) -> Dict[str, Any]:
+        """解析 LLM 响应"""
+        try:
+            # 尝试解析 JSON
+            if isinstance(response, str):
+                # 提取 JSON 部分
+                json_start = response.find('{')
+                json_end = response.rfind('}') + 1
+                if json_start != -1 and json_end != 0:
+                    json_str = response[json_start:json_end]
+                    result = json.loads(json_str)
+                else:
+                    # 如果没有找到 JSON，返回默认格式
+                    result = {
+                        "metric_id": "",
+                        "query_params": {},
+                        "explanation": response
+                    }
+            else:
+                result = {
+                    "metric_id": "",
+                    "query_params": {},
+                    "explanation": str(response)
                 }
-                
-                ans_multiple.cache_keys[self._result_cache_key] = cache_result
+
+            return result
+
+        except Exception as e:
+            logger.error(f"解析响应失败: {e}")
+            return {
+                "metric_id": "",
+                "query_params": {},
+                "explanation": f"解析响应失败: {e}",
+                "raw_response": str(response)
+            }
+
+    def _execute_query(self, metric_id: str, query_params: dict):
+        """执行指标查询"""
+        try:
+            if not self.dip_metric:
+                return {"error": "DIP Metric 数据源未初始化"}
+
+            # 调用指标查询
+            result = self.dip_metric.call(metric_id, query_params)
+            return result
+
+        except Exception as e:
+            logger.error(f"执行指标查询失败: {e}")
+            return {"error": f"执行指标查询失败: {e}"}
+
+    async def _aexecute_query(self, metric_id: str, query_params: dict):
+        """异步执行指标查询"""
+        try:
+            if not self.dip_metric:
+                return {"error": "DIP Metric 数据源未初始化"}
+
+            # 异步调用指标查询
+            result = await self.dip_metric.acall(metric_id, query_params)
+            return result
+
+        except Exception as e:
+            logger.error(f"异步执行指标查询失败: {e}")
+            return {"error": f"异步执行指标查询失败: {e}"}
+
+    def _process_execution_result(self, result):
+        """处理执行结果，参考 text2metric.py 的实现"""
+        try:
+            # 提取关键信息
+            raw_result = {
+                "step": result.get("step", ""),
+                "unit": result.get("unit", ""),
+                "unit_type": result.get("unit_type", ""),
+                "data_summary": {},
+                "result_cache_key": self._result_cache_key,
+                # "dim_mapping": result.get("dim_mapping", {}),
+                "data": []
+            }
+
+            processed = {}
+
+            data = result["data"]
+            total_records = len(data)
+
+            # 数据统计信息
+            raw_result["data_summary"] = {
+                "total_data_points": total_records,
+                "force_limit": self.force_limit,
+                "step": result.get("step", ""),
+                "unit": result.get("unit", ""),
+                "unit_type": result.get("unit_type", "")
+            }
+
+            processed = raw_result.copy()
+
+            # 处理数据摘要和精简
+            if "data" in result and result["data"]:
+                # 设置完整的数据
+                raw_result["data"] = data
+
+                # 加上 force_limit 限制
+                if self.force_limit > 0:
+                    data = data[:self.force_limit]
+                    total_records = min(self.force_limit, total_records)
+
+                if self.return_record_limit > 0 or self.return_data_limit > 0:
+                    limited_data = []
+                    data_len = 0
+                    for i in range(total_records):
+                        limited_data.append(data[i])
+                        data_len += len(json.dumps(data[i], ensure_ascii=False))
+
+                        # 超出数据量限制，至少返回一条数据
+                        if self.return_data_limit > 0 and data_len >= self.return_data_limit:
+                            break
+
+                        # 超出记录数限制
+                        if self.return_record_limit > 0 and len(limited_data) >= self.return_record_limit:
+                            break
+
+                    processed["data"] = limited_data
+                    processed["data_desc"] = {
+                        "return_records_num": len(limited_data),
+                        "real_records_num": total_records,
+                    }
+                else:
+                    processed["data"] = data
+                    processed["data_desc"] = {
+                        "return_records_num": total_records,
+                        "real_records_num": total_records
+                    }
+
+            return processed, raw_result
+
+        except Exception as e:
+            logger.error(f"处理执行结果失败: {e}")
+            logger.error(traceback.format_exc())
+            return {"error": f"处理执行结果失败: {e}"}
+
+    @classmethod
+    def from_dip_metric(
+        cls,
+        dip_metric: DIPMetric,
+        llm: Optional[Any] = None,
+        session_id: Optional[str] = "",
+        api_mode: bool = False,
+        *args,
+        **kwargs
+    ):
+        """从 DIP Metric 创建工具实例"""
+        instance = cls(
+            dip_metric=dip_metric,
+            llm=llm,
+            session_id=session_id,
+            api_mode=api_mode,
+            *args, **kwargs)
+
+        return instance
 
     @classmethod
     @api_tool_decorator
     async def as_async_api_cls(
         cls,
-        params: dict
+        params: dict = Body(...),
+        stream: bool = False,
+        mode: str = "http"
     ):
-        # TODO: 需要按照 DIP 进行重构
-        # Indicator Params
-            # indicator_list: list[str]
-            # token: str
-        indicator_dict = params.get("indicator", {})
+        """异步 API 调用"""
+        try:
+            logger.debug(f"异步 API 调用参数: {params}")
+            # Data Source Params (参考 text2sql 的结构)
+            data_source = params.get("data_source", {})
+            token = data_source.get('token', '')
+            # user = data_source.get('user', '')
+            # password = data_source.get('password', '')
+            base_url = data_source.get('base_url', '')
+            user_id = data_source.get('user_id', '')
+            account_type = data_source.get('account_type', 'user')
+            kn_params = data_source.get('kn', [])
+            search_scope = data_source.get('search_scope', [])
+            recall_mode = data_source.get('recall_mode', _SETTINGS.DEFAULT_AGENT_RETRIEVAL_MODE)
 
-        # just for test
-        token = indicator_dict.get('token', '')
-        if not token or token == "''":
-            user = indicator_dict.get("user", "")
-            password = indicator_dict.get("password", "")
+            # 设置指标列表（从 data_source 中获取）
+            # 可能格式为：
+            # {
+            #     "metric_list": ["metric_id1", "metric_id2", "metric_id3"]
+            # }
+            # 或者
+            # {
+            #     "metric_list": [
+            #         {
+            #             "metric_model_id": "metric_id1"
+            #         }
+            #       ]
+            # }
+            metric_list = data_source.get("metric_list", [])
 
-            try:
-                indicator_dict["token"] = get_authorization(indicator_dict.get("auth_url", _SETTINGS.AF_DEBUG_IP), user, password)
-            except Exception as e:
-                logger.error(f"Error: {e}")
-                raise ToolFatalError(reason="获取 token 失败", detail=e) from e
+            if metric_list:
+                if isinstance(metric_list, str):
+                    metric_list = metric_list.split(",")
+                elif isinstance(metric_list, list):
+                    if isinstance(metric_list[0], str):
+                        # 预期的正确结构
+                        pass
+                    elif isinstance(metric_list[0], dict):
+                        # Data Agent 的结构
+                        metric_list = [item.get("metric_model_id", "") for item in metric_list]
+                    else:
+                        logger.error(f"指标列表格式不正确: {metric_list}")
+                        raise Text2DIPMetricError(detail="指标列表格式不正确", reason="指标列表格式不正确")
+                else:
+                    logger.error(f"指标列表格式不正确: {metric_list}")
+                    raise Text2DIPMetricError(detail="指标列表格式不正确", reason="指标列表格式不正确")
 
-        indicator = AFIndicator(**indicator_dict)
-        
-        # LLM Params
-        # client_params = {
-        #     "openai_api_key",
-        #     "openai_organization",
-        #     "openai_project",
-        #     "openai_api_base",
-        #     "max_retries",
-        #     "request_timeout",
-        #     "default_headers",
-        #     "default_query",
-        # }
-        # http_params = {
-        #     "proxies",
-        #     "transport",
-        #     "limits",
-        # }
+            # 从知识网络中获取指标列表
+            if kn_params:
+                headers = {
+                    "x-user": user_id,
+                    "x-account-id": user_id,
+                    "x-account-type": account_type
+                }
+                if token:
+                    headers["Authorization"] = token
 
-        # qwen_72b_tool = CustomChatOpenAI(
-        #     model_name="Qwen-72B-Chat",
-        #     openai_api_key="EMPTY",
-        #     openai_api_base="http://10.4.117.180:8304/v1",
-        #     temperature=0.99,
-        # )
-        # llm_dict = {
-        #     "model_name": _SETTINGS.TOOL_LLM_MODEL_NAME,
-        #     "openai_api_key": _SETTINGS.TOOL_LLM_OPENAI_API_KEY,
-        #     "openai_api_base": _SETTINGS.TOOL_LLM_OPENAI_API_BASE,
-        # }
-        llm_dict = parse_llm_from_model_factory(params.get("inner_llm", {}))
-        llm_dict.update(params.get("llm", {}))
-        
+                for kn_param in kn_params:
+                    if isinstance(kn_param, dict):
+                        kn_id = kn_param.get('knowledge_network_id', '')
+                    else:
+                        kn_id = kn_param
 
-        # llm_dict = params.get("llm", {})
-        llm = CustomChatOpenAI(**llm_dict)
+                    _, metrics, _ = await get_datasource_from_agent_retrieval_async(
+                        kn_id=kn_id,
+                        query=params.get('input', '_'),
+                        headers=headers,
+                        base_url=base_url,
+                        search_scope=search_scope,
+                        mode=recall_mode
+                    )
 
-        # config of text2metric tool
-            # background: str = ""
-            # retry_times: int = 3
-            # session_type: str = "redis"
-            # session_id: Optional[Any] = None
-            # with_execution: bool = True  # 是否执行指标函数
-            # get_desc_from_datasource: bool = True  # 是否从数据源获取描述
-            # enable_yoy_or_mom: bool = True  # 是否启用同比环比
-            # essential_explain: bool = True  # 是否只展示必要的解释
-            # with_sample_data: bool = True   # 是否从逻辑是同中获取样例数据
-            # dimension_num_limit: int = -1   # 维度数量限制
-            # return_record_limit: int = -1  # 返回数据条数，与字节数相互作用, -1 代表不限制
-            # return_data_limit: int = -1  # 返回数据总量，与字节数相互作用, -1 
+                # "id", "name", "display_name", "comment"
+                for metric in metrics:
+                    metric_list.append(metric.get("id", ""))
 
-        config_dict = params.get("config", {})
-        # if config_dict.get("retriever_config"):
-        #     config_dict["retriever_config"] = RetrieverConfig(**config_dict["retriever_config"])
+            # 创建 DIP Metric 实例
+            dip_metric = DIPMetric(
+                token=token,
+                user_id=user_id,
+                base_url=base_url,
+                account_type=account_type,
+                metric_list=metric_list
+            )
 
-        tool = cls.from_indicator(indicator, llm=llm, api_mode=True, **config_dict)
+            llm_headers = {
+                "x-user": user_id,
+                "x-account-id": user_id,
+                "x-account-type": account_type
+            }
 
-        # Infos Params
-        #   extra_info: str = "",
-        #   knowledge_enhanced_information: Any = "",
-        infos = params.get("infos", {})
-        infos['input'] = params.get('input', '')
+            # LLM Params
+            llm_dict = parse_llm_from_model_factory(params.get("inner_llm", {}), headers=llm_headers)
+            llm_dict.update(params.get("llm", {}))
+            llm = CustomChatOpenAI(**llm_dict)
 
+            # Config Params
+            config_dict = params.get("config", {}).copy()  # 复制一份，避免修改原始字典
 
-        # invoke tool
-        res = await tool.ainvoke(input=infos)
-        return res
-    
+            # 提取并设置配置参数
+            recall_top_k = config_dict.pop("recall_top_k", _SETTINGS.INDICATOR_RECALL_TOP_K)
+            dimension_num_limit = config_dict.pop("dimension_num_limit", _SETTINGS.TEXT2METRIC_DIMENSION_NUM_LIMIT)
+
+            # 创建工具实例
+            tool = cls.from_dip_metric(
+                dip_metric,
+                llm=llm,
+                api_mode=True,
+                recall_top_k=recall_top_k,
+                dimension_num_limit=dimension_num_limit,
+                **config_dict
+            )
+
+            # Infos Params
+            infos = params.get("infos", {})
+            infos['input'] = params.get('input', '')
+            infos['action'] = params.get('action', 'query')
+
+            # 执行查询
+            result = await tool.ainvoke(input=infos)
+            return result
+
+        except Exception as e:
+            logger.error(f"异步 API 调用失败: {e}")
+            raise e
+
     @staticmethod
     async def get_api_schema():
-        inputs = {
-            "indicator": {
-                "indicator_list": ["Metric_ID_1", "Metric_ID_2", "Metric_ID_3"],
-                'auth_url': 'https://Auth_URL',
-                'user': 'User',
-                'password': '******',
-                'token': '',
-                'user_id': ''
-            },
-            "llm": {
-                'model_name': 'Model Name',
-                'openai_api_key': '******',
-                'openai_api_base': 'http://xxxx',
-                'max_tokens': 4000,
-                'temperature': 0.1
-            },
-            "config": {
-                "background": "",
-                "retry_times": 3,
-                "session_type": "in_memory",
-                "session_id": "123",
-                "with_execution": True,
-                "get_desc_from_datasource": True,
-                "enable_yoy_or_mom": True,
-                "essential_explain": True,
-                "with_sample_data": True,
-                "recall_top_k": 5,
-                "dimension_num_limit": 30,
-                "return_record_limit": 10,
-                "return_data_limit": 1000,
-                "rewrite_query": True,
-            },
-            "infos": {
-                "knowledge_enhanced_information": {},
-                "extra_info": ""
-            },
-            'input': '用户输入的自然语言查询'
-        }
-
-        outputs = {
-            "output": {
-                "title": "查询标题",
-                "data": [{"日期": "2024-01-01", "指标": 100}],
-                "data_desc": {
-                    "return_records_num": 1,
-                    "real_records_num": 1
-                },
-                "indicator_unit": "单位",
-                "params": {
-                    "dimensions": ["日期"],
-                    "filters": [],
-                    "time_constraint": {
-                        "start_time": "2024-01-01",
-                        "end_time": "2024-12-31"
-                    }
-                },
-                "cites": [{"id": "Metric_ID_1", "name": "Metric_Name_1", "type": "indicator", "description": "Metric_Description_1"}],
-                "result_cache_key": "RESULT_CACHE_KEY"
-            }
-        }
+        """获取 API Schema"""
         return {
             "post": {
-                "summary": ToolName.from_text2metric.value,
-                "description": _DESCS["tool_description"]["cn"] + "\n" + _DESCS["desc_for_yoy_or_mom"]["cn"],
+                "summary": "text2metric",
+                "description": "根据文本生成指标查询参数, 并查询指标数据",
+                "parameters": [
+                    {
+                        "name": "stream",
+                        "in": "query",
+                        "description": "是否流式返回",
+                        "schema": {
+                            "type": "boolean",
+                            "default": False
+                        },
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "description": "请求模式",
+                        "schema": {
+                            "type": "string",
+                            "enum": ["http", "sse"],
+                            "default": "http"
+                        },
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "indicator": {
+                                    "data_source": {
                                         "type": "object",
-                                        "description": "指标配置信息",
+                                        "description": "数据源配置信息",
                                         "properties": {
-                                            "indicator_list": {
+                                            "metric_list": {
                                                 "type": "array",
                                                 "description": "指标ID列表",
                                                 "items": {
                                                     "type": "string"
                                                 }
                                             },
-                                            "auth_url": {
+                                            "base_url": {
                                                 "type": "string",
-                                                "description": "认证服务URL"
-                                            },
-                                            "user": {
-                                                "type": "string",
-                                                "description": "用户名"
-                                            },
-                                            "password": {
-                                                "type": "string",
-                                                "description": "密码"
+                                                "description": "服务器地址"
                                             },
                                             "token": {
                                                 "type": "string",
-                                                "description": "认证令牌，如提供则无需用户名和密码"
+                                                "description": "认证令牌"
                                             },
                                             "user_id": {
                                                 "type": "string",
                                                 "description": "用户ID"
+                                            },
+                                            "account_type": {
+                                                "type": "string",
+                                                "description": "调用者的类型，user 代表普通用户，app 代表应用账号，anonymous 代表匿名用户",
+                                                "enum": ["user", "app", "anonymous"],
+                                                "default": "user"
+                                            },
+                                            "kn": {
+                                                "type": "array",
+                                                "description": "知识网络配置参数",
+                                                "items": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "knowledge_network_id": {
+                                                            "type": "string",
+                                                            "description": "知识网络ID"
+                                                        },
+                                                        "object_types": {
+                                                            "type": "array",
+                                                            "description": "知识网络对象类型",
+                                                            "items": {
+                                                                "type": "string"
+                                                            }
+                                                        }
+                                                    },
+                                                    "required": ["knowledge_network_id"]
+                                                }
+                                            },
+                                            "search_scope": {
+                                                "type": "array",
+                                                "description": "知识网络搜索范围，支持 object_types, relation_types, action_types",
+                                                "items": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "recall_mode": {
+                                                "type": "string",
+                                                "description": (
+                                                    "召回模式，支持 keyword_vector_retrieval(默认), "
+                                                    "agent_intent_planning, agent_intent_retrieval"
+                                                ),
+                                                "enum": [
+                                                    "keyword_vector_retrieval",
+                                                    "agent_intent_planning",
+                                                    "agent_intent_retrieval"
+                                                ],
+                                                "default": "keyword_vector_retrieval"
                                             }
-                                        },
-                                        "required": ["indicator_list"]
+                                        }
+                                    },
+                                    "inner_llm": {
+                                        "type": "object",
+                                        "description": "内部语言模型配置，用于指定内部使用的 LLM 模型参数，如模型ID、名称、温度、最大token数等。支持通过模型工厂配置模型"
                                     },
                                     "llm": {
                                         "type": "object",
-                                        "description": "语言模型配置",
+                                        "description": "外部大语言模型配置，一般不需要配置，除非需要使用外部模型",
                                         "properties": {
                                             "model_name": {
                                                 "type": "string",
@@ -913,10 +1125,6 @@ class Text2MetricTool(LLMTool):
                                             }
                                         }
                                     },
-                                    "inner_llm": {
-                                        "type": "object",
-                                        "description": "内部语言模型配置"
-                                    },
                                     "config": {
                                         "type": "object",
                                         "description": "工具配置参数",
@@ -925,76 +1133,69 @@ class Text2MetricTool(LLMTool):
                                                 "type": "string",
                                                 "description": "背景信息"
                                             },
-                                            "retry_times": {
-                                                "type": "integer",
-                                                "description": "重试次数",
-                                                "default": 3
-                                            },
                                             "session_type": {
                                                 "type": "string",
                                                 "description": "会话类型",
-                                                "enum": ["in_memory", "redis"],
+                                                "enum": [
+                                                    "in_memory",
+                                                    "redis"
+                                                ],
                                                 "default": "redis"
                                             },
                                             "session_id": {
                                                 "type": "string",
                                                 "description": "会话ID"
                                             },
-                                            "with_execution": {
-                                                "type": "boolean",
-                                                "description": "是否执行指标函数",
-                                                "default": True
-                                            },
-                                            "get_desc_from_datasource": {
-                                                "type": "boolean",
-                                                "description": "是否从数据源获取描述",
-                                                "default": True
-                                            },
-                                            "enable_yoy_or_mom": {
-                                                "type": "boolean",
-                                                "description": "是否启用同比环比",
-                                                "default": True
-                                            },
-                                            "essential_explain": {
-                                                "type": "boolean",
-                                                "description": "是否只展示必要的解释",
-                                                "default": True
-                                            },
-                                            "with_sample_data": {
-                                                "type": "boolean",
-                                                "description": "是否从逻辑视图中获取样例数据",
-                                                "default": True
+                                            "force_limit": {
+                                                "type": "integer",
+                                                "description": (
+                                                    "查询指标时，如果没有设置返回数据条数限制，"
+                                                    "在采用该参数设置的值作为限制, -1表示不限制, "
+                                                    f"系统默认为 {_SETTINGS.TEXT2METRIC_FORCE_LIMIT}"
+                                                ),
+                                                "default": _SETTINGS.TEXT2METRIC_FORCE_LIMIT
                                             },
                                             "recall_top_k": {
                                                 "type": "integer",
-                                                "description": "召回指标数量限制，-1表示不限制",
-                                                "default": 5
+                                                "description": (
+                                                    "指标召回数量限制，用于限制从数据源中召回的指标数量，"
+                                                    f"-1表示不限制, 系统默认为 {_SETTINGS.INDICATOR_RECALL_TOP_K}"
+                                                ),
+                                                "default": _SETTINGS.INDICATOR_RECALL_TOP_K
                                             },
                                             "dimension_num_limit": {
                                                 "type": "integer",
-                                                "description": "维度数量限制，-1表示不限制",
-                                                "default": -1
+                                                "description": (
+                                                    "给大模型选择时维度数量限制，-1表示不限制, "
+                                                    f"系统默认为 {_SETTINGS.TEXT2METRIC_DIMENSION_NUM_LIMIT}"
+                                                ),
+                                                "default": _SETTINGS.TEXT2METRIC_DIMENSION_NUM_LIMIT
                                             },
                                             "return_record_limit": {
                                                 "type": "integer",
-                                                "description": "返回数据条数限制，-1表示不限制",
-                                                "default": -1
+                                                "description": (
+                                                    "结果返回时数据条数限制，-1表示不限制, "
+                                                    "原因是指标查询执行后返回大量数据，"
+                                                    "可能导致大模型上下文token超限。"
+                                                    f"系统默认为 {_SETTINGS.RETURN_RECORD_LIMIT}"
+                                                ),
+                                                "default": _SETTINGS.RETURN_RECORD_LIMIT
                                             },
                                             "return_data_limit": {
                                                 "type": "integer",
-                                                "description": "返回数据总量限制，-1表示不限制",
-                                                "default": -1
+                                                "description": (
+                                                    "结果返回时数据总量限制，单位是字节，-1表示不限制, "
+                                                    "原因是指标查询执行后返回大量数据，"
+                                                    "可能导致大模型上下文token超限。"
+                                                    f"系统默认为 {_SETTINGS.RETURN_DATA_LIMIT}"
+                                                ),
+                                                "default": _SETTINGS.RETURN_DATA_LIMIT
                                             },
-                                            "rewrite_query": {
-                                                "type": "boolean",
-                                                "description": "是否重写指标查询语句",
-                                                "default": False
-                                            }
                                         }
                                     },
                                     "infos": {
                                         "type": "object",
-                                        "description": "输入参数",
+                                        "description": "额外的输入信息, 包含额外信息和知识增强信息",
                                         "properties": {
                                             "knowledge_enhanced_information": {
                                                 "type": "object",
@@ -1009,11 +1210,27 @@ class Text2MetricTool(LLMTool):
                                     "input": {
                                         "type": "string",
                                         "description": "用户输入的自然语言查询"
+                                    },
+                                    "action": {
+                                        "type": "string",
+                                        "description": "操作类型：show_ds 显示数据源信息，query 执行查询（默认）",
+                                        "enum": [
+                                            "show_ds",
+                                            "query"
+                                        ],
+                                        "default": "query"
+                                    },
+                                    "timeout": {
+                                        "type": "number",
+                                        "description": "请求超时时间（秒），超过此时间未完成则返回超时错误，默认120秒",
+                                        "default": 120
                                     }
                                 },
-                                "required": ["indicator", "input"]
-                            },
-                            "example": inputs
+                                "required": [
+                                    "data_source",
+                                    "input"
+                                ]
+                            }
                         }
                     }
                 },
@@ -1050,154 +1267,241 @@ class Text2MetricTool(LLMTool):
                                                 }
                                             }
                                         },
-                                        "indicator_unit": {
+                                        "metric_id": {
                                             "type": "string",
-                                            "description": "指标单位"
+                                            "description": "选择的指标ID，基于用户输入自动匹配并选择的指标标识符"
                                         },
-                                        "params": {
+                                        "query_params": {
                                             "type": "object",
-                                            "description": "查询参数"
+                                            "description": "生成的查询参数，包含时间范围、过滤条件、步长等指标查询所需的参数"
+                                        },
+                                        "explanation": {
+                                            "type": "object",
+                                            "description": "查询解释说明，以字典形式展示指标选择、时间范围、过滤条件等信息的业务含义"
                                         },
                                         "cites": {
                                             "type": "array",
-                                            "description": "引用指标",
+                                            "description": "引用的指标列表，包含指标ID、名称、类型等信息",
                                             "items": {
                                                 "type": "object"
                                             }
                                         },
                                         "result_cache_key": {
                                             "type": "string",
-                                            "description": "结果缓存键"
+                                            "description": "结果缓存键，用于从缓存中获取完整查询结果，前端可通过此键获取完整数据"
+                                        },
+                                        "execution_result": {
+                                            "type": "object",
+                                            "description": "指标执行结果详情，包含指标元信息、数据摘要、样例数据等"
                                         }
                                     }
                                 },
-                                "example": outputs
+                                "example": {
+                                    "output": {
+                                        "metric_id": "cpu_usage_metric",
+                                        "query_params": {
+                                            "instant": False,
+                                            "start": 1646360670123,
+                                            "end": 1646471470123,
+                                            "step": "1m",
+                                            "filters": [
+                                                {
+                                                    "name": "labels.host",
+                                                    "value": [
+                                                        "server-1",
+                                                        "server-2"
+                                                    ],
+                                                    "operation": "in"
+                                                }
+                                            ]
+                                        },
+                                        "explanation": {
+                                            "CPU使用率": [
+                                                {
+                                                    "指标": (
+                                                        "使用 'CPU使用率' 指标，按 '时间' '最近1小时' 的数据，"
+                                                        "并设置过滤条件 '主机为server-1和server-2'"
+                                                    )
+                                                },
+                                                {
+                                                    "时间": "从 2024-01-01 到 2024-01-02"
+                                                },
+                                                {
+                                                    "主机": "包含 server-1, server-2"
+                                                }
+                                            ]
+                                        },
+                                        "cites": [
+                                            {
+                                                "id": "cpu_usage_metric",
+                                                "name": "CPU使用率",
+                                                "type": "metric",
+                                                "description": "CPU使用率指标"
+                                            }
+                                        ],
+                                        "data": [
+                                            {
+                                                "时间": "2024-01-01 10:00:00",
+                                                "主机": "server-1",
+                                                "CPU使用率": 75.5
+                                            },
+                                            {
+                                                "时间": "2024-01-01 10:01:00",
+                                                "主机": "server-1",
+                                                "CPU使用率": 78.2
+                                            }
+                                        ],
+                                        "title": "最近1小时CPU使用率",
+                                        "data_desc": {
+                                            "return_records_num": 2,
+                                            "real_records_num": 120
+                                        },
+                                        "execution_result": {
+                                            "success": True,
+                                            "model_info": {
+                                                "id": "cpu_usage_metric",
+                                                "name": "CPU使用率",
+                                                "metric_type": "atomic",
+                                                "query_type": "dsl",
+                                                "unit": "%"
+                                            },
+                                            "data_summary": {
+                                                "total_data_points": 120,
+                                                "step": "1m",
+                                                "is_variable": False,
+                                                "is_calendar": False
+                                            },
+                                            "sample_data": [
+                                                {
+                                                    "index": 1,
+                                                    "labels": {
+                                                        "host": "server-1"
+                                                    },
+                                                    "time_points": 120,
+                                                    "value_points": 120,
+                                                    "sample_times": [
+                                                        1646360670123,
+                                                        1646360730123
+                                                    ],
+                                                    "sample_values": [
+                                                        75.5,
+                                                        78.2
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        "result_cache_key": "cpu_usage_metric_1646360670123_1646471470123"
+                                    },
+                                    "time": "2.5",
+                                    "tokens": "150"
+                                }
                             }
                         }
                     }
                 }
             }
         }
-    
-    def _config_rewrite_metric_query_chain(self, question: str, background: str, metrics: list, samples: list):
-        prompt = RewriteMetricQueryPrompt(
-            question=question,
-            metrics=metrics,
-            samples=samples,
-            language=self.language,
-            background=background
-        )
 
-        if self.model_type == ModelType4Prompt.DEEPSEEK_R1.value:
-            messages = [
-                HumanMessage(content=prompt.render(escape_braces=False), additional_kwargs={_TOOL_MESSAGE_KEY: "text2metric_rewrite_query"}),
-                HumanMessage(content=question)
-            ]
-        else:
-            messages = [
-                SystemMessage(content=prompt.render(escape_braces=False), additional_kwargs={_TOOL_MESSAGE_KEY: "text2metric_rewrite_query"}),
-                HumanMessage(content=question)
-            ]
+    @staticmethod
+    def get_mock_result():
+        res = {
+            "cites": [{
+                "id": "mock",
+                "name": "立白销量",
+                "type": "metric"
+            }
+            ],
+            "unit": "件",
+            "id": "mock",
+            "params": {
+                "filters": [{
+                    "name": "品牌",
+                    "operation": "=",
+                    "value": "小白白品牌"
+                }
+                ],
+                "start": 1646360670123,
+                "end": 1646471470123,
+                "step": "1m",
+                "instant": False
+            },
+            "explanation": {
+                "立白销量": [{
+                    "指标": "使用 '立白销量' 指标，按 '时间' '2024年1月到2024年12月' 的数据，并设置过滤条件 '品牌为小白白品牌'"
+                }, {
+                    "时间": "从 2024-01-01 到 2024-12-31"
+                }, {
+                    "日期(按月)": "全部"
+                }, {
+                    "品牌": "等于 小白白品牌"
+                }
+                ]
+            },
+            "title": "2024年小白白品牌每月销量",
+            "data": [{
+                "日期(月)": "2024-01",
+                "立白销量": 1694.1372677178583
+            }, {
+                "日期(月)": "2024-02",
+                "立白销量": 1667.5650000348517
+            }, {
+                "日期(月)": "2024-03",
+                "立白销量": 1691.206653715858
+            }
+            ],
+            "result_cache_key": "mock_result_key",
+            "execution_result": {
+                "success": True,
+                "model_info": {
+                    "id": "mock",
+                    "name": "立白销量",
+                    "metric_type": "atomic",
+                    "query_type": "sql",
+                    "unit": "件"
+                },
+                "data_summary": {
+                    "total_data_points": 120,
+                    "step": "1m",
+                    "is_variable": False,
+                    "is_calendar": False
+                },
+                "sample_data": []
+            },
+            "time": "18.41778826713562",
+            "tokens": "0",
+        }
 
-        chain = self.llm | BaseJsonParser()
-        return chain, messages
-
-    async def _arewrite_metric_query(self, question: str, background: str, metrics: list, samples: list):
-        chain, messages = self._config_rewrite_metric_query_chain(question, background, metrics, samples)
-        new_question = await chain.ainvoke(messages)
-
-        # 输出是字符串，帮助后续问题理解
-        return json.dumps(new_question, ensure_ascii=False)
-    
-    def _rewrite_metric_query(self, question: str, background: str, metrics: list, samples: list):
-        chain, messages = self._config_rewrite_metric_query_chain(question, background, metrics, samples)
-        new_question = chain.invoke(messages)
-
-        return json.dumps(new_question, ensure_ascii=False)
-
-
-
-if __name__ == "__main__":
-    from data_retrieval.datasource.af_indicator import AFIndicator
-    # from langchain_community.chat_models import ChatOllama
-    from langchain_openai import ChatOpenAI
-
-    llm = ChatOpenAI(
-        model_name='Qwen-72B-Chat',
-        openai_api_key="EMPTY",
-        openai_api_base="http://192.168.173.19:8304/v1",
-        max_tokens=2000,
-        temperature=0.01,
-    )
-    # llm = ChatOllama(model="phi3:latest")
-    # llm = ChatOllama(model="codegemma")
-
-    from data_retrieval.api.auth import get_authorization
-
-    # indicator_list = ["532179399886306706"]
-    # token = get_authorization("https://10.4.109.201", "liberly", "111111")
-    # text2metric = AFIndicator(
-    #     indicator_list=indicator_list,
-    #     token=token
-    # )
-    # indicator_list = ["535772491461722839", "536195966831723223", "536195625633481431", "536196205823165143"]
-    # token = get_authorization("http://10.4.109.201", "liberly", "111111")
-
-    indicator_list = ["541569060106716947"]
-    token = get_authorization("http://10.4.109.142", "liberly", "111111")
-
-    text2metric = AFIndicator(
-        indicator_list=indicator_list,
-        token=token,
-    )
-
-    # from data_retrieval.datasource.af_indicator import MockAFIndicator
-    # text2metric = MockAFIndicator()
-
-    tool = Text2MetricTool.from_indicator(
-        indicator=text2metric,
-        llm=llm,
-        with_execution=True,
-        retry_times=2,
-        get_desc_from_datasource=True,
-        session_id="-7-",
-        enable_yoy_or_mom=True
-    )
-
-    print(tool.description)
-
-    res = tool.invoke({"input": "上海装货的运量是多少"})
-    print("============")
-    print(res)
-
-    # from data_retrieval.datasource.af_indicator import MockAFIndicator
-    # text2indicator = MockAFIndicator()
-
-    # for i in range(10000):
-    #     tool = Text2IndicatorTool.from_indicator(
-    #         indicator=text2indicator,
-    #         llm=llm,
-    #         with_execution=False,
-    #         retry_times=2,
-    #         get_desc_from_datasource=True,
-    #         session_id="-7-"
-    #     )
-    #
-    #     print(tool.description)
+        return {
+            "output": res,
+            "full_output": res
+        }
 
 
+if __name__ == '__main__':
     async def main():
-        res = await tool.ainvoke({"input": "‘小白白品牌’Q1销量同比增长"})
-        print("============")
-        print(res)
+        """测试函数"""
+        from data_retrieval.tools.base import validate_openapi_schema
+        is_valid, error_msg = validate_openapi_schema(await Text2Metric.get_api_schema())
+        logger.info(f"验证结果: {is_valid}, 错误信息: {error_msg}")
 
+        # 创建 Mock DIP Metric
+        # from data_retrieval.datasource.dip_metric import MockDIPMetric
+
+        # dip_metric = MockDIPMetric(token="test_token")
+        # dip_metric.set_data_list(["metric_1", "metric_2"])
+
+        # # 创建工具实例
+        # tool = Text2Metric.from_dip_metric(dip_metric)
+
+        # # 测试查询
+        # result = await tool._aprocess_query(
+        #     "查询最近1小时的CPU使用率",
+        #     "",
+        #     [],
+        #     {}
+        # )
+
+        # print("查询结果:", json.dumps(result, ensure_ascii=False, indent=2))
 
     import asyncio
     asyncio.run(main())
-
-    # print(tool.invoke({"input": "近三年大区为东部大区各个片区的销量"}))
-    # print(tool.invoke({"input": "按下单地点、渠道分析指标，并按滤渠道是拼多多进行过滤，时间是近三年"}))
-
-
-
-

@@ -78,5 +78,3 @@ class _SampleDataMixin(_SessionBase):
             }
 
         logger.info(f"会话 {session_id} 的知识网络 {kn_id} 批量存储了 {len(sample_data_dict)} 个对象类型的样例数据")
-
-

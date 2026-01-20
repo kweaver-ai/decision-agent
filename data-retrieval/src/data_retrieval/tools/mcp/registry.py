@@ -14,7 +14,7 @@ Key Design:
 
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, List, Optional, Type, Set, Protocol, Awaitable, Union
+from typing import Any, Callable, Dict, List, Optional, Type, Set, Awaitable, Union
 import inspect
 import copy
 from abc import ABC, abstractmethod
@@ -27,36 +27,36 @@ from data_retrieval.tools.registry import ALL_TOOLS_MAPPING
 class IdentityParamsProvider(ABC):
     """
     Abstract interface for fetching parameters based on identity.
-    
+
     Implementations can fetch params from:
     - Redis/Database
     - Remote API
     - Local cache
     - Configuration file
     """
-    
+
     @abstractmethod
     async def get_params(self, identity: str, tool_name: str) -> Dict[str, Any]:
         """
         Fetch parameters for a given identity and tool.
-        
+
         Args:
             identity: User/session identifier (e.g., session_id, user_id, app_id)
             tool_name: Name of the tool being called
-            
+
         Returns:
             Dict of parameters to merge with LLM-provided params
         """
         pass
-    
+
     @abstractmethod
     async def get_global_params(self, identity: str) -> Dict[str, Any]:
         """
         Fetch global parameters that apply to all tools.
-        
+
         Args:
             identity: User/session identifier
-            
+
         Returns:
             Dict of global parameters
         """
@@ -68,17 +68,17 @@ class DictParamsProvider(IdentityParamsProvider):
     Simple in-memory params provider using dictionaries.
     Useful for testing or simple deployments.
     """
-    
+
     def __init__(self):
         # {identity: {global_params}}
         self._global_params: Dict[str, Dict[str, Any]] = {}
         # {identity: {tool_name: {params}}}
         self._tool_params: Dict[str, Dict[str, Dict[str, Any]]] = {}
-    
+
     def set_params(self, identity: str, params: Dict[str, Any], tool_name: Optional[str] = None) -> None:
         """
         Set parameters for an identity.
-        
+
         Args:
             identity: User/session identifier
             params: Parameters to set
@@ -90,7 +90,7 @@ class DictParamsProvider(IdentityParamsProvider):
             self._tool_params[identity][tool_name] = params.copy()
         else:
             self._global_params[identity] = params.copy()
-    
+
     def clear(self, identity: Optional[str] = None) -> None:
         """Clear params for an identity or all identities."""
         if identity:
@@ -99,10 +99,10 @@ class DictParamsProvider(IdentityParamsProvider):
         else:
             self._global_params.clear()
             self._tool_params.clear()
-    
+
     async def get_params(self, identity: str, tool_name: str) -> Dict[str, Any]:
         return self._tool_params.get(identity, {}).get(tool_name, {})
-    
+
     async def get_global_params(self, identity: str) -> Dict[str, Any]:
         return self._global_params.get(identity, {})
 
@@ -111,29 +111,29 @@ class CallableParamsProvider(IdentityParamsProvider):
     """
     Params provider that uses a callable/function to fetch params.
     Useful for integration with external services.
-    
+
     Example:
         async def fetch_from_api(identity: str, tool_name: str) -> dict:
             response = await httpx.get(f"http://config-server/params/{identity}/{tool_name}")
             return response.json()
-        
+
         provider = CallableParamsProvider(fetch_from_api)
     """
-    
+
     def __init__(
-        self, 
+        self,
         params_fetcher: Callable[[str, str], Union[Dict[str, Any], Awaitable[Dict[str, Any]]]],
         global_fetcher: Optional[Callable[[str], Union[Dict[str, Any], Awaitable[Dict[str, Any]]]]] = None
     ):
         self._params_fetcher = params_fetcher
         self._global_fetcher = global_fetcher
-    
+
     async def get_params(self, identity: str, tool_name: str) -> Dict[str, Any]:
         result = self._params_fetcher(identity, tool_name)
         if inspect.isawaitable(result):
             return await result
         return result
-    
+
     async def get_global_params(self, identity: str) -> Dict[str, Any]:
         if self._global_fetcher is None:
             return {}
@@ -142,16 +142,17 @@ class CallableParamsProvider(IdentityParamsProvider):
             return await result
         return result
 
+
 class MockParamsProvider(DictParamsProvider):
     """
     Mock params provider that returns preset parameters.
     Useful for testing or simple deployments.
     """
-    
+
     def __init__(self):
         super().__init__()
         identity = "test-user-001"
-        self.set_params(identity, params = {
+        self.set_params(identity, params={
             "config": {
                 "dimension_num_limit": 10,
                 "return_data_limit": 10,
@@ -163,10 +164,10 @@ class MockParamsProvider(DictParamsProvider):
                 "user_id": "bdb78b62-6c48-11f0-af96-fa8dcc0a06b2"
             },
             "inner_llm": {
-                "id": "1991760467793678336", 
-                "max_tokens": 10000, 
+                "id": "1991760467793678336",
+                "max_tokens": 10000,
                 "name": "deepseekv3.1",
-                "temperature": 0.0 
+                "temperature": 0.0
             },
             "session_type": "in_memory",
             "view_num_limit": 5
@@ -191,7 +192,7 @@ _identity_param_name: str = "identity"
 def set_params_provider(provider: IdentityParamsProvider) -> None:
     """
     Set the params provider for fetching identity-based parameters.
-    
+
     Example:
         # Use a custom provider that fetches from Redis
         provider = RedisParamsProvider(redis_client)
@@ -240,12 +241,12 @@ def clear_hidden_params() -> None:
 def set_identity_params(identity: str, params: Dict[str, Any], tool_name: Optional[str] = None) -> None:
     """
     Set parameters for an identity using the default DictParamsProvider.
-    
+
     Args:
         identity: User/session identifier
         params: Parameters to set
         tool_name: If provided, set tool-specific params; otherwise set global params
-        
+
     Example:
         # Set global params for a user
         set_identity_params("user-123", {
@@ -253,7 +254,7 @@ def set_identity_params(identity: str, params: Dict[str, Any], tool_name: Option
             "token": "auth-token",
             "inner_llm": {"name": "deepseek-v3"},
         })
-        
+
         # Set tool-specific params
         set_identity_params("user-123", {
             "inner_kg": {"kg_id": "14"},
@@ -281,14 +282,14 @@ def _get_pydantic_field_default(cls: Type, field_name: str, default: Any = None)
         if field_default is not None:
             if field_default is not ... and field_default is not type(None):
                 return field_default
-    
+
     # Method 2: Try model_fields (pydantic v2 style)
     if hasattr(cls, 'model_fields') and field_name in cls.model_fields:
         field = cls.model_fields[field_name]
         field_default = getattr(field, 'default', None)
         if field_default is not None:
             return field_default
-    
+
     # Method 3: Direct attribute access (fallback)
     value = getattr(cls, field_name, None)
     if value is not None:
@@ -296,7 +297,7 @@ def _get_pydantic_field_default(cls: Type, field_name: str, default: Any = None)
             return value.default
         if isinstance(value, (str, type)):
             return value
-    
+
     return default
 
 
@@ -323,23 +324,23 @@ def _filter_hidden_params(schema: Dict[str, Any]) -> Dict[str, Any]:
     """
     if not _hidden_params:
         return schema
-    
+
     schema = copy.deepcopy(schema)
-    
+
     # Remove from properties
     if "properties" in schema:
         for param in _hidden_params:
             schema["properties"].pop(param, None)
-    
+
     # Remove from required list
     if "required" in schema:
         schema["required"] = [
-            r for r in schema["required"] 
+            r for r in schema["required"]
             if r not in _hidden_params
         ]
         if not schema["required"]:
             del schema["required"]
-    
+
     return schema
 
 
@@ -352,13 +353,13 @@ def mcp_tool_spec(tool_name: str, tool_cls: Type) -> Dict[str, Any]:
     - name
     - description
     - inputSchema
-    
+
     Hidden parameters are automatically removed from inputSchema.
     """
     desc = _get_pydantic_field_default(tool_cls, "description", "") or ""
     args_schema = _get_pydantic_field_default(tool_cls, "args_schema", None)
     input_schema = _pydantic_v1_schema(args_schema) or {"type": "object", "properties": {}}
-    
+
     # Filter out hidden params from schema
     input_schema = _filter_hidden_params(input_schema)
 
@@ -386,52 +387,52 @@ def list_mcp_tools(tool_names: Optional[List[str]] = None) -> List[Dict[str, Any
 # ============== Tool Invocation ==============
 
 async def get_merged_params_for_identity(
-    identity: str, 
-    tool_name: str, 
+    identity: str,
+    tool_name: str,
     llm_params: Dict[str, Any]
 ) -> Dict[str, Any]:
     """
     Get merged parameters for a tool call.
-    
+
     Priority: llm_params > tool_params > global_params
-    
+
     Args:
         identity: User/session identifier
         tool_name: Name of the tool being called
         llm_params: Parameters provided by LLM
-        
+
     Returns:
         Merged parameters dict
     """
     provider = get_params_provider()
-    
+
     # Fetch params from provider
     global_params = await provider.get_global_params(identity)
     tool_params = await provider.get_params(identity, tool_name)
-    
+
     # Merge with priority: llm_params > tool_params > global_params
     merged = {}
     merged.update(global_params)
     merged.update(tool_params)
     merged.update(llm_params)
-    
+
     return merged
 
 
 async def get_tool_params(tool_name: str, arguments: Dict[str, Any]) -> Dict[str, Any]:
     """
     Get merged parameters for a tool call.
-    
+
     Process:
     1. Extract identity from arguments
     2. Fetch params from server based on identity
     3. Merge params with LLM-provided arguments
     4. Return merged params (caller handles actual tool invocation)
-    
+
     Args:
         tool_name: Name of the tool
         arguments: LLM-provided arguments (should include 'identity' param)
-        
+
     Returns:
         Merged parameters dict ready for tool invocation
     """
@@ -444,13 +445,13 @@ async def get_tool_params(tool_name: str, arguments: Dict[str, Any]) -> Dict[str
     args_copy = arguments.copy()
     identity_param = get_identity_param_name()
     identity = args_copy.pop(identity_param, None) or args_copy.get("session_id", "")
-    
+
     # Fetch and merge params based on identity
     if identity:
         merged_arguments = await get_merged_params_for_identity(identity, tool_name, args_copy)
     else:
         merged_arguments = args_copy
-    
+
     return merged_arguments
 
 
@@ -464,15 +465,15 @@ _tool_call_handler: Optional[ToolCallHandler] = None
 def set_tool_call_handler(handler: ToolCallHandler) -> None:
     """
     Set a custom handler for tool invocation.
-    
+
     This allows external code to control how tools are actually called.
-    
+
     Example:
         async def my_handler(tool_name: str, params: dict) -> Any:
             # Custom logic to invoke tool
             tool_cls = ALL_TOOLS_MAPPING[tool_name]
             return await tool_cls.as_async_api_cls(params=params)
-        
+
         set_tool_call_handler(my_handler)
     """
     global _tool_call_handler
@@ -487,21 +488,21 @@ def get_tool_call_handler() -> Optional[ToolCallHandler]:
 async def call_mcp_tool(tool_name: str, arguments: Dict[str, Any]) -> Any:
     """
     Call an MCP tool with merged parameters.
-    
+
     This function:
     1. Validates tool exists
     2. Extracts identity from arguments
     3. Fetches params from server based on identity
     4. Merges params with LLM-provided arguments
     5. Calls the tool via as_async_api_cls or custom handler
-    
+
     Args:
         tool_name: Name of the tool
         arguments: LLM-provided arguments (should include 'identity' param)
-        
+
     Returns:
         Tool execution result
-        
+
     Raises:
         ValueError: If tool_name is not found in ALL_TOOLS_MAPPING
         TypeError: If tool does not have as_async_api_cls method
@@ -513,41 +514,41 @@ async def call_mcp_tool(tool_name: str, arguments: Dict[str, Any]) -> Any:
             f"Unknown tool: '{tool_name}'. "
             f"Available tools: {available_tools}"
         )
-    
+
     # Get merged params
     merged_params = await get_tool_params(tool_name, arguments)
-    
+
     # If custom handler is set, use it
     handler = get_tool_call_handler()
     if handler is not None:
         return await handler(tool_name, merged_params)
-    
+
     # Default: call tool via as_async_api_cls
     tool_cls = ALL_TOOLS_MAPPING[tool_name]
-    
+
     if hasattr(tool_cls, "as_async_api_cls"):
         fn = tool_cls.as_async_api_cls
         sig = inspect.signature(fn)
         kwargs: Dict[str, Any] = {}
-        
+
         # Standard signature: as_async_api_cls(params: dict, stream: bool=False, mode: str="http")
         if "params" in sig.parameters:
             kwargs["params"] = merged_params
         else:
             kwargs.update(merged_params)
-        
+
         if "stream" in sig.parameters:
             kwargs["stream"] = False
         if "mode" in sig.parameters:
             kwargs["mode"] = "mcp"
 
         print(f"call_mcp_tool merged_params: {merged_params}")
-        
+
         result = fn(**kwargs)
         if inspect.isawaitable(result):
             return await result
         return result
-    
+
     # Fallback error
     raise TypeError(
         f"Tool '{tool_name}' does not have 'as_async_api_cls' method. "

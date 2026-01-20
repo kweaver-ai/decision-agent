@@ -81,11 +81,11 @@ class APIDocsGenerator:
                 try:
                     schema = await tool_cls.get_api_schema()
                     schemas["paths"][f"{self.prefix}/{tool_name}"] = schema
-                    print(f"✓ 已生成 {tool_name} 的 API schema")
+                    print(f"[OK] Generated {tool_name} API schema")
                 except Exception as e:
-                    print(f"✗ 生成 {tool_name} 的 API schema 失败: {e}")
+                    print(f"[FAIL] Generate {tool_name} API schema failed: {e}")
             else:
-                print(f"⚠ {tool_name} 没有 get_api_schema 方法，跳过")
+                print(f"[SKIP] {tool_name} has no get_api_schema method")
         
         return schemas
 
@@ -115,8 +115,8 @@ async def main():
         json.dump(docs, f, ensure_ascii=False, indent=4)
     
     print("-" * 50)
-    print(f"✓ API 文档已保存到: {output_path}")
-    print(f"✓ 共生成 {len(docs['paths'])} 个工具的 API schema")
+    print(f"[OK] API docs saved to: {output_path}")
+    print(f"[OK] Generated {len(docs['paths'])} tool API schemas")
 
 
 if __name__ == "__main__":

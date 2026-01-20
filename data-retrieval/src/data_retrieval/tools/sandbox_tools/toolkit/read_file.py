@@ -1,9 +1,8 @@
-import asyncio
 import json
 import traceback
 from typing import Optional
 from langchain_core.callbacks import CallbackManagerForToolRun, AsyncCallbackManagerForToolRun
-from langchain_core.pydantic_v1 import BaseModel, Field
+from langchain_core.pydantic_v1 import Field
 
 from data_retrieval.logs.logger import logger
 from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer
@@ -31,7 +30,7 @@ class ReadFileInput(BaseSandboxToolInput):
 
 class ReadFileTool(BaseSandboxTool):
     """读取文件工具，读取沙箱环境中的文件内容"""
-    
+
     name: str = "read_file"
     description: str = "读取沙箱环境中的文件内容，支持文本文件和二进制文件"
     args_schema: type[BaseSandboxToolInput] = ReadFileInput
@@ -51,7 +50,7 @@ class ReadFileTool(BaseSandboxTool):
         except Exception as e:
             logger.error(f"Read file failed: {e}")
             raise SandboxError(reason="读取文件失败", detail=str(e)) from e
-    
+
     @async_construct_final_answer
     async def _arun(
         self,
@@ -74,7 +73,7 @@ class ReadFileTool(BaseSandboxTool):
         except Exception as e:
             logger.error(f"Read file failed: {e}")
             raise SandboxError(reason="读取文件失败", detail=str(e)) from e
-    
+
     async def _read_file(
         self,
         filename: str,
@@ -85,11 +84,11 @@ class ReadFileTool(BaseSandboxTool):
             raise SandboxError(reason="读取文件失败", detail="filename 参数不能为空")
 
         sandbox = self._get_sandbox()
-        
+
         try:
             # 循环读取文件，直到读取到文件末尾，将结果拼接起来
             iter_times = 1
-                        
+
             # 如果迭代次数过多，要么文件过大，要么出bug了，单个文件不超过50MB， 默认一次读 4KB
             offset = 0
             result = {"content": "", "is_eof": False, "size": 0}
@@ -100,30 +99,28 @@ class ReadFileTool(BaseSandboxTool):
 
                 if part_result["size"] >= 50 * 1024 * 1024:
                     raise SandboxError(reason="读取文件失败", detail="文件过大，单个文件不超过50MB")
-            
+
                 offset = part_result["offset"]
                 size = part_result["size"]
 
                 logger.info(f"文件大小: {size} bytes, 已读取: {offset} bytes, remain: {size - offset} bytes")
-                
+
                 result["content"] += part_result["content"]
                 result["is_eof"] = part_result["is_eof"]
 
                 iter_times += 1
 
-                eof =  part_result.get("is_eof", True)
+                eof = part_result.get("is_eof", True)
                 if eof:
                     break
 
-
-            
             # res_full_output = {
             #     "action": "read_file",
             #     "result": {
             #         "size": result['size'],
             #     },
             #     "message": f"文件 {filename} 读取成功"
-            # }               
+            # }
 
             res_output = {
                 "action": "read_file",
@@ -155,7 +152,7 @@ class ReadFileTool(BaseSandboxTool):
             }
         except Exception as e:
             logger.error(f"Read file action failed: {e}")
-            raise SandboxError(reason=f"文件读取失败", detail=str(e)) from e
+            raise SandboxError(reason="文件读取失败", detail=str(e)) from e
 
     @staticmethod
     async def get_api_schema():
@@ -163,7 +160,7 @@ class ReadFileTool(BaseSandboxTool):
         base_schema = await BaseSandboxTool.get_api_schema()
         base_schema["post"]["summary"] = "read_file"
         base_schema["post"]["description"] = "读取沙箱环境中的文件内容，支持文本文件和二进制文件"
-        
+
         # 更新请求体 schema，添加工具特定参数
         base_schema["post"]["requestBody"]["content"]["application/json"]["schema"]["properties"].update({
             "filename": {
@@ -180,7 +177,7 @@ class ReadFileTool(BaseSandboxTool):
             # }
         })
         base_schema["post"]["requestBody"]["content"]["application/json"]["schema"]["required"] = ["filename"]
-        
+
         # 添加示例
         base_schema["post"]["requestBody"]["content"]["application/json"]["examples"] = {
             "read_python_file": {
@@ -193,5 +190,5 @@ class ReadFileTool(BaseSandboxTool):
                 }
             }
         }
-        
-        return base_schema 
+
+        return base_schema

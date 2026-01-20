@@ -1,6 +1,5 @@
-import asyncio
 import uuid
-from typing import Optional, Dict, Any
+from typing import Optional
 from langchain_core.pydantic_v1 import PrivateAttr, BaseModel, Field
 from fastapi import Body
 from data_retrieval.logs.logger import logger
@@ -8,10 +7,9 @@ from data_retrieval.sessions import BaseChatHistorySession, CreateSession
 from data_retrieval.tools.base import AFTool
 from data_retrieval.tools.base import api_tool_decorator
 from data_retrieval.settings import get_settings
-from sandbox_env.sdk.shared_env import SharedEnvSandbox
-from sandbox_env.sdk.base import ServerSelectorType
+from sandbox_runtime.sdk.shared_env import SharedEnvSandbox
+from sandbox_runtime.sdk.base import ServerSelectorType
 from data_retrieval.errors import SandboxError
-from data_retrieval.settings import get_settings
 from data_retrieval.utils._common import is_valid_url
 
 
@@ -28,7 +26,7 @@ class BaseSandboxToolInput(BaseModel):
 
 class BaseSandboxTool(AFTool):
     """基础沙箱工具类，提供共享的沙箱管理功能"""
-    
+
     session_id: str = ""
     server_url: str = _settings.SANDBOX_URL
     session: Optional[BaseChatHistorySession] = None
@@ -44,7 +42,7 @@ class BaseSandboxTool(AFTool):
             self.session_id = str(uuid.uuid4())
             self._random_session_id = True
             logger.info(f"Randomly generated session_id: {self.session_id}")
-        
+
         logger.info(f"BaseSandboxTool initialized with session_id: {self.session_id}")
         logger.info(f"BaseSandboxTool initialized with session_type: {self.session_type}")
         self.session = CreateSession(
@@ -54,7 +52,7 @@ class BaseSandboxTool(AFTool):
         if not is_valid_url(self.server_url):
             self.server_url = _settings.SANDBOX_URL
             logger.warning(f"Invalid server URL: {self.server_url}, using default URL: {_settings.SANDBOX_URL}")
-    
+
     def _get_sandbox(self) -> SharedEnvSandbox:
         """获取或创建沙箱实例"""
         if self._sandbox is None:
@@ -64,18 +62,18 @@ class BaseSandboxTool(AFTool):
                 selector_type=self._selector_type
             )
         return self._sandbox
-    
+
     def _check_execution_result(self, result: dict, operation_name: str):
         """检查执行结果，判断是否有错误"""
         if not isinstance(result, dict):
             return
-        
+
         # 检查 stderr
         stderr = result.get("stderr", "")
         if stderr and stderr.strip():
             logger.warning(f"{operation_name} 有错误输出: {stderr}")
             # 如果 stderr 不为空，记录警告但不抛出异常，因为有些警告不影响执行
-        
+
         # 检查 return_code
         return_code = result.get("return_code", 0)
         if return_code != 0:
@@ -84,16 +82,16 @@ class BaseSandboxTool(AFTool):
                 error_msg += f", 错误信息: {stderr}"
             logger.error(error_msg)
             raise SandboxError(
-                reason=f"{operation_name}失败", 
+                reason=f"{operation_name}失败",
                 detail=f"退出码: {return_code}, 错误信息: {stderr}"
             )
-        
+
         # 检查是否有其他错误信息
         error = result.get("error")
         if error:
             logger.error(f"{operation_name} 返回错误: {error}")
             raise SandboxError(
-                reason=f"{operation_name}失败", 
+                reason=f"{operation_name}失败",
                 detail=str(error)
             )
 
@@ -114,8 +112,8 @@ class BaseSandboxTool(AFTool):
         tool = cls(server_url=server_url, session_id=session_id, session_type=session_type)
 
         # 移除通用参数，保留工具特定参数
-        tool_params = {k: v for k, v in params.items() 
-                      if k not in ["server_url", "session_id", "session_type"]}
+        tool_params = {k: v for k, v in params.items()
+                       if k not in ["server_url", "session_id", "session_type"]}
 
         # invoke tool
         res = await tool.ainvoke(tool_params)

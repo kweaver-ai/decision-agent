@@ -1,7 +1,9 @@
-import json, aiohttp, yaml
+import yaml
 from .prompt import prompt_generate_nGQL, prompt_generate_nGQL_with_history, retrieval_content
 from data_retrieval.tools.graph_tools.common.stand_log import StandLogger
 from data_retrieval.tools.graph_tools.utils.llm import llm_chat
+
+
 class CoTGenerator:
     def __init__(self, params=None):
         self.database_schema = None
@@ -25,7 +27,8 @@ class CoTGenerator:
         other_variable = intermediate_result.retrieval_values.dict()
         retrieval_info = retrieval_content.format(schema=schema, background=background, **other_variable)
         if intermediate_result.retrieval:  # TODO 用其他参数触发
-            content = prompt_generate_nGQL.format(question=question, rewrite_question=rewrite_question, retrieval_content=retrieval_info)
+            content = prompt_generate_nGQL.format(
+                question=question, rewrite_question=rewrite_question, retrieval_content=retrieval_info)
 
         else:
             content = prompt_generate_nGQL_with_history.format(question=question)
@@ -49,4 +52,3 @@ class CoTGenerator:
         StandLogger.debug("cot generator response：{}".format(response))
         intermediate_result.history.append({"role": "assistant", "content": response})
         return {"response": response, "messages": intermediate_result.history}
-

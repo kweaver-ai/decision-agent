@@ -1,16 +1,18 @@
 import asyncio
 import json
 from typing import List
-import re, requests, aiohttp
+import re
+import requests
+import aiohttp
 from nebula3.Config import Config
 from nebula3.gclient.net import ConnectionPool
-from collections import defaultdict, Counter
-import re
+from collections import defaultdict
 import logging
 
 http_max_initial_line_length = 16384  # opensearch http.max_initial_line_length配置
 logging.basicConfig(format='%(asctime)s %(name)s %(levelname)s %(message)s', level=logging.INFO)
 logger = logging.getLogger(__name__)
+
 
 def keyword_proc(predicted_ngql):
     raw_ngql = predicted_ngql
@@ -35,6 +37,8 @@ def keyword_proc(predicted_ngql):
     if raw_ngql != predicted_ngql:
         logger.info("keyword_proc: {} -> {}".format(raw_ngql, predicted_ngql))
     return predicted_ngql
+
+
 class NebulaConnector(object):
     """
     Nebula Graph Database Connect and Search API

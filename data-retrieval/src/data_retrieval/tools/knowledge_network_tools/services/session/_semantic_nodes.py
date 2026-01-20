@@ -12,7 +12,7 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any, Dict, List, Optional, Set
 
 from data_retrieval.logs.logger import logger
 
@@ -199,5 +199,3 @@ class _SemanticNodesMixin(_SessionBase):
             seen_local.add(k)
             out.append(n)
         return out
-
-

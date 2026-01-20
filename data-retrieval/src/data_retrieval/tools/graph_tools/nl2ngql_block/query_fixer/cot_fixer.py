@@ -12,6 +12,7 @@ class CoTFixer():
         # 实现 CoT 方法生成 SQL 查询
         response = await self._generate(intermediate_result, messages, queries_fix)
         return response
+
     async def _generate(self, intermediate_result, messages, queries_fix):
         inner_llm = intermediate_result.inner_llm
         question = intermediate_result.query

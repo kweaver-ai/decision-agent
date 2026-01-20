@@ -7,7 +7,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Callable, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional
 
 from data_retrieval.logs.logger import logger
 
@@ -96,8 +96,9 @@ def persist_and_build_return(
         action_types: List[Dict[str, Any]] = []
         if network_details and isinstance(network_details, dict):
             action_types = network_details.get("action_types", [])
-        
-        final_result = {"object_types": union_object_types, "relation_types": union_relation_types, "action_types": action_types}
+
+        final_result = {"object_types": union_object_types,
+                        "relation_types": union_relation_types, "action_types": action_types}
     else:
         # 增量：当前结果 - 之前轮次并集
         current_records = RetrievalSessionManager._session_records[session_id][current_kn_id]["retrieval_results"]
@@ -180,8 +181,9 @@ def persist_and_build_return(
         action_types: List[Dict[str, Any]] = []
         if current_round == 1 and network_details and isinstance(network_details, dict):
             action_types = network_details.get("action_types", []) or []
-        
-        final_result = {"object_types": incremental_object_types, "relation_types": incremental_relation_types, "action_types": action_types}
+
+        final_result = {"object_types": incremental_object_types,
+                        "relation_types": incremental_relation_types, "action_types": action_types}
         logger.info(
             f"获取知识网络 {current_kn_id} 第{current_round}轮的增量结果，"
             f"新增对象类型: {len(incremental_object_types)} 项，新增关系类型: {len(incremental_relation_types)} 项"
@@ -191,5 +193,3 @@ def persist_and_build_return(
     logger.debug(f"当前活跃会话数: {session_info['active_sessions']}, 总记录数: {session_info['total_records']}")
 
     return final_result
-
-

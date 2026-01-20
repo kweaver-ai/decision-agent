@@ -422,5 +422,3 @@ def semantic_instances_map_to_nodes(
         nodes.append(node)
 
     return nodes
-
-

@@ -1,17 +1,11 @@
-import asyncio, aiohttp
 from ..synthetic_data.template_synthetic import nGQLTemplateSynthetic
 import copy
-
-from itertools import zip_longest
 
 
 class QuestionRuleRetrieval:
     def __init__(self, params):
         self.template_synthetic = nGQLTemplateSynthetic()
         self.size = params["size"]
-        
-
-
 
     async def retrieval(self, intermediate_result, keywords):
         query = intermediate_result.query
@@ -31,11 +25,11 @@ class QuestionRuleRetrieval:
         """Convert nGQL query to cypher format"""
         # Replace == with =
         query = nGQL_query.replace("==", "=")
-        
+
         # Remove tag names from property references (v1.person.name -> v1.name)
         import re
         query = re.sub(r'(\w+)\.\w+\.(\w+)', r'\1.\2', query)
-        
+
         return query
 
     def get_schema(self, keywords):
@@ -82,7 +76,6 @@ class QuestionRuleRetrieval:
         TODO 一个template会有多个真实样例，分组返回会好点。
         """
 
-        count = 0
         context = ""
 
         if not nGQL_template:
@@ -93,7 +86,8 @@ class QuestionRuleRetrieval:
         ]
 
         # 使用zip_longest来处理所有列表，fillvalue可以根据需要设置，这里设置为None
-        # result = [element for sublist in zip_longest(*lists, fillvalue=None) for element in sublist if element is not None]
+        # result = [element for sublist in zip_longest(*lists, fillvalue=None)
+        #           for element in sublist if element is not None]
         if len(lists) > self.size:
             # 计算公差
             total_numbers = len(lists)
@@ -108,7 +102,8 @@ class QuestionRuleRetrieval:
         # 取出每个位置的元素
         lists = [element for i in range(max_length) for lst in lists if i < len(lst) for element in [lst[i]]]
         for i, res in enumerate(lists):
-            if i > self.size: break
+            if i > self.size:
+                break
             context += "{}.".format(i) + res + "\n"
 
         # result = sorted(result, key=lambda x: len(x), reverse=True)

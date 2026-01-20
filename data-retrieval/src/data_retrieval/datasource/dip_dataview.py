@@ -1,27 +1,16 @@
 # -*- coding: utf-8 -*-
 # @Author:  Lareina.guo@aishu.cn
 # @Date: 2024-6-7
-from typing import Any, List, Optional, Union
-import re
-import asyncio
+from typing import Any, List, Optional
 import traceback
 
-from data_retrieval.api.af_api import Services
 from data_retrieval.api.vega import VegaServices
 from data_retrieval.api.error import AfDataSourceError, VirEngineError, FrontendColumnError, FrontendSampleError
 from data_retrieval.datasource.db_base import DataSource
 from data_retrieval.logs.logger import logger
 from data_retrieval.parsers.text2sql_parser import RuleBaseSource
 from data_retrieval.datasource.dimension_reduce import DimensionReduce
-from data_retrieval.api import VegaType
-from data_retrieval.api.vega import VegaServices
-from data_retrieval.api.af_api import Services
-from pydantic import PrivateAttr
-from typing import Dict, List
-from data_retrieval.utils.dip_services import Builder
-from data_retrieval.utils.dip_services.base import ServiceType
 from data_retrieval.api.data_model import DataModelService
-from data_retrieval.api.agent_retrieval import AgentRetrievalService
 
 from copy import deepcopy
 from data_retrieval.utils._common import run_blocking
@@ -33,126 +22,6 @@ CREATE_SCHEMA_TEMPLATE = """CREATE TABLE {source}.{schema}.{title}
 """
 
 RESP_TEMPLATE = """根据<strong>"{table}"</strong><i slice_idx=0>{index}</i>，检索到如下数据："""
-
-
-async def get_datasource_from_kg_params(kg_params: Union[Dict, List], addr="", headers={}, dip_type=ServiceType.DIP.value):
-    """
-    解析 KG 参数
-    """
-    # example:
-    # {
-    #     "kg": [
-    #         {
-    #             "kg_id": "129",
-    #             "fields": [
-    #                 "regions",
-    #                 "comments"
-    #             ],
-    #             "output_fields": [
-    #                 "comments"
-    #             ],
-    #             "field_properties": {
-    #                 "regions": [
-    #                     "@vid",
-    #                     "regions"
-    #                 ],
-    #                 "comments": [
-    #                     "@vid",
-    #                     "CONTENT",
-    #                     "VOTES",
-    #                     "COMMENT_TIME"
-    #                 ]
-    #             }
-    #         }
-    #     ]
-    # }
-    if isinstance(kg_params, Dict):
-        kg_params = kg_params.get("kg", [])
-    
-    builder_service = Builder(addr=addr, headers=headers, type=dip_type)
-    
-    for kg in kg_params:
-        kg_id = kg.get("kg_id", "")
-
-        # 用户选中的实体，用于过滤数据源
-        fields = kg.get("fields", [])
-
-        kg_info = await builder_service.get_kg_info(kg_id)
-
-        KMap = kg_info.get("res", {}).get("graph_KMap", {})
-        datasources_in_kmap = KMap.get("files", [])
-        entities_in_kmap = KMap.get("entity", [])
-
-        res = []
-        for ds in datasources_in_kmap:
-            # 数据样例参考
-            # '{
-            #     'ds_id': 5,
-            #     'data_source': 'DataPlatform',
-            #     'ds_path': None,
-            #     'extract_type': 'standardExtraction',
-            #     'extract_rules': [{
-            #             'entity_type': '订单商品信息宽表主键FINAL_SUB_ORDER_IDITEM_IDBA_CODESTAFF_ID_2',
-            #             'property': [{
-            #                     'column_name': 'aftersale_apply_time',
-            #                     'property_field': 'aftersale_apply_time'
-            #                 }
-            #             ]
-            #         }
-            #     ],
-            #     'files': [{
-            #             'file_name': '订单商品信息宽表(主键:FINAL_SUB_ORDER_ID+ITEM_ID+BA_CODE+STAFF_ID+IS_POS)',
-            #             'file_path': '',
-            #             'file_source': '4d94ab8c-e545-444e-9143-94636d11a240',
-            #             'start_time': None,
-            #             'end_time': None
-            #         }
-            #     ],
-            #     'ds_name': 'DataPlatform'
-            # }
-            if ds.get("data_source") != "DataPlatform":
-                logger.warning(f"不应该出现这种情况: {ds.get('data_source')}")
-                continue
-
-            # 过滤不在列表中的实体
-            # 例子:
-            # {
-            #     "entity":  [{
-            #         'name': 'DWS_ORDER_ITEM_STAFF_ORDER_BY_DAY',
-            #         'entity_type': '订单商品信息宽表主键FINAL_SUB_ORDER_IDITEM_IDBA_CODESTAFF_ID_2',
-            #         ...
-            #     }]
-            # }
-
-            # 规则比较负责
-            # 1. 用户的选择在 Fields 中， Fields 是 Entity Name
-            # 2. KMap 知识映射中，Entity 保存了 Entity Type 和 Entity Name
-            #    而 Files 中保存了 Entity Type 和 数据源的对应关系
-            # 3. 所以需要先根据 Entity Type 在 KMap 中找到对应的 Entity Name，
-            #    然后根据 Entity Name 在 Fields 中找到对应的 Entity Type，
-            #    如果 Entity Name 在 Fields 中，则认为该数据源是选中的，否则过滤掉
-            selected_ds = False
-            entity_types = [rule.get("entity_type", "") for rule in ds.get("extract_rules", [])]
-            for entity in entities_in_kmap:
-                if entity.get("name") in fields and entity.get("entity_type") in entity_types:
-                    selected_ds = True
-                    break
-
-            if not selected_ds:
-                continue
-
-            source = ds.get("files", [])
-            for s in source:
-                view_name = s.get("file_name", "")
-                view_id = s.get("file_source", "")
-            
-
-                res.append({
-                    "name": view_name,
-                    "id": view_id
-                })
-    
-    return res
 
 
 def get_view_en2type(resp_column):
@@ -170,10 +39,12 @@ def get_view_en2type(resp_column):
         # else:
         #     logger.warning(f"unknown view type: {resp_column.get('type')}")
         # table = f"custom_view_source.\"default\".\"{resp_column['view_id']}\""
-        raise AfDataSourceError(
-            detail=f"View Name: {resp_column['name']}, View ID: {resp_column['id']}, Reason: Can't be used as a table, maybe it's a custom view",
-            reason=f"View {resp_column['name']} can't be used as a table"
-        )
+    raise AfDataSourceError(
+        detail=(
+            f"View Name: {resp_column['name']}, View ID: {resp_column['id']}, "
+            "Reason: Can't be used as a table, maybe it's a custom view"
+        ),
+        reason=f"View {resp_column['name']} can't be used as a table")
 
     zh_table = resp_column["name"]
     return en2type, column_name, table, zh_table
@@ -262,7 +133,7 @@ class DataView(DataSource):
     base_url: str = ""
     model_data_view_fields: dict = None  # 主题模型、专题模型字段，筛选专用
     special_data_view_fields: dict = None  # 指定字段必须保留
-    service: Union[DataModelService, Services] = None
+    service: DataModelService = None
     dimension_reduce: Optional[DimensionReduce] = None
 
     _view_details_cache: dict[str, Any] = {}
@@ -271,14 +142,12 @@ class DataView(DataSource):
     class Config:
         arbitrary_types_allowed = True
 
-
     def __init__(
         self,
         **kwargs
     ):
         super().__init__(**kwargs)
 
-        # self.token = get_authorization(self.af_ip, self.user, self.password)
         if self.token:
             if not self.token.startswith("Bearer "):
                 self.token = f"Bearer {self.token}"
@@ -294,7 +163,7 @@ class DataView(DataSource):
         self.views_in_concept = self.views_in_concept
 
         self.service = DataModelService(base_url=self.base_url)
-        
+
         self.dimension_reduce = DimensionReduce(
             embedding_url=self.base_url,
             token=self.token,
@@ -317,7 +186,7 @@ class DataView(DataSource):
         details = self.service.get_view_details_by_id(view_id, headers=self.headers)
         self._view_details_cache[view_id] = deepcopy(details)
         return details
-    
+
     async def _get_view_details_async(self, view_id: str) -> dict:
         if view_id in self._view_details_cache.keys():
             return self._view_details_cache[view_id]
@@ -332,12 +201,13 @@ class DataView(DataSource):
         sample = self.service.get_view_data_preview(view_id, headers=self.headers, fields=fields, limit=1, offset=0)
         self._sample_cache[view_id] = deepcopy(sample)
         return sample
-    
+
     async def _get_sample_async(self, view_id: str, fields: list[str], limit: int = 1, offset: int = 0) -> dict:
         if view_id in self._sample_cache.keys():
             return self._sample_cache[view_id]
-        
-        sample = await self.service.get_view_data_preview_async(view_id, headers=self.headers, fields=fields, limit=limit, offset=offset)
+
+        sample = await self.service.get_view_data_preview_async(
+            view_id, headers=self.headers, fields=fields, limit=limit, offset=offset)
         self._sample_cache[view_id] = deepcopy(sample)
         return sample
 
@@ -358,7 +228,7 @@ class DataView(DataSource):
 
     def test_connection(self):
         return True
-    
+
     def set_tables(self, tables: List[str]):
         self.view_list = tables
 
@@ -368,19 +238,21 @@ class DataView(DataSource):
     def query(self, query: str, as_gen=True, as_dict=True) -> dict:
         try:
             vega_service = VegaServices(base_url=self.base_url)
-            table = vega_service.exec_vir_engine_by_sql(self.user, self.user_id, query, account_type=self.account_type, headers=self.headers)
-        except AfDataSourceError as e:
-            raise VirEngineError(e) from e
-        return table
-    
-    async def query_async(self, query: str, as_gen=True, as_dict=True) -> dict:
-        try:
-            vega_service = VegaServices(base_url=self.base_url)
-            table = await vega_service.exec_vir_engine_by_sql_async(self.user, self.user_id, query, account_type=self.account_type, headers=self.headers)
+            table = vega_service.exec_vir_engine_by_sql(
+                self.user, self.user_id, query, account_type=self.account_type, headers=self.headers)
         except AfDataSourceError as e:
             raise VirEngineError(e) from e
         return table
 
+    async def query_async(self, query: str, as_gen=True, as_dict=True) -> dict:
+        try:
+            vega_service = VegaServices(base_url=self.base_url)
+            table = await vega_service.exec_vir_engine_by_sql_async(
+                self.user, self.user_id, query,
+                account_type=self.account_type, headers=self.headers)
+        except AfDataSourceError as e:
+            raise VirEngineError(e) from e
+        return table
 
     def get_metadata(self, identities=None) -> list:
         details = []
@@ -393,8 +265,8 @@ class DataView(DataSource):
                     # 表名: 数据库.模式.表名
                     parts = table.split(".")
                     asset: dict = {"index": view_id, "title": parts[2],
-                                "view_source_catalog": parts[0],
-                                "schema": parts[1]}
+                                   "view_source_catalog": parts[0],
+                                   "schema": parts[1]}
                     source = view_source_reshape(asset)
                     detail = get_view_schema_of_table(source, view_detail, zh_table, view_detail.get("comment", ""))
                     details.append(detail)
@@ -402,7 +274,7 @@ class DataView(DataSource):
             traceback.print_exc()
             raise FrontendColumnError(e) from e
         return details
-    
+
     async def get_metadata_async(self, identities=None) -> list:
         details = []
         try:
@@ -414,8 +286,8 @@ class DataView(DataSource):
                     # 表名: 数据库.模式.表名
                     parts = table.split(".")
                     asset: dict = {"index": view_id, "title": parts[2],
-                                "view_source_catalog": parts[0],
-                                "schema": parts[1]}
+                                   "view_source_catalog": parts[0],
+                                   "schema": parts[1]}
                     source = view_source_reshape(asset)
                     detail = get_view_schema_of_table(source, view_detail, zh_table, view_detail.get("comment", ""))
                     details.append(detail)
@@ -441,7 +313,8 @@ class DataView(DataSource):
                 view_details = self._get_view_details(view_id)
 
                 for view_detail in view_details:
-                    sample = self._get_sample(view_id, [field["name"] for field in view_detail["fields"]], limit=num, offset=0)
+                    sample = self._get_sample(view_id, [field["name"]
+                                              for field in view_detail["fields"]], limit=num, offset=0)
 
                     samples[view_id] = sample
         except AfDataSourceError as e:
@@ -449,19 +322,20 @@ class DataView(DataSource):
             raise FrontendColumnError(e) from e
         return samples
 
-    def get_meta_sample_data(self, input_query="", view_limit=5, dimension_num_limit=30, with_sample=True)->dict:
+    def get_meta_sample_data(self, input_query="", view_limit=5, dimension_num_limit=30, with_sample=True) -> dict:
         coroutine = self.get_meta_sample_data_async(input_query, view_limit, dimension_num_limit, with_sample)
         return run_blocking(coroutine)
-    
-    async def get_meta_sample_data_async(self, input_query="", view_limit=5, dimension_num_limit=30, with_sample=True)->dict:
+
+    async def get_meta_sample_data_async(self, input_query="", view_limit=5,
+                                         dimension_num_limit=30, with_sample=True) -> dict:
         details = []
         samples = {}
-        logger.info("get meta sample data query {}, view_limit {}, dimension_num_limit {}".format(input_query, view_limit, dimension_num_limit))
+        logger.info("get meta sample data query {}, view_limit {}, dimension_num_limit {}".format(
+            input_query, view_limit, dimension_num_limit))
         try:
             view_infos = {}
             view_white_list_sql_infos = {}  # 白名单筛选sql
-            view_desensitization_field_infos = {}  # 字段脱敏
-            view_classifier_field_list = {} # 分类分级
+            view_classifier_field_list = {}  # 分类分级
             view_schema_infos = {}    # 表头名字
             for view_id in self.view_list:
                 view_details = await self._get_view_details_async(view_id)
@@ -476,7 +350,7 @@ class DataView(DataSource):
             # 降维
             # column_infos = {}
             common_filed = []
-            
+
             first = True
             for k, v in reduced_view.items():
                 if first:
@@ -488,21 +362,27 @@ class DataView(DataSource):
                         if filed["name"] in common_filed:
                             n_common_field.append(filed["name"])
                     common_filed = n_common_field
-            
+
             if len(reduced_view) < 2:
                 common_filed = []
 
             for view_id, detail in reduced_view.items():
                 special_fields = []
                 # 指定字段必须保留
-                if self.special_data_view_fields is not  None and view_id in self.special_data_view_fields:
+                if self.special_data_view_fields is not None and view_id in self.special_data_view_fields:
                     special_fields = [field["name"] for field in self.special_data_view_fields[view_id]]
                     logger.info("保留字段有{}".format(special_fields))
 
-                # test_fields = self.dimension_reduce.data_view_reduce(input_query, detail["fields"], dimension_num_limit, common_filed+special_fields)
+                # test_fields = self.dimension_reduce.data_view_reduce(
+                #     input_query, detail["fields"], dimension_num_limit,
+                #     common_filed+special_fields)
                 # 用混合索引降维
-                # detail["fields"] = self.dimension_reduce.data_view_reduce_v3(input_query, detail["fields"], dimension_num_limit, common_filed+special_fields)
-                detail["fields"] = await self.dimension_reduce.adata_view_reduce_v3(input_query, detail["fields"], dimension_num_limit, common_filed+special_fields)
+                # detail["fields"] = self.dimension_reduce.data_view_reduce_v3(
+                #     input_query, detail["fields"], dimension_num_limit,
+                #     common_filed+special_fields)
+                detail["fields"] = await self.dimension_reduce.adata_view_reduce_v3(
+                    input_query, detail["fields"], dimension_num_limit,
+                    common_filed + special_fields)
 
                 # 分类分级过滤
                 if view_id in view_classifier_field_list and len(view_classifier_field_list[view_id]):
@@ -558,7 +438,7 @@ class DataView(DataSource):
                     if "entries" in sample and len(sample["entries"]) > 0:
                         reduced_fields = [field["name"] for field in detail["fields"]]
                         sample_reduced = {}
-                        
+
                         for k, v in sample["entries"][0].items():
                             if k in reduced_fields:
                                 sample_reduced[k] = v
@@ -573,13 +453,13 @@ class DataView(DataSource):
             traceback.print_exc()
             raise FrontendColumnError(e) from e
 
-        result =  {
+        result = {
             "detail": details,
             "view_schema_infos": view_schema_infos
         }
 
         if view_white_list_sql_infos:
-            result["view_white_list_sql_infos"] = view_white_list_sql_infos 
+            result["view_white_list_sql_infos"] = view_white_list_sql_infos
 
         if with_sample:
             result["sample"] = samples
@@ -608,9 +488,7 @@ class DataView(DataSource):
             logger.error(e)
         return descriptions
 
-
     def get_catelog(self) -> list[str]:
-        text2sql = Services()
         catelogs = []
         try:
             for view_id in self.view_list:

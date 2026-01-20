@@ -10,6 +10,8 @@ from typing import Optional
 
 
 from functools import wraps
+
+
 def handle_sdk_error(error_message, error_type):
     """同步方法的错误处理装饰器"""
     def decorator(func):
@@ -22,6 +24,7 @@ def handle_sdk_error(error_message, error_type):
         return wrapper
     return decorator
 
+
 def handle_sdk_error_async(error_message, error_type):
     """异步方法的错误处理装饰器"""
     def decorator(func):
@@ -33,6 +36,7 @@ def handle_sdk_error_async(error_message, error_type):
                 raise error_type(e, error_message)
         return wrapper
     return decorator
+
 
 class Errno(Enum):
     """Error code."""
@@ -100,13 +104,13 @@ class DIPServiceError(Exception):
             "url": self.url,
             "detail": self.detail,
             "message": self.message
-        }        
+        }
 
 
 class BuilderError(DIPServiceError):
     """Error from builder."""
 
-    def __init__(self, e: DIPServiceError, message: str=""):
+    def __init__(self, e: DIPServiceError, message: str = ""):
         super().__init__(
             status=e.status,
             reason=e.reason,
@@ -120,7 +124,8 @@ class BuilderError(DIPServiceError):
 
 class CommonError(DIPServiceError):
     """Error from common calls."""
-    def __init__(self, e: DIPServiceError, message: str=""):
+
+    def __init__(self, e: DIPServiceError, message: str = ""):
         super().__init__(
             status=e.status,
             reason=e.reason,
@@ -134,7 +139,8 @@ class CommonError(DIPServiceError):
 
 class CogEngineError(DIPServiceError):
     """Error from Cognitive Engine calls."""
-    def __init__(self, e: DIPServiceError, message: str=""):
+
+    def __init__(self, e: DIPServiceError, message: str = ""):
         super().__init__(
             status=e.status,
             reason=e.reason,
@@ -148,7 +154,8 @@ class CogEngineError(DIPServiceError):
 
 class AlgServerError(DIPServiceError):
     """Error from AlgServer calls."""
-    def __init__(self, e: DIPServiceError, message: str=""):
+
+    def __init__(self, e: DIPServiceError, message: str = ""):
         super().__init__(
             status=e.status,
             reason=e.reason,
@@ -162,7 +169,8 @@ class AlgServerError(DIPServiceError):
 
 class ModelFactoryError(DIPServiceError):
     """Error from ModelFactory calls."""
-    def __init__(self, e: DIPServiceError, message: str=""):
+
+    def __init__(self, e: DIPServiceError, message: str = ""):
         super().__init__(
             status=e.status,
             reason=e.reason,

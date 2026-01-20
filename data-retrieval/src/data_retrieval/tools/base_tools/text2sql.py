@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2024-5-23
-import json, time
+import json
 import traceback
 from textwrap import dedent
-from typing import Any, Optional, Type, Dict, Union, List
+from typing import Any, Optional, Type, List
 from enum import Enum
 from collections import OrderedDict
 from langchain.callbacks.manager import (AsyncCallbackManagerForToolRun,
@@ -16,7 +16,6 @@ from langchain_core.prompts import (
 )
 from langchain_core.messages import HumanMessage, SystemMessage
 from langchain_core.tools import ToolException
-from sql_metadata.compat import get_query_tables
 from fastapi import Body
 
 from data_retrieval.api.error import (
@@ -24,9 +23,8 @@ from data_retrieval.api.error import (
 )
 from data_retrieval.errors import Text2SQLException
 from data_retrieval.datasource.db_base import DataSource
-from data_retrieval.datasource.dip_dataview import DataView, get_datasource_from_kg_params
+from data_retrieval.datasource.dip_dataview import DataView
 from data_retrieval.api.agent_retrieval import get_datasource_from_agent_retrieval_async
-from data_retrieval.utils.dip_services.base import ServiceType
 from data_retrieval.logs.logger import logger
 from data_retrieval.parsers.base import BaseJsonParser
 from data_retrieval.parsers.text2sql_parser import JsonText2SQLRuleBaseParser
@@ -34,30 +32,39 @@ from data_retrieval.prompts.tools_prompts.text2sql_prompt.text2sql import Text2S
 from data_retrieval.prompts.tools_prompts.text2sql_prompt.rewrite_query import RewriteQueryPrompt
 
 from data_retrieval.sessions import CreateSession, BaseChatHistorySession
-from data_retrieval.tools.base import ToolMultipleResult, ToolName
-from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer
-from data_retrieval.tools.base_tools.context2question import achat_history_to_question, chat_history_to_question
+from data_retrieval.tools.base import ToolName
+from data_retrieval.tools.base import async_construct_final_answer
 from data_retrieval.utils.func import JsonParse
 from data_retrieval.utils.func import add_quotes_to_fields_with_data_self
 from data_retrieval.tools.base import LLMTool, _TOOL_MESSAGE_KEY
 from data_retrieval.tools.base import api_tool_decorator
 from data_retrieval.utils.llm import CustomChatOpenAI
-from data_retrieval.api.auth import get_authorization
-from data_retrieval.errors import ToolFatalError
 from data_retrieval.utils.model_types import ModelType4Prompt
 from data_retrieval.utils.sql_to_graph import build_graph
 from data_retrieval.api import VegaType
 from data_retrieval.tools.base import parse_llm_from_model_factory
+from data_retrieval.utils._common import run_blocking
 
 from data_retrieval.settings import get_settings
 
-import asyncio
 
 _SETTINGS = get_settings()
 
 # from data_retrieval.api.error import DataSourceNum, Errors
-error_message1 = "textsql 工具无法回答此问题，请尝试更换其它工具，并不再使用 text2sql 工具"
-error_message2 = "工具调用失败，请再次尝试，或者更换其它工具, 异常信息: {error_info}"
+_ERROR_MESSAGES = {
+    "cannot_answer": {
+        "cn": "textsql 工具无法回答此问题，请尝试更换其它工具，并不再使用 text2sql 工具",
+        "en": "The text2sql tool cannot answer this question. Please try another tool and do not use text2sql again."
+    },
+    "tool_call_failed": {
+        "cn": "工具调用失败，请再次尝试，或者更换其它工具, 异常信息: {error_info}",
+        "en": "Tool call failed. Please try again or use another tool. Error: {error_info}"
+    }
+}
+
+# Default language fallback
+error_message1 = _ERROR_MESSAGES["cannot_answer"]["cn"]
+error_message2 = _ERROR_MESSAGES["tool_call_failed"]["cn"]
 
 _DESCS = {
     "table_list": {
@@ -65,8 +72,18 @@ _DESCS = {
         "en": "tables to query",
     },
     "tool_description": {
-        "cn": "根据用户输入的文本和数据视图信息来生成 SQL 语句，并查询数据库。注意: input参数只接受问题，不接受SQL。工具具有更优秀的SQL生成能力，你只需要告诉工具需要查询的内容即可。有时用户只需要生成SQL，不需要查询，需要给出解释\n注意：为了节省 token 数，输出的结果可能不完整，这是正常情况。data_desc 对象来记录返回数据条数和实际结果条数",
-        "en": "Generate SQL according to user's input, the result has a data_desc object to record the number of returned data and the actual number of results, please tell the user to check the detailed data, the application will get it",
+        "cn": (
+            "根据用户输入的文本和数据视图信息来生成 SQL 语句，并查询数据库。"
+            "注意: input参数只接受问题，不接受SQL。工具具有更优秀的SQL生成能力，"
+            "你只需要告诉工具需要查询的内容即可。有时用户只需要生成SQL，不需要查询，需要给出解释\n"
+            "注意：为了节省 token 数，输出的结果可能不完整，这是正常情况。"
+            "data_desc 对象来记录返回数据条数和实际结果条数"
+        ),
+        "en": (
+            "Generate SQL according to user's input, the result has a data_desc object to record the number of "
+            "returned data and the actual number of results, please tell the user to check the detailed data, "
+            "the application will get it"
+        ),
     },
     "chat_history": {
         "cn": "对话历史",
@@ -81,6 +98,7 @@ _DESCS = {
         "en": "\nHere's the data description for the SQL generation tool:\n{desc}",
     }
 }
+
 
 class DataViewDescSchema(BaseModel):
     id: str = Field(description="数据视图的 id, 格式为 uuid")
@@ -99,12 +117,20 @@ class Text2SQLInput(BaseModel):
         default="gen_exec",
         description="工具的行为类型：gen(只生成SQL)、gen_exec(生成并执行SQL)、show_ds(只展示配置的数据源的元数据信息)"
     )
-    
+
     # call_count: int = Field(default=0, description="记录工具被调用的次数")
 
 
 class Text2SQLInputWithViewList(Text2SQLInput):
-    view_list: Optional[List[DataViewDescSchema]] = Field(default=[], description=f"数据视图的列表，当已经初始化过虚拟视图列表时，不需要填写该参数。如果需要填写该参数，请确保`上下文缓存的数据资源中存在`，不要随意生成。格式如下：{DataViewDescSchema.schema_json(ensure_ascii=False)}")
+    view_list_description = (
+        "数据视图的列表，当已经初始化过虚拟视图列表时，不需要填写该参数。"
+        "如果需要填写该参数，请确保`上下文缓存的数据资源中存在`，不要随意生成。"
+        f"格式如下：{DataViewDescSchema.schema_json(ensure_ascii=False)}"
+    )
+    view_list: Optional[List[DataViewDescSchema]] = Field(
+        default=[],
+        description=view_list_description,
+    )
 
 
 class ActionType(str, Enum):
@@ -155,17 +181,17 @@ class Text2SQLTool(LLMTool):
     return_data_limit: int = _SETTINGS.RETURN_DATA_LIMIT
     show_sql_graph: bool = _SETTINGS.SHOW_SQL_GRAPH
 
-    _initial_view_ids: List[str] = PrivateAttr(default=[]) # 工具初始化时设置的视图id列表
+    _initial_view_ids: List[str] = PrivateAttr(default=[])  # 工具初始化时设置的视图id列表
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+
         if not self.chat_history:
             self.chat_history = []
 
         if kwargs.get("session") is None:
             self.session = CreateSession(self.session_type)
-        
+
         # 保存初始化的视图id列表
         if self.data_source and self.data_source.get_tables():
             self._initial_view_ids = self.data_source.get_tables()
@@ -189,7 +215,7 @@ class Text2SQLTool(LLMTool):
             )
 
     @classmethod
-    def from_data_source(cls, data_source: DataSource, llm, prompt_manager, *args, **kwargs):
+    def from_data_source(cls, data_source: DataSource, llm, *args, **kwargs):
         """Create a new instance of Text2SQLTool
 
         Args:
@@ -206,7 +232,7 @@ class Text2SQLTool(LLMTool):
                 llm=llm
             )
         """
-        return cls(data_source=data_source, llm=llm, prompt_manager=prompt_manager, *args, **kwargs)
+        return cls(data_source=data_source, llm=llm, *args, **kwargs)
 
     def _config_chain(
             self,
@@ -227,7 +253,6 @@ class Text2SQLTool(LLMTool):
             metadata=metadata,
             background=self.background,
             errors=errors,
-            prompt_manager=self.prompt_manager,
             language=self.language
         )
 
@@ -255,26 +280,28 @@ class Text2SQLTool(LLMTool):
             )
 
         chain = (
-                prompt
-                | self.llm
+            prompt
+            | self.llm
         )
         return chain
-    
+
     def _config_rewrite_query_chain(self, question: str, metadata_and_samples: dict):
         prompt = RewriteQueryPrompt(
             question=question,
             metadata_and_samples=metadata_and_samples,
             background=self.background
         )
-        
+
         if self.model_type == ModelType4Prompt.DEEPSEEK_R1.value:
             messages = [
-                HumanMessage(content=prompt.render(escape_braces=False), additional_kwargs={_TOOL_MESSAGE_KEY: "text2sql_rewrite_query"}),
+                HumanMessage(content=prompt.render(escape_braces=False), additional_kwargs={
+                             _TOOL_MESSAGE_KEY: "text2sql_rewrite_query"}),
                 HumanMessage(content=question)
             ]
         else:
             messages = [
-                SystemMessage(content=prompt.render(escape_braces=False), additional_kwargs={_TOOL_MESSAGE_KEY: "text2sql_rewrite_query"}),
+                SystemMessage(content=prompt.render(escape_braces=False), additional_kwargs={
+                              _TOOL_MESSAGE_KEY: "text2sql_rewrite_query"}),
                 HumanMessage(content=question)
             ]
 
@@ -286,7 +313,7 @@ class Text2SQLTool(LLMTool):
         new_question = chain.invoke(messages)
 
         return json.dumps(new_question, ensure_ascii=False)
-    
+
     async def _arewrite_sql_query(self, question: str, metadata_and_samples):
         chain, messages = self._config_rewrite_query_chain(question, metadata_and_samples)
         new_question = await chain.ainvoke(messages)
@@ -367,8 +394,6 @@ class Text2SQLTool(LLMTool):
                 break
         return new_sql
 
-
-
     def fetch(
             self,
             question: str,
@@ -377,7 +402,7 @@ class Text2SQLTool(LLMTool):
             extra_info: str = "",
             knowledge_enhanced_information: str = ""
     ):
-        
+
         data_info = self.data_source.get_meta_sample_data(
             "\n".join([question, extra_info, knowledge_enhanced_information]),
             self.view_num_limit,
@@ -456,7 +481,7 @@ class Text2SQLTool(LLMTool):
             self.view_num_limit,
             self.dimension_num_limit
         )
-        
+
         if self.rewrite_query:
             question = await self._arewrite_sql_query(question, data_info)
             logger.debug(f"重写后的问题->: {question}")
@@ -488,7 +513,7 @@ class Text2SQLTool(LLMTool):
         res['sql'] = n_sql
         if 'explanation' in generated_res:
             res['explanation'] = generated_res['explanation']
-        
+
         # 获取 title 和 message
         res['title'] = generated_res.get("title", "")
         res['message'] = generated_res.get("message", "")
@@ -541,17 +566,18 @@ class Text2SQLTool(LLMTool):
 
     @staticmethod
     def _fix_table_name(table_name: str) -> str:
+        """修复表名格式，确保 schema 和表名部分被正确引用"""
         parts = table_name.split(".")
         if len(parts) != 3:
             return table_name
-        
+
         part0, part1, part2 = parts[0], parts[1], parts[2]
 
         if not part1.startswith("\"") and not part1.endswith("\""):
             part1 = f"\"{part1}\""
         if not part2.startswith("\"") and not part2.endswith("\""):
             part2 = f"\"{part2}\""
-                
+
         return f"{part0}.{part1}.{part2}"
 
     def _run(
@@ -564,8 +590,14 @@ class Text2SQLTool(LLMTool):
             errors: Optional[dict] = None,
             run_manager: Optional[CallbackManagerForToolRun] = None
     ):
-        """同步运行方法，直接调用异步版本"""
-        return asyncio.run(self._arun(
+        """同步运行方法，直接调用异步版本。
+
+        WARNING: This method must only be called from synchronous contexts.
+        Do NOT call this from within an async function or event loop,
+        as it creates a new event loop internally via run_blocking().
+        Use _arun() directly in async contexts instead.
+        """
+        return run_blocking(self._arun(
             input=input,
             action=action,
             extra_info=extra_info,
@@ -589,11 +621,11 @@ class Text2SQLTool(LLMTool):
         # 如果 action 不合法，则默认使用 gen_exec
         if action not in [ActionType.GEN.value, ActionType.GEN_EXEC.value, ActionType.SHOW_DS.value]:
             action = ActionType.GEN_EXEC.value
-        
+
         # 如果 action 不是 show_ds，且 input 为空，则抛出异常
         if action != ActionType.SHOW_DS.value and (not input or not input.strip()):
             raise Text2SQLException(detail="输入问题不能为空", reason="输入问题不能为空")
-        
+
         try:
             # 如果 view_list 不为空，则设置 data_source 的 tables
             if view_list:
@@ -614,16 +646,16 @@ class Text2SQLTool(LLMTool):
             # 如果数据源为空，则抛出异常
             if not self.data_source.get_tables():
                 raise Text2SQLException("数据源为空，请检查 view_list 参数。如果涉及知识网络，请检查 kn 参数。如果是老版本知识网络，请检查 kg 参数。")
-    
+
             self._get_desc_from_datasource(self.get_desc_from_datasource)
-            
+
             # 如果是 show_ds 模式，直接返回数据源信息
             if action == "show_ds":
                 if not self.data_source.get_tables():
                     return {
                         "data_sources": f"未设置数据资源，需要用 {ToolName.from_sailor.value} 工具设置数据资源"
                     }
-                
+
                 data_view_metadata = await self.data_source.get_meta_sample_data_async(
                     input,
                     self.view_num_limit,
@@ -649,7 +681,8 @@ class Text2SQLTool(LLMTool):
                     "title": input if input else "获取数据源信息"
                 }
 
-            extra_info, knowledge_enhanced_information = self._add_extra_info(extra_info, knowledge_enhanced_information)
+            extra_info, knowledge_enhanced_information = self._add_extra_info(
+                extra_info, knowledge_enhanced_information)
 
             question = input
             logger.debug(f"text2sql -> input: {input}")
@@ -687,7 +720,7 @@ class Text2SQLTool(LLMTool):
 
                         fixed_table_name = self._fix_table_name(table)
                         logger.warning(f"try to fix table {table} to {fixed_table_name}")
-                        if not fixed_table_name in dataview:
+                        if fixed_table_name not in dataview:
                             logger.warning("datavire still not found in dataview")
                             continue
                         else:
@@ -737,7 +770,7 @@ class Text2SQLTool(LLMTool):
                 # 如果是 gen 模式，直接返回结果
                 if action == ActionType.GEN.value or not res.get("sql"):
                     return res
-                
+
                 # 转化为 graph
                 if self.show_sql_graph:
                     try:
@@ -752,10 +785,9 @@ class Text2SQLTool(LLMTool):
                                     node["data_source_id"] = v["id"]
                                     break
                         res["graph"] = graph
-                        
+
                     except Exception as e:
                         logger.error(f"转化为 graph 失败: {e}")
-                
 
                 # ==
                 # 补丁，如果data为空，大模型有可能会总结查询数据为0，这里添加一个提示
@@ -813,61 +845,21 @@ class Text2SQLTool(LLMTool):
                 llm_res.move_to_end("data")
 
                 logger.info(f"llm_res with ordered dict: {llm_res}")
-                
+
                 if self.api_mode:
                     return {
                         "output": llm_res,
                         "full_output": full_output
                     }
-                else:   
+                else:
                     return res
-            
+
         except Text2SQLException as e:
             raise ToolException(error_message2.format(error_info=e.json()))
 
         except Exception as e:
-            print(traceback.format_exc())
+            logger.error(traceback.format_exc())
             raise ToolException(error_message2.format(error_info=e))
-
-    def handle_result(
-        self,
-        log: Dict[str, Any],
-        ans_multiple: ToolMultipleResult
-    ) -> None:
-        if self.session:
-            tool_res = self.session.get_agent_logs(
-                self._result_cache_key
-            )
-            if tool_res:
-                log["result"] = tool_res
-                ans_multiple.table.append(tool_res.get("res", ""))
-
-                # This is wrong, because the res is a markdown string
-                # ans_multiple.new_table.append({"title": tool_res["title"], "data": tool_res.get("data", [])})
-                data = tool_res.get("data", [])
-                ans_multiple.new_table.append({"title": tool_res["title"], "data": data})
-
-                ans_multiple.cites = tool_res.get("cites", [])
-                ans_multiple.explain.append(
-                    {
-                        "sql": tool_res["sql"],
-                        "explanation": tool_res["explanation"]
-                    }
-                )
-
-                ans_multiple.cache_keys[self._result_cache_key] = {
-                    "tool_name": "text2sql",
-                    "title": tool_res.get("title", "text2sql"),
-                    "sql": tool_res.get("sql", ""),
-                    "is_empty": tool_res.get("is_empty", len(data) == 0),
-                    "fields": tool_res.get("fields", list(data[0].keys()) if data else []),
-                }
-
-                if tool_res.get("graph"):
-                    ans_multiple.graph.append({
-                        "title": tool_res["title"],
-                        "graph": tool_res["graph"]
-                    })
 
     @classmethod
     @api_tool_decorator
@@ -881,7 +873,6 @@ class Text2SQLTool(LLMTool):
         # return {'text2sql': '测试接口'}
         # data_source Params
         data_source_dict = params.get('data_source', {})
-        kg_params = data_source_dict.get('kg', {})
         vega_type = data_source_dict.get('vega_type', VegaType.DIP.value)
         config_dict = params.get("config", {})
 
@@ -904,41 +895,9 @@ class Text2SQLTool(LLMTool):
         base_url = data_source_dict.get('base_url', auth_url)
         token = data_source_dict.get('token', '')
 
-        # 如果 base_url 不为空 或 token 为空，则获取 token,
-        # 如果 base_url 为空，则说明调用的是内部的 vega 服务，不需要获取 token
-        # 只有 AF 才去获取
-        if base_url and (not token or token == "''") and vega_type == VegaType.AF.value:
-            user = data_source_dict.get("user", "")
-            password = data_source_dict.get("password", "")
-
-            max_retries = 5
-            retry_count = 0
-            
-            while retry_count < max_retries:
-                try:
-                    data_source_dict["token"] = get_authorization(
-                        base_url,
-                        user,
-                        password
-                    )
-                    break  # 如果成功获取 token，跳出循环
-                except Exception as e:
-                    retry_count += 1
-                    logger.error(f"获取 token 失败，尝试第 {retry_count} 次，报错信息: {e}\n{traceback.format_exc()}")
-                    if retry_count == max_retries:
-                        raise ToolFatalError(reason="获取 token 失败，已尝试 {} 次".format(max_retries), detail=e) from e
-                    # 如果需要延迟重试，可以在这里添加 sleep
-                    time.sleep(1)  # 例如，延迟 1 秒后重试
-        
         # 设置 data_source 参数
         data_source_dict['base_url'] = base_url
         data_source_dict['vega_type'] = vega_type
-
-        # 如果指定了地址，则说明是外部的 DIP 服务，需要使用 OUTTER_DIP 类型
-        if base_url and vega_type == VegaType.DIP.value:
-            dip_type = ServiceType.OUTTER_DIP.value
-        else:
-            dip_type = ServiceType.DIP.value
 
         headers = {}
         userid = data_source_dict.get("user_id", "")
@@ -955,22 +914,9 @@ class Text2SQLTool(LLMTool):
                 token = f"Bearer {token}"
             headers["Authorization"] = token
 
-
-        # 将 kg 参数配置到 data_source_dict 中，如果是 kg 默认全走内部的参数调用
-        if kg_params:
-            datasources_in_kg = await get_datasource_from_kg_params(
-                addr=base_url,
-                kg_params=kg_params,
-                headers=headers,
-                dip_type=dip_type
-            )
-
-            logger.info(f"datasources_in_kg: {datasources_in_kg}")
-            view_list = [ds.get("id") for ds in datasources_in_kg]
-
         if kn_params:
             for kn_param in kn_params:
-                if type(kn_param) == dict:
+                if isinstance(kn_param, dict):
                     kn_id = kn_param.get('knowledge_network_id', '')
                 else:
                     kn_id = kn_param
@@ -1032,7 +978,7 @@ class Text2SQLTool(LLMTool):
 
         # Input Params
         in_put_infos = params.get("infos", {})
-        
+
         in_put_infos['input'] = params.get('input', '')
         if not in_put_infos.get('action'):
             in_put_infos['action'] = params.get('action', ActionType.GEN_EXEC.value)
@@ -1040,7 +986,7 @@ class Text2SQLTool(LLMTool):
         # invoke tool
         res = await tool.ainvoke(input=in_put_infos)
         return res
-    
+
     @staticmethod
     async def get_api_schema():
         inputs = {
@@ -1067,12 +1013,12 @@ class Text2SQLTool(LLMTool):
                 'temperature': 0.1
             },
             'inner_llm': {
-                'frequency_penalty': 0, 
-                'id': '1935601639213895680', 
-                'max_tokens': 1000, 
-                'name': 'doubao-seed-1.6-flash', 
-                'presence_penalty': 0, 
-                'temperature': 1, 
+                'frequency_penalty': 0,
+                'id': '1935601639213895680',
+                'max_tokens': 1000,
+                'name': 'doubao-seed-1.6-flash',
+                'presence_penalty': 0,
+                'temperature': 1,
                 'top_k': 1,
                 'top_p': 1
             },
@@ -1089,7 +1035,6 @@ class Text2SQLTool(LLMTool):
                 'view_num_limit': 5,
                 'rewrite_query': False,
                 'show_sql_graph': False,
-                'force_limit': 1000,
                 'recall_mode': 'keyword_vector_retrieval'
             },
             'infos': {
@@ -1180,27 +1125,6 @@ class Text2SQLTool(LLMTool):
                                                 "enum": ["user", "app", "anonymous"],
                                                 "default": "user"
                                             },
-                                            "kg": {
-                                                "type": "array",
-                                                "description": "知识图谱配置参数，用于从知识图谱中获取数据源",
-                                                "items": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "kg_id": {
-                                                            "type": "string",
-                                                            "description": "知识图谱ID"
-                                                        },
-                                                        "fields": {
-                                                            "type": "array",
-                                                            "description": "用户选中的实体字段列表",
-                                                            "items": {
-                                                                "type": "string"
-                                                            }
-                                                        }
-                                                    },
-                                                    "required": ["kg_id", "fields"]
-                                                }
-                                            },
                                             "kn": {
                                                 "type": "array",
                                                 "description": "知识网络配置参数",
@@ -1224,15 +1148,24 @@ class Text2SQLTool(LLMTool):
                                             },
                                             'search_scope': {
                                                 'type': 'array',
-                                                'description': '知识网络搜索范围，支持 object_types, relation_types, action_types',
+                                                'description': (
+                                                    '知识网络搜索范围，支持 object_types, relation_types, action_types'
+                                                ),
                                                 'items': {
                                                     'type': 'string'
                                                 }
                                             },
                                             'recall_mode': {
                                                 'type': 'string',
-                                                'description': '召回模式，支持 keyword_vector_retrieval(默认), agent_intent_planning, agent_intent_retrieval',
-                                                'enum': ['keyword_vector_retrieval', 'agent_intent_planning', 'agent_intent_retrieval'],
+                                                'description': (
+                                                    '召回模式，支持 keyword_vector_retrieval(默认), '
+                                                    'agent_intent_planning, agent_intent_retrieval'
+                                                ),
+                                                'enum': [
+                                                    'keyword_vector_retrieval',
+                                                    'agent_intent_planning',
+                                                    'agent_intent_retrieval'
+                                                ],
                                                 'default': 'keyword_vector_retrieval'
                                             }
                                         },
@@ -1267,7 +1200,10 @@ class Text2SQLTool(LLMTool):
                                     },
                                     "inner_llm": {
                                         "type": "object",
-                                        "description": "内部语言模型配置，用于指定内部使用的 LLM 模型参数，如模型ID、名称、温度、最大token数等。支持通过模型工厂配置模型"
+                                        "description": (
+                                            "内部语言模型配置，用于指定内部使用的 LLM 模型参数，如模型ID、名称、温度、"
+                                            "最大token数等。支持通过模型工厂配置模型"
+                                        )
                                     },
                                     "config": {
                                         "type": "object",
@@ -1299,32 +1235,50 @@ class Text2SQLTool(LLMTool):
                                             },
                                             "rewrite_query": {
                                                 "type": "boolean",
-                                                "description": "是否重写用户输入的自然语言查询，即在生成 SQL 时，根据数据源的描述和样本数据，重写用户输入的自然语言查询，以更符合数据源的实际情况",
+                                                "description": (
+                                                    "是否重写用户输入的自然语言查询，即在生成 SQL 时，根据数据源的描述和样本数据，"
+                                                    "重写用户输入的自然语言查询，以更符合数据源的实际情况"
+                                                ),
                                                 "default": False
                                             },
                                             "view_num_limit": {
                                                 "type": "integer",
-                                                "description": "给大模型选择时引用视图数量限制，-1表示不限制，原因是数据源包含大量视图，可能导致大模型上下文token超限，内置的召回算法会自动筛选最相关的视图",
+                                                "description": (
+                                                    "给大模型选择时引用视图数量限制，-1表示不限制，原因是数据源包含大量视图，"
+                                                    "可能导致大模型上下文token超限，内置的召回算法会自动筛选最相关的视图"
+                                                ),
                                                 "default": 5
                                             },
                                             "dimension_num_limit": {
                                                 "type": "integer",
-                                                "description": f"给大模型选择时维度数量限制，-1表示不限制, 系统默认为 {_SETTINGS.TEXT2SQL_DIMENSION_NUM_LIMIT}",
+                                                "description": (
+                                                    "给大模型选择时维度数量限制，-1表示不限制, "
+                                                    f"系统默认为 {_SETTINGS.TEXT2SQL_DIMENSION_NUM_LIMIT}"
+                                                ),
                                                 "default": _SETTINGS.TEXT2SQL_DIMENSION_NUM_LIMIT
                                             },
                                             "force_limit": {
                                                 "type": "integer",
-                                                "description": f"生成的 SQL 的 LIMIT 子句限制，-1表示不限制, 系统默认为 {_SETTINGS.TEXT2SQL_FORCE_LIMIT}",
+                                                "description": (
+                                                    "生成的 SQL 的 LIMIT 子句限制，-1表示不限制, "
+                                                    f"系统默认为 {_SETTINGS.TEXT2SQL_FORCE_LIMIT}"
+                                                ),
                                                 "default": _SETTINGS.TEXT2SQL_FORCE_LIMIT
                                             },
                                             "return_record_limit": {
                                                 "type": "integer",
-                                                "description": "SQL 执行后返回数据条数限制，-1表示不限制，原因是SQL执行后返回大量数据，可能导致大模型上下文token超限",
+                                                "description": (
+                                                    "SQL 执行后返回数据条数限制，-1表示不限制，原因是SQL执行后返回大量数据，"
+                                                    "可能导致大模型上下文token超限"
+                                                ),
                                                 "default": -1
                                             },
                                             "return_data_limit": {
                                                 "type": "integer",
-                                                "description": "SQL 执行后返回数据总量限制，单位是字节，-1表示不限制，原因是SQL执行后返回大量数据，可能导致大模型上下文token超限",
+                                                "description": (
+                                                    "SQL 执行后返回数据总量限制，单位是字节，-1表示不限制，原因是SQL执行后"
+                                                    "返回大量数据，可能导致大模型上下文token超限"
+                                                ),
                                                 "default": -1
                                             }
                                         }
@@ -1426,7 +1380,7 @@ class Text2SQLTool(LLMTool):
                 }
             }
         }
-    
+
 
 if __name__ == "__main__":
     # if not run_manager:
@@ -1467,26 +1421,3 @@ if __name__ == "__main__":
     #     llm=llm,
     #     background="电影表中的年份字段是年份，如果用户使用两位数的年份，要注意转换成四位数的年份。",
     # )
-    from data_retrieval.api.auth import get_authorization
-    from data_retrieval.datasource.vega_datasource import VegaDataSource
-
-    token = get_authorization("https://10.4.110.170", "xia", "111111")
-    datasource = VegaDataSource(
-        view_list=[
-            "330755ad-6126-415e-adb5-79adb12a0455",
-            "ee4aaa09-498c-4126-ae29-8a8590c2d1f0",
-        ],
-        token=token,
-        user_id="fa1ee91a-643d-11ef-8405-a214ef0d99c8"
-    )
-
-    tool = Text2SQLTool.from_data_source(
-        language="cn",
-        data_source=datasource,
-        llm=llm,
-        get_desc_from_datasource=True
-    )
-
-    # print(tool.description)
-
-    print(tool.invoke({"input": "各种苹果的销量分组", }))

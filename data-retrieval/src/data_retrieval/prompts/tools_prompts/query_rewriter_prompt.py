@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2024-5-29
+from datetime import datetime
 from typing import Optional
 
 from data_retrieval.prompts.base import BasePrompt
@@ -52,7 +53,7 @@ prompts = {
     "en": "Not implemented yet."
 }
 
-from datetime import datetime
+
 class QueryRewriterPrompt(BasePrompt):
     background: Optional[str] = ""
     templates: dict = prompts
@@ -64,4 +65,3 @@ class QueryRewriterPrompt(BasePrompt):
         super().__init__(*args, **kwargs)
         now_time = datetime.now()
         self.current_date_time = now_time.strftime("%Y-%m-%d %H:%M:%S")
-

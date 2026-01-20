@@ -176,7 +176,7 @@ async def build_final_result(
                 logger.warning(
                     "从session获取属性分数失败，将尝试从临时session获取: %s", str(e), exc_info=True
                 )
-        
+
         # 如果从 session 中获取失败或没有 session_id，尝试从临时 session 中获取
         # 临时 session_id 用于存储没有 session_id 时的属性分数
         if not property_scores and kn_id:
@@ -192,7 +192,7 @@ async def build_final_result(
                 logger.debug(
                     "从临时session获取属性分数失败: %s", str(e)
                 )
-        
+
         # 如果 property_scores 仍然为空，说明没有可用的属性分数，将降级为不对属性做裁剪
         if not property_scores:
             logger.debug(
@@ -402,7 +402,7 @@ async def build_final_result(
         if action_types and isinstance(action_types, list):
             logger.debug(f"从network_details中提取到 {len(action_types)} 个action_types")
         else:
-            logger.debug(f"network_details中未找到action_types字段或格式不正确")
+            logger.debug("network_details中未找到action_types字段或格式不正确")
 
     result = {"object_types": object_types, "relation_types": relation_types, "action_types": action_types}
 
@@ -420,5 +420,3 @@ async def build_final_result(
         )
 
     return result
-
-

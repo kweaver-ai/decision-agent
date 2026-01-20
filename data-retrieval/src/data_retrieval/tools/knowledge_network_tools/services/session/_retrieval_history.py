@@ -262,5 +262,3 @@ class _RetrievalHistoryMixin(_SessionBase):
         return schema_info is not None and (
             len(schema_info.get("object_types", [])) > 0 or len(schema_info.get("relation_types", [])) > 0
         )
-
-

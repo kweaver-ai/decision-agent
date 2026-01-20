@@ -2,7 +2,7 @@
     "openapi": "3.0.3",
     "info": {
         "title": "基础结构化数据分析工具箱2",
-        "description": "支持对结构话数据进行处理的工具箱，工具包含: \n1. text2sql\n2. text2ngql\n3. text2metric\n4. sql_helper\n5. knowledge_item\n6. get_metadata\n7. json2plot\n8. execute_code\n9. execute_command\n10. read_file\n11. create_file\n12. list_files\n13. get_status\n14. close_sandbox\n15. download_from_efast\n16. knowledge_rerank\n17. kn_search\n18. kn_path_search\n19. cypher_query\n",
+        "description": "支持对结构话数据进行处理的工具箱，工具包含: \n1. text2sql\n2. text2metric\n3. sql_helper\n4. knowledge_item\n5. get_metadata\n6. json2plot\n7. execute_code\n8. execute_command\n9. read_file\n10. create_file\n11. list_files\n12. get_status\n13. close_sandbox\n14. download_from_efast\n15. knowledge_rerank\n16. kn_search\n17. kn_path_search\n18. cypher_query\n",
         "version": "1.0.11"
     },
     "servers": [
@@ -77,30 +77,6 @@
                                                     "anonymous"
                                                 ],
                                                 "default": "user"
-                                            },
-                                            "kg": {
-                                                "type": "array",
-                                                "description": "知识图谱配置参数，用于从知识图谱中获取数据源",
-                                                "items": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "kg_id": {
-                                                            "type": "string",
-                                                            "description": "知识图谱ID"
-                                                        },
-                                                        "fields": {
-                                                            "type": "array",
-                                                            "description": "用户选中的实体字段列表",
-                                                            "items": {
-                                                                "type": "string"
-                                                            }
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "kg_id",
-                                                        "fields"
-                                                    ]
-                                                }
                                             },
                                             "kn": {
                                                 "type": "array",
@@ -326,7 +302,7 @@
                                     "retry_times": 3,
                                     "session_type": "in_memory",
                                     "session_id": "123",
-                                    "force_limit": 1000,
+                                    "force_limit": 100,
                                     "only_essential_dim": true,
                                     "dimension_num_limit": 10,
                                     "return_record_limit": 10,
@@ -440,308 +416,6 @@
                                     },
                                     "tokens": "100",
                                     "time": "14.328890085220337"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/tools/text2ngql": {
-            "post": {
-                "summary": "text2ngql",
-                "description": "将问题生成nGQL查询语句，并获取执行结果，复杂问题务必拆分子问题，工具一次只能解决一个子问题",
-                "parameters": [
-                    {
-                        "name": "stream",
-                        "in": "query",
-                        "description": "是否流式返回",
-                        "schema": {
-                            "type": "boolean",
-                            "default": false
-                        }
-                    },
-                    {
-                        "name": "mode",
-                        "in": "query",
-                        "description": "请求模式",
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "http",
-                                "sse"
-                            ],
-                            "default": "http"
-                        }
-                    },
-                    {
-                        "name": "x-account-id",
-                        "in": "header",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        },
-                        "description": "账户ID，用于内部服务调用时传递账户信息"
-                    },
-                    {
-                        "name": "x-account-type",
-                        "in": "header",
-                        "required": false,
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "user",
-                                "app",
-                                "anonymous"
-                            ],
-                            "default": "user"
-                        },
-                        "description": "账户类型：user(用户), app(应用), anonymous(匿名)"
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "query": {
-                                        "type": "string",
-                                        "description": "自然语言查询语句",
-                                        "default": ""
-                                    },
-                                    "inner_kg": {
-                                        "type": "object",
-                                        "description": "知识图谱相关配置, 通用引用变量，使用self_config.data_source.kg[0] 获取",
-                                        "default": {}
-                                    },
-                                    "inner_llm": {
-                                        "type": "object",
-                                        "description": "大语言模型参数配置, 通用选择模型获取。如果提供了 x-account-id 和 x-account-type header，这些值会自动添加到 inner_llm 中",
-                                        "default": {},
-                                        "properties": {
-                                            "account_id": {
-                                                "type": "string",
-                                                "description": "账户ID（可选，如果提供了 x-account-id header，会自动添加）"
-                                            },
-                                            "account_type": {
-                                                "type": "string",
-                                                "description": "账户类型（可选，如果提供了 x-account-type header，会自动添加）",
-                                                "enum": [
-                                                    "user",
-                                                    "app",
-                                                    "anonymous"
-                                                ]
-                                            }
-                                        }
-                                    },
-                                    "rewrite_query": {
-                                        "type": "string",
-                                        "description": "重写后的查询语句，如有，会加入prompt中",
-                                        "default": ""
-                                    },
-                                    "background": {
-                                        "type": "string",
-                                        "description": "背景信息，如有，会加入prompt中",
-                                        "default": ""
-                                    },
-                                    "retrieval": {
-                                        "type": "boolean",
-                                        "description": "是否启用检索增强，默认True，会做关键词抽取，向量召回，如果多轮对话时可以使用false，因为之前history带入了schema和检索信息",
-                                        "default": true
-                                    },
-                                    "retrieval_params": {
-                                        "type": "object",
-                                        "description": "图谱检索相关配置",
-                                        "properties": {
-                                            "score": {
-                                                "type": "number",
-                                                "description": "opensearch向量召回阈值",
-                                                "default": 0.9
-                                            },
-                                            "select_num": {
-                                                "type": "integer",
-                                                "description": "召回数量",
-                                                "default": 5
-                                            },
-                                            "label_name": {
-                                                "type": "string",
-                                                "description": "选中某个实体类型召回",
-                                                "default": "*"
-                                            },
-                                            "keywords_extract": {
-                                                "type": "boolean",
-                                                "description": "是否用大模型对问题做关键词抽取",
-                                                "default": true
-                                            }
-                                        },
-                                        "default": {
-                                            "score": 0.9,
-                                            "select_num": 5,
-                                            "label_name": "*",
-                                            "keywords_extract": true
-                                        }
-                                    },
-                                    "history": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object",
-                                            "additionalProperties": true
-                                        },
-                                        "description": "对话历史记录，多轮对话时需要",
-                                        "default": []
-                                    },
-                                    "cache_cover": {
-                                        "type": "boolean",
-                                        "description": "是否覆盖缓存，如果True，会重新获取最新的schema或者数据",
-                                        "default": false
-                                    },
-                                    "action": {
-                                        "type": "string",
-                                        "description": "操作类型，可选值: nl2ngql(自然语言转查询) 或 或 get_schema(获取schema) 或 keyword_retrieval（获取图谱检索结果）",
-                                        "enum": [
-                                            "nl2ngql",
-                                            "get_schema",
-                                            "keyword_retrieval"
-                                        ],
-                                        "default": "nl2ngql"
-                                    },
-                                    "timeout": {
-                                        "type": "number",
-                                        "description": "超时时间",
-                                        "default": 120
-                                    }
-                                },
-                                "required": [
-                                    "inner_kg"
-                                ]
-                            },
-                            "examples": {
-                                "图谱查询示例": {
-                                    "summary": "查询人物信息示例",
-                                    "value": {
-                                        "query": "Rose是谁",
-                                        "inner_kg": {
-                                            "kg_id": "14",
-                                            "fields": [
-                                                "orgnization",
-                                                "person",
-                                                "district"
-                                            ]
-                                        },
-                                        "inner_llm": {
-                                            "name": "deepseek-v3",
-                                            "temperature": 0.01,
-                                            "top_k": 2,
-                                            "top_p": 0.5,
-                                            "frequency_penalty": 0.5,
-                                            "max_tokens": 10000,
-                                            "presence_penalty": 0.5
-                                        },
-                                        "background": "",
-                                        "rewrite_query": "无",
-                                        "retrieval": true,
-                                        "cache_cover": false,
-                                        "history": [
-                                            {
-                                                "role": "user",
-                                                "content": "图谱存储了爱数公司所有的人和部门信息，当查询爱数总人数时，不需要指定部门名称，直接查询所有人即可。"
-                                            }
-                                        ]
-                                    }
-                                },
-                                "向量检索示例": {
-                                    "summary": "向量检索示例",
-                                    "value": {
-                                        "query": "Rose是谁",
-                                        "inner_kg": {
-                                            "kg_id": "5",
-                                            "fields": [
-                                                "orgnization",
-                                                "person",
-                                                "district"
-                                            ]
-                                        },
-                                        "inner_llm": {
-                                            "name": "ali-deepseek-v3",
-                                            "temperature": 0.01,
-                                            "top_k": 2,
-                                            "top_p": 0.5,
-                                            "frequency_penalty": 0.5,
-                                            "max_tokens": 10000,
-                                            "presence_penalty": 0.5
-                                        },
-                                        "action": "keyword_retrieval",
-                                        "retrieval_params": {
-                                            "keywords_extract": false,
-                                            "score": 0,
-                                            "label_name": "*"
-                                        }
-                                    }
-                                },
-                                "获取图谱schema示例": {
-                                    "summary": "向量检索示例",
-                                    "value": {
-                                        "inner_kg": {
-                                            "kg_id": "5",
-                                            "fields": [
-                                                "orgnization",
-                                                "person",
-                                                "district"
-                                            ]
-                                        },
-                                        "action": "get_schema"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful response",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "result": {
-                                            "type": "object",
-                                            "description": "简化版查询结果",
-                                            "properties": {
-                                                "sql": {
-                                                    "type": "string",
-                                                    "description": "生成的nGQL查询语句"
-                                                },
-                                                "data": {
-                                                    "type": "object",
-                                                    "description": "查询结果数据"
-                                                }
-                                            }
-                                        },
-                                        "full_result": {
-                                            "type": "object",
-                                            "description": "完整版查询结果",
-                                            "properties": {
-                                                "sql": {
-                                                    "type": "string",
-                                                    "description": "生成的nGQL查询语句"
-                                                },
-                                                "data": {
-                                                    "type": "object",
-                                                    "description": "查询结果数据"
-                                                },
-                                                "messages": {
-                                                    "type": "array",
-                                                    "items": {
-                                                        "type": "object"
-                                                    },
-                                                    "description": "交互过程中的消息记录"
-                                                }
-                                            }
-                                        }
-                                    }
                                 }
                             }
                         }
@@ -1207,30 +881,6 @@
                                                     "anonymous"
                                                 ],
                                                 "default": "user"
-                                            },
-                                            "kg": {
-                                                "type": "array",
-                                                "description": "知识图谱配置参数，用于从知识图谱中获取数据源",
-                                                "items": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "kg_id": {
-                                                            "type": "string",
-                                                            "description": "知识图谱ID"
-                                                        },
-                                                        "fields": {
-                                                            "type": "array",
-                                                            "description": "用户选中的实体字段列表",
-                                                            "items": {
-                                                                "type": "string"
-                                                            }
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "kg_id",
-                                                        "fields"
-                                                    ]
-                                                }
                                             },
                                             "kn": {
                                                 "type": "array",
@@ -1734,7 +1384,7 @@
         "/tools/get_metadata": {
             "post": {
                 "summary": "get_metadata",
-                "description": "获取数据视图和指标的元数据信息，支持从知识图谱(kg)和知识网络(kn)中获取数据源",
+                "description": "获取数据视图和指标的元数据信息，支持从知识网络(kn)中获取数据源",
                 "parameters": [
                     {
                         "name": "stream",
@@ -1804,30 +1454,6 @@
                                                 "description": "指标ID列表",
                                                 "items": {
                                                     "type": "string"
-                                                }
-                                            },
-                                            "kg": {
-                                                "type": "array",
-                                                "description": "知识图谱配置参数（老版本），用于从知识图谱中获取数据源。注意：kg 只能获取数据视图（data_view），不能获取指标（metric）",
-                                                "items": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "kg_id": {
-                                                            "type": "string",
-                                                            "description": "知识图谱ID"
-                                                        },
-                                                        "fields": {
-                                                            "type": "array",
-                                                            "description": "用户选中的实体字段列表",
-                                                            "items": {
-                                                                "type": "string"
-                                                            }
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "kg_id",
-                                                        "fields"
-                                                    ]
                                                 }
                                             },
                                             "kn": {
@@ -1948,15 +1574,6 @@
                                     "token": "",
                                     "user_id": "",
                                     "account_type": "user",
-                                    "kg": [
-                                        {
-                                            "kg_id": "129",
-                                            "fields": [
-                                                "regions",
-                                                "comments"
-                                            ]
-                                        }
-                                    ],
                                     "kn": [
                                         {
                                             "knowledge_network_id": "kn_id_1"

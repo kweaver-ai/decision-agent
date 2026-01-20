@@ -7,7 +7,7 @@ Cypher查询工具
 import json
 from typing import Dict, Any, Optional
 
-from fastapi import Body, HTTPException, Header, Depends
+from fastapi import Body, HTTPException, Depends
 from pydantic import BaseModel, Field
 
 from data_retrieval.logs.logger import logger
@@ -29,7 +29,7 @@ class CypherQueryInput(BaseModel):
 
 class CypherQueryTool:
     """Cypher查询工具"""
-    
+
     @classmethod
     async def query(
         cls,
@@ -39,12 +39,12 @@ class CypherQueryTool:
     ) -> Dict[str, Any]:
         """
         执行Cypher查询
-        
+
         Args:
             kn_id: 知识网络ID
             cypher: Cypher查询语句
             headers: HTTP请求头
-            
+
         Returns:
             检索结果（meta + table格式）
         """
@@ -52,7 +52,7 @@ class CypherQueryTool:
             # 1. 解析Cypher
             parsed = CypherParser.parse(cypher)
             logger.debug(f"Cypher解析成功，查询类型: {parsed.query_type.value}")
-            
+
             # 2. 根据查询类型执行不同的检索
             if parsed.query_type == QueryType.SINGLE_OBJECT:
                 # 单个对象检索
@@ -74,7 +74,7 @@ class CypherQueryTool:
                     "对象检索API请求体:\n%s",
                     json.dumps(object_request_body, ensure_ascii=False, indent=2)
                 )
-                
+
                 result = await ObjectRetrievalTool.retrieve(
                     kn_id=params["kn_id"],
                     object_type_id=params["object_type_id"],
@@ -83,7 +83,7 @@ class CypherQueryTool:
                     properties=params.get("properties"),
                     headers=headers
                 )
-                
+
             elif parsed.query_type == QueryType.RELATION_PATH:
                 # 关系路径检索
                 input_data = CypherConverter.convert_to_relation_path_params(kn_id, parsed)
@@ -94,19 +94,19 @@ class CypherQueryTool:
                     "关系路径检索API请求体:\n%s",
                     json.dumps(relation_request_body, ensure_ascii=False, indent=2)
                 )
-                
+
                 result = await RelationPathRetrievalTool.retrieve(
                     kn_id=input_data.kn_id,
                     relation_type_paths=input_data.relation_type_paths,
                     headers=headers
                 )
-                
+
             else:
                 raise ValueError(f"不支持的查询类型: {parsed.query_type}")
-            
+
             logger.debug("Cypher查询执行完成")
             return result
-            
+
         except KnowledgeNetworkParamError:
             raise
         except KnowledgeNetworkRetrievalError:
@@ -119,16 +119,16 @@ class CypherQueryTool:
                     "hint": "请检查Cypher语法是否正确，是否符合支持的模板"
                 }
             )
-    
+
     @classmethod
     async def as_async_api_cls(cls, params: dict = Body(...), header_params: HeaderParams = Depends()):
         """
         API接口方法
-        
+
         Args:
             params: API请求参数
             header_params: 请求头参数对象
-            
+
         Returns:
             检索结果
         """
@@ -143,24 +143,24 @@ class CypherQueryTool:
                     detail={"error": str(e)},
                     link="https://example.com/api-docs/cypher-query"
                 )
-            
+
             # 构建headers
             headers_dict = {
                 "x-account-type": header_params.account_type,
                 "x-account-id": header_params.account_id,
                 "Content-Type": header_params.content_type
             }
-            
+
             # 执行查询
             result = await cls.query(
                 kn_id=input_data.kn_id,
                 cypher=input_data.cypher,
                 headers=headers_dict
             )
-            
+
             logger.debug("Cypher查询API执行完成")
             return result
-            
+
         except HTTPException:
             raise
         except (KnowledgeNetworkRetrievalError, KnowledgeNetworkParamError) as e:
@@ -168,15 +168,15 @@ class CypherQueryTool:
                 status_code=400 if isinstance(e, KnowledgeNetworkParamError) else 500,
                 detail=e.json()
             )
-    
+
     @classmethod
     def _build_cypher_description(cls, supported_templates: list) -> str:
         """
         从模板信息动态构建Cypher参数的描述文本
-        
+
         Args:
             supported_templates: 支持的模板列表
-            
+
         Returns:
             格式化的描述文本
         """
@@ -189,13 +189,13 @@ class CypherQueryTool:
             "3. 运算符使用方式与标准Cypher不同（特别是KNN、MATCH等）\n\n",
             "支持的查询模式：\n\n"
         ]
-        
+
         # 遍历所有模板，生成描述
         for idx, template in enumerate(supported_templates, 1):
             template_type = template.get("template_type", "")
             template_desc = template.get("description", "")
             node_range = template.get("node_range", "")
-            
+
             if template_type == "single_object":
                 # 单个对象检索
                 example = template.get("example", "")
@@ -208,13 +208,13 @@ class CypherQueryTool:
                 # 关系路径查询
                 description_parts.append(f"**{idx}. 关系路径查询（{node_range}节点）**\n")
                 description_parts.append(f"{template_desc}\n\n")
-                
+
                 # 添加多个示例
                 if "examples" in template:
                     description_parts.append("示例：\n")
                     for example in template["examples"]:
                         description_parts.append(f"```cypher\n{example}\n```\n\n")
-        
+
         # 添加语法说明 - 重点强调特殊运算符的使用方式
         description_parts.extend([
             "**支持的运算符（重要：与标准Cypher不同）**：\n\n",
@@ -243,19 +243,19 @@ class CypherQueryTool:
             "- WHERE子句中可以使用混合运算符，如：`WHERE a.name == '发烧' AND a.description KNN '症状'`\n",
             "- 本工具不支持标准Cypher的复杂语法（如OPTIONAL MATCH、UNWIND、聚合函数等）"
         ])
-        
+
         return "".join(description_parts)
-    
+
     @classmethod
     async def get_api_schema(cls):
         """获取API schema定义"""
         from .templates import CypherTemplateMatcher
-        
+
         supported_templates = CypherTemplateMatcher.get_supported_templates()
-        
+
         # 动态生成Cypher参数描述
         cypher_description = cls._build_cypher_description(supported_templates)
-        
+
         # 构建示例
         examples = {}
         for template in supported_templates:
@@ -288,7 +288,7 @@ class CypherQueryTool:
                         "cypher": template.get("example", "")
                     }
                 }
-        
+
         return {
             "post": {
                 "summary": "cypher_query",
@@ -411,4 +411,3 @@ class CypherQueryTool:
                 }
             }
         }
-

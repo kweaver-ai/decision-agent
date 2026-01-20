@@ -2,7 +2,7 @@
 @File: utils.py
 @Date: 2024-09-13
 @Author: Danny.gao
-@Desc: 
+@Desc:
 """
 from urllib.parse import urlparse
 from concurrent.futures import ThreadPoolExecutor
@@ -45,11 +45,29 @@ def is_valid_url(url):
     try:
         result = urlparse(url)
         return all([result.scheme, result.netloc])
-    except:
+    except Exception:
         return False
 
 
 _executor = ThreadPoolExecutor()
 
+
 def run_blocking(coro):
+    """
+    Run an async coroutine from synchronous code.
+
+    This function handles the case where:
+    - No event loop is running: creates a new loop via asyncio.run()
+    - Event loop is running: submits to thread pool to avoid nested loop issues
+
+    WARNING: This should only be called from synchronous contexts.
+    If you're in an async context, use `await` directly instead.
+    """
+    try:
+        loop = asyncio.get_running_loop()
+    except RuntimeError:
+        # No running loop, safe to use asyncio.run()
+        return asyncio.run(coro)
+
+    # There's a running loop, run in a separate thread to avoid conflicts
     return _executor.submit(lambda: asyncio.run(coro)).result()
