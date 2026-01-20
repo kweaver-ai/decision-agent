@@ -653,7 +653,13 @@ class SQLHelperTool(AFTool):
                                             },
                                             "dimension_num_limit": {
                                                 "type": "integer",
-                                                "description": f"获取元数据时维度数量限制，-1表示不限制, 系统默认为 {_SETTINGS.TEXT2SQL_DIMENSION_NUM_LIMIT}。注意：此参数仅在 command 为 get_metadata 时有效，在 command 为 execute_sql 时无效，因为工具会严格执行 SQL，不会限制维度数量",
+                                                "description": (
+                                                    "获取元数据时维度数量限制，-1表示不限制, "
+                                                    f"系统默认为 {_SETTINGS.TEXT2SQL_DIMENSION_NUM_LIMIT}。"
+                                                    "注意：此参数仅在 command 为 get_metadata 时有效，"
+                                                    "在 command 为 execute_sql 时无效，"
+                                                    "因为工具会严格执行 SQL，不会限制维度数量"
+                                                ),
                                                 "default": _SETTINGS.TEXT2SQL_DIMENSION_NUM_LIMIT
                                             },
                                             "return_record_limit": {
@@ -669,7 +675,13 @@ class SQLHelperTool(AFTool):
                                             },
                                             "return_data_limit": {
                                                 "type": "integer",
-                                                "description": f"SQL 执行后返回数据总量限制，单位是字节，-1表示不限制，原因是SQL执行后返回大量数据，可能导致大模型上下文token超限。系统默认为 {_SETTINGS.RETURN_DATA_LIMIT}。注意：此参数在 command 为 execute_sql 时有效，用于限制返回结果的数据大小",
+                                                "description": (
+                                                    "SQL 执行后返回数据总量限制，单位是字节，-1表示不限制，"
+                                                    "原因是SQL执行后返回大量数据，可能导致大模型上下文token超限。"
+                                                    f"系统默认为 {_SETTINGS.RETURN_DATA_LIMIT}。"
+                                                    "注意：此参数在 command 为 execute_sql 时有效，"
+                                                    "用于限制返回结果的数据大小"
+                                                ),
                                                 "default": _SETTINGS.RETURN_DATA_LIMIT
                                             },
                                             "force_limit": {

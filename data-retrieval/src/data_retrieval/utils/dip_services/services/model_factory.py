@@ -6,7 +6,9 @@
 # @File: error.py
 from urllib.parse import urljoin
 from data_retrieval.utils.dip_services.base import Service, API, ServiceType, ConnectionData
-from data_retrieval.utils.dip_services.sdk_error import ModelFactoryError, DIPServiceError, handle_sdk_error, handle_sdk_error_async
+from data_retrieval.utils.dip_services.sdk_error import (
+    ModelFactoryError, DIPServiceError, handle_sdk_error, handle_sdk_error_async
+)
 from data_retrieval.utils.dip_services.base import HTTPMethod
 from functools import wraps
 

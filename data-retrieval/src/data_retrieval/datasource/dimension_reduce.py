@@ -111,8 +111,11 @@ class DimensionReduce(object):
                 input_ids = []
                 if datasource_type == "dataview":
                     for datasource_id, datasource in input_data_source.items():
-                        input_text = f"{datasource['technical_name']}|{datasource['name']}|{datasource['comment']}".strip(
-                            "|")
+                        input_text = (
+                            f"{datasource['technical_name']}|"
+                            f"{datasource['name']}|"
+                            f"{datasource['comment']}"
+                        ).strip("|")
                         input_texts.append(input_text)
                         input_ids.append(datasource_id)
 

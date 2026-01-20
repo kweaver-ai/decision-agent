@@ -208,7 +208,9 @@ def build_graph(sql, columns, data):
 
                 # 设置实体的显示名称
                 if len(nodes_in_row[table_alias_or_name]["properties"]) >= 1:
-                    nodes_in_row[table_alias_or_name]["name"] = nodes_in_row[table_alias_or_name]["properties"][0]["value"]
+                    nodes_in_row[table_alias_or_name]["name"] = (
+                        nodes_in_row[table_alias_or_name]["properties"][0]["value"]
+                    )
 
                 # 如果节点不存在，则加入 nodes
                 if node_id not in nodes:

@@ -338,7 +338,12 @@ if __name__ == "__main__":
 
     conn_data_outter_dip = ConnectionData(
         addr="http://192.168.167.13:6475/",
-        headers={"Authorization": "Bearer ory_at_GE0Na075hzuAbg79aBxMEwHz4EdkenVjHxvgJ6u3j-Y.O9aLmLSm_Wes3u5Mcyqq3UGVVRYL9oRQpW_ncKx2Fdo"}
+        headers={
+            "Authorization": (
+                "Bearer ory_at_GE0Na075hzuAbg79aBxMEwHz4EdkenVjHxvgJ6u3j-Y."
+                "O9aLmLSm_Wes3u5Mcyqq3UGVVRYL9oRQpW_ncKx2Fdo"
+            )
+        }
         # headers={"userId": "test"}
     )
 

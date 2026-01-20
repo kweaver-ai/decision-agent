@@ -355,7 +355,7 @@ if __name__ == "__main__":
             # res = await engine.ngql_search(
             #     kg_id=55,
             #     statements=[
-            #         """MATCH p=(v:enterprise)-[e1:has_relation]->(v1:enterprise_relation) WHERE id(v)=='f278cc52de63871495105dbc77146772' WITH v1,p MATCH p1=(v1)-[e2:has{choice:"0"}]->(v2) OPTIONAL MATCH p2=(v2)-[e3:enterprise_2_activity|product_2_activity*0..1]->(v3:activity) WITH v1, collect(p1)[0..6] AS p11, collect(p2)[0..4] AS p22, p RETURN p, p11, p22;"""
+            #         "MATCH p=(v:enterprise)-[e1:has_relation]->(v1:enterprise_relation) ..."
             #     ]
             # )
             # print(json.dumps(res, indent=4, ensure_ascii=False))

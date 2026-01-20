@@ -482,7 +482,8 @@ class ArimaTool(AFTool):
                 datas = self.execut(sql=sql)
                 logger.debug(f'sql execut data: {datas}')
                 logger.debug(f'{i + 1} times to ARIMA predict......')
-                # datas = [{'周数': '第22周', '运量': 11736.562}, {'周数': '第23周', '运量': 68916.86}, {'周数': '第24周', '运量': 68152.17}, {'周数': '第25周', '运量': 74618.94}, {'周数': '第26周', '运量': 71077.48}]
+                # datas = [{'周数': '第22周', '运量': 11736.562},
+                #          {'周数': '第23周', '运量': 68916.86}, ...]
                 # sql, cites = '', []
                 try:
                     flag, time_field, value_field, df = self.format_inputs(datas=datas)

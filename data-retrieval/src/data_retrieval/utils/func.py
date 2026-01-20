@@ -269,7 +269,8 @@ if __name__ == '__main__':
 
     # print(modified_sql)
 
-    test_data = """SELECT comprehensive-unit-price FROM vdm_mysql_znc5em0v.default._select_from_ti_assets_ta_inner_join_tv_assets_ta2_on_ta_code_ta AS T1
+    test_data = """SELECT comprehensive-unit-price
+FROM vdm_mysql_znc5em0v.default._select_from_ti_assets_ta_inner_join_tv_assets_ta2_on_ta_code_ta AS T1
 WHERE T1.maintenance-END-TIME LIKE '2024/%'
 LIMIT 100
     """
@@ -277,7 +278,8 @@ LIMIT 100
     res = add_quotes_to_fields_with_data_self(test_data)
     logger.info(res)
 
-    t_res = """SELECT "comprehensive-unit-price" FROM vdm_mysql_znc5em0v.default._select_from_ti_assets_ta_inner_join_tv_assets_ta2_on_ta_code_ta AS T1
+    t_res = """SELECT "comprehensive-unit-price"
+FROM vdm_mysql_znc5em0v.default._select_from_ti_assets_ta_inner_join_tv_assets_ta2_on_ta_code_ta AS T1
 WHERE T1."maintenance-END-TIME" LIKE '2024/%'
 LIMIT 100
     """

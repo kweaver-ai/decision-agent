@@ -232,7 +232,11 @@ class Json2Plot(AFTool):
             chart_type = ChartType.LINE
             raise Json2PlotError(
                 reason=f"不支持的图表类型: {kwargs['chart_type']}",
-                detail=f"不支持的图表类型: {kwargs['chart_type']}，请重新生成配置，或重新传入参数，支持的图表类型为: {ChartType.LINE.value}, {ChartType.COLUMN.value}, {ChartType.PIE.value}")
+                detail=(
+                    f"不支持的图表类型: {kwargs['chart_type']}，请重新生成配置，或重新传入参数，"
+                    f"支持的图表类型为: {ChartType.LINE.value}, {ChartType.COLUMN.value}, "
+                    f"{ChartType.PIE.value}"
+                ))
         else:
             chart_type = _CHART_TYPE_DICT[kwargs["chart_type"]]
 

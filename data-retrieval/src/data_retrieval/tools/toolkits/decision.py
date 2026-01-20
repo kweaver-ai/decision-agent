@@ -150,7 +150,10 @@ class DecisionTool(AFTool):
         if road_names:
             where += f"road_name in ('{', '.join(road_names)}')"
         if goods_names:
-            where += f" and (goods_name in ('{', '.join(goods_names)}') or danger_goods_type in ('{', '.join(goods_names)}'))"
+            where += (
+                f" and (goods_name in ('{', '.join(goods_names)}') "
+                f"or danger_goods_type in ('{', '.join(goods_names)}'))"
+            )
         where = where.strip().strip('and')
         if where:
             sql = f"select * from {table_name} where {where}"

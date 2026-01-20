@@ -71,9 +71,9 @@ class DetectionTool(AFTool):
     def format_tables(self) -> dict:
         res = {}
         # 找到所有的逻辑视图
-        # ['vdm_maria_u4u8lxul.default.vehicle_track_road_aggregated', 'vdm_maria_u4u8lxul.default.waybill_main', 'vdm_maria_u4u8lxul.default.waybill_goods',
-        # 'vdm_maria_u4u8lxul.default.loc_patterns', 'vdm_maria_u4u8lxul.default.regular_routes', 'vdm_maria_u4u8lxul.default.goods_loc_patterns',
-        # 'vdm_maria_u4u8lxul.default.bill_an']
+        # ['vdm_maria_u4u8lxul.default.vehicle_track_road_aggregated',
+        #  'vdm_maria_u4u8lxul.default.waybill_main',
+        #  'vdm_maria_u4u8lxul.default.waybill_goods', ...]
         catelogs = self.data_source.get_catelog()
         for catelog in catelogs:
             if '.goods_transport_details' in catelog:
@@ -912,13 +912,16 @@ class DetectionTool(AFTool):
                 # if goods_type == '装货':
                 #     up_loc, up_provice, up_city, up_county, up_time = record['goods_area'], record['province'], \
                 #         record['city'], record['county'], record['goods_time']
-                #     down_loc, down_provice, down_city, down_county, down_time = record['rel_goods_area'], \
-                #         record['rel_province'], record['rel_city'], record['rel_county'], record['rel_goods_time']
+                #     down_loc, down_provice, down_city, down_county, down_time = (
+                #         record['rel_goods_area'], record['rel_province'],
+                #         record['rel_city'], record['rel_county'], record['rel_goods_time'])
                 # else:
-                #     down_loc, down_provice, down_city, down_county, down_time = record['goods_area'], record['province'], \
-                #         record['city'], record['county'], record['goods_time']
-                #     up_loc, up_provice, up_city, up_county, up_time = record['rel_goods_area'], record['rel_province'], \
-                #         record['rel_city'], record['rel_county'], record['rel_goods_time']
+                #     down_loc, down_provice, down_city, down_county, down_time = (
+                #         record['goods_area'], record['province'],
+                #         record['city'], record['county'], record['goods_time'])
+                #     up_loc, up_provice, up_city, up_county, up_time = (
+                #         record['rel_goods_area'], record['rel_province'],
+                #         record['rel_city'], record['rel_county'], record['rel_goods_time'])
                 up_loc, up_provice, up_city, _, _ = record['load_goods_area'], record['load_province'], \
                     record['load_city'], record['load_county'], record['load_time']
                 down_loc, down_provice, down_city, _, _ = record['unload_goods_area'], \
