@@ -17,7 +17,8 @@ class QueryFixer:
     #     step 1：把多余的node去掉
     #     step2：矫正路径
     #     step3：添加嵌套
-    #     match (v1:business)<-[e1:person_2_business_belong_to]-(v2:person)-[e2:person_2_custom_subject_releated_manual]->(v3:custom_subject)
+    #     match (v1:business)<-[e1:person_2_business_belong_to]-
+    #     (v2:person)-[e2:person_2_custom_subject_releated_manual]->(v3:custom_subject)
     #     where v1.business.name == "互联网领域" return v2.person.name
     #     """
     #     queries = intermediate_result.candidate_queries
@@ -83,7 +84,8 @@ class QueryFixer:
     #     else:
     #         # 如果没有匹配到，则保留原有逻辑
     #         query = query.split("cypher:")[-1].strip()
-    #         query = query.replace("cypher:", "").replace("cypher:", "").replace("cypher", "").replace("cypher", "").replace("```", "")
+    #         query = query.replace("cypher:", "").replace("cypher:", "")
+    #         query = query.replace("cypher", "").replace("cypher", "").replace("```", "")
     #     query = re.sub(r'\s+', ' ', query).strip()
     #     return query
 

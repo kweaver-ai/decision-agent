@@ -16,7 +16,9 @@ class RetrievalSessionManager:
     """
 
     # 类变量，用于存储所有会话的召回记录
-    # 格式: {session_id: {kn_id: {"retrieval_results": [results], "relation_scores": {relation_id: score}, "property_scores": {property_id: score}}}}
+    # 格式: {session_id: {kn_id: {"retrieval_results": [results],
+    #        "relation_scores": {relation_id: score},
+    #        "property_scores": {property_id: score}}}}
     _session_records: Dict[str, Dict[str, Dict[str, Any]]] = {}
 
     # 类变量，用于存储会话的最后访问时间

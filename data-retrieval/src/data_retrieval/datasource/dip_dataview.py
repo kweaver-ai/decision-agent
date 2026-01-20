@@ -39,10 +39,12 @@ def get_view_en2type(resp_column):
         # else:
         #     logger.warning(f"unknown view type: {resp_column.get('type')}")
         # table = f"custom_view_source.\"default\".\"{resp_column['view_id']}\""
-        raise AfDataSourceError(
-            detail=f"View Name: {resp_column['name']}, View ID: {resp_column['id']}, Reason: Can't be used as a table, maybe it's a custom view",
-            reason=f"View {resp_column['name']} can't be used as a table"
-        )
+    raise AfDataSourceError(
+        detail=(
+            f"View Name: {resp_column['name']}, View ID: {resp_column['id']}, "
+            "Reason: Can't be used as a table, maybe it's a custom view"
+        ),
+        reason=f"View {resp_column['name']} can't be used as a table")
 
     zh_table = resp_column["name"]
     return en2type, column_name, table, zh_table
@@ -204,7 +206,8 @@ class DataView(DataSource):
         if view_id in self._sample_cache.keys():
             return self._sample_cache[view_id]
 
-        sample = await self.service.get_view_data_preview_async(view_id, headers=self.headers, fields=fields, limit=limit, offset=offset)
+        sample = await self.service.get_view_data_preview_async(
+            view_id, headers=self.headers, fields=fields, limit=limit, offset=offset)
         self._sample_cache[view_id] = deepcopy(sample)
         return sample
 
@@ -244,7 +247,9 @@ class DataView(DataSource):
     async def query_async(self, query: str, as_gen=True, as_dict=True) -> dict:
         try:
             vega_service = VegaServices(base_url=self.base_url)
-            table = await vega_service.exec_vir_engine_by_sql_async(self.user, self.user_id, query, account_type=self.account_type, headers=self.headers)
+            table = await vega_service.exec_vir_engine_by_sql_async(
+                self.user, self.user_id, query,
+                account_type=self.account_type, headers=self.headers)
         except AfDataSourceError as e:
             raise VirEngineError(e) from e
         return table
@@ -368,10 +373,16 @@ class DataView(DataSource):
                     special_fields = [field["name"] for field in self.special_data_view_fields[view_id]]
                     logger.info("保留字段有{}".format(special_fields))
 
-                # test_fields = self.dimension_reduce.data_view_reduce(input_query, detail["fields"], dimension_num_limit, common_filed+special_fields)
+                # test_fields = self.dimension_reduce.data_view_reduce(
+                #     input_query, detail["fields"], dimension_num_limit,
+                #     common_filed+special_fields)
                 # 用混合索引降维
-                # detail["fields"] = self.dimension_reduce.data_view_reduce_v3(input_query, detail["fields"], dimension_num_limit, common_filed+special_fields)
-                detail["fields"] = await self.dimension_reduce.adata_view_reduce_v3(input_query, detail["fields"], dimension_num_limit, common_filed + special_fields)
+                # detail["fields"] = self.dimension_reduce.data_view_reduce_v3(
+                #     input_query, detail["fields"], dimension_num_limit,
+                #     common_filed+special_fields)
+                detail["fields"] = await self.dimension_reduce.adata_view_reduce_v3(
+                    input_query, detail["fields"], dimension_num_limit,
+                    common_filed + special_fields)
 
                 # 分类分级过滤
                 if view_id in view_classifier_field_list and len(view_classifier_field_list[view_id]):

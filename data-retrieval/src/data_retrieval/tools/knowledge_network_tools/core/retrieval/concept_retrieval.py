@@ -49,8 +49,14 @@ class ConceptRetrieval:
         return prompt
 
     @classmethod
-    def _collect_relation_and_object_types(
-            cls, network_details: Dict[str, Any], session_id: Optional[str] = None, top_k: int = 10) -> Tuple[List, List, Dict, List]:
+    def _collect_relation_and_object_types(cls,
+                                           network_details: Dict[str,
+                                                                 Any],
+                                           session_id: Optional[str] = None,
+                                           top_k: int = 10) -> Tuple[List,
+                                                                     List,
+                                                                     Dict,
+                                                                     List]:
         """
         收集所有关系类型和对象类型
 
@@ -183,8 +189,17 @@ class ConceptRetrieval:
         return prompt
 
     @classmethod
-    async def _call_llm_and_process_results(cls, prompt: str, query: str, objects_mapping: Dict, top_k: int,
-                                            relations_mapping: List[Dict[str, Any]], account_id: str = None, account_type: str = None) -> Tuple[Dict, List[Dict[str, Any]]]:
+    async def _call_llm_and_process_results(cls,
+                                            prompt: str,
+                                            query: str,
+                                            objects_mapping: Dict,
+                                            top_k: int,
+                                            relations_mapping: List[Dict[str,
+                                                                         Any]],
+                                            account_id: str = None,
+                                            account_type: str = None) -> Tuple[Dict,
+                                                                               List[Dict[str,
+                                                                                         Any]]]:
         """
         调用LLM并处理结果，现在处理关系编号而非对象类型编号
 
@@ -320,8 +335,16 @@ class ConceptRetrieval:
         return filtered_objects_mapping
 
     @classmethod
-    async def _process_object_properties(cls, objects_mapping: Dict[int, Dict[str, Any]], query: str = "", session_id: Optional[str]
-                                         = None, kn_id: Optional[str] = None, enable_rerank: bool = True) -> Dict[int, Dict[str, Any]]:
+    async def _process_object_properties(cls,
+                                         objects_mapping: Dict[int,
+                                                               Dict[str,
+                                                                    Any]],
+                                         query: str = "",
+                                         session_id: Optional[str] = None,
+                                         kn_id: Optional[str] = None,
+                                         enable_rerank: bool = True) -> Dict[int,
+                                                                             Dict[str,
+                                                                                  Any]]:
         """
         处理对象属性信息，计算属性相关性分数（使用统一排序接口）
 

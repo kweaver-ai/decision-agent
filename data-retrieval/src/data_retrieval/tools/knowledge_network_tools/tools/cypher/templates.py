@@ -198,8 +198,7 @@ class CypherTemplateMatcher:
         path_examples = [
             "MATCH (a:disease)-[r:has_symptom]->(b:symptom) WHERE a.disease_name == '上气道梗阻' RETURN a.disease_name, b.symptom_name",
             "MATCH (a:person)-[r1:belongs_to]->(b:school)-[r2:has_major]->(c:major) WHERE a.name == '张三' RETURN a.name, b.school_name, c.major_name",
-            "MATCH (a:person)-[r1:belongs_to]->(b:school)-[r2:has_major]->(c:major)-[r3:taught_by]->(d:teacher) WHERE a.name == '张三' RETURN a.name, b.school_name, c.major_name, d.teacher_name"
-        ]
+            "MATCH (a:person)-[r1:belongs_to]->(b:school)-[r2:has_major]->(c:major)-[r3:taught_by]->(d:teacher) WHERE a.name == '张三' RETURN a.name, b.school_name, c.major_name, d.teacher_name"]
 
         return [
             {

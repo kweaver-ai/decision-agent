@@ -18,7 +18,8 @@ class KnKnowledgeDataService(object):
 
     async def get_datasources(self, id_list: List[str]):
         """
-        @deprecated: 数据源管理不再由kn-knowledge-data提供，而是由dp-data-source提供(参考:https://confluence.aishu.cn/pages/viewpage.action?pageId=267724865)
+        @deprecated: 数据源管理不再由kn-knowledge-data提供，而是由dp-data-source提供
+        (参考:https://confluence.aishu.cn/pages/viewpage.action?pageId=267724865)
         获取数据源列表
         :param id_list: 数据源ID列表
         :return: 数据源列表

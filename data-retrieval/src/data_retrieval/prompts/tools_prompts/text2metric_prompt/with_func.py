@@ -51,7 +51,8 @@ For each query, return a json object of arguments:
 
 {% if background %}
 <background>
-When generating results, you can refer frm the following background knowledge, which can be directly considered as part of the user's question:
+When generating results, you can refer from the following background knowledge, \
+which can be directly considered as part of the user's question:
 {{ background }}
 </background>
 {% endif %}
@@ -90,13 +91,21 @@ Generated parameters:
 
 **NOTICE:**
 
-1. **Please double-check**, if the user does not specify a time dimension grouping method in the question (i.e., does not specify whether to group by day or month), **do not** set the time dimension and format in dimensions in params.
-2. **Please double-check**, if time_constraint is set, do not add the same time dimension again in {params.dimensions} and {params.filters}.
+1. **Please double-check**, if the user does not specify a time dimension grouping method \
+in the question (i.e., does not specify whether to group by day or month), \
+**do not** set the time dimension and format in dimensions in params.
+2. **Please double-check**, if time_constraint is set, do not add the same time dimension \
+again in {params.dimensions} and {params.filters}.
 3. **Please double-check**, ONLY select necessary dimensions to the {params.dimensions}.
 4. Note that the current time is {{ current_date_time }}
-5. If user asks what to query data in a certain period, you MAY NOT to drill down. eg: if user asks "Query data in August 2011", it's on month basis, DO NOT to query data in August 2011 by day (format: day).
+5. If user asks what to query data in a certain period, you MAY NOT to drill down. \
+eg: if user asks "Query data in August 2011", it's on month basis, \
+DO NOT to query data in August 2011 by day (format: day).
 {% if enable_yoy_or_mom %}
-6. If user asks for period-over-period comparison, the time range in {params.time_constraint} is the latest statistical period, not the entire time range. For example: "2001 sales YoY", the time range is '2001-01-01 00:00:00 to 2001-12-31 23:59:59', not '2000-01-01 00:00:00 to 2001-12-31 23:59:59'
+6. If user asks for period-over-period comparison, the time range in {params.time_constraint} \
+is the latest statistical period, not the entire time range. \
+For example: "2001 sales YoY", the time range is '2001-01-01 00:00:00 to 2001-12-31 23:59:59', \
+not '2000-01-01 00:00:00 to 2001-12-31 23:59:59'
 {% endif %}
 
 {%- if errors  %}

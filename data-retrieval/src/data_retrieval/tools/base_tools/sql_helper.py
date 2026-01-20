@@ -34,7 +34,11 @@ error_message2 = "工具调用失败，请再次尝试，或者更换其它工�
 _DESCS = {
     "tool_description": {
         "cn": "专门用于调用 SQL 语句的工具，支持获取元数据信息和执行 SQL 语句。注意：此工具不生成 SQL 语句，只执行已提供的 SQL 语句。",
-        "en": "A tool specifically for calling SQL statements, supporting metadata retrieval and SQL execution. Note: This tool does not generate SQL statements, only executes provided SQL statements.",
+        "en": (
+            "A tool specifically for calling SQL statements, supporting metadata retrieval "
+            "and SQL execution. Note: This tool does not generate SQL statements, "
+            "only executes provided SQL statements."
+        ),
     },
     "sql": {
         "cn": "要执行的 SQL 语句",
@@ -51,8 +55,7 @@ _DESCS = {
     "desc_from_datasource": {
         "cn": "\n- 包含的视图信息：{desc}",
         "en": "\nHere's the data description for the SQL helper tool:\n{desc}",
-    }
-}
+    }}
 
 
 class CommandType(str, Enum):
@@ -606,8 +609,15 @@ class SQLHelperTool(AFTool):
                                             },
                                             "recall_mode": {
                                                 "type": "string",
-                                                "description": "召回模式，支持 keyword_vector_retrieval(默认), agent_intent_planning, agent_intent_retrieval",
-                                                "enum": ["keyword_vector_retrieval", "agent_intent_planning", "agent_intent_retrieval"],
+                                                "description": (
+                                                    "召回模式，支持 keyword_vector_retrieval(默认), "
+                                                    "agent_intent_planning, agent_intent_retrieval"
+                                                ),
+                                                "enum": [
+                                                    "keyword_vector_retrieval",
+                                                    "agent_intent_planning",
+                                                    "agent_intent_retrieval"
+                                                ],
                                                 "default": "keyword_vector_retrieval"
                                             }
 
@@ -630,7 +640,15 @@ class SQLHelperTool(AFTool):
                                             },
                                             "view_num_limit": {
                                                 "type": "integer",
-                                                "description": f"获取元数据时引用视图数量限制，-1表示不限制，原因是数据源包含大量视图，可能导致大模型上下文token超限，内置的召回算法会自动筛选最相关的视图。系统默认为 {_SETTINGS.TEXT2SQL_RECALL_TOP_K}。注意：此参数仅在 command 为 get_metadata 时有效，在 command 为 execute_sql 时无效，因为工具会严格执行 SQL，不会限制视图数量",
+                                                "description": (
+                                                    "获取元数据时引用视图数量限制，-1表示不限制，"
+                                                    "原因是数据源包含大量视图，可能导致大模型上下文token超限，"
+                                                    "内置的召回算法会自动筛选最相关的视图。"
+                                                    f"系统默认为 {_SETTINGS.TEXT2SQL_RECALL_TOP_K}。"
+                                                    "注意：此参数仅在 command 为 get_metadata 时有效，"
+                                                    "在 command 为 execute_sql 时无效，"
+                                                    "因为工具会严格执行 SQL，不会限制视图数量"
+                                                ),
                                                 "default": _SETTINGS.TEXT2SQL_RECALL_TOP_K
                                             },
                                             "dimension_num_limit": {
@@ -640,7 +658,13 @@ class SQLHelperTool(AFTool):
                                             },
                                             "return_record_limit": {
                                                 "type": "integer",
-                                                "description": f"SQL 执行后返回数据条数限制，-1表示不限制，原因是SQL执行后返回大量数据，可能导致大模型上下文token超限。系统默认为 {_SETTINGS.RETURN_RECORD_LIMIT}。注意：此参数在 command 为 execute_sql 时有效，用于限制返回结果的数据条数",
+                                                "description": (
+                                                    "SQL 执行后返回数据条数限制，-1表示不限制，"
+                                                    "原因是SQL执行后返回大量数据，可能导致大模型上下文token超限。"
+                                                    f"系统默认为 {_SETTINGS.RETURN_RECORD_LIMIT}。"
+                                                    "注意：此参数在 command 为 execute_sql 时有效，"
+                                                    "用于限制返回结果的数据条数"
+                                                ),
                                                 "default": _SETTINGS.RETURN_RECORD_LIMIT
                                             },
                                             "return_data_limit": {
@@ -650,7 +674,14 @@ class SQLHelperTool(AFTool):
                                             },
                                             "force_limit": {
                                                 "type": "integer",
-                                                "description": f"强制限制SQL查询的行数。在SQL执行前，工具会将原始SQL包装为子查询并添加 LIMIT 子句，限制返回的数据条数。系统默认为 {_SETTINGS.SQL_HELPER_FORCE_LIMIT}。如果设置为 0 或负数，则不添加 LIMIT 限制。注意：此参数仅在 command 为 execute_sql 时有效，在 SQL 执行前生效，会影响实际查询的数据量",
+                                                "description": (
+                                                    "强制限制SQL查询的行数。在SQL执行前，"
+                                                    "工具会将原始SQL包装为子查询并添加 LIMIT 子句，"
+                                                    f"限制返回的数据条数。系统默认为 {_SETTINGS.SQL_HELPER_FORCE_LIMIT}。"
+                                                    "如果设置为 0 或负数，则不添加 LIMIT 限制。"
+                                                    "注意：此参数仅在 command 为 execute_sql 时有效，"
+                                                    "在 SQL 执行前生效，会影响实际查询的数据量"
+                                                ),
                                                 "default": _SETTINGS.SQL_HELPER_FORCE_LIMIT
                                             },
                                             "with_sample": {

@@ -86,7 +86,8 @@ class QuestionRuleRetrieval:
         ]
 
         # 使用zip_longest来处理所有列表，fillvalue可以根据需要设置，这里设置为None
-        # result = [element for sublist in zip_longest(*lists, fillvalue=None) for element in sublist if element is not None]
+        # result = [element for sublist in zip_longest(*lists, fillvalue=None)
+        #           for element in sublist if element is not None]
         if len(lists) > self.size:
             # 计算公差
             total_numbers = len(lists)

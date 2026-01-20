@@ -35,7 +35,11 @@ generic_template_strict = {
             # "order_by": ["as m1 order by m1 desc LIMIT 1", "as m1 order by m1 asc LIMIT 1"]
         },
         # 按日期年份排序，返回属性值
-        "match {path1} with {node1}.P_date.year as m1, count({node1}.P_date.year) as m2 order by m2 {{desc_asc}} LIMIT {{limit}} return m1, m2": {
+        (
+            "match {path1} with {node1}.P_date.year as m1, "
+            "count({node1}.P_date.year) as m2 order by m2 {{desc_asc}} "
+            "LIMIT {{limit}} return m1, m2"
+        ): {
             "path1": ["v1->v2->v3->v4", "v1->v2->v3", "v1->v2<-v3", "v1->v2", "v1"],
             "node1": ["v1"],
             # "order_by": ["as m1 order by m1 desc LIMIT 1", "as m1 order by m1 asc LIMIT 1"]
@@ -143,7 +147,10 @@ generic_template_strict = {
     },
     "match where with return": {
         # 一个条件，按数值排序，返回属性值
-        "match {path1} where {node1}.pov with {node2}, {node3}.p_int as m1 order by m1 {{desc_asc}} LIMIT {{limit}} return {node2}.p": {
+        (
+            "match {path1} where {node1}.pov with {node2}, {node3}.p_int as m1 "
+            "order by m1 {{desc_asc}} LIMIT {{limit}} return {node2}.p"
+        ): {
             "path1": ["v1->v2->v3->v4", "v1->v2->v3", "v1->v2<-v3", "v1->v2", "v1"],
             "node1": ["v1", "v2", "v3"],
             "node2": ["v1", "v2", "v3"],
@@ -151,7 +158,10 @@ generic_template_strict = {
             # "order_by": ["as m1 order by m1 desc LIMIT 1", "as m1 order by m1 asc LIMIT 1"],
         },
         # 一个条件，按日期排序，返回属性值
-        "match {path1} where {node1}.pov with {node2}, {node3}.p_date as m1 order by m1 {{desc_asc}} LIMIT {{limit}} return {node2}.p": {
+        (
+            "match {path1} where {node1}.pov with {node2}, {node3}.p_date as m1 "
+            "order by m1 {{desc_asc}} LIMIT {{limit}} return {node2}.p"
+        ): {
             "path1": ["v1->v2->v3->v4", "v1->v2->v3", "v1->v2<-v3", "v1->v2", "v1"],
             "node1": ["v1", "v2", "v3"],
             "node2": ["v1", "v2", "v3"],
@@ -175,7 +185,10 @@ generic_template_strict = {
         #     "order_by": ["as m1 order by m1 desc LIMIT 1", "as m1 order by m1 asc LIMIT 1"],
         # },
         # 一个条件，按计数排序，返回属性值
-        "match {path1} where {node1}.pov with {node2}, count({node3}) as m1 order by m1 {{desc_asc}} LIMIT {{limit}} return {node2}.p": {
+        (
+            "match {path1} where {node1}.pov with {node2}, count({node3}) as m1 "
+            "order by m1 {{desc_asc}} LIMIT {{limit}} return {node2}.p"
+        ): {
             "path1": ["v1->v2->v3->v4", "v1->v2->v3", "v1->v2<-v3", "v1->v2", "v1"],
             "node1": ["v1", "v2", "v3"],
             "node2": ["v1", "v2", "v3"],
@@ -184,7 +197,10 @@ generic_template_strict = {
 
         },
         # 两个条件，按时间排序，返回属性值
-        "match {path1} where {node1}.pov {{connector}} {node2}.pov with {node3}, {node4}.p_int as m1 order by m1 {{desc_asc}} LIMIT {{limit}} return {node3}.p": {
+        (
+            "match {path1} where {node1}.pov {{connector}} {node2}.pov with {node3}, "
+            "{node4}.p_int as m1 order by m1 {{desc_asc}} LIMIT {{limit}} return {node3}.p"
+        ): {
             "path1": ["v1->v2->v3->v4", "v1->v2->v3", "v1->v2<-v3", "v1->v2", "v1"],
             "node1": ["v1", "v2", "v3", "v4"],
             "node2": ["v1", "v2", "v3", "v4"],
@@ -201,7 +217,10 @@ generic_template_strict = {
             # "order_by": ["as m1 order by m1 desc LIMIT 1", "as m1 order by m1 asc LIMIT 1"],
         },
         # 两个条件，按计数排序，返回属性值
-        "match {path1} where {node1}.pov {{connector}} {node2}.pov with {node3}, count({node4}) as m1 order by m1 {{desc_asc}} LIMIT {{limit}} return {node3}.p": {
+        (
+            "match {path1} where {node1}.pov {{connector}} {node2}.pov with {node3}, "
+            "count({node4}) as m1 order by m1 {{desc_asc}} LIMIT {{limit}} return {node3}.p"
+        ): {
             "path1": ["v1->v2->v3->v4", "v1->v2->v3", "v1->v2<-v3", "v1->v2", "v1"],
             "node1": ["v1", "v2", "v3", "v4"],
             "node2": ["v1", "v2", "v3", "v4"],

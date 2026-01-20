@@ -184,7 +184,9 @@ class VegaDataSource(DataSource):
 
     async def query_async(self, query: str, as_gen=True, as_dict=True) -> dict:
         try:
-            table = await self.service.exec_vir_engine_by_sql_async(self.user, self.user_id, query, account_type=self.account_type, headers=self.headers)
+            table = await self.service.exec_vir_engine_by_sql_async(
+                self.user, self.user_id, query,
+                account_type=self.account_type, headers=self.headers)
         except AfDataSourceError as e:
             raise VirEngineError(e) from e
         return table
@@ -349,7 +351,9 @@ class VegaDataSource(DataSource):
                     dict_sample = {}
 
                     sample = self.service.get_view_sample_by_source(source, headers=self.headers)
-                    # sample = self.service.get_view_data_preview(view_id, headers=self.headers, fields=[field["id"] for field in column["fields"]])
+                    # sample = self.service.get_view_data_preview(
+                    #     view_id, headers=self.headers,
+                    #     fields=[field["id"] for field in column["fields"]])
                     if "data" in sample and len(sample["data"]) > 0:
                         for data, columns in zip(sample["data"][0], sample["columns"]):
                             for field in column["fields"]:
@@ -436,8 +440,12 @@ class VegaDataSource(DataSource):
                     special_fields = [field["technical_name"] for field in self.special_data_view_fields[view_id]]
                     logger.info("保留字段有{}".format(special_fields))
 
-                # column["fields"] = self.dimension_reduce.data_view_reduce_v3(input_query, column["fields"], dimension_num_limit, common_filed+special_fields)
-                column["fields"] = await self.dimension_reduce.adata_view_reduce_v3(input_query, column["fields"], dimension_num_limit, common_filed + special_fields)
+                # column["fields"] = self.dimension_reduce.data_view_reduce_v3(
+                #     input_query, column["fields"], dimension_num_limit,
+                #     common_filed+special_fields)
+                column["fields"] = await self.dimension_reduce.adata_view_reduce_v3(
+                    input_query, column["fields"], dimension_num_limit,
+                    common_filed + special_fields)
 
                 # 分类分级过滤
                 if view_id in view_classifier_field_list and len(view_classifier_field_list[view_id]):
@@ -475,7 +483,9 @@ class VegaDataSource(DataSource):
                     dict_sample = {}
 
                     sample = await self.service.get_view_sample_by_source_async(source, headers=self.headers)
-                    # sample = self.service.get_view_data_preview(view_id, headers=self.headers, fields=[field["id"] for field in column["fields"]])
+                    # sample = self.service.get_view_data_preview(
+                    #     view_id, headers=self.headers,
+                    #     fields=[field["id"] for field in column["fields"]])
                     if "data" in sample and len(sample["data"]) > 0:
                         for data, columns in zip(sample["data"][0], sample["columns"]):
                             for field in column["fields"]:

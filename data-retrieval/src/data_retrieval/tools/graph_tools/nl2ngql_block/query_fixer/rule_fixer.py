@@ -16,7 +16,8 @@ class RuleFixer:
         step 1：把多余的node去掉
         step2：矫正路径
         step3：添加嵌套
-        match (v1:business)<-[e1:person_2_business_belong_to]-(v2:person)-[e2:person_2_custom_subject_releated_manual]->(v3:custom_subject)
+        match (v1:business)<-[e1:person_2_business_belong_to]-
+        (v2:person)-[e2:person_2_custom_subject_releated_manual]->(v3:custom_subject)
         where v1.business.name == "互联网领域" return v2.person.name
         """
         # self.check_nested_node()
@@ -69,8 +70,9 @@ class RuleFixer:
 
     def fix_edge_path(self, query):
         """
-        match (v_district:district)-[e_district:district_2_district_child*0..11]->(v1:district),
-        (v1:district)-[e1:person_2_district_work_at]->(v2:person) where v_district.district.name =~ "福建.*" return v2.person.name
+        match (v_district:district)-[e_district:district_2_district_child*0..11]->
+        (v1:district), (v1:district)-[e1:person_2_district_work_at]->(v2:person)
+        where v_district.district.name =~ "福建.*" return v2.person.name
         """
         edge_names = self.nested_edges
         for edge in self.edge_name2props:
@@ -78,9 +80,13 @@ class RuleFixer:
                 node1 = self.edge_name2props[edge]["subject"]
                 node2 = self.edge_name2props[edge]["object"]
                 query = re.sub(
-                    f"(\\([a-zA-Z]\\d:{node1}\\))-.?(\\[e?\\d?:{edge}\\])-.?(\\([a-zA-Z]\\d:{node2}\\))", r"\1-\2->\3", query)
+                    f"(\\([a-zA-Z]\\d:{node1}\\))-.?(\\[e?\\d?:{edge}\\])-.?(\\([a-zA-Z]\\d:{node2}\\))",
+                    r"\1-\2->\3",
+                    query)
                 query = re.sub(
-                    f"(\\([a-zA-Z]\\d:{node2}\\))-.?(\\[e?\\d?:{edge}\\])-.?(\\([a-zA-Z]\\d:{node1}\\))", r"\1<-\2-\3", query)
+                    f"(\\([a-zA-Z]\\d:{node2}\\))-.?(\\[e?\\d?:{edge}\\])-.?(\\([a-zA-Z]\\d:{node1}\\))",
+                    r"\1<-\2-\3",
+                    query)
 
         res, error_info = self.nebula_engine.execute_any_ngql(self.space_name, query + " limit 20")
         # res = nebula_connector.execute_query(query, limit=20)
@@ -93,7 +99,8 @@ class RuleFixer:
 
     def remove_nouse_node(self, query, res):
         """
-        match (v1:business)<-[e1:person_2_business_belong_to]-(v2:person)-[e2:person_2_custom_subject_releated_manual]->(v3:custom_subject)
+        match (v1:business)<-[e1:person_2_business_belong_to]-
+        (v2:person)-[e2:person_2_custom_subject_releated_manual]->(v3:custom_subject)
         where v1.business.name == "互联网领域" return v2.person.name
         """
         if not self.has_value(res):
@@ -109,15 +116,17 @@ class RuleFixer:
 
             if use_min_node_index - min_node_index >= 1 or max_node_index - use_max_node_index >= 1:
                 if use_min_node_index - min_node_index >= 1:
-                    query = re.sub(f"\\(v{min_node_index}:[^\\)]*\\)(?:(?!match).)*(\\(v{use_min_node_index}:[^\\)]*\\))",
-                                   r"\1",
-                                   query)
+                    query = re.sub(
+                        f"\\(v{min_node_index}:[^\\)]*\\)(?:(?!match).)*(\\(v{use_min_node_index}:[^\\)]*\\))",
+                        r"\1",
+                        query)
                 # print(query)
                 if max_node_index - use_max_node_index >= 1:
                     # print(max_node_index, use_max_node_index)
-                    query = re.sub(f"(\\(v{use_max_node_index}:[^\\)]*\\))(?:(?!match).)*\\(v{max_node_index}:[^\\)]*\\)",
-                                   r"\1",
-                                   query)
+                    query = re.sub(
+                        f"(\\(v{use_max_node_index}:[^\\)]*\\))(?:(?!match).)*\\(v{max_node_index}:[^\\)]*\\)",
+                        r"\1",
+                        query)
 
                 res, error_info = self.nebula_engine.execute_any_ngql(self.space_name, query + " limit 20")
                 if res != 'none' and self.has_value(res):
@@ -152,7 +161,10 @@ class RuleFixer:
             # nested_query = re.sub(r'v{}\.{}'.format(node_index, node_name), r'v_{}.{}'.format(node_name, node_name),
             #                       query)
             # print(node_index)
-            # print(re.search(f'->\(v{node_index}:{node_name}\)'.format(node_name=node_name, edge_name=edge_name, node_index=node_index), query))
+            # print(re.search(
+            #     f'->\(v{node_index}:{node_name}\)'.format(
+            #         node_name=node_name, edge_name=edge_name, node_index=node_index
+            #     ), query))
             # 再新增路径
             """
             (v2:orgnization)<-[e2:orgnization_2_orgnization_child*0..]-(v3:orgnization)
@@ -179,16 +191,25 @@ class RuleFixer:
                 # (v1:person)-[e1:person_2_orgnization_belong_to]->(v2:orgnization)<-[e2:person_2_orgnization_belong_to]-(v3:person)
                 # where v1.person.name  contains  '张小宇' return distinct v3.person.name
                 if f'->(v{node_index}:{node_name})'.format(node_name=node_name, node_index=node_index) in query:
-                    query = re.sub(f'->\\(v{node_index}:{node_name}\\)'.format(
-                        node_name=node_name, node_index=node_index),
+                    query = re.sub(
+                        f'->\\(v{node_index}:{node_name}\\)'.format(
+                            node_name=node_name,
+                            node_index=node_index),
                         f'->(v_{node_name}:{node_name})<-[e_{node_name}:{edge_name}*0..11]-(v{node_index}:{node_name})'.format(
-                            node_name=node_name, edge_name=edge_name, node_index=node_index),
+                            node_name=node_name,
+                            edge_name=edge_name,
+                            node_index=node_index),
                         query)
-                elif f'(v{node_index}:{node_name})<-'.format(node_name=node_name, node_index=node_index) in query:
-                    query = re.sub(f'\\(v{node_index}:{node_name}\\)<-'.format(
-                        node_name=node_name, node_index=node_index),
+                elif f'(v{node_index}:{node_name})<-'.format(
+                        node_name=node_name, node_index=node_index) in query:
+                    query = re.sub(
+                        f'\\(v{node_index}:{node_name}\\)<-'.format(
+                            node_name=node_name,
+                            node_index=node_index),
                         f'(v{node_index}:{node_name})-[e_{node_name}:{edge_name}*0..11]->(v_{node_name}:{node_name})<-'.format(
-                            node_name=node_name, edge_name=edge_name, node_index=node_index),
+                            node_name=node_name,
+                            edge_name=edge_name,
+                            node_index=node_index),
                         query)
 
             # print("修改后的nested nGQL:\n ", query)

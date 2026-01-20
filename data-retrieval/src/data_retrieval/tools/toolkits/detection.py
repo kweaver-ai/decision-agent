@@ -749,7 +749,10 @@ class DetectionTool(AFTool):
                         if goods_weight > outflow * 1.2:
                             item = {
                                 'status': '异常',
-                                'reason': f'在起始-目的地({origin_to_dest})之间运输的货物({goods_name_and_type})运量已经超出{origin}流出的正常运输量。',
+                                'reason': (
+                                    f'在起始-目的地({origin_to_dest})之间运输的货物'
+                                    f'({goods_name_and_type})运量已经超出{origin}流出的正常运输量。'
+                                ),
                                 'location_pattern': origin_pattern,
                                 'goods_info': good_info,
                                 'type': 'origin'
@@ -807,7 +810,10 @@ class DetectionTool(AFTool):
                         if goods_weight > inflow * 1.2:
                             item = {
                                 'status': '异常',
-                                'reason': f'在起始-目的地({origin_to_dest})之间运输的货物({goods_name_and_type})运量已经超出流入{dest}的正常运输量。',
+                                'reason': (
+                                    f'在起始-目的地({origin_to_dest})之间运输的货物'
+                                    f'({goods_name_and_type})运量已经超出流入{dest}的正常运输量。'
+                                ),
                                 'location_pattern': dest_pattern,
                                 'goods_info': good_info,
                                 'type': 'dest'

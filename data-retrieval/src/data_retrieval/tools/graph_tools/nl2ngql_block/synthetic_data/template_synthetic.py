@@ -139,9 +139,8 @@ class nGQLTemplateSynthetic:
                             special_idx = dict(pairs)
                         # TODO 写个判断，如果是数值类型，就只采样数值属性，如果没有，就break
 
-                        candidate_combination = self.sample_all_entity_label_prop_value(entity_name2props, entity_name,
-                                                                                        edge_with_entity_name, special_idx,
-                                                                                        entity_i, v_index, require_prop_num)
+                        candidate_combination = self.sample_all_entity_label_prop_value(
+                            entity_name2props, entity_name, edge_with_entity_name, special_idx, entity_i, v_index, require_prop_num)
                         if not candidate_combination:
                             break
                         all_candidate_combination[entity_i] = candidate_combination

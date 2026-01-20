@@ -41,7 +41,12 @@ class SandboxToolInput(BaseModel):
     """Sandbox 工具的输入参数"""
     action: str = Field(
         default=SandboxActionType.EXECUTE_CODE.value,
-        description="操作类型：create_file(创建文件)、read_file(读取文件)、list_files(列出文件)、execute_code(执行代码)、execute_command(执行命令)、upload_file(上传文件)、download_file(下载文件)"
+        description=(
+            "操作类型：create_file(创建文件)、read_file(读取文件)、"
+            "list_files(列出文件)、execute_code(执行代码)、"
+            "execute_command(执行命令)、upload_file(上传文件)、"
+            "download_file(下载文件)"
+        )
     )
     content: Optional[str] = Field(
         default="",
@@ -575,7 +580,12 @@ class SandboxTool(AFTool):
                                     "description": "演示完整的工作流程：创建文件 -> 执行代码 -> 读取结果",
                                     "value": {
                                         "action": "execute_code",
-                                        "content": "import json\nimport os\n\n# 创建配置文件\nconfig = {\n    'app_name': 'Sandbox Demo',\n    'version': '1.0.0',\n    'features': ['file_ops', 'code_exec', 'data_analysis']\n}\n\nwith open('config.json', 'w') as f:\n    json.dump(config, f, indent=2)\n\n# 创建工具函数\nutils_code = '''\ndef load_config(filename):\n    with open(filename, 'r') as f:\n        return json.load(f)\n\ndef save_result(data, filename):\n    with open(filename, 'w') as f:\n        json.dump(data, f, indent=2)\n'''\n\nwith open('utils.py', 'w') as f:\n    f.write(utils_code)\n\n# 执行主程序\nfrom utils import load_config, save_result\n\nconfig = load_config('config.json')\nprint(f'应用名称: {config[\"app_name\"]}')\nprint(f'版本: {config[\"version\"]}')\n\n# 保存结果\nresult = {\n    'status': 'success',\n    'config': config,\n    'files_created': ['config.json', 'utils.py']\n}\nsave_result(result, 'output.json')\nprint('工作流执行完成')\n\nworkflow_result = result",
+                                        "content": (  # noqa: E501
+                                            "import json\nimport os\n\n"
+                                            "# 创建配置文件\nconfig = {...}\n"
+                                            "# ... workflow code ...\n"
+                                            "workflow_result = result"
+                                        ),
                                         "filename": "workflow.py",
                                         "output_params": ["workflow_result"],
                                         "session_id": "test_session_123"

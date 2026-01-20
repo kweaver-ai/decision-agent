@@ -114,9 +114,19 @@ class ArgsModel(BaseModel):
 """))
     data: List[Dict[str, Any]] = Field(
         default=[], description="用于作图的 JSON 数据，与 tool_result_cache_key 参数不能同时设置, 如果 tool_result_cache_key 为空, 才是用")
-    data_field: str = Field(default="", description="数据字段，注意设置的 group_by 和 data_field 必须和数据匹配，不要自己生成，如果数据中没有，可以询问用户")
+    data_field: str = Field(
+        default="",
+        description=(
+            "数据字段，注意设置的 group_by 和 data_field 必须和数据匹配，"
+            "不要自己生成，如果数据中没有，可以询问用户"
+        )
+    )
     tool_result_cache_key: str = Field(
-        default="", description=f"{ToolName.from_text2dip_metric.value} 或 {ToolName.from_text2sql.value}工具缓存 key, 其他工具的结果没有意义，key 是一个字符串, 与 data 不能同时设置")
+        default="",
+        description=(
+            f"{ToolName.from_text2dip_metric.value} 或 {ToolName.from_text2sql.value}"
+            "工具缓存 key, 其他工具的结果没有意义，key 是一个字符串, 与 data 不能同时设置"
+        ))
 
 
 _SCHEMA = {
@@ -222,8 +232,7 @@ class Json2Plot(AFTool):
             chart_type = ChartType.LINE
             raise Json2PlotError(
                 reason=f"不支持的图表类型: {kwargs['chart_type']}",
-                detail=f"不支持的图表类型: {kwargs['chart_type']}，请重新生成配置，或重新传入参数，支持的图表类型为: {ChartType.LINE.value}, {ChartType.COLUMN.value}, {ChartType.PIE.value}"
-            )
+                detail=f"不支持的图表类型: {kwargs['chart_type']}，请重新生成配置，或重新传入参数，支持的图表类型为: {ChartType.LINE.value}, {ChartType.COLUMN.value}, {ChartType.PIE.value}")
         else:
             chart_type = _CHART_TYPE_DICT[kwargs["chart_type"]]
 
@@ -422,7 +431,11 @@ class Json2Plot(AFTool):
                                     },
                                     "data": {
                                         "type": "array",
-                                        "description": "用于作图的 JSON 数据，与 tool_result_cache_key 参数不能同时设置。如果 tool_result_cache_key 为空，则使用此参数。数据格式为对象数组，每个对象表示一条数据记录",
+                                        "description": (
+                                            "用于作图的 JSON 数据，与 tool_result_cache_key 参数不能同时设置。"
+                                            "如果 tool_result_cache_key 为空，则使用此参数。"
+                                            "数据格式为对象数组，每个对象表示一条数据记录"
+                                        ),
                                         "items": {
                                             "type": "object",
                                             "additionalProperties": {
@@ -456,7 +469,11 @@ class Json2Plot(AFTool):
                                         },
                                         "chart_config": {
                                             "type": "object",
-                                            "description": "详细图表配置，包含完整的图表渲染参数，如 xField（X轴字段）、yField（Y轴字段）、seriesField（系列字段）、groupField（分组字段）等"
+                                            "description": (
+                                                "详细图表配置，包含完整的图表渲染参数，"
+                                                "如 xField（X轴字段）、yField（Y轴字段）、"
+                                                "seriesField（系列字段）、groupField（分组字段）等"
+                                            )
                                         },
                                         "title": {
                                             "type": "string",

@@ -273,7 +273,6 @@ class ToolResult:
         }
 
 
-
 class LogResult:
     def __init__(
         self,

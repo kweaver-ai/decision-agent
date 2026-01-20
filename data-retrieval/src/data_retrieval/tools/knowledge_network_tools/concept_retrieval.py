@@ -48,8 +48,14 @@ class ConceptRetrieval:
         return prompt
 
     @classmethod
-    def _collect_relation_and_object_types(
-            cls, network_details: Dict[str, Any], session_id: Optional[str] = None, top_k: int = 10) -> Tuple[List, List, Dict, List]:
+    def _collect_relation_and_object_types(cls,
+                                           network_details: Dict[str,
+                                                                 Any],
+                                           session_id: Optional[str] = None,
+                                           top_k: int = 10) -> Tuple[List,
+                                                                     List,
+                                                                     Dict,
+                                                                     List]:
         """
         收集所有关系类型和对象类型
 
@@ -170,8 +176,17 @@ class ConceptRetrieval:
         return prompt
 
     @classmethod
-    async def _call_llm_and_process_results(cls, prompt: str, query: str, objects_mapping: Dict, top_k: int,
-                                            relations_mapping: List[Dict[str, Any]], account_id: str = None, account_type: str = None) -> Tuple[Dict, List[Dict[str, Any]]]:
+    async def _call_llm_and_process_results(cls,
+                                            prompt: str,
+                                            query: str,
+                                            objects_mapping: Dict,
+                                            top_k: int,
+                                            relations_mapping: List[Dict[str,
+                                                                         Any]],
+                                            account_id: str = None,
+                                            account_type: str = None) -> Tuple[Dict,
+                                                                               List[Dict[str,
+                                                                                         Any]]]:
         """
         调用LLM并处理结果，现在处理关系编号而非对象类型编号
 
@@ -239,8 +254,15 @@ class ConceptRetrieval:
         return filtered_objects_mapping, relevant_relations
 
     @classmethod
-    async def _process_object_properties(cls, objects_mapping: Dict[int, Dict[str, Any]], query: str = "",
-                                         session_id: Optional[str] = None, kn_id: Optional[str] = None) -> Dict[int, Dict[str, Any]]:
+    async def _process_object_properties(cls,
+                                         objects_mapping: Dict[int,
+                                                               Dict[str,
+                                                                    Any]],
+                                         query: str = "",
+                                         session_id: Optional[str] = None,
+                                         kn_id: Optional[str] = None) -> Dict[int,
+                                                                              Dict[str,
+                                                                                   Any]]:
         """
         处理对象属性信息，计算属性相关性分数
 
@@ -536,8 +558,18 @@ class ConceptRetrieval:
             return sorted(items, key=lambda x: getattr(x, score_field, 0), reverse=True)
 
     @classmethod
-    async def rank_relation_types(cls, query: str, network_details: Dict[str, Any], top_k: int = 10, additional_context: Optional[str] = None,
-                                  session_id: Optional[str] = None, skip_llm: bool = False, account_id: str = None, account_type: str = None) -> Tuple[Dict, List[Dict[str, Any]]]:
+    async def rank_relation_types(cls,
+                                  query: str,
+                                  network_details: Dict[str,
+                                                        Any],
+                                  top_k: int = 10,
+                                  additional_context: Optional[str] = None,
+                                  session_id: Optional[str] = None,
+                                  skip_llm: bool = False,
+                                  account_id: str = None,
+                                  account_type: str = None) -> Tuple[Dict,
+                                                                     List[Dict[str,
+                                                                               Any]]]:
         """
         使用LLM对关系类型进行相关性排序
 

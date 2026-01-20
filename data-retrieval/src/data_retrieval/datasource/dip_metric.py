@@ -69,7 +69,8 @@ _QUERY_TYPE = [
 #     "description": "指定的步长无效",
 #     "solution": "请检查参数是否正确。",
 #     "error_link": "暂无",
-#     "error_details": "expect steps is one of {[15s 30s 1m 2m 5m 10m 15m 20m 30m 1h 2h 3h 6h 12h 1d 1y minute hour day week month quarter year]}, actaul is 1w"
+#     "error_details": "expect steps is one of {[15s 30s 1m 2m 5m 10m 15m 20m 30m 1h 2h 3h
+#                       6h 12h 1d 1y minute hour day week month quarter year]}, actaul is 1w"
 # }
 _TIME_GRANULARITY_PROMSQL = "15s 30s 1m 2m 5m 10m 15m 20m 30m 1h 2h 3h 6h 12h 1d 1y".split(" ")
 _TIME_GRANULARITY_PROMSQL_DEFAULT = "1h"
@@ -303,7 +304,8 @@ class DIPMetric(APIDataSource):
                     if "time_granularity" in metric_params["sameperiod_config"]:
                         if metric_params["sameperiod_config"]["time_granularity"] not in _TIME_GRANULARITY_SAMEPERIOD:
                             logger.warning(
-                                f"指标 {metric_id} 的同环比参数为空，已移除, 默认设置为 sameperiod, 原参数: {metric_params['sameperiod_config']['time_granularity']}")
+                                f"指标 {metric_id} 的同环比参数为空，已移除, 默认设置为 sameperiod, "
+                                f"原参数: {metric_params['sameperiod_config']['time_granularity']}")
                             metric_params["sameperiod_config"]["time_granularity"] = "month"
                     else:
                         metric_params["sameperiod_config"]["time_granularity"] = "month"

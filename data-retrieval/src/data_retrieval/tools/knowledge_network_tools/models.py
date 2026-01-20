@@ -41,12 +41,24 @@ class SemanticInstanceRetrievalConfig(BaseModel):
     initial_candidate_count: int = Field(
         default=50,
         ge=1,
-        description="语义实例召回的初始召回数量上限（重排序前的候选数量）。作用阶段：基础召回阶段，在调用API时使用。作用：控制从知识网络API中初始召回多少个候选实例，这些候选实例会经过向量重排序后筛选出per_type_instance_limit个。建议值：一般设置为per_type_instance_limit的3-5倍，确保有足够的候选进行重排序。"
+        description=(
+            "语义实例召回的初始召回数量上限（重排序前的候选数量）。"
+            "作用阶段：基础召回阶段，在调用API时使用。"
+            "作用：控制从知识网络API中初始召回多少个候选实例，"
+            "这些候选实例会经过向量重排序后筛选出per_type_instance_limit个。"
+            "建议值：一般设置为per_type_instance_limit的3-5倍，确保有足够的候选进行重排序。"
+        )
     )
     per_type_instance_limit: int = Field(
         default=5,
         ge=1,
-        description="每个对象类型最终返回的实例数量上限（重排序后的数量）。作用阶段：基础召回阶段。作用范围：每个对象类型单独控制。例如：如果有3个对象类型，每个对象类型最多返回per_type_instance_limit个实例，总共最多返回3×per_type_instance_limit个实例。注意：此参数在基础模式和增强模式的基础召回阶段都会使用。"
+        description=(
+            "每个对象类型最终返回的实例数量上限（重排序后的数量）。"
+            "作用阶段：基础召回阶段。作用范围：每个对象类型单独控制。"
+            "例如：如果有3个对象类型，每个对象类型最多返回per_type_instance_limit个实例，"
+            "总共最多返回3×per_type_instance_limit个实例。"
+            "注意：此参数在基础模式和增强模式的基础召回阶段都会使用。"
+        )
     )
 
     # -----------------------------------------------------
@@ -93,7 +105,13 @@ class SemanticInstanceRetrievalConfig(BaseModel):
         default=0.3,
         ge=0.0,
         le=1.0,
-        description="直接相关性最低阈值（0-1之间）。作用：过滤掉直接相关性分数低于此阈值的实例。直接相关性分数是使用Rerank模型计算的实例与查询的语义相似度。增大此值会过滤更严格，只保留高相关性实例；减小此值会过滤更宽松，保留更多实例。"
+        description=(
+            "直接相关性最低阈值（0-1之间）。"
+            "作用：过滤掉直接相关性分数低于此阈值的实例。"
+            "直接相关性分数是使用Rerank模型计算的实例与查询的语义相似度。"
+            "增大此值会过滤更严格，只保留高相关性实例；"
+            "减小此值会过滤更宽松，保留更多实例。"
+        )
     )
 
     # -----------------------------------------------------

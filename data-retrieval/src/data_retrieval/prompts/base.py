@@ -49,9 +49,12 @@ class BasePrompt(BaseModel, ABC):
         return ""
 
     def render(self, remove_lines=True, escape_braces=False) -> str:
-        """Render the prompt with Jinja2 template engine
+        """Render the prompt with Jinja2 template engine.
+
+        Args:
             remove_lines: if True, the prompt will be removed empty lines
-            escape_braces: if True, the prompt will be escaped with {{ and }}, because langchain need f-string, and {} must be escaped to {{ and }}
+            escape_braces: if True, the prompt will be escaped with {{ and }},
+                because langchain need f-string, and {} must be escaped to {{ and }}
         """
 
         # disable autoescape here in safety case

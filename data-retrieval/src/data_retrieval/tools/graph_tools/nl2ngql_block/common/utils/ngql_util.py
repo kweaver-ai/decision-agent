@@ -180,7 +180,11 @@ class SchemaParser(object):
         """
         self.space_name = intermediate_result.nebula_params["dbname"]
         self.nebula_engine = intermediate_result.nebula_params["nebula_engine"]
-        sql_template = """MATCH (v1:{label}) WITH v1.{label}.{prop} AS m1,  count(v1.{label}.{prop}) as count_{prop} order by count_{prop} DESC LIMIT 5 RETURN m1, count_{prop}"""
+        sql_template = (
+            "MATCH (v1:{label}) WITH v1.{label}.{prop} AS m1,  "
+            "count(v1.{label}.{prop}) as count_{prop} order by count_{prop} DESC "
+            "LIMIT 5 RETURN m1, count_{prop}"
+        )
         filter_entity = []
         filter_edge = []
         filter_schema_res = {

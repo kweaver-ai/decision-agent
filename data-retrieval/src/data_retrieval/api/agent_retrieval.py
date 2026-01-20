@@ -120,7 +120,9 @@ async def get_datasource_from_agent_retrieval_async(
     # }
 
     logger.info(
-        f"get_datasource_from_agent_retrieval_async kn_id: {kn_id}, query: {query}, prev_queries: {prev_queries}, headers: {headers}, base_url: {base_url}, max_concepts: {max_concepts}")
+        f"get_datasource_from_agent_retrieval_async kn_id: {kn_id}, query: {query}, "
+        f"prev_queries: {prev_queries}, headers: {headers}, base_url: {base_url}, "
+        f"max_concepts: {max_concepts}")
 
     if not kn_id:
         return [], [], []

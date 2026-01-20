@@ -40,7 +40,7 @@ class OpenDocService(object):
                     "doc_id": "525F15FAA5A14428B43D40DC9FFD5E23",
                     "version": "897981BF180B4C419D6A49E0C05F0350",
                     "status": "completed",
-                    "url": "https://10.4.131.229:443/Miachen/0606f1b1-78d9-4828-9ac2-5aedc032e90c/897981BF180B4C419D6A49E0C05F0350/sub/66e9f87602d31d3e70618182f246325c?AWSAccessKeyId=Miachen&Expires=1726881780&Signature=blygHGniqQ14%2fj1oczctSdLxMJA%3d"
+                    "url": "https://10.4.131.229:443/Miachen/..."  # noqa: E501
                 }
                 '''
                 if resp['status'] != 'completed':

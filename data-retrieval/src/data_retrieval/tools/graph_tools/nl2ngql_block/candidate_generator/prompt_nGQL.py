@@ -46,7 +46,8 @@ prompt_generate_nGQL = """
 3.生成的nGQL条件匹配时，不要使用=~正则匹配，尽量使用contains。
 4.如果问题需要多个nGQL查询语句，请先生成第一个子问题的查询语句即可，不要生成多个。
 5.有些问题一个查询语句不能直接解决问题，可以提供一些中间线索即可，最后再让人工来判断，来回答问题即可。
-6.如果schema中只有entity没有edge，可以生成只查询单个节点的nGQL语句，例如：MATCH (v1:person) WHERE v1.person.name contains "张三" RETURN v1.person.name
+6.如果schema中只有entity没有edge，可以生成只查询单个节点的nGQL语句，\
+例如：MATCH (v1:person) WHERE v1.person.name contains "张三" RETURN v1.person.name
 
 
 question: {question}

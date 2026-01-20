@@ -180,8 +180,17 @@ class KnowledgeNetworkRetrievalTool:
         return compact_result
 
     @classmethod
-    async def _build_final_result(cls, relevant_concepts: Tuple[Dict, List[Dict[str, Any]]], network_details: Dict[str, Any],
-                                  session_id: Optional[str] = None, skip_llm: bool = False, return_union: bool = True) -> Dict[str, List[Dict[str, Any]]]:
+    async def _build_final_result(cls,
+                                  relevant_concepts: Tuple[Dict,
+                                                           List[Dict[str,
+                                                                     Any]]],
+                                  network_details: Dict[str,
+                                                        Any],
+                                  session_id: Optional[str] = None,
+                                  skip_llm: bool = False,
+                                  return_union: bool = True) -> Dict[str,
+                                                                     List[Dict[str,
+                                                                               Any]]]:
         """
         构建最终检索结果
 
@@ -248,7 +257,9 @@ class KnowledgeNetworkRetrievalTool:
             if not object_type_primary_keys and object_types_list:
                 # 如果object_types存在但没有找到主键，记录警告
                 logger.warning(
-                    f"从network_details中找到 {len(object_types_list)} 个对象类型，但未找到任何主键信息。第一个对象类型的keys: {list(object_types_list[0].keys()) if object_types_list and len(object_types_list) > 0 else 'empty'}")
+                    f"从network_details中找到 {len(object_types_list)} 个对象类型，"
+                    f"但未找到任何主键信息。第一个对象类型的keys: "
+                    f"{list(object_types_list[0].keys()) if object_types_list and len(object_types_list) > 0 else 'empty'}")
             elif not object_types_list:
                 logger.warning(
                     f"network_details中未找到object_types字段，network_details的keys: {list(network_details.keys())}")
@@ -355,7 +366,10 @@ class KnowledgeNetworkRetrievalTool:
             else:
                 # 只返回当前轮次新增的结果（增量结果）
                 # 获取当前轮次号（保存后，当前轮次已经存在于记录中）
-                current_records = RetrievalSessionManager._session_records[session_id][current_kn_id]["retrieval_results"]
+                current_records = (
+                    RetrievalSessionManager._session_records[session_id]
+                    [current_kn_id]["retrieval_results"]
+                )
                 all_rounds = RetrievalSessionManager._get_rounds_for_kn(current_records)
                 current_round = max(all_rounds) if all_rounds else 1
 
@@ -413,7 +427,9 @@ class KnowledgeNetworkRetrievalTool:
                     "relation_types": incremental_relation_types
                 }
                 logger.info(
-                    f"获取知识网络 {current_kn_id} 第{current_round}轮的增量结果，新增对象类型: {len(incremental_object_types)} 项，新增关系类型: {len(incremental_relation_types)} 项")
+                    f"获取知识网络 {current_kn_id} 第{current_round}轮的增量结果，"
+                    f"新增对象类型: {len(incremental_object_types)} 项，"
+                    f"新增关系类型: {len(incremental_relation_types)} 项")
 
             # 输出会话统计信息
             session_info = RetrievalSessionManager.get_session_info()
@@ -422,11 +438,24 @@ class KnowledgeNetworkRetrievalTool:
         return final_result
 
     @classmethod
-    async def retrieve(cls, query: str, top_k: int = 10, kn_ids: List[Any] = None,
-                       additional_context: Optional[str] = None, session_id: Optional[str] = None,
-                       headers: Optional[Dict[str, str]] = None, skip_llm: bool = False,
-                       compact_format: bool = True, return_union: bool = True,
-                       enable_keyword_context: bool = False, object_type_id: Optional[str] = None) -> tuple[Union[Dict[str, List[Dict[str, Any]]], Dict[str, Any]], float]:
+    async def retrieve(cls,
+                       query: str,
+                       top_k: int = 10,
+                       kn_ids: List[Any] = None,
+                       additional_context: Optional[str] = None,
+                       session_id: Optional[str] = None,
+                       headers: Optional[Dict[str,
+                                              str]] = None,
+                       skip_llm: bool = False,
+                       compact_format: bool = True,
+                       return_union: bool = True,
+                       enable_keyword_context: bool = False,
+                       object_type_id: Optional[str] = None) -> tuple[Union[Dict[str,
+                                                                                 List[Dict[str,
+                                                                                           Any]]],
+                                                                            Dict[str,
+                                                                      Any]],
+                                                                      float]:
         """
         执行知识网络检索
 
@@ -524,7 +553,8 @@ class KnowledgeNetworkRetrievalTool:
             # 原有的schema召回流程
             # 使用KnowledgeNetworkRetrieval获取相关知识网络和详情，目前只会获取一个知识网络
             network_details = await KnowledgeNetworkRetrieval._rank_knowledge_networks(
-                query, top_k, additional_context, headers, session_id, kn_id_list, account_id=account_id, account_type=account_type
+                query, top_k, additional_context, headers, session_id, kn_id_list,
+                account_id=account_id, account_type=account_type
             )
             logger.info("获取知识网络详情")
 
@@ -536,9 +566,11 @@ class KnowledgeNetworkRetrievalTool:
             logger.info("筛选出相关概念")
 
             # 步骤5: 构建最终的检索结果
-            final_result = await cls._build_final_result(relevant_concepts, network_details, session_id, skip_llm, return_union)
+            final_result = await cls._build_final_result(
+                relevant_concepts, network_details, session_id, skip_llm, return_union)
             logger.info(
-                f"构建完成，对象类型: {len(final_result.get('object_types', []))} 项，关系类型: {len(final_result.get('relation_types', []))} 项")
+                f"构建完成，对象类型: {len(final_result.get('object_types', []))} 项，"
+                f"关系类型: {len(final_result.get('relation_types', []))} 项")
 
             execution_time = time.time() - start_time
             logger.info(f"知识网络检索完成，执行时间: {execution_time:.2f}秒")
@@ -744,7 +776,10 @@ class KnowledgeNetworkRetrievalTool:
                                     },
                                     "return_union": {
                                         "type": "boolean",
-                                        "description": "多轮检索时是否返回并集结果。True返回所有轮次的并集（默认），False只返回当前轮次新增的结果（增量结果），用于减少上下文长度",
+                                        "description": (
+                                            "多轮检索时是否返回并集结果。True返回所有轮次的并集（默认），"
+                                            "False只返回当前轮次新增的结果（增量结果），用于减少上下文长度"
+                                        ),
                                         "default": True
                                     }
                                 },
@@ -849,7 +884,10 @@ class KnowledgeNetworkRetrievalTool:
                             "application/json": {
                                 "schema": {
                                     "type": "object",
-                                    "description": "检索结果。根据compact_format参数返回不同格式：True返回紧凑格式（objects/relations），False返回完整格式（object_types/relation_types）",
+                                    "description": (
+                                        "检索结果。根据compact_format参数返回不同格式：True返回紧凑格式"
+                                        "（objects/relations），False返回完整格式（object_types/relation_types）"
+                                    ),
                                     "properties": {
                                         "object_types": {
                                             "type": "array",

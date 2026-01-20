@@ -24,9 +24,11 @@ _SETTINGS = get_settings()
 _DESCS = {
     "tool_description": {
         "cn": "根据输入的文本，获取知识条目信息，知识条目可用于为其他工具提供背景知识",
-        "en": "Get knowledge item information based on the input text, knowledge items can be used to provide background knowledge for other tools",
-    }
-}
+        "en": (
+            "Get knowledge item information based on the input text, "
+            "knowledge items can be used to provide background knowledge for other tools"
+        ),
+    }}
 
 
 class KnowledgeItemInput(BaseModel):
@@ -124,7 +126,10 @@ class KnowledgeItemTool(AFTool):
                 message = ""
                 items = knowledge_item.get("items", [])
                 if len(items) > _SETTINGS.KNOWLEDGE_ITEM_HARD_LIMIT:
-                    message = f"知识条目 {knowledge_item['name']} 的 items 数量超过 {_SETTINGS.KNOWLEDGE_ITEM_HARD_LIMIT}，超过部分不参与检索"
+                    message = (
+                        f"知识条目 {knowledge_item['name']} 的 items 数量超过 "
+                        f"{_SETTINGS.KNOWLEDGE_ITEM_HARD_LIMIT}，超过部分不参与检索"
+                    )
                     logger.warning(message)
 
                 items = items[:_SETTINGS.KNOWLEDGE_ITEM_HARD_LIMIT]

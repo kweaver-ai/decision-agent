@@ -60,8 +60,18 @@ _DESCS = {
         "en": "tables to query",
     },
     "tool_description": {
-        "cn": "根据用户输入的文本和数据视图信息来生成 SQL 语句，并查询数据库。注意: input参数只接受问题，不接受SQL。工具具有更优秀的SQL生成能力，你只需要告诉工具需要查询的内容即可。有时用户只需要生成SQL，不需要查询，需要给出解释\n注意：为了节省 token 数，输出的结果可能不完整，这是正常情况。data_desc 对象来记录返回数据条数和实际结果条数",
-        "en": "Generate SQL according to user's input, the result has a data_desc object to record the number of returned data and the actual number of results, please tell the user to check the detailed data, the application will get it",
+        "cn": (
+            "根据用户输入的文本和数据视图信息来生成 SQL 语句，并查询数据库。"
+            "注意: input参数只接受问题，不接受SQL。工具具有更优秀的SQL生成能力，"
+            "你只需要告诉工具需要查询的内容即可。有时用户只需要生成SQL，不需要查询，需要给出解释\n"
+            "注意：为了节省 token 数，输出的结果可能不完整，这是正常情况。"
+            "data_desc 对象来记录返回数据条数和实际结果条数"
+        ),
+        "en": (
+            "Generate SQL according to user's input, the result has a data_desc object to record the number of "
+            "returned data and the actual number of results, please tell the user to check the detailed data, "
+            "the application will get it"
+        ),
     },
     "chat_history": {
         "cn": "对话历史",
@@ -100,8 +110,15 @@ class Text2SQLInput(BaseModel):
 
 
 class Text2SQLInputWithViewList(Text2SQLInput):
+    view_list_description = (
+        "数据视图的列表，当已经初始化过虚拟视图列表时，不需要填写该参数。"
+        "如果需要填写该参数，请确保`上下文缓存的数据资源中存在`，不要随意生成。"
+        f"格式如下：{DataViewDescSchema.schema_json(ensure_ascii=False)}"
+    )
     view_list: Optional[List[DataViewDescSchema]] = Field(
-        default=[], description=f"数据视图的列表，当已经初始化过虚拟视图列表时，不需要填写该参数。如果需要填写该参数，请确保`上下文缓存的数据资源中存在`，不要随意生成。格式如下：{DataViewDescSchema.schema_json(ensure_ascii=False)}")
+        default=[],
+        description=view_list_description,
+    )
 
 
 class ActionType(str, Enum):
@@ -1112,15 +1129,24 @@ class Text2SQLTool(LLMTool):
                                             },
                                             'search_scope': {
                                                 'type': 'array',
-                                                'description': '知识网络搜索范围，支持 object_types, relation_types, action_types',
+                                                'description': (
+                                                    '知识网络搜索范围，支持 object_types, relation_types, action_types'
+                                                ),
                                                 'items': {
                                                     'type': 'string'
                                                 }
                                             },
                                             'recall_mode': {
                                                 'type': 'string',
-                                                'description': '召回模式，支持 keyword_vector_retrieval(默认), agent_intent_planning, agent_intent_retrieval',
-                                                'enum': ['keyword_vector_retrieval', 'agent_intent_planning', 'agent_intent_retrieval'],
+                                                'description': (
+                                                    '召回模式，支持 keyword_vector_retrieval(默认), '
+                                                    'agent_intent_planning, agent_intent_retrieval'
+                                                ),
+                                                'enum': [
+                                                    'keyword_vector_retrieval',
+                                                    'agent_intent_planning',
+                                                    'agent_intent_retrieval'
+                                                ],
                                                 'default': 'keyword_vector_retrieval'
                                             }
                                         },
@@ -1155,7 +1181,10 @@ class Text2SQLTool(LLMTool):
                                     },
                                     "inner_llm": {
                                         "type": "object",
-                                        "description": "内部语言模型配置，用于指定内部使用的 LLM 模型参数，如模型ID、名称、温度、最大token数等。支持通过模型工厂配置模型"
+                                        "description": (
+                                            "内部语言模型配置，用于指定内部使用的 LLM 模型参数，如模型ID、名称、温度、"
+                                            "最大token数等。支持通过模型工厂配置模型"
+                                        )
                                     },
                                     "config": {
                                         "type": "object",
@@ -1187,32 +1216,50 @@ class Text2SQLTool(LLMTool):
                                             },
                                             "rewrite_query": {
                                                 "type": "boolean",
-                                                "description": "是否重写用户输入的自然语言查询，即在生成 SQL 时，根据数据源的描述和样本数据，重写用户输入的自然语言查询，以更符合数据源的实际情况",
+                                                "description": (
+                                                    "是否重写用户输入的自然语言查询，即在生成 SQL 时，根据数据源的描述和样本数据，"
+                                                    "重写用户输入的自然语言查询，以更符合数据源的实际情况"
+                                                ),
                                                 "default": False
                                             },
                                             "view_num_limit": {
                                                 "type": "integer",
-                                                "description": "给大模型选择时引用视图数量限制，-1表示不限制，原因是数据源包含大量视图，可能导致大模型上下文token超限，内置的召回算法会自动筛选最相关的视图",
+                                                "description": (
+                                                    "给大模型选择时引用视图数量限制，-1表示不限制，原因是数据源包含大量视图，"
+                                                    "可能导致大模型上下文token超限，内置的召回算法会自动筛选最相关的视图"
+                                                ),
                                                 "default": 5
                                             },
                                             "dimension_num_limit": {
                                                 "type": "integer",
-                                                "description": f"给大模型选择时维度数量限制，-1表示不限制, 系统默认为 {_SETTINGS.TEXT2SQL_DIMENSION_NUM_LIMIT}",
+                                                "description": (
+                                                    "给大模型选择时维度数量限制，-1表示不限制, "
+                                                    f"系统默认为 {_SETTINGS.TEXT2SQL_DIMENSION_NUM_LIMIT}"
+                                                ),
                                                 "default": _SETTINGS.TEXT2SQL_DIMENSION_NUM_LIMIT
                                             },
                                             "force_limit": {
                                                 "type": "integer",
-                                                "description": f"生成的 SQL 的 LIMIT 子句限制，-1表示不限制, 系统默认为 {_SETTINGS.TEXT2SQL_FORCE_LIMIT}",
+                                                "description": (
+                                                    "生成的 SQL 的 LIMIT 子句限制，-1表示不限制, "
+                                                    f"系统默认为 {_SETTINGS.TEXT2SQL_FORCE_LIMIT}"
+                                                ),
                                                 "default": _SETTINGS.TEXT2SQL_FORCE_LIMIT
                                             },
                                             "return_record_limit": {
                                                 "type": "integer",
-                                                "description": "SQL 执行后返回数据条数限制，-1表示不限制，原因是SQL执行后返回大量数据，可能导致大模型上下文token超限",
+                                                "description": (
+                                                    "SQL 执行后返回数据条数限制，-1表示不限制，原因是SQL执行后返回大量数据，"
+                                                    "可能导致大模型上下文token超限"
+                                                ),
                                                 "default": -1
                                             },
                                             "return_data_limit": {
                                                 "type": "integer",
-                                                "description": "SQL 执行后返回数据总量限制，单位是字节，-1表示不限制，原因是SQL执行后返回大量数据，可能导致大模型上下文token超限",
+                                                "description": (
+                                                    "SQL 执行后返回数据总量限制，单位是字节，-1表示不限制，原因是SQL执行后"
+                                                    "返回大量数据，可能导致大模型上下文token超限"
+                                                ),
                                                 "default": -1
                                             }
                                         }

@@ -39,9 +39,8 @@ class _CacheMixin(_SessionBase):
         return None
 
     @classmethod
-    def set_concept_retrieval_cache(
-        cls, session_id: str, kn_id: str, query: str, relevant_concepts: Tuple[Any, Any], network_details: Dict[str, Any]
-    ) -> None:
+    def set_concept_retrieval_cache(cls, session_id: str, kn_id: str, query: str,
+                                    relevant_concepts: Tuple[Any, Any], network_details: Dict[str, Any]) -> None:
         if not session_id or not kn_id or not query:
             return
         cls._update_session_access_time(session_id)

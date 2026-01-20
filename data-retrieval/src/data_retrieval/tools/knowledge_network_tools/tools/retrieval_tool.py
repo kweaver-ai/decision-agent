@@ -471,8 +471,7 @@ class KnowledgeNetworkRetrievalTool:
                             if len(keywords_for_search) > 1:
                                 logger.info(
                                     f"开始多关键词候选召回（合并请求），关键词数={len(keywords_for_search)}，对象类型数={len(object_types_for_retrieval)}, "
-                                    f"candidate_limit={semantic_candidate_limit}"
-                                )
+                                    f"candidate_limit={semantic_candidate_limit}")
                                 candidate_instance_map = await SemanticInstanceRetrieval.semantic_retrieve_candidates_for_all_multi_keyword(
                                     full_query=query,
                                     keywords=keywords_for_search,
@@ -526,8 +525,7 @@ class KnowledgeNetworkRetrievalTool:
                                 async def _run_kw(kw: str) -> Tuple[str, Dict[str, List[Dict[str, Any]]]]:
                                     logger.info(
                                         f"开始语义实例召回（并发关键词），关键词='{kw}'，对象类型数={len(object_types_for_retrieval)}, "
-                                        f"per_type_instance_limit={semantic_per_type_limit}, candidate_limit={semantic_candidate_limit}"
-                                    )
+                                        f"per_type_instance_limit={semantic_per_type_limit}, candidate_limit={semantic_candidate_limit}")
                                     kw_map = await SemanticInstanceRetrieval.semantic_retrieve_instances_for_all(
                                         query=kw,
                                         object_types=object_types_for_retrieval,

@@ -46,7 +46,11 @@ class JsonText2SQLRuleBaseParser(BaseJsonParser):
 
     def _parse_str_2_json(self, result):
         # 字符串的格式如下
-        # '```sql\nSELECT COUNT(*) \nFROM vdm_maria_31sn42r0.default.fruittypes \nWHERE name LIKE \'%葡萄%\';\n```\n\n\n{\n    "sql": "SELECT COUNT(*) \\nFROM `vdm_maria_31sn42r0.default.fruittypes` \\nWHERE `name` LIKE \'%葡萄%\'",\n    "explanation": "这条SQL语句的目的是查询`fruittypes`表中所有包含\\"葡萄\\"字样的记录数量。使用了LIKE关键字和百分号通配符（%）来匹配包含\\"葡萄\\"的水果种类名称。"\n}'
+        # '```sql\nSELECT COUNT(*) \nFROM vdm_maria_31sn42r0.default.fruittypes \n
+        # WHERE name LIKE \'%葡萄%\';\n```\n\n\n{\n    "sql": "SELECT COUNT(*) \\n
+        # FROM `vdm_maria_31sn42r0.default.fruittypes` \\nWHERE `name` LIKE \'%葡萄%\'",
+        # \n    "explanation": "这条SQL语句的目的是查询`fruittypes`表中所有包含\\"葡萄\\"
+        # 字样的记录数量。使用了LIKE关键字和百分号通配符（%）来匹配包含\\"葡萄\\"的水果种类名称。"\n}'
 
         res = {
             "sql": "",

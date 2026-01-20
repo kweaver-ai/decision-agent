@@ -44,7 +44,8 @@ class ObjectTypeConfig(BaseModel):
     """对象类型配置"""
     id: str = Field(description="对象类型ID")
     condition: Optional[Any] = Field(
-        default=None, description="查询条件，统一使用sub_conditions结构。格式：{operation: 'and', sub_conditions: [{field: '...', operation: '==', value: '...', value_from: 'const'}]}。支持ConditionConfig对象或字典格式（字典格式可用于KNN等需要额外参数的操作符）")
+        default=None,
+        description="查询条件，统一使用sub_conditions结构。格式：{operation: 'and', sub_conditions: [{field: '...', operation: '==', value: '...', value_from: 'const'}]}。支持ConditionConfig对象或字典格式（字典格式可用于KNN等需要额外参数的操作符）")
     limit: Optional[int] = Field(default=50, description="返回结果数量限制（默认值50，最大不超过100，用于控制token消耗）")
     properties: Optional[List[str]] = Field(default=None, description="需要返回的属性列表，只有指定了properties的对象才会在结果中保留")
 

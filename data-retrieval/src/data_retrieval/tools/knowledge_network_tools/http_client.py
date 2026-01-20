@@ -17,8 +17,16 @@ class KnowledgeNetworkHTTPClient:
     """知识网络HTTP客户端"""
 
     @classmethod
-    async def _make_http_request(cls, url: str, method: str = "GET", params: Optional[Dict[str, Any]] = None,
-                                 json_data: Optional[Dict[str, Any]] = None, headers: Optional[Dict[str, str]] = None) -> Optional[Dict[str, Any]]:
+    async def _make_http_request(cls,
+                                 url: str,
+                                 method: str = "GET",
+                                 params: Optional[Dict[str,
+                                                       Any]] = None,
+                                 json_data: Optional[Dict[str,
+                                                          Any]] = None,
+                                 headers: Optional[Dict[str,
+                                                        str]] = None) -> Optional[Dict[str,
+                                                                                       Any]]:
         """
         通用HTTP请求方法
 

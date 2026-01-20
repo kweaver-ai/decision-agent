@@ -155,9 +155,7 @@ class CreateFileTool(BaseSandboxTool):
                     "content": "def fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)\n\n# 计算前10个斐波那契数\nfor i in range(10):\n    print(f'F({i}) = {fibonacci(i)}')",
                     "filename": "fibonacci.py",
                     "server_url": "http://localhost:8080",
-                    "session_id": "test_session_123"
-                }
-            },
+                    "session_id": "test_session_123"}},
             "create_from_cache": {
                 "summary": "从缓存创建文件",
                 "description": "使用缓存中的数据创建文件",
@@ -165,9 +163,6 @@ class CreateFileTool(BaseSandboxTool):
                     "filename": "data.json",
                     "result_cache_key": "cached_data_123",
                     "server_url": "http://localhost:8080",
-                    "session_id": "test_session_123"
-                }
-            }
-        }
+                    "session_id": "test_session_123"}}}
 
         return base_schema

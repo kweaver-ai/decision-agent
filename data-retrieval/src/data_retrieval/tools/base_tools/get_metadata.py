@@ -474,7 +474,10 @@ class GetMetadataTool(AFTool):
                                             },
                                             "kn": {
                                                 "type": "array",
-                                                "description": "知识网络配置参数（新版本），用于从知识网络中获取数据源。注意：kn 可以获取数据视图（data_view）和指标（metric）",
+                                                "description": (
+                                                    "知识网络配置参数（新版本），用于从知识网络中获取数据源。"
+                                                    "注意：kn 可以获取数据视图（data_view）和指标（metric）"
+                                                ),
                                                 "items": {
                                                     "type": "object",
                                                     "properties": {
@@ -495,15 +498,24 @@ class GetMetadataTool(AFTool):
                                             },
                                             "search_scope": {
                                                 "type": "array",
-                                                "description": "知识网络搜索范围，支持 object_types, relation_types, action_types",
+                                                "description": (
+                                                    "知识网络搜索范围，支持 object_types, relation_types, action_types"
+                                                ),
                                                 "items": {
                                                     "type": "string"
                                                 }
                                             },
                                             "recall_mode": {
                                                 "type": "string",
-                                                "description": "召回模式，支持 keyword_vector_retrieval(默认), agent_intent_planning, agent_intent_retrieval",
-                                                "enum": ["keyword_vector_retrieval", "agent_intent_planning", "agent_intent_retrieval"],
+                                                "description": (
+                                                    "召回模式，支持 keyword_vector_retrieval(默认), "
+                                                    "agent_intent_planning, agent_intent_retrieval"
+                                                ),
+                                                "enum": [
+                                                    "keyword_vector_retrieval",
+                                                    "agent_intent_planning",
+                                                    "agent_intent_retrieval",
+                                                ],
                                                 "default": "keyword_vector_retrieval"
                                             }
                                         },
@@ -525,12 +537,18 @@ class GetMetadataTool(AFTool):
                                             },
                                             "dimension_num_limit": {
                                                 "type": "integer",
-                                                "description": f"维度数量限制，-1表示不限制, 系统默认为 {_SETTINGS.TEXT2SQL_DIMENSION_NUM_LIMIT}",
+                                                "description": (
+                                                    "维度数量限制，-1表示不限制, "
+                                                    f"系统默认为 {_SETTINGS.TEXT2SQL_DIMENSION_NUM_LIMIT}"
+                                                ),
                                                 "default": _SETTINGS.TEXT2SQL_DIMENSION_NUM_LIMIT
                                             },
                                             "ds_type": {
                                                 "type": "string",
-                                                "description": "数据源类型过滤，data_view 表示只获取数据视图，metric 表示只获取指标，all 或不指定则获取所有类型",
+                                                "description": (
+                                                    "数据源类型过滤，data_view 表示只获取数据视图，"
+                                                    "metric 表示只获取指标，all 或不指定则获取所有类型"
+                                                ),
                                                 "enum": ["data_view", "metric", "all"]
                                             },
                                             "session_type": {

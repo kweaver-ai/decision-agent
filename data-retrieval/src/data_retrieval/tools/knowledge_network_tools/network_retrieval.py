@@ -30,9 +30,17 @@ class KnowledgeNetworkRetrieval:
         pass
 
     @classmethod
-    async def _filter_all_relation_paths_with_rerank(cls, query: str, kn_ids: List[str],
-                                                     network_details: Dict[str, Dict[str, Any]], session_id: Optional[str] = None,
-                                                     top_k_per_network: int = 3, top_k_total: int = 10) -> Dict[str, List[Dict[str, Any]]]:
+    async def _filter_all_relation_paths_with_rerank(cls,
+                                                     query: str,
+                                                     kn_ids: List[str],
+                                                     network_details: Dict[str,
+                                                                           Dict[str,
+                                                                                Any]],
+                                                     session_id: Optional[str] = None,
+                                                     top_k_per_network: int = 3,
+                                                     top_k_total: int = 10) -> Dict[str,
+                                                                                    List[Dict[str,
+                                                                                              Any]]]:
         """
         一次性对所有知识网络的关系路径进行向量重排序，为每个知识网络选择前top_k_per_network个关系路径，最终选择top_k_total个最相关的关系路径
 
@@ -238,8 +246,19 @@ class KnowledgeNetworkRetrieval:
         return formatted_paths
 
     @classmethod
-    async def _build_knowledge_network_prompt(cls, query: str, kn_ids: List[str],
-                                              network_details: Dict[str, Dict[str, Any]], filtered_relations_by_kn: Dict[str, List[Dict[str, Any]]], additional_context: Optional[str] = None, session_id: str = None) -> tuple[str, Dict[int, str]]:
+    async def _build_knowledge_network_prompt(cls,
+                                              query: str,
+                                              kn_ids: List[str],
+                                              network_details: Dict[str,
+                                                                    Dict[str,
+                                                                         Any]],
+                                              filtered_relations_by_kn: Dict[str,
+                                                                             List[Dict[str,
+                                                                                       Any]]],
+                                              additional_context: Optional[str] = None,
+                                              session_id: str = None) -> tuple[str,
+                                                                               Dict[int,
+                                                                                    str]]:
         """
         构建知识网络排序提示词
 
@@ -290,8 +309,18 @@ class KnowledgeNetworkRetrieval:
         return prompt, kn_mapping
 
     @classmethod
-    async def _rank_knowledge_networks(cls, query: str, top_k: int,
-                                       additional_context: Optional[str] = None, headers: Optional[Dict[str, str]] = None, session_id: str = None, kn_ids: List[str] = None, account_id: str = None, account_type: str = None) -> Tuple[List[str], List[Dict[str, Any]]]:
+    async def _rank_knowledge_networks(cls,
+                                       query: str,
+                                       top_k: int,
+                                       additional_context: Optional[str] = None,
+                                       headers: Optional[Dict[str,
+                                                              str]] = None,
+                                       session_id: str = None,
+                                       kn_ids: List[str] = None,
+                                       account_id: str = None,
+                                       account_type: str = None) -> Tuple[List[str],
+                                                                          List[Dict[str,
+                                                                                    Any]]]:
         """
         使用LLM对知识网络进行相关性排序，或者直接使用指定的知识网络ID列表
 

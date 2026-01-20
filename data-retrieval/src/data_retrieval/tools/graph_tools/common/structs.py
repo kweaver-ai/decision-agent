@@ -193,7 +193,13 @@ class AgentConfig:
                     "tool_use_description": "将用户问题的自然语言转为图数据库查询的NGQL查询语句，并返回查询结果。"
                 }
             ],
-            "user_prompt": "现在我给你图谱召回的结果，请你先判断图谱召回的结果是否能回答问题，如果可以，组织答案后返回，如果不能直接回答问题，请调用工具回答问题。\n用户的问题 query = {{query}}\n图谱召回的结果 schema_linking_res = {{retriver_output}}\n\n{{1_tool_use}}{{2_format_constraint}}开始！\n\nQuestion： {{query}}",
+            "user_prompt": (
+                "现在我给你图谱召回的结果，请你先判断图谱召回的结果是否能回答问题，"
+                "如果可以，组织答案后返回，如果不能直接回答问题，请调用工具回答问题。\n"
+                "用户的问题 query = {{query}}\n"
+                "图谱召回的结果 schema_linking_res = {{retriver_output}}\n\n"
+                "{{1_tool_use}}{{2_format_constraint}}开始！\n\nQuestion： {{query}}"
+            ),
             "user_prompt_variables": [
                 {
                     "name": "query",
@@ -205,7 +211,19 @@ class AgentConfig:
                 },
                 {
                     "name": "2_format_constraint",
-                    "value": "如果调用工具，请使用以下格式：\\n\\nQuestion: 你必须回答的问题\\nThought: 思考你需要做什么以及调用哪个工具可以找到答案\\nAction: 你选择使用的工具名称，工具名称必须从 [{tool_names}] 中选择。不需要调用工具时，为null\\nAction Input: 工具输入参数，不使用工具时为null\\nObservation: 调用工具后得到的结果\\n... (Thought/Action/Action Input/Observation的流程可能需要重复多次才能解决问题)\\n\\n当已经满足用户要求时，请使用以下格式：\\nThought: 我已经知道最终答案了\\nFinal Answer: 用户问题的最终答案"
+                    "value": (
+                        "如果调用工具，请使用以下格式：\\n\\n"
+                        "Question: 你必须回答的问题\\n"
+                        "Thought: 思考你需要做什么以及调用哪个工具可以找到答案\\n"
+                        "Action: 你选择使用的工具名称，工具名称必须从 [{tool_names}] 中选择。"
+                        "不需要调用工具时，为null\\n"
+                        "Action Input: 工具输入参数，不使用工具时为null\\n"
+                        "Observation: 调用工具后得到的结果\\n"
+                        "... (Thought/Action/Action Input/Observation的流程可能需要重复多次才能解决问题)\\n\\n"
+                        "当已经满足用户要求时，请使用以下格式：\\n"
+                        "Thought: 我已经知道最终答案了\\n"
+                        "Final Answer: 用户问题的最终答案"
+                    )
                 },
                 {
                     "name": "retriver_output.concept",
@@ -310,25 +328,101 @@ COT_CONFIG = {
 # jctd
 NL2NGQL_PROMPTS = {
     'lf_generation_prompt': {
-        'system_message': '你是一个精通知识图谱schema和nebula查询语句的专家,能够根据用户问题、图谱本体信息,总结出来一种固定的Logic Form的json报文.\n用户查询问题为企业员工场景的一个知识网络.接下来给你10个一步步思考的问题示例：\n{{cot_list}}\n',
-        'human_message': '我有这样一个问题《{{query}}》，其相关的schema信息可以参考：《{{schema_linking_res}}》，若其中的属性值与问题不相干的，可以忽略。按照上述我给出的示例进行分析并返回Logic Form的json报文,其中包含用户问题涉及到的子图信息(related_subgraph),\n筛选条件(filtered_condition),返回目标(return_target)及其他限制(other_limits)这四个部分.请注意在用户问题涉及到最值问题时,尤其涉及到date,datetime,int,bool类型的属性,请你仔细分析图谱schema,并给出筛选条件.\n注意:\n1.当出现需要同时存在的两条具有相同边但实体点不同的路径时，注意子图信息(related_subgraph)分为两条路径的写法。\n2.当schema中properties的values中的属性值与query中不一致，但语义相似时，filter_condition中的属性值必须与schema中values中的值一致。\n3.碰到问题中的属性值单位与图谱中不一致，必须将Logic Form中的属性值换算为与图谱中统一单位的数值。换算结果如下：\n{{unit_tr_str}}\n生成Logic Form时必须使用换算后的数值。\n不需要返回思考过程，直接返回你总结的Logic Form。返回格式如下：\nFinal Answer:总结的Logic Form json\n注意，不要重复输出多个以上格式的内容，只需要输出一遍'
+        'system_message': (
+            '你是一个精通知识图谱schema和nebula查询语句的专家,'
+            '能够根据用户问题、图谱本体信息,总结出来一种固定的Logic Form的json报文.\n'
+            '用户查询问题为企业员工场景的一个知识网络.接下来给你10个一步步思考的问题示例：\n'
+            '{{cot_list}}\n'
+        ),
+        'human_message': (
+            '我有这样一个问题《{{query}}》，其相关的schema信息可以参考：'
+            '《{{schema_linking_res}}》，若其中的属性值与问题不相干的，可以忽略。'
+            '按照上述我给出的示例进行分析并返回Logic Form的json报文,'
+            '其中包含用户问题涉及到的子图信息(related_subgraph),\n'
+            '筛选条件(filtered_condition),返回目标(return_target)'
+            '及其他限制(other_limits)这四个部分.'
+            '请注意在用户问题涉及到最值问题时,尤其涉及到date,datetime,int,bool类型的属性,'
+            '请你仔细分析图谱schema,并给出筛选条件.\n'
+            '注意:\n'
+            '1.当出现需要同时存在的两条具有相同边但实体点不同的路径时，'
+            '注意子图信息(related_subgraph)分为两条路径的写法。\n'
+            '2.当schema中properties的values中的属性值与query中不一致，但语义相似时，'
+            'filter_condition中的属性值必须与schema中values中的值一致。\n'
+            '3.碰到问题中的属性值单位与图谱中不一致，'
+            '必须将Logic Form中的属性值换算为与图谱中统一单位的数值。换算结果如下：\n'
+            '{{unit_tr_str}}\n'
+            '生成Logic Form时必须使用换算后的数值。\n'
+            '不需要返回思考过程，直接返回你总结的Logic Form。返回格式如下：\n'
+            'Final Answer:总结的Logic Form json\n'
+            '注意，不要重复输出多个以上格式的内容，只需要输出一遍'
+        )
     },
     'sk_generation_prompt': {},
     'reflexion_prompt': {
-        # 'system_message': '你是一个nebula查询语句的评论员，你的任务是判断nebula查询语句哪个筛选条件可以删除，或者哪条路径可以删除，并进行修改。',
-        # 'human_message': '用户问题：{{query}}\nnebula查询语句：{{ngql}}\n图谱相关信息：{schema_linking_res}\n以上nebula查询语句执行失败，或未得到答案，请分析nebula查询语句中的路径和筛选条件，并返回修改后正确的查询语句。\n请按以下步骤进行：\n1.分析nebula查询语句中的错误\n2.分析where开头的筛选条件，修改或者删除一个与用户问题相关度低的条件\n请注意查询语句使用Nebula3的格式要求，表示实体属性时需要带上实体类名，如实体person的属性name，表示为v.person.name\n返回格式如下：\nThought：你的分析过程\nAnswer：正确的nebula查询语句'
+        # 'system_message': '你是一个nebula查询语句的评论员，...',
+        # 'human_message': '用户问题：{{query}}\nnebula查询语句：{{ngql}}...'
     }
 }
 # as
 NL2NGQL_PROMPTS_AS = {
     'lf_generation_prompt': {
-        'system_message': '你是一个精通知识图谱schema和nebula查询语句的专家,能够根据用户问题、图谱本体信息,总结出来一种固定的Logic Form的json报文.\n用户查询问题为企业员工场景的一个知识网络.接下来给你10个一步步思考的问题示例：\n{{cot_list}}\n',
-        'human_message': '我有这样一个问题《{{query}}》，其相关的schema信息可以参考：《{{schema_linking_res}}》，若其中的属性值与问题不相干的，可以忽略。按照上述我给出的示例进行分析并返回Logic Form的json报文,其中包含用户问题涉及到的子图信息(related_subgraph),\n筛选条件(filtered_condition),返回目标(return_target)及其他限制(other_limits)这四个部分.请注意在用户问题涉及到最值问题时,尤其涉及到date,datetime,int,bool类型的属性,请你仔细分析图谱schema,并给出筛选条件.\n注意:\n1.当出现需要同时存在的两条具有相同边但实体点不同的路径时，注意子图信息(related_subgraph)分为两条路径的写法。\n2.当schema中properties的values中的属性值与query中不一致，但语义相似时，filter_condition中的属性值必须与schema中values中的值一致。\n3.碰到问题中的属性值单位与图谱中不一致，必须将Logic Form中的属性值换算为与图谱中统一单位的数值。换算结果如下：\n{{unit_tr_str}}\n生成Logic Form时必须使用换算后的数值。\n这是一些先验知识：AB代表上层组织为AnyBackup，AR代表上层组织为AnyRobot，AD代表上层组织为AnyDATA，AS代表上层组织为AnyShare，AF代表上层组织为AnyFabric。\n你拥有足够的思考时间,并请你一步步认真仔细地回答,你的回答将直接影响我的职业生涯.不需要返回思考过程，直接返回你总结的Logic Form。返回格式如下：\nFinal Answer:总结的Logic Form json\n注意，不要重复输出多个以上格式的内容，只需要输出一遍'
+        'system_message': (
+            '你是一个精通知识图谱schema和nebula查询语句的专家,'
+            '能够根据用户问题、图谱本体信息,总结出来一种固定的Logic Form的json报文.\n'
+            '用户查询问题为企业员工场景的一个知识网络.'
+            '接下来给你10个一步步思考的问题示例：\n{{cot_list}}\n'
+        ),
+        'human_message': (
+            '我有这样一个问题《{{query}}》，其相关的schema信息可以参考：'
+            '《{{schema_linking_res}}》，若其中的属性值与问题不相干的，可以忽略。'
+            '按照上述我给出的示例进行分析并返回Logic Form的json报文,'
+            '其中包含用户问题涉及到的子图信息(related_subgraph),\n'
+            '筛选条件(filtered_condition),返回目标(return_target)'
+            '及其他限制(other_limits)这四个部分.'
+            '请注意在用户问题涉及到最值问题时,'
+            '尤其涉及到date,datetime,int,bool类型的属性,'
+            '请你仔细分析图谱schema,并给出筛选条件.\n注意:\n'
+            '1.当出现需要同时存在的两条具有相同边但实体点不同的路径时，'
+            '注意子图信息(related_subgraph)分为两条路径的写法。\n'
+            '2.当schema中properties的values中的属性值与query中不一致，但语义相似时，'
+            'filter_condition中的属性值必须与schema中values中的值一致。\n'
+            '3.碰到问题中的属性值单位与图谱中不一致，'
+            '必须将Logic Form中的属性值换算为与图谱中统一单位的数值。'
+            '换算结果如下：\n{{unit_tr_str}}\n生成Logic Form时必须使用换算后的数值。\n'
+            '这是一些先验知识：AB代表上层组织为AnyBackup，AR代表上层组织为AnyRobot，'
+            'AD代表上层组织为AnyDATA，AS代表上层组织为AnyShare，'
+            'AF代表上层组织为AnyFabric。\n'
+            '你拥有足够的思考时间,并请你一步步认真仔细地回答,'
+            '你的回答将直接影响我的职业生涯.'
+            '不需要返回思考过程，直接返回你总结的Logic Form。返回格式如下：\n'
+            'Final Answer:总结的Logic Form json\n'
+            '注意，不要重复输出多个以上格式的内容，只需要输出一遍'
+        )
     },
     'sk_generation_prompt': {},
     'reflexion_prompt': {
-        'system_message': '你是一个nebula查询语句的评论员，你的任务是判断nebula查询语句哪个筛选条件可以删除，或者哪条路径可以删除，并进行修改。',
-        'human_message': '用户问题：{{query}}\nnebula查询语句：{{ngql}}\n图谱相关信息：{schema_linking_res}\n以上nebula查询语句执行失败，或未得到答案，请分析nebula查询语句中的路径和筛选条件，并返回修改后正确的查询语句。\n请按以下步骤进行：\n1.分析nebula查询语句中的错误\n2.分析where开头的筛选条件，修改或者删除一个与用户问题相关度低的条件\n请注意查询语句使用Nebula3的格式要求，表示实体属性时需要带上实体类名，如实体person的属性name，表示为v.person.name\n这是一些先验知识：AB代表上层组织为AnyBackup，AR代表上层组织为AnyRobot，AD代表上层组织为AnyDATA，AS代表上层组织为AnyShare，AF代表上层组织为AnyFabric。\n不需要返回思考过程，直接返回正确的nebula查询语句。返回格式如下：\nAnswer:正确的nebula查询语句'
+        'system_message': (
+            '你是一个nebula查询语句的评论员，'
+            '你的任务是判断nebula查询语句哪个筛选条件可以删除，'
+            '或者哪条路径可以删除，并进行修改。'
+        ),
+        'human_message': (
+            '用户问题：{{query}}\nnebula查询语句：{{ngql}}\n'
+            '图谱相关信息：{schema_linking_res}\n'
+            '以上nebula查询语句执行失败，或未得到答案，'
+            '请分析nebula查询语句中的路径和筛选条件，并返回修改后正确的查询语句。\n'
+            '请按以下步骤进行：\n'
+            '1.分析nebula查询语句中的错误\n'
+            '2.分析where开头的筛选条件，修改或者删除一个与用户问题相关度低的条件\n'
+            '请注意查询语句使用Nebula3的格式要求，'
+            '表示实体属性时需要带上实体类名，'
+            '如实体person的属性name，表示为v.person.name\n'
+            '这是一些先验知识：AB代表上层组织为AnyBackup，AR代表上层组织为AnyRobot，'
+            'AD代表上层组织为AnyDATA，AS代表上层组织为AnyShare，'
+            'AF代表上层组织为AnyFabric。\n'
+            '不需要返回思考过程，直接返回正确的nebula查询语句。返回格式如下：\n'
+            'Answer:正确的nebula查询语句'
+        )
     }
 }
 

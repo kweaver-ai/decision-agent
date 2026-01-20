@@ -148,8 +148,15 @@ class KnowledgeNetworkRerankTool:
         return prompt
 
     @classmethod
-    async def _call_llm_for_rerank(cls, question: str, concepts: List[Dict[str, Any]], intents: List[Dict[str, Any]]
-                                   = None, batch_size: int = 128, account_id: str = None, account_type: str = None) -> tuple:
+    async def _call_llm_for_rerank(cls,
+                                   question: str,
+                                   concepts: List[Dict[str,
+                                                       Any]],
+                                   intents: List[Dict[str,
+                                                      Any]] = None,
+                                   batch_size: int = 128,
+                                   account_id: str = None,
+                                   account_type: str = None) -> tuple:
         """调用大模型进行重排序，支持分批处理大量概念，返回(索引列表, 分数列表)"""
         logger.info(f"开始使用LLM进行概念重排序，问题: {question}, 概念数量: {len(concepts)}")
 
@@ -173,7 +180,13 @@ class KnowledgeNetworkRerankTool:
                 logger.debug(f"第{batch_num}批次处理完成，返回索引数量: {len(batch_results)}")
                 # 调整索引以反映全局位置
                 adjusted_results = [
-                    idx + batch_start_index for idx in batch_results if isinstance(idx, (int, float)) and not isinstance(idx, bool)]
+                    idx +
+                    batch_start_index for idx in batch_results if isinstance(
+                        idx,
+                        (int,
+                         float)) and not isinstance(
+                        idx,
+                        bool)]
                 all_results.extend(adjusted_results)
             except Exception as e:
                 logger.error(f"大模型处理第{batch_num}批次时出错: {str(e)}", exc_info=True)
@@ -208,8 +221,12 @@ class KnowledgeNetworkRerankTool:
         return unique_results, scores
 
     @classmethod
-    async def _process_single_batch(
-            cls, prompt: str, concepts: List[Dict[str, Any]], account_id: str = None, account_type: str = None) -> List[int]:
+    async def _process_single_batch(cls,
+                                    prompt: str,
+                                    concepts: List[Dict[str,
+                                                        Any]],
+                                    account_id: str = None,
+                                    account_type: str = None) -> List[int]:
         """处理单个批次的提示词，使用流式调用大模型"""
         logger.debug(f"开始处理单个批次，概念数量: {len(concepts)}")
 
@@ -311,8 +328,19 @@ class KnowledgeNetworkRerankTool:
                 batch_scores = await cls._process_vector_single_batch(question, batch_concepts)
                 # 添加索引信息
                 if batch_scores and len(batch_scores) > 0:
-                    indexed_scores = [(int(idx + batch_start_index), float(score)) for idx, score in enumerate(batch_scores)
-                                      if isinstance(idx, (int, float)) and not isinstance(idx, bool) and isinstance(score, (int, float))]
+                    indexed_scores = [
+                        (int(
+                            idx + batch_start_index),
+                            float(score)) for idx,
+                        score in enumerate(batch_scores) if isinstance(
+                            idx,
+                            (int,
+                             float)) and not isinstance(
+                            idx,
+                            bool) and isinstance(
+                            score,
+                            (int,
+                             float))]
                     all_scores.extend(indexed_scores)
                     logger.debug(f"第{batch_num}批次处理完成，返回分数数量: {len(batch_scores)}")
                 else:
@@ -386,8 +414,16 @@ class KnowledgeNetworkRerankTool:
             return [0.0] * len(batch_concepts)
 
     @classmethod
-    async def rerank_concepts(cls, question: str, concepts: List[Dict[str, Any]], action: str = "llm", intents: List[Dict[str, Any]]
-                              = None, batch_size: int = None, account_id: str = None, account_type: str = None) -> tuple:
+    async def rerank_concepts(cls,
+                              question: str,
+                              concepts: List[Dict[str,
+                                                  Any]],
+                              action: str = "llm",
+                              intents: List[Dict[str,
+                                                 Any]] = None,
+                              batch_size: int = None,
+                              account_id: str = None,
+                              account_type: str = None) -> tuple:
         """对概念进行重排序，返回(重排序的概念列表, 排序分数列表)"""
         logger.info(f"开始概念重排序，问题: {question}, 概念数量: {len(concepts)}, 方法: {action}")
 

@@ -19,7 +19,10 @@ search_path_template = {
     "v1->v2": "(v1:{label_1})-[e1:{rel_1}]->(v2:{label_2})",
     "v3->v4": "(v3:{label_3})-[e2:{rel_2}]->(v4:{label_4})",
     "v1->v2->v3": "(v1:{label_1})-[e1:{rel_1}]->(v2:{label_2})-[e2:{rel_2}]->(v3:{label_3})",
-    "v1->v2->v3->v4": "(v1:{label_1})-[e1:{rel_1}]->(v2:{label_2})-[e2:{rel_2}]->(v3:{label_3})-[e3:{rel_3}]->(v4:{label_4})",
+    "v1->v2->v3->v4": (
+        "(v1:{label_1})-[e1:{rel_1}]->(v2:{label_2})-[e2:{rel_2}]->"
+        "(v3:{label_3})-[e3:{rel_3}]->(v4:{label_4})"
+    ),
     "v1->v2<-v3": "(v1:{label_1})-[e1:{rel_1}]->(v2:{label_2})<-[e2:{rel_2}]-(v3:{label_3})",
     "v1<-v2->v3": "(v1:{label_1})<-[e1:{rel_1}]-(v2:{label_2})-[e2:{rel_2}]->(v3:{label_3})",
 }
@@ -217,18 +220,30 @@ def find_diverging_paths(edges):
 """
 我有一些图的关系数据，如：
 'edge': [
-        {'alias': '对应的地址', 'description': '', 'name': 'customer_address_2_address', 'object': 'address','subject': 'customer_address'},
-        {'alias': '消费者居住状态', 'description': '', 'name': 'customer_2_customer_address', 'object': 'customer_address', 'subject': 'customer'},
-        {'alias': '下单', 'description': '', 'name': 'customer_2_cust_order', 'object': 'cust_order', 'subject': 'customer'},
-        {'alias': '订单状态', 'description': '', 'name': 'cust_order_2_order_history', 'object': 'order_history', 'subject': 'cust_order'},
-        {'alias': '状态为', 'description': '', 'name': 'order_history_2_order_status', 'object': 'order_status', 'subject': 'order_history'},
-        {'alias': '购买', 'description': '', 'name': 'order_line_2_book', 'object': 'book', 'subject': 'order_line'},
-        {'alias': '包含', 'description': '', 'name': 'cust_order_2_order_line', 'object': 'order_line', 'subject': 'cust_order'},
-        {'alias': '运送方式', 'description': '', 'name': 'cust_order_2_shipping_method', 'object': 'shipping_method', 'subject': 'cust_order'},
-        {'alias': '邮递地址', 'description': '', 'name': 'cust_order_2_address', 'object': 'address', 'subject': 'cust_order'},
-        {'alias': '语言', 'description': '', 'name': 'book_2_book_language', 'object': 'book_language', 'subject': 'book'},
-        {'alias': '出版', 'description': '', 'name': 'publisher_2_book', 'object': 'book', 'subject': 'publisher'},
-        {'alias': '创作', 'description': '', 'name': 'author_2_book', 'object': 'book', 'subject': 'author'},
+        {'alias': '对应的地址', 'description': '', 'name': 'customer_address_2_address',
+         'object': 'address','subject': 'customer_address'},
+        {'alias': '消费者居住状态', 'description': '', 'name': 'customer_2_customer_address',
+         'object': 'customer_address', 'subject': 'customer'},
+        {'alias': '下单', 'description': '', 'name': 'customer_2_cust_order',
+         'object': 'cust_order', 'subject': 'customer'},
+        {'alias': '订单状态', 'description': '', 'name': 'cust_order_2_order_history',
+         'object': 'order_history', 'subject': 'cust_order'},
+        {'alias': '状态为', 'description': '', 'name': 'order_history_2_order_status',
+         'object': 'order_status', 'subject': 'order_history'},
+        {'alias': '购买', 'description': '', 'name': 'order_line_2_book',
+         'object': 'book', 'subject': 'order_line'},
+        {'alias': '包含', 'description': '', 'name': 'cust_order_2_order_line',
+         'object': 'order_line', 'subject': 'cust_order'},
+        {'alias': '运送方式', 'description': '', 'name': 'cust_order_2_shipping_method',
+         'object': 'shipping_method', 'subject': 'cust_order'},
+        {'alias': '邮递地址', 'description': '', 'name': 'cust_order_2_address',
+         'object': 'address', 'subject': 'cust_order'},
+        {'alias': '语言', 'description': '', 'name': 'book_2_book_language',
+         'object': 'book_language', 'subject': 'book'},
+        {'alias': '出版', 'description': '', 'name': 'publisher_2_book',
+         'object': 'book', 'subject': 'publisher'},
+        {'alias': '创作', 'description': '', 'name': 'author_2_book',
+         'object': 'book', 'subject': 'author'},
         {'alias': '属于', 'description': '', 'name': 'address_2_country', 'object': 'country', 'subject': 'address'}
     ]
 
