@@ -1,4 +1,4 @@
-ARG buildImage=acr.aishu.cn/dip/py.build:3.10.18:20250109211000
+ARG buildImage=acr.aishu.cn/dip/py.build:3.10.18-20251030
 ARG baseImage=acr.aishu.cn/public/ubuntu:22.04.20241202
 ARG goBuildImage=acr.aishu.cn/dip/go.build:1.21.9.3.8.2024120203
 

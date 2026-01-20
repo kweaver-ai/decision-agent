@@ -9,7 +9,7 @@ if TYPE_CHECKING:
 
 
 def check_and_raise_interrupt(item: Dict[str, Any]) -> None:
-    """检查是否是中断响应，如果是则抛出 ToolInterrupt
+    """检查是否是中断响应，如果是则抛出 ToolInterruptException
     
     用于 run_dolphin.py 和 resume_handler.py 中的中断处理复用。
     
@@ -17,7 +17,7 @@ def check_and_raise_interrupt(item: Dict[str, Any]) -> None:
         item: agent.arun() 返回的项
         
     Raises:
-        ToolInterrupt: 当检测到工具中断时
+        ToolInterruptException: 当检测到工具中断时
     """
     if not isinstance(item, dict):
         return
@@ -28,17 +28,17 @@ def check_and_raise_interrupt(item: Dict[str, Any]) -> None:
     interrupt_type = item.get("interrupt_type")
     
     if interrupt_type == "tool_confirmation":
-        # 延迟导入避免循环依赖
-        from dolphin.core.utils.tools import ToolInterrupt
+        # 使用自定义异常
+        from app.common.exceptions.tool_interrupt import ToolInterruptException, ToolInterruptInfo
         
         handle = item.get("handle")
         data = item.get("data", {})
         
-        raise ToolInterrupt(
-            tool_name=data.get("tool_name"),
-            tool_args=data.get("tool_args"),
+        interrupt_info = ToolInterruptInfo(
             handle=handle,
+            data=data,
         )
+        raise ToolInterruptException(interrupt_info)
 
 
 async def process_arun_loop(

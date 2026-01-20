@@ -1,6 +1,6 @@
 from typing import Any, AsyncGenerator, Dict, Optional
 from dolphin.core import flags
-from dolphin.core.utils.tools import ToolInterrupt
+from app.common.exceptions.tool_interrupt import ToolInterruptException
 from dolphin.core.common.constants import KEY_SESSION_ID, KEY_USER_ID
 from dolphin.core.common.exceptions import (
     ModelException,
@@ -215,7 +215,7 @@ class AgentCoreV2:
 
                 StandLogger.info("AgentCore run end")
 
-            except ToolInterrupt as tool_interrupt:
+            except ToolInterruptException as tool_interrupt:
                 # 处理工具中断
 
                 await InterruptHandler.handle_tool_interrupt(

@@ -15,7 +15,8 @@ datas = [
     ("app/logic/retriever/AS_doc/config/stop_words.txt", "app/logic/retriever/AS_doc/config"),
     ("app/resources/data/sensitive_words.txt", "app/resources/data"),
     ("app/resources/executors/graph_rag_block/stop_words.txt", "app/resources/executors/graph_rag_block"),
-    (".venv/lib64/python3.10/site-packages/DolphinLanguageSDK/skill/installed", "DolphinLanguageSDK/skill/installed")
+    # DolphinLanguageSDK 路径在 Docker 构建环境中可能不存在，暂时移除
+    # (".venv/lib64/python3.10/site-packages/DolphinLanguageSDK/skill/installed", "DolphinLanguageSDK/skill/installed")
 ]
 
 # Analysis configuration
