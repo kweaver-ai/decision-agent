@@ -217,6 +217,21 @@ depServices:
       host: mdl-uniquery-svc
       port: 13011
       protocol: http
+  # ========== LLM/Embedding 外部服务 (Executor/Memory共用) ==========
+  llm_ad:
+    embeddingUrl: ""
+    embeddingModel: ""
+    embeddingDimension: 768
+  rerank_ad:
+    rerankUrl: ""
+  graphDatabase:
+    type: "nebulaGraph"
+    host: ""
+    port: "9669"
+    user: ""
+    password: ""
+    readonlyuser: ""
+    readonlypassword: ""
 
 resources:
   requests:
@@ -262,3 +277,55 @@ opentelemetry:
     exporter: "console"
     http_endpoint: "http://localhost:4318/v1/metrics"
     export_interval: 10
+
+# ========== Agent Executor 配置 ==========
+agentExecutor:
+  port: 30778
+  debugMode: false
+  logLevel: "info"
+  enableSystemLog: true
+  enableDolphinAgentVerbose: false
+  isPrintLastCommitInfo: true
+  logConversationSessionInit: false
+  isWriteExceptionLogToFile: false
+  enableSensitiveWordDetection: false
+  doNotUseExploreBlockV2: false
+  disableDolphinSdkLLMCache: false
+  enableDolphinAgentOutputVariablesCtrl: false
+  isSkillAgentNeedProgress: false
+  rps:
+    limit: 100
+  telemetry:
+    log:
+      enabled: false
+      endpoint: ""
+    metric:
+      enabled: false
+      endpoint: ""
+    trace:
+      enabled: false
+      endpoint: ""
+
+# ========== Agent Memory 配置 ==========
+agentMemory:
+  port: 30790
+  llm:
+    base_url: ""
+    model: ""
+  embedding:
+    model: ""
+    base_url: ""
+    dims: 768
+  rerank:
+    model: ""
+    url: ""
+  telemetry:
+    log:
+      enabled: false
+      endpoint: ""
+    metric:
+      enabled: false
+      endpoint: ""
+    trace:
+      enabled: false
+      endpoint: ""

@@ -73,6 +73,7 @@ CLAUDE.md
 # Local Files
 # =============================================================================
 .local/
+Makefile.local.mk
 
 # =============================================================================
 # System and Temporary Files
@@ -81,3 +82,4 @@ CLAUDE.md
 pip-log.txt
 pip-delete-this-directory.txt
 
+uv.lock

@@ -224,6 +224,12 @@ spec:
           ports:
             - name: public-port
               containerPort: {{ .Values.service.port }}
+            # ========== Executor端口 ==========
+            - name: executor-port
+              containerPort: {{ .Values.agentExecutor.port }}
+            # ========== Memory端口 ==========
+            - name: memory-port
+              containerPort: {{ .Values.agentMemory.port }}
           {{- if ne .Values.runMode "dev"}}
           readinessProbe:
             httpGet:
@@ -241,6 +247,16 @@ spec:
               mountPath: /mdl-shared-configmap
             - name: {{ .Release.Name }}-secret-yaml
               mountPath: /sysvol/conf/secret
+            # ========== Executor配置文件挂载 ==========
+            - name: executor-yaml-v2
+              mountPath: /sysvol/conf/agent-executor.yaml
+              subPath: agent-executor.yaml
+            # ========== 时间同步 ==========
+            - name: host-time
+              mountPath: /etc/localtime
+            # ========== DM配置 ==========
+            - name: rds-conf
+              mountPath: /tmp/rds_conf
             {{- if eq .Values.runMode "dev" }}
             - name: home-path
               mountPath: /root
@@ -264,6 +280,21 @@ spec:
         - name: {{ .Release.Name }}-dependant-configmap
           configMap:
             name: {{ .Release.Name }}-dependant-configmap
+        # ========== Executor配置Volume ==========
+        - name: executor-yaml-v2
+          configMap:
+            name: agent-executor-yaml-v2
+        # ========== 时间同步Volume ==========
+        - name: host-time
+          hostPath:
+            path: /etc/localtime
+        # ========== DM配置Volume ==========
+        - name: rds-conf
+          configMap:
+            name: {{ .Release.Name }}-yaml
+            items:
+            - key: dm_svc.conf
+              path: dm_svc.conf
         {{ if eq .Values.runMode "dev" }}
         - name: home-path
           hostPath:

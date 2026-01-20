@@ -1,0 +1,131 @@
+# Agent Backend 统一Dockerfile
+# 多阶段构建：构建3个可执行文件，使用supervisor管理进程
+
+ARG buildImage
+ARG baseImage
+ARG goBuildImage
+
+# ==================== 构建阶段：agent-factory (Go) ====================
+FROM ${goBuildImage} AS builder-factory
+
+ARG ARCH_TYPE=amd64
+
+WORKDIR /build
+
+# 复制 agent-factory 源代码
+COPY agent-factory/go.mod agent-factory/go.sum /build/
+COPY agent-factory/main.go /build/
+COPY agent-factory/src /build/src
+COPY agent-factory/cconf /build/cconf
+COPY agent-factory/conf /build/conf
+COPY agent-factory/locale /build/locale
+
+# 构建 agent-factory Go 二进制文件
+RUN set -ex; \
+    cd /build && \
+    go mod download && \
+    if [ "${ARCH_TYPE}" = "arm64" ]; then \
+      go build -ldflags '-s -w' -o agent-factory ./main.go; \
+    else \
+      go build -ldflags '-s -w -checklinkname=0' -o agent-factory ./main.go; \
+    fi && \
+    chmod +x agent-factory
+
+# ==================== 构建阶段：agent-executor (Python/PyInstaller) ====================
+FROM ${buildImage} AS builder-executor
+
+ARG ARCH_TYPE=amd64
+
+WORKDIR /build
+
+# 复制 agent-executor 源代码
+COPY agent-executor/.netrc /root/.netrc
+COPY agent-executor/id_rsa /root/.ssh/id_rsa
+COPY agent-executor/agent-executor.spec /build/agent-executor.spec
+COPY agent-executor/pyproject.toml /build/pyproject.toml
+COPY agent-executor/app /build/app
+COPY agent-executor/main.py /build/main.py
+COPY agent-executor/mq-sdk-lib /build/mq-sdk-lib
+COPY agent-executor/last_commit_info.txt /build/last_commit_info.txt
+
+# 安装依赖并构建 agent-executor
+RUN set -ex; \
+    ssh-keyscan -t rsa devops.aishu.cn >> /root/.ssh/known_hosts; \
+    cd /build; \
+    uv sync; \
+    uv run pyinstaller agent-executor.spec
+
+# ==================== 构建阶段：agent-memory (Python/PyInstaller) ====================
+FROM ${buildImage} AS builder-memory
+
+WORKDIR /build
+
+# 复制 agent-memory 源代码
+COPY agent-memory/agent-memory.spec /build/agent-memory.spec
+COPY agent-memory/requirements.txt /build/requirements.txt
+COPY agent-memory/mem0 /build/mem0
+COPY agent-memory/src /build/src
+
+# 安装依赖并构建 agent-memory
+RUN set -ex; \
+    cd /build; \
+    export PATH=/export/servers/python3.9/bin:$PATH; \
+    python3 -m pip install -i https://pypi.tuna.tsinghua.edu.cn/simple --upgrade --no-cache-dir -r requirements.txt; \
+    pyinstaller agent-memory.spec
+
+# ==================== 生产阶段：supervisor 管理三个服务 ====================
+FROM ${baseImage} AS prod
+
+ARG ARCH_TYPE=amd64
+ARG UID=1000
+ARG GID=1000
+
+# 安装 supervisor
+RUN apt-get install -y \
+    supervisor \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# 创建非 root 用户
+RUN groupadd -r -g $GID aishu && \
+    useradd -r -u $UID -g $GID aishu && \
+    mkdir -p /app/agent-factory /app/agent-executor /app/agent-memory /var/log/supervisor
+
+WORKDIR /app
+
+# 从构建阶段复制已构建的二进制文件
+COPY --from=builder-factory --chown=$UID:$GID /build/agent-factory /app/agent-factory/agent-factory
+COPY --from=builder-factory --chown=$UID:$GID /build/locale /app/agent-factory/locale
+COPY --from=builder-executor --chown=$UID:$GID /build/dist/agent-executor /app/agent-executor
+COPY --from=builder-memory --chown=$UID:$GID /build/dist/agent-memory /app/agent-memory
+
+# 处理 mq-sdk-lib 动态库
+COPY --from=builder-executor /build/mq-sdk-lib /tmp/mq-sdk-lib
+RUN if [ "$ARCH_TYPE" = "amd64" ]; then \
+        mv /tmp/mq-sdk-lib/x86/* /usr/lib/; \
+    elif [ "$ARCH_TYPE" = "arm64" ]; then \
+        mv /tmp/mq-sdk-lib/arm/* /usr/lib/; \
+    fi; \
+    rm -rf /tmp/mq-sdk-lib
+
+# 复制 supervisor 配置文件
+COPY --chown=$UID:$GID deploy/docker/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# 设置权限
+RUN chown -R $UID:$GID /app /var/log/supervisor
+
+# 切换到非 root 用户
+USER $UID
+
+# 暴露端口
+# agent-factory: 13020
+# agent-executor: 30778
+# agent-memory: 30790
+EXPOSE 13020 30778 30790
+
+# 健康检查
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:13020/health/ready || exit 1
+
+# 使用 supervisor 启动所有服务
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf", "-n"]
