@@ -305,7 +305,7 @@ if __name__ == "__main__":
         # base_url="http://192.168.152.11:18302/v1/embeddings",
         # base_url="https://192.168.124.90/api/mf-model-api/v1/small-model/embedding",
         time_out=5,
-        token="Bearer ory_at_nrj_KBORymr5dbAQXC2TqjYLeIM41wExj_WKlH3-C40.beJ_xcHDa9sQbbWBm2LYZcerYwlGhWUf6-0qWFd0GLc",
+        token="Bearer YOUR_TOKEN_HERE",  # Replace with actual token
         user_id="450dd110-5bba-11f0-b8d9-1688e6ea28e2",
     )
     logger.info(embedding.embed_documents(["你好", "世界"]))

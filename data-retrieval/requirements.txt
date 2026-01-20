@@ -25,7 +25,7 @@ matplotlib==3.10.1
 scipy==1.15.2
 statsmodels==0.14.4
 scikit-learn==1.6.1
-uvicorn>=0.34.0
+uvicorn>=0.27.0
 arrow==0.15.8
 circuitbreaker==2.0.0
 python-dotenv==1.0.1

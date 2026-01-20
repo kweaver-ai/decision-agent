@@ -33,7 +33,7 @@ prompt_template_cn = """
         - 指标描述：利润指标
         - 维度列表：[事业部-bu_name, 时间-time, ....]
 - 样例数据:
-    XXXX
+    (参考实际数据)
 
 - 输出:
 ```json
@@ -99,7 +99,7 @@ prompt_template_cn = """
         - 指标描述：利润指标
         - 维度列表：[事业部(bu_name), 时间(time), 产品(product_name)]
 - 样例数据:
-    XXXX
+    (参考实际数据)
 
 - 输出:
 ```json
@@ -124,7 +124,7 @@ prompt_template_cn = """
         - 指标描述：利润指标
         - 维度列表：[事业部(bu_name), 时间(time), 产品(product_name)]
 - 样例数据:
-    XXXX
+    (参考实际数据)
 
 - 输出:
 ```json
@@ -142,9 +142,9 @@ prompt_template_cn = """
 
 - 问题: 2014年X产品和Y产品在各事业部的销量
 - 给定的指标列表
-    XXXX
+    (参考实际指标列表)
 - 样例数据:
-    XXXX
+    (参考实际数据)
 
 - 输出:
 ```json
