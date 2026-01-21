@@ -28,22 +28,21 @@ spec:
             - "sh"
             - "-c"
             - >
-              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-myagents &&
-              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-dataagent &&
+              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-all &&
+              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-space &&
               curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-customspace &&
-              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-agenttemplate &&
-              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-api &&
               curl -f -H "Content-Type:application/json" -X PUT -d '
               [
               {
                 "parent": "root",
-                "name": "decision-agent",
+                "name": "dataagent",
                 "orderIndex": 1000,
                 "app": {
                   "textZHCN": "Decision Agent",
                   "textZHTW": "Decision Agent",
                   "textENUS": "Decision Agent",
-                  "type": "group"
+                  "type": "group",
+                  "pathname": "/agent"
                 },
                 "subapp": {
                   "children": {
@@ -51,7 +50,7 @@ spec:
                 }
               },
               {
-                "parent": "decision-agent",
+                "parent": "dataagent",
                 "name": "development",
                 "orderIndex": 1000,
                 "app": {
@@ -60,7 +59,8 @@ spec:
                   "textENUS": "Development",
                   "icon": "//ip:port/agent-web/public/icons/development.svg",
                   "type": "directory",
-                  "isDefaultOpen": true
+                  "isDefaultOpen": true,
+                  "pathname": "/agent/development"
                 },
                 "subapp": {
                   "children": {
@@ -68,7 +68,7 @@ spec:
                 }
               },
               {
-                "parent": "decision-agent",
+                "parent": "dataagent",
                 "name": "square",
                 "orderIndex": 2000,
                 "app": {
@@ -77,7 +77,8 @@ spec:
                   "textENUS": "Square",
                   "icon": "//ip:port/agent-web/public/icons/square.svg",
                   "type": "directory",
-                  "isDefaultOpen": true
+                  "isDefaultOpen": true,
+                  "pathname": "/agent/square"
                 },
                 "subapp": {
                   "children": {
@@ -93,7 +94,8 @@ spec:
                   "textZHTW": "Decision Agent",
                   "textENUS": "Decision Agent",
                   "icon": "//ip:port/agent-web/public/icons/decision-agent.svg",
-                  "type": "directory"
+                  "type": "directory",
+                  "pathname": "/agent/square/agent-list"
                 },
                 "subapp": {
                   "entry": "//ip:port/agent-web/decision-agent.html",
@@ -110,7 +112,8 @@ spec:
                   "textZHTW": "模板",
                   "textENUS": "Template",
                   "icon": "//ip:port/agent-web/public/icons/agent-template.svg",
-                  "type": "directory"
+                  "type": "directory",
+                  "pathname": "/agent/square/agent-template"
                 },
                 "subapp": {
                   "entry": "//ip:port/agent-web/agent-template.html",
@@ -127,7 +130,8 @@ spec:
                   "textZHTW": "API",
                   "textENUS": "API",
                   "icon": "//ip:port/agent-web/public/icons/api.svg",
-                  "type": "directory"
+                  "type": "directory",
+                  "pathname": "/agent/square/agent-api"
                 },
                 "subapp": {
                   "entry": "//ip:port/agent-web/api.html",
@@ -144,7 +148,8 @@ spec:
                   "textZHTW": "Decision Agent",
                   "textENUS": "Decision Agent",
                   "icon": "//ip:port/agent-web/public/icons/decision-agent.svg",
-                  "type": "directory"
+                  "type": "directory",
+                  "pathname": "/agent/development/my-agent-list"
                 },
                 "subapp": {
                   "entry": "//ip:port/agent-web/my-agents.html",

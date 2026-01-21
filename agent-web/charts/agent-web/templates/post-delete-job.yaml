@@ -28,11 +28,6 @@ spec:
             - "sh"
             - "-c"
             - >
-              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-myagents &&
-              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-dataagent &&
-              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-customspace &&
-              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-agenttemplate &&
-              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-api &&
               curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-list &&
               curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-template &&
               curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-api &&
