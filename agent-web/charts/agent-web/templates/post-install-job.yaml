@@ -28,15 +28,12 @@ spec:
             - "sh"
             - "-c"
             - >
-            # 为了防止在部署控制台上，使用大包直接升级，不会走 post-delete-job.yaml的情况，先删一下旧版本的菜单
-            # 删除0.1.0版本的菜单
-            curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-myagents &&
-            curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-dataagent &&
-            curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-customspace &&
-            curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-agenttemplate &&
-            curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-api &&
-            # 注册新菜单
-            curl -f -H "Content-Type:application/json" -X PUT -d '
+              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-myagents &&
+              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-dataagent &&
+              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-customspace &&
+              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-agenttemplate &&
+              curl -f -X DELETE http://studio-web-service:8877/api/workstation/v1/webapp/agent-web-api &&
+              curl -f -H "Content-Type:application/json" -X PUT -d '
             [
             {
               "parent": "root",
