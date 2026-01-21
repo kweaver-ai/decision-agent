@@ -9,6 +9,7 @@ ARG goBuildImage=swr.cn-east-3.myhuaweicloud.com/kweaver-ai/golang:1.24.11
 FROM ${goBuildImage} AS builder-factory
 
 ARG ARCH_TYPE=amd64
+ARG GOPROXY=https://goproxy.cn,direct
 
 WORKDIR /build
 
@@ -24,6 +25,7 @@ COPY agent-factory/dict /build/dict
 # 构建 agent-factory Go 二进制文件
 RUN set -ex; \
     cd /build && \
+    export GOPROXY=${GOPROXY} && \
     go mod download && \
     if [ "${ARCH_TYPE}" = "arm64" ]; then \
       go build -ldflags '-s -w' -o agent-factory ./main.go; \
