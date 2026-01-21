@@ -5,9 +5,9 @@ import (
 	"database/sql"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/dbacccom"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/dbhelper2"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 )
 
 func (r *DatasetRepo) Create(ctx context.Context, tx *sql.Tx, id, hashSha256 string) (err error) {

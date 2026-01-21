@@ -12,10 +12,10 @@ type ResourceTypeSetReq struct {
 
 // ResourceTypeOperationItem 资源类型操作项
 type ResourceTypeOperationItem struct {
-	ID          string                          `json:"id"`
-	Name        []*ResourceTypeOperationName    `json:"name"`
-	Description string                          `json:"description,omitempty"`
-	Scope       []string                        `json:"scope"`
+	ID          string                       `json:"id"`
+	Name        []*ResourceTypeOperationName `json:"name"`
+	Description string                       `json:"description,omitempty"`
+	Scope       []string                     `json:"scope"`
 }
 
 // ResourceTypeOperationName 资源类型操作名称

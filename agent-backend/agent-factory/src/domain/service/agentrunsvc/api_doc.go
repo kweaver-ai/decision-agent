@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"slices"
 
+	"github.com/getkin/kin-openapi/openapi3"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/static"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
-	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )

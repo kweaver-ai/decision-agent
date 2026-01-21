@@ -3,8 +3,8 @@ package tempareadbacc
 import (
 	"context"
 
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/dbhelper2"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 )
 
 func (repo *TempAreaRepo) Create(ctx context.Context, po []*dapo.TempAreaPO) (err error) {

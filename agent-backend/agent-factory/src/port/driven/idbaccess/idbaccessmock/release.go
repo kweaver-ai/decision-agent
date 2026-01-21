@@ -14,9 +14,9 @@ import (
 	sql "database/sql"
 	reflect "reflect"
 
+	comvalobj "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/comvalobj"
 	squarereq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squarereq"
 	dapo "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
-	comvalobj "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/comvalobj"
 	sqlx "github.com/kweaver-ai/proton-rds-sdk-go/sqlx"
 	gomock "go.uber.org/mock/gomock"
 )

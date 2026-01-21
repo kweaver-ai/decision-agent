@@ -14,8 +14,8 @@ import (
 	sql "database/sql"
 	reflect "reflect"
 
-	dapo "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	cdaenum "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
+	dapo "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	sqlx "github.com/kweaver-ai/proton-rds-sdk-go/sqlx"
 	gomock "go.uber.org/mock/gomock"
 )

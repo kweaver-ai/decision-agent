@@ -2,8 +2,8 @@ package personalspaceresp
 
 import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/daconfeo"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/daenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/daenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 )
 

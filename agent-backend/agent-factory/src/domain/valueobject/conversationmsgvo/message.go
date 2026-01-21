@@ -1,11 +1,11 @@
 package conversationmsgvo
 
 import (
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/chat_enum/chatresenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentconfigvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 )
 
 type Message struct {

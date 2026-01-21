@@ -6,9 +6,9 @@ import (
 	"sync"
 	"time"
 
+	redis "github.com/go-redis/redis/v8"
 	"github.com/kweaver-ai/decision-agent/agent-factory/cconf"
 	"github.com/kweaver-ai/kweaver-go-lib/logger"
-	redis "github.com/go-redis/redis/v8"
 )
 
 const (

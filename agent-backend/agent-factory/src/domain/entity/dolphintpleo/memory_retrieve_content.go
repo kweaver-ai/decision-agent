@@ -35,7 +35,6 @@ func (m *MemoryRetrieveContent) ToString() (str string) {
 	// if m.Queries != "" {
 	// 	str += m.Queries
 	// }
-
 	if m.RelevantMemory != "" {
 		str += m.RelevantMemory
 	}

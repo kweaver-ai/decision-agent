@@ -4,11 +4,11 @@ import (
 	"context"
 	"encoding/json"
 
+	"github.com/kweaver-ai/TelemetrySDK-Go/span/v2/field"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
-	"github.com/kweaver-ai/TelemetrySDK-Go/span/v2/field"
 )
 
 // NOTE: 成功日志上报

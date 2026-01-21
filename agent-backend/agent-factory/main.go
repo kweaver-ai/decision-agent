@@ -21,9 +21,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("Failed to initialize OpenTelemetry provider: %v", err)
 	}
+
 	defer func() {
 		ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
+
 		if err := otelProvider.Shutdown(ctx); err != nil {
 			log.Printf("Failed to shutdown OpenTelemetry provider: %v", err)
 		}

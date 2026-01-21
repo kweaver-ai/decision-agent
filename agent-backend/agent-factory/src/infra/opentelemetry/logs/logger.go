@@ -109,6 +109,7 @@ func (l *Logger) emit(ctx context.Context, severity otellog.Severity, msg string
 	if spanContext.HasTraceID() {
 		logAttrs = append(logAttrs, otellog.String("trace_id", spanContext.TraceID().String()))
 	}
+
 	if spanContext.HasSpanID() {
 		logAttrs = append(logAttrs, otellog.String("span_id", spanContext.SpanID().String()))
 	}

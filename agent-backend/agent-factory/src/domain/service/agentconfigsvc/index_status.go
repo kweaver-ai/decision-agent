@@ -3,6 +3,7 @@ package v3agentconfigsvc
 import (
 	"errors"
 
+	"github.com/gin-gonic/gin"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/daconstant"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/daconfeo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/releaseeo"
@@ -10,7 +11,6 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/types/dto/daconfigdto/dsdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/docindexobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
-	"github.com/gin-gonic/gin"
 )
 
 func (s *dataAgentConfigSvc) BatchCheckIndexStatus(ctx *gin.Context, req *agentconfigreq.BatchCheckIndexStatusReq) (res []*docindexobj.AgentDocIndexStatusInfo, err error) {

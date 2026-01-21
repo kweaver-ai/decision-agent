@@ -4,9 +4,9 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 )
 
 //go:generate mockgen -source=./da_config.go -destination ./idbaccessmock/da_config.go -package idbaccessmock

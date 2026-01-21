@@ -14,13 +14,13 @@ import (
 	sql "database/sql"
 	reflect "reflect"
 
+	gin "github.com/gin-gonic/gin"
 	docindexobj "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/docindexobj"
 	auditlogdto "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/auditlogdto"
 	agentconfigreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
 	agentconfigresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigresp"
 	agenttplreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_tpl/agenttplreq"
 	agenttplresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_tpl/agenttplresp"
-	gin "github.com/gin-gonic/gin"
 	gomock "go.uber.org/mock/gomock"
 )
 

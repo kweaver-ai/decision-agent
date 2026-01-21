@@ -61,6 +61,7 @@ func (h *observabilityHTTPHandler) ConversationList(c *gin.Context) {
 		o11y.Error(c, "[ConversationList] start_time must be less than end_time")
 		httpErr := capierr.New400Err(c, "[ConversationList] start_time must be less than end_time")
 		rest.ReplyError(c, httpErr)
+
 		return
 	}
 

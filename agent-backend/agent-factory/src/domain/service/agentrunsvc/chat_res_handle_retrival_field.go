@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo/daresvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/efastaccess/efastdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/util"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
-	"github.com/bytedance/sonic"
 	"github.com/pkg/errors"
 )
 

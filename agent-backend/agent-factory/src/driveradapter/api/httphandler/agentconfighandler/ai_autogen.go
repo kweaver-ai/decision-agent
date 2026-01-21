@@ -6,13 +6,13 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/gin-gonic/gin"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/imodelfactoryacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/imodelfactoryacc"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
-	"github.com/gin-gonic/gin"
 )
 
 // aiAutogenContent AI自动生成内容

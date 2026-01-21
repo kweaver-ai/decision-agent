@@ -3,10 +3,10 @@ package otherhandler
 import (
 	"sync"
 
+	"github.com/gin-gonic/gin"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/inject/v3/dainject"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/ihandlerportdriver"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver"
-	"github.com/gin-gonic/gin"
 )
 
 type otherHTTPHandler struct {

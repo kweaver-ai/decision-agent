@@ -4,9 +4,9 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/comvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squarereq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/comvalobj"
 )
 
 //go:generate mockgen -source=./release.go -destination ./idbaccessmock/release.go -package idbaccessmock

@@ -1,9 +1,9 @@
 package publishvo
 
 import (
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/daenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/pmsvo"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 )
 
 type PublishInfo struct {

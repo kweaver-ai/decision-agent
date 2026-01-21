@@ -1,8 +1,8 @@
 package pubedreq
 
 import (
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/published/pubedresp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/published/pubedresp"
 	"github.com/pkg/errors"
 )
 

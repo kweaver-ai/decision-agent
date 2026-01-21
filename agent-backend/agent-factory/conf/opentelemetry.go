@@ -37,6 +37,7 @@ func setOtelDefaults(config *OtelConfig) {
 	if config.ServiceName == "" {
 		config.ServiceName = "agent-factory"
 	}
+
 	if config.ServiceVersion == "" {
 		config.ServiceVersion = "1.0.7"
 	}
@@ -44,9 +45,11 @@ func setOtelDefaults(config *OtelConfig) {
 	if config.Trace.Exporter == "" {
 		config.Trace.Exporter = "console"
 	}
+
 	if config.Trace.HTTPEndpoint == "" {
 		config.Trace.HTTPEndpoint = "http://localhost:4318"
 	}
+
 	if config.Trace.SamplingRate <= 0 || config.Trace.SamplingRate > 1 {
 		config.Trace.SamplingRate = 1.0
 	}
@@ -55,9 +58,11 @@ func setOtelDefaults(config *OtelConfig) {
 	if config.Log.Exporter == "" {
 		config.Log.Exporter = "console"
 	}
+
 	if config.Log.HTTPEndpoint == "" {
 		config.Log.HTTPEndpoint = "http://localhost:4318"
 	}
+
 	if config.Log.Level == "" {
 		config.Log.Level = "info"
 	}
@@ -65,9 +70,11 @@ func setOtelDefaults(config *OtelConfig) {
 	if config.Metric.Exporter == "" {
 		config.Metric.Exporter = "console"
 	}
+
 	if config.Metric.HTTPEndpoint == "" {
 		config.Metric.HTTPEndpoint = "http://localhost:4318"
 	}
+
 	if config.Metric.ExportInterval <= 0 {
 		config.Metric.ExportInterval = 10
 	}

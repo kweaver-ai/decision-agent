@@ -70,7 +70,6 @@ func (agentSvc *agentSvc) resumeFromInterrupt(ctx context.Context, agentRunID st
 		}
 	}
 
-
 	// 调用 Executor Resume 接口
 	messages, errs, err := agentSvc.agentExecutorV2.Resume(ctx, req)
 	if err != nil {
@@ -101,8 +100,10 @@ func (agentSvc *agentSvc) resumeFromInterrupt(ctx context.Context, agentRunID st
 				if err := StreamDiff(ctx, seq, oldResp, newResp, channel); err != nil {
 					o11y.Error(ctx, fmt.Sprintf("[resumeFromInterrupt] stream diff err: %v", err))
 					agentSvc.logger.Errorf("[resumeFromInterrupt] stream diff err: %v", err)
+
 					return
 				}
+
 				oldResp = newResp
 
 			case err, ok := <-errs:
@@ -112,6 +113,7 @@ func (agentSvc *agentSvc) resumeFromInterrupt(ctx context.Context, agentRunID st
 				}
 				// 发送结束标记
 				emitJSON(seq, channel, []interface{}{}, nil, "end")
+
 				return
 			}
 		}

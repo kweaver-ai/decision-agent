@@ -33,7 +33,7 @@ func (svc *publishedSvc) GetPubedTplList(ctx context.Context, req *pubedreq.Pube
 	}
 
 	if len(tplIDsByBd) == 0 {
-        res.IsLastPage = true
+		res.IsLastPage = true
 		return
 	}
 

@@ -2,9 +2,9 @@ package agenttplreq
 
 import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/daconfeo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/customvalidator"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	"github.com/pkg/errors"
 )

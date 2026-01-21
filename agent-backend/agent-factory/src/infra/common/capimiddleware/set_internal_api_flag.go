@@ -3,10 +3,10 @@ package capimiddleware
 import (
 	"context"
 
+	"github.com/gin-gonic/gin"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
-	"github.com/gin-gonic/gin"
 )
 
 func SetInternalAPIFlag() gin.HandlerFunc {

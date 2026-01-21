@@ -2,12 +2,12 @@ package tempareasvc
 
 import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iagentfactoryhttp"
 	iecoConfighttp "github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iecoconfighttp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iefasthttp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iportdriver"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp"
 )
 
 type tempareaSvc struct {

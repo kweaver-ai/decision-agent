@@ -3,8 +3,8 @@ package v3agentconfigsvc
 import (
 	"context"
 
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 )
 

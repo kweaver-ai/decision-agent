@@ -3,11 +3,11 @@ package permissionhandler
 import (
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/rdto/agent_permission/cpmsreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
-	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
 )
 

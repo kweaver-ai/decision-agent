@@ -3,9 +3,9 @@ package agentrespvo
 import (
 	"errors"
 
+	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/chat_enum/chatresenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
-	"github.com/bytedance/sonic"
 	"github.com/tidwall/gjson"
 )
 

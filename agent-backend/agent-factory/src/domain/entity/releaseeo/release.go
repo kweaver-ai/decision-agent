@@ -1,8 +1,8 @@
 package releaseeo
 
 import (
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/daenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/daenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 )
 

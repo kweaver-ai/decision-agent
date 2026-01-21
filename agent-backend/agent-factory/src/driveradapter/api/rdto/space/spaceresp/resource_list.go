@@ -2,8 +2,8 @@ package spaceresp
 
 import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/spaceeo"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	"github.com/pkg/errors"
 )

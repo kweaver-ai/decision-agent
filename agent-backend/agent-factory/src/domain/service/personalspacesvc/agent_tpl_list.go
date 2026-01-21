@@ -61,7 +61,7 @@ func (s *PersonalSpaceService) AgentTplList(ctx context.Context, req *personalsp
 
 	// 4. 构建响应
 	if len(pos) == 0 {
-        resp.IsLastPage = true
+		resp.IsLastPage = true
 		return
 	}
 

@@ -86,10 +86,10 @@ func RemoveKeyFromJSON(jsonStr, jsonPath string) (newStr string, err error) {
 
 	updated, err := sjson.Delete(jsonStr, jsonPath)
 	if err != nil {
-		return 
+		return
 	}
 
 	newStr = updated
 
-	return 
+	return
 }

@@ -13,10 +13,10 @@ import (
 	context "context"
 	reflect "reflect"
 
+	cdaenum "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	auditlogdto "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/auditlogdto"
 	spacereq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/space/spacereq"
 	spaceresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/space/spaceresp"
-	cdaenum "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	gomock "go.uber.org/mock/gomock"
 )
 

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/gin-gonic/gin"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 )
 
 func GetParmID(c *gin.Context) (id string, err error) {

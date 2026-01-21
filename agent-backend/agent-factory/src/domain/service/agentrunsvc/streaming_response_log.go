@@ -65,7 +65,6 @@ func NewStreamingResponseLogger(conversationID string, logType ResponseLoggerTyp
 	}, nil
 }
 
-
 // LogChunk 记录一个数据块
 func (l *StreamingResponseLogger) LogChunk(chunk []byte) {
 	if l == nil || l.file == nil {

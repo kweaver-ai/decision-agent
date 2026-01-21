@@ -1,8 +1,8 @@
 package srdbarg
 
 import (
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/common"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/common"
 )
 
 type GetSRListArg struct {

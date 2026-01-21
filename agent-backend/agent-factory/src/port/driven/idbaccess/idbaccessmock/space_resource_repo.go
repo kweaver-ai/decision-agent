@@ -14,10 +14,10 @@ import (
 	sql "database/sql"
 	reflect "reflect"
 
+	cdaenum "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	spacevo "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/spacevo"
 	srdbarg "github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/spacedb/spaceresourcedbacc/srdbarg"
 	dapo "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
-	cdaenum "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	sqlx "github.com/kweaver-ai/proton-rds-sdk-go/sqlx"
 	gomock "go.uber.org/mock/gomock"
 )

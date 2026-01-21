@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/daconfeo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj/skillvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/pubedagentdbacc/padbarg"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj/skillvalobj"
 )
 
 func (s *dataAgentConfigSvc) detailPmsCheck(ctx context.Context, po *dapo.DataAgentPo, isPrivate bool, uid string) (err error) {

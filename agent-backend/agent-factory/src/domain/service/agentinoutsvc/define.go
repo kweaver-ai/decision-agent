@@ -2,10 +2,10 @@ package agentinoutsvc
 
 import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/ibizdomainacc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver"
 )
 
 type agentInOutSvc struct {

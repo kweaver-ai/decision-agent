@@ -3,8 +3,8 @@ package otherhandler
 import (
 	"net/http"
 
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj/skillvalobj"
 	"github.com/gin-gonic/gin"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj/skillvalobj"
 )
 
 var categoryList = []skillvalobj.Category{

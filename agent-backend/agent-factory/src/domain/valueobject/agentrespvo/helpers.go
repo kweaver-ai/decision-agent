@@ -1,8 +1,8 @@
 package agentrespvo
 
 import (
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/util"
 	"github.com/bytedance/sonic"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/util"
 )
 
 // -------prompt start--------

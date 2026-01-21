@@ -10,8 +10,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/sqlhelper2"
 	"go.uber.org/mock/gomock"
 
-	"github.com/kweaver-ai/proton-rds-sdk-go/sqlx"
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/kweaver-ai/proton-rds-sdk-go/sqlx"
 	"github.com/stretchr/testify/assert"
 )
 

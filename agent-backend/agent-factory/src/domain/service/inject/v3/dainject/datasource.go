@@ -8,8 +8,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/datasetdbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/dsdbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/httpinject"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/rediscmp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver"
 	"github.com/kweaver-ai/kweaver-go-lib/logger"
 )
 

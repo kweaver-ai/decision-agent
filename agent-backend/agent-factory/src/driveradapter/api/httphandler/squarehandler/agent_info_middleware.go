@@ -1,9 +1,9 @@
 package squarehandler
 
 import (
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentfactoryhttp/afhttpdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squarereq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentfactoryhttp/afhttpdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capimiddleware"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"

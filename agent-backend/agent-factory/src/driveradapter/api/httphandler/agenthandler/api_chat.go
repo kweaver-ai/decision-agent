@@ -1,23 +1,23 @@
 package agenthandler
 
 import (
-    "fmt"
-    "net/http"
-    "strings"
+	"fmt"
+	"net/http"
+	"strings"
 
-    "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant"
-    agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
-    "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
-    "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
-    "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
-    "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant"
+	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 
-    // "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr/chelper"
+	// "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr/chelper"
 
-    o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
-    "github.com/kweaver-ai/kweaver-go-lib/rest"
-    "github.com/bytedance/sonic"
-    "github.com/gin-gonic/gin"
+	"github.com/bytedance/sonic"
+	"github.com/gin-gonic/gin"
+	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
 // NOTE: API调用，除url不同，其余与外部调用相同，只是token变为长期有效
@@ -50,9 +50,9 @@ func (h *agentHTTPHandler) APIChat(c *gin.Context) {
 		return
 	}
 
-    if cenvhelper.IsLocalDev(cenvhelper.RunScenario_Aaron_Local_Dev) {
-        //req.IncStream=false
-    }
+	if cenvhelper.IsLocalDev(cenvhelper.RunScenario_Aaron_Local_Dev) {
+		//req.IncStream=false
+	}
 
 	// NOTE: 获取用户ID
 	user := chelper.GetVisitorFromCtx(c)

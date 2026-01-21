@@ -23,6 +23,7 @@ func (agentSvc *agentSvc) TerminateChat(ctx context.Context, conversationID stri
 	// 1. 如果提供了 agentRunID，先调用 Executor 终止
 	if agentRunID != "" {
 		o11y.Info(ctx, fmt.Sprintf("[TerminateChat] calling executor terminate, agentRunID: %s", agentRunID))
+
 		req := &v2agentexecutordto.AgentTerminateReq{
 			AgentRunID: agentRunID,
 		}

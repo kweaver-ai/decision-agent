@@ -3,9 +3,9 @@ package observabilitysvc
 import (
 	"context"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 	observabilityreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/observability/req"
 	observabilityresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/observability/resp"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 )
 
 func (s *observabilitySvc) AnalyticsQuery(ctx context.Context, req *observabilityreq.AnalyticsQueryReq) (*observabilityresp.AnalyticsQueryResp, error) {

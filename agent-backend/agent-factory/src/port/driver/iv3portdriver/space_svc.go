@@ -3,10 +3,10 @@ package iv3portdriver
 import (
 	"context"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/auditlogdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/space/spacereq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/space/spaceresp"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 )
 
 //go:generate mockgen -source=./space_svc.go -destination ./iv3portdrivermock/space_svc.go -package iv3portdrivermock

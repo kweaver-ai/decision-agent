@@ -31,13 +31,16 @@ var (
 // InitLogger 初始化全局Logger（线程安全）
 func InitLogger(otelLogger otellog.Logger) error {
 	var initErr error
+
 	loggerOnce.Do(func() {
 		var err error
+
 		GLogger, err = logs.NewLogger(GConfig.OtelConfig, otelLogger)
 		if err != nil {
 			initErr = err
 		}
 	})
+
 	return initErr
 }
 
@@ -49,13 +52,16 @@ func GetLogger() *logs.Logger {
 // InitMetrics 初始化全局Metrics（线程安全）
 func InitMetrics(meter metric.Meter) error {
 	var initErr error
+
 	metricsOnce.Do(func() {
 		var err error
+
 		GMetrics, err = metrics.NewMetrics(GConfig.OtelConfig, meter)
 		if err != nil {
 			initErr = err
 		}
 	})
+
 	return initErr
 }
 
@@ -67,17 +73,21 @@ func GetMetrics() *metrics.Metrics {
 // InitDependencyInjector 初始化全局DependencyInjector（线程安全）
 func InitDependencyInjector() error {
 	var initErr error
+
 	dependencyOnce.Do(func() {
 		if GLogger == nil {
 			initErr = context.DeadlineExceeded // 使用一个错误表示Logger未初始化
 			return
 		}
+
 		if GMetrics == nil {
 			initErr = context.DeadlineExceeded // 使用一个错误表示Metrics未初始化
 			return
 		}
+
 		GDependencyInjector = middleware.NewDependencyInjector(GLogger, GMetrics)
 	})
+
 	return initErr
 }
 
@@ -127,6 +137,7 @@ func ShutdownOpenTelemetry() {
 	if GLogger != nil {
 		// Logger没有显式的关闭方法
 	}
+
 	if GMetrics != nil {
 		// Metrics没有显式的关闭方法
 	}

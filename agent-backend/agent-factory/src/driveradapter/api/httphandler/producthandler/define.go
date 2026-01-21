@@ -3,11 +3,11 @@ package producthandler
 import (
 	"sync"
 
+	"github.com/gin-gonic/gin"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/productsvc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capimiddleware"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/ihandlerportdriver"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capimiddleware"
-	"github.com/gin-gonic/gin"
 )
 
 type productHTTPHandler struct {

@@ -4,10 +4,10 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/spacevo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/spacedb/spaceresourcedbacc/srdbarg"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 )
 
 //go:generate mockgen -source=./space_resource_repo.go -destination ./idbaccessmock/space_resource_repo.go -package idbaccessmock

@@ -1,9 +1,9 @@
 package afresvo
 
 import (
+	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentresperr"
 	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
-	"github.com/bytedance/sonic"
 )
 
 type AgentFactoryError struct {

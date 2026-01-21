@@ -1,9 +1,9 @@
 package personalspacereq
 
 import (
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/daenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/personal_space/personalspaceresp"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/pkg/errors"
 )
 
@@ -13,7 +13,7 @@ type AgentListReq struct {
 	Name string `form:"name" json:"name"` // Agent名称（模糊搜索）
 
 	PublishStatus cdaenum.StatusThreeState `form:"publish_status" json:"publish_status"` // 发布状态 ("unpublished", "published", "published_edited")
-	PublishToBe   cdaenum.PublishToBe `form:"publish_to_be" json:"publish_to_be"`   // 发布为标识("api_agent", "web_sdk_agent", "skill_agent")
+	PublishToBe   cdaenum.PublishToBe      `form:"publish_to_be" json:"publish_to_be"`   // 发布为标识("api_agent", "web_sdk_agent", "skill_agent")
 
 	AgentCreatedType daenum.AgentCreatedType `form:"agent_created_type" json:"agent_created_type"` // Agent创建类型 ("create", "copy")
 

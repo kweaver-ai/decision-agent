@@ -4,12 +4,12 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/bytedance/sonic"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/comvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/conversationmsgvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
-	"github.com/bytedance/sonic"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )

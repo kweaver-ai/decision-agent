@@ -9,8 +9,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess"
 	"github.com/kweaver-ai/kweaver-go-lib/logger"
 
-	"github.com/kweaver-ai/proton-rds-sdk-go/sqlx"
 	"github.com/DATA-DOG/go-sqlmock"
+	"github.com/kweaver-ai/proton-rds-sdk-go/sqlx"
 	"github.com/smartystreets/goconvey/convey"
 )
 

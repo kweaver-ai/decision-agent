@@ -13,10 +13,10 @@ import (
 
 	// "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr/chelper"
 
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
-	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/bytedance/sonic"
 	"github.com/gin-gonic/gin"
+	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
 // NOTE: API调用，除url不同，其余与外部调用相同，只是token变为长期有效

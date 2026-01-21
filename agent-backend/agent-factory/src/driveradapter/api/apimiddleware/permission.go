@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/bytedance/sonic"
+	"github.com/gin-gonic/gin"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentfactoryhttp/afhttpdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/httpinject"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentfactoryhttp/afhttpdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capimiddleware"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
-	"github.com/bytedance/sonic"
-	"github.com/gin-gonic/gin"
 )
 
 func CheckAgentUsePms() gin.HandlerFunc {

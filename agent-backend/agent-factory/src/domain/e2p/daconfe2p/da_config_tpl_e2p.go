@@ -2,8 +2,8 @@ package daconfe2p
 
 import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/daconfeo"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 )
 
 // DataAgentTpls 将多个数据智能体模板实体转换为持久化对象

@@ -4,7 +4,7 @@ import (
 	"sync"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/agentrunsvc"
+	agentsvc "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/agentrunsvc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/conversationdbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/conversationmsgdbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/tempareadbacc"

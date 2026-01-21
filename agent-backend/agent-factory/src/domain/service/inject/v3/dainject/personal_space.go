@@ -10,8 +10,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/personalspacedbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/pubedagentdbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/releaseacc"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/chttpinject"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver"
 )
 
 var (

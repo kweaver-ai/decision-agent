@@ -6,8 +6,8 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo"
 	"github.com/PuerkitoBio/goquery"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo"
 )
 
 const (

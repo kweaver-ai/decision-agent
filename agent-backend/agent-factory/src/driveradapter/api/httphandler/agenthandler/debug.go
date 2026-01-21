@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/bytedance/sonic"
+	"github.com/gin-gonic/gin"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req/chatopt"
@@ -13,8 +15,6 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
-	"github.com/bytedance/sonic"
-	"github.com/gin-gonic/gin"
 )
 
 func (h *agentHTTPHandler) Debug(c *gin.Context) {

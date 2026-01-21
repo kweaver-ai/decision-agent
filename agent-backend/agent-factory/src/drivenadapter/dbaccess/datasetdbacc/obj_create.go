@@ -6,9 +6,9 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/daenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/types/dto/daconfigdto/dsdto"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/dbhelper2"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 )
 
 func (r *DatasetRepo) CreateDatasetObjs(ctx context.Context, tx *sql.Tx, dto *dsdto.DsComDto, datasetId string) (err error) {

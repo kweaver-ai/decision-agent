@@ -5,13 +5,13 @@ import (
 	"fmt"
 	"net/http"
 
+	jsoniter "github.com/json-iterator/go"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/httpclient"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/imodelfactoryacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/imodelfactoryacc"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
-	jsoniter "github.com/json-iterator/go"
 	"github.com/sashabaranov/go-openai"
 )
 

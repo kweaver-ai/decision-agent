@@ -7,8 +7,8 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/kweaver-ai/decision-agent/agent-factory/appruntime"
 	"github.com/gin-gonic/gin"
+	"github.com/kweaver-ai/decision-agent/agent-factory/appruntime"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
@@ -32,6 +32,7 @@ func ExtractTraceHeader(ctx context.Context, header http.Header) context.Context
 	if header == nil {
 		return ctx
 	}
+
 	return otel.GetTextMapPropagator().Extract(ctx, propagation.HeaderCarrier(header))
 }
 
@@ -39,14 +40,15 @@ func ExtractTraceHeader(ctx context.Context, header http.Header) context.Context
 func StartInternalSpan(ctx context.Context) (context.Context, trace.Span) {
 	pc, file, linkNo, ok := runtime.Caller(1)
 	if !ok {
-
 		newCtx, span := otel.Tracer(appruntime.TraceInstrumentationName).Start(ctx, "unknow", trace.WithSpanKind(trace.SpanKindInternal))
 		return newCtx, span
 	}
+
 	funcPaths := strings.Split(runtime.FuncForPC(pc).Name(), "/")
 	spanName := funcPaths[len(funcPaths)-1]
 	newCtx, span := otel.Tracer(appruntime.TraceInstrumentationName).Start(ctx, spanName, trace.WithSpanKind(trace.SpanKindInternal))
 	span.SetAttributes(attribute.String(FUNC_PATH, fmt.Sprintf("%s:%v", file, linkNo)))
+
 	return newCtx, span
 }
 
@@ -57,6 +59,7 @@ func StartServerSpan(ctx *gin.Context) (context.Context, trace.Span) {
 	span.SetAttributes(attribute.String(HTTP_METHOD, ctx.Request.Method))
 	span.SetAttributes(attribute.String(HTTP_ROUTE, ctx.FullPath()))
 	span.SetAttributes(attribute.String(HTTP_CLIENT_IP, ctx.ClientIP()))
+
 	return newCtx, span
 }
 
@@ -72,11 +75,13 @@ func EndSpan(ctx context.Context, err error) {
 	if span == nil {
 		return
 	}
+
 	if err != nil {
 		span.RecordError(err)
 		span.SetStatus(codes.Error, err.Error())
 	} else {
 		span.SetStatus(codes.Ok, "OK")
 	}
+
 	span.End()
 }

@@ -6,9 +6,9 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/kweaver-go-lib/logger"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
-	"github.com/bytedance/sonic"
 )
 
 func formatSSEMessage(data string) []byte {

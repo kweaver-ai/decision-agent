@@ -1,13 +1,13 @@
 package personalspaceresp
 
 import (
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/cdaconstant"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/daconfeo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/daenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/publishvo"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/cdaconstant"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 )
 
 // AgentListItem 个人空间Agent列表项
@@ -28,7 +28,7 @@ type AgentListItem struct {
 	ProductKey string `json:"product_key"` // 所属产品标识
 
 	Status      cdaenum.StatusThreeState `json:"status"`       // 状态 ("unpublished", "published", "published_edited")
-	CreatedType daenum.AgentCreatedType `json:"created_type"` // Agent创建类型
+	CreatedType daenum.AgentCreatedType  `json:"created_type"` // Agent创建类型
 
 	UpdatedAt     int64  `json:"updated_at"`      // 最近更新时间
 	UpdatedBy     string `json:"updated_by"`      // 最近更新人

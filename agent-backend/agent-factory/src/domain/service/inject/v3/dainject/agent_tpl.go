@@ -12,9 +12,9 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/daconftpldbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/productdbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/publishedtpldbacc"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/chttpinject"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/rediscmp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver"
 	"github.com/kweaver-ai/kweaver-go-lib/logger"
 )
 

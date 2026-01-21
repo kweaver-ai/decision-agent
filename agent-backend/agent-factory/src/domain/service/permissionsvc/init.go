@@ -16,7 +16,6 @@ func (svc *permissionSvc) InitPermission(ctx context.Context) (err error) {
 	//	err = errors.Wrapf(err, "update agent resource type failed")
 	//	return
 	//}
-
 	// 2. 授予应用管理员-所有Agent的“使用权限”
 	err = svc.authZHttp.GrantAgentUsePmsForAppAdmin(ctx)
 	if err != nil {

@@ -3,10 +3,10 @@ package bizdomain
 import (
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/bddbacc/bdagenttpldbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/daconftpldbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
-	"github.com/gin-gonic/gin"
 )
 
 // FixMissingAgentTplRelHandler 修复缺失的agent模板业务域关联

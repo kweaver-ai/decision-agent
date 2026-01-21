@@ -7,10 +7,10 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/spacevo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/space/spacereq"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/dbhelper2"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/sqlhelper2"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 )
 
 func (repo *SpaceRepo) GetSpacePosByMembers(ctx context.Context, tx *sql.Tx, members []*spacevo.MemberUniq, req *spacereq.ListReq) (pos []*dapo.SpacePo, count int64, err error) {

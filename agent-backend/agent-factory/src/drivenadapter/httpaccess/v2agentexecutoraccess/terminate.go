@@ -38,6 +38,7 @@ func (ae *v2AgentExecutorHttpAcc) Terminate(ctx context.Context, req *v2agentexe
 			if ok && err != nil {
 				return err
 			}
+
 			return nil
 		}
 	}

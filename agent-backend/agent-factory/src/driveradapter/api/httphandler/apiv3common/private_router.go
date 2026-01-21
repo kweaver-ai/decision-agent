@@ -1,9 +1,9 @@
 package apiv3common
 
 import (
+	"github.com/gin-gonic/gin"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capimiddleware"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
-	"github.com/gin-gonic/gin"
 )
 
 func GetPrivateRouterGroup(router *gin.RouterGroup) (group *gin.RouterGroup) {

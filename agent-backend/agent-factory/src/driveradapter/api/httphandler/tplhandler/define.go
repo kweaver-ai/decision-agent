@@ -4,9 +4,9 @@ import (
 	"sync"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/inject/v3/dainject"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/ihandlerportdriver"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp"
 	"github.com/kweaver-ai/kweaver-go-lib/logger"
 
 	"github.com/gin-gonic/gin"
@@ -34,9 +34,9 @@ func (h *daTplHTTPHandler) RegPubRouter(router *gin.RouterGroup) {
 }
 
 func (h *daTplHTTPHandler) RegPriRouter(router *gin.RouterGroup) {
-    //后面如果有，则打开注释，基于g来注册私有接口
+	//后面如果有，则打开注释，基于g来注册私有接口
 	//g := apiv3common.GetPrivateRouterGroup(router)
-    //g.GET()
+	//g.GET()
 }
 
 var (

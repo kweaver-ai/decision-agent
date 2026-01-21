@@ -2,8 +2,8 @@ package spacee2p
 
 import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/spaceeo"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 )
 
 // Spaces 将多个空间实体转换为持久化对象

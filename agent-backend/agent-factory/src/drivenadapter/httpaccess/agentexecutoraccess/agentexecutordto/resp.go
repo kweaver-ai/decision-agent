@@ -8,4 +8,3 @@ type AgentCallResp struct {
 	Error  interface{} `json:"error,omitempty"` // 发生错误时返回该字段。包含错误码、错误信息等。
 	// UserDefine map[string]interface{} `json:"user_define,omitempty"` // 透传中断的messageid
 }
-

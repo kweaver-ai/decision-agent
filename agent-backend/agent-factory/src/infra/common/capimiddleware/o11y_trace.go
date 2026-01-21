@@ -3,8 +3,8 @@ package capimiddleware
 import (
 	"fmt"
 
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/gin-gonic/gin"
+	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	semconv "go.opentelemetry.io/otel/semconv/v1.17.0"
 )
 

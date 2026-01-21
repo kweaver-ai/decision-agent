@@ -3,8 +3,8 @@ package bizdomain
 import (
 	"net/http"
 
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/gin-gonic/gin"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 )
 
 // QueryResourceAssociationsTestHandler 测试关联关系查询

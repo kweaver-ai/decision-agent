@@ -5,8 +5,8 @@ import (
 	"math"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/types/dto/daconfigdto/dsdto"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/docindexobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/comvalobj"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/docindexobj"
 )
 
 func (s *dsSvc) GetDsIndexStatus(ctx context.Context, req *dsdto.DsUniqWithDatasetIDDto, isShowFailInfos bool) (info *docindexobj.AgentDocIndexStatusInfo, err error) {

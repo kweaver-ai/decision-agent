@@ -6,9 +6,9 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/published/pubedreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/published/pubedresp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/pkg/errors"
 )
 
@@ -35,7 +35,7 @@ func (svc *publishedSvc) getPmsAgentPos(ctx context.Context, req *pubedreq.Pubed
 	}
 
 	if len(agentIdsByBdIds) == 0 {
-        isLastPage = true
+		isLastPage = true
 		return
 	}
 

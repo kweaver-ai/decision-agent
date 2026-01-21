@@ -3,6 +3,7 @@ package v3agentconfighandler
 import (
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/auditconstant"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/daconstant"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
@@ -14,7 +15,6 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil/crest"
 	"github.com/kweaver-ai/kweaver-go-lib/audit"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
-	"github.com/gin-gonic/gin"
 )
 
 func (h *daConfHTTPHandler) Create(c *gin.Context) {

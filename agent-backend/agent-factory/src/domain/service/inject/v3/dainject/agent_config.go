@@ -4,7 +4,7 @@ import (
 	"sync"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/agentconfigsvc"
+	v3agentconfigsvc "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/agentconfigsvc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/bddbacc/bdagentdbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/bddbacc/bdagenttpldbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/daconfdbacc"
@@ -13,14 +13,14 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/pubedagentdbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/releaseacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/spacedb/spaceresourcedbacc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/chttpinject"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/httpinject"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/usermanagementacc"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/chttpinject"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/mqaccess"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/cmpopenai"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/rediscmp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver"
 	"github.com/kweaver-ai/kweaver-go-lib/logger"
 )
 

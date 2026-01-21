@@ -3,11 +3,11 @@ package boot
 import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/conf"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	_ "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cglobal"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/redishelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/kweaver-go-lib/audit"
 	"github.com/kweaver-ai/kweaver-go-lib/mq"
 

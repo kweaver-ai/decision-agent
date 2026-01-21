@@ -5,9 +5,9 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/inject/v3/dainject"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/httphandler/apiv3common"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/ihandlerportdriver"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp"
 	"github.com/kweaver-ai/kweaver-go-lib/logger"
 
 	"github.com/gin-gonic/gin"
@@ -46,7 +46,7 @@ func (h *daConfHTTPHandler) RegPubRouter(router *gin.RouterGroup) {
 }
 
 func (h *daConfHTTPHandler) RegPriRouter(router *gin.RouterGroup) {
-    g:=apiv3common.GetPrivateRouterGroup(router)
+	g := apiv3common.GetPrivateRouterGroup(router)
 
 	// 私有路由注册
 	g.POST("/agent", h.Create)                   // 新建agent

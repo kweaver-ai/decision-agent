@@ -3,6 +3,7 @@ package producthandler
 import (
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/auditconstant"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/product/productreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
@@ -11,7 +12,6 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	"github.com/kweaver-ai/kweaver-go-lib/audit"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
-	"github.com/gin-gonic/gin"
 )
 
 func (h *productHTTPHandler) Update(c *gin.Context) {

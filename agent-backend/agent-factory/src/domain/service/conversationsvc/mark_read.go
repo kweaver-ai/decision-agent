@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"

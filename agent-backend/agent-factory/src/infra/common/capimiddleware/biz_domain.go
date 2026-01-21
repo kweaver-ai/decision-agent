@@ -4,10 +4,10 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
-	"github.com/gin-gonic/gin"
 )
 
 // BizDomainMiddleware 业务域中间件

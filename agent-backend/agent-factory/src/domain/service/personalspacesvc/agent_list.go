@@ -10,9 +10,9 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/personal_space/personalspacereq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/personal_space/personalspaceresp"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/pkg/errors"
 )
 
@@ -73,7 +73,7 @@ func (s *PersonalSpaceService) AgentList(ctx context.Context, req *personalspace
 	// 4. 构建响应
 
 	if len(pos) == 0 {
-        resp.IsLastPage = true
+		resp.IsLastPage = true
 		return
 	}
 

@@ -4,9 +4,9 @@ import (
 	"context"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/releaseeo"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/pkg/errors"
 )
 

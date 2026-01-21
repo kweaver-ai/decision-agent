@@ -4,12 +4,12 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
-	"github.com/gin-gonic/gin"
 )
 
 // SetInternalAPIUserInfo 设置内部api用户信息
@@ -19,14 +19,14 @@ import (
 // 3. 如果account-id为空，不设置visitor信息到context，继续执行
 // 4. 设置visitor信息到context
 // supportAccountTypes: 支持的账户类型，默认为[cenum.AccountTypeUser]
-func SetInternalAPIUserInfo(isCheckAccountType bool,supportAccountTypes ...cenum.AccountType) gin.HandlerFunc {
+func SetInternalAPIUserInfo(isCheckAccountType bool, supportAccountTypes ...cenum.AccountType) gin.HandlerFunc {
 	// 如果没有传入supportAccountTypes，默认为[cenum.AccountTypeUser]
 	if len(supportAccountTypes) == 0 {
 		supportAccountTypes = []cenum.AccountType{cenum.AccountTypeUser}
 	}
 
 	return func(c *gin.Context) {
-        //log.Println("in SetInternalAPIUserInfo...")
+		//log.Println("in SetInternalAPIUserInfo...")
 		// 1. 从header中获取account-id和account-type
 		uid, isExist, err := chelper.GetAccountIDFromContext(c)
 		if err != nil {
@@ -48,7 +48,6 @@ func SetInternalAPIUserInfo(isCheckAccountType bool,supportAccountTypes ...cenum
 
 		// 2.1 如果account-type不为空，检查是否在supportAccountTypes中
 		if isExist {
-
 			if isCheckAccountType {
 				isSupported := false
 
@@ -64,8 +63,6 @@ func SetInternalAPIUserInfo(isCheckAccountType bool,supportAccountTypes ...cenum
 					return
 				}
 			}
-			
-			
 		} else {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "account type is required when account-id is not empty"})
 			return

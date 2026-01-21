@@ -8,8 +8,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/releaseacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/spacedb/spacedbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/visithistoryacc"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/usermanagementacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/chttpinject"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/usermanagementacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iumacc"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess"

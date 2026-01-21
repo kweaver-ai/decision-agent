@@ -96,6 +96,7 @@ func createResource(cfg *conf.OtelConfig) (*resource.Resource, error) {
 // initTracer 初始化 Trace 提供者
 func (p *Provider) initTracer(res *resource.Resource) error {
 	var exporter sdktrace.SpanExporter
+
 	var err error
 
 	// 根据配置选择 exporter
@@ -145,12 +146,14 @@ func (p *Provider) initTracer(res *resource.Resource) error {
 	})
 
 	log.Printf("Trace provider initialized with %s exporter", p.config.Trace.Exporter)
+
 	return nil
 }
 
 // initLogger 初始化 Log 提供者
 func (p *Provider) initLogger(res *resource.Resource) error {
 	var exporter otelsdklog.Exporter
+
 	var err error
 
 	// 根据配置选择 exporter
@@ -185,12 +188,14 @@ func (p *Provider) initLogger(res *resource.Resource) error {
 	p.shutdownFuncs = append(p.shutdownFuncs, func(ctx context.Context) error {
 		return lp.Shutdown(ctx)
 	})
+
 	return nil
 }
 
 // initMeter 初始化 Metric 提供者
 func (p *Provider) initMeter(res *resource.Resource) error {
 	var exporter otelsdkmetric.Exporter
+
 	var err error
 
 	// 根据配置选择 exporter
@@ -230,6 +235,7 @@ func (p *Provider) initMeter(res *resource.Resource) error {
 	})
 
 	log.Printf("Metric provider initialized with %s exporter", p.config.Metric.Exporter)
+
 	return nil
 }
 
@@ -264,5 +270,6 @@ func (p *Provider) Shutdown(ctx context.Context) error {
 	}
 
 	log.Println("All OpenTelemetry providers shutdown successfully")
+
 	return nil
 }

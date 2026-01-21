@@ -72,7 +72,6 @@ func GetAllOperator() []Operator {
 	}
 }
 
-
 func GetAllAgentMgmtOperator() []Operator {
 	return []Operator{
 		AgentPublish,
