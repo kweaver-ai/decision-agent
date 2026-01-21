@@ -1,9 +1,9 @@
 # Agent Backend 统一Dockerfile
 # 多阶段构建：构建3个可执行文件，使用supervisor管理进程
 
-ARG buildImage
-ARG baseImage
-ARG goBuildImage
+ARG buildImage=acr.aishu.cn/dip/py.build:3.10.18-20251030
+ARG baseImage=swr.cn-east-3.myhuaweicloud.com/kweaver-ai/ubuntu:24.04
+ARG goBuildImage=swr.cn-east-3.myhuaweicloud.com/kweaver-ai/golang:1.24.11
 
 # ==================== 构建阶段：agent-factory (Go) ====================
 FROM ${goBuildImage} AS builder-factory
@@ -19,6 +19,7 @@ COPY agent-factory/src /build/src
 COPY agent-factory/cconf /build/cconf
 COPY agent-factory/conf /build/conf
 COPY agent-factory/locale /build/locale
+COPY agent-factory/dict /build/dict
 
 # 构建 agent-factory Go 二进制文件
 RUN set -ex; \
@@ -45,6 +46,7 @@ COPY agent-executor/agent-executor.spec /build/agent-executor.spec
 COPY agent-executor/pyproject.toml /build/pyproject.toml
 COPY agent-executor/app /build/app
 COPY agent-executor/main.py /build/main.py
+COPY agent-executor/data_migrations /build/data_migrations
 COPY agent-executor/mq-sdk-lib /build/mq-sdk-lib
 COPY agent-executor/last_commit_info.txt /build/last_commit_info.txt
 
@@ -53,6 +55,10 @@ RUN set -ex; \
     ssh-keyscan -t rsa devops.aishu.cn >> /root/.ssh/known_hosts; \
     cd /build; \
     uv sync; \
+    # Dolphin from test.pypi
+    uv pip install --index-url https://test.pypi.org/simple/ \
+        --extra-index-url https://pypi.tuna.tsinghua.edu.cn/simple/ \
+        --index-strategy unsafe-best-match kweaver-dolphin; \
     uv run pyinstaller agent-executor.spec
 
 # ==================== 构建阶段：agent-memory (Python/PyInstaller) ====================
@@ -77,11 +83,11 @@ RUN set -ex; \
 FROM ${baseImage} AS prod
 
 ARG ARCH_TYPE=amd64
-ARG UID=1000
-ARG GID=1000
+ARG UID=1001
+ARG GID=1001
 
 # 安装 supervisor
-RUN apt-get install -y \
+RUN apt-get update && apt-get install -y \
     supervisor \
     curl \
     && rm -rf /var/lib/apt/lists/*
@@ -96,6 +102,8 @@ WORKDIR /app
 # 从构建阶段复制已构建的二进制文件
 COPY --from=builder-factory --chown=$UID:$GID /build/agent-factory /app/agent-factory/agent-factory
 COPY --from=builder-factory --chown=$UID:$GID /build/locale /app/agent-factory/locale
+COPY --from=builder-factory --chown=$UID:$GID /build/dict /app/agent-factory/dict
+COPY --from=builder-factory --chown=$UID:$GID /build/src/drivenadapter/httpaccess/uniqueryaccess/*.json /app/agent-factory/src/drivenadapter/httpaccess/uniqueryaccess/
 COPY --from=builder-executor --chown=$UID:$GID /build/dist/agent-executor /app/agent-executor
 COPY --from=builder-memory --chown=$UID:$GID /build/dist/agent-memory /app/agent-memory
 
@@ -125,7 +133,8 @@ EXPOSE 13020 30778 30790
 
 # 健康检查
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-    CMD curl -f http://localhost:13020/health/ready || exit 1
+    CMD curl -f http://localhost:13020/health/ready && \
+        curl -f http://localhost:30778/health/ready || exit 1
 
 # 使用 supervisor 启动所有服务
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf", "-n"]

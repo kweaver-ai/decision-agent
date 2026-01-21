@@ -239,6 +239,16 @@ spec:
             periodSeconds: {{ .Values.service.readinessProbe.periodSeconds }}
             timeoutSeconds: {{ .Values.service.readinessProbe.timeoutSeconds }}
             failureThreshold: {{ .Values.service.readinessProbe.failureThreshold }}
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - "curl -sf http://localhost:{{ .Values.service.port }}/health/ready && curl -sf http://localhost:{{ .Values.agentExecutor.port }}/health/ready"
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
           {{- end}}
           volumeMounts:
             - name: {{ .Release.Name }}-yaml

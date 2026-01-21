@@ -111,6 +111,9 @@ uv-clean:
 	rm -rf .venv
 	@echo "✅ UV 缓存清理完成"
 
+do-pyinstaller:
+	uv run pyinstaller agent-executor.spec
+
 # 帮助信息
 help:
 	@echo "🚀 Agent-Executor - Makefile 帮助"
