@@ -13,14 +13,8 @@ ARG GOPROXY=https://goproxy.cn,direct
 
 WORKDIR /build
 
-# 复制 agent-factory 源代码
-COPY agent-factory/go.mod agent-factory/go.sum /build/
-COPY agent-factory/main.go /build/
-COPY agent-factory/src /build/src
-COPY agent-factory/cconf /build/cconf
-COPY agent-factory/conf /build/conf
-COPY agent-factory/locale /build/locale
-COPY agent-factory/dict /build/dict
+# 复制完整 agent-factory 源代码
+COPY agent-factory/ /build/
 
 # 构建 agent-factory Go 二进制文件
 RUN set -ex; \
