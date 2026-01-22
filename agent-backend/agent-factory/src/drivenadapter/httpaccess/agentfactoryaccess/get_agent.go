@@ -29,7 +29,6 @@ func (af *agentFactoryHttpAcc) GetAgent(ctx context.Context, agentID string, ver
 
 	uri := fmt.Sprintf("%s/api/agent-factory/internal/v3/agent-market/agent/%s/version/%s", af.privateAddress, agentID, version)
 	code, res, err := af.client.GetNoUnmarshal(ctx, uri, nil, nil)
-
 	if err != nil {
 		o11y.Error(ctx, fmt.Sprintf("[GetAgent] request uri %s err %s", uri, err))
 		err = errors.Wrapf(err, "[GetAgent] request uri %s err %s", uri, err)

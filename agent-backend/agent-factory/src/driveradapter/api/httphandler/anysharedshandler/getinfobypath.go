@@ -15,7 +15,6 @@ func (h *anysharedsHandler) getInfoByPath(c *gin.Context) {
 	// 接收语言标识转换为 context.Context
 	ctx := rest.GetLanguageCtx(c)
 	reqByte, err := c.GetRawData()
-
 	if err != nil {
 		err = capierr.New400Err(ctx, err.Error())
 		_ = c.Error(err)
@@ -48,7 +47,6 @@ func (h *anysharedsHandler) getInfoByPath(c *gin.Context) {
 	oauthURL := fmt.Sprintf("%s://%s:%d/oauth2/token", reqParam.Protocol, reqParam.Host, reqParam.Port)
 	token, err := getAnyshareOauth2Token(ctx, oauthURL, reqParam.Account, reqParam.Password)
 	// Token has been obtained successfully
-
 	if err != nil {
 		err = capierr.New500Err(ctx, err.Error())
 		_ = c.Error(err)

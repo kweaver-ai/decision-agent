@@ -48,7 +48,6 @@ func (efast *efastHttpAcc) GetObjectFieldByID(ctx context.Context, objectIDs []s
 		ObjIDs: ids,
 	}
 	_, data, err := efast.client.PostNoUnmarshal(ctx, uri, headers, req)
-
 	if err != nil {
 		o11y.Error(ctx, fmt.Sprintf("[GetObjectFieldByID] request uri %s err %s, resp %s, req: %v ", uri, err, string(data), req))
 		return documentMap, errors.Wrapf(err, "[GetObjectFieldByID] request uri %s err %s, resp %s, req: %v ", uri, err, string(data), req)

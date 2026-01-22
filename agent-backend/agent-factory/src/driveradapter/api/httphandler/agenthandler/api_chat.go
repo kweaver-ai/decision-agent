@@ -51,7 +51,7 @@ func (h *agentHTTPHandler) APIChat(c *gin.Context) {
 	}
 
 	if cenvhelper.IsLocalDev(cenvhelper.RunScenario_Aaron_Local_Dev) {
-		//req.IncStream=false
+		// req.IncStream=false
 	}
 
 	// NOTE: 获取用户ID

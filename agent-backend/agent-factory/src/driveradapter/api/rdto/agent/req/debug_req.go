@@ -3,6 +3,7 @@ package agentreq
 import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/comvalobj"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req/chatopt"
 )
 
@@ -12,6 +13,10 @@ type DebugReq struct {
 	Input          DebugInput `json:"input"`           // 输入
 	ConversationID string     `json:"conversation_id"` // 会话ID
 
+	AgentRunID                string                              `json:"agent_run_id"`                     // Agent运行ID（中断恢复时由前端传入）
+	ResumeInterruptInfo       *v2agentexecutordto.AgentResumeInfo `json:"resume_interrupt_info"`            // 中断恢复信息（为nil时走正常流程）
+	InterruptedAssistantMsgID string                              `json:"interrupted_assistant_message_id"` // 中断的助手消息ID
+
 	ChatMode string `json:"chat_mode"` // 聊天模式
 	// NOTE: 新增stream参数，控制流式返回
 	Stream    bool `json:"stream,omitempty"`     // 是否流式返回
@@ -20,9 +25,6 @@ type DebugReq struct {
 	UserID      string `json:"-"` // 用户ID
 	Token       string `json:"-"` // 用户token
 	AgentAPPKey string `json:"-"`
-
-	// NOTE: 这里的SessionID 是历史遗留问题，实际上为RunID
-	SessionID string `json:"-"`
 
 	ExecutorVersion string `json:"executor_version"` // executor version v1 或 v2 默认v2
 
@@ -34,6 +36,5 @@ type DebugInput struct {
 	TempFiles    []valueobject.TempFile  `json:"temp_files"`    // 临时文件
 	Query        string                  `json:"query"`         // 查询内容
 	CustomQuerys map[string]interface{}  `json:"custom_querys"` // 自定义查询
-	Tool         Tool                    `json:"tool"`          // 工具
 	History      []*comvalobj.LLMMessage `json:"history"`       // 历史
 }

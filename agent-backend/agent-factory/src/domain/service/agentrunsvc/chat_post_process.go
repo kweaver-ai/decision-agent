@@ -187,7 +187,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 		progresses = agentSvc.addCitesToProgress(ctx, progresses, true)
 	}
 
-	//TODO: 这里progress 的处理应该还是需要的，只是结果可以不返回
+	// TODO: 这里progress 的处理应该还是需要的，只是结果可以不返回
 	progressAns, err := agentSvc.handleProgress(ctx, req, progresses)
 	if err != nil {
 		o11y.Error(ctx, fmt.Sprintf("[AfterProcess] handle progress err: %v", err))

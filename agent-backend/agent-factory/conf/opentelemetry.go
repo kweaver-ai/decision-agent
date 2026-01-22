@@ -11,7 +11,7 @@ type OtelConfig struct {
 // TraceConfig Trace 配置
 type TraceConfig struct {
 	Enabled      bool    `yaml:"enabled"`
-	Exporter     string  `yaml:"exporter"` //console http
+	Exporter     string  `yaml:"exporter"` // console http
 	HTTPEndpoint string  `yaml:"http_endpoint"`
 	SamplingRate float64 `yaml:"sampling_rate"`
 }
@@ -19,7 +19,7 @@ type TraceConfig struct {
 // LogConfig Log 配置
 type LogConfig struct {
 	Enabled      bool   `yaml:"enabled"`
-	Exporter     string `yaml:"exporter"` //console http
+	Exporter     string `yaml:"exporter"` // console http
 	HTTPEndpoint string `yaml:"http_endpoint"`
 	Level        string `yaml:"level"`
 }
@@ -27,7 +27,7 @@ type LogConfig struct {
 // MetricConfig Metric 配置
 type MetricConfig struct {
 	Enabled        bool   `yaml:"enabled"`
-	Exporter       string `yaml:"exporter"` //console http
+	Exporter       string `yaml:"exporter"` // console http
 	HTTPEndpoint   string `yaml:"http_endpoint"`
 	ExportInterval int    `yaml:"export_interval"`
 }

@@ -44,7 +44,7 @@ func NewStreamingResponseLogger(conversationID string, logType ResponseLoggerTyp
 
 	// 根据日志类型创建不同的子目录
 	logDir := filepath.Join(logRootDir, "streaming_responses", string(logType))
-	if err := os.MkdirAll(logDir, 0755); err != nil {
+	if err := os.MkdirAll(logDir, 0o755); err != nil {
 		return nil, err
 	}
 

@@ -64,4 +64,6 @@ def process_options(
 
     if options.agent_run_id:
         agent_config.agent_run_id = options.agent_run_id
+        # # 兼容老的
+        # agent_config.session_id = options.agent_run_id
     # new add 2025年10月19日16:52:53 --end--

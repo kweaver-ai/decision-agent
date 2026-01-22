@@ -13,14 +13,14 @@ import (
 )
 
 func (s *observabilitySvc) AgentDetail(ctx context.Context, req *observabilityreq.AgentDetailReq) (*observabilityresp.AgentResp, error) {
-	//1. 获取agent信息
+	// 1. 获取agent信息
 	agent, err := s.agentFactory.GetAgent(ctx, req.AgentID, req.AgentVersion)
 	if err != nil {
 		s.logger.Errorf("[AgentDetail] get agent config failed: %v", err.Error())
 		return nil, rest.NewHTTPError(ctx, http.StatusInternalServerError, apierr.AgentAPP_Agent_GetAgentFailed).WithErrorDetails(err.Error())
 	}
 
-	//2. 通过uniquery查询agent-app的日志数据
+	// 2. 通过uniquery查询agent-app的日志数据
 	uniqueryReq := uniquerydto.ReqDataView{
 		Limit:        10000,
 		Offset:       0,
@@ -87,7 +87,7 @@ func (s *observabilitySvc) AgentDetail(ctx context.Context, req *observabilityre
 
 	entries := viewResults.Entries
 
-	//3. 计算Agent级别指标
+	// 3. 计算Agent级别指标
 	var (
 		totalRequests     = len(entries)
 		sessionSet        = make(map[string]bool)
@@ -137,7 +137,7 @@ func (s *observabilitySvc) AgentDetail(ctx context.Context, req *observabilityre
 		}
 	}
 
-	//4. 计算各项指标
+	// 4. 计算各项指标
 	totalSessions := len(sessionSet)
 
 	var avgSessionRounds int
@@ -166,7 +166,7 @@ func (s *observabilitySvc) AgentDetail(ctx context.Context, req *observabilityre
 		toolSuccessRate = float32(totalToolCalls-totalToolFailures) / float32(totalToolCalls) * 100
 	}
 
-	//5. 返回结果
+	// 5. 返回结果
 	return &observabilityresp.AgentResp{
 		Agent: observabilityresp.Agent{
 			ID:      req.AgentID,

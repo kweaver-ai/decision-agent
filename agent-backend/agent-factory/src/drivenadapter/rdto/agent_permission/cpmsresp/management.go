@@ -23,14 +23,14 @@ type AgentTplPermission struct {
 
 // UserStatusResp 用户权限状态响应
 type UserStatusResp struct {
-	//CustomSpace CustomSpacePermission `json:"custom_space"` // 自定义空间权限
+	// CustomSpace CustomSpacePermission `json:"custom_space"` // 自定义空间权限
 	Agent    AgentPermission    `json:"agent"`     // Agent权限
 	AgentTpl AgentTplPermission `json:"agent_tpl"` // Agent模板权限
 }
 
 func NewUserStatusResp() *UserStatusResp {
 	return &UserStatusResp{
-		//CustomSpace: CustomSpacePermission{},
+		// CustomSpace: CustomSpacePermission{},
 		Agent:    AgentPermission{},
 		AgentTpl: AgentTplPermission{},
 	}

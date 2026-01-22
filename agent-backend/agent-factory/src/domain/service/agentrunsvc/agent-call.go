@@ -6,6 +6,7 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutordto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/v2agentexecutoraccess"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iagentexecutorhttp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iv2agentexecutorhttp"
 )
@@ -31,8 +32,15 @@ func (a *AgentCall) Call() (chan string, chan error, error) {
 	return nil, nil, fmt.Errorf("executor version %s not supported", a.req.ExecutorVersion)
 }
 
-func (a *AgentCall) Resume() {
+func (a *AgentCall) Resume(agentRunID string, resumeInfo *v2agentexecutordto.AgentResumeInfo) (messageChan chan string, errChan chan error, err error) {
+	// 构造V2 Resume请求（直接使用，不需要转换）
+	v2Req := &v2agentexecutordto.AgentResumeReq{
+		AgentRunID: agentRunID,
+		ResumeInfo: resumeInfo,
+	}
 
+	// 调用executor的Resume接口
+	return a.agentExecutorV2.Resume(a.callCtx, v2Req)
 }
 
 func (a *AgentCall) Cancel() {

@@ -47,7 +47,7 @@ func AgentConfig2AgentCallConfigDebug(ctx context.Context, agentConfig *daconfva
 	agentCallConfig := agentexecutordto.Config{
 		Config:    *agentConfig,
 		AgentID:   req.AgentID,
-		SessionID: req.SessionID,
+		SessionID: req.AgentRunID,
 	}
 
 	if agentConfig.Skill == nil {

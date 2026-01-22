@@ -54,7 +54,6 @@ func (cli *client) GetUserInfoByUserID(ctx context.Context, userIDs []string, fi
 
 	uri := cli.address + fmt.Sprintf(usersInfoURI, strings.Join(userIDs, ","), strings.Join(fields, ","))
 	data, err := cli.httpClient.GetExpect2xxByte(ctx, uri, nil)
-
 	if err != nil {
 		cli.log.Errorf("[GetUserInfoByUserID] request failed:%v, url:%s", err, uri)
 		err = errors.Wrapf(err, "request failed")
@@ -96,7 +95,6 @@ func (cli *client) GetUserIDByAccount(ctx context.Context, account string) (inva
 	vals.Add("account", account)
 	uri := fmt.Sprintf("%s%s?%s", cli.address, userIDByAccountURI, vals.Encode())
 	data, err := cli.httpClient.GetExpect2xxByte(ctx, uri, nil)
-
 	if err != nil {
 		cli.log.Errorf("[GetUserIDByAccount] request failed:%v, url:%s", err, uri)
 		err = errors.Wrapf(err, "request failed")

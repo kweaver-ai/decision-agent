@@ -34,7 +34,7 @@ func (svc *conversationSvc) Update(ctx context.Context, req conversationreq.Upda
 	}
 
 	currentTimestamp := cutil.GetCurrentMSTimestamp()
-	//截断title
+	// 截断title
 	if req.Title != "" {
 		runes := []rune(req.Title)
 		if len(runes) < 50 {
