@@ -11,7 +11,7 @@ import _ from 'lodash';
 import { nanoid } from 'nanoid';
 import type { AiInputRef, AiInputValue } from '../components/AiInput/interface';
 import ScrollBarContainer from '@/components/ScrollBarContainer';
-import { getAgentInputDisplayFields, getChatItemRoleByMode, getTempAreaEnable } from '../utils';
+import { getAgentInputDisplayFields, getTempAreaEnable } from '../utils';
 import DipIcon from '@/components/DipIcon';
 import DipButton from '@/components/DipButton';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -40,11 +40,6 @@ const DipChat = () => {
       aiInputValue,
       streamGenerating,
       conversationCollapsed,
-      deepThinkHidden,
-      deepThinkDisabledForNetworking,
-      deepThinkDisabledForNormal,
-      deepThinkSelectedForNormal,
-      deepThinkSelectedForNetworking,
       agentAppType,
       agentDetails,
       debug,
@@ -69,6 +64,7 @@ const DipChat = () => {
   const navigate = useNavigate();
   const [showBackBottom, setShowBackBottom] = useState(false);
   const [size, setSize] = React.useState<number>(280);
+  const isInterrupt = _.get(chatList[chatList.length - 1], 'interrupt');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -95,10 +91,8 @@ const DipChat = () => {
         'activeConversationKey',
         'conversationItems',
         'chatList',
-        'executePlanItemIndex',
         'activeChatItemIndex',
         'streamGenerating',
-        'scrollIntoViewPlanId',
         'conversationCollapsed',
         'activeProgressIndex',
       ]);
@@ -116,8 +110,7 @@ const DipChat = () => {
     });
     cloneChatList.push({
       key: nanoid(),
-      // role: debug ? 'debugger' : getChatItemRoleByMode(value.mode, agentAppType),
-      role: getChatItemRoleByMode(value.mode, agentAppType),
+      role: 'common',
       content: '',
       loading: true,
     });
@@ -213,7 +206,6 @@ const DipChat = () => {
     resetDipChatStore([
       'activeConversationKey',
       'activeChatItemIndex',
-      'executePlanItemIndex',
       'agentInputParamsFormErrorFields',
       'agentInputParamsFormValue',
       'activeProgressIndex',
@@ -226,9 +218,7 @@ const DipChat = () => {
     if (chatList.length > 0) {
       return <BubbleList />;
     }
-    if (agentAppType !== 'super-assistant') {
-      return <AgentDescription />;
-    }
+    return <AgentDescription />;
   };
 
   const renderAgentInputParams = () => {
@@ -313,10 +303,6 @@ const DipChat = () => {
                       <ColorLoading />
                     </div>
                   )}
-                  {/* <div className={styles.loading}>*/}
-                  {/*  <span className="dip-mr-8">任务正在进行中</span>*/}
-                  {/*  <WaveLoading />*/}
-                  {/* </div>*/}
                   <div className={classNames(styles.newConversation)}>
                     <DipButton
                       icon={<DipIcon type="icon-dip-chat1" className="dip-font-16" />}
@@ -351,14 +337,7 @@ const DipChat = () => {
                 </div>
               </div>
               <AiInput
-                deepThink={{
-                  hidden: deepThinkHidden,
-                  disabledForNormal: deepThinkDisabledForNormal,
-                  disabledForNetworking: deepThinkDisabledForNetworking,
-                  selectedForNormal: deepThinkSelectedForNormal,
-                  selectedForNetworking: deepThinkSelectedForNetworking,
-                }}
-                loading={streamGenerating}
+                loading={streamGenerating || !!isInterrupt}
                 value={aiInputValue}
                 ref={aiInputRef}
                 onSubmit={onSubmit}
@@ -489,12 +468,11 @@ const DipChat = () => {
     const metricTreeDataSource = data_source?.metric ?? [];
     const contentDataSource = docTreeDataSource.filter((item: any) => item.ds_id === '0'); // 内容数据库数据源
     return (
-      agentAppType === 'super-assistant' ||
-      (!getTempAreaEnable(agentConfig) &&
-        knSpaceTreeDataSource.length === 0 &&
-        knExperimentalDataSource.length === 0 &&
-        metricTreeDataSource.length === 0 &&
-        contentDataSource.length === 0)
+      !getTempAreaEnable(agentConfig) &&
+      knSpaceTreeDataSource.length === 0 &&
+      knExperimentalDataSource.length === 0 &&
+      metricTreeDataSource.length === 0 &&
+      contentDataSource.length === 0
     );
   };
 
@@ -512,8 +490,6 @@ const DipChat = () => {
         className={classNames(styles.rightWrapper, 'dip-flex-item-full-width dip-h-100 dip-flex', {
           [styles.mr240]: !conversationCollapsed,
           [styles.mr68]: conversationCollapsed,
-          // 'dip-p-8': agentAppType !== 'super-assistant' && !conversationCollapsed,
-          // 'dip-pt-8 dip-pr-8 dip-pb-8': agentAppType !== 'super-assistant' && conversationCollapsed,
         })}
       >
         {renderCollapseBtn()}

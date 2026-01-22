@@ -1,5 +1,5 @@
-import React, { CSSProperties } from 'react';
-import { SelectProps } from 'antd';
+import React, { type CSSProperties } from 'react';
+import type { SelectProps } from 'antd';
 
 export interface VarOptions {
   label: any;

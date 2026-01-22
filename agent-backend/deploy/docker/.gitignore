@@ -1,0 +1,13 @@
+# 本地构建文件
+Dockerfile.local
+.local/
+
+# 常见忽略
+.git
+.gitignore
+*.md
+__pycache__
+*.pyc
+.venv
+.idea
+.vscode

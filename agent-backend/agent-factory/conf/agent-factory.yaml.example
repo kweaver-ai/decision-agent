@@ -1,0 +1,184 @@
+
+# 是否保留老的APP路径
+keep_legacy_app_path: false
+
+# 这个文件只有本地调试用，打包是打不进去的，
+db:
+  user_name: anyshare
+  user_pwd: "********"
+  db_host: mariadb-mariadb-cluster.resource
+  db_port: 3330
+  db_host_read: 192.168.232.11
+  db_port_read: 3330
+  db_name: adp
+  db_charset: utf8mb4
+  timeout: 10
+  read_timeout: 10
+  write_timeout: 10
+  max_open_conns: 30
+  max_open_read_conns: 30
+
+redis:
+  connect_type: "sentinel"
+  password: "********"
+  username: "root"
+
+  db: 3
+
+  # standalone 单机模式
+  host: "192.168.232.11"
+  port: "36379"
+
+  # sentinel 模式配置
+  master_group_name: "mymaster"
+  sentinel_host: "proton-redis-proton-redis-sentinel.resource"
+  sentinel_port: "26379"
+  sentinel_username: "root"
+  sentinel_password: "********"
+
+  # master-slave 主从模式
+  master_host: ""
+  master_port: "6379"
+  slave_host: ""
+  slave_port: "6379"
+  
+# hydra 相关配置
+hydra:
+  user-mgnt:
+    host: 192.168.232.11
+    port: 30980
+  hydra-public:
+    host: hydra-public
+    port: 4444
+  hydra-admin:
+    host: 192.168.232.11
+    port: 30445
+
+project:
+  host: "0.0.0.0"
+  port: 30777
+  language: "zh-CN"
+  logger_level: info
+
+  rbac_host: kg-user-rbac
+  rbac_port: 6900
+  intelli_qa_host: intelli-qa
+  intelli_qa_port: 8887
+  builder_host: kg-builder
+  builder_port: 6475
+  auth_host: kg-data-auth
+  auth_port: 7000
+  agent_app_host: 192.168.232.11
+  agent_app_port: 30778
+
+  model_factory_host: mf-model-factory
+  model_factory_port: 9898
+
+  debug: true
+  debug_host: 192.168.232.11
+#  debug_host: 192.168.167.12
+model_factory:
+  public_svc:
+    host: model-factory-private
+    port: 8443
+    protocol: http
+  llm:
+    defaultModelName: ""
+    apiKey: ""
+eco_index:
+  private_svc:
+    host: 192.168.232.11
+    port: 32130
+    protocol: http
+agent_executor:
+  public_svc:
+    host: 192.168.232.11
+    port: 30778
+    protocol: http
+  private_svc:
+    host: 192.168.232.11
+    port: 30778
+    protocol: http
+agent_factory:
+  public_svc:
+    host: 192.168.232.11
+    port: 32020
+    protocol: http
+  private_svc:
+    host: 192.168.232.11
+    port: 32020
+    protocol: http
+efast:
+  private_svc:
+    host: 192.168.232.11
+    port: 9123
+    protocol: http
+  public_svc:
+    host: 192.168.232.11
+    port: 9123
+    protocol: http
+docset:
+  public_svc:
+    host: 192.168.232.11
+    port: 32596
+    protocol: http
+  private_svc:
+    host: 192.168.232.11
+    port: 32597
+    protocol: http
+ecoconfig:
+  public_svc:
+    host: 192.168.232.11
+    port: 32127
+    protocol: http
+  private_svc:
+    host: 192.168.232.11
+    port: 32128
+    protocol: http
+
+uniquery:
+  public_svc:
+    host: 192.168.232.11
+    port: 13011
+    protocol: http
+  private_svc:
+    host: 192.168.232.11
+    port: 13011
+    protocol: http
+
+# OpenTelemetry 配置
+opentelemetry:
+  # 服务名称
+  service_name: "agent-factory"
+  # 服务版本
+  service_version: "1.0.0"
+
+  # Trace 配置
+  trace:
+    enabled: true
+    # 上报方式: console 或 http
+    exporter: "console"
+    # HTTP 上报端点 (当 exporter 为 http 时生效)
+    http_endpoint: "http://localhost:4318/v1/traces"
+    # 采样率: 0.0 - 1.0
+    sampling_rate: 1.0
+
+  # Log 配置
+  log:
+    enabled: true
+    # 上报方式: console 或 http
+    exporter: "console"
+    # HTTP 上报端点 (当 exporter 为 http 时生效)
+    http_endpoint: "http://localhost:4318/v1/logs"
+    # 日志级别: debug, info, warn, error
+    level: "info"
+
+  # Metric 配置
+  metric:
+    enabled: true
+    # 上报方式: console 或 http
+    exporter: "console"
+    # HTTP 上报端点 (当 exporter 为 http 时生效)
+    http_endpoint: "http://localhost:4318/v1/metrics"
+    # 指标上报间隔 (秒)
+    export_interval: 10

@@ -1,0 +1,49 @@
+package dssvc
+
+import (
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/idatahubacc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iecoindex"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver"
+)
+
+type dsSvc struct {
+	*service.SvcBase
+	redisCmp icmp.RedisCmp
+
+	dsRepo idbaccess.IDsRepo
+
+	datasetRepo idbaccess.IDatasetRepo
+
+	ecoIndexHttp iecoindex.IEcoIndex
+
+	datahubCentralHttp idatahubacc.IDataHubCentral
+
+	logger icmp.Logger
+}
+
+var _ iv3portdriver.IDsSvc = &dsSvc{}
+
+type NewDsSvcDto struct {
+	RedisCmp           icmp.RedisCmp
+	SvcBase            *service.SvcBase
+	DsRepo             idbaccess.IDsRepo
+	EcoIndexHttp       iecoindex.IEcoIndex
+	DatasetRepo        idbaccess.IDatasetRepo
+	DatahubCentralHttp idatahubacc.IDataHubCentral
+	Logger             icmp.Logger
+}
+
+func NewDsSvc(dto *NewDsSvcDto) iv3portdriver.IDsSvc {
+	return &dsSvc{
+		redisCmp:           dto.RedisCmp,
+		SvcBase:            dto.SvcBase,
+		dsRepo:             dto.DsRepo,
+		ecoIndexHttp:       dto.EcoIndexHttp,
+		datasetRepo:        dto.DatasetRepo,
+		datahubCentralHttp: dto.DatahubCentralHttp,
+		logger:             dto.Logger,
+	}
+}

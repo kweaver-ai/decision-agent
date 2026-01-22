@@ -85,18 +85,18 @@ const ConversationList = ({ startNewConversation, className }: any) => {
   const getDetailsById = async (id: string) => {
     const res: any = await getConversationDetailsByKey(id);
     if (res) {
-      const { recoverConversation, chatList, executePlanItemIndex, read_message_index, message_index } = res;
+      const { recoverConversation, chatList, read_message_index, message_index } = res;
       if (recoverConversation) {
         setDipChatStore({
           activeConversationKey: id,
         });
         sendChat({
           chatList,
-          body: { conversation_id: id },
+          body: { conversation_id: id, interruptAction: 'confirm' },
           recoverConversation: true,
         });
       } else {
-        setDipChatStore({ chatList, executePlanItemIndex: executePlanItemIndex });
+        setDipChatStore({ chatList });
         if (read_message_index !== message_index) {
           // 标记会话已读
           await markReadConversation(agentAppKey, id, message_index);
@@ -131,14 +131,7 @@ const ConversationList = ({ startNewConversation, className }: any) => {
                 setDipChatStore({
                   activeConversationKey: item.key,
                 });
-                resetDipChatStore([
-                  'activeChatItemIndex',
-                  'executePlanItemIndex',
-                  'chatListAutoScroll',
-                  'scrollIntoViewPlanId',
-                  'expandedExploreItemId',
-                  'activeProgressIndex',
-                ]);
+                resetDipChatStore(['activeChatItemIndex', 'chatListAutoScroll', 'activeProgressIndex']);
                 getDetailsById(item.key);
               }, 0);
             }

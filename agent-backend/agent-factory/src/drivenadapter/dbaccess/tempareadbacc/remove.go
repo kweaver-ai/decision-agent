@@ -1,0 +1,17 @@
+package tempareadbacc
+
+import (
+	"context"
+
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/dbhelper2"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
+)
+
+func (repo *TempAreaRepo) Remove(ctx context.Context, tempAreaID string, sourceID []string) (err error) {
+	sr := dbhelper2.NewSQLRunner(repo.db, repo.logger)
+	po := &dapo.TempAreaPO{}
+	sr.FromPo(po)
+	_, err = sr.WhereEqual("f_temp_area_id", tempAreaID).In("f_source_id", sourceID).Delete()
+
+	return
+}
