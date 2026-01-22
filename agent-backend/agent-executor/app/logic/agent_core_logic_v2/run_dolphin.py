@@ -227,5 +227,5 @@ async def run_dolphin(
     ac.dialog_log_handler.save_dialog_logs(config, headers)
 
     ac.memory_handler.start_memory_build_thread(
-        config, context_variables, headers, item
+        config, context_variables, headers, output
     )
