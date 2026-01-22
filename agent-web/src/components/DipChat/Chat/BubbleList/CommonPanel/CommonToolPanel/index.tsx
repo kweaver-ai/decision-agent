@@ -1,5 +1,5 @@
 import styles from './index.module.less';
-import { DipChatItemContentProgressType } from '@/components/DipChat/interface';
+import type { DipChatItemContentProgressType } from '@/components/DipChat/interface';
 import ToolIcon from '@/assets/icons/toolIcon.svg';
 import AgentImg from '@/assets/icons/agent3.svg';
 import MCPIcon from '@/assets/icons/mcp.svg';

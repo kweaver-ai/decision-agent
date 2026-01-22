@@ -2,6 +2,7 @@ import { defineConfig } from '@rsbuild/core';
 import { pluginReact } from '@rsbuild/plugin-react';
 import { pluginLess } from '@rsbuild/plugin-less';
 import { pluginSvgr } from '@rsbuild/plugin-svgr';
+import { pluginNodePolyfill } from '@rsbuild/plugin-node-polyfill';
 import fs from 'fs';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
@@ -53,6 +54,7 @@ export default defineConfig({
         exportType: 'default', // 导出默认组件
       },
     }),
+    pluginNodePolyfill(),
   ],
 
   // ========== 构建配置 ==========

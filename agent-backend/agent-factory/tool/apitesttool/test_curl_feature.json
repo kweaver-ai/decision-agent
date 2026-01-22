@@ -1,0 +1,60 @@
+{
+  "name": "测试curl复制功能",
+  "description": "测试新增的复制curl命令功能",
+  "variables": {
+    "base_url": "https://jsonplaceholder.typicode.com"
+  },
+  "tests": [
+    {
+      "name": "测试GET请求",
+      "description": "测试GET请求的curl复制功能",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/users/1",
+        "headers": {
+          "Accept": "application/json",
+          "User-Agent": "API-Test-Tool/1.0",
+          "X-Request-ID": "${uuid}"
+        }
+      },
+      "expected": {
+        "status_code": 200,
+        "assertions": [
+          {
+            "type": "exists",
+            "field": "body.id",
+            "message": "用户应该有ID"
+          }
+        ]
+      }
+    },
+    {
+      "name": "测试POST请求",
+      "description": "测试POST请求的curl复制功能",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/posts",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "Authorization": "Bearer test-token"
+        },
+        "body": {
+          "title": "测试文章",
+          "body": "这是一篇测试文章的内容",
+          "userId": 1
+        }
+      },
+      "expected": {
+        "status_code": 201,
+        "assertions": [
+          {
+            "type": "exists",
+            "field": "body.id",
+            "message": "创建的文章应该有ID"
+          }
+        ]
+      }
+    }
+  ]
+}

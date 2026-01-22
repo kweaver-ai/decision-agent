@@ -15,15 +15,15 @@ import SkillsIcon from '@/assets/icons/skill.svg';
 import {
   getMCPServerDetail,
   getMCPServerTools,
-  MCPServerReleaseInfo,
-  MCPTool,
+  type MCPServerReleaseInfo,
+  type MCPTool,
 } from '@/apis/agent-operator-integration/mcp';
 import { getToolBoxMarketList, getBoxToolList } from '@/apis/agent-operator-integration';
 import { getAgentsByPost, getPublishedAgentInfoList } from '@/apis/agent-factory';
 import {
-  Agent,
-  SkillAgentDataSourceConfig,
-  SkillAgentLLMConfig,
+  type Agent,
+  type SkillAgentDataSourceConfig,
+  type SkillAgentLLMConfig,
   DatasourceConfigTypeEnum,
   LLMConfigTypeEnum,
 } from '@/apis/agent-factory/type';
@@ -813,6 +813,7 @@ const SkillsSection = (props: SkillsSectionProps) => {
           tool_box_id: skill.tool_box_id,
           tool_input: skill.tool_input,
           intervention: skill.intervention || false,
+          intervention_confirmation_message: skill.intervention ? skill.intervention_confirmation_message : null,
           tool_timeout: skill.tool_timeout || 300,
           details: skill.details || skill,
           result_process_strategies: skill.result_process_strategies,
@@ -824,6 +825,7 @@ const SkillsSection = (props: SkillsSectionProps) => {
           agent_version: skill.agent_version || skill.tool_box_id,
           agent_input: skill.tool_input || [],
           intervention: skill.intervention || false,
+          intervention_confirmation_message: skill.intervention ? skill.intervention_confirmation_message : null,
           agent_timeout: skill.agent_timeout || 1800,
           data_source_config: skill?.data_source_config,
           llm_config: skill?.llm_config,

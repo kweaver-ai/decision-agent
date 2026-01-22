@@ -1,0 +1,428 @@
+{
+  "name": "示例API测试套件",
+  "description": "这是一个API测试工具的示例配置文件，展示了各种测试场景和高级功能",
+  "variables": {
+    "base_url": "https://jsonplaceholder.typicode.com",
+    "api_version": "v1"
+  },
+  "variable_config": {
+    "random_number_min": 1,
+    "random_number_max": 1000,
+    "random_string_length": 10,
+    "random_name_length": 8
+  },
+  "tests": [
+    {
+      "name": "测试JSONPlaceholder - 获取用户列表",
+      "description": "测试获取用户列表API",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/users",
+        "headers": {
+          "Accept": "application/json",
+          "X-Request-ID": "${uuid}",
+          "X-Timestamp": "${timestamp}"
+        }
+      },
+      "expected": {
+        "status_code": 200,
+        "headers": {
+          "Content-Type": "application/json; charset=utf-8"
+        },
+        "json_path": {
+          "0.name": "Leanne Graham",
+          "0.email": "Sincere@april.biz"
+        },
+        "assertions": [
+          {
+            "type": "exists",
+            "field": "body.0.id",
+            "message": "第一个用户应该有ID字段"
+          },
+          {
+            "type": "equals",
+            "field": "body.0.username",
+            "value": "Bret",
+            "message": "第一个用户的用户名应该是Bret"
+          },
+          {
+            "type": "greater_than",
+            "field": "body.length",
+            "value": 5,
+            "message": "用户列表应该包含超过5个用户"
+          }
+        ]
+      },
+      "variable_extraction": [
+        {
+          "name": "first_user_id",
+          "source": "body",
+          "path": "0.id"
+        },
+        {
+          "name": "first_user_name",
+          "source": "body",
+          "path": "0.name"
+        }
+      ],
+      "timeout": "10s",
+      "retry": 2
+    },
+    {
+      "name": "测试JSONPlaceholder - 获取提取的用户",
+      "description": "使用从上一个测试提取的用户ID获取用户详情",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/users/{{first_user_id}}",
+        "headers": {
+          "Accept": "application/json",
+          "X-Request-ID": "${uuid}"
+        }
+      },
+      "expected": {
+        "status_code": 200,
+        "assertions": [
+          {
+            "type": "equals",
+            "field": "body.id",
+            "value": "{{first_user_id}}",
+            "message": "用户ID应该匹配提取的ID"
+          },
+          {
+            "type": "equals",
+            "field": "body.name",
+            "value": "{{first_user_name}}",
+            "message": "用户名应该匹配提取的名称"
+          },
+          {
+            "type": "contains",
+            "field": "body.email",
+            "value": "@",
+            "message": "邮箱应该包含@符号"
+          },
+          {
+            "type": "regex",
+            "field": "body.phone",
+            "value": "^[0-9\\-\\.\\s\\(\\)x]+$",
+            "message": "电话号码格式应该正确"
+          }
+        ]
+      },
+      "timeout": "5s",
+      "retry": 1
+    },
+    {
+      "name": "测试动态变量 - 创建新文章",
+      "description": "使用动态变量创建文章，展示各种动态变量的使用",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/posts",
+        "headers": {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+          "X-Request-ID": "${uuid}",
+          "X-Timestamp": "${timestamp_ms}",
+          "X-Random-Token": "${random_string:16}"
+        },
+        "body": {
+          "title": "测试文章 - ${random_string:8}",
+          "body": "这是一篇测试文章，创建时间: ${timestamp}，随机ID: ${random_number:1000-9999}",
+          "userId": "${random_number:1-10}",
+          "author": "${random_name:12}",
+          "tags": ["test", "${random_string:6}", "api"],
+          "metadata": {
+            "created_at": "${timestamp_ms}",
+            "session_id": "${uuid}",
+            "version": "${random_number:1-5}"
+          }
+        }
+      },
+      "expected": {
+        "status_code": 201,
+        "assertions": [
+          {
+            "type": "exists",
+            "field": "body.id",
+            "message": "创建的文章应该有ID"
+          },
+          {
+            "type": "contains",
+            "field": "body.title",
+            "value": "测试文章",
+            "message": "文章标题应该包含'测试文章'"
+          },
+          {
+            "type": "greater_than",
+            "field": "body.userId",
+            "value": 0,
+            "message": "用户ID应该大于0"
+          }
+        ]
+      },
+      "variable_extraction": [
+        {
+          "name": "created_post_id",
+          "source": "body",
+          "path": "id"
+        },
+        {
+          "name": "created_post_title",
+          "source": "body",
+          "path": "title"
+        }
+      ],
+      "timeout": "10s",
+      "retry": 2
+    },
+    {
+      "name": "测试JSONPlaceholder - 更新创建的文章",
+      "description": "更新刚才创建的文章，使用提取的文章ID",
+      "request": {
+        "method": "PUT",
+        "url": "{{base_url}}/posts/{{created_post_id}}",
+        "headers": {
+          "Content-Type": "application/json",
+          "X-Request-ID": "${uuid}",
+          "X-Update-Time": "${timestamp}"
+        },
+        "body": {
+          "id": "{{created_post_id}}",
+          "title": "{{created_post_title}} - 已更新",
+          "body": "更新后的文章内容 - ${timestamp}",
+          "userId": 1,
+          "updated_by": "${random_name:10}",
+          "update_id": "${random_string:12}"
+        }
+      },
+      "expected": {
+        "status_code": 200,
+        "assertions": [
+          {
+            "type": "equals",
+            "field": "body.id",
+            "value": "{{created_post_id}}",
+            "message": "文章ID应该匹配"
+          },
+          {
+            "type": "contains",
+            "field": "body.title",
+            "value": "已更新",
+            "message": "文章标题应该包含'已更新'"
+          }
+        ]
+      },
+      "timeout": "8s"
+    },
+    {
+      "name": "测试JSONPlaceholder - 删除文章",
+      "description": "删除指定的文章",
+      "request": {
+        "method": "DELETE",
+        "url": "{{base_url}}/posts/{{created_post_id}}",
+        "headers": {
+          "X-Request-ID": "${uuid}",
+          "X-Delete-Time": "${timestamp}"
+        }
+      },
+      "expected": {
+        "status_code": 200
+      },
+      "timeout": "5s"
+    },
+    {
+      "name": "测试错误处理 - 404错误",
+      "description": "测试访问不存在的资源",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/users/${random_number:999999-999999}",
+        "headers": {
+          "X-Request-ID": "${uuid}"
+        }
+      },
+      "expected": {
+        "status_code": 404
+      },
+      "timeout": "5s"
+    },
+    {
+      "name": "测试使用Host和Path",
+      "description": "演示使用host和path分别配置的方式",
+      "request": {
+        "method": "GET",
+        "host": "{{base_url}}",
+        "path": "/posts",
+        "params": {
+          "userId": "1",
+          "_limit": "${random_number:5-10}",
+          "_page": "1"
+        },
+        "headers": {
+          "Accept": "application/json",
+          "X-Request-ID": "${uuid}"
+        }
+      },
+      "expected": {
+        "status_code": 200,
+        "assertions": [
+          {
+            "type": "greater_than",
+            "field": "body.length",
+            "value": 0,
+            "message": "应该返回至少一篇文章"
+          },
+          {
+            "type": "equals",
+            "field": "body.0.userId",
+            "value": 1,
+            "message": "第一篇文章的用户ID应该是1"
+          }
+        ]
+      },
+      "timeout": "10s"
+    },
+    {
+      "name": "测试可选断言",
+      "description": "演示可选断言的使用",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/users/1",
+        "headers": {
+          "X-Request-ID": "${uuid}",
+          "X-Test-Type": "optional-assertions"
+        }
+      },
+      "expected": {
+        "status_code": 200,
+        "assertions": [
+          {
+            "type": "exists",
+            "field": "body.id",
+            "message": "用户ID必须存在"
+          },
+          {
+            "type": "exists",
+            "field": "body.avatar",
+            "message": "用户头像字段（可选）",
+            "optional": true
+          },
+          {
+            "type": "contains",
+            "field": "body.website",
+            "value": "http",
+            "message": "网站应该是HTTP链接（可选）",
+            "optional": true
+          }
+        ]
+      },
+      "timeout": "5s"
+    },
+    {
+      "name": "测试复杂变量提取",
+      "description": "演示复杂的变量提取，包括正则表达式提取",
+      "request": {
+        "method": "GET",
+        "url": "{{base_url}}/users/1",
+        "headers": {
+          "X-Request-ID": "${uuid}",
+          "X-Extract-Test": "complex-extraction"
+        }
+      },
+      "expected": {
+        "status_code": 200,
+        "assertions": [
+          {
+            "type": "exists",
+            "field": "body.email",
+            "message": "用户应该有邮箱"
+          },
+          {
+            "type": "exists",
+            "field": "body.address.geo.lat",
+            "message": "用户应该有地理位置信息"
+          }
+        ]
+      },
+      "variable_extraction": [
+        {
+          "name": "user_email",
+          "source": "body",
+          "path": "email"
+        },
+        {
+          "name": "email_domain",
+          "source": "body",
+          "path": "email",
+          "regex": "@(.+)$"
+        },
+        {
+          "name": "user_lat",
+          "source": "body",
+          "path": "address.geo.lat"
+        },
+        {
+          "name": "user_lng",
+          "source": "body",
+          "path": "address.geo.lng"
+        },
+        {
+          "name": "content_type",
+          "source": "header",
+          "path": "Content-Type"
+        }
+      ],
+      "timeout": "5s"
+    },
+    {
+      "name": "测试提取变量的使用",
+      "description": "使用从上一个测试提取的变量",
+      "request": {
+        "method": "POST",
+        "url": "{{base_url}}/posts",
+        "headers": {
+          "Content-Type": "application/json",
+          "X-Request-ID": "${uuid}",
+          "X-User-Email": "{{user_email}}",
+          "X-Email-Domain": "{{email_domain}}"
+        },
+        "body": {
+          "title": "来自{{email_domain}}的用户文章",
+          "body": "这篇文章由邮箱为{{user_email}}的用户创建，位置: {{user_lat}}, {{user_lng}}",
+          "userId": 1,
+          "metadata": {
+            "source_email": "{{user_email}}",
+            "source_domain": "{{email_domain}}",
+            "geo_location": {
+              "lat": "{{user_lat}}",
+              "lng": "{{user_lng}}"
+            },
+            "created_at": "${timestamp_ms}",
+            "random_id": "${random_string:16}"
+          }
+        }
+      },
+      "expected": {
+        "status_code": 201,
+        "assertions": [
+          {
+            "type": "exists",
+            "field": "body.id",
+            "message": "创建的文章应该有ID"
+          },
+          {
+            "type": "contains",
+            "field": "body.title",
+            "value": "{{email_domain}}",
+            "message": "文章标题应该包含邮箱域名"
+          },
+          {
+            "type": "contains",
+            "field": "body.body",
+            "value": "{{user_email}}",
+            "message": "文章内容应该包含用户邮箱"
+          }
+        ]
+      },
+      "timeout": "10s"
+    }
+  ]
+} 

@@ -1,4 +1,4 @@
-import React, { CSSProperties, forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { type CSSProperties, forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import ReactDOM from 'react-dom/client';
 import './style.less';
 import classNames from 'classnames';
@@ -7,7 +7,7 @@ import { getPromptVarFromString } from './assitant';
 import { useLatestState, useDeepCompareEffect, useUpdateEffect } from '@/hooks';
 import VarElement from './VarElement';
 
-import { AdPromptInputProps, AdPromptInputRef, Position } from './interface';
+import type { AdPromptInputProps, AdPromptInputRef, Position } from './interface';
 
 const AdPromptInput = forwardRef<AdPromptInputRef, AdPromptInputProps>((props, ref) => {
   const isControl = 'value' in props; // 是否受控
@@ -51,7 +51,7 @@ const AdPromptInput = forwardRef<AdPromptInputRef, AdPromptInputProps>((props, r
     if (isControl && !getInputFocus()) {
       setValue(value);
     }
-  }, [value, JSON.stringify(trigger)]);
+  }, [value, trigger]);
 
   useUpdateEffect(() => {
     if (visible) {
@@ -204,6 +204,7 @@ const AdPromptInput = forwardRef<AdPromptInputRef, AdPromptInputProps>((props, r
         return item.value === key;
       });
       const ele = document.createElement('span');
+      ele.classList.add(`${prefixCls}-var`);
       if (isVar) {
         ele.contentEditable = 'false';
         if (selectedItem?.type !== 'object') {
@@ -224,7 +225,6 @@ const AdPromptInput = forwardRef<AdPromptInputRef, AdPromptInputProps>((props, r
         // 在变量后面添加一个不间断空格
         fragment.appendChild(document.createTextNode('\u00A0'));
       }
-
       if (isVar) {
         ReactDOM.createRoot(ele).render(
           <VarElement
@@ -350,6 +350,7 @@ const AdPromptInput = forwardRef<AdPromptInputRef, AdPromptInputProps>((props, r
       {visible && (
         <div style={{ position: 'absolute', ...selectStyle }}>
           <Select
+            size="small"
             ref={selectRef}
             style={{ minWidth: 60 }}
             searchValue={selectSearchText}

@@ -1,4 +1,4 @@
-import React, { PropsWithChildren, useEffect, useRef } from 'react';
+import React, { type PropsWithChildren, useEffect, useRef } from 'react';
 
 export type ResizeProps = {
   width: number;

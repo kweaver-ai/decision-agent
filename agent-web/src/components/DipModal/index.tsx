@@ -3,7 +3,7 @@ import { Modal } from 'antd';
 import type { ModalProps } from 'antd';
 import './index.less';
 import classNames from 'classnames';
-import { useWindowSize } from 'react-use';
+import { useWindowSize } from '@/hooks';
 
 export interface DipModalProps extends ModalProps {
   fullScreen?: boolean; // 是否全屏 默认 false

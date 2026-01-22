@@ -160,28 +160,28 @@ function parseSchemaProperties(rootSchema: any, schema: any) {
 export function getMCPInputParamsFromOpenAPISpec(rootSchema: any) {
   // 根properties
   const rootProperties = rootSchema.properties;
-  let arr: Array<{ name: string; type: string; required: boolean; description: '' }> = [];
+  let arr: any = [];
+  if (rootProperties) {
+    Object.keys(rootProperties).forEach(key => {
+      // 属性值
+      const value = rootProperties[key];
 
-  Object.keys(rootProperties).forEach(key => {
-    // 属性值
-    const value = rootProperties[key];
+      if (['body', 'header', 'path', 'query'].includes(key)) {
+        const schemaType = judgeSchemaType(value);
 
-    if (['body', 'header', 'path', 'query'].includes(key)) {
-      const schemaType = judgeSchemaType(value);
-
-      const targetSchema = schemaType === 'inline' ? value : getRefSchema(rootSchema, value.$ref);
-      const result = parseSchemaProperties(rootSchema, targetSchema);
-      arr = [...arr, ...result];
-    } else {
-      // 保留对旧数据的处理
-      const result = parseSchemaProperties(rootSchema, {
-        properties: { [key]: value },
-        required: rootSchema.required,
-        type: rootSchema.type,
-      });
-      arr = [...arr, ...result];
-    }
-  });
-
+        const targetSchema = schemaType === 'inline' ? value : getRefSchema(rootSchema, value.$ref);
+        const result = parseSchemaProperties(rootSchema, targetSchema);
+        arr = [...arr, ...result];
+      } else {
+        // 保留对旧数据的处理
+        const result = parseSchemaProperties(rootSchema, {
+          properties: { [key]: value },
+          required: rootSchema.required,
+          type: rootSchema.type,
+        });
+        arr = [...arr, ...result];
+      }
+    });
+  }
   return arr;
 }

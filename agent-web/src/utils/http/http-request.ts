@@ -1,7 +1,9 @@
 import axios from 'axios';
+import type { Method } from 'axios';
 import { curry } from 'lodash';
 import qs from 'query-string';
-import { config, OptionsType, LangType, businessDomainHeaderKey } from './types';
+import type { OptionsType, LangType } from './types';
+import { config, businessDomainHeaderKey } from './types';
 import { handleError } from './error-handler';
 import axiosInstance from './axios-instance';
 
@@ -47,78 +49,70 @@ const createHttpRequest = curry((method: string, url: string, options: OptionsTy
   const CancelToken = axios.CancelToken;
   let cancel: (message?: string) => void;
 
-  const axiosConfig = {
-    method: method.toLowerCase(),
+  const axiosConfig: any = {
+    method: method.toLowerCase() as Method,
     url: fullUrl,
     data: body,
     params,
-    paramsSerializer: (params: any) => qs.stringify(params),
+    paramsSerializer: {
+      serialize: (params: any) => qs.stringify(params),
+    },
     headers: {
       ...getCommonHttpHeaders(),
-      ...(body instanceof FormData ? {} : { 'Content-Type': 'application/json;charset=UTF-8' }), // formData无需设置 content-type，axios 会自动设置
       ...headers,
     },
     timeout,
     cancelToken: new CancelToken(c => {
       cancel = c;
     }),
-    transformRequest: [
-      (data: any) => {
-        if (data) {
-          if (data instanceof FormData || typeof data === 'string') return data; // 不转换 FormData；不转换字符串
-
-          try {
-            return JSON.stringify(data);
-          } catch {
-            return data;
-          }
-        }
-      },
-    ],
+    // Axios 1.x 默认处理 JSON 转换，除非有特殊处理需求，否则无需自定义 transformRequest
     transformResponse: [
       (data: any) => {
-        if (data) {
+        if (data && typeof data === 'string') {
           try {
             return JSON.parse(data);
           } catch {
             return data;
           }
         }
+        return data;
       },
     ],
     validateStatus: (status: number) => status < 400,
   };
 
-  const promise: any = new Promise(async (resolve, reject) => {
-    try {
-      let response;
+  const promise: any = new Promise((resolve, reject) => {
+    (async () => {
+      try {
+        let response;
 
-      switch (method.toLowerCase()) {
-        case 'get':
-        case 'post':
-        case 'put':
-        case 'patch':
-        case 'delete':
-          response = await axiosInstance.request(axiosConfig);
-          break;
-        default:
-          throw new Error(`Unsupported HTTP method: ${method}`);
-      }
+        switch (method.toLowerCase()) {
+          case 'get':
+          case 'post':
+          case 'put':
+          case 'patch':
+          case 'delete':
+            response = await axiosInstance.request(axiosConfig);
+            break;
+          default:
+            throw new Error(`Unsupported HTTP method: ${method}`);
+        }
 
-      if (returnFullResponse) {
-        // 有些场景，除了data还需要其它返回信息
-        resolve(response);
-      } else {
-        resolve(response.data);
+        if (returnFullResponse) {
+          // 有些场景，除了data还需要其它返回信息
+          resolve(response);
+        } else {
+          resolve(response.data);
+        }
+      } catch (error) {
+        handleError({
+          error,
+          url,
+          reject,
+          isOffline: !navigator.onLine,
+        });
       }
-    } catch (error) {
-      handleError({
-        error,
-        url,
-        reject,
-        isOffline: !navigator.onLine,
-      });
-    }
+    })();
   });
 
   promise.abort = () => cancel('CANCEL');

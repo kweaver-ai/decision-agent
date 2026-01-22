@@ -1,7 +1,7 @@
-import { CSSProperties, ReactNode, useEffect, useMemo, useRef, useState } from 'react';
+import { type CSSProperties, type ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import intl from 'react-intl-universal';
 import classNames from 'classnames';
-import { Input, Dropdown, MenuProps } from 'antd';
+import { Input, Dropdown, type MenuProps } from 'antd';
 import { DownOutlined } from '@ant-design/icons';
 import { useDeepCompareMemo, useLatestState, useMicroWidgetProps } from '@/hooks';
 import IconFont from '@/components/IconFont';

@@ -2,15 +2,15 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import _ from 'lodash';
 import classnames from 'classnames';
 import intl from 'react-intl-universal';
-import { v4 as generateUuid } from 'uuid';
 import { Dropdown, Table } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import type { ColumnType } from 'antd/lib/table/interface';
+import { nanoid } from 'nanoid';
 
 import { useDeepCompareEffect } from '@/hooks';
 import AdResizeObserver from '@/components/AdResizeObserver/AdResizeObserver';
 
-import { ITableProps } from '../types';
+import type { ITableProps } from '../types';
 import useATRH from './TableHooks';
 
 import EmptyIcon from '@/assets/icons/empty.svg';
@@ -56,7 +56,7 @@ const ITable: React.FC<ITableProps> = props => {
   const [colsID, setColsID] = useState(persistenceID);
   const [tableScrollY, setTableScrollY] = useState<number>(0);
   const tableWrapperRef = useRef<HTMLDivElement | null>(null);
-  const domId = useRef<string>(generateUuid());
+  const domId = useRef<string>(nanoid());
   const scrollIntoViewAble = useRef(false);
 
   const renderCell = (value: any) => {
@@ -130,7 +130,7 @@ const ITable: React.FC<ITableProps> = props => {
           }
         }
       }
-      setColsID(generateUuid().replace(/-/g, '_'));
+      setColsID(nanoid().replace(/-/g, '_'));
     }
     return () => {};
   }, [TableRef, columns, persistenceID]);

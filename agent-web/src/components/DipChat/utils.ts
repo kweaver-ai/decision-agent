@@ -1,9 +1,6 @@
 import _ from 'lodash';
-import type { PlanSearchType } from './Chat/BubbleList/PlanPanel';
 import { nanoid } from 'nanoid';
-import type { AiInputValue } from './components/AiInput/interface';
 import type {
-  AgentAppType,
   ConversationItemType,
   DipChatItemContentProgressType,
   DipChatItemContentType,
@@ -13,138 +10,6 @@ import type { TableColumnsType } from 'antd';
 import dayjs from 'dayjs';
 import { isJSONString } from '@/utils/handle-function';
 import { removeInvalidCodeBlocks } from '@/components/Markdown/utils';
-
-/** 判断是不是生成计划 */
-export const isGeneratePlan = (other_variables: any) => {
-  const { plan_list, ref_list } = other_variables || {};
-  if (plan_list && !ref_list) {
-    return true;
-  }
-  return false;
-};
-
-/** 判断是不是执行计划 */
-export const isExecutePlan = (other_variables: any) => {
-  const { ref_list, plan } = other_variables || {};
-  if (ref_list && plan) {
-    return true;
-  }
-  return false;
-};
-/** 判断是不是确认计划 */
-export const isConfirmPlan = (other_variables: any) => {
-  const { ref_list, plan } = other_variables || {};
-  if (ref_list && !plan) {
-    return true;
-  }
-  return false;
-};
-
-/** 获取计划的执行过程的错误 */
-export const getPlanExecuteError = (other_variables: any, planIndex: number) => {
-  const { ref_list } = other_variables || {};
-  if (ref_list && Array.isArray(ref_list?.value)) {
-    const planProcessData = ref_list.value[planIndex];
-    if (!_.isEmpty(planProcessData)) {
-      const { status, error } = planProcessData;
-      if (status === 'Error') {
-        return error;
-      }
-    }
-  }
-};
-
-/** 获取生成计划的错误 */
-export const getPlanGenerateError = (other_variables: any) => {
-  const { plan_list } = other_variables || {};
-  if (plan_list) {
-    const { status, error } = plan_list;
-    if (status === 'Error') {
-      return error;
-    }
-  }
-};
-
-export const getPlanList = (other_variables: any) => {
-  return _.get(other_variables, ['plan_list']) || [];
-};
-
-/** 获取计划的执行过程(计划执行过程 有三种情况  网络搜索  DOCQA  GraphQA) */
-export const getPlanExecuteProcess = (other_variables: any, planIndex: number) => {
-  const { ref_list } = other_variables || {};
-  if (ref_list && Array.isArray(ref_list)) {
-    const planType = getPlanType(other_variables, planIndex);
-    const planProcessData = ref_list[planIndex];
-    if (!_.isEmpty(planProcessData)) {
-      const { search_querys, search_results, doc_retrieval_res, graph_retrieval_res } = planProcessData;
-      // console.log(search_querys, 'search_querys');
-      // 说明是网络搜索
-      if (planType === 'net-search' && search_querys && search_results) {
-        return getCitesData({ search_querys, search_results });
-      }
-
-      // 说明是文档搜索
-      if (planType === 'doc-search' && doc_retrieval_res) {
-        return doc_retrieval_res?.answer?.full_result?.references?.map((item: any) => {
-          return {
-            content: item.content,
-            ...item.meta,
-          };
-        });
-      }
-      // 说明是图谱搜索
-      if (planType === 'graph-search' && graph_retrieval_res) {
-        return graph_retrieval_res?.answer?.full_result?.references?.map((item: any) => {
-          const target = item.meta?.sub_graph?.nodes?.find((item: any) => !!item.kg_name);
-          return {
-            content: item.content,
-            kg_name: target?.kg_name,
-            id: nanoid(),
-          };
-        });
-      }
-    }
-  }
-};
-
-/** 获取计划的执行结果 */
-export const getPlanExecuteResult = (other_variables: any, planIndex: number) => {
-  const { ref_list } = other_variables || {};
-  if (ref_list && Array.isArray(ref_list)) {
-    const planResultData = ref_list[planIndex];
-    if (!_.isEmpty(planResultData)) {
-      return planResultData?.answer?.answer ?? '';
-    }
-  }
-};
-
-/** 获取计划类型 */
-export const getPlanType = (other_variables: any, planIndex: number): PlanSearchType | '' => {
-  const { SelectAgent } = other_variables || {};
-  if (Array.isArray(SelectAgent)) {
-    const data = SelectAgent[planIndex];
-    if (data?.includes('OnlineSearch_Agent')) {
-      return 'net-search';
-    }
-    if (data?.includes('Summary_Agent')) {
-      return 'summary';
-    }
-    if (data?.includes('DocQA_Agent')) {
-      return 'doc-search';
-    }
-    if (data?.includes('GraphQA_Agent')) {
-      return 'graph-search';
-    }
-  }
-  return '';
-};
-
-/** 获取深度搜索模式的content */
-export const getDeepSearchModePlanReport = (final_answer: any) => {
-  // const str = _.get(final_answer, ['answer_type_other', 'value', 'value', 'answer']);
-  const str = _.get(final_answer, ['answer', 'text']);
-  return str ?? '';
-};
 
 /** 获取引用的数据 */
 export const getCitesData = (other_variables: any) => {
@@ -808,27 +673,8 @@ export const getChatItemContent = (message: any): DipChatItemContentType => {
   };
 };
 
-export const getChatItemRoleByMode = (mode: AiInputValue['mode'], agentAppType: AgentAppType) => {
-  let role: any = 'common';
-  if (agentAppType === 'super-assistant') {
-    switch (mode) {
-      case 'deep-search':
-        role = 'plan';
-        break;
-      case 'networking':
-        role = 'net';
-        break;
-      case 'normal':
-        role = 'common';
-        break;
-      default:
-        break;
-    }
-  }
-  if (agentAppType === 'wenshu') {
-    role = 'wenshu';
-  }
-  return role;
+export const getChatItemRoleByMode = () => {
+  return 'common';
 };
 
 /** 从Agent身上获取临时区config */

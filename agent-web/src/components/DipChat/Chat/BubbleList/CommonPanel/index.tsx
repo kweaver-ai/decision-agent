@@ -2,7 +2,6 @@ import styles from './index.module.less';
 import { useDipChatStore } from '@/components/DipChat/store';
 import PanelFooter from '@/components/DipChat/Chat/BubbleList/PanelFooter';
 import classNames from 'classnames';
-import Logo from '@/components/Logo';
 import SqlToolPanel from './SqlToolPanel';
 import ChartToolPanel from './ChartToolPanel';
 import CodeToolPanel from './CodeToolPanel';
@@ -20,14 +19,13 @@ import NetSearchToolPanel from './NetSearchToolPanel';
 import MetricToolPanel from './MetricToolPanel';
 import AgentIcon from '@/components/AgentIcon';
 import { nanoid } from 'nanoid';
-import { getChatItemRoleByMode } from '@/components/DipChat/utils';
 import intl from 'react-intl-universal';
 import LLMPanel from './LLMPanel';
 import dayjs from 'dayjs';
 
 const CommonPanel = ({ chatItemIndex, readOnly }: any) => {
   const {
-    dipChatStore: { chatList, streamGenerating, agentDetails, agentAppType, aiInputValue },
+    dipChatStore: { chatList, streamGenerating, agentDetails },
     openSideBar,
     sendChat,
   } = useDipChatStore();
@@ -123,13 +121,6 @@ const CommonPanel = ({ chatItemIndex, readOnly }: any) => {
   };
 
   const renderIcon = () => {
-    if (agentAppType === 'super-assistant') {
-      return (
-        <div className="dip-mt-4">
-          <Logo loading={generating} />
-        </div>
-      );
-    }
     return (
       <AgentIcon
         avatar_type={agentDetails.avatar_type}
@@ -192,7 +183,7 @@ const CommonPanel = ({ chatItemIndex, readOnly }: any) => {
                   });
                   cloneChatList.push({
                     key: nanoid(),
-                    role: getChatItemRoleByMode(aiInputValue.mode, agentAppType),
+                    role: 'common',
                     content: '',
                     loading: true,
                   });
@@ -298,17 +289,15 @@ const CommonPanel = ({ chatItemIndex, readOnly }: any) => {
                 );
                 break;
               case 'net_search_tool':
-                if (agentAppType !== 'super-assistant') {
-                  toolResult = (
-                    <NetSearchToolPanel
-                      key={progressIndex}
-                      chatItemIndex={chatItemIndex}
-                      progressIndex={progressIndex}
-                      progressItem={item}
-                      readOnly={readOnly}
-                    />
-                  );
-                }
+                toolResult = (
+                  <NetSearchToolPanel
+                    key={progressIndex}
+                    chatItemIndex={chatItemIndex}
+                    progressIndex={progressIndex}
+                    progressItem={item}
+                    readOnly={readOnly}
+                  />
+                );
                 break;
               default: {
                 const loading = streamGenerating && chatItemIndex === chatList.length - 1 && !item.llmResult?.text;
