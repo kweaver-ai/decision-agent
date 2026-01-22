@@ -51,7 +51,7 @@ data:
       host: "0.0.0.0"
       port: {{ .Values.service.port }}
       logger_level: {{ .Values.service.loggerLevel }}
-      keep_legacy_app_path: {{ .Values.service.keep_legacy_app_path }}
+    keep_legacy_app_path: {{ .Values.service.keep_legacy_app_path }}
     hydra:
       user-mgnt:
         host: {{ .Values.depServices.hydra.userMgnt.host }}
@@ -72,6 +72,26 @@ data:
       {{- toYaml .Values.depServices.authorization | nindent 6 }}
     agent_factory:
       {{- toYaml .Values.depServices.agentFactory | nindent 6 }}
+    # ========== 新增必需配置 ==========
+    agent_executor:
+      private_svc:
+        host: localhost
+        port: {{ .Values.agentExecutor.port | default 30778 }}
+        protocol: http
+      public_svc:
+        host: localhost
+        port: {{ .Values.agentExecutor.port | default 30778 }}
+        protocol: http
+      use_v2: {{ .Values.depServices.agentExecutor.use_v2 | default true }}
+    efast:
+      {{- toYaml .Values.depServices.efast | nindent 6 }}
+    docset:
+      {{- toYaml .Values.depServices.docset | nindent 6 }}
+    ecoconfig:
+      {{- toYaml .Values.depServices.ecoconfig | nindent 6 }}
+    uniquery:
+      {{- toYaml .Values.depServices.uniquery | nindent 6 }}
+    # ========================================
     biz_domain:
       {{- toYaml .Values.depServices.bizDomain | nindent 6 }}
     opentelemetry:

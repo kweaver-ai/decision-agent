@@ -10,8 +10,8 @@ runMode: release
 
 enableSecurityContext: true
 securityContext:
-  runAsUser: 1000
-  runAsGroup: 1000
+  runAsUser: 1001
+  runAsGroup: 1001
 
 image:
   registry: acr.aishu.cn
@@ -43,7 +43,7 @@ service:
   # APP 配置
   streamDiffFrequency: 5
   # 是否保留老的APP路径
-  keep_legacy_app_path: false
+  keep_legacy_app_path: true
   sessionAffinity: ClientIP
   sessionAffinityConfig:
     clientIP:

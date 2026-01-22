@@ -31,6 +31,10 @@ func (a *AgentCall) Call() (chan string, chan error, error) {
 	return nil, nil, fmt.Errorf("executor version %s not supported", a.req.ExecutorVersion)
 }
 
+func (a *AgentCall) Resume() {
+
+}
+
 func (a *AgentCall) Cancel() {
 	a.cancelFunc()
 }

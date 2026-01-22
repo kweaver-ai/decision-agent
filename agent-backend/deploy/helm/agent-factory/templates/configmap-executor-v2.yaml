@@ -102,10 +102,10 @@ data:
         host: "agent-app"
         port: "30777"
       agent_executor:
-        host: "agent-executor"
+        host: "localhost"
         port: "30778"
       agent_factory:
-        host: "agent-factory"
+        host: "localhost"
         port: "13020"
       agent_operator_integration:
         host: "agent-operator-integration"

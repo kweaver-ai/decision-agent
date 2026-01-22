@@ -244,17 +244,27 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - "curl -sf http://localhost:{{ .Values.service.port }}/health/ready && curl -sf http://localhost:{{ .Values.agentExecutor.port }}/health/ready"
+                - "curl -sf http://localhost:{{ .Values.service.port }}/health/ready"
             initialDelaySeconds: 60
             periodSeconds: 30
             timeoutSeconds: 10
             failureThreshold: 3
           {{- end}}
           volumeMounts:
+            # ========== ConfigMap文件使用subPath精确挂载 ==========
             - name: {{ .Release.Name }}-yaml
-              mountPath: /sysvol/conf/
+              mountPath: /sysvol/conf/agent-factory.yaml
+              subPath: agent-factory.yaml
+            - name: {{ .Release.Name }}-yaml
+              mountPath: /sysvol/conf/dm_svc.conf
+              subPath: dm_svc.conf
+            - name: {{ .Release.Name }}-yaml
+              mountPath: /sysvol/conf/mq_config.yaml
+              subPath: mq_config.yaml
+            # ========== 其他挂载 ==========
             - name: {{ .Release.Name }}-dependant-configmap
               mountPath: /mdl-shared-configmap
+            # ========== Secret使用目录级挂载 ==========
             - name: {{ .Release.Name }}-secret-yaml
               mountPath: /sysvol/conf/secret
             # ========== Executor配置文件挂载 ==========
