@@ -17,8 +17,10 @@ import (
 	observabilityresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/observability/resp"
 )
 
-var _ conversationresp.ConversationDetail
-var _ observabilityresp.ObservabilityConversationDetail
+var (
+	_ conversationresp.ConversationDetail
+	_ observabilityresp.ObservabilityConversationDetail
+)
 
 func (h *observabilityHTTPHandler) ConversationList(c *gin.Context) {
 	// 1. 获取路径参数
@@ -45,7 +47,7 @@ func (h *observabilityHTTPHandler) ConversationList(c *gin.Context) {
 
 	// 3. 设置路径参数到请求中
 	// req.AgentID = agentID
-	//这里不需要设置，因为路径参数中是agent_key ，通过agent_key 获取到 对话的 记录列表，而不是debug 的列表
+	// 这里不需要设置，因为路径参数中是agent_key ，通过agent_key 获取到 对话的 记录列表，而不是debug 的列表
 
 	// 4. 参数验证
 	if req.Size <= 0 {
@@ -89,8 +91,8 @@ func (h *observabilityHTTPHandler) ConversationList(c *gin.Context) {
 	}
 
 	// 5. 调用服务
-	//agentID 值实际为 agent key
-	//req.AgentID 值实际为 agent ID
+	// agentID 值实际为 agent key
+	// req.AgentID 值实际为 agent ID
 	data, totalCount, err := h.conversationSvc.ListByAgentID(c.Request.Context(), agentID, req.Title, req.Page, req.Size, req.StartTime, req.EndTime)
 	if err != nil {
 		h.logger.Errorf("[ConversationList] call conversation service error: %v", err)

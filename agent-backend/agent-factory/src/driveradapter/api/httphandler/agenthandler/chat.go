@@ -51,7 +51,7 @@ func (h *agentHTTPHandler) Chat(c *gin.Context) {
 	}
 
 	if cenvhelper.IsLocalDev(cenvhelper.RunScenario_Aaron_Local_Dev) {
-		//req.IncStream = false
+		// req.IncStream = false
 	}
 
 	req.AgentAPPKey = agentAPPKey
@@ -83,9 +83,8 @@ func (h *agentHTTPHandler) Chat(c *gin.Context) {
 	req.XBusinessDomainID = chelper.GetBizDomainIDFromCtx(c)
 	req.Token = strings.TrimPrefix(user.TokenID, "Bearer ")
 
-	if req.Tool.SessionID != "" {
-		req.AgentRunID = req.Tool.SessionID
-	} else {
+	// 如果AgentRunID为空，则生成新的ID
+	if req.AgentRunID == "" {
 		req.AgentRunID = cutil.UlidMake()
 	}
 

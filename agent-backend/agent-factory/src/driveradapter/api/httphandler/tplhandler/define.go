@@ -34,9 +34,9 @@ func (h *daTplHTTPHandler) RegPubRouter(router *gin.RouterGroup) {
 }
 
 func (h *daTplHTTPHandler) RegPriRouter(router *gin.RouterGroup) {
-	//后面如果有，则打开注释，基于g来注册私有接口
-	//g := apiv3common.GetPrivateRouterGroup(router)
-	//g.GET()
+	// 后面如果有，则打开注释，基于g来注册私有接口
+	// g := apiv3common.GetPrivateRouterGroup(router)
+	// g.GET()
 }
 
 var (

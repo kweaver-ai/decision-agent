@@ -22,7 +22,7 @@ func (agentSvc *agentSvc) handleProgress(ctx context.Context, req *agentreq.Chat
 	o11y.SetAttributes(ctx, attribute.String("user_id", req.UserID))
 	setInterface, _ := progressSet.Load(req.AssistantMessageID)
 
-	//1. 初始化 set
+	// 1. 初始化 set
 	set, _ := setInterface.(map[string]bool)
 	if set == nil {
 		set = make(map[string]bool)
@@ -69,7 +69,6 @@ func (agentSvc *agentSvc) handleProgress(ctx context.Context, req *agentreq.Chat
 }
 
 func (agentSvc *agentSvc) forResumeInterrupt(ctx context.Context, req *agentreq.ChatReq) (ans []*agentrespvo.Progress, err error) {
-
 	ans = make([]*agentrespvo.Progress, 0)
 
 	if req.InterruptedAssistantMsgID != "" {

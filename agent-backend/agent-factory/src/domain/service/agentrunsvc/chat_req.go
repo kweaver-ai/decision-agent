@@ -44,7 +44,6 @@ func (agentSvc *agentSvc) GenerateAgentCallReq(ctx context.Context, req *agentre
 		Input: map[string]interface{}{
 			"query":        req.Query,
 			"history":      contexts,
-			"tool":         req.Tool,
 			"confirm_plan": req.ConfirmPlan,
 		},
 		CallType:          req.CallType,

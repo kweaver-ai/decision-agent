@@ -41,7 +41,6 @@ type FinalAnswer struct {
 	SkillProcess          []*SkillsProcessItem    `json:"skill_process"`
 	AnswerTypeOther       interface{}             `json:"answer_type_other"`       // 当content_type为other时使用
 	OutputVariablesConfig *agentconfigvo.Variable `json:"output_variables_config"` // output 输出变量配置
-
 }
 
 type SkillsProcessItem struct {

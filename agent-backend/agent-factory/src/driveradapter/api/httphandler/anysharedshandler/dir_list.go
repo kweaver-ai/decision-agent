@@ -15,7 +15,6 @@ func (h *anysharedsHandler) dirList(c *gin.Context) {
 	// 接收语言标识转换为 context.Context
 	ctx := rest.GetLanguageCtx(c)
 	reqByte, err := c.GetRawData()
-
 	if err != nil {
 		err = capierr.New400Err(ctx, err.Error())
 		_ = c.Error(err)
