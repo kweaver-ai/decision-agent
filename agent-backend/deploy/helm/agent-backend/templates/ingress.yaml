@@ -3,7 +3,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Values.moduleName }}-ingress
+  name: agent-factory-ingress
   namespace: {{ .Values.namespace }}
   annotations:
     nginx.ingress.kubernetes.io/proxy-body-size: "500M"
@@ -18,7 +18,7 @@ spec:
           pathType: ImplementationSpecific
           backend:
             service:
-              name: {{ $.Values.moduleName }}
+              name: agent-factory
               port:
                 number: {{ $.Values.service.agentFactory.port }}
         {{- end }}

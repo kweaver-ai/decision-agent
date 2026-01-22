@@ -16,7 +16,7 @@ securityContext:
 image:
   registry: acr.aishu.cn
   service:
-    repository: dip/agent-factory
+    repository: dip/agent-backend
     tag: data-581755
     pullPolicy: IfNotPresent
 

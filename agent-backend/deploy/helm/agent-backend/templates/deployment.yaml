@@ -5,12 +5,12 @@ apiVersion: extensions/v1beta1
 {{- end }}
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}
+  name: agent-factory
   namespace: {{ .Values.namespace }}
 spec:
   selector:
     matchLabels:
-      app: {{ .Release.Name }}
+      app: agent-factory
   replicas: {{ .Values.replicaCount }}
   strategy:
     rollingUpdate:
@@ -22,7 +22,7 @@ spec:
       annotations:
         checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
       labels:
-        app: {{ .Release.Name }}
+        app: agent-factory
     spec:
       {{- with .Values.nodeSelector }}
       nodeSelector:
@@ -36,7 +36,7 @@ spec:
               - key: app
                 operator: In
                 values:
-                - {{ .Release.Name }}
+                - agent-factory
             topologyKey: "kubernetes.io/hostname"
       {{- if ne .Values.runMode "dev" }}
       {{- if eq .Values.enableSecurityContext true }}
@@ -47,7 +47,7 @@ spec:
       {{- end }}
       {{- end }}
       containers:
-        - name: {{ .Release.Name }}
+        - name: agent-factory
           {{- if ne .Values.runMode "dev" }}
           image: "{{ .Values.image.registry }}/{{ .Values.image.service.repository }}:{{ .Values.image.service.tag }}"
           imagePullPolicy: {{ .Values.image.service.pullPolicy }}
@@ -59,7 +59,7 @@ spec:
               - name: AGENT_FACTORY_DISABLE_PMS_CHECK
                 value: {{ .Values.env.disable_pms_check | quote }}
               - name: SERVICE_NAME
-                value: {{ .Release.Name }}
+                value: agent-factory
               - name: DB_TYPE
                 value: {{ .Values.depServices.rds.type | quote }}
             {{- if .Values.service.loggerOutput}}
@@ -79,143 +79,143 @@ spec:
               - name: RDSHOST
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: RDSHOST
               - name: RDSPORT
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: RDSPORT
               - name: RDSUSER
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: RDSUSER
               - name: RDSPASS
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: RDSPASS
 
               - name: RDSDBNAME
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: RDSDBNAME
               - name: OPENSEARCH_HOST
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: OPENSEARCH_HOST
               - name: OPENSEARCHWRITE
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: OPENSEARCHWRITE
               - name: OPENSEARCHREAD
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: OPENSEARCHRED
               - name: OPENSEARCH_PORT
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: OPENSEARCH_PORT
               - name: OPENSEARCH_USER
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: OPENSEARCH_USER
               - name: OPENSEARCH_PASS
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: OPENSEARCH_PASS
               - name: REDISCLUSTERMODE
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: REDISCLUSTERMODE
               - name: REDISUSER
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: REDISUSER
               - name: REDISPASS
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: REDISPASS
               {{- if ne .Values.depServices.redis.connectType "master-slave" }}
               - name: REDISHOST
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: REDISHOST
               - name: REDISPORT
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: REDISPORT
               {{- end }}
               {{- if eq .Values.depServices.redis.connectType "sentinel" }}
               - name: SENTINELMASTER
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: SENTINELMASTER
               - name: SENTINELUSER
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: SENTINELUSER
               - name: SENTINELPASS
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: SENTINELPASS
               {{- end }}
               {{- if eq .Values.depServices.redis.connectType "master-slave" }}
               - name: REDISREADHOST
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: REDISREADHOST
               - name: REDISREADPORT
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: REDISREADPORT
               - name: REDISREADUSER
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: REDISREADUSER
               - name: REDISREADPASS
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: REDISREADPASS
               - name: REDISWRITEHOST
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: REDISWRITEHOST
               - name: REDISWRITEPORT
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: REDISWRITEPORT
               - name: REDISWRITEUSER
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: REDISWRITEUSER
               - name: REDISWRITEPASS
                 valueFrom:
                   configMapKeyRef:
-                    name: {{ .Release.Name }}-yaml
+                    name: agent-factory-yaml
                     key: REDISWRITEPASS
               {{- end }}
 
@@ -252,20 +252,20 @@ spec:
           {{- end}}
           volumeMounts:
             # ========== ConfigMap文件使用subPath精确挂载 ==========
-            - name: {{ .Release.Name }}-yaml
+            - name: agent-factory-yaml
               mountPath: /sysvol/conf/agent-factory.yaml
               subPath: agent-factory.yaml
-            - name: {{ .Release.Name }}-yaml
+            - name: agent-factory-yaml
               mountPath: /sysvol/conf/dm_svc.conf
               subPath: dm_svc.conf
-            - name: {{ .Release.Name }}-yaml
+            - name: agent-factory-yaml
               mountPath: /sysvol/conf/mq_config.yaml
               subPath: mq_config.yaml
             # ========== 其他挂载 ==========
-            - name: {{ .Release.Name }}-dependant-configmap
+            - name: agent-factory-dependant-configmap
               mountPath: /mdl-shared-configmap
             # ========== Secret使用目录级挂载 ==========
-            - name: {{ .Release.Name }}-secret-yaml
+            - name: agent-factory-secret-yaml
               mountPath: /sysvol/conf/secret
             # ========== Executor配置文件挂载 ==========
             - name: executor-yaml-v2
@@ -291,15 +291,15 @@ spec:
               memory: {{ .Values.resources.limits.memory }}
           {{ end }}
       volumes:
-        - name: {{ .Release.Name }}-yaml
+        - name: agent-factory-yaml
           configMap:
-            name: {{ .Release.Name }}-yaml
-        - name: {{ .Release.Name }}-secret-yaml
+            name: agent-factory-yaml
+        - name: agent-factory-secret-yaml
           secret:
-            secretName: {{ .Release.Name }}-secret-yaml
-        - name: {{ .Release.Name }}-dependant-configmap
+            secretName: agent-factory-secret-yaml
+        - name: agent-factory-dependant-configmap
           configMap:
-            name: {{ .Release.Name }}-dependant-configmap
+            name: agent-factory-dependant-configmap
         # ========== Executor配置Volume ==========
         - name: executor-yaml-v2
           configMap:
@@ -311,7 +311,7 @@ spec:
         # ========== DM配置Volume ==========
         - name: rds-conf
           configMap:
-            name: {{ .Release.Name }}-yaml
+            name: agent-factory-yaml
             items:
             - key: dm_svc.conf
               path: dm_svc.conf
