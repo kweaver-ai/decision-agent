@@ -7,8 +7,8 @@ const agentFactoryV3BaseUrl = '/api/agent-factory/v3';
 export const getChatUrl = (
   app_key: string,
   recover: boolean = false,
-  debug: boolean = false,
-  customSpaceId: string = ''
+  debug: boolean = false
+  // customSpaceId: string = ''
 ) => {
   if (debug) {
     return `${agentAppV1BaseUrl}/app/${app_key}/debug/completion`;
@@ -16,9 +16,9 @@ export const getChatUrl = (
   if (recover) {
     return `${agentAppV1BaseUrl}/app/${app_key}/chat/resume`;
   }
-  if (customSpaceId) {
-    return `${agentAppV1BaseUrl}/app/${app_key}/chat/completion?custom_space_id=${customSpaceId}`;
-  }
+  // if (customSpaceId) {
+  //   return `${agentAppV1BaseUrl}/app/${app_key}/chat/completion?custom_space_id=${customSpaceId}`;
+  // }
   return `${agentAppV1BaseUrl}/app/${app_key}/chat/completion`;
 };
 

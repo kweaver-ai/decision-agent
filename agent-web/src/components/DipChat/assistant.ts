@@ -48,7 +48,7 @@ export const handleChatItemContent = (
       delete item.block_answer;
     }
   });
-  const { user_message_id, assistant_message_id, message } = contentObj;
+  const { user_message_id, assistant_message_id, agent_run_id, message } = contentObj;
   const progress = _.get(message, 'content.middle_answer.progress');
   console.log(progress, '++通用场景处理Progress++');
   newChatList[lastIndex].loading = response.pending;
@@ -61,7 +61,7 @@ export const handleChatItemContent = (
   }
   newChatList[lastIndex].content = _.get(message, 'content') ? getChatItemContent(message) : {};
   newChatList[lastIndex].interrupt = _.get(message, 'ext.interrupt_info');
-  newChatList[lastIndex].agentRunId = _.get(message, 'ext.agent_run_id');
+  newChatList[lastIndex].agentRunId = agent_run_id;
   // debug模式下记录原始数据，方便调试区展示原始输出结果
   if (debug) {
     // 把之前的sourceData移除，只保留最后一次的sourceData

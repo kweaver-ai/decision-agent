@@ -92,7 +92,7 @@ const ConversationList = ({ startNewConversation, className }: any) => {
         });
         sendChat({
           chatList,
-          body: { conversation_id: id },
+          body: { conversation_id: id, interruptAction: 'confirm' },
           recoverConversation: true,
         });
       } else {
@@ -131,11 +131,7 @@ const ConversationList = ({ startNewConversation, className }: any) => {
                 setDipChatStore({
                   activeConversationKey: item.key,
                 });
-                resetDipChatStore([
-                  'activeChatItemIndex',
-                  'chatListAutoScroll',
-                  'activeProgressIndex',
-                ]);
+                resetDipChatStore(['activeChatItemIndex', 'chatListAutoScroll', 'activeProgressIndex']);
                 getDetailsById(item.key);
               }, 0);
             }

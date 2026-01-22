@@ -8,17 +8,23 @@ import type { EChartsOption } from 'echarts';
 import type { GetConversationListOption } from '@/apis/super-assistant';
 
 type ToolArgsType = {
-  key: 'field' | 'value';
+  key: string;
   value: any;
   type: 'string';
 };
 
 export type InterruptDataType = {
-  session_id: string;
-  tool_name: string;
-  tool_args: ToolArgsType[];
-  handle?: any;
-  data?: any;
+  handle: any;
+  data: {
+    // session_id: string;
+    tool_name: string;
+    tool_description: string;
+    tool_args: ToolArgsType[];
+    interrupt_config: {
+      requires_confirmation: boolean;
+      confirmation_message: string;
+    };
+  };
 };
 
 export type DipChatItemRole = 'user' | 'net' | 'common';
@@ -203,8 +209,10 @@ export type ChatBody = {
   temporary_area_id?: string;
   stream?: boolean;
   inc_stream?: boolean;
-  confirm_plan?: boolean;
   temp_files?: TempFileType[];
+  // 中断的参数
+  interruptAction?: 'confirm' | 'skip';
+  interruptModifiedArgs?: Array<{ key: string; value: any }>;
 };
 
 export type SendChatPram = {

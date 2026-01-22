@@ -382,7 +382,7 @@ const RoleInstruction: React.FC = () => {
 
   const openDolphinDoc = () => {
     microWidgetProps?.history.navigateToMicroWidget({
-      name: 'agent-web-dataagent',
+      name: 'agent-list',
       path: `/dolphin-language-doc?hidesidebar=true&hideHeaderPath=true`,
       isNewTab: true,
     });

@@ -416,7 +416,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
       agentAppKey,
       tempFileList,
       debug,
-      chatList
+      chatList,
     } = getStore();
 
     if (!streamGenerating) {
@@ -523,11 +523,13 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
           const tempObj: any = {
             conversation_id: params.body.conversation_id,
             agent_run_id: lastChatItem.agentRunId,
-          }
-          if(lastChatItem.interrupt) {
+          };
+          if (lastChatItem.interrupt) {
             tempObj.resume_interrupt_info = {
-              resume_handle: '',
-            }
+              resume_handle: lastChatItem.interrupt.handle,
+              action: params.body.interruptAction,
+              modified_args: params.body.interruptModifiedArgs ?? [],
+            };
           }
           return tempObj;
         }
@@ -551,7 +553,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
       const reqBody = getReqBody();
       send({
         body: { ...reqBody },
-        url: getChatUrl(agentAppKey ?? reqBody.agent_id, params.recoverConversation, debug, customSpaceId),
+        url: getChatUrl(agentAppKey ?? reqBody.agent_id, params.recoverConversation, debug),
         increase_stream: true,
       });
       if (!debug) {
@@ -698,7 +700,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
               content: getChatItemContent(item),
               interrupt: interrupt_info,
               error: item.status === 'failed' ? '{}' : undefined,
-              agentRunId: _.get(ext, 'agent_run_id'),
+              agentRunId: _.get(item, 'agent_run_id'),
             });
           }
         });

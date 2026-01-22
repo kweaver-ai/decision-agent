@@ -428,7 +428,7 @@ const DecisionAgent = ({ mode: modeFromProps = ModeEnum.DataAgent }: DataAgentsP
       case AgentActionEnum.ViewAPI:
         // 查看API
         microWidgetProps?.history.navigateToMicroWidget({
-          name: 'agent-web-dataagent',
+          name: 'agent-list',
           path: `/api-doc?id=${agent?.id}&name=${encodeURIComponent(agent?.name)}&version=${agent?.version}&hidesidebar=true&hideHeaderPath=true`,
           isNewTab: true,
         });
@@ -461,7 +461,7 @@ const DecisionAgent = ({ mode: modeFromProps = ModeEnum.DataAgent }: DataAgentsP
       case AgentActionEnum.ConfigInfo:
         // 跳转到配置信息详情页面
         microWidgetProps?.history.navigateToMicroWidget({
-          name: 'agent-web-myagents',
+          name: 'my-agent-list',
           path: `/detail/${agent.id}?hidesidebar=true&hideHeaderPath=true`,
           isNewTab: true,
         });
@@ -470,7 +470,7 @@ const DecisionAgent = ({ mode: modeFromProps = ModeEnum.DataAgent }: DataAgentsP
       case TemplateActionEnum.TemplateConfig:
         // 跳转到配置信息详情页面
         microWidgetProps?.history.navigateToMicroWidget({
-          name: mode === ModeEnum.MyTemplate ? 'agent-web-myagents' : 'agent-web-agenttemplate',
+          name: mode === ModeEnum.MyTemplate ? 'my-agent-list' : 'agent-template',
           path: `/template-detail/${agent.tpl_id ?? agent.id}?hidesidebar=true&hideHeaderPath=true`,
           isNewTab: true,
         });

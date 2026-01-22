@@ -5,6 +5,7 @@ import { getKnExperimentDetailsById, getObjectTypeById } from '@/apis/knowledge-
 import DipIcon from '@/components/DipIcon';
 import classNames from 'classnames';
 import styles from './index.module.less';
+import { nanoid } from 'nanoid';
 
 const KNExperimentalTree = ({ dataSource }: any) => {
   const { knowledge_network_id } = dataSource || {};
@@ -22,7 +23,7 @@ const KNExperimentalTree = ({ dataSource }: any) => {
     console.log('res', res);
     if (res) {
       const treeDataSource = adTreeUtils.createAdTreeNodeData([res], {
-        keyField: 'id',
+        keyField: () => nanoid(),
         titleField: (record: any) => (
           <div className="dip-flex-align-center" title={record.name}>
             <div style={{ background: record.color }} className={classNames(styles.icon, 'dip-flex-center')}>
@@ -45,12 +46,11 @@ const KNExperimentalTree = ({ dataSource }: any) => {
   const onLoadData = (nodeData: AdTreeDataNode) =>
     // eslint-disable-next-line no-async-promise-executor
     new Promise<any>(async resolve => {
-      const key = nodeData.key as string;
-      const res = await getObjectTypeById(key);
+      const parentId = nodeData.sourceData.id as string;
+      const res = await getObjectTypeById(parentId);
       if (res) {
-        console.log('所有的对象类啊啊', res);
         const objectTypeTreeData = adTreeUtils.createAdTreeNodeData(res.entries, {
-          keyField: 'id',
+          keyField: () => nanoid(),
           titleField: (record: any) => (
             <div className="dip-flex-align-center" title={record.name}>
               <div style={{ background: record.color }} className={classNames(styles.icon, 'dip-flex-center')}>

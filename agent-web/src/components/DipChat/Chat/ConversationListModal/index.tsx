@@ -107,7 +107,7 @@ const ConversationListModal = ({ onClose, agentAppKey, startNewConversation }: a
         });
         sendChat({
           chatList,
-          body: { conversation_id: activeKey },
+          body: { conversation_id: activeKey, interruptAction: 'confirm' },
           recoverConversation: true,
         });
       } else {
