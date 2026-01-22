@@ -210,7 +210,7 @@ class SessionParamsProvider(IdentityParamsProvider):
 # ============== 常量 ==============
 
 SERVER_NAME = "data-retrieval-mcp"
-SERVER_VERSION = "0.1.0"
+SERVER_VERSION = "0.2.0"
 
 # 默认隐藏的参数（LLM 不可见）
 # identity 通过 URL 参数或环境变量传递，无需 LLM 感知
