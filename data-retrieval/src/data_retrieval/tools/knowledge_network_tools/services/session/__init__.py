@@ -8,4 +8,3 @@ from .session_manager import RetrievalSessionManager
 __all__ = [
     "RetrievalSessionManager",
 ]
-

@@ -9,9 +9,8 @@
 3. 运行: python test_retrieval_scenarios.py
 """
 
-import asyncio
 import json
-from typing import Dict, Any, List
+from typing import Dict, Any
 
 # 测试配置
 TEST_CONFIG = {
@@ -24,9 +23,9 @@ TEST_CONFIG = {
 
 def print_test_case(name: str, params: Dict[str, Any]):
     """打印测试用例"""
-    print("\n" + "="*80)
+    print("\n" + "=" * 80)
     print(f"测试用例: {name}")
-    print("="*80)
+    print("=" * 80)
     print("\n请求参数:")
     print(json.dumps(params, indent=2, ensure_ascii=False))
 
@@ -36,7 +35,7 @@ def print_test_result(result: Dict[str, Any], execution_time: float = None):
     print("\n测试结果:")
     if execution_time:
         print(f"执行时间: {execution_time:.2f}秒")
-    
+
     if "object_types" in result:
         print(f"\n对象类型数量: {len(result.get('object_types', []))}")
         if result.get('object_types'):
@@ -46,7 +45,7 @@ def print_test_result(result: Dict[str, Any], execution_time: float = None):
                 props = obj.get('properties', [])
                 if props:
                     print(f"    属性数量: {len(props)}")
-    
+
     if "relation_types" in result:
         print(f"\n关系类型数量: {len(result.get('relation_types', []))}")
         if result.get('relation_types'):
@@ -54,7 +53,7 @@ def print_test_result(result: Dict[str, Any], execution_time: float = None):
             for rel in result['relation_types'][:3]:
                 print(f"  - {rel.get('concept_name')} ({rel.get('concept_id')})")
                 print(f"    {rel.get('source_object_type_id')} -> {rel.get('target_object_type_id')}")
-    
+
     if "keyword_context" in result:
         ctx = result['keyword_context']
         print(f"\n关键词: {ctx.get('keyword')}")
@@ -67,16 +66,16 @@ def print_test_result(result: Dict[str, Any], execution_time: float = None):
         print(f"总邻居数: {stats.get('total_neighbors', 0)}")
         if instances:
             first = instances[0]
-            print(f"\n第一个实例:")
+            print("\n第一个实例:")
             print(f"  ID: {first.get('instance_id')}")
             print(f"  名称: {first.get('instance_name')}")
             neighbors = first.get('neighbors', [])
             print(f"  邻居数量: {len(neighbors)}")
             if neighbors:
-                print(f"  前3个邻居:")
+                print("  前3个邻居:")
                 for n in neighbors[:3]:
                     print(f"    - {n.get('instance_name')} ({n.get('object_type_id')})")
-    
+
     if "objects" in result:
         print(f"\n对象类型YAML长度: {len(result.get('objects', ''))} 字符")
         print(f"关系类型YAML长度: {len(result.get('relations', ''))} 字符")
@@ -104,7 +103,7 @@ TEST_CASES = {
             "has_relation_types": True
         }
     },
-    
+
     "concept_retrieval_compact": {
         "name": "概念召回 - 紧凑格式",
         "description": "测试compact_format=True的紧凑格式返回",
@@ -122,7 +121,7 @@ TEST_CASES = {
             "has_objects_or_object_types": True
         }
     },
-    
+
     "concept_retrieval_incremental": {
         "name": "概念召回 - 增量结果",
         "description": "测试return_union=False的增量结果",
@@ -140,7 +139,7 @@ TEST_CASES = {
             "has_object_types": True
         }
     },
-    
+
     "concept_retrieval_skip_llm": {
         "name": "概念召回 - 跳过LLM",
         "description": "测试skip_llm=True跳过LLM处理",
@@ -159,7 +158,7 @@ TEST_CASES = {
             "has_relation_types": True
         }
     },
-    
+
     # 关键词召回测试用例
     "keyword_retrieval_basic": {
         "name": "基础关键词召回",
@@ -180,7 +179,7 @@ TEST_CASES = {
             "keyword_matches": "上气道梗阻"
         }
     },
-    
+
     "keyword_retrieval_multiple": {
         "name": "多个关键词召回",
         "description": "测试针对不同关键词的多次召回",
@@ -207,7 +206,7 @@ TEST_CASES = {
             "both_success": True
         }
     },
-    
+
     # 错误场景测试用例
     "error_no_schema": {
         "name": "错误场景 - 没有先召回schema",
@@ -225,7 +224,7 @@ TEST_CASES = {
             "error_message_contains": "Schema信息不存在"
         }
     },
-    
+
     "error_no_object_type_id": {
         "name": "错误场景 - 缺少object_type_id",
         "description": "测试在启用关键词召回时缺少object_type_id参数",
@@ -248,14 +247,14 @@ TEST_CASES = {
 def generate_curl_command(test_case: Dict[str, Any], base_url: str = "http://localhost:8000") -> str:
     """生成curl测试命令"""
     params = test_case["params"]
-    
+
     # 构建请求体
     body = {
         "query": params["query"],
         "top_k": params.get("top_k", 10),
         "kn_ids": params["kn_ids"],
     }
-    
+
     if "session_id" in params:
         body["session_id"] = params["session_id"]
     if "enable_keyword_context" in params:
@@ -268,29 +267,29 @@ def generate_curl_command(test_case: Dict[str, Any], base_url: str = "http://loc
         body["return_union"] = params["return_union"]
     if "skip_llm" in params:
         body["skip_llm"] = params["skip_llm"]
-    
+
     curl_cmd = f"""curl -X POST '{base_url}/api/knowledge-retrieve' \\
   -H 'Content-Type: application/json' \\
   -H 'x-account-id: {TEST_CONFIG["account_id"]}' \\
   -H 'x-account-type: {TEST_CONFIG["account_type"]}' \\
   -d '{json.dumps(body, ensure_ascii=False)}'"""
-    
+
     return curl_cmd
 
 
 def print_all_test_cases():
     """打印所有测试用例"""
-    print("="*80)
+    print("=" * 80)
     print("所有测试用例")
-    print("="*80)
-    
+    print("=" * 80)
+
     for case_id, case in TEST_CASES.items():
         print(f"\n【{case_id}】{case['name']}")
         print(f"描述: {case.get('description', '')}")
-        
+
         if case.get('requires_schema'):
             print("⚠️  注意: 此测试需要先召回schema")
-        
+
         params = case["params"]
         if isinstance(params, list):
             print(f"\n包含 {len(params)} 个子测试:")
@@ -299,10 +298,10 @@ def print_all_test_cases():
                 print_test_case(f"{case['name']} - 子测试{i}", p)
         else:
             print_test_case(case['name'], params)
-        
+
         print("\n预期结果:")
         print(json.dumps(case.get("expected", {}), indent=2, ensure_ascii=False))
-        
+
         # 生成curl命令
         if isinstance(params, dict):
             print("\nCURL命令:")
@@ -311,20 +310,20 @@ def print_all_test_cases():
 
 def main():
     """主函数"""
-    print("="*80)
+    print("=" * 80)
     print("检索功能测试用例文档")
-    print("="*80)
+    print("=" * 80)
     print("\n此脚本包含概念召回和关键词召回的所有测试用例")
     print("可以通过以下方式使用:")
     print("1. 查看所有测试用例: python test_retrieval_scenarios.py")
     print("2. 使用生成的curl命令直接测试API")
     print("3. 在代码中导入TEST_CASES字典进行自动化测试")
-    
+
     print_all_test_cases()
-    
-    print("\n" + "="*80)
+
+    print("\n" + "=" * 80)
     print("测试执行建议")
-    print("="*80)
+    print("=" * 80)
     print("""
 1. 概念召回测试顺序:
    - 先测试基础概念召回（concept_retrieval_basic）
@@ -346,4 +345,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

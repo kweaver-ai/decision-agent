@@ -3,7 +3,7 @@ requires = ["setuptools"]
 
 [project]
 name = "kweaver-data-retrieval"
-version = "0.1.2"
+version = "0.1.3"
 authors = [
   { name="Chen Xiao", email="xavier.chen@aishu.cn" },
 ]
@@ -23,32 +23,27 @@ dependencies = [
   "langchain_core==0.2.3",
   "langchain_openai==0.1.8",
   "Requests==2.32.3",
-  "aiohttp==3.9.4",
-  "pydantic==2.7.3",
+  "aiohttp==3.12.0",
+  "pydantic==2.11.5",
   "pandas==2.2.2",
   "async-timeout==4.0.3",
-  "pycryptodome==3.20.0",
   "urllib3==2.1.0",
-  "altair==5.4.0",
-  "commentjson==0.9.0",
-  "plotly==5.23.0",
-  "jsonref==1.1.0",
-  "vegafusion==1.6.9",
   "tabulate==0.9.0",
   "redis==5.0.8",
-  "pydantic-settings==2.1.0",
+  "pydantic-settings==2.12.0",
   "sqlparse==0.5.1",
   "sql_metadata==2.13.0",
   "pyahocorasick==2.0.0",
   "jieba==0.42.1",
   "faiss-cpu>=1.8",
   "fastapi>=0.115.0",
+  "kweaver-sandbox-runtime==0.1.1",
+  "uvicorn>=0.27.0",
   "openai>=1.68.2",
   "httpx==0.27.2",
-  "jupyter-kernel-gateway==3.0.1",
   "sqlglot[rs]==26.21.0",
-  "nebula3-python==3.5.0",
-  "rank-bm25==0.2.2"
+  "rank-bm25==0.2.2",
+  "circuitbreaker>=2.0.0"
 ]
 
 [project.optional-dependencies]
@@ -56,6 +51,14 @@ linux = [
   "gunicorn>=21.2.0"
 ]
 windows = []
+dev = [
+  "pytest>=8.0.0",
+  "pytest-cov>=4.0.0",
+  "pytest-asyncio>=0.23.0",
+  "flake8>=7.0.0",
+  "autopep8>=2.0.0",
+  "ruff>=0.1.0"
+]
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -63,3 +66,19 @@ exclude = ["tests", "tests.*"]
 
 [tool.setuptools.package-data]
 "data_retrieval.prompts.tools_prompts.text2metric_prompt" = ["params_json.txt"]
+
+[dependency-groups]
+dev = [
+    "autopep8>=2.3.2",
+    "flake8>=7.3.0",
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
+    "ruff>=0.14.11",
+]
+
+[tool.ruff]
+line-length = 120
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = ["E501"]  # 行长由 line-length 控制

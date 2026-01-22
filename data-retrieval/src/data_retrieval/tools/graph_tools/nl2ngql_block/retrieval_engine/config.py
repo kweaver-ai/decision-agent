@@ -20,13 +20,9 @@ class MethodConfig:  # 只配置当前模块的参数
         },
     }
 
-
     qq_retrieval = {
         "name": "QuestionRuleRetrieval",
         "params": {
             "size": 10,
         }
     }
-
-
-

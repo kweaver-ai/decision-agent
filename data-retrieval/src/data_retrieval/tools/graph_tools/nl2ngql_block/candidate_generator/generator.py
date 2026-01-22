@@ -19,6 +19,6 @@ class CandidateGenerator:
         for key, result in zip(tasks.keys(), results):
             generate_values[key] = result
         candidate_generator_response = CandidateGeneratorResponse(**generate_values)
-        intermediate_result.candidate_queries = candidate_generator_response.cot_generator # 生成多个值
+        intermediate_result.candidate_queries = candidate_generator_response.cot_generator  # 生成多个值
         # 目前就一种生成器,所以直接取出来
         return candidate_generator_response.cot_generator["messages"]

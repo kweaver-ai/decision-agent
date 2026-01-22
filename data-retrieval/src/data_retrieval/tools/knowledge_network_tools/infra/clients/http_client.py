@@ -11,7 +11,7 @@ from urllib.parse import urlparse
 from fastapi import HTTPException
 from data_retrieval.logs.logger import logger
 from ...config import config
-from ...infra.utils.timing_utils import api_timer, add_cost
+from ...infra.utils.timing_utils import api_timer
 
 # 知识网络API基础URL（从配置文件读取）
 KNOWLEDGE_NETWORK_API_BASE = config.KNOWLEDGE_NETWORK_API_BASE
@@ -19,21 +19,21 @@ KNOWLEDGE_NETWORK_API_BASE = config.KNOWLEDGE_NETWORK_API_BASE
 
 class KnowledgeNetworkHTTPClient:
     """知识网络HTTP客户端"""
-    
+
     @classmethod
-    async def _make_http_request(cls, url: str, method: str = "GET", params: Optional[Dict[str, Any]] = None, 
-                                json_data: Optional[Dict[str, Any]] = None, headers: Optional[Dict[str, str]] = None,
-                                timeout: float = 30.0) -> Optional[Dict[str, Any]]:
+    async def _make_http_request(cls, url: str, method: str = "GET", params: Optional[Dict[str, Any]] = None,
+                                 json_data: Optional[Dict[str, Any]] = None, headers: Optional[Dict[str, str]] = None,
+                                 timeout: float = 30.0) -> Optional[Dict[str, Any]]:
         """
         通用HTTP请求方法
-        
+
         Args:
             url: 请求URL
             method: HTTP方法，默认为GET
             params: 查询参数
             json_data: JSON请求体数据
             headers: HTTP请求头
-            
+
         Returns:
             响应数据或None（如果出错）
         """
@@ -48,7 +48,7 @@ class KnowledgeNetworkHTTPClient:
                     return str(obj)
                 except Exception:
                     return "<unserializable>"
-        
+
         def _summarize_headers(h: Dict[str, str]) -> Dict[str, str]:
             """尽量避免打印敏感头；当前仅做最小脱敏。"""
             if not h:
@@ -63,7 +63,7 @@ class KnowledgeNetworkHTTPClient:
                 else:
                     out[k] = v
             return out
-        
+
         try:
             # 合并默认headers和传入的headers
             request_headers = {}
@@ -71,7 +71,7 @@ class KnowledgeNetworkHTTPClient:
                 request_headers.update(headers)
             # httpx 不接受 header value 为 None；同时尽量保证为 str
             request_headers = {str(k): str(v) for k, v in (request_headers or {}).items() if v is not None}
-            
+
             async with httpx.AsyncClient() as client:
                 parsed = urlparse(url)
                 path_label = parsed.path or url
@@ -105,10 +105,10 @@ class KnowledgeNetworkHTTPClient:
                         )
                 else:
                     raise ValueError(f"不支持的HTTP方法: {method}")
-                
+
                 response.raise_for_status()
                 return response.json()
-                
+
         except httpx.HTTPStatusError as e:
             status = e.response.status_code if e.response is not None else "unknown"
             resp_text = ""
@@ -116,7 +116,7 @@ class KnowledgeNetworkHTTPClient:
                 resp_text = e.response.text if e.response is not None else ""
             except Exception:
                 resp_text = ""
-            
+
             logger.error(
                 "HTTP状态错误：%s\n"
                 "URL: %s\n"
@@ -174,10 +174,10 @@ class KnowledgeNetworkHTTPClient:
     async def _get_knowledge_networks(cls, headers: Optional[Dict[str, str]] = None) -> List[Dict[str, Any]]:
         """
         获取业务知识网络列表
-        
+
         Args:
             headers: HTTP请求头
-            
+
         Returns:
             知识网络列表
         """
@@ -186,10 +186,10 @@ class KnowledgeNetworkHTTPClient:
             params = {
                 "include_detail": "false"
             }
-            
+
             logger.debug(f"开始获取知识网络列表，URL: {url}")
             data = await cls._make_http_request(url, "GET", params=params, json_data=None, headers=headers)
-            
+
             if data and "entries" in data:
                 networks = data["entries"]
                 logger.debug(f"成功获取知识网络列表，数量: {len(networks)}")
@@ -197,20 +197,21 @@ class KnowledgeNetworkHTTPClient:
             else:
                 logger.warning("获取知识网络列表返回空数据")
                 return []
-                    
+
         except Exception as e:
             logger.error(f"获取知识网络列表失败: {str(e)}", exc_info=True)
             return []
 
     @classmethod
-    async def _get_knowledge_network_detail(cls, kn_id: str, headers: Optional[Dict[str, str]] = None) -> Optional[Dict[str, Any]]:
+    async def _get_knowledge_network_detail(
+            cls, kn_id: str, headers: Optional[Dict[str, str]] = None) -> Optional[Dict[str, Any]]:
         """
         获取知识网络详情
-        
+
         Args:
             kn_id: 知识网络ID
             headers: HTTP请求头
-            
+
         Returns:
             知识网络详情
         """
@@ -220,7 +221,7 @@ class KnowledgeNetworkHTTPClient:
                 "include_detail": "true",
                 "mode": "export"  # 新增mode=export参数
             }
-            
+
             data = await cls._make_http_request(url, "GET", params=params, headers=headers)
             if data:
                 logger.debug(f"成功获取知识网络详情 (ID: {kn_id})")
@@ -228,7 +229,7 @@ class KnowledgeNetworkHTTPClient:
             else:
                 logger.warning(f"获取知识网络详情返回空数据 (ID: {kn_id})")
                 return None
-                
+
         except Exception as e:
             logger.error(f"获取知识网络详情失败 (ID: {kn_id}): {str(e)}", exc_info=True)
             return None
@@ -418,17 +419,17 @@ class KnowledgeNetworkHTTPClient:
     ) -> Dict[str, Any]:
         """
         统一的关系路径查询（抛出异常版本）
-        
+
         Args:
             kn_id: 知识网络ID
             relation_type_paths: 关系类型路径字典，格式: {"relation_type_paths": [...]}
             headers: HTTP请求头
             timeout: 请求超时时间，默认30.0秒
             ignoring_store_cache: 是否忽略存储缓存
-            
+
         Returns:
             API返回结果
-            
+
         Raises:
             HTTPException: 当API调用失败时，原样返回API的错误响应
         """
@@ -436,14 +437,14 @@ class KnowledgeNetworkHTTPClient:
         params = {"query_type": "relation_path"}
         if ignoring_store_cache:
             params["ignoring_store_cache"] = "true"
-        
+
         request_headers = {
             "X-HTTP-Method-Override": "GET",
             "Content-Type": "application/json"
         }
         if headers:
             request_headers.update(headers)
-        
+
         try:
             async with httpx.AsyncClient() as client:
                 bucket = "path_query"
@@ -461,12 +462,12 @@ class KnowledgeNetworkHTTPClient:
                     )
                 response.raise_for_status()
                 return response.json()
-                
+
         except httpx.HTTPStatusError as e:
             # API调用失败，原样返回API的错误响应
             status_code = e.response.status_code if e.response else 500
             error_detail = {}
-            
+
             try:
                 if e.response is not None:
                     # 尝试解析JSON响应
@@ -477,7 +478,7 @@ class KnowledgeNetworkHTTPClient:
                         error_detail = {"error": e.response.text}
             except Exception:
                 error_detail = {"error": str(e)}
-            
+
             # 记录错误日志
             try:
                 request_body_str = json.dumps(relation_type_paths, ensure_ascii=False, indent=2)
@@ -495,10 +496,10 @@ class KnowledgeNetworkHTTPClient:
                     f"打印请求Body时出错: {str(log_error)}",
                     exc_info=True
                 )
-            
+
             # 原样抛出API的错误响应
             raise HTTPException(status_code=status_code, detail=error_detail)
-            
+
         except httpx.RequestError as e:
             # 网络请求错误
             error_detail = {"error": f"网络请求失败: {str(e)}"}
@@ -507,7 +508,7 @@ class KnowledgeNetworkHTTPClient:
                 exc_info=True
             )
             raise HTTPException(status_code=500, detail=error_detail)
-            
+
         except Exception as e:
             # 其他未知错误
             error_detail = {"error": f"未知错误: {str(e)}"}

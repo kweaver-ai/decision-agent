@@ -38,10 +38,10 @@ class APIDataSource(DataSourceBase):
     def params_correction(self, params: Dict[str, Any]) -> dict:
         """Check params
         """
-    
+
     async def params_correction_async(self, *args, **kwargs) -> Dict[str, Any]:
         pass
-    
+
     def set_data_list(self, data_list: list[str]):
         """Set data list
         """

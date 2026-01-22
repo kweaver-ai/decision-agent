@@ -3,8 +3,9 @@ import aiohttp
 import json
 from typing import Optional, Union, Any
 from pydantic import BaseModel
-from data_retrieval.api.error import Text2SQLError, AfDataSourceError
+from data_retrieval.api.error import AfDataSourceError
 from enum import Enum, unique
+
 
 class HTTPMethod:
     """HTTP Method
@@ -12,10 +13,12 @@ class HTTPMethod:
     POST = "POST"
     GET = "GET"
 
+
 @unique
 class Config(Enum):
     TIMES: int = 3
     timeout: int = 1800
+
 
 class API(BaseModel):
     url: str
@@ -136,4 +139,3 @@ class API(BaseModel):
                     reason="method not support",
                     url=self.url
                 )
-

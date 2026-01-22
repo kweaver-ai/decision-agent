@@ -358,7 +358,7 @@ Data Agent 支持工具链调用，即一个工具的输出可以作为另一个
 - `json2plot`: Json2Plot - 数据可视化工具
 - `text2sql`: Text2SQLTool - 自然语言转SQL工具
 - `text2ngql`: Text2nGQLTool - 自然语言转nGQL工具
-- `text2metric`: Text2DIPMetricTool - 自然语言转指标查询工具
+- `text2metric`: Text2Metric - 自然语言转指标查询工具
 - `sql_helper`: SQLHelperTool - SQL执行辅助工具
 - `get_metadata`: GetMetadataTool - 获取数据源元数据工具
 - `knowledge_item`: KnowledgeItemTool - 知识条目检索工具

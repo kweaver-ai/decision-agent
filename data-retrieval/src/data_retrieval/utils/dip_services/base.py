@@ -35,6 +35,7 @@ class ServiceType(Enum):
     DIP = "dip"
     OUTTER_DIP = "outter_dip"
 
+
 class HTTPMethod:
     """HTTP Method
     """
@@ -94,6 +95,7 @@ class Service(ABC, BaseModel):
             self.type = ServiceType.AD.value
         else:
             self.type = ServiceType.DIP.value
+
     @abstractmethod
     def test_connet(self) -> bool:
         """ test connection

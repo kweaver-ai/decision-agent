@@ -8,4 +8,3 @@ from .instance_scorer import InstanceScorer
 __all__ = [
     "InstanceScorer",
 ]
-

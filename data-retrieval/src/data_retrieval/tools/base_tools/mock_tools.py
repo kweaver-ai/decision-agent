@@ -32,6 +32,7 @@ class MinusInput(BaseModel):
     first: int = Field(description="The first number")
     second: int = Field(description="The second number")
 
+
 class MinusTool(AFTool):
     name: str = "minus"
     description: str = "Minus two numbers"
@@ -43,7 +44,7 @@ class MinusTool(AFTool):
         """Minus two numbers
         """
         return first - second
-    
+
     async def _arun(self, first: int, second: int) -> int:
         """Minus two numbers
         """
@@ -53,7 +54,7 @@ class MinusTool(AFTool):
             raise ValueError("MinusTool error")
 
         return first - second
-    
+
     @classmethod
     @api_tool_decorator
     async def as_async_api_cls(

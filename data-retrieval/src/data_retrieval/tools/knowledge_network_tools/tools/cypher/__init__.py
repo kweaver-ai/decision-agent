@@ -9,4 +9,3 @@ from .cypher_query_tool import CypherQueryTool
 __all__ = [
     "CypherQueryTool",
 ]
-

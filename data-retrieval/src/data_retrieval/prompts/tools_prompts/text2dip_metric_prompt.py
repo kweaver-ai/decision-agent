@@ -2,11 +2,10 @@
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2024-08-26
 from datetime import datetime
-from typing import Optional, List, Any
+from typing import Optional, Any
 import json
 
 from data_retrieval.prompts.base import BasePrompt
-from data_retrieval.prompts.manager.base import BasePromptManager
 
 # DIP 指标查询参数模板
 dip_metric_prompt_template = """# ROLE
@@ -58,7 +57,7 @@ dip_metric_prompt_template = """# ROLE
 }
 
 原因中需要包含,为什么选择该指标,为什么选择该时间范围,选择什么样的时间间隔,以及为什么设置分析维度和过滤条件
-   
+
 ### 任务1: 选择指标
 
 根据用户的问题选择一个合适的指标，指标的 id 为指标的唯一标识
@@ -123,7 +122,7 @@ dip_metric_prompt_template = """# ROLE
 - `year`: 1年
 {% endif %}
 
-**注意**: 
+**注意**:
 1. 聚合方式必须严格遵守格式，请理解用户问题，选择合适的聚合方式
 2. 指标具备聚合分析能力, 如果用户没有特别说明，不要设置更小粒度的聚合方式
 3. 务必不要使用更小粒度的数据来计算更大粒度的数据
@@ -177,19 +176,19 @@ look_back_delta 默认是5min。格式是 look_back_delta=<time_durations>，tim
 
 当用户问题中没有提到日期，默认是当年, 当月, 或者当天
 如果问题中包含相对时间时，需要根据当前时间 {{ current_date_time }} 计算时间约束，由于要精确设置时间戳, 下面是 instant 为 true 或 false 的一些示例:
-- 最近1小时: 
+- 最近1小时:
   - instant = true, time = 当前时间 - 1小时, look_back_delta = 1h
   - instant = true, start = 当前时间 - 1小时, end = 当前时间
   - instant = false, start = 当前时间 - 1小时, end = 当前时间
-- 昨天: 
+- 昨天:
   - instant = true, time = 当前天的00:00:00, look_back_delta = 1d
   - instant = true, start = 当前天的00:00:00, end = 当前天的23:59:59
   - instant = false, start = (当前天 - 1)天的00:00:00, end = (当前天 - 1)天的23:59:59
-- 上个月: 
+- 上个月:
   - instant = true, time = 当前月份的1日00:00:00, look_back_delta = 30d
   - instant = true, start = 当前月份的1日00:00:00, end = 当前月份的最后一天23:59:59
   - instant = false, start = (当前月份 - 1)个月的1日00:00:00, end = (当前月份 - 1)个月的最后一天23:59:59
-- 去年: 
+- 去年:
   - instant = true, time = 当前年份的1月1日00:00:00, look_back_delta = 1y
   - instant = true, start = 当前年份的1月1日00:00:00, end = 当前年份的12月31日23:59:59
   - instant = false, start = (当前年份 - 1年)的1月1日00:00:00, end = (当前年份 - 1年)的12月31日23:59:59
@@ -367,6 +366,7 @@ prompts = {
     "en": dip_metric_prompt_template + "\n" + suffix_command["en"]
 }
 
+
 class Text2DIPMetricPrompt(BasePrompt):
     """Text2DIPMetric Prompt
     There are three variables in the prompt:
@@ -392,20 +392,10 @@ class Text2DIPMetricPrompt(BasePrompt):
         if isinstance(self.metrics, dict):
             self.metrics = json.dumps(self.metrics, ensure_ascii=False)
         elif isinstance(self.metrics, list):
-            if len(self.metrics) > 0:    
+            if len(self.metrics) > 0:
                 if isinstance(self.metrics[0], dict):
-                    self.metrics = '\n'.join([ json.dumps(metric, ensure_ascii=False) for metric in self.metrics ])
+                    self.metrics = '\n'.join([json.dumps(metric, ensure_ascii=False) for metric in self.metrics])
                 else:
                     self.metrics = '\n\n'.join(self.metrics)
             else:
                 self.metrics = ""
-
-
-# class Text2DIPMetricPromptManager(BasePromptManager):
-#     """Text2DIPMetric Prompt 管理器"""
-
-#     def __init__(self, **kwargs):
-#         super().__init__(**kwargs)
-#         self.prompts = {
-#             "default": Text2DIPMetricPrompt,
-#         }

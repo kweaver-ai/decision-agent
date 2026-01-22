@@ -2,7 +2,7 @@
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2024-8-26
 from datetime import datetime
-from typing import Optional, List, Any
+from typing import Optional, Any
 import json
 
 from data_retrieval.prompts.base import BasePrompt
@@ -28,7 +28,9 @@ from data_retrieval.prompts.base import BasePrompt
 # | 为否 | false | [] |
 # | 介于 | between | ["datetime","datetime"] | TODO: Prompt 中需要暂时屏蔽，可能出现意想不到的问题
 prompt_template_cn = """# ROLE
-根据用户的问题生成指标函数的参数, 通过设置下钻维度(dimensions)、过滤条件(filters)、时间约束(timeConstraint)、指标类型(Metrics)等参数, 生成指标查询参数，在不设置 dimensions、filters 时，默认查询所有维度。
+根据用户的问题生成指标函数的参数, 通过设置下钻维度(dimensions)、过滤条件(filters)、\
+时间约束(timeConstraint)、指标类型(Metrics)等参数, 生成指标查询参数，\
+在不设置 dimensions、filters 时，默认查询所有维度。
 
 ## INSTRUCTIONS
 
@@ -73,7 +75,7 @@ dimensions, 指标可供分组或下钻的维度
 {
     "title": "... 对于数据的简要描述 ... "
 }
-   
+
 ### 任务1: 选择指标
 
 根据用户的问题选择一个合适的指标，指标的 id 为指标的唯一标识
@@ -215,7 +217,9 @@ dimensions 数组中的 JSON 对象结构如下：
 
 1. 如果用户没有明确要求计算同比或者环比，比如分别计算不同周期的数据，则不需要生成 metrics 参数
 2. 如果问题中要计算同比或者环比，必须设置 type
-3. 生成同比或者环比时，时间范围是最近的一个统计周期，而非全部时间范围, 例如：2001年销量同比，时间范围是 '2001-01-01 00:00:00 到 2001-12-31 23:59:59' 而非 '2000-01-01 00:00:00 到 2001-12-31 23:59:59'
+3. 生成同比或者环比时，时间范围是最近的一个统计周期，而非全部时间范围, \
+例如：2001年销量同比，时间范围是 '2001-01-01 00:00:00 到 2001-12-31 23:59:59' \
+而非 '2000-01-01 00:00:00 到 2001-12-31 23:59:59'
 {% endif %}
 
 ## Examples
@@ -344,9 +348,10 @@ class Text2MetricPrompt(BasePrompt):
         if isinstance(self.indicators, dict):
             self.indicators = json.dumps(self.indicators, ensure_ascii=False)
         elif isinstance(self.indicators, list):
-            if len(self.indicators) > 0:    
+            if len(self.indicators) > 0:
                 if isinstance(self.indicators[0], dict):
-                    self.indicators = '\n'.join([ json.dumps(indicator, ensure_ascii=False) for indicator in self.indicators ])
+                    self.indicators = '\n'.join([json.dumps(indicator, ensure_ascii=False)
+                                                for indicator in self.indicators])
                 else:
                     self.indicators = '\n\n'.join(self.indicators)
             else:

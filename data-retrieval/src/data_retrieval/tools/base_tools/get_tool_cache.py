@@ -1,14 +1,8 @@
-import traceback
-from enum import Enum
-from typing import Any, Optional
-from data_retrieval.logs.logger import logger
 from data_retrieval.tools.base import (
     ToolName,
     AFTool
 )
-from langchain.pydantic_v1 import BaseModel, Field, PrivateAttr
-from typing import Type
-from textwrap import dedent
+from langchain.pydantic_v1 import BaseModel, Field
 from data_retrieval.sessions import BaseChatHistorySession, CreateSession
 from data_retrieval.tools import async_construct_final_answer, construct_final_answer
 
@@ -19,8 +13,10 @@ import json
 
 _SETTINGS = get_settings()
 
+
 class GetToolCacheInput(BaseModel):
     cache_key: str = Field(..., description="工具缓存 key")
+
 
 class GetToolCacheTool(AFTool):
     """
@@ -53,7 +49,7 @@ class GetToolCacheTool(AFTool):
         """
         tool_res = self.session.get_agent_logs(cache_key)
         res_str = json.dumps(tool_res, ensure_ascii=False)
-        
+
         if len(res_str) > _SETTINGS.CACHE_SIZE_LIMIT:
             # 如果超过限制，则需要截取一部分, CACHE_SIZE_LIMIT 的 前 80% 和后 20%
             res_str = (
@@ -62,4 +58,3 @@ class GetToolCacheTool(AFTool):
                 res_str[-int(_SETTINGS.CACHE_SIZE_LIMIT * 0.2):]
             )
         return res_str
-

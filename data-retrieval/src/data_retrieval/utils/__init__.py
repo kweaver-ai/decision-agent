@@ -16,7 +16,7 @@ from ._common import (
 
 __all__ = [
     'deprecated',
-    'deprecated_class', 
+    'deprecated_class',
     'deprecated_property',
     '_route_similarity',
     'format_table_datas'

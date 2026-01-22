@@ -107,5 +107,3 @@ async def fetch_all_sample_data(
 
     logger.info(f"样例数据获取完成，成功: {success_count}, 失败或无数据: {fail_count}, 总计: {len(object_type_ids)}")
     return sample_data_dict
-
-

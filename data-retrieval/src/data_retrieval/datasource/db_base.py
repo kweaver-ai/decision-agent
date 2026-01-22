@@ -95,7 +95,7 @@ class DataSource(DataSourceBase):
 
     def get_description(self) -> Dict[str, Any]:
         return {}
-    
+
     def set_tables(self, tables: List[str]):
         pass
 

@@ -29,9 +29,8 @@ class InstructionBookInsideToolkit(BaseToolkit):
 
     def get_tool_names(self):
         return [tool.name for tool in self.tools]
-    
-    def get_tool(self, name)-> BaseTool:
+
+    def get_tool(self, name) -> BaseTool:
         for _, v in enumerate(self.tools):
             if v.name == name:
                 return v
-    

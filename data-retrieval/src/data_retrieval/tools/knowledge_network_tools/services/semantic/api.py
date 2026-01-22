@@ -7,7 +7,7 @@
 
 from __future__ import annotations
 
-from typing import Any, Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional
 
 from data_retrieval.logs.logger import logger
 
@@ -33,7 +33,3 @@ async def call_relation_path_api(
     except Exception as e:
         logger.warning(f"调用关系路径检索API失败 (kn_id={kn_id}): {str(e)}", exc_info=True)
         return None
-
-
-
-

@@ -1,0 +1,18 @@
+[flake8]
+max-line-length = 120
+exclude = .git,__pycache__,.venv,build,dist
+extend-ignore = E203,W503
+# Per-file ignores for files with long prompt templates, code examples, and schema definitions
+per-file-ignores =
+    # Prompt templates with long strings
+    */prompts/*.py:E501
+    */prompts/**/*.py:E501
+    # Graph tools with NGQL templates and retrieval engines
+    */tools/graph_tools/*.py:E501
+    */tools/graph_tools/**/*.py:E501
+    # Sandbox tools with code examples
+    */tools/sandbox_tools/*.py:E501
+    */tools/sandbox_tools/**/*.py:E501
+    # Knowledge network tools with schema descriptions
+    */tools/knowledge_network_tools/*.py:E501
+    */tools/knowledge_network_tools/**/*.py:E501

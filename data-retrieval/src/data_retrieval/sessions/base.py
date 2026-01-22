@@ -37,14 +37,15 @@ class BaseChatHistorySession(ABC):
     @abstractmethod
     def clean_session(self):
         raise NotImplementedError
-    
+
     @abstractmethod
     def add_working_context(self, session_id: str, working_context: dict):
         raise NotImplementedError
-    
+
     @abstractmethod
     def get_working_context(self, session_id: str) -> dict:
         raise NotImplementedError
+
 
 class GetSessionId(object):
 

@@ -1,10 +1,10 @@
 # -*- coding:utf-8 -*-
-from dataclasses import dataclass, field
-from typing import List, Union
+from typing import List
 
-from fastapi import Body, Header
-from typing import List, Dict, Optional, Any
+from fastapi import Header
+from typing import Dict, Optional, Any
 from pydantic import BaseModel, model_validator
+
 
 class Text2nGQLRequest(BaseModel):
     query: str = ""
@@ -29,7 +29,7 @@ class Text2nGQLRequest(BaseModel):
             default_params = {
                 "score": 0.9,
                 "select_num": 5,
-                "label_name": "*",  
+                "label_name": "*",
                 "keywords_extract": True
             }
             data['retrieval_params'] = {**default_params, **data['retrieval_params']}
@@ -45,11 +45,11 @@ class Text2nGQLRequest(BaseModel):
                 raise ValueError("当action为'nl2ngql'时，inner_llm为必传参数")
             if not self.inner_kg:
                 raise ValueError("当action为'nl2ngql'时，inner_kg为必传参数")
-                
+
         elif self.action == "get_schema":
             if not self.inner_kg:
                 raise ValueError("当action为'get_schema'时，inner_kg为必传参数")
-                
+
         elif self.action == "keyword_retrieval":
             if not self.query:
                 raise ValueError("当action为'keyword_retrieval'时，query为必传参数")
@@ -57,11 +57,12 @@ class Text2nGQLRequest(BaseModel):
                 raise ValueError("当action为'keyword_retrieval'时，inner_kg为必传参数")
             if not self.inner_llm:
                 raise ValueError("当action为'keyword_retrieval'时，inner_llm为必传参数")
-                
+
         else:
             raise ValueError(f"不支持的action值: {self.action}")
-            
+
         return self
+
 
 class RetrievalResponse(BaseModel):
     keyword_retrieval: Any = ""  # 关键词抽取结果
@@ -105,7 +106,7 @@ class Text2nGQLResponse(BaseModel):
 
 class HeaderParams:
     """请求头参数依赖类"""
-    
+
     def __init__(
         self,
         account_type: str = Header(None, alias="x-account-type"),

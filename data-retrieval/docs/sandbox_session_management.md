@@ -194,4 +194,3 @@ python test_sandbox_session_cleanup.py
 
 - `src/data_retrieval/tools/sandbox_tools/shared_env.py` - 主要实现
 - `tests/agent_test/test_sandbox_session_cleanup.py` - 测试脚本
-- `deps/sandbox_env-0.1.0-py3-none-any.whl` - 依赖包 

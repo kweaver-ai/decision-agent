@@ -18,6 +18,7 @@ from data_retrieval.settings import get_settings
 
 settings = get_settings()
 
+
 class EmbeddingType(Enum):
     MODEL_FACTORY = "model_factory"
     RAW = "raw"
@@ -66,12 +67,12 @@ class BaseEmbeddingsService:
 
     def embed_texts_with_idx(self, texts: List[str], idx: List) -> List[List[float]]:
         if len(texts) != len(idx):
-            raise ValueError(f"texts and idx must have the same length")
+            raise ValueError("texts and idx must have the same length")
         return zip(idx, self.embed_texts(texts))
 
     async def aembed_texts_with_idx(self, texts: List[str], idx: List) -> List[List[float]]:
         if len(texts) != len(idx):
-            raise ValueError(f"texts and idx must have the same length")
+            raise ValueError("texts and idx must have the same length")
         return zip(idx, await self.aembed_texts(texts))
 
 
@@ -98,7 +99,7 @@ class EmbeddingServiceFactory:
             else:
                 self.default_path = "api/mf-model-api/v1/small-model/embedding"
                 self.base_url = urljoin(self.base_url, self.default_path)
-    
+
     def get_service(self) -> BaseEmbeddingsService:
         if self.embedding_type == EmbeddingType.MODEL_FACTORY.value:
             return ModelFactoryEmbeddings(
@@ -133,7 +134,7 @@ class RawEmbeddings(BaseEmbeddingsService):
             token=token,
             user_id=user_id,
         )
-    
+
     def embed_texts(self, texts: List[str]) -> List[List[float]]:
         try:
             vec = requests.post(
@@ -147,18 +148,18 @@ class RawEmbeddings(BaseEmbeddingsService):
             logger.debug(print_exc())
             return []
         return vec.json()
-    
+
     async def aembed_texts(self, texts: List[str]) -> List[List[float]]:
         try:
             timeout = aiohttp.ClientTimeout(total=self.timeout)
 
             async with aiohttp.ClientSession(timeout=timeout) as session:
                 async with session.post(
-                    self.base_url,
-                    json={"texts": texts},
-                    verify_ssl=False,
-                    headers=self.get_headers()) as resp:
-                    res = await  resp.text()
+                        self.base_url,
+                        json={"texts": texts},
+                        verify_ssl=False,
+                        headers=self.get_headers()) as resp:
+                    res = await resp.text()
                     h_status = resp.status
                 if h_status != 200:
                     logger.error(f'Embedding 服务请求错误返回码: {self.base_url}, status_code: {h_status}')
@@ -167,11 +168,10 @@ class RawEmbeddings(BaseEmbeddingsService):
                     embeddings = json.loads(res)
                     return embeddings
         except Exception as e:
-            logger.error(f'M3E embedding 错误: {self.base_url} Exception= ',str(e))
+            logger.error(f'M3E embedding 错误: {self.base_url} Exception= ', str(e))
             return []
 
 
-    
 class ModelFactoryEmbeddings(BaseEmbeddingsService):
     def __init__(
         self,
@@ -187,7 +187,7 @@ class ModelFactoryEmbeddings(BaseEmbeddingsService):
             token=token,
             user_id=user_id,
         )
-    
+
     def embed_texts(self, texts: List[str]) -> List[List[float]]:
         try:
             vec = []
@@ -231,7 +231,7 @@ class ModelFactoryEmbeddings(BaseEmbeddingsService):
             logger.debug(print_exc())
             return []
         return vec
-    
+
     async def aembed_texts(self, texts: List[str]) -> List[List[float]]:
         try:
             timeout = aiohttp.ClientTimeout(total=self.timeout)
@@ -260,9 +260,8 @@ class ModelFactoryEmbeddings(BaseEmbeddingsService):
                         vec.append(item.get("embedding", []))
                     return vec
         except Exception as e:
-            logger.error(f'M3E embedding 错误: {self.base_url} Exception= ',str(e))
+            logger.error(f'M3E embedding 错误: {self.base_url} Exception= ', str(e))
             return []
-    
 
 
 class M3EEmbeddings(Embeddings):
@@ -287,13 +286,13 @@ class M3EEmbeddings(Embeddings):
 
     async def aembed_documents(self, texts: List[str]) -> List[List[float]]:
         return await self.service.aembed_texts(texts)
-    
+
     def embed_documents(self, texts: List[str]) -> List[List[float]]:
         return self.service.embed_texts(texts)
 
     def embed_query(self, text: str) -> List[float]:
         return self.embed_documents([text])[0]
-    
+
     async def aembed_query(self, text: str) -> List[float]:
         res = await self.aembed_documents([text])
         return res[0]
@@ -306,16 +305,16 @@ if __name__ == "__main__":
         # base_url="http://192.168.152.11:18302/v1/embeddings",
         # base_url="https://192.168.124.90/api/mf-model-api/v1/small-model/embedding",
         time_out=5,
-        token="Bearer ory_at_nrj_KBORymr5dbAQXC2TqjYLeIM41wExj_WKlH3-C40.beJ_xcHDa9sQbbWBm2LYZcerYwlGhWUf6-0qWFd0GLc",
+        token="Bearer YOUR_TOKEN_HERE",  # Replace with actual token
         user_id="450dd110-5bba-11f0-b8d9-1688e6ea28e2",
     )
-    print(embedding.embed_documents(["你好", "世界"]))
-    print(embedding.embed_query("你好"))
+    logger.info(embedding.embed_documents(["你好", "世界"]))
+    logger.info(embedding.embed_query("你好"))
 
     import asyncio
     asyncio.run(embedding.aembed_documents(["你好", "世界"]))
     res = asyncio.run(embedding.aembed_query("你好"))
-    print(res)
+    logger.info(res)
 
     # import faiss
     # from langchain_community.docstore.in_memory import InMemoryDocstore
@@ -340,4 +339,3 @@ if __name__ == "__main__":
     # import asyncio
     # res = asyncio.run(vectorstore.asimilarity_search_with_relevance_scores("大家好", k=1))
     # print(res)
-

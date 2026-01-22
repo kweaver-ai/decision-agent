@@ -2,7 +2,7 @@
 
 ## 概述
 
-DataModelService 是一个用于获取指标详情和查询指标数据的服务类，参考了 `af_api.py` 的实现模式。
+DataModelService 是一个用于获取指标详情和查询指标数据的服务类。
 
 ## 功能特性
 

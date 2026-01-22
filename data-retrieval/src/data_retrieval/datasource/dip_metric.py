@@ -2,23 +2,20 @@
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2024-8-26
 
-from typing import Any, Dict, List, Optional
-from datetime import datetime, timezone
+from typing import Any, Dict, List
+from datetime import datetime
 import pandas as pd
-import asyncio
 from typing import Tuple
 import traceback
 
 from data_retrieval.datasource.api_base import APIDataSource
 from data_retrieval.api.data_model import DataModelService
-from data_retrieval.api.error import AfDataSourceError, DataModelDetailError, DataModelQueryError
+from data_retrieval.api.error import DataModelDetailError, DataModelQueryError
 from data_retrieval.logs.logger import logger
 from data_retrieval.datasource.dimension_reduce import DimensionReduce
-from data_retrieval.api.vega import VegaServices
 from data_retrieval.utils._common import run_blocking
 
 
-from pydantic import PrivateAttr
 from copy import deepcopy
 
 
@@ -72,7 +69,8 @@ _QUERY_TYPE = [
 #     "description": "指定的步长无效",
 #     "solution": "请检查参数是否正确。",
 #     "error_link": "暂无",
-#     "error_details": "expect steps is one of {[15s 30s 1m 2m 5m 10m 15m 20m 30m 1h 2h 3h 6h 12h 1d 1y minute hour day week month quarter year]}, actaul is 1w"
+#     "error_details": "expect steps is one of {[15s 30s 1m 2m 5m 10m 15m 20m 30m 1h 2h 3h
+#                       6h 12h 1d 1y minute hour day week month quarter year]}, actaul is 1w"
 # }
 _TIME_GRANULARITY_PROMSQL = "15s 30s 1m 2m 5m 10m 15m 20m 30m 1h 2h 3h 6h 12h 1d 1y".split(" ")
 _TIME_GRANULARITY_PROMSQL_DEFAULT = "1h"
@@ -80,6 +78,7 @@ _TIME_GRANULARITY_SQL = ["minute", "hour", "day", "week", "month", "quarter", "y
 _TIME_GRANULARITY_SQL_DEFAULT = "month"
 _TIME_GRANULARITY_SAMEPERIOD = ["month", "quarter", "year", "day"]
 _DEFAULT_LOOK_BACK_DELTA = "30d"
+
 
 def _convert_str_2_date_time(time_str):
     """转换字符串为日期时间"""
@@ -101,7 +100,7 @@ class DIPMetric(APIDataSource):
     account_type: str = "user"
     headers: Any
     base_url: str = ""
-    
+
     service: DataModelService = None
     dimension_reduce: Any = None
     cache_data: Dict[str, Any] = {}
@@ -166,11 +165,11 @@ class DIPMetric(APIDataSource):
 
     def params_correction(self, params: Dict[str, Any], metric_id: str = None) -> dict:
         """参数校验和修正
-        
+
         Args:
             params: 查询参数
             metric_id: 指标ID
-            
+
         Returns:
             修正后的参数
         """
@@ -185,13 +184,13 @@ class DIPMetric(APIDataSource):
         else:
             time_granularity = _TIME_GRANULARITY_SQL
             time_granularity_default = _TIME_GRANULARITY_SQL_DEFAULT
-        
+
         corrected_params = params.copy()
-        
+
         # 验证即时查询参数
         if "instant" not in corrected_params:
             corrected_params["instant"] = False
-        
+
         def change_time_to_local_time(time_str):
             """将时间字符串转换为当地时间的时间戳"""
             server_tz = datetime.now().astimezone().tzinfo
@@ -206,15 +205,15 @@ class DIPMetric(APIDataSource):
             if isinstance(corrected_params["start"], str):
                 # 解析字符串为naive datetime，然后加上服务器当地时区
                 corrected_params["start"] = change_time_to_local_time(corrected_params["start"])
-        
+
             if "end" in corrected_params:
                 if isinstance(corrected_params["end"], str):
                     # 解析字符串为naive datetime，然后加上服务器当地时区
                     corrected_params["end"] = change_time_to_local_time(corrected_params["end"])
             else:
                 corrected_params["end"] = int(datetime.now().timestamp() * 1000)
-        
-        if corrected_params["instant"] == False:
+
+        if not corrected_params["instant"]:
             # 验证步长参数
             if "step" in corrected_params:
                 if query_type == "promsql":
@@ -229,26 +228,26 @@ class DIPMetric(APIDataSource):
             if "time" in corrected_params:
                 if isinstance(corrected_params["time"], str):
                     corrected_params["time"] = change_time_to_local_time(corrected_params["time"])
-            
+
                 if "look_back_delta" not in corrected_params:
                     corrected_params["look_back_delta"] = _DEFAULT_LOOK_BACK_DELTA
             else:
                 # 如果按时间段查询汇总值, 需要进行转换
                 if "start" in corrected_params and "end" in corrected_params:
-                    look_back_delta = (corrected_params["end"] - corrected_params["start"]) # 前面已经转换为毫秒
+                    look_back_delta = (corrected_params["end"] - corrected_params["start"])  # 前面已经转换为毫秒
                     corrected_params["look_back_delta"] = f"{look_back_delta}ms"
 
                     corrected_params["time"] = corrected_params["end"]
                     corrected_params.pop("start")
                     corrected_params.pop("end")
-                        
+
         # 验证过滤器参数
         if "filters" in corrected_params:
             for filter_item in corrected_params["filters"]:
                 if "operation" in filter_item:
                     if filter_item["operation"] not in _OPERATOR:
                         filter_item["operation"] = "="
-        
+
         # 验证分析维度
         if "analysis_dimensions" in corrected_params:
             # 分析维度不能超出配置的维度
@@ -273,12 +272,12 @@ class DIPMetric(APIDataSource):
         # 验证同环比参数
         if "metrics" in corrected_params:
             # "metrics": { // 同环比占比分析
-                # "type": "sameperiod", // 同环比：sameperiod，需配置sameperiod_config； 占比： proportion，占比时不需要配置sameperiod_config
-                # "sameperiod_config": {
-                #     "method": ["growth_value","growth_rate"],
-                #     "offset": 1,
-                #     "time_granularity": "month"
-                # }
+            # "type": "sameperiod", // 同环比：sameperiod，需配置sameperiod_config； 占比： proportion，占比时不需要配置sameperiod_config
+            # "sameperiod_config": {
+            #     "method": ["growth_value","growth_rate"],
+            #     "offset": 1,
+            #     "time_granularity": "month"
+            # }
             # }
             metric_params = corrected_params["metrics"]
             if metric_params == {} or metric_params is None:
@@ -304,23 +303,25 @@ class DIPMetric(APIDataSource):
 
                     if "time_granularity" in metric_params["sameperiod_config"]:
                         if metric_params["sameperiod_config"]["time_granularity"] not in _TIME_GRANULARITY_SAMEPERIOD:
-                            logger.warning(f"指标 {metric_id} 的同环比参数为空，已移除, 默认设置为 sameperiod, 原参数: {metric_params['sameperiod_config']['time_granularity']}")
+                            logger.warning(
+                                f"指标 {metric_id} 的同环比参数为空，已移除, 默认设置为 sameperiod, "
+                                f"原参数: {metric_params['sameperiod_config']['time_granularity']}")
                             metric_params["sameperiod_config"]["time_granularity"] = "month"
                     else:
                         metric_params["sameperiod_config"]["time_granularity"] = "month"
-            
+
         return corrected_params
 
-    def get_description_by_ids(self, metric_ids: str|list[str]) -> List[Dict[str, Any]]:
+    def get_description_by_ids(self, metric_ids: str | list[str]) -> List[Dict[str, Any]]:
         return run_blocking(self.aget_description_by_ids(metric_ids))
 
-    async def aget_description_by_ids(self, metric_ids: str|list[str]) -> List[Dict[str, Any]]:
+    async def aget_description_by_ids(self, metric_ids: str | list[str]) -> List[Dict[str, Any]]:
         """异步根据ID获取指标描述"""
         result = []
         not_cached_ids = []
         try:
             ids = metric_ids if isinstance(metric_ids, list) else metric_ids.split(",")
-            
+
             # 从缓存获取
             for id in ids:
                 cache_key = f"description_{id}"
@@ -328,9 +329,9 @@ class DIPMetric(APIDataSource):
                     result.append(self.cache_data[cache_key])
                 else:
                     not_cached_ids.append(id)
-            
+
             if not_cached_ids:
-                
+
                 data_view_ids = []
                 metric_infos = []
 
@@ -363,7 +364,7 @@ class DIPMetric(APIDataSource):
 
                 for id, detail in zip(not_cached_ids, metric_infos):
                     self.cache_data[f"description_{id}"] = deepcopy(detail)
-                
+
                 result.extend(metric_infos)
 
             return result
@@ -371,7 +372,7 @@ class DIPMetric(APIDataSource):
             logger.error(f"异步获取指标描述失败: {e}")
             print(traceback.format_exc())
             raise e
-        
+
     def get_metric_query_type(self, metric_id: str) -> str:
         """获取指标查询类型"""
         metric_detail = self.get_description_by_ids(metric_id)
@@ -384,7 +385,7 @@ class DIPMetric(APIDataSource):
         description = {}
         if self.metric_list:
             description = self.get_description_by_ids(self.metric_list)
-            
+
         return description
 
     async def aget_description(self) -> Dict[str, Any]:
@@ -392,15 +393,17 @@ class DIPMetric(APIDataSource):
         description = {}
         if self.metric_list:
             description = await self.aget_description_by_ids(self.metric_list)
-            
+
         return description
 
-    def get_details(self, input_query: str = "", metric_num_limit: int = 5, input_dimension_num_limit: int = 30) -> Dict[str, Any]:
+    def get_details(self, input_query: str = "", metric_num_limit: int = 5,
+                    input_dimension_num_limit: int = 30) -> Dict[str, Any]:
         """获取详细信息"""
         # 同步版本直接调用异步版本
         return run_blocking(self.aget_details(input_query, metric_num_limit, input_dimension_num_limit))
 
-    async def aget_details(self, input_query: str = "", metric_num_limit: int = 5, input_dimension_num_limit: int = 30) -> Dict[str, Any]:
+    async def aget_details(self, input_query: str = "", metric_num_limit: int = 5,
+                           input_dimension_num_limit: int = 30) -> Dict[str, Any]:
         """异步获取详细信息"""
         details = []
         # 如果有指标列表，获取详细信息
@@ -408,7 +411,7 @@ class DIPMetric(APIDataSource):
         raw_details = []
         if self.metric_list:
             raw_details = await self.aget_description_by_ids(self.metric_list)
-            
+
             # 分离 sql 和非 sql 类型的指标
             sql_metrics = []
             non_sql_metrics = []
@@ -418,13 +421,13 @@ class DIPMetric(APIDataSource):
                     non_sql_metrics.append(item)
                 else:
                     sql_metrics.append(item)
-            
+
             # 将 sql 指标列表转换为字典格式，用于降维
             sql_metrics_dict = {}
             for metric in sql_metrics:
                 metric_id = metric.get("id") or metric.get("name")
                 sql_metrics_dict[metric_id] = metric
-            
+
             # 第一步：对 sql 类型的指标进行降维处理（减少数据源数量）
             if sql_metrics_dict and input_query and len(sql_metrics_dict) > metric_num_limit and metric_num_limit > 0:
                 try:
@@ -450,7 +453,7 @@ class DIPMetric(APIDataSource):
                         reduced_metrics = sql_metrics
                 else:
                     reduced_metrics = []
-            
+
             # 第二步：对每个指标的 analysis_dimensions 进行降维处理（减少维度数量）
             for metric in reduced_metrics:
                 if metric.get("analysis_dimensions") and input_query and input_dimension_num_limit > 0:
@@ -470,21 +473,21 @@ class DIPMetric(APIDataSource):
                             traceback.print_exc()
                             # 降维失败时，保留原始维度或截取前 N 个
                             metric["analysis_dimensions"] = analysis_dimensions[:input_dimension_num_limit]
-                
+
                 details.append(metric)
-            
+
             # 添加非 sql 类型的指标（这些指标不参与降维，但需要返回）
             details.extend(non_sql_metrics)
-        
+
         return details
 
     def call(self, metric_id: str, data: dict) -> Any:
         """调用指标查询API
-        
+
         Args:
             metric_id: 指标ID，支持单个或多个指标ID（逗号分隔）
             data: 查询参数，即使多个指标也只有一个查询参数：
-            
+
             单个指标范围查询：
             {
                 "instant": false,
@@ -499,7 +502,7 @@ class DIPMetric(APIDataSource):
                     }
                 ]
             }
-            
+
             单个指标即时查询：
             {
                 "instant": true,
@@ -508,14 +511,14 @@ class DIPMetric(APIDataSource):
                 "filters": [...]
             }
 
-            
+
         Returns:
             查询结果
         """
         try:
             # 单个指标查询
             corrected_data = self.params_correction(data, metric_id)
-            
+
             # 调用查询API
             result = self.service.query_metric_models_data(metric_id, self.headers, corrected_data)
             data_frame, dim_mapping = self.convert_result_to_dataframe(metric_id, result.get("datas", []))
@@ -551,7 +554,7 @@ class DIPMetric(APIDataSource):
             corrected_data = self.params_correction(data, metric_id)
 
             logger.debug(f"异步调用指标查询参数: {corrected_data}")
-            
+
             # 异步调用查询API
             result = await self.service.query_metric_models_data_async(metric_id, self.headers, corrected_data)
             logger.debug(f"异步调用指标查询结果: {result}")
@@ -578,7 +581,7 @@ class DIPMetric(APIDataSource):
 
             result.pop("datas")
             result["data"] = data_json
-            
+
             return result
         except DataModelQueryError as e:
             logger.error(f"异步指标查询失败: {e}")
@@ -586,10 +589,10 @@ class DIPMetric(APIDataSource):
 
     def get_metric_info(self, metric_id: str) -> Dict[str, Any]:
         """获取指标信息
-        
+
         Args:
             metric_id: 指标ID
-            
+
         Returns:
             指标信息，包含字段、维度等
         """
@@ -597,12 +600,12 @@ class DIPMetric(APIDataSource):
             metric_detail = self.get_description_by_ids(metric_id)
             if not metric_detail:
                 return {}
-            
+
             # 提取字段信息
             fields = {}
             if "data_view" in metric_detail and "fields" in metric_detail["data_view"]:
                 fields = metric_detail["data_view"]["fields"]
-            
+
             return {
                 "id": metric_detail.get("id"),
                 "name": metric_detail.get("name"),
@@ -626,10 +629,10 @@ class DIPMetric(APIDataSource):
 
     def convert_result_to_dataframe(self, metric_id: str, result: list) -> Tuple[pd.DataFrame, dict]:
         """将 DIP Metric 查询结果转换为 DataFrame
-        
+
         Args:
             result (dict): DIP Metric 查询结果
-            
+
         Returns:
             Tuple[pd.DataFrame, dict]: 转换后的 DataFrame 和列名映射
         """
@@ -645,7 +648,8 @@ class DIPMetric(APIDataSource):
                 detail = details[0]
                 fields = detail.get("analysis_dimensions", [])
                 for field in fields:
-                    labels_mapping[field["name"]] = field["display_name"] if field.get("display_name") else field["name"]
+                    labels_mapping[field["name"]] = field["display_name"] if field.get(
+                        "display_name") else field["name"]
 
             # TODO: 全球化
             labels_mapping["timestamp"] = "时间戳"
@@ -661,10 +665,10 @@ class DIPMetric(APIDataSource):
                 values = data.get("values", [])
                 growth_values = data.get("growth_values", [])
                 growth_rates = data.get("growth_rates", [])
-                
+
                 # 确保所有数组长度一致
                 max_len = max(len(times), len(time_strs), len(values), len(growth_values), len(growth_rates))
-                
+
                 # 为每个时间点创建一行数据
                 for i in range(max_len):
                     if labels:
@@ -689,12 +693,12 @@ class DIPMetric(APIDataSource):
                         row_data["growth_value"] = growth_values[i] if i < len(growth_values) else None
                     if growth_rates:
                         row_data["growth_rate"] = growth_rates[i] if i < len(growth_rates) else None
-                    
+
                     rows.append(row_data)
-        
+
             # 创建 DataFrame
             df = pd.DataFrame(rows)
-    
+
             # 删除除了日期\label字段全为空的行
             df = df.dropna(subset=df.columns.difference(["timestamp", "time_str"] + list(labels.keys())), how="all")
 
@@ -708,7 +712,7 @@ class DIPMetric(APIDataSource):
             df = df.rename(columns=labels_mapping)
 
             return df, labels_mapping
-            
+
         except ImportError:
             logger.error("pandas 未安装，无法转换为 DataFrame")
             return None
@@ -718,10 +722,10 @@ class DIPMetric(APIDataSource):
 
     def get_result_statistics(self, metric_id: str, result: dict) -> dict:
         """获取查询结果的统计信息
-        
+
         Args:
             result (dict): DIP Metric 查询结果
-            
+
         Returns:
             dict: 统计信息
         """
@@ -729,7 +733,7 @@ class DIPMetric(APIDataSource):
             df, _ = self.convert_result_to_dataframe(metric_id, result)
             if df is None or df.empty:
                 return {}
-            
+
             stats = {
                 "total_rows": len(df),
                 "total_columns": len(df.columns),
@@ -738,7 +742,7 @@ class DIPMetric(APIDataSource):
                 "area_stats": None,
                 "value_stats": None
             }
-            
+
             # 时间范围统计
             if "datetime" in df.columns:
                 stats["time_range"] = {
@@ -746,17 +750,17 @@ class DIPMetric(APIDataSource):
                     "end": df["datetime"].max().isoformat(),
                     "duration_days": (df["datetime"].max() - df["datetime"].min()).days
                 }
-            
+
             # 品牌统计
             if "brand" in df.columns:
                 brand_stats = df.groupby("brand")["value"].agg(['count', 'sum', 'mean', 'std']).round(2)
                 stats["brand_stats"] = brand_stats.to_dict()
-            
+
             # 地区统计
             if "area_2_province" in df.columns:
                 area_stats = df.groupby("area_2_province")["value"].agg(['count', 'sum', 'mean', 'std']).round(2)
                 stats["area_stats"] = area_stats.to_dict()
-            
+
             # 数值统计
             if "value" in df.columns:
                 stats["value_stats"] = {
@@ -767,19 +771,17 @@ class DIPMetric(APIDataSource):
                     "max": df["value"].max(),
                     "null_count": df["value"].isnull().sum()
                 }
-            
+
             return stats
-            
+
         except Exception as e:
             logger.error(f"获取统计信息失败: {e}")
             return {}
 
 
-
-
 class MockDIPMetric(DIPMetric):
     """Mock DIP Metric 用于测试"""
-    
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.headers = {"Authorization": "mock_token"}
@@ -863,7 +865,8 @@ class MockDIPMetric(DIPMetric):
             "supported_operations": list(_OPERATOR.keys()),
         }
 
-    def get_details(self, input_query: str = "", metric_num_limit: int = 5, input_dimension_num_limit: int = 30) -> Dict[str, Any]:
+    def get_details(self, input_query: str = "", metric_num_limit: int = 5,
+                    input_dimension_num_limit: int = 30) -> Dict[str, Any]:
         """获取详细信息"""
         details = {
             "name": "Mock DIP Metric",
@@ -876,27 +879,25 @@ class MockDIPMetric(DIPMetric):
             "query_types": _QUERY_TYPE,
             "time_granularity": "month",
         }
-        
+
         # 根据输入查询过滤指标
         filtered_metrics = []
         if input_query:
             # 简单的关键词匹配
             query_lower = input_query.lower()
             for metric_id, metric_info in self._mock_metrics.items():
-                if (query_lower in metric_info["name"].lower() or 
+                if (query_lower in metric_info["name"].lower() or
                     query_lower in metric_info["comment"].lower() or
-                    any(query_lower in tag.lower() for tag in metric_info["tags"])):
+                        any(query_lower in tag.lower() for tag in metric_info["tags"])):
                     filtered_metrics.append(metric_info)
         else:
             # 返回所有指标
             filtered_metrics = list(self._mock_metrics.values())
-        
+
         # 限制返回数量
         details["metrics"] = filtered_metrics[:metric_num_limit]
-        
+
         return details
-
-
 
     def get_metric_info(self, metric_id: str) -> Dict[str, Any]:
         """获取指标信息"""
@@ -913,10 +914,10 @@ class MockDIPMetric(DIPMetric):
     def _generate_mock_data(self, metric_id: str, data: Dict[str, Any]) -> Dict[str, Any]:
         """生成模拟数据"""
         metric_info = self.get_metric_info(metric_id)
-        
+
         # 检查是否为即时查询
         is_instant = isinstance(data, dict) and data.get("instant", False)
-        
+
         if is_instant:
             # 即时查询数据
             times = [data.get("time", 1669789900123)]
@@ -926,7 +927,7 @@ class MockDIPMetric(DIPMetric):
             start = data.get("start", 1646360670123)
             end = data.get("end", 1646471470123)
             step = data.get("step", "1m")
-            
+
             # 生成时间序列数据
             step_ms = 60000  # 1分钟 = 60000毫秒
             if step == "5m":
@@ -937,11 +938,11 @@ class MockDIPMetric(DIPMetric):
                 step_ms = 1800000
             elif step == "1h":
                 step_ms = 3600000
-            
+
             times = list(range(start, end, step_ms))
             if not times:
                 times = [start]
-        
+
         # 生成模拟数值
         import random
         base_value = 50 + random.randint(0, 50)  # 基础值50-100
@@ -951,10 +952,10 @@ class MockDIPMetric(DIPMetric):
             noise = random.uniform(-10, 10)
             value = max(0, min(100, base_value + noise + i * 0.1))
             values.append(round(value, 2))
-        
+
         # 生成标签
         labels = {"instance": "mock-instance", "host": "mock-host"}
-        
+
         # 处理过滤器
         if isinstance(data, dict) and "filters" in data:
             for filter_item in data["filters"]:
@@ -963,7 +964,7 @@ class MockDIPMetric(DIPMetric):
                         labels["host"] = filter_item["value"][0] if filter_item["value"] else "mock-host"
                     else:
                         labels["host"] = filter_item.get("value", "mock-host")
-        
+
         return {
             "model": {
                 "id": metric_info["id"],
@@ -991,10 +992,10 @@ class MockDIPMetric(DIPMetric):
         try:
             # 参数校验
             corrected_data = self.params_correction(data, metric_id)
-            
+
             # 生成模拟数据
             result = self._generate_mock_data(metric_id, corrected_data)
-            
+
             return result
         except Exception as e:
             logger.error(f"Mock 调用失败: {e}")
@@ -1026,16 +1027,16 @@ if __name__ == '__main__':
         # 测试示例
         metric = DIPMetric(token="your_token_here")
         metric.set_data_list(["metric_1", "metric_2"])
-        
+
         # 测试连接
         print("连接测试:", metric.test_connection())
-        
+
         # 获取描述
         print("描述:", metric.get_description())
-        
+
         # 获取详细信息
         print("详细信息:", metric.get_details())
-        
+
         # 测试查询
         query_data = {
             "instant": False,
@@ -1044,7 +1045,7 @@ if __name__ == '__main__':
             "step": "1m",
             "filters": []
         }
-        
+
         try:
             result = metric.call("metric_1", query_data)
             print("查询结果:", result)

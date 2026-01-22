@@ -20,10 +20,10 @@ retrieval_content = """
 
 prompt_generate_nGQL = """
 然后，你需要根据问题生成正确的cypher图查询语言。
-===注意事项 
-1.根据上下文的所有信息，请生成一个有效的cypher查询，确保输出cypher没有语法错误. 
-2.只需要输出cypher查询语句，不要输出其他内容，不对问题进行任何解释。 
-3.生成的cypher条件匹配时，不要使用=~正则匹配，尽量使用where 和 contains。 
+===注意事项
+1.根据上下文的所有信息，请生成一个有效的cypher查询，确保输出cypher没有语法错误.
+2.只需要输出cypher查询语句，不要输出其他内容，不对问题进行任何解释。
+3.生成的cypher条件匹配时，不要使用=~正则匹配，尽量使用where 和 contains。
 4.如果问题需要多个cypher查询语句，请先生成第一个子问题的查询语句即可，不要生成多个。
 5.有些问题一个查询语句不能直接解决问题，可以提供一些中间线索即可，最后再让人工来判断，来回答问题即可。
 
@@ -43,5 +43,3 @@ prompt_generate_nGQL_with_history = """
 question: {question}
 cypher:
 """
-
-

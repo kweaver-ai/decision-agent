@@ -141,4 +141,3 @@ class api_timer:
             record_span(self.bucket, self.start, end, label=self.label)
         # 不拦截异常
         return False
-

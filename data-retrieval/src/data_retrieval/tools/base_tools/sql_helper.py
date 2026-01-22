@@ -1,12 +1,10 @@
 # -*- coding: utf-8 -*-
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2024-5-23
-import json
 import traceback
 import uuid
-from typing import Any, Optional, Type, Dict, Union, List
+from typing import Optional, Type, List
 from enum import Enum
-from collections import OrderedDict
 from langchain.callbacks.manager import (AsyncCallbackManagerForToolRun,
                                          CallbackManagerForToolRun)
 from langchain.pydantic_v1 import BaseModel, Field, PrivateAttr
@@ -15,23 +13,18 @@ from fastapi import Body
 
 from data_retrieval.api.error import VirEngineError
 from data_retrieval.errors import SQLHelperException
-from data_retrieval.datasource.db_base import DataSource
-from data_retrieval.datasource.dip_dataview import DataView, get_datasource_from_kg_params
+from data_retrieval.datasource.dip_dataview import DataView
 from data_retrieval.api.agent_retrieval import get_datasource_from_agent_retrieval_async
 from data_retrieval.logs.logger import logger
-from data_retrieval.sessions import CreateSession, BaseChatHistorySession # 重新导入 session 相关模块
-from data_retrieval.tools.base import ToolMultipleResult, ToolName
-from data_retrieval.tools.base import construct_final_answer, async_construct_final_answer
-from data_retrieval.tools.base import AFTool, _TOOL_MESSAGE_KEY
+from data_retrieval.sessions import CreateSession, BaseChatHistorySession  # 重新导入 session 相关模块
+from data_retrieval.tools.base import ToolName
+from data_retrieval.tools.base import async_construct_final_answer
+from data_retrieval.tools.base import AFTool
 from data_retrieval.tools.base import api_tool_decorator
-from data_retrieval.errors import ToolFatalError
-from data_retrieval.api import VegaType
 from data_retrieval.settings import get_settings
 from data_retrieval.utils.func import JsonParse
 from data_retrieval.utils._common import run_blocking
 
-import asyncio
-import time
 
 _SETTINGS = get_settings()
 
@@ -41,7 +34,11 @@ error_message2 = "工具调用失败，请再次尝试，或者更换其它工�
 _DESCS = {
     "tool_description": {
         "cn": "专门用于调用 SQL 语句的工具，支持获取元数据信息和执行 SQL 语句。注意：此工具不生成 SQL 语句，只执行已提供的 SQL 语句。",
-        "en": "A tool specifically for calling SQL statements, supporting metadata retrieval and SQL execution. Note: This tool does not generate SQL statements, only executes provided SQL statements.",
+        "en": (
+            "A tool specifically for calling SQL statements, supporting metadata retrieval "
+            "and SQL execution. Note: This tool does not generate SQL statements, "
+            "only executes provided SQL statements."
+        ),
     },
     "sql": {
         "cn": "要执行的 SQL 语句",
@@ -58,8 +55,8 @@ _DESCS = {
     "desc_from_datasource": {
         "cn": "\n- 包含的视图信息：{desc}",
         "en": "\nHere's the data description for the SQL helper tool:\n{desc}",
-    }
-}
+    }}
+
 
 class CommandType(str, Enum):
     GET_METADATA = "get_metadata"
@@ -99,15 +96,16 @@ class SQLHelperTool(AFTool):
     name: str = "sql_helper"
     description: str = _DESCS["tool_description"]["cn"]
     args_schema: Type[BaseModel] = SQLHelperInput
-    data_source: DataView # 修改为 DataView 类型
+    data_source: DataView  # 修改为 DataView 类型
     return_record_limit: int = _SETTINGS.RETURN_RECORD_LIMIT
     return_data_limit: int = _SETTINGS.RETURN_DATA_LIMIT
     view_num_limit: int = _SETTINGS.SQL_HELPER_RECALL_TOP_K  # 仅在 get_metadata 命令时有效，用于限制返回的视图数量
-    dimension_num_limit: int = _SETTINGS.SQL_HELPER_DIMENSION_NUM_LIMIT  # 仅在 get_metadata 命令时有效，用于限制返回的维度数量。注意：在 execute_sql 命令时无效，因为工具会严格执行 SQL
+    # 仅在 get_metadata 命令时有效，用于限制返回的维度数量。注意：在 execute_sql 命令时无效，因为工具会严格执行 SQL
+    dimension_num_limit: int = _SETTINGS.SQL_HELPER_DIMENSION_NUM_LIMIT
     with_sample: bool = True
-    session_id: Optional[str] = "" # 重新引入 session_id
-    session_type: Optional[str] = "redis" # 重新引入 session_type
-    session: Optional[BaseChatHistorySession] = None # 重新引入 session
+    session_id: Optional[str] = ""  # 重新引入 session_id
+    session_type: Optional[str] = "redis"  # 重新引入 session_type
+    session: Optional[BaseChatHistorySession] = None  # 重新引入 session
     force_limit: int = _SETTINGS.SQL_HELPER_FORCE_LIMIT
     # handle_tool_error: bool = True
     get_desc_from_datasource: bool = False
@@ -116,10 +114,10 @@ class SQLHelperTool(AFTool):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+
         if kwargs.get("session") is None:
-            self.session = CreateSession(self.session_type) # 重新引入 session 初始化
-        
+            self.session = CreateSession(self.session_type)  # 重新引入 session 初始化
+
         # 保存初始化的视图id列表
         if self.data_source and self.data_source.get_tables():
             self._initial_view_ids = self.data_source.get_tables()
@@ -189,17 +187,17 @@ class SQLHelperTool(AFTool):
         try:
             logger.info(f"sql_helper _arun command: {command}, sql: {sql}, title: {title}")
             if not title:
-                logger.warning(f"sql_helper _arun title is empty, set to 所有数据")
+                logger.warning("sql_helper _arun title is empty, set to 所有数据")
                 title = "所有数据"
-            self._get_desc_from_datasource(self.get_desc_from_datasource)        
+            self._get_desc_from_datasource(self.get_desc_from_datasource)
             # 根据命令类型执行不同操作
             if command == CommandType.GET_METADATA.value:
                 # return await self._get_metadata()
-                
+
                 # 如果数据源为空，则抛出异常
                 if not self.data_source.get_tables():
-                    raise SQLHelperException("数据源为空，请检查 view_list 参数。如果涉及知识网络，请检查 kn 参数。如果是老版本知识网络，请检查 kg 参数。")
-        
+                    raise SQLHelperException("数据源为空，请检查 view_list 参数。如涉及知识网络，请检查 kn 参数。")
+
                 return await self._get_meta_sample_data(
                     input_query=title,
                     view_limit=self.view_num_limit,
@@ -210,7 +208,7 @@ class SQLHelperTool(AFTool):
                 return await self._execute_sql(sql, title)
             else:
                 raise SQLHelperException(f"不支持的命令类型: {command}")
-            
+
         except SQLHelperException as e:
             traceback.print_exc()
             raise ToolException(error_message2.format(error_info=e.json()))
@@ -223,7 +221,7 @@ class SQLHelperTool(AFTool):
         """获取元数据信息"""
         try:
             metadata = await self.data_source.get_metadata_async()
-            
+
             summary = []
             for detail in metadata:
                 summary.append({
@@ -238,14 +236,14 @@ class SQLHelperTool(AFTool):
                 "metadata": metadata,
                 "message": "成功获取元数据信息"
             }
-            
+
         except Exception as e:
             logger.error(f"获取元数据信息失败: {e}")
             raise SQLHelperException(f"获取元数据信息失败: {str(e)}")
 
     async def _get_meta_sample_data(self, input_query="", view_limit=5, dimension_num_limit=30, with_sample=True):
         """获取元数据样本数据
-        
+
         注意：view_limit 和 dimension_num_limit 参数在此方法中有效，
         用于限制返回的视图数量和维度数量，避免返回过多数据。
         """
@@ -277,24 +275,22 @@ class SQLHelperTool(AFTool):
             logger.error(f"获取元数据样本数据失败: {e}")
             raise SQLHelperException(f"获取元数据样本数据失败: {str(e)}")
 
-
     def _add_force_limit(self, sql: str):
         """添加 force_limit 限制"""
         alias = "_outer_" + uuid.uuid4().hex[:8]
         inner = sql.rstrip().rstrip(";")
         return f"SELECT * FROM (\n{inner}\n) AS {alias}\nLIMIT {self.force_limit}"
 
-
     async def _execute_sql(self, sql: str, title: str = ""):
         """执行 SQL 语句
-        
+
         注意：view_num_limit 和 dimension_num_limit 参数在此方法中无效，
         因为工具会严格执行 SQL 语句，不会限制视图或维度数量。
         这两个参数仅在 get_metadata 命令时有效。
         """
         if not sql.strip():
             raise SQLHelperException("SQL 语句不能为空")
-        
+
         try:
             # 执行 SQL 查询
             if self.force_limit > 0:
@@ -307,7 +303,7 @@ class SQLHelperTool(AFTool):
                 as_gen=False,
                 as_dict=True
             )
-            
+
             # 处理查询结果
             if query_result.get("data"):
                 # 转换数据格式
@@ -322,7 +318,7 @@ class SQLHelperTool(AFTool):
                     "message": "SQL 执行成功",
                     "result_cache_key": self._result_cache_key
                 }
-                
+
                 # 记录日志, 完整数据
                 full_result = {
                     **base_result,
@@ -332,19 +328,19 @@ class SQLHelperTool(AFTool):
                         "real_records_num": len(dict_data)
                     },
                 }
-                
+
                 if self.session:
                     try:
                         self.session.add_agent_logs(
-                                self._result_cache_key,
-                                logs=full_result
-                            )
+                            self._result_cache_key,
+                            logs=full_result
+                        )
                     except Exception as e:
                         logger.error(f"添加缓存失败: str{e}")
-                
+
                 # 限制返回数据量
                 limited_data = parse.to_dict(
-                    self.return_record_limit, 
+                    self.return_record_limit,
                     self.return_data_limit
                 )
 
@@ -356,7 +352,7 @@ class SQLHelperTool(AFTool):
                         "real_records_num": len(dict_data)
                     },
                 }
-                
+
             else:
                 result = {
                     "command": CommandType.EXECUTE_SQL.value,
@@ -371,66 +367,21 @@ class SQLHelperTool(AFTool):
                 }
 
                 full_result = result
-            
+
             if self.api_mode:
                 return {
                     "output": result,
                     "full_output": full_result
                 }
-            else:   
+            else:
                 return result
-                
+
         except VirEngineError as e:
             logger.error(f"SQL 执行错误: {e}")
             raise SQLHelperException(f"SQL 执行错误: {e.detail}")
         except Exception as e:
             logger.error(f"SQL 执行失败: {e}")
             raise SQLHelperException(f"SQL 执行失败: {str(e)}")
-
-    def handle_result(
-        self,
-        log: Dict[str, Any],
-        ans_multiple: ToolMultipleResult
-    ) -> None:
-        if self.session:
-            tool_res = self.session.get_agent_logs(
-                self._result_cache_key
-            )
-            if tool_res:
-                log["result"] = tool_res
-                
-                if tool_res.get("command") == CommandType.GET_METADATA.value:
-                    # 处理元数据信息
-                    ans_multiple.text.append(f"元数据信息: {tool_res.get('message', '')}")
-                    ans_multiple.cites = tool_res.get("metadata", [])
-                elif tool_res.get("command") == CommandType.EXECUTE_SQL.value:
-                    # 处理 SQL 执行结果
-                    data = tool_res.get("data", [])
-                    title = tool_res.get("title", "")
-                    sql = tool_res.get("sql", "")
-                    
-                    ans_multiple.table.append(sql)
-                    
-                    # 如果有title，使用它作为标题，否则使用默认标题
-                    if title:
-                        table_title = f"{title}: {sql}"
-                    else:
-                        table_title = f"SQL 执行结果: {sql}"
-                    
-                    ans_multiple.new_table.append({
-                        "title": table_title, 
-                        "data": data
-                    })
-                    ans_multiple.text.append(tool_res.get("message", ""))
-
-                ans_multiple.cache_keys[self._result_cache_key] = {
-                    "tool_name": "sql_helper",
-                    "title": f"SQL Helper - {tool_res.get('command', '')}",
-                    "sql": tool_res.get("sql", ""),
-                    "is_empty": len(tool_res.get("data", [])) == 0,
-                    "fields": list(tool_res.get("data", [{}])[0].keys()) if tool_res.get("data") else [],
-                }
-        # pass # 暂时不做任何处理
 
     @classmethod
     @api_tool_decorator
@@ -443,10 +394,9 @@ class SQLHelperTool(AFTool):
         logger.info(f"sql_helper as_async_api_cls params: {params}")
         # data_source Params
         data_source_dict = params.get('data_source', {})
-        kg_params = data_source_dict.get('kg', {})
         config_dict = params.get("config", {})
 
-        base_url = data_source_dict.get('base_url', '') # 直接获取 base_url
+        base_url = data_source_dict.get('base_url', '')  # 直接获取 base_url
         token = data_source_dict.get('token', '')
         user_id = data_source_dict.get('user_id', '')
         account_type = data_source_dict.get('account_type', 'user')
@@ -455,7 +405,7 @@ class SQLHelperTool(AFTool):
         kn_params = data_source_dict.get('kn', [])
         recall_mode = data_source_dict.get('recall_mode', _SETTINGS.DEFAULT_AGENT_RETRIEVAL_MODE)
         search_scope = data_source_dict.get('search_scope', [])
-        
+
         # 获取 headers
         headers = {}
 
@@ -470,24 +420,12 @@ class SQLHelperTool(AFTool):
             headers["Authorization"] = token
 
         command = params.get('command', CommandType.EXECUTE_SQL.value)
-        
-        if command == CommandType.GET_METADATA.value:
-            # 将 kg 参数配置到 data_source_dict 中
-            if kg_params:
-                datasources_in_kg = await get_datasource_from_kg_params(
-                    addr=base_url,
-                    kg_params=kg_params,
-                    headers=headers,
-                )
 
-                logger.info(f"datasources_in_kg: {datasources_in_kg}")
-                view_list = [ds.get("id") for ds in datasources_in_kg]
-                data_source_dict['view_list'] = view_list
-            
+        if command == CommandType.GET_METADATA.value:
             # 业务知识网络的配置
             if kn_params:
                 for kn_param in kn_params:
-                    if type(kn_param) == dict:
+                    if isinstance(kn_param, dict):
                         kn_id = kn_param.get('knowledge_network_id', '')
                     else:
                         kn_id = kn_param
@@ -532,7 +470,7 @@ class SQLHelperTool(AFTool):
         # invoke tool
         res = await tool.ainvoke(input=input_dict)
         return res
-    
+
     @staticmethod
     async def get_api_schema():
         inputs = {
@@ -641,27 +579,6 @@ class SQLHelperTool(AFTool):
                                                 "enum": ["user", "app", "anonymous"],
                                                 "default": "user"
                                             },
-                                            "kg": {
-                                                "type": "array",
-                                                "description": "知识图谱配置参数，用于从知识图谱中获取数据源",
-                                                "items": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "kg_id": {
-                                                            "type": "string",
-                                                            "description": "知识图谱ID"
-                                                        },
-                                                        "fields": {
-                                                            "type": "array",
-                                                            "description": "用户选中的实体字段列表",
-                                                            "items": {
-                                                                "type": "string"
-                                                            }
-                                                        }
-                                                    },
-                                                    "required": ["kg_id", "fields"]
-                                                }
-                                            },
                                             "kn": {
                                                 "type": "array",
                                                 "description": "知识网络配置参数，用于从知识网络中获取数据源",
@@ -692,8 +609,15 @@ class SQLHelperTool(AFTool):
                                             },
                                             "recall_mode": {
                                                 "type": "string",
-                                                "description": "召回模式，支持 keyword_vector_retrieval(默认), agent_intent_planning, agent_intent_retrieval",
-                                                "enum": ["keyword_vector_retrieval", "agent_intent_planning", "agent_intent_retrieval"],
+                                                "description": (
+                                                    "召回模式，支持 keyword_vector_retrieval(默认), "
+                                                    "agent_intent_planning, agent_intent_retrieval"
+                                                ),
+                                                "enum": [
+                                                    "keyword_vector_retrieval",
+                                                    "agent_intent_planning",
+                                                    "agent_intent_retrieval"
+                                                ],
                                                 "default": "keyword_vector_retrieval"
                                             }
 
@@ -716,27 +640,60 @@ class SQLHelperTool(AFTool):
                                             },
                                             "view_num_limit": {
                                                 "type": "integer",
-                                                "description": f"获取元数据时引用视图数量限制，-1表示不限制，原因是数据源包含大量视图，可能导致大模型上下文token超限，内置的召回算法会自动筛选最相关的视图。系统默认为 {_SETTINGS.TEXT2SQL_RECALL_TOP_K}。注意：此参数仅在 command 为 get_metadata 时有效，在 command 为 execute_sql 时无效，因为工具会严格执行 SQL，不会限制视图数量",
+                                                "description": (
+                                                    "获取元数据时引用视图数量限制，-1表示不限制，"
+                                                    "原因是数据源包含大量视图，可能导致大模型上下文token超限，"
+                                                    "内置的召回算法会自动筛选最相关的视图。"
+                                                    f"系统默认为 {_SETTINGS.TEXT2SQL_RECALL_TOP_K}。"
+                                                    "注意：此参数仅在 command 为 get_metadata 时有效，"
+                                                    "在 command 为 execute_sql 时无效，"
+                                                    "因为工具会严格执行 SQL，不会限制视图数量"
+                                                ),
                                                 "default": _SETTINGS.TEXT2SQL_RECALL_TOP_K
                                             },
                                             "dimension_num_limit": {
                                                 "type": "integer",
-                                                "description": f"获取元数据时维度数量限制，-1表示不限制, 系统默认为 {_SETTINGS.TEXT2SQL_DIMENSION_NUM_LIMIT}。注意：此参数仅在 command 为 get_metadata 时有效，在 command 为 execute_sql 时无效，因为工具会严格执行 SQL，不会限制维度数量",
+                                                "description": (
+                                                    "获取元数据时维度数量限制，-1表示不限制, "
+                                                    f"系统默认为 {_SETTINGS.TEXT2SQL_DIMENSION_NUM_LIMIT}。"
+                                                    "注意：此参数仅在 command 为 get_metadata 时有效，"
+                                                    "在 command 为 execute_sql 时无效，"
+                                                    "因为工具会严格执行 SQL，不会限制维度数量"
+                                                ),
                                                 "default": _SETTINGS.TEXT2SQL_DIMENSION_NUM_LIMIT
                                             },
                                             "return_record_limit": {
                                                 "type": "integer",
-                                                "description": f"SQL 执行后返回数据条数限制，-1表示不限制，原因是SQL执行后返回大量数据，可能导致大模型上下文token超限。系统默认为 {_SETTINGS.RETURN_RECORD_LIMIT}。注意：此参数在 command 为 execute_sql 时有效，用于限制返回结果的数据条数",
+                                                "description": (
+                                                    "SQL 执行后返回数据条数限制，-1表示不限制，"
+                                                    "原因是SQL执行后返回大量数据，可能导致大模型上下文token超限。"
+                                                    f"系统默认为 {_SETTINGS.RETURN_RECORD_LIMIT}。"
+                                                    "注意：此参数在 command 为 execute_sql 时有效，"
+                                                    "用于限制返回结果的数据条数"
+                                                ),
                                                 "default": _SETTINGS.RETURN_RECORD_LIMIT
                                             },
                                             "return_data_limit": {
                                                 "type": "integer",
-                                                "description": f"SQL 执行后返回数据总量限制，单位是字节，-1表示不限制，原因是SQL执行后返回大量数据，可能导致大模型上下文token超限。系统默认为 {_SETTINGS.RETURN_DATA_LIMIT}。注意：此参数在 command 为 execute_sql 时有效，用于限制返回结果的数据大小",
+                                                "description": (
+                                                    "SQL 执行后返回数据总量限制，单位是字节，-1表示不限制，"
+                                                    "原因是SQL执行后返回大量数据，可能导致大模型上下文token超限。"
+                                                    f"系统默认为 {_SETTINGS.RETURN_DATA_LIMIT}。"
+                                                    "注意：此参数在 command 为 execute_sql 时有效，"
+                                                    "用于限制返回结果的数据大小"
+                                                ),
                                                 "default": _SETTINGS.RETURN_DATA_LIMIT
                                             },
                                             "force_limit": {
                                                 "type": "integer",
-                                                "description": f"强制限制SQL查询的行数。在SQL执行前，工具会将原始SQL包装为子查询并添加 LIMIT 子句，限制返回的数据条数。系统默认为 {_SETTINGS.SQL_HELPER_FORCE_LIMIT}。如果设置为 0 或负数，则不添加 LIMIT 限制。注意：此参数仅在 command 为 execute_sql 时有效，在 SQL 执行前生效，会影响实际查询的数据量",
+                                                "description": (
+                                                    "强制限制SQL查询的行数。在SQL执行前，"
+                                                    "工具会将原始SQL包装为子查询并添加 LIMIT 子句，"
+                                                    f"限制返回的数据条数。系统默认为 {_SETTINGS.SQL_HELPER_FORCE_LIMIT}。"
+                                                    "如果设置为 0 或负数，则不添加 LIMIT 限制。"
+                                                    "注意：此参数仅在 command 为 execute_sql 时有效，"
+                                                    "在 SQL 执行前生效，会影响实际查询的数据量"
+                                                ),
                                                 "default": _SETTINGS.SQL_HELPER_FORCE_LIMIT
                                             },
                                             "with_sample": {
@@ -862,9 +819,9 @@ if __name__ == "__main__":
             "your_view_id_1",
             "your_view_id_2",
         ],
-        "base_url": "http://your_data_model_service_url", # 替换为您的实际 DataModelService URL
-        "user_id": "your_user_id", # 替换为您的实际用户ID
-        "token": "your_token" # 替换为您的实际token
+        "base_url": "http://your_data_model_service_url",  # 替换为您的实际 DataModelService URL
+        "user_id": "your_user_id",  # 替换为您的实际用户ID
+        "token": "your_token"  # 替换为您的实际token
     }
 
     datasource = DataView(**data_view_params)
@@ -882,6 +839,6 @@ if __name__ == "__main__":
 
     # 测试执行 SQL
     print("\n测试执行 SQL:")
-    sql_query = "SELECT * FROM your_view_table LIMIT 5" # 替换为您的实际SQL查询
+    sql_query = "SELECT * FROM your_view_table LIMIT 5"  # 替换为您的实际SQL查询
     sql_result = tool.invoke({"command": "execute_sql", "sql": sql_query, "title": "示例SQL查询结果"})
     print(sql_result)

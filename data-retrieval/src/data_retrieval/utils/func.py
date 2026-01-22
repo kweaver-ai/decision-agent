@@ -4,6 +4,8 @@ from typing import List
 
 import pandas as pd
 
+from data_retrieval.logs.logger import logger
+
 
 class JsonParse(object):
 
@@ -37,7 +39,7 @@ class JsonParse(object):
     ) -> str:
         if self.df.empty:
             return ""
-        
+
         # df_to_convert = self.df.copy()
         df_to_convert = self.df
 
@@ -58,7 +60,7 @@ class JsonParse(object):
         records_num = int(records_num * (data_limit / len(markdown)))
         if records_num == 0:
             records_num = 1
-        
+
         markdown = df_to_convert.head(records_num).to_markdown(
             index=False,
             disable_numparse=True
@@ -190,6 +192,7 @@ def construct_text_from_cites(cites: list):
 
     return text
 
+
 def add_quotes_to_fields_with_dash(input_sql):
     # 定义正则表达式，匹配包含 '-' 的字段名
     # 假设字段名由字母、数字、下划线和破折号组成，并且以点（.）或空格（ ）分隔（可选）
@@ -207,6 +210,7 @@ def add_quotes_to_fields_with_dash(input_sql):
 
     return modified_sql
 
+
 def add_quotes_to_fields_with_data_self(input_sql):
     if "-" not in input_sql:
         return input_sql
@@ -223,7 +227,7 @@ def add_quotes_to_fields_with_data_self(input_sql):
             elif item.endswith(","):
                 n_item = item[:-1]
 
-                n_item = re.sub(pattern, lambda match: f'"{match.group(1)}"', n_item)+","
+                n_item = re.sub(pattern, lambda match: f'"{match.group(1)}"', n_item) + ","
                 # n_item = re.sub(pattern, lambda match: f'"{match.group(1)}"', item[:-1])
                 n_sql_list.append(n_item)
             else:
@@ -247,17 +251,17 @@ if __name__ == '__main__':
     }
 
     parse = JsonParse(data)
-    print(parse.to_markdown())
-    print(parse.to_json())
-    print(parse.to_dict())
+    logger.info(parse.to_markdown())
+    logger.info(parse.to_json())
+    logger.info(parse.to_dict())
 
     data = "SELECT aaa.first-name, bb.last-name, age FROM users WHERE xxx.first-name = 'John' AND last-name = 'Doe';"
 
-    print(add_quotes_to_fields_with_dash(data))
+    logger.info(add_quotes_to_fields_with_dash(data))
 
     data = 'SELECT aaa.first-a, bb.last_a,  age FROM users WHERE h.first_b = "J-ohn" AND have(h.b-b) = "Doe";'
 
-    print(add_quotes_to_fields_with_data_self(data))
+    logger.info(add_quotes_to_fields_with_data_self(data))
     #
     # data = 'year(first-a)'
     # pattern = r"([a-zA-Z0-9_]+-[a-zA-Z0-9_]+)"
@@ -265,15 +269,17 @@ if __name__ == '__main__':
 
     # print(modified_sql)
 
-    test_data = """SELECT comprehensive-unit-price FROM vdm_mysql_znc5em0v.default._select_from_ti_assets_ta_inner_join_tv_assets_ta2_on_ta_code_ta AS T1
+    test_data = """SELECT comprehensive-unit-price
+FROM vdm_mysql_znc5em0v.default._select_from_ti_assets_ta_inner_join_tv_assets_ta2_on_ta_code_ta AS T1
 WHERE T1.maintenance-END-TIME LIKE '2024/%'
 LIMIT 100
     """
 
     res = add_quotes_to_fields_with_data_self(test_data)
-    print(res)
+    logger.info(res)
 
-    t_res = """SELECT "comprehensive-unit-price" FROM vdm_mysql_znc5em0v.default._select_from_ti_assets_ta_inner_join_tv_assets_ta2_on_ta_code_ta AS T1
+    t_res = """SELECT "comprehensive-unit-price"
+FROM vdm_mysql_znc5em0v.default._select_from_ti_assets_ta_inner_join_tv_assets_ta2_on_ta_code_ta AS T1
 WHERE T1."maintenance-END-TIME" LIKE '2024/%'
 LIMIT 100
     """
@@ -287,4 +293,4 @@ WHERE T1.maintenance-END-TIME LIKE '2024/%'
 LIMIT 100
     """
 
-    print(add_quotes_to_fields_with_data_self(data))
+    logger.info(add_quotes_to_fields_with_data_self(data))

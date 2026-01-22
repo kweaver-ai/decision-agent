@@ -50,9 +50,7 @@ class AgentOperatorIntegrationService:
         failure_threshold=GetFailureThreshold(), recovery_timeout=GetRecoveryTimeout()
     )
     async def get_mcp_tools(self, mcp_server_id) -> dict:
-        url = "{basic_url}/api/agent-operator-integration/internal-v1/mcp/proxy/{mcp_server_id}/tools".format(
-            self._basic_url, mcp_server_id
-        )
+        url = "{basic_url}/api/agent-operator-integration/internal-v1/mcp/proxy/{mcp_server_id}/tools"
         async with aiohttp.ClientSession(headers=self.headers) as session:
             async with session.get(url, ssl=False) as response:
                 if response.status != HTTPStatus.OK:

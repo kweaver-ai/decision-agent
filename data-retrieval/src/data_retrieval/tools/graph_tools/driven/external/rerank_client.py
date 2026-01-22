@@ -7,6 +7,7 @@ import data_retrieval.tools.graph_tools.common.stand_log as log_oper
 from data_retrieval.tools.graph_tools.common.stand_log import StandLogger
 from data_retrieval.tools.graph_tools.utils.common import is_valid_url
 
+
 class RerankClient:
     def __init__(self):
         self.rerank_url = Config.RERANK_URL
@@ -19,13 +20,13 @@ class RerankClient:
 
         # 旧版
         body = {
-            "slices":slices,
-            "query":query
+            "slices": slices,
+            "query": query
         }
         # 新版
         body = {
-            "documents":slices,
-            "query":query,
+            "documents": slices,
+            "query": query,
             "model": "reranker"
         }
         try:
@@ -34,7 +35,7 @@ class RerankClient:
                     if response.status != 200:
                         err = await response.text()
                         raise Exception(f"{self.rerank_url} 调用rerank服务失败: {err}")
-                    rerank_scores = await response.json()     
+                    rerank_scores = await response.json()
                     rerank_scores = rerank_scores["results"]
                     return rerank_scores
         except Exception as e:
