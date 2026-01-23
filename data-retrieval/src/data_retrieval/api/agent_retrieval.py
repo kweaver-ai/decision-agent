@@ -198,7 +198,7 @@ async def get_datasource_from_agent_retrieval_async(
                 concept_map[concept_type] = []
             concept_map[concept_type].append(concept)
 
-        # TODO: 目前只保留 object_types 和 relation_types 类型的概念
+        # 目前只保留 object_types 和 relation_types 类型的概念
         for concept in concept_map.get("object_type", []):
             concept_detail = concept.get("concept_detail", {})
             ds = concept_detail.get("data_source", {})
