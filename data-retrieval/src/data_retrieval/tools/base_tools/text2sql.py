@@ -914,6 +914,7 @@ class Text2SQLTool(LLMTool):
                 token = f"Bearer {token}"
             headers["Authorization"] = token
 
+        kn_data_view_fields = {}
         if kn_params:
             for kn_param in kn_params:
                 if isinstance(kn_param, dict):
@@ -932,12 +933,28 @@ class Text2SQLTool(LLMTool):
             )
             view_list.extend([view.get("id") for view in data_views])
 
+            # Build kn_data_view_fields mapping from concept_detail.data_properties
+            for view in data_views:
+                view_id = view.get("id")
+                concept_detail = view.get("concept_detail", {})
+                data_properties = concept_detail.get("data_properties", [])
+                if data_properties and view_id:
+                    # Extract mapped_field names
+                    field_names = []
+                    for prop in data_properties:
+                        mapped_field = prop.get("mapped_field", {})
+                        if mapped_field and mapped_field.get("name"):
+                            field_names.append(mapped_field["name"])
+                    if field_names:
+                        kn_data_view_fields[view_id] = field_names
+
         data_source = DataView(
             view_list=view_list,
             base_url=base_url,
             user_id=userid,
             token=token,
-            account_type=account_type
+            account_type=account_type,
+            kn_data_view_fields=kn_data_view_fields if kn_data_view_fields else None
         )
 
         # LLM Params

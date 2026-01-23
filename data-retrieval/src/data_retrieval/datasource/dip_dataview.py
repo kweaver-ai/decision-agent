@@ -133,6 +133,7 @@ class DataView(DataSource):
     base_url: str = ""
     model_data_view_fields: dict = None  # 主题模型、专题模型字段，筛选专用
     special_data_view_fields: dict = None  # 指定字段必须保留
+    kn_data_view_fields: dict = None  # 知识网络字段过滤，key: view_id, value: list of mapped_field names
     service: DataModelService = None
     dimension_reduce: Optional[DimensionReduce] = None
 
@@ -171,6 +172,7 @@ class DataView(DataSource):
         )
         self.model_data_view_fields = self.model_data_view_fields
         self.special_data_view_fields = self.special_data_view_fields
+        self.kn_data_view_fields = self.kn_data_view_fields
 
         view_details_cache = self.__dict__.get("_view_details_cache")
         if not isinstance(view_details_cache, dict):
@@ -373,6 +375,18 @@ class DataView(DataSource):
                     special_fields = [field["name"] for field in self.special_data_view_fields[view_id]]
                     logger.info("保留字段有{}".format(special_fields))
 
+                # 知识网络字段过滤（在降维之前执行，只保留知识网络中定义的字段）
+                if self.kn_data_view_fields is not None and view_id in self.kn_data_view_fields:
+                    n_column_fields = []
+                    num_fields = len(detail["fields"])
+                    kn_field_names = set(self.kn_data_view_fields[view_id])
+                    for n_field in detail["fields"]:
+                        if n_field["original_name"] in kn_field_names:
+                            n_column_fields.append(n_field)
+                    detail["fields"] = n_column_fields
+                    logger.info("view_id {} 字段数量 {} 知识网络字段过滤后字段数量 {}".format(
+                        view_id, num_fields, len(n_column_fields)))
+
                 # test_fields = self.dimension_reduce.data_view_reduce(
                 #     input_query, detail["fields"], dimension_num_limit,
                 #     common_filed+special_fields)
@@ -404,6 +418,7 @@ class DataView(DataSource):
                             n_column_fields.append(n_field)
                     detail["fields"] = n_column_fields
                     logger.info("view_id {} 字段数量 {} 模型字段过滤后字段数量 {}".format(view_id, num_fields, len(n_column_fields)))
+
                 logger.info("view_id {} 字段最后保留字段为 {}".format(view_id, [_filed["name"] for _filed in detail["fields"]]))
 
                 totype, column_name, table, zh_table = get_view_en2type(detail)

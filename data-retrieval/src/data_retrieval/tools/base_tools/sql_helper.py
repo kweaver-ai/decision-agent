@@ -421,6 +421,7 @@ class SQLHelperTool(AFTool):
 
         command = params.get('command', CommandType.EXECUTE_SQL.value)
 
+        kn_data_view_fields = {}
         if command == CommandType.GET_METADATA.value:
             # 业务知识网络的配置
             if kn_params:
@@ -441,12 +442,27 @@ class SQLHelperTool(AFTool):
                     )
                     view_list.extend([view.get("id") for view in data_views])
 
+                    # Build kn_data_view_fields mapping from concept_detail.data_properties
+                    for view in data_views:
+                        view_id = view.get("id")
+                        concept_detail = view.get("concept_detail", {})
+                        data_properties = concept_detail.get("data_properties", [])
+                        if data_properties and view_id:
+                            field_names = []
+                            for prop in data_properties:
+                                mapped_field = prop.get("mapped_field", {})
+                                if mapped_field and mapped_field.get("name"):
+                                    field_names.append(mapped_field["name"])
+                            if field_names:
+                                kn_data_view_fields[view_id] = field_names
+
         data_source = DataView(
             view_list=view_list,
             base_url=base_url,
             user_id=user_id,
             token=token,
-            account_type=account_type
+            account_type=account_type,
+            kn_data_view_fields=kn_data_view_fields if kn_data_view_fields else None
         )
 
         with_sample = params.get("with_sample", False)
