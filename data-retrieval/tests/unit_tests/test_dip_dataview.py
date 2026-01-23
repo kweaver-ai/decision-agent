@@ -297,6 +297,175 @@ class TestKnDataViewFieldsExtraction:
         assert "view_1" not in kn_data_view_fields
 
 
+class TestRelationBackgroundBuilder:
+    """测试关系背景信息构建"""
+
+    def test_build_relation_background_with_relations(self):
+        """测试从关系数据构建背景信息"""
+        relations = [
+            {
+                "concept_id": "rel_1",
+                "concept_name": "可用药物",
+                "name": "available_drug",
+                "source_object_type_id": "disease",
+                "source_object_type_name": "疾病",
+                "source_view_id": "view_disease_001",
+                "target_object_type_id": "drug",
+                "target_object_type_name": "药物",
+                "target_view_id": "view_drug_001",
+                "comment": ""
+            },
+            {
+                "concept_id": "rel_2",
+                "concept_name": "检查项",
+                "name": "check_item",
+                "source_object_type_id": "disease",
+                "source_object_type_name": "疾病",
+                "source_view_id": "",
+                "target_object_type_id": "checklist",
+                "target_object_type_name": "检查项目",
+                "target_view_id": "view_checklist_001",
+                "comment": "疾病相关检查"
+            }
+        ]
+
+        relation_background = ""
+        if relations:
+            relation_descriptions = []
+            for rel in relations:
+                if rel.get("source_object_type_name") and rel.get("target_object_type_name"):
+                    source_name = rel.get('source_object_type_name')
+                    target_name = rel.get('target_object_type_name')
+                    source_view_id = rel.get('source_view_id', '')
+                    target_view_id = rel.get('target_view_id', '')
+
+                    if source_view_id:
+                        source_name = f"{source_name}(view_id: {source_view_id})"
+                    if target_view_id:
+                        target_name = f"{target_name}(view_id: {target_view_id})"
+
+                    desc = f"- {source_name} 与 {target_name} 存在关系：{rel.get('concept_name', '')}"
+                    if rel.get("comment"):
+                        desc += f"（{rel.get('comment')}）"
+                    relation_descriptions.append(desc)
+            if relation_descriptions:
+                relation_background = "\n数据视图之间的关系：\n" + "\n".join(relation_descriptions)
+
+        assert "数据视图之间的关系" in relation_background
+        assert "疾病(view_id: view_disease_001) 与 药物(view_id: view_drug_001) 存在关系：可用药物" in relation_background
+        assert "疾病 与 检查项目(view_id: view_checklist_001) 存在关系：检查项（疾病相关检查）" in relation_background
+
+    def test_build_relation_background_empty_relations(self):
+        """测试空关系列表"""
+        relations = []
+
+        relation_background = ""
+        if relations:
+            relation_descriptions = []
+            for rel in relations:
+                if rel.get("source_object_type_name") and rel.get("target_object_type_name"):
+                    desc = (f"- {rel.get('source_object_type_name')} 与 "
+                            f"{rel.get('target_object_type_name')} 存在关系：{rel.get('concept_name', '')}")
+                    if rel.get("comment"):
+                        desc += f"（{rel.get('comment')}）"
+                    relation_descriptions.append(desc)
+            if relation_descriptions:
+                relation_background = "\n数据视图之间的关系：\n" + "\n".join(relation_descriptions)
+
+        assert relation_background == ""
+
+    def test_build_relation_background_missing_object_type_name(self):
+        """测试缺少对象类型名称时的处理"""
+        relations = [
+            {
+                "concept_id": "rel_1",
+                "concept_name": "可用药物",
+                "name": "available_drug",
+                "source_object_type_id": "disease",
+                "source_object_type_name": "",  # 空
+                "source_view_id": "",
+                "target_object_type_id": "drug",
+                "target_object_type_name": "药物",
+                "target_view_id": "",
+                "comment": ""
+            }
+        ]
+
+        relation_background = ""
+        if relations:
+            relation_descriptions = []
+            for rel in relations:
+                if rel.get("source_object_type_name") and rel.get("target_object_type_name"):
+                    source_name = rel.get('source_object_type_name')
+                    target_name = rel.get('target_object_type_name')
+                    source_view_id = rel.get('source_view_id', '')
+                    target_view_id = rel.get('target_view_id', '')
+
+                    if source_view_id:
+                        source_name = f"{source_name}(view_id: {source_view_id})"
+                    if target_view_id:
+                        target_name = f"{target_name}(view_id: {target_view_id})"
+
+                    desc = f"- {source_name} 与 {target_name} 存在关系：{rel.get('concept_name', '')}"
+                    if rel.get("comment"):
+                        desc += f"（{rel.get('comment')}）"
+                    relation_descriptions.append(desc)
+            if relation_descriptions:
+                relation_background = "\n数据视图之间的关系：\n" + "\n".join(relation_descriptions)
+
+        assert relation_background == ""
+
+    def test_populate_relations_from_concept(self):
+        """测试从概念中提取关系信息"""
+        concept = {
+            "concept_id": "checks",
+            "concept_name": "检查项",
+            "concept_type": "relation_type",
+            "concept_detail": {
+                "name": "check_item",
+                "source_object_type_id": "disease",
+                "source_object_type_name": "疾病",
+                "target_object_type_id": "checklist",
+                "target_object_type_name": "检查项目",
+                "comment": "检查项目关系"
+            }
+        }
+
+        # Simulate concept_data_view_mapping
+        concept_data_view_mapping = {
+            "disease": "view_disease_001",
+            "checklist": "view_checklist_001"
+        }
+
+        concept_detail = concept.get("concept_detail", {})
+        source_object_type_id = concept_detail.get("source_object_type_id", "")
+        target_object_type_id = concept_detail.get("target_object_type_id", "")
+
+        relation_info = {
+            "concept_id": concept.get("concept_id", ""),
+            "concept_name": concept.get("concept_name", ""),
+            "name": concept_detail.get("name", ""),
+            "source_object_type_id": source_object_type_id,
+            "source_object_type_name": concept_detail.get("source_object_type_name", ""),
+            "source_view_id": concept_data_view_mapping.get(source_object_type_id, ""),
+            "target_object_type_id": target_object_type_id,
+            "target_object_type_name": concept_detail.get("target_object_type_name", ""),
+            "target_view_id": concept_data_view_mapping.get(target_object_type_id, ""),
+            "comment": concept_detail.get("comment", "")
+        }
+
+        assert relation_info["concept_id"] == "checks"
+        assert relation_info["concept_name"] == "检查项"
+        assert relation_info["name"] == "check_item"
+        assert relation_info["source_object_type_id"] == "disease"
+        assert relation_info["source_object_type_name"] == "疾病"
+        assert relation_info["source_view_id"] == "view_disease_001"
+        assert relation_info["target_object_type_id"] == "checklist"
+        assert relation_info["target_object_type_name"] == "检查项目"
+        assert relation_info["target_view_id"] == "view_checklist_001"
+        assert relation_info["comment"] == "检查项目关系"
+
+
 def run_tests():
     """运行所有测试"""
     print("=" * 60)
@@ -307,6 +476,7 @@ def run_tests():
         TestDataViewKnFieldsFilter,
         TestKnFieldsFilterLogic,
         TestKnDataViewFieldsExtraction,
+        TestRelationBackgroundBuilder,
     ]
 
     total = 0

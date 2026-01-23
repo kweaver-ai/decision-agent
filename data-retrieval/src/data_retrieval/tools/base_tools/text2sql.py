@@ -915,6 +915,7 @@ class Text2SQLTool(LLMTool):
             headers["Authorization"] = token
 
         kn_data_view_fields = {}
+        relations = []
         if kn_params:
             for kn_param in kn_params:
                 if isinstance(kn_param, dict):
@@ -922,7 +923,7 @@ class Text2SQLTool(LLMTool):
                 else:
                     kn_id = kn_param
 
-            data_views, _, _ = await get_datasource_from_agent_retrieval_async(
+            data_views, _, relations = await get_datasource_from_agent_retrieval_async(
                 kn_id=kn_id,
                 query=params.get('input', ''),
                 search_scope=search_scope,
@@ -947,6 +948,36 @@ class Text2SQLTool(LLMTool):
                             field_names.append(mapped_field["name"])
                     if field_names:
                         kn_data_view_fields[view_id] = field_names
+
+        # Build relation background info from relations
+        relation_background = ""
+        if relations:
+            relation_descriptions = []
+            for rel in relations:
+                if rel.get("source_object_type_name") and rel.get("target_object_type_name"):
+                    # Build description with view IDs if available
+                    source_name = rel.get('source_object_type_name')
+                    target_name = rel.get('target_object_type_name')
+                    source_view_id = rel.get('source_view_id', '')
+                    target_view_id = rel.get('target_view_id', '')
+
+                    # Add view ID info if available
+                    if source_view_id:
+                        source_name = f"{source_name}(view_id: {source_view_id})"
+                    if target_view_id:
+                        target_name = f"{target_name}(view_id: {target_view_id})"
+
+                    desc = f"- {source_name} 与 {target_name} 存在关系：{rel.get('concept_name', '')}"
+                    if rel.get("comment"):
+                        desc += f"（{rel.get('comment')}）"
+                    relation_descriptions.append(desc)
+            if relation_descriptions:
+                relation_background = "\n数据视图之间的关系：\n" + "\n".join(relation_descriptions)
+
+        # Add relation background to config_dict
+        if relation_background:
+            existing_background = config_dict.get("background", "")
+            config_dict["background"] = existing_background + relation_background
 
         data_source = DataView(
             view_list=view_list,
@@ -1002,6 +1033,35 @@ class Text2SQLTool(LLMTool):
 
         # invoke tool
         res = await tool.ainvoke(input=in_put_infos)
+
+        # 如果是 show_ds 模式，添加关系信息到结果中
+        action = in_put_infos.get('action', ActionType.GEN_EXEC.value)
+        if action == ActionType.SHOW_DS.value and relations:
+            relation_descriptions = []
+            for rel in relations:
+                if rel.get("source_object_type_name") and rel.get("target_object_type_name"):
+                    source_name = rel.get('source_object_type_name')
+                    target_name = rel.get('target_object_type_name')
+                    source_view_id = rel.get('source_view_id', '')
+                    target_view_id = rel.get('target_view_id', '')
+
+                    if source_view_id:
+                        source_name = f"{source_name}(view_id: {source_view_id})"
+                    if target_view_id:
+                        target_name = f"{target_name}(view_id: {target_view_id})"
+
+                    desc = f"{source_name} 与 {target_name} 存在关系：{rel.get('concept_name', '')}"
+                    if rel.get("comment"):
+                        desc += f"（{rel.get('comment')}）"
+                    relation_descriptions.append(desc)
+
+            if relation_descriptions:
+                if isinstance(res, dict):
+                    if "output" in res:
+                        res["output"]["relations"] = relation_descriptions
+                    else:
+                        res["relations"] = relation_descriptions
+
         return res
 
     @staticmethod
