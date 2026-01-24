@@ -116,7 +116,7 @@ sequenceDiagram
 
     User->>DAP: Chat Request (user_id, agent_id, conversation_id)
     
-    Note over DAP: 生成 session_id = sb-session-{user_id}-{agent_id}
+    Note over DAP: 生成 session_id = sb-session-{user_id}
     
     Note over DAP,SP: 1. 检测 Sandbox Session 状态
     DAP->>SP: GET /api/v1/sessions/{session_id}
@@ -163,14 +163,15 @@ sequenceDiagram
 
 ### 定义
 
-每个用户在每个 Agent 下有且只有一个 Sandbox Session，Session 跟随用户生命周期。
+每个用户有且只有一个 Sandbox Session，该用户下的所有 Agent 和所有 Conversation 共享同一个 Session，Session 跟随用户生命周期。
 
 ### Session ID 生成规则
 
-- **格式**：`sb-session-{user_id}-{agent_id}`
-- **示例**：`sb-session-user123-agent456`
-- **固定性**：同一用户的同一 Agent 始终使用相同的 Session ID
-- **无需缓存**：每次 Chat 都基于 `user_id` 和 `agent_id` 生成相同的 Session ID
+- **格式**：`sb-session-{user_id}`
+- **示例**：`sb-session-user123`
+- **固定性**：同一用户始终使用相同的 Session ID
+- **共享性**：同一用户下的所有 Agent 和所有 Conversation 共享同一个 Sandbox Session
+- **无需缓存**：每次 Chat 都基于 `user_id` 生成相同的 Session ID
 
 ### 生命周期管理
 
@@ -185,7 +186,7 @@ sequenceDiagram
 - 不使用数据库存储 Session 映射关系
 - 不使用 Redis 缓存
 - 不使用 sync.Map 内存缓存
-- Session ID 直接由 `user_id` 和 `agent_id` 生成，每次都相同
+- Session ID 直接由 `user_id` 生成，每次都相同
 
 ---
 
@@ -237,7 +238,7 @@ df = pd.read_csv('/workspace/uploads/temparea/data.csv')
 
 ```go
 // NOTE: 确保 Sandbox Session 存在并就绪
-sessionID := fmt.Sprintf("sb-session-%s-%s", req.UserID, req.AgentID)
+sessionID := fmt.Sprintf("sb-session-%s", req.UserID)
 sandboxSessionID, err := agentSvc.EnsureSandboxSession(ctx, sessionID, req)
 if err != nil {
     o11y.Error(newCtx, fmt.Sprintf("[chat] ensure sandbox session failed: %v", err))
@@ -262,6 +263,7 @@ package agentsvc
 import (
     "context"
     "fmt"
+    "strings"
     "time"
 
     "github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/sandboxplatformhttp/sandboxplatformdto"
@@ -329,6 +331,13 @@ func (s *agentSvc) createNewSession(ctx context.Context, sessionID string, req *
 
     createResp, err := s.sandboxPlatform.CreateSession(ctx, createReq)
     if err != nil {
+        // 检查是否为 "已存在" 错误（并发场景下其他请求已创建）
+        if s.isSessionAlreadyExistsError(err) {
+            s.logger.Infof("[createNewSession] session already exists: %s, will wait for ready", sessionID)
+            // 直接等待现有 Session 就绪
+            return s.waitForSessionReady(ctx, sessionID)
+        }
+
         s.logger.Errorf("[createNewSession] create failed: %v", err)
         return "", errors.Wrap(err, "create sandbox session failed")
     }
@@ -339,41 +348,56 @@ func (s *agentSvc) createNewSession(ctx context.Context, sessionID string, req *
         actualSessionID = sessionID
     }
 
-    // 等待 Session 就绪（轮询）
-    sessionReady := false
+    // 等待 Session 就绪
+    return s.waitForSessionReady(ctx, actualSessionID)
+}
+
+// waitForSessionReady 等待 Session 就绪
+func (s *agentSvc) waitForSessionReady(ctx context.Context, sessionID string) (string, error) {
     maxRetries := s.sandboxPlatformConf.MaxRetries
     retryInterval := s.sandboxPlatformConf.RetryInterval
 
     for i := 0; i < maxRetries; i++ {
-        sessionInfo, err := s.sandboxPlatform.GetSession(ctx, actualSessionID)
+        sessionInfo, err := s.sandboxPlatform.GetSession(ctx, sessionID)
         if err != nil {
-            s.logger.Errorf("[createNewSession] get session status failed (attempt %d): %v", i+1, err)
+            s.logger.Errorf("[waitForSessionReady] get session status failed (attempt %d): %v", i+1, err)
             time.Sleep(retryInterval)
             continue
         }
 
         if sessionInfo.Status == "running" {
-            sessionReady = true
-            s.logger.Infof("[createNewSession] session ready: %s (attempts: %d)", actualSessionID, i+1)
-            break
+            s.logger.Infof("[waitForSessionReady] session ready: %s (attempts: %d)", sessionID, i+1)
+            return sessionID, nil
+        }
+
+        // 如果状态是 error/stopped，直接失败
+        if sessionInfo.Status == "error" || sessionInfo.Status == "stopped" {
+            return "", errors.Errorf("session in invalid state: %s", sessionInfo.Status)
         }
 
         time.Sleep(retryInterval)
     }
 
-    if !sessionReady {
-        s.logger.Errorf("[createNewSession] session not ready after %d retries", maxRetries)
-        return "", errors.New("sandbox session not ready after retries")
-    }
-
-    return actualSessionID, nil
+    return "", errors.New("timeout waiting for session ready")
 }
 
 // isSessionNotFoundError 判断是否为 Session 不存在的错误
 func (s *agentSvc) isSessionNotFoundError(err error) bool {
-    // 根据实际 HTTP 客户端的错误类型判断
-    // 例如：检查 HTTP 状态码是否为 404
-    return false // 实现根据具体情况调整
+    // 检查是否为 rest.HTTPError 类型
+    var httpErr *rest.HTTPError
+    if errors.As(err, &httpErr) {
+        return httpErr.StatusCode == http.StatusNotFound
+    }
+    return false
+}
+
+// isSessionAlreadyExistsError 判断是否为 Session 已存在的错误
+func (s *agentSvc) isSessionAlreadyExistsError(err error) bool {
+    var httpErr *rest.HTTPError
+    if errors.As(err, &httpErr) {
+        return httpErr.StatusCode == http.StatusConflict // 409 Conflict
+    }
+    return strings.Contains(err.Error(), "already exists")
 }
 ```
 
@@ -424,6 +448,10 @@ type ISandboxPlatform interface {
     GetSession(ctx context.Context, sessionID string) (*sandboxdto.GetSessionResp, error)
     // DeleteSession 删除 Sandbox Session
     DeleteSession(ctx context.Context, sessionID string) error
+    // DeleteConversationFiles 删除指定 Conversation 的文件
+    DeleteConversationFiles(ctx context.Context, sessionID, conversationID string) error
+    // ListFiles 列出指定目录下的文件
+    ListFiles(ctx context.Context, sessionID, conversationID, subdir string) ([]string, error)
 }
 ```
 
@@ -580,6 +608,65 @@ func NewSandboxPlatformHttpAcc(sandboxPlatformConf *conf.SandboxPlatformConf, ht
 
 ---
 
+## 4.3 Conversation 删除时的文件清理
+
+### 删除流程
+
+在 `src/drivenadapter/dbaccess/conversationdbacc/delete.go` 的删除逻辑中增加 Hook：
+
+```go
+// 在 src/drivenadapter/dbaccess/conversationdbacc/delete.go 中
+// 需要导入: "context", "fmt", "time"
+
+func (acc *conversationDBAcc) Delete(ctx context.Context, req conversationdto.DeleteReq) error {
+    // 1. 执行数据库软删除
+    err := acc.db.Delete(...)
+    if err != nil {
+        return err
+    }
+
+    // 2. 异步清理 Sandbox Workspace 文件（带超时和重试）
+    go func() {
+        // 带超时的 context，防止清理操作无限期执行
+        cleanupCtx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+        defer cancel()
+
+        sessionID := fmt.Sprintf("sb-session-%s", req.UserID)
+
+        // 重试机制（最多 3 次，指数退避）
+        var lastErr error
+        for i := 0; i < 3; i++ {
+            if err := acc.sandboxPlatform.DeleteConversationFiles(cleanupCtx, sessionID, req.ConversationID); err != nil {
+                lastErr = err
+                logger.Warnf("[DeleteConversation] cleanup attempt %d failed: %v", i+1, err)
+                time.Sleep(time.Second * time.Duration(i+1)) // 指数退避: 1s, 2s, 3s
+                continue
+            }
+            logger.Infof("[DeleteConversation] cleanup success: %s/%s", sessionID, req.ConversationID)
+            return
+        }
+
+        // 所有重试失败，记录到持久化存储以便后续处理
+        logger.Errorf("[DeleteConversation] cleanup failed after retries: %v", lastErr)
+
+        // TODO: 将清理任务写入队列/数据库，由定时任务重试
+        // 例如：acc.cleanupQueue.Enqueue(CleanupTask{SessionID: sessionID, ConversationID: req.ConversationID})
+    }()
+
+    return nil
+}
+```
+
+### 设计考虑
+- **异步执行**：文件清理不阻塞 Conversation 删除操作
+- **超时控制**：使用 `context.WithTimeout` 防止清理操作无限期执行（30秒超时）
+- **重试机制**：最多重试 3 次，采用指数退避策略（1s, 2s, 3s）
+- **幂等性**：多次调用 `DeleteConversationFiles` 应该是安全的
+- **持久化重试**：所有重试失败后，应将清理任务写入队列/数据库，由定时任务处理
+- **应用重启容错**：即使应用重启，未完成的清理任务仍可由定时任务重试
+
+---
+
 # 5. 配置设计
 
 ## 5.1 Sandbox Platform 配置
@@ -647,17 +734,17 @@ sandbox_platform:
 
 ### Session ID 生成规则
 
-Session ID 基于 `user_id` 和 `agent_id` 生成，前后端使用相同的规则即可：
+Session ID 基于 `user_id` 生成，前后端使用相同的规则即可：
 
 ```typescript
 // 前端生成 Session ID
-function generateSessionId(userId: string, agentId: string): string {
-    return `sb-session-${userId}-${agentId}`;
+function generateSessionId(userId: string): string {
+    return `sb-session-${userId}`;
 }
 
 // 示例
-const sessionId = generateSessionId('user123', 'agent456');
-// 结果: "sb-session-user123-agent456"
+const sessionId = generateSessionId('user123');
+// 结果: "sb-session-user123"
 ```
 
 ### 使用方式
@@ -666,14 +753,14 @@ const sessionId = generateSessionId('user123', 'agent456');
 
 ```typescript
 // 上传文件
-async function uploadFile(userId: string, agentId: string, conversationId: string, file: File) {
-    const sessionId = generateSessionId(userId, agentId);
-    
+async function uploadFile(userId: string, conversationId: string, file: File) {
+    const sessionId = generateSessionId(userId);
+
     const formData = new FormData();
     formData.append('file', file);
     formData.append('conversation_id', conversationId);
     formData.append('subdir', 'temparea');
-    
+
     const response = await fetch(
         `${SANDBOX_API_URL}/api/v1/sessions/${sessionId}/files/upload`,
         {
@@ -681,7 +768,7 @@ async function uploadFile(userId: string, agentId: string, conversationId: strin
             body: formData,
         }
     );
-    
+
     return response.json();
 }
 ```
@@ -690,8 +777,9 @@ async function uploadFile(userId: string, agentId: string, conversationId: strin
 
 - **无需从 Decision Agent 获取 Session ID**
 - **前后端使用相同的生成规则**
-- **格式**：`sb-session-{user_id}-{agent_id}`
-- **固定性**：同一用户的同一 Agent 始终使用相同的 Session ID
+- **格式**：`sb-session-{user_id}`
+- **固定性**：同一用户始终使用相同的 Session ID
+- **共享性**：同一用户下的所有 Agent 和 Conversation 共享同一个 Session
 
 ---
 
@@ -830,13 +918,41 @@ await downloadFile({
 **driveradapter/api/rdto/agent/req/chat_req.go**：
 
 ```go
+package req
+
+// SelectedFile 用户选择的临时区文件
+type SelectedFile struct {
+    FileName string `json:"file_name" validate:"required"` // 文件名
+    // 注：完整路径为 /workspace/uploads/temparea/{file_name}
+}
+
 type ChatReq struct {
     // ... 现有字段 ...
 
-    // SandboxSessionID Sandbox Session ID（新增）
-    SandboxSessionID string `json:"sandbox_session_id"`
+    // SelectedFiles 用户选择的临时区文件（新增）
+    // 用户上传文件后，可以在对话时选择哪些文件参与本次对话
+    SelectedFiles []SelectedFile `json:"selected_files,omitempty"`
 }
 ```
+
+**字段说明**：
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `selected_files` | array | 否 | 用户选择的临时区文件列表 |
+
+**SelectedFile 结构**：
+
+| 字段 | 类型 | 必填 | 说明 |
+|------|------|------|------|
+| `file_name` | string | 是 | 文件名（不含路径） |
+
+**使用场景**：
+
+1. 用户先通过 Sandbox Platform API 上传文件到临时区
+2. 用户发起对话时，可以选择已上传的文件参与本次对话
+3. 前端将选中的文件名通过 `selected_files` 参数传递给后端
+4. 后端将文件信息注入到 Agent 的 WorkspaceContext 中
 
 ### 修改 GenerateAgentCallReq 函数
 
@@ -902,25 +1018,138 @@ Agent 无需知道完整的物理路径，只需使用约定路径即可。
 
 ---
 
+## 7.3 WorkspaceContext：文件信息传递
+
+### 目的
+让 Agent 知道当前可用的文件列表，无需执行 ls 命令。
+
+### 数据结构
+
+```go
+// WorkspaceFile 工作区文件信息
+type WorkspaceFile struct {
+    FileName string `json:"file_name"` // 文件名
+    FilePath string `json:"file_path"` // 完整路径
+}
+
+// WorkspaceContext 工作区上下文
+type WorkspaceContext struct {
+    RootPath  string          `json:"root_path"`  // 临时区根路径
+    Files     []WorkspaceFile `json:"files"`      // 可用文件列表
+}
+
+// 在 V2AgentCallReq 中增加字段
+type V2AgentCallReq struct {
+    // ... 现有字段 ...
+
+    // WorkspaceContext 工作区上下文（新增）
+    WorkspaceContext *WorkspaceContext `json:"workspace_context,omitempty"`
+}
+```
+
+**注**：由于 `ListFiles` API 仅返回文件名列表，不包含文件大小信息，因此 `WorkspaceFile` 结构体不包含 `FileSize` 字段。
+
+### 填充逻辑
+
+在 `GenerateAgentCallReq` 函数中：
+
+```go
+func (agentSvc *agentSvc) GenerateAgentCallReq(
+    ctx context.Context,
+    req *agentreq.ChatReq,
+    contexts []*comvalobj.LLMMessage,
+    agent *agentfactorydto.Agent,
+) (*v2agentexecutordto.V2AgentCallReq, error) {
+    // ... 现有代码 ...
+
+    // 获取文件列表
+    sessionID := fmt.Sprintf("sb-session-%s", req.UserID)
+    files, err := agentSvc.sandboxPlatform.ListFiles(ctx, sessionID, req.ConversationID, "temparea")
+    if err != nil {
+        agentSvc.logger.Warnf("[GenerateAgentCallReq] list files failed: %v", err)
+        files = []string{} // 失败时使用空列表
+    }
+
+    // 构建文件信息
+    workspaceFiles := make([]v2agentexecutordto.WorkspaceFile, 0, len(files))
+    for _, file := range files {
+        workspaceFiles = append(workspaceFiles, v2agentexecutordto.WorkspaceFile{
+            FileName: file,
+            FilePath: fmt.Sprintf("/workspace/uploads/temparea/%s", file),
+        })
+    }
+
+    agentCallReq := v2agentexecutordto.V2AgentCallReq{
+        // ... 其他字段 ...
+        SandboxSessionID: req.SandboxSessionID,
+        WorkspaceContext: &v2agentexecutordto.WorkspaceContext{
+            RootPath: "/workspace/uploads/temparea/",
+            Files:    workspaceFiles,
+        },
+    }
+
+    return agentCallReq, nil
+}
+```
+
+### Agent Prompt 注入
+
+在 Agent Executor 中，将 WorkspaceContext 转换为 System Prompt 片段：
+
+```python
+# Agent Executor 端的 Prompt 模板
+workspace_info = ""
+if workspace_context:
+    files_info = "\n".join([
+        f"- {f['file_name']} ({f['file_path']})"
+        for f in workspace_context['files']
+    ])
+    workspace_info = f"""
+You have access to user-uploaded files in the workspace.
+Workspace root: {workspace_context['root_path']}
+
+Available files:
+{files_info}
+"""
+
+system_prompt = base_prompt + workspace_info
+```
+
+---
+
 # 8. 关键实现注意点
 
 ## 8.1 并发控制
 
-### 无需并发控制
+### 并发场景处理
 
-由于完全移除缓存机制，不再需要处理并发创建 Session 的场景：
+当多个 Chat 请求同时到达时，可能出现以下情况：
 
-- **Session ID 固定**：同一用户的同一 Agent 始终使用相同的 Session ID
+```go
+// 场景：用户同时发起 3 个 Chat 请求
+// Request 1: GetSession(404) -> CreateSession -> Wait -> Success
+// Request 2: GetSession(404) -> CreateSession -> Wait -> ?
+// Request 3: GetSession(404) -> CreateSession -> Wait -> ?
+```
+
+**Request 2/3 可能遇到**：
+1. CreateSession 返回 "already exists" 错误（409 Conflict）
+2. CreateSession 成功但返回的是相同的 session_id
+3. CreateSession 卡在 pending 状态
+
+**处理策略**：
+
+- **Session ID 固定**：同一用户始终使用相同的 Session ID
 - **直接检测状态**：每次 Chat 都调用 Sandbox Platform API 检测
-- **自动处理冲突**：如果多个请求同时检测到 Session 不存在，都会调用创建 API
-  - Sandbox Platform 负责处理并发创建（幂等性）
-  - 如果 Session 已存在，创建 API 可能返回错误或返回已存在的 Session ID
-  - Decision Agent 继续轮询等待 Session 就绪即可
+- **优雅处理冲突**：通过 `isSessionAlreadyExistsError` 检测 409 Conflict 错误
+  - 如果检测到 "已存在" 错误，直接调用 `waitForSessionReady` 等待现有 Session 就绪
+  - 避免因并发创建导致的失败
+- **提取等待逻辑**：独立的 `waitForSessionReady` 函数供多种场景复用
 
 ### Sandbox Platform 需保证的幂等性
 
 Sandbox Platform 的 `POST /api/v1/sessions` API 应该保证：
-- 如果 `session_id` 已存在且状态正常，返回现有 Session 信息
+- 如果 `session_id` 已存在且状态正常，返回 409 Conflict 或现有 Session 信息
 - 如果 `session_id` 不存在，创建新 Session
 - 如果 `session_id` 存在但状态异常，可以选择：
   - 返回错误，由 Decision Agent 重新创建（使用新的 session_id）
@@ -1019,6 +1248,288 @@ s.logger.Infof("[EnsureSandboxSession] sandbox session ready: %s (attempts: %d)"
 - Session 达到资源限制时自动清理
 - 支持手动删除 Session API（如果需要）
 
+## 8.5 安全性设计
+
+### 防止跨 Conversation 目录遍历
+
+**威胁模型**：
+恶意 Agent 或用户尝试访问其他 Conversation 的文件，例如：
+```python
+# 尝试访问其他对话的文件
+df = pd.read_csv('/workspace/uploads/temparea/../../conv-999/temparea/secret.csv')
+```
+
+**防护措施**：
+
+1. **Sandbox Platform 端路径验证**
+```go
+// 在 Sandbox Platform 的文件操作中
+func validatePath(sessionID, conversationID, requestedPath string) error {
+    // 构建允许的前缀
+    allowedPrefix := fmt.Sprintf("/workspace/uploads/%s/%s/temparea/", sessionID, conversationID)
+
+    // 解析路径，防止 ../ 绕过
+    cleanPath := filepath.Clean(requestedPath)
+    if !strings.HasPrefix(cleanPath, allowedPrefix) {
+        return errors.New("path traversal detected")
+    }
+
+    return nil
+}
+```
+
+2. **容器内文件系统隔离**
+- 每个独立的 Conversation 目录设置正确的权限
+- 使用 Linux namespace 或 chroot 限制访问范围
+
+3. **Agent 代码沙箱执行**
+- Agent 生成的代码在受限环境中执行
+- 禁止使用 `os.chdir()` 改变工作目录
+- 禁止使用 `symlink()` 创建符号链接
+
+### 路径注入安全
+
+**防止 Prompt 注入攻击**：
+- 文件名在注入前进行转义
+- 使用结构化格式（JSON）而非字符串拼接
+- 验证文件名只包含合法字符
+
+```go
+func sanitizeFileName(fileName string) string {
+    // 移除路径分隔符
+    fileName = strings.ReplaceAll(fileName, "/", "")
+    fileName = strings.ReplaceAll(fileName, "\\", "")
+    // 限制文件名长度
+    if len(fileName) > 255 {
+        fileName = fileName[:255]
+    }
+    return fileName
+}
+```
+
+---
+
+## 8.6 Agent Chat API 变更
+
+### 背景
+
+现有 Agent Chat API（`POST /api/agent-app/v1/app/{app_key}/chat/completion`）使用了旧的临时区实现方式：
+- `temporary_area_id`：临时区域 ID
+- `temp_files`：临时文件列表
+
+### 新的 API 设计
+
+由于 Sandbox Session 现在由 `user_id` 自动生成，需要新增 `selected_files` 参数，让用户在对话时可以选择已上传的文件。
+
+### API 请求参数变更
+
+**移除的参数**：
+
+| 参数名 | 类型 | 说明 |
+|--------|------|------|
+| `temporary_area_id` | string | 临时区域 ID（已删除） |
+| `temp_files` | array | 临时文件列表（已删除） |
+
+**新增的参数**：
+
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| `selected_files` | array | 否 | 用户选择的临时区文件列表 |
+
+**selected_files 参数结构**：
+
+```json
+{
+  "selected_files": [
+    {
+      "file_name": "data.csv"
+    },
+    {
+      "file_name": "config.json"
+    }
+  ]
+}
+```
+
+**保持不变的参数**：
+
+| 参数名 | 类型 | 必填 | 说明 |
+|--------|------|------|------|
+| `app_key` | string | 是 | Agent App Key |
+| `conversation_id` | string | 是 | 会话 ID |
+| `query` | string | 是 | 用户提问问题 |
+| `stream` | boolean | 否 | 是否流式返回 |
+| `inc_stream` | boolean | 否 | 是否增量流式返回 |
+| `custom_querys` | object | 否 | 自定义输入变量 |
+
+### 完整请求示例
+
+```json
+{
+  "query": "分析一下 data.csv 文件中的销售数据",
+  "conversation_id": "conv-123",
+  "stream": true,
+  "selected_files": [
+    { "file_name": "data.csv" },
+    { "file_name": "config.json" }
+  ]
+}
+```
+
+### 工作流程
+
+```mermaid
+sequenceDiagram
+    participant User as 用户
+    participant Frontend as 前端
+    participant SP as Sandbox Platform
+    participant DAP as Decision Agent Platform
+
+    Note over User,SP: 步骤1: 用户上传文件
+    User->>Frontend: 选择文件上传
+    Frontend->>SP: POST /files/upload (session_id, conversation_id, file)
+    SP-->>Frontend: 上传成功
+
+    Note over User,DAP: 步骤2: 用户发起对话并选择文件
+    User->>Frontend: 输入问题，选择已上传文件
+    Frontend->>DAP: POST /chat/completion {query, selected_files}
+    Note over DAP: 自动生成 session_id = sb-session-{user_id}
+    DAP->>SP: GET /api/v1/sessions/{session_id}
+
+    alt Session 不存在
+        DAP->>SP: POST /api/v1/sessions
+        DAP->>SP: 轮询等待 Session 就绪
+    end
+
+    Note over DAP: 根据 selected_files 填充 WorkspaceContext
+    DAP->>DAP: 调用 Agent Executor
+    DAP-->>Frontend: 返回 Chat 响应
+```
+
+### 前端集成变更
+
+**文件上传**：
+
+```typescript
+// 1. 上传文件到 Sandbox Platform
+async function uploadFile(userId: string, conversationId: string, file: File) {
+    const sessionId = `sb-session-${userId}`;
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('conversation_id', conversationId);
+    formData.append('subdir', 'temparea');
+
+    const response = await fetch(
+        `${SANDBOX_API_URL}/api/v1/sessions/${sessionId}/files/upload`,
+        { method: 'POST', body: formData }
+    );
+
+    return response.json(); // { file_name: "data.csv", ... }
+}
+```
+
+**发起对话（选择文件）**：
+
+```typescript
+// 2. 发起对话时选择已上传的文件
+interface SelectedFile {
+    file_name: string;
+}
+
+async function chatWithFiles(
+    query: string,
+    conversationId: string,
+    selectedFiles: SelectedFile[]
+) {
+    const response = await fetch('/api/agent-app/v1/app/my-agent/chat/completion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            query: query,
+            conversation_id: conversationId,
+            stream: true,
+            selected_files: selectedFiles  // 用户选择的文件
+        })
+    });
+
+    return response.json();
+}
+
+// 使用示例
+await chatWithFiles(
+    '分析一下 data.csv 中的销售趋势',
+    'conv-123',
+    [
+        { file_name: 'data.csv' },
+        { file_name: 'config.json' }
+    ]
+);
+```
+
+**获取可用文件列表**：
+
+```typescript
+// 3. 获取已上传的文件列表供用户选择
+async function listUploadedFiles(userId: string, conversationId: string) {
+    const sessionId = `sb-session-${userId}`;
+
+    const response = await fetch(
+        `${SANDBOX_API_URL}/api/v1/sessions/${sessionId}/files`,
+        {
+            method: 'GET',
+            headers: {
+                'conversation_id': conversationId,
+                'subdir': 'temparea'
+            }
+        }
+    );
+
+    const data = await response.json();
+    return data.files; // ["data.csv", "config.json", ...]
+}
+```
+
+### WorkspaceContext 填充逻辑
+
+后端根据 `selected_files` 填充 `WorkspaceContext`：
+
+```go
+// 在 GenerateAgentCallReq 函数中
+func (agentSvc *agentSvc) GenerateAgentCallReq(
+    ctx context.Context,
+    req *agentreq.ChatReq,
+    contexts []*comvalobj.LLMMessage,
+    agent *agentfactorydto.Agent,
+) (*v2agentexecutordto.V2AgentCallReq, error) {
+    // ... 现有代码 ...
+
+    // 根据用户选择的文件构建 WorkspaceContext
+    workspaceFiles := make([]v2agentexecutordto.WorkspaceFile, 0, len(req.SelectedFiles))
+    for _, selectedFile := range req.SelectedFiles {
+        workspaceFiles = append(workspaceFiles, v2agentexecutordto.WorkspaceFile{
+            FileName: selectedFile.FileName,
+            FilePath: fmt.Sprintf("/workspace/uploads/temparea/%s", selectedFile.FileName),
+        })
+    }
+
+    agentCallReq := v2agentexecutordto.V2AgentCallReq{
+        // ... 其他字段 ...
+        SandboxSessionID: req.SandboxSessionID,
+        WorkspaceContext: &v2agentexecutordto.WorkspaceContext{
+            RootPath: "/workspace/uploads/temparea/",
+            Files:    workspaceFiles,
+        },
+    }
+
+    return agentCallReq, nil
+}
+```
+
+### API 响应变更
+
+响应结构**保持不变**。
+
 ---
 
 # 9. 实施步骤
@@ -1049,20 +1560,65 @@ s.logger.Infof("[EnsureSandboxSession] sandbox session ready: %s (attempts: %d)"
 
 ---
 
-## 阶段四：前端集成
+## 阶段四：API 变更
 
-1. 前端从 Chat 响应中获取 Sandbox Session ID
-2. 实现文件上传/列表/下载功能
-3. 确保文件路径正确（`temparea` 子目录）
+1. **删除旧参数**：
+   - 从 `ChatReq` DTO 中删除 `TemporaryAreaID` 字段
+   - 从 `ChatReq` DTO 中删除 `TempFiles` 字段
+
+2. **新增 selected_files 参数**：
+   ```go
+   // driveradapter/api/rdto/agent/req/chat_req.go
+   type SelectedFile struct {
+       FileName string `json:"file_name" validate:"required"`
+   }
+
+   type ChatReq struct {
+       // ... 现有字段 ...
+       SelectedFiles []SelectedFile `json:"selected_files,omitempty"`
+   }
+   ```
+
+3. **更新 GenerateAgentCallReq**：
+   - 根据 `req.SelectedFiles` 填充 `WorkspaceContext`
+   - 仅将用户选择的文件注入到 Agent Prompt 中
+
+4. **更新 API 文档**：
+   - 移除 `temporary_area_id` 和 `temp_files` 参数说明
+   - 添加 `selected_files` 参数说明
+   - 添加新的文件上传方式说明（直接调用 Sandbox Platform API）
 
 ---
 
-## 阶段五：清理旧代码
+## 阶段五：前端集成
+
+1. **移除旧的前端代码**：
+   - 删除传递 `temporary_area_id` 的代码
+   - 删除传递 `temp_files` 的代码
+
+2. **实现新的文件上传**：
+   - 前端直接调用 Sandbox Platform API 上传文件
+   - 使用 `sb-session-{user_id}` 作为 session_id
+
+3. **实现文件选择功能**：
+   - 用户上传文件后，前端获取文件列表
+   - 用户在发起对话时可以选择已上传的文件
+   - 将选中的文件通过 `selected_files` 参数传递
+
+4. **更新前端文档**：
+   - 说明新的文件上传方式
+   - 说明文件选择功能
+   - 更新示例代码
+
+---
+
+## 阶段六：清理旧代码
 
 1. 删除旧的 temparea 相关代码（如果存在）
 2. 删除 `t_data_agent_temporary_area` 表（如果不再使用）
-3. 更新单元测试
-4. 更新文档
+3. 数据迁移：将旧的临时区文件迁移到 Sandbox Platform（如果需要）
+4. 更新单元测试
+5. 更新文档
 
 ---
 
@@ -1078,7 +1634,7 @@ s.logger.Infof("[EnsureSandboxSession] sandbox session ready: %s (attempts: %d)"
 
 ### 关键技术点
 
-- **固定 Session ID**：基于 `user_id` 和 `agent_id` 生成
+- **固定 Session ID**：基于 `user_id` 生成
 - **直接检测状态**：每次调用 Sandbox Platform API 检测
 - **自动重新创建**：Session 不存在或异常时自动创建
 - **轮询等待就绪**：创建后轮询等待 Session 状态变为 `running`
@@ -1090,3 +1646,30 @@ s.logger.Infof("[EnsureSandboxSession] sandbox session ready: %s (attempts: %d)"
 - 可选：用户登出时清理 Sandbox Session（调用 Sandbox Platform 删除 API）
 - 可选：支持 Session 配置自定义（通过 config 参数）
 - 可选：添加 Session 状态监控和告警
+
+### API 变更摘要
+
+**删除的参数**：
+- `temporary_area_id`：已删除
+- `temp_files`：已删除
+
+**新增的参数**：
+- `selected_files`：用户选择的临时区文件列表
+  ```json
+  {
+    "selected_files": [
+      { "file_name": "data.csv" },
+      { "file_name": "config.json" }
+    ]
+  }
+  ```
+
+**工作流程**：
+1. 用户先通过 Sandbox Platform API 上传文件
+2. 用户发起对话时，可以选择已上传的文件
+3. 前端将选中的文件通过 `selected_files` 参数传递
+4. 后端根据用户选择的文件填充 WorkspaceContext
+
+**客户端变更**：
+- **文件上传**：直接调用 Sandbox Platform API
+- **发起对话**：通过 `selected_files` 参数传递用户选择的文件

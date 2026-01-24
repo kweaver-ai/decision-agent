@@ -124,14 +124,26 @@ Workspace Root
 + 用户上传的文件存储在固定路径：
 
 ```plain
-/sandbox/workspace/uploads/<filename>
+/workspace/uploads/temparea/<filename>
+```
+
++ **完整物理路径**（Sandbox Platform 内部）：
+
+```plain
+/workspace/uploads/{sandbox_session_id}/{conversation_id}/temparea/<filename>
+```
+
++ **Agent 代码中使用的约定路径**（会被 Sandbox Platform 自动映射）：
+
+```plain
+/workspace/uploads/temparea/<filename>
 ```
 
 + Agent 在沙箱内必须通过**真实路径**访问文件（而不是 file_id、token 等抽象引用）。
 + 生成文件存储在：
 
 ```plain
-/sandbox/workspace/generated/
+/workspace/uploads/generated/
 ```
 
 **不展示给用户**。
@@ -139,6 +151,73 @@ Workspace Root
 ### 4.6 目录结构
 + V1 文件平铺存储（flat）
 + 不允许 Agent 或用户创建目录
+
+### 4.7 Agent Prompt 路径注入
+
+为避免 LLM 盲猜路径（如 /data/），必须在 Agent 的 System Prompt 中注入路径前缀：
+
+**注入内容**：
+- 临时区根路径：`/workspace/uploads/temparea/`
+- 当前可用的文件列表
+- 每个文件的完整路径
+
+**注入时机**：每次调用 Agent 时动态注入
+
+**注入示例**：
+```
+You have access to user-uploaded files in the workspace.
+Workspace root: /workspace/uploads/temparea/
+
+Available files:
+- data.csv (/workspace/uploads/temparea/data.csv)
+- config.json (/workspace/uploads/temparea/config.json)
+```
+
+### 4.8 生命周期管理
+
+**文件删除时机**：
+1. **主动删除**：用户删除 Conversation 时，DAP 立即调用 Sandbox Platform 删除接口清理文件
+2. **被动清理**：Session TTL 过期后，Sandbox Platform 自动清理所有相关文件
+
+**删除一致性保证**：
+- Conversation 删除操作必须是同步或可靠异步的
+- 删除失败应记录日志但不阻塞 Conversation 删除
+
+### 4.9 代码沙箱安全限制
+
+**Sandbox Platform 必须提供的安全保障**：
+
+#### 1. 文件系统隔离
+- Agent 代码只能访问 `/workspace/uploads/temparea/` 目录
+- 使用 chroot 或容器级别隔离限制访问范围
+- 禁止访问系统目录（`/etc`, `/usr`, `/bin` 等）
+
+#### 2. 命令执行限制
+- 禁止 `os.system()`, `subprocess.call()` 等系统调用
+- 使用白名单机制，只允许特定的 Python 标准库
+- 禁止导入 `os`, `subprocess`, `socket` 等危险模块
+
+#### 3. 资源限制
+- CPU/内存/磁盘 IO 限制
+- 执行超时时间限制
+- 网络访问限制（除非明确需要）
+
+#### 4. 路径验证
+- 所有文件操作前验证路径合法性
+- 禁止使用 `../` 进行目录遍历
+- 禁止符号链接操作
+
+**恶意代码示例及防护**：
+
+```python
+# Agent 可能生成的恶意代码
+import os
+os.system("rm -rf /workspace/uploads/*/")  # ❌ 禁止：命令执行
+os.chdir("../../etc")                       # ❌ 禁止：目录遍历
+import socket                               # ❌ 禁止：网络访问
+```
+
+以上代码应被 Sandbox Platform 的安全机制拦截并拒绝执行。
 
 ---
 
