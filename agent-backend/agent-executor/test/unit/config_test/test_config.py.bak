@@ -141,3 +141,144 @@ class TestBuiltinIdsConfig(TestCase):
         )
 
 
+class TestConfigClassV2(TestCase):
+    """测试 ConfigClassV2 配置类"""
+
+    def setUp(self):
+        """设置测试环境"""
+        # 清除单例实例，确保每个测试都是独立的
+        if hasattr(ConfigClassV2, "_instance"):
+            delattr(ConfigClassV2, "_instance")
+
+    def test_singleton_pattern(self):
+        """测试单例模式"""
+        config1 = ConfigClassV2()
+        config2 = ConfigClassV2()
+
+        self.assertIs(config1, config2)
+
+    def test_init_only_once(self):
+        """测试只初始化一次"""
+        config1 = ConfigClassV2()
+        initialized1 = config1._initialized
+
+        config2 = ConfigClassV2()
+        initialized2 = config2._initialized
+
+        self.assertEqual(initialized1, initialized2)
+
+    @patch("app.config.config_v2.config_class_v2.ConfigInitializer")
+    def test_config_initializer_called(self, mock_initializer):
+        """测试配置初始化器被调用"""
+        mock_initializer.initialize.return_value = None
+
+        config = ConfigClassV2()
+
+        mock_initializer.initialize.assert_called_once_with(config)
+
+    @patch("app.config.config_v2.config_class_v2.ConfigClassV2.outer_llm")
+    def test_get_local_dev_model_config(self, mock_outer_llm):
+        """测试获取本地开发模型配置"""
+        config = ConfigClassV2()
+        mock_outer_llm.model_list = {"gpt-3.5": {"api_key": "test"}}
+
+        result = config.get_local_dev_model_config("gpt-3.5")
+
+        self.assertEqual(result, {"api_key": "test"})
+
+    @patch("app.config.config_v2.config_class_v2.ConfigClassV2.outer_llm")
+    def test_get_local_dev_model_config_not_exists(self, mock_outer_llm):
+        """测试获取不存在的模型配置（返回空字典）"""
+        config = ConfigClassV2()
+        mock_outer_llm.model_list = {"gpt-3.5": {"api_key": "test"}}
+
+        result = config.get_local_dev_model_config("nonexistent_model")
+
+        self.assertEqual(result, {})
+
+    @patch("app.config.config_v2.config_class_v2.ConfigClassV2.o11y")
+    def test_is_o11y_log_enabled_true(self, mock_o11y):
+        """测试 o11y 日志启用"""
+        config = ConfigClassV2()
+        mock_o11y.log_enabled = True
+
+        result = config.is_o11y_log_enabled()
+
+        self.assertTrue(result)
+
+    @patch("app.config.config_v2.config_class_v2.ConfigClassV2.o11y")
+    def test_is_o11y_log_enabled_false(self, mock_o11y):
+        """测试 o11y 日志禁用"""
+        config = ConfigClassV2()
+        mock_o11y.log_enabled = False
+
+        result = config.is_o11y_log_enabled()
+
+        self.assertFalse(result)
+
+    @patch("app.config.config_v2.config_class_v2.ConfigClassV2.o11y")
+    def test_is_o11y_trace_enabled_true(self, mock_o11y):
+        """测试 o11y 追踪启用"""
+        config = ConfigClassV2()
+        mock_o11y.trace_enabled = True
+
+        result = config.is_o11y_trace_enabled()
+
+        self.assertTrue(result)
+
+    @patch("app.config.config_v2.config_class_v2.ConfigClassV2.o11y")
+    def test_is_o11y_trace_enabled_false(self, mock_o11y):
+        """测试 o11y 追踪禁用"""
+        config = ConfigClassV2()
+        mock_o11y.trace_enabled = False
+
+        result = config.is_o11y_trace_enabled()
+
+        self.assertFalse(result)
+
+    @patch("app.config.config_v2.config_class_v2.ConfigClassV2.app")
+    def test_is_debug_mode_true(self, mock_app):
+        """测试调试模式启用"""
+        config = ConfigClassV2()
+        mock_app.debug = True
+
+        result = config.is_debug_mode()
+
+        self.assertTrue(result)
+
+    @patch("app.config.config_v2.config_class_v2.ConfigClassV2.app")
+    def test_is_debug_mode_false(self, mock_app):
+        """测试调试模式禁用"""
+        config = ConfigClassV2()
+        mock_app.debug = False
+
+        result = config.is_debug_mode()
+
+        self.assertFalse(result)
+
+    def test_to_dict_simple_attrs(self):
+        """测试转换为字典（简单属性）"""
+        config = ConfigClassV2()
+
+        result = config.to_dict()
+
+        self.assertIsInstance(result, dict)
+
+    def test_to_dict_excludes_private_attrs(self):
+        """测试转换字典时排除私有属性"""
+        config = ConfigClassV2()
+
+        result = config.to_dict()
+
+        self.assertNotIn("_initialized", result)
+        self.assertNotIn("_instance", result)
+
+    def test_to_dict_excludes_methods(self):
+        """测试转换字典时排除方法"""
+        config = ConfigClassV2()
+
+        result = config.to_dict()
+
+        self.assertNotIn("get_local_dev_model_config", result)
+        self.assertNotIn("is_o11y_log_enabled", result)
+        self.assertNotIn("to_dict", result)

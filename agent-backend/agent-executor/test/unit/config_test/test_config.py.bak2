@@ -141,3 +141,29 @@ class TestBuiltinIdsConfig(TestCase):
         )
 
 
+class TestConfigClassV2(TestCase):
+    """测试 ConfigClassV2 配置类"""
+
+    def setUp(self):
+        """设置测试环境"""
+        # 清除单例实例，确保每个测试都是独立的
+        if hasattr(ConfigClassV2, "_instance"):
+            delattr(ConfigClassV2, "_instance")
+
+    def test_singleton_pattern(self):
+        """测试单例模式"""
+        config1 = ConfigClassV2()
+        config2 = ConfigClassV2()
+
+        self.assertIs(config1, config2)
+
+    def test_init_only_once(self):
+        """测试只初始化一次"""
+        config1 = ConfigClassV2()
+        initialized1 = config1._initialized
+
+        config2 = ConfigClassV2()
+        initialized2 = config2._initialized
+
+        self.assertEqual(initialized1, initialized2)
+

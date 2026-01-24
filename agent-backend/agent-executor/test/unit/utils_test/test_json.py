@@ -7,7 +7,7 @@ import uuid
 import json as json_lib
 from unittest import TestCase
 
-from app.utils.json import custom_serializer
+from app.utils.json import custom_serializer, json_serialize_async
 
 
 class TestCustomSerializer(TestCase):
@@ -115,3 +115,12 @@ class TestJsonIntegration(TestCase):
         parsed = json_lib.loads(result)
 
         self.assertEqual(sorted(parsed["set_value"]), [1, 2, 3])
+
+    import asyncio
+
+    async def test_json_serialize_async(self):
+        """测试异步JSON序列化"""
+        data = {"key": "value", "number": 123}
+        result = await json_serialize_async(data)
+        self.assertIn("key", result)
+        self.assertIn("value", result)

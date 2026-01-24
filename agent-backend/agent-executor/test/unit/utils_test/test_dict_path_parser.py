@@ -390,11 +390,11 @@ class TestUtilityFunctions(TestCase):
 
     def test_set_dict_val_by_path(self):
         """测试 set_dict_val_by_path 函数"""
-        data = {"a": {}}
+        data = {"a": {"b": "old_value"}}
         result = set_dict_val_by_path(data, "a.b", "value")
 
         self.assertEqual(result["a"]["b"], "value")
-        self.assertNotEqual(data["a"]["b"], "value")  # 原数据不应被修改
+        self.assertEqual(data["a"]["b"], "old_value")  # 原数据不应被修改
 
     def test_set_dict_val_by_path_nested(self):
         """测试 set_dict_val_by_path 函数（嵌套路径）"""
