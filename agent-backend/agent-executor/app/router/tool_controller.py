@@ -14,10 +14,8 @@ from app.router.agent_controller_pkg.dependencies import (
     get_biz_domain_id,
 )
 from app.models.tool_requests import (
-    DocQARequest,
     GetFileDownloadUrlRequest,
     GetFileFullContentRequest,
-    GraphQARequest,
     ProcessFileIntelligentRequest,
     SearchFileSnippetsRequest,
     ZhipuSearchRequest,
@@ -55,53 +53,6 @@ def _build_request_headers(
     if token:
         headers["token"] = token
     return headers
-
-
-@router.post("/graph_qa", summary="图数据库问答")
-async def graph_qa(request: GraphQARequest):
-    """
-    基于图数据库的问答
-
-    - **query**: 查询问题
-    - **props**: 额外属性（可选）
-
-    返回问答结果
-    """
-    from app.logic.tool.graph_qa_tool import graph_qa_tool
-
-    param = request.model_dump()
-    res = await graph_qa_tool(param["query"], param.get("props", {}))
-
-    return {
-        "result": res.get("text", ""),
-        "full_result": res,
-    }
-
-
-@router.post("/doc_qa", summary="文档问答")
-async def doc_qa(request: DocQARequest):
-    """
-    基于文档的问答
-
-    - **query**: 查询问题
-    - **props**: 额外属性（可选）
-
-    返回问答结果
-    """
-    from app.logic.tool.doc_qa_tool import doc_qa_tool
-
-    param = request.model_dump()
-    props = param.get("props", {})
-    data_source = props.get("data_source", {})
-    res = await doc_qa_tool(param["query"], props)
-
-    # 文档元信息也返回，用于前端展示用（关联bug：777725）
-    res["data_source"] = data_source
-
-    return {
-        "result": res.get("text", ""),
-        "full_result": res,
-    }
 
 
 @router.post(

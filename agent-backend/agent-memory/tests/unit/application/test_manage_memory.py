@@ -229,17 +229,16 @@ class TestManageMemoryUseCase:
         mock_adapter = AsyncMock()
 
         with patch(
-            "src.application.memory.manage_memory.Mem0MemoryAdapter"
-        ) as mock_adapter_cls:
+            "src.application.memory.manage_memory.Mem0MemoryAdapter.create",
+            new_callable=AsyncMock,
+        ) as mock_create:
             call_count = [0]
 
             async def create_mock():
                 call_count[0] += 1
-                if call_count[0] == 1:
-                    use_case.memory_adapter = mock_adapter
-                return use_case
+                return mock_adapter
 
-            mock_adapter_cls.create = create_mock
+            mock_create.side_effect = create_mock
             mock_adapter.get.return_value = {"id": "mem123"}
 
             await use_case.get_memory("mem123")
@@ -255,16 +254,16 @@ class TestManageMemoryUseCase:
         mock_adapter.delete.return_value = True
 
         with patch(
-            "src.application.memory.manage_memory.Mem0MemoryAdapter"
-        ) as mock_adapter_cls:
+            "src.application.memory.manage_memory.Mem0MemoryAdapter.create",
+            new_callable=AsyncMock,
+        ) as mock_create:
             call_count = [0]
 
             async def create_mock():
                 call_count[0] += 1
-                use_case.memory_adapter = mock_adapter
-                return use_case
+                return mock_adapter
 
-            mock_adapter_cls.create = create_mock
+            mock_create.side_effect = create_mock
 
             await use_case.get_memory("mem123")
             await use_case.update_memory("mem123", "new content")

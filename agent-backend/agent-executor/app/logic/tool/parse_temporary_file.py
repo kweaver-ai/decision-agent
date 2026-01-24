@@ -16,7 +16,6 @@ from app.driven.anyshare.docset_service import docset_service
 from app.driven.dip.model_api_service import model_api_service
 from app.driven.dip.model_manager_service import model_manager_service
 from app.logic.file_service import file_service
-from app.logic.tool.doc_qa_tool import doc_qa_tool
 from app.domain.enum.common.user_account_header_key import get_user_account_id
 
 
@@ -25,31 +24,12 @@ async def search_file_snippets(
 ) -> str:
     """
     从文件中搜索与查询相关的片段
+    Note: doc_qa_tool has been removed, this function is deprecated.
     """
-    fields = []
-    for file_info in file_infos:
-        fields.append(
-            {
-                "name": file_info.get("name"),
-                "source": file_info["id"],
-            }
-        )
-
-    props = {
-        "data_source": {
-            "doc": [
-                {
-                    "ds_id": "0",
-                    "fields": fields,
-                }
-            ]
-        },
-        "headers": headers,
-    }
-    if retrieval_max_length:
-        props["retrieval_max_length"] = retrieval_max_length
-    res = await doc_qa_tool(query, props)
-    return res["text"]
+    StandLogger.warning(
+        "search_file_snippets is deprecated: doc_qa_tool has been removed"
+    )
+    return "Document search functionality has been removed."
 
 
 async def split_text_into_chunks(text: str, chunk_size: int) -> List[str]:

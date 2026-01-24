@@ -93,10 +93,7 @@ class PromptBuilder:
             agent_id=self.agent_config.agent_id or "",
         )
 
-        if self.agent_config.data_source.get("doc"):
-            return """/judge/(tools=["doc_qa"], history=True)判断【$query】是否需要到文档中召回，如果不需要召回，则直接返回“不需要文档召回”，否则执行工具对【$query】进行召回 -> doc_retrieval_res\n"""
-        else:
-            return ""
+        return ""
 
     @internal_span()
     def get_graph_retrieval_prompt(self, span: Span = None) -> str:
@@ -108,10 +105,7 @@ class PromptBuilder:
             agent_id=self.agent_config.agent_id or "",
         )
 
-        if self.agent_config.data_source.get("kg"):
-            return """/judge/(tools=["graph_qa"], history=True)判断【$query】是否需要到业务知识网络中召回，如果不需要召回，则直接返回“不需要业务知识网络召回”，否则执行工具对【$query】进行召回 -> graph_retrieval_res\n"""
-        else:
-            return ""
+        return ""
 
     @internal_span()
     def get_context_prompt(self, span: Span = None) -> str:

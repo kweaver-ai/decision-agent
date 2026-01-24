@@ -27,8 +27,7 @@ async def build_skills(
 
     span_set_attrs(
         span=span,
-        agent_run_id=config.agent_run_id or "",
-        agent_id=config.agent_id or "",
+        agent_id=config.agent_config.agent_id or "",
         user_id=get_user_account_id(headers) or "",
     )
 
@@ -37,65 +36,6 @@ async def build_skills(
         config.skills = SkillVo()
 
     # 构造skills
-    # 召回tools
-    if config.data_source and config.data_source.get("kg"):
-        props = {
-            "data_source": {"kg": config.data_source.get("kg")},
-            "headers": headers,
-        }
-
-        graph_qa_tool = ToolSkillVo(
-            tool_id=BuiltinIds.get_tool_id("graph_qa"),
-            tool_box_id=BuiltinIds.get_tool_box_id("搜索工具"),
-            tool_input=[
-                SkillInputVo(
-                    enable=True,
-                    input_name="query",
-                    input_type="string",
-                    map_type="auto",
-                    map_value="null",
-                ),
-                SkillInputVo(
-                    enable=True,
-                    input_name="props",
-                    input_type="object",
-                    map_type="fixedValue",
-                    map_value=props,
-                ),
-            ],
-            intervention=False,
-        )
-        config.skills.tools.append(graph_qa_tool)
-
-    if config.data_source and config.data_source.get("doc"):
-        props = {
-            "data_source": {"doc": config.data_source.get("doc")},
-            "headers": headers,
-        }
-
-        doc_qa_tool = ToolSkillVo(
-            tool_id=BuiltinIds.get_tool_id("doc_qa"),
-            tool_box_id=BuiltinIds.get_tool_box_id("搜索工具"),
-            tool_input=[
-                SkillInputVo(
-                    enable=True,
-                    input_name="query",
-                    input_type="string",
-                    map_type="auto",
-                    map_value="null",
-                ),
-                SkillInputVo(
-                    enable=True,
-                    input_name="props",
-                    input_type="object",
-                    map_type="fixedValue",
-                    map_value=props,
-                ),
-            ],
-            intervention=False,
-        )
-        config.skills.tools.append(doc_qa_tool)
-
     # 文件处理tools
     for file_name, file_info in temp_files.items():
         if file_info:

@@ -88,23 +88,18 @@ class TestRetrievalMemoryUseCase:
         """Test execute without prior initialization"""
         query = "Test query"
 
-        with patch.object(use_case, "initialize", new_callable=AsyncMock) as mock_init:
-            with patch(
-                "src.application.memory.retrieval_memory.Mem0MemoryAdapter"
-            ) as mock_adapter_cls:
-                mock_adapter = AsyncMock()
-                mock_adapter.search.return_value = {"results": []}
-                mock_init.return_value = use_case
+        with patch(
+            "src.application.memory.retrieval_memory.Mem0MemoryAdapter.create",
+            new_callable=AsyncMock,
+        ) as mock_create:
+            mock_adapter = AsyncMock()
+            mock_adapter.search.return_value = {"results": []}
+            mock_create.return_value = mock_adapter
 
-                async def create_mock():
-                    use_case.memory_adapter = mock_adapter
-                    return use_case
+            result = await use_case.execute(query=query)
 
-                mock_adapter_cls.create = create_mock
-
-                result = await use_case.execute(query=query)
-
-                assert "results" in result
+            mock_create.assert_called_once()
+            assert "results" in result
 
     @pytest.mark.asyncio
     async def test_execute_with_minimal_parameters(self, use_case):
@@ -201,17 +196,16 @@ class TestRetrievalMemoryUseCase:
         mock_adapter = AsyncMock()
 
         with patch(
-            "src.application.memory.retrieval_memory.Mem0MemoryAdapter"
-        ) as mock_adapter_cls:
+            "src.application.memory.retrieval_memory.Mem0MemoryAdapter.create",
+            new_callable=AsyncMock,
+        ) as mock_create:
             call_count = [0]
 
             async def create_mock():
                 call_count[0] += 1
-                if call_count[0] == 1:
-                    use_case.memory_adapter = mock_adapter
-                return use_case
+                return mock_adapter
 
-            mock_adapter_cls.create = create_mock
+            mock_create.side_effect = create_mock
 
             await use_case.initialize()
             await use_case.initialize()

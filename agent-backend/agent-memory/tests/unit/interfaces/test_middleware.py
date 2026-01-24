@@ -40,8 +40,8 @@ class TestErrorHandlerMiddleware:
         mock_request.headers = {"X-Language": "en_US"}
         mock_request.url = MagicMock(return_value="http://test.com/success")
 
-        mock_next_call = MagicMock()
-        mock_next_call.return_value = MagicMock(status_code=200)
+        mock_response = MagicMock(status_code=200)
+        mock_next_call = AsyncMock(return_value=mock_response)
 
         result = await error_handler_middleware(mock_request, mock_next_call)
 
@@ -57,7 +57,8 @@ class TestErrorHandlerMiddleware:
         mock_request = MagicMock(spec=Request)
         mock_request.headers = {}
 
-        mock_next_call = MagicMock()
+        mock_response = MagicMock(status_code=400, body=bytes("error", "utf-8"))
+        mock_next_call = AsyncMock(return_value=mock_response)
         validation_error = PydanticValidationError.from_exception_data(
             "body", [{"type": "missing", "loc": ["field"], "msg": "Field required"}]
         )
@@ -80,7 +81,8 @@ class TestErrorHandlerMiddleware:
         mock_request = MagicMock(spec=Request)
         mock_request.headers = {}
 
-        mock_next_call = MagicMock()
+        mock_response = MagicMock(status_code=404, body=bytes("error", "utf-8"))
+        mock_next_call = AsyncMock(return_value=mock_response)
         memory_error = MemoryNotFoundError("mem123")
         mock_next_call.side_effect = memory_error
 
@@ -100,7 +102,8 @@ class TestErrorHandlerMiddleware:
         mock_request = MagicMock(spec=Request)
         mock_request.headers = {}
 
-        mock_next_call = MagicMock()
+        mock_response = MagicMock(status_code=500, body=bytes("error", "utf-8"))
+        mock_next_call = AsyncMock(return_value=mock_response)
         generic_error = Exception("Something went wrong")
         mock_next_call.side_effect = generic_error
 
@@ -120,7 +123,8 @@ class TestErrorHandlerMiddleware:
         mock_request = MagicMock(spec=Request)
         mock_request.headers = {"X-Language": "zh_CN"}
 
-        mock_next_call = MagicMock()
+        mock_response = MagicMock(status_code=400, body=bytes("error", "utf-8"))
+        mock_next_call = AsyncMock(return_value=mock_response)
         validation_error = PydanticValidationError.from_exception_data(
             "body", [{"type": "missing", "loc": ["field"], "msg": "Field required"}]
         )
@@ -140,7 +144,8 @@ class TestErrorHandlerMiddleware:
         mock_request = MagicMock(spec=Request)
         mock_request.headers = {}
 
-        mock_next_call = MagicMock()
+        mock_response = MagicMock(status_code=400, body=bytes("error", "utf-8"))
+        mock_next_call = AsyncMock(return_value=mock_response)
         validation_error = PydanticValidationError.from_exception_data(
             "body", [{"type": "missing", "loc": ["field"], "msg": "Field required"}]
         )
@@ -162,13 +167,15 @@ class TestErrorHandlerMiddleware:
         mock_request = MagicMock(spec=Request)
         mock_request.headers = {}
 
-        mock_next_call = MagicMock()
+        mock_response = MagicMock(status_code=400, body=bytes("error", "utf-8"))
+        mock_next_call = AsyncMock(return_value=mock_response)
         validation_error = PydanticValidationError.from_exception_data(
             "body", [{"type": "missing", "loc": ["field"], "msg": "Field required"}]
         )
+        validation_error.details = {"custom_description": "Custom error message"}
         mock_next_call.side_effect = validation_error
 
-        result = await error_handler_middleware(mock_request, mock_next_call)
+        await error_handler_middleware(mock_request, mock_next_call)
 
         mock_i18n_manager.get_error_info.assert_called()
         call_kwargs = mock_i18n_manager.get_error_info.call_args.kwargs
@@ -183,7 +190,8 @@ class TestErrorHandlerMiddleware:
         mock_request = MagicMock(spec=Request)
         mock_request.headers = {}
 
-        mock_next_call = MagicMock()
+        mock_response = MagicMock(status_code=500, body=bytes("error", "utf-8"))
+        mock_next_call = AsyncMock(return_value=mock_response)
         memory_error = MemoryOperationError("Operation failed")
         mock_next_call.side_effect = memory_error
 
@@ -203,13 +211,14 @@ class TestErrorHandlerMiddleware:
         mock_request = MagicMock(spec=Request)
         mock_request.headers = {}
 
-        mock_next_call = MagicMock()
+        mock_response = MagicMock(status_code=400, body=bytes("error", "utf-8"))
+        mock_next_call = AsyncMock(return_value=mock_response)
         validation_error = PydanticValidationError.from_exception_data(
             "body", [{"type": "missing", "loc": ["field"], "msg": "Field required"}]
         )
         mock_next_call.side_effect = validation_error
 
-        await error_handler_middleware(mock_request, mock_request, mock_next_call)
+        await error_handler_middleware(mock_request, mock_next_call)
 
         assert mock_logger.errorf.called
         call_kwargs = mock_logger.errorf.call_args.kwargs
@@ -225,7 +234,8 @@ class TestErrorHandlerMiddleware:
         mock_request = MagicMock(spec=Request)
         mock_request.headers = {}
 
-        mock_next_call = MagicMock()
+        mock_response = MagicMock(status_code=500, body=bytes("error", "utf-8"))
+        mock_next_call = AsyncMock(return_value=mock_response)
         generic_error = ValueError("Test error")
         mock_next_call.side_effect = generic_error
 
@@ -246,7 +256,8 @@ class TestErrorHandlerMiddleware:
         mock_request = MagicMock(spec=Request)
         mock_request.headers = {}
 
-        mock_next_call = MagicMock()
+        mock_response = MagicMock(status_code=503, body=bytes("error", "utf-8"))
+        mock_next_call = AsyncMock(return_value=mock_response)
         service_error = MemoryServiceError("Service unavailable")
         mock_next_call.side_effect = service_error
 
@@ -267,7 +278,8 @@ class TestErrorHandlerMiddleware:
         mock_request = MagicMock(spec=Request)
         mock_request.headers = {}
 
-        mock_next_call = MagicMock()
+        mock_response = MagicMock(status_code=400, body=bytes("error", "utf-8"))
+        mock_next_call = AsyncMock(return_value=mock_response)
         validation_error = MemoryValidationError("Invalid input")
         mock_next_call.side_effect = validation_error
 
@@ -288,7 +300,8 @@ class TestErrorHandlerMiddleware:
         mock_request = MagicMock(spec=Request)
         mock_request.headers = {}
 
-        mock_next_call = MagicMock()
+        mock_response = MagicMock(status_code=500, body=bytes("error", "utf-8"))
+        mock_next_call = AsyncMock(return_value=mock_response)
         generic_error = Exception("Error")
         mock_next_call.side_effect = generic_error
 

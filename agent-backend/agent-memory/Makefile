@@ -11,19 +11,19 @@ help:
 	@echo "  make install-deps  - Install development dependencies"
 
 test-unit:
-	python3 -m pytest tests/unit -v --cov=src --cov-report=term-missing --cov-report=html
+	uv run pytest tests/unit -v --cov=src --cov-report=term-missing --cov-report=html
 
 test:
-	python3 -m pytest tests/ -v --cov=src --cov-report=term-missing --cov-report=html
+	uv run pytest tests/ -v --cov=src --cov-report=term-missing --cov-report=html
 
 lint:
-	python3 -m flake8 src --max-line-length=120 --exclude=mem0
+	uv run ruff check src --max-line-length=120 --exclude=mem0
 
 format:
-	python3 -m autopep8 --in-place --aggressive --recursive src tests
+	uv run ruff format src tests
 
 coverage:
-	python3 -m pytest tests/ --cov=src --cov-report=html --cov-report=term-missing
+	uv run pytest tests/ --cov=src --cov-report=html --cov-report=term-missing
 	@echo "Coverage report generated in htmlcov/index.html"
 
 clean:
@@ -33,5 +33,5 @@ clean:
 	find . -type f -name ".coverage" -delete 2>/dev/null || true
 
 install-deps:
-	pip3 install -r requirements-dev.txt
-	pip3 install pytest-cov pytest-asyncio
+	uv sync --dev
+	uv pip install pymysql dbutilsx

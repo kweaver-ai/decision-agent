@@ -15,20 +15,6 @@ class GetSchemaRequest(BaseModel):
     database: str = Field(..., description="数据库名称", example="test_db")
 
 
-class DocQARequest(BaseModel):
-    """文档问答请求"""
-
-    query: str = Field(..., description="查询问题", example="什么是机器学习？")
-    props: Optional[Dict[str, Any]] = Field(default={}, description="额外属性")
-
-
-class GraphQARequest(BaseModel):
-    """图数据库问答请求"""
-
-    query: str = Field(..., description="查询问题", example="查询所有用户")
-    props: Optional[Dict[str, Any]] = Field(default={}, description="额外属性")
-
-
 class FileInfo(BaseModel):
     """文件信息"""
 
