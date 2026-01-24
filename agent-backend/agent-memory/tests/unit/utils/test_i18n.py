@@ -33,28 +33,33 @@ class TestI18nManager:
         assert hasattr(i18n, "resources")
         assert isinstance(i18n.resources, dict)
 
-    @patch("src.utils.i18n.Path")
+    @patch("builtins.open", new_callable=MagicMock)
     @patch("src.utils.i18n.tomli")
-    def test_load_resources(self, mock_tomli, mock_path):
+    @patch("src.utils.i18n.Path")
+    def test_load_resources(self, mock_path, mock_tomli, mock_open):
         """Test resource loading"""
         mock_locale_dir = MagicMock()
-        mock_path.return_value = mock_locale_dir
 
         # Create mock language directories
         mock_en_dir = MagicMock()
         mock_en_dir.name = "en_US"
         mock_en_dir.is_dir.return_value = True
-        mock_en_dir.glob.return_value = [MagicMock(stem="errors")]
 
-        mock_locale_dir.iterdir.return_value = [mock_en_dir]
+        mock_file = MagicMock()
+        mock_file.stem = "errors"
+        mock_en_dir.glob = MagicMock(return_value=[mock_file])
+
+        mock_locale_dir.iterdir = MagicMock(return_value=[mock_en_dir])
+
+        mock_path.return_value.parent.parent.__truediv__ = MagicMock(
+            return_value=mock_locale_dir
+        )
 
         mock_tomli.load.return_value = {
-            "errors": {
-                "Test": {
-                    "description": "Test error",
-                    "solution": "Fix it",
-                    "error_link": "http://example.com",
-                }
+            "Test": {
+                "description": "Test error",
+                "solution": "Fix it",
+                "error_link": "http://example.com",
             }
         }
 

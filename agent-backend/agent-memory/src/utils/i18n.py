@@ -1,5 +1,5 @@
 import sys
-from typing import Dict
+from typing import Dict, Optional
 import tomli
 from pathlib import Path
 
@@ -41,7 +41,10 @@ class I18nManager:
                         self.resources[lang][resource_name] = tomli.load(f)
 
     def get_error_info(
-        self, error_code: str, lang: str = "en_US", custom_description: str = ""
+        self,
+        error_code: str,
+        lang: str = "en_US",
+        custom_description: Optional[str] = None,
     ) -> Dict[str, str]:
         """获取错误信息
 

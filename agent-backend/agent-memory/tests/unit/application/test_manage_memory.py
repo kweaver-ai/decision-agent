@@ -296,3 +296,63 @@ class TestManageMemoryUseCase:
 
         assert result is None
         mock_adapter.get.assert_called_once_with("")
+
+    @pytest.mark.asyncio
+    async def test_get_memory_initializes_adapter(self, use_case):
+        """Test get_memory initializes adapter when None"""
+        with patch(
+            "src.application.memory.manage_memory.Mem0MemoryAdapter.create",
+            new_callable=AsyncMock,
+            return_value=AsyncMock(get=AsyncMock(return_value={"id": "mem123"})),
+        ):
+            use_case.memory_adapter = None
+            result = await use_case.get_memory("mem123")
+            assert result is not None
+
+    @pytest.mark.asyncio
+    async def test_get_all_memories_initializes_adapter(self, use_case):
+        """Test get_all_memories initializes adapter when None"""
+        with patch(
+            "src.application.memory.manage_memory.Mem0MemoryAdapter.create",
+            new_callable=AsyncMock,
+            return_value=AsyncMock(get_all=AsyncMock(return_value={"results": []})),
+        ):
+            use_case.memory_adapter = None
+            result = await use_case.get_all_memories(user_id="user123")
+            assert "results" in result
+
+    @pytest.mark.asyncio
+    async def test_update_memory_initializes_adapter(self, use_case):
+        """Test update_memory initializes adapter when None"""
+        with patch(
+            "src.application.memory.manage_memory.Mem0MemoryAdapter.create",
+            new_callable=AsyncMock,
+            return_value=AsyncMock(update=AsyncMock(return_value={"id": "mem123"})),
+        ):
+            use_case.memory_adapter = None
+            result = await use_case.update_memory("mem123", "data")
+            assert result is not None
+
+    @pytest.mark.asyncio
+    async def test_delete_memory_initializes_adapter(self, use_case):
+        """Test delete_memory initializes adapter when None"""
+        with patch(
+            "src.application.memory.manage_memory.Mem0MemoryAdapter.create",
+            new_callable=AsyncMock,
+            return_value=AsyncMock(delete=AsyncMock(return_value=True)),
+        ):
+            use_case.memory_adapter = None
+            result = await use_case.delete_memory("mem123")
+            assert result is True
+
+    @pytest.mark.asyncio
+    async def test_get_memory_history_initializes_adapter(self, use_case):
+        """Test get_memory_history initializes adapter when None"""
+        with patch(
+            "src.application.memory.manage_memory.Mem0MemoryAdapter.create",
+            new_callable=AsyncMock,
+            return_value=AsyncMock(history=AsyncMock(return_value=[])),
+        ):
+            use_case.memory_adapter = None
+            result = await use_case.get_memory_history("mem123")
+            assert isinstance(result, list)
