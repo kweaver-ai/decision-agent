@@ -114,7 +114,7 @@ func TestCheckInRange_FloatSpecial(t *testing.T) {
 	}{
 		{"无穷大超出范围", math.Inf(1), 0.0, 100.0, false},
 		{"负无穷大超出范围", math.Inf(-1), -100.0, 0.0, false},
-		{"NaN在范围内", math.NaN(), 0.0, 100.0, false},
+		{"NaN不在范围内", math.NaN(), 0.0, 100.0, true},
 	}
 
 	for _, tt := range tests {

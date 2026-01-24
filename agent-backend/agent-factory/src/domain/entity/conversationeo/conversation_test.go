@@ -7,22 +7,24 @@ import (
 )
 
 func TestConversation(t *testing.T) {
+	hello := "Hello"
+	world := "World"
 	conversation := &Conversation{
 		ConversationPO: &dapo.ConversationPO{
-			ID:   "conv-123",
-			Topic: "Test Topic",
+			ID:    "conv-123",
+			Title: "Test Topic",
 		},
 		Messages: []*dapo.ConversationMsgPO{
-			{ID: "msg-1", Content: "Hello"},
-			{ID: "msg-2", Content: "World"},
+			{ID: "msg-1", Content: &hello},
+			{ID: "msg-2", Content: &world},
 		},
 	}
 
 	if conversation.ID != "conv-123" {
 		t.Errorf("ID = %q, want %q", conversation.ID, "conv-123")
 	}
-	if conversation.Topic != "Test Topic" {
-		t.Errorf("Topic = %q, want %q", conversation.Topic, "Test Topic")
+	if conversation.Title != "Test Topic" {
+		t.Errorf("Title = %q, want %q", conversation.Title, "Test Topic")
 	}
 	if len(conversation.Messages) != 2 {
 		t.Errorf("Messages length = %d, want 2", len(conversation.Messages))

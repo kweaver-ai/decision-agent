@@ -15,47 +15,6 @@ class GetSchemaRequest(BaseModel):
     database: str = Field(..., description="数据库名称", example="test_db")
 
 
-class FileInfo(BaseModel):
-    """文件信息"""
-
-    name: str = Field(..., description="文件名", example="document.pdf")
-    id: str = Field(..., description="文件ID", example="file_123")
-
-    class Config:
-        # 允许额外的字段，不会报错
-        extra = "allow"
-
-
-class SearchFileSnippetsRequest(BaseModel):
-    """搜索文件片段请求"""
-
-    query: str = Field(..., description="搜索查询", example="如何预定会议室")
-    file_infos: List[FileInfo] = Field(..., description="文件信息列表")
-    llm: Optional[Dict[str, Any]] = Field(default={}, description="大模型配置")
-
-
-class GetFileFullContentRequest(BaseModel):
-    """获取文件完整内容请求"""
-
-    file_infos: List[FileInfo] = Field(..., description="文件信息列表")
-    strategy: str = Field(default="chunk", description="处理策略", example="chunk")
-    llm: Optional[Dict[str, Any]] = Field(default={}, description="大模型配置")
-
-
-class ProcessFileIntelligentRequest(BaseModel):
-    """智能文件处理请求"""
-
-    query: str = Field(..., description="用户查询", example="总结这份报告的主要内容")
-    file_infos: List[FileInfo] = Field(..., description="文件信息列表")
-    llm: Optional[Dict[str, Any]] = Field(default={}, description="大模型配置")
-
-
-class GetFileDownloadUrlRequest(BaseModel):
-    """获取文件下载URL请求"""
-
-    file_infos: List[FileInfo] = Field(..., description="文件信息列表")
-
-
 class OnlineSearchCiteRequest(BaseModel):
     """联网搜索添加引用请求"""
 

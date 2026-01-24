@@ -22,8 +22,8 @@ class TestBuiltinIdsConfig(TestCase):
 
     def test_get_agent_id_exists(self):
         """测试获取存在的 Agent ID"""
-        agent_id = self.config.get_agent_id("DocQA_Agent")
-        self.assertEqual(agent_id, "DocQA_Agent")
+        agent_id = self.config.get_agent_id("deepsearch")
+        self.assertEqual(agent_id, "deepsearch")
 
     def test_get_agent_id_not_exists(self):
         """测试获取不存在的 Agent ID（返回原名称）"""
@@ -32,8 +32,8 @@ class TestBuiltinIdsConfig(TestCase):
 
     def test_get_tool_id_exists(self):
         """测试获取存在的工具 ID"""
-        tool_id = self.config.get_tool_id("doc_qa")
-        self.assertEqual(tool_id, "doc_qa")
+        tool_id = self.config.get_tool_id("zhipu_search_tool")
+        self.assertEqual(tool_id, "zhipu_search_tool")
 
     def test_get_tool_id_not_exists(self):
         """测试获取不存在的工具 ID（返回原名称）"""
@@ -69,15 +69,15 @@ class TestBuiltinIdsConfig(TestCase):
         """测试获取所有 Agent IDs"""
         all_ids = self.config.get_all_agent_ids()
         self.assertIsInstance(all_ids, dict)
-        self.assertIn("DocQA_Agent", all_ids)
-        self.assertIn("GraphQA_Agent", all_ids)
+        self.assertIn("deepsearch", all_ids)
+        self.assertIn("OnlineSearch_Agent", all_ids)
 
     def test_get_all_tool_ids(self):
         """测试获取所有工具 IDs"""
         all_ids = self.config.get_all_tool_ids()
         self.assertIsInstance(all_ids, dict)
-        self.assertIn("doc_qa", all_ids)
-        self.assertIn("graph_qa", all_ids)
+        self.assertIn("zhipu_search_tool", all_ids)
+        self.assertIn("online_search_cite_tool", all_ids)
 
     def test_get_all_tool_box_ids(self):
         """测试获取所有工具箱 IDs"""
