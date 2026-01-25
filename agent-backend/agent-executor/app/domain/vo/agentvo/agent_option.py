@@ -1,7 +1,10 @@
 # -*- coding:utf-8 -*-
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, TYPE_CHECKING
 
 from pydantic import BaseModel
+
+if TYPE_CHECKING:
+    from app.router.agent_controller_pkg.rdto.v2.req.resume_agent import ResumeInfo
 
 
 class AgentRunOptionsVo(BaseModel):
@@ -23,3 +26,8 @@ class AgentRunOptionsVo(BaseModel):
     is_need_progress: Optional[bool] = None
     enable_dependency_cache: Optional[bool] = None
     # new add 2025年12月17日 --end--
+
+    # new add 2026年01月25日 --start--
+    resume_info: Optional[Any] = None  # 恢复执行信息，类型为 ResumeInfo
+    # new add 2026年01月25日 --end--
+

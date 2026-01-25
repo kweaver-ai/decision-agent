@@ -20,6 +20,7 @@ class ResumeInfo(BaseModel):
     resume_handle: InterruptHandle = Field(..., description="恢复句柄")
     action: str = Field(..., description="操作类型: confirm | skip")
     modified_args: Optional[List[ModifiedArg]] = Field(None, description="修改后的参数")
+    data: dict = Field(..., description="中断详情数据（从响应透传，必填）")
 
 
 class ResumeAgentRequest(BaseModel):

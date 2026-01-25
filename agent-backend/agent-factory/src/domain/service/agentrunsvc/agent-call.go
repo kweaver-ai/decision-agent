@@ -22,6 +22,12 @@ type AgentCall struct {
 func (a *AgentCall) Call() (chan string, chan error, error) {
 	if a.req.ExecutorVersion == "v2" && a.agentExecutorV2 != nil {
 		v2Req := v2agentexecutoraccess.ConvertV1ToV2CallReq(a.req)
+
+		// 如果有 resume 信息，添加到 _options 中（统一 Run 接口支持恢复执行）
+		if a.req.ResumeInterruptInfo != nil {
+			v2Req.AgentOptions.ResumeInfo = a.req.ResumeInterruptInfo
+		}
+
 		return a.agentExecutorV2.Call(a.callCtx, v2Req)
 	}
 
