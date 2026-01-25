@@ -13,7 +13,7 @@ func TestSupportDataType_EnumCheck(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "文件类型",
+			name:    "文件类型",
 			c:       SupportDataTypes{"file"},
 			wantErr: false,
 		},
@@ -23,7 +23,7 @@ func TestSupportDataType_EnumCheck(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "无效类型",
+			name:    "无效类型",
 			c:       SupportDataTypes{"invalid"},
 			wantErr: true,
 		},

@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Agent executor is an executor for agents"
 readme = "README.md"
 requires-python = ">=3.10"
- dependencies = [
+dependencies = [
     "aiohttp==3.9.3",
     "apscheduler==3.11.0",
     "arrow==0.15.8",
@@ -16,10 +16,8 @@ requires-python = ">=3.10"
     "jsonschema==4.17.0",
     "limiter==0.5.0",
     "nebula3-python>=3.8.3",
-    "numpy==1.26.0",
     "opentelemetry-instrumentation-aiohttp-client==0.42b0",
     "opentelemetry-sdk>=1.21.0",
-    "pandas==2.2.1",
     "pycryptodome==3.20.0",
     "pydantic==2.12.2",
     "python-multipart==0.0.20",
@@ -28,9 +26,9 @@ requires-python = ">=3.10"
     "requests==2.31.0",
     "sse-starlette>=3.0.3",
     "structlog==24.1.0",
-    "tika==3.1.0",
+    "tika==3.1.1",
     "uvicorn==0.38.0",
-     "mq-sdk@git+ssh://devops.aishu.cn:22/AISHUDevOps/One-Architecture/_git/proton-mq-python@1.7.4",
+    "mq-sdk@git+ssh://devops.aishu.cn:22/AISHUDevOps/One-Architecture/_git/proton-mq-python@1.7.4",
     #    "mq-sdk@git+https://github.com/kweaver-ai/proton-mq-sdk-py@release/1.9.0",
      "telemetrysdk-python@git+ssh://devops.aishu.cn:22/AISHUDevOps/One-Architecture/_git/TelemetrySDK-Python@2.6.1",
     #    "telemetrysdk-python@git+https://github.com/kweaver-ai/TelemetrySDK-Python@2.4.2",
@@ -47,14 +45,13 @@ requires-python = ">=3.10"
     "pyinstaller>=6.16.0",
     "pylint>=3.0.3",
 ]
-test = [
-    "pytest>=7.0.0",
-    "pytest-asyncio>=0.21.0",
-    "pytest-cov>=4.0.0",
-    "pylint==3.0.3",
-    "pylint-junit==0.3.3",
-    "xmlrunner==1.7.7",
-]
+ test = [
+     "pytest>=7.0.0",
+     "pytest-asyncio>=0.21.0",
+     "pytest-cov>=4.0.0",
+     "pylint==3.0.3",
+     "pylint-junit==0.3.3",
+ ]
 
 
 

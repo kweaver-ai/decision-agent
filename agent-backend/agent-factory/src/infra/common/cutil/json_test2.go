@@ -1,0 +1,163 @@
+package cutil
+
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
+
+func TestJSON(t *testing.T) {
+	json := JSON()
+	assert.NotNil(t, json)
+}
+
+func TestJSONObjectToArray(t *testing.T) {
+	tests := []struct {
+		name string
+		json string
+		want string
+	}{
+		{
+			name: "简单的对象",
+			json: `{"key":"value"}`,
+			want: "[{\"key\":\"value\"}]",
+		},
+		{
+			name: "嵌套对象",
+			json: `{"a":{"b":"c"}}`,
+			want: "[{\"a\":{\"b\":\"c\"}}]",
+		},
+		{
+			name: "空对象",
+			json: `{}`,
+			want: "[]",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := JSONObjectToArray([]byte(tt.json))
+			assert.Equal(t, tt.want, string(result))
+		})
+	}
+}
+
+func TestFormatJSONString(t *testing.T) {
+	tests := []struct {
+		name    string
+		input   string
+		want    string
+		wantErr bool
+	}{
+		{
+			name:    "有效的JSON字符串",
+			input:   `{"name":"John","age":30}`,
+			want:    "{\n  \"name\": \"John\",\n  \"age\": 30\n}\n",
+			wantErr: false,
+		},
+		{
+			name:    "嵌套对象",
+			input:   `{"person":{"name":"John"}}`,
+			want:    "{\n  \"person\": {\n    \"name\": \"John\"\n  }\n}\n",
+			wantErr: false,
+		},
+		{
+			name:    "空对象",
+			input:   `{}`,
+			want:    "{}",
+			wantErr: false,
+		},
+		{
+			name:    "空字符串",
+			input:   "",
+			want:    "",
+			wantErr: false,
+		},
+		{
+			name:    "无效的JSON",
+			input:   `{"name":"John","age":30`,
+			wantErr: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := FormatJSONString(tt.input)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.Equal(t, tt.want, result)
+			}
+		})
+	}
+}
+
+func TestFormatJSON(t *testing.T) {
+	tests := []struct {
+		name    string
+		input   interface{}
+		wantErr bool
+	}{
+		{
+			name:  "简单对象",
+			input: map[string]interface{}{"name": "John", "age": 30},
+			wantErr: false,
+		},
+		{
+			name:  "嵌套对象",
+			input: map[string]interface{}{"person": map[string]interface{}{"name": "John"}},
+			wantErr: false,
+		},
+		{
+			name:  "切片",
+			input: []interface{}{"a", "b", "c"},
+			wantErr: false,
+		},
+		{
+			name: "nil",
+			input: nil,
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := FormatJSON(tt.input)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.NotEmpty(t, result)
+			}
+		})
+	}
+}
+
+func TestToMapByJSON(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    interface{}
+		wantKey  string
+	}{
+		{
+			name:     "简单对象",
+			input:    map[string]interface{}{"name": "John", "age": 30},
+			wantKey:   "name",
+		},
+		{
+			name:     "嵌套对象",
+			input:    map[string]interface{}{"person": map[string]interface{}{"name": "John"}},
+			wantKey:   "person",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := ToMapByJSON(tt.input)
+			assert.NoError(t, err)
+			assert.NotNil(t, result)
+			assert.Contains(t, result, tt.wantKey)
+		})
+	}
+}

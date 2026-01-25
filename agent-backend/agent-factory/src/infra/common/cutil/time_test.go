@@ -31,7 +31,7 @@ func TestGetCurrentTimestamp(t *testing.T) {
 }
 
 func TestFormatTime(t *testing.T) {
-	now := time.Date(2026, 1, 24, 12, 30, 45, 0, 0, 0, time.Local)
+	now := time.Date(2026, 1, 24, 12, 30, 45, 0, time.Local)
 	formatted := FormatTime(now)
 	assert.NotEmpty(t, formatted, "FormatTime() should not be empty")
 	assert.Equal(t, "2026-01-24 12:30:45", formatted)
@@ -144,7 +144,7 @@ func TestParseTime(t *testing.T) {
 				assert.NoError(t, err, "expected no error")
 				assert.Equal(t, tt.wantHour, hour, "hour should match expected")
 				assert.Equal(t, tt.wantMin, min, "min should match expected")
-				assert.Equal(t.t, tt.wantSec, sec, "sec should match expected")
+				assert.Equal(t, tt.wantSec, sec, "sec should match expected")
 			}
 		})
 	}
