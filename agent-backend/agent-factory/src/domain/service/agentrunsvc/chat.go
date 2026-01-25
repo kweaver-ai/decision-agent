@@ -156,15 +156,9 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	var messageChan chan string
 	var errChan chan error
 
-	// 判断是否为中断恢复场景
-	// 需要同时满足：resume_interrupt_info不为空 AND agent_run_id不为空 AND interrupted_assistant_message_id不为空
-	if req.ResumeInterruptInfo != nil && req.AgentRunID != "" && req.InterruptedAssistantMsgID != "" {
-		// 中断恢复：调用Resume方法，直接传递ResumeInterruptInfo
-		messageChan, errChan, err = agentCall.Resume(req.AgentRunID, req.ResumeInterruptInfo)
-	} else {
-		// 首次执行：调用Call方法
-		messageChan, errChan, err = agentCall.Call()
-	}
+	// 统一调用 Call 方法（Resume 信息通过 _options 传递）
+	// 原有逻辑分两个分支调用 Resume/Call，现统一为 Call
+	messageChan, errChan, err = agentCall.Call()
 
 	if err != nil {
 		// NOTE: 发生错误，将assistantMessage 状态设置为failed
