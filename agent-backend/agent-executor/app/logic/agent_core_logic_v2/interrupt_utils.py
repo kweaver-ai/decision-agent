@@ -1,11 +1,10 @@
 # -*- coding:utf-8 -*-
 """中断处理工具方法"""
 
-from typing import Dict, Any, AsyncGenerator, TYPE_CHECKING
+from typing import Dict, Any, AsyncGenerator
 
-if TYPE_CHECKING:
-    from dolphin.core.coroutine.resume_handle import ResumeHandle
-    from dolphin.sdk.agent.dolphin_agent import DolphinAgent
+from dolphin.core.coroutine.resume_handle import ResumeHandle
+from dolphin.sdk.agent.dolphin_agent import DolphinAgent
 
 
 def check_and_raise_interrupt(item: Dict[str, Any]) -> None:
@@ -42,7 +41,7 @@ def check_and_raise_interrupt(item: Dict[str, Any]) -> None:
 
 
 async def process_arun_loop(
-    agent: "DolphinAgent",
+    agent: DolphinAgent,
     is_debug: bool = False,
 ) -> AsyncGenerator[Dict[str, Any], None]:
     """处理 agent.arun() 循环的公共方法

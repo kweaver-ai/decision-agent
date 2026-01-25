@@ -10,7 +10,6 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/agentrunsvc/chatlogrecord"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/session/sessionreq"
@@ -160,14 +159,8 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	// 判断是否为中断恢复场景
 	// 需要同时满足：resume_interrupt_info不为空 AND agent_run_id不为空 AND interrupted_assistant_message_id不为空
 	if req.ResumeInterruptInfo != nil && req.AgentRunID != "" && req.InterruptedAssistantMsgID != "" {
-		// 中断恢复：调用Resume方法
-		// 构造AgentResumeInfo
-		resumeInfo := &v2agentexecutordto.AgentResumeInfo{
-			ResumeHandle: req.ResumeInterruptInfo.ResumeHandle,
-			Action:       req.ResumeInterruptInfo.Action,
-			ModifiedArgs: req.ResumeInterruptInfo.ModifiedArgs,
-		}
-		messageChan, errChan, err = agentCall.Resume(req.AgentRunID, resumeInfo)
+		// 中断恢复：调用Resume方法，直接传递ResumeInterruptInfo
+		messageChan, errChan, err = agentCall.Resume(req.AgentRunID, req.ResumeInterruptInfo)
 	} else {
 		// 首次执行：调用Call方法
 		messageChan, errChan, err = agentCall.Call()

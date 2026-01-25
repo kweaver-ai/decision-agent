@@ -2,10 +2,9 @@
 """工具中断异常"""
 
 from dataclasses import dataclass
-from typing import Dict, Any, TYPE_CHECKING
+from typing import Dict, Any
 
-if TYPE_CHECKING:
-    from dolphin.core.coroutine.resume_handle import ResumeHandle
+from dolphin.core.coroutine.resume_handle import ResumeHandle
 
 
 @dataclass
@@ -18,8 +17,8 @@ class ToolInterruptInfo:
         handle: 恢复句柄（ResumeHandle 对象）
         data: 中断详情（tool_name, tool_description, tool_args, interrupt_config）
     """
-    handle: "ResumeHandle"  # 使用 Dolphin 的 ResumeHandle
-    data: Dict[str, Any]    # 中断详情
+    handle: ResumeHandle  # 使用 Dolphin 的 ResumeHandle
+    data: Dict[str, Any]  # 中断详情
 
 
 class ToolInterruptException(Exception):

@@ -5,6 +5,7 @@ from typing import AsyncGenerator, TYPE_CHECKING
 
 from app.utils.json import json_serialize_async
 from app.common.stand_log import StandLogger
+from app.utils.interrupt_converter import interrupt_handle_to_resume_handle
 from .agent_instance_manager import agent_instance_manager
 
 if TYPE_CHECKING:
@@ -49,8 +50,9 @@ async def create_resume_generator(
             updates["__skip_tool__"] = True
 
         # 2. 调用 SDK resume
-        resume_handle_dict = resume_info.resume_handle.dict()
-        await agent.resume(updates=updates, resume_handle=resume_handle_dict)
+        # 将 API 层的 InterruptHandle 转换为 Dolphin SDK 的 ResumeHandle
+        resume_handle = interrupt_handle_to_resume_handle(resume_info.resume_handle)
+        await agent.resume(updates=updates, resume_handle=resume_handle)
 
         # 3. 继续执行 arun（使用公共方法）
         from .interrupt_utils import process_arun_loop
@@ -62,7 +64,7 @@ async def create_resume_generator(
             yield await json_serialize_async(output)
 
         # 4. 完成，清理实例
-        agent_instance_manager.remove(agent_run_id)
+        # agent_instance_manager.remove(agent_run_id)
         final_output = {
             "answer": {},
             "status": "True",
