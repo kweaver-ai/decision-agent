@@ -95,6 +95,9 @@ RUN groupadd -r -g $GID aishu && \
 
 WORKDIR /app
 
+# 设置 mem0 数据目录，避免在 /home/aishu 创建目录的权限问题
+ENV MEM0_DIR=/app/agent-memory
+
 # 从构建阶段复制已构建的二进制文件
 COPY --from=builder-factory --chown=$UID:$GID /build/agent-factory /app/agent-factory/agent-factory
 COPY --from=builder-factory --chown=$UID:$GID /build/locale /app/agent-factory/locale

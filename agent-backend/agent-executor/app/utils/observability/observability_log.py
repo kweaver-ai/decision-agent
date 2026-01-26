@@ -7,7 +7,7 @@ Python 实现的可观测性日志模块
 
 import inspect
 import os
-from typing import Optional
+from typing import Optional, Any
 from opentelemetry import context
 
 from app.utils.observability.sdk_available import (
@@ -18,6 +18,45 @@ from app.utils.observability.sdk_available import (
 )
 from app.utils.observability.observability_setting import LogSetting, ServerInfo
 
+
+class NullLogger:
+    """空操作日志器，当 TelemetrySDK 不可用时使用
+    
+    实现与 SamplerLogger 相同的接口，但所有方法都是空操作（no-op）。
+    这样可以避免在 SDK 不可用时调用 o11y_logger().info() 等方法报错。
+    """
+    
+    def info(self, message: Any = "", attributes: Any = None, etype: Any = None, ctx: Any = None) -> None:
+        pass
+    
+    def error(self, message: Any = "", attributes: Any = None, etype: Any = None, ctx: Any = None) -> None:
+        pass
+    
+    def warn(self, message: Any = "", attributes: Any = None, etype: Any = None, ctx: Any = None) -> None:
+        pass
+    
+    def debug(self, message: Any = "", attributes: Any = None, etype: Any = None, ctx: Any = None) -> None:
+        pass
+    
+    def fatal(self, message: Any = "", attributes: Any = None, etype: Any = None, ctx: Any = None) -> None:
+        pass
+    
+    def trace(self, message: Any = "", attributes: Any = None, etype: Any = None, ctx: Any = None) -> None:
+        pass
+    
+    def set_level(self, level: str) -> None:
+        pass
+    
+    def get_level(self) -> int:
+        return 0
+    
+    def set_exporters(self, *exporters) -> None:
+        pass
+    
+    def shutdown(self) -> None:
+        pass
+
+
 # 定义 全局 Telemetry Logger
 logger = None
 
@@ -25,6 +64,8 @@ if TELEMETRY_SDK_AVAILABLE:
     logger = SamplerLogger(log_resource())
     # 默认级别为off，不打印日志
     logger.set_level("off")
+else:
+    logger = NullLogger()
 
 
 def get_caller_info() -> str:
@@ -155,6 +196,9 @@ def init_log_provider(server_info: ServerInfo, setting: LogSetting) -> None:
 
 
 def get_logger():
+    global logger
+    if logger is None:
+        logger = NullLogger()
     return logger
 
 

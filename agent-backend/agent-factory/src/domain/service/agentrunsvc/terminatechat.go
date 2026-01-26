@@ -12,8 +12,7 @@ import (
 
 // TerminateChat 终止聊天
 // 如果 agentRunID 不为空，先调用 Executor 终止，再执行原有逻辑
-func (agentSvc *agentSvc) TerminateChat(ctx context.Context, conversationID string, agentRunID string) error {
-	var err error
+func (agentSvc *agentSvc) TerminateChat(ctx context.Context, conversationID string, agentRunID string) (err error) {
 
 	ctx, _ = o11y.StartInternalSpan(ctx)
 	defer o11y.EndSpan(ctx, err)
@@ -34,12 +33,18 @@ func (agentSvc *agentSvc) TerminateChat(ctx context.Context, conversationID stri
 	}
 
 	// 2. 执行原有的 channel 关闭逻辑
-	stopchan, _ := stopChanMap.Load(conversationID)
+	stopchan, ok := stopChanMap.Load(conversationID)
+	if !ok {
+		return
+	}
+
 	if stopchan == nil {
 		o11y.Error(ctx, fmt.Sprintf("[TerminateChat] terminate chat failed, conversationID: %s, stopchan not found", conversationID))
 		agentSvc.logger.Errorf("terminate chat failed, conversationID: %s, stopchan not found", conversationID)
 
-		return capierr.New404Err(ctx, "stopchan not found")
+		err = capierr.New404Err(ctx, "stopchan not found")
+
+		return
 	}
 
 	close(stopchan.(chan struct{}))
@@ -47,5 +52,5 @@ func (agentSvc *agentSvc) TerminateChat(ctx context.Context, conversationID stri
 	o11y.Info(ctx, fmt.Sprintf("[TerminateChat] terminate chat success, conversationID: %s", conversationID))
 	agentSvc.logger.Infof("terminate chat success, conversationID: %s", conversationID)
 
-	return nil
+	return 
 }
