@@ -1,9 +1,9 @@
 {
     "componentDefineType": "helm/service",
-    "name": "agent-factory",
+    "name": "agent-backend",
     "version": "1.0.0",
     "configSchema": {
-        "title": "agent-factory",
+        "title": "agent-backend",
         "description": "组件配置定义",
         "type": "object",
         "properties": {
