@@ -91,10 +91,13 @@ const InterruptFormPanel = ({ chatItemIndex }: any) => {
 
   const updateInterrupt = () => {
     const formValues = form.getFieldsValue();
-    const args = Object.keys(formValues).map(key => ({
-      key,
-      value: formValues[key],
-    }));
+    // 只收集用户修改过的参数，仅包含 key 和 value
+    const args = fields
+      .filter(field => formValues[field.key] !== field.value)
+      .map(field => ({
+        key: field.key,
+        value: formValues[field.key],
+      }));
     const userChatItem = chatList[chatItemIndex - 1];
     const reqBody: any = {};
     if (userChatItem.fileList) {
