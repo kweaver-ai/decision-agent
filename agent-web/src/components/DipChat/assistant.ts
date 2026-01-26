@@ -60,7 +60,7 @@ export const handleChatItemContent = (
     newChatList[lastIndex - 1].key = user_message_id;
   }
   newChatList[lastIndex].content = _.get(message, 'content') ? getChatItemContent(message) : {};
-  newChatList[lastIndex].interrupt = _.get(message, 'ext.interrupt_info');
+  newChatList[lastIndex].interrupt = _.get(message, 'ext.interrupt_info') || {};
   newChatList[lastIndex].agentRunId = agent_run_id;
   // debug模式下记录原始数据，方便调试区展示原始输出结果
   if (debug) {
