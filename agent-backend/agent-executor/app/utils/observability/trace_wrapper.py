@@ -5,7 +5,7 @@ from typing import Optional, Callable, AsyncGenerator, Any, Awaitable
 
 from opentelemetry.trace import Status, StatusCode
 
-from app.common.config import Config
+from app.utils.observability.sdk_available import TELEMETRY_SDK_AVAILABLE
 from app.utils.common import func_judgment
 
 
@@ -19,15 +19,17 @@ def internal_span(
     参数:
         name: span 的名称，如果未提供则使用被注解函数的名称
         attributes: 要添加到 span 的属性字典
-        tracer_provider: 可选的 tracer 提供者实例
 
     返回:
         包装后的函数
     """
 
     def decorator(func: Callable) -> Callable:
-        # 如果没有启用 o11y 跟踪，直接返回
-        if not Config.is_o11y_trace_enabled():
+        # 延迟导入 Config 避免循环依赖
+        from app.common.config import Config
+        
+        # 如果 SDK 不可用或追踪未启用，直接返回原函数
+        if not TELEMETRY_SDK_AVAILABLE or not Config.is_o11y_trace_enabled():
             return func
 
         from exporter.ar_trace.trace_exporter import tracer

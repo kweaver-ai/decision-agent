@@ -2,15 +2,19 @@
 from opentelemetry import trace
 from opentelemetry.trace import SpanKind, Tracer
 from typing import Optional
-from exporter.ar_trace.trace_exporter import tracer
 from opentelemetry.trace import Status, StatusCode
 from contextlib import contextmanager, asynccontextmanager
 from typing import AsyncGenerator, Generator
 
+from app.utils.observability.sdk_available import TELEMETRY_SDK_AVAILABLE, sdk_tracer
+
 
 class TraceContext:
     def __init__(self) -> None:
-        self.tracer: Tracer = tracer
+        if TELEMETRY_SDK_AVAILABLE and sdk_tracer is not None:
+            self.tracer: Tracer = sdk_tracer
+        else:
+            self.tracer: Tracer = trace.get_tracer(__name__)
 
     @contextmanager
     def start_span(

@@ -1,37 +1,37 @@
 # -*- coding:utf-8 -*-
 
 """
-Python 实现的可观测性日志模块
+Python 实现的可观测性追踪模块
 提供带上下文追踪的日志记录功能，支持多种日志导出方式
 """
 
 import os
 
-from exporter.resource.resource import set_service_info
-
-from app.common.config import Config
+from app.utils.observability.sdk_available import (
+    TELEMETRY_SDK_AVAILABLE,
+    set_service_info,
+    trace_resource,
+)
 from app.utils.observability.observability_setting import TraceSetting, ServerInfo
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
 from opentelemetry.trace import set_tracer_provider
 
-# from exporter.ar_trace.trace_exporter import ARTraceExporter
-# from exporter.public.client import HTTPClient
-# from exporter.public.public import WithAnyRobotURL
-from exporter.resource.resource import trace_resource
 
-
-# 初始化 Telemetry Log Provider
-
-
-# 初始化 Trace Provider
 def init_trace_provider(server_info: ServerInfo, setting: TraceSetting) -> None:
-    """初始化日志导出器
+    """初始化追踪导出器
 
     Args:
         server_info: 服务器信息
-        setting: 日志配置设置
+        setting: 追踪配置设置
     """
+    # 如果 SDK 不可用，直接返回
+    if not TELEMETRY_SDK_AVAILABLE:
+        return
+    
+    # 延迟导入 Config 避免循环依赖
+    from app.common.config import Config
+    
     set_service_info(
         server_info.server_name,
         server_info.server_version,
@@ -54,7 +54,6 @@ def init_trace_provider(server_info: ServerInfo, setting: TraceSetting) -> None:
     elif setting.trace_provider == "http":
         trace_exporter = ARTraceExporter(
             HTTPClient(WithAnyRobotURL(setting.http_trace_feed_ingester_url))
-            # StdoutClient("AnyRobotTrace.json")
         )
 
     trace_processor = BatchSpanProcessor(
