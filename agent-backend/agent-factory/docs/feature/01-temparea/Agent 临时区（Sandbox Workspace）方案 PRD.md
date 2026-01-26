@@ -1,24 +1,21 @@
 ## 1. 背景与问题定义
 在 DataAgent 平台中，用户在 Agent 对话过程中需要上传文件供 Agent 分析与操作。为了保证对话的连续性与可复用性，需要一个与 Conversation 绑定的临时文件空间，使 Agent 可以在沙箱内通过稳定路径访问这些文件。
 
-目前缺失的问题：
-
-+ 用户上传的文件无法稳定被 Agent 引用
-+ Agent 执行时无法依赖文件路径进行代码执行
-+ 文件与 Conversation 的生命周期未被明确绑定
-+ 目前缺少对用户可见的临时区能力（上传/列表/下载）
+目前的问题：
++ 当前临时区依赖文档库，以及一系列文档处理和召回能力 （后续版本将不再提供文档库等相关能力）
 
 ---
 
 ## 2. 目标（Goals）
 ### 2.1 核心目标
-1. **提供 Conversation 级别的临时文件空间（Sandbox Workspace）**  
+1. 基于沙箱 + 对象存储 实现临时区功能，具体如下
+2. **提供 Conversation 级别的临时文件空间（Sandbox Workspace）**  
 该空间可被 Agent 在沙箱内以稳定路径访问。
-2. **支持用户在指定 Agent + Conversation 内上传文件**  
+3. **支持用户在指定 Agent + Conversation 内上传文件**  
 文件将被存储在与沙箱一致的路径结构中。
-3. **提供用户可见的文件列表与下载能力**  
+4. **提供用户可见的文件列表与下载能力**  
 用户可在对话界面查看已上传文件并下载。
-4. **保证文件生命周期与 Conversation 绑定**  
+5. **保证文件生命周期与 Conversation 绑定**  
 Conversation 存在 → 文件可引用；Conversation 删除 → 文件立即删除，不可恢复。
 
 ---
@@ -99,8 +96,7 @@ Workspace Root
 ├── shared/              # Session 级共享区（可选）
 ├── conversations/
 │   └── {conversation_id}/
-│       ├── input/
-│       ├── output/
+│       ├── generated/
 │       └── tmp/
 └── system/
 ```
@@ -109,7 +105,6 @@ Workspace Root
 
 | 区域 | 可见范围 |
 | --- | --- |
-| system | Runtime 内部 |
 | shared | 同 Session 所有 Conversation |
 | conversation dir | 仅当前 Conversation |
 
@@ -124,29 +119,27 @@ Workspace Root
 + 用户上传的文件存储在固定路径：
 
 ```plain
-/workspace/uploads/temparea/<filename>
+/workspace/{conversation_id}/uploads/temparea/<filename>
 ```
 
 + **完整物理路径**（Sandbox Platform 内部）：
 
 ```plain
-/workspace/uploads/{sandbox_session_id}/{conversation_id}/temparea/<filename>
+/workspace/{conversation_id}/uploads/temparea/<filename>
 ```
 
-+ **Agent 代码中使用的约定路径**（会被 Sandbox Platform 自动映射）：
++ **Agent 代码中使用的路径**（与物理路径一致）：
 
 ```plain
-/workspace/uploads/temparea/<filename>
+/workspace/{conversation_id}/uploads/temparea/<filename>
 ```
 
-+ Agent 在沙箱内必须通过**真实路径**访问文件（而不是 file_id、token 等抽象引用）。
-+ 生成文件存储在：
++ Agent 在沙箱内直接使用物理路径访问文件，无需 mount 映射。
 
 ```plain
-/workspace/uploads/generated/
+/workspace/{conversation_id}/uploads/temparea/<filename>
 ```
 
-**不展示给用户**。
 
 ### 4.6 目录结构
 + V1 文件平铺存储（flat）
@@ -154,23 +147,26 @@ Workspace Root
 
 ### 4.7 Agent Prompt 路径注入
 
-为避免 LLM 盲猜路径（如 /data/），必须在 Agent 的 System Prompt 中注入路径前缀：
+为避免 LLM 盲猜路径（如 /data/），必须在 Agent 的 User Prompt 中动态注入路径信息：
 
 **注入内容**：
-- 临时区根路径：`/workspace/uploads/temparea/`
+- 临时区根路径：`/workspace/{conversation_id}/uploads/temparea/`
 - 当前可用的文件列表
 - 每个文件的完整路径
 
-**注入时机**：每次调用 Agent 时动态注入
+**注入时机**：每次用户提问时动态注入到用户提示词
 
-**注入示例**：
+**注入位置**：作为用户查询的一部分，在用户原始问题之前注入
+
+**注入示例**（在用户问题前注入）：
 ```
-You have access to user-uploaded files in the workspace.
-Workspace root: /workspace/uploads/temparea/
+当前会话的临时文件路径：/workspace/conv-123/uploads/temparea/
 
-Available files:
-- data.csv (/workspace/uploads/temparea/data.csv)
-- config.json (/workspace/uploads/temparea/config.json)
+可用文件：
+- data.csv (/workspace/conv-123/uploads/temparea/data.csv)
+- config.json (/workspace/conv-123/uploads/temparea/config.json)
+
+用户问题：请分析 data.csv 中的数据...
 ```
 
 ### 4.8 生命周期管理
@@ -188,7 +184,7 @@ Available files:
 **Sandbox Platform 必须提供的安全保障**：
 
 #### 1. 文件系统隔离
-- Agent 代码只能访问 `/workspace/uploads/temparea/` 目录
+- Agent 代码只能访问 `/workspace/{conversation_id}/uploads/temparea/` 目录
 - 使用 chroot 或容器级别隔离限制访问范围
 - 禁止访问系统目录（`/etc`, `/usr`, `/bin` 等）
 
@@ -296,7 +292,7 @@ import socket                               # ❌ 禁止：网络访问
 
 ## 8. 关键约束与实现注意点
 1. **路径稳定性**  
-Agent 必须能稳定访问 `/sandbox/workspace/uploads` 下的文件。
+Agent 必须能稳定访问 `/workspace/{conversation_id}/uploads/temparea/` 下的文件。
 2. **用户可见性**  
 文件列表只展示用户上传的文件。
 3. **删除强一致性**  

@@ -196,22 +196,20 @@ sequenceDiagram
 
 ```
 /workspace/
-└── uploads/
-    └── {sandbox_session_id}/
-        └── {conversation_id}/
-            └── temparea/              # 【新增】临时区上传的文件目录
-                ├── data.csv
-                ├── model.pkl
-                └── config.json
+└── {conversation_id}/
+    └── uploads/
+        └── temparea/              # 【新增】临时区上传的文件目录
+            ├── data.csv
+            ├── model.pkl
+            └── config.json
 ```
 
 ### 路径说明
 
 | 路径层级 | 说明 |
 |---------|------|
-| `uploads` | Sandbox Platform 固定目录 |
-| `{sandbox_session_id}` | Sandbox Platform 返回的 Session ID |
 | `{conversation_id}` | Conversation ID |
+| `uploads` | Sandbox Platform 固定目录，用于存放上传文件 |
 | `temparea` | **固定目录名**，用于区分用户上传文件与其他类型文件 |
 | `*.csv, *.pkl, ...` | 用户上传的文件 |
 
@@ -221,9 +219,8 @@ sequenceDiagram
 # Agent 生成的代码中引用用户上传的文件
 import pandas as pd
 
-# Sandbox Platform 会根据 sandbox_session_id 和 conversation_id 自动映射路径
-# Agent 只需要使用约定路径即可
-df = pd.read_csv('/workspace/uploads/temparea/data.csv')
+# Agent 直接使用物理路径，无需 mount 映射
+df = pd.read_csv('/workspace/{conversation_id}/uploads/temparea/data.csv')
 ```
 
 ---
@@ -911,9 +908,38 @@ await downloadFile({
 
 # 7. Agent 代码执行集成
 
-## 7.1 传递 Sandbox Session ID 给 Agent Executor
+## 7.1 Query 注入：将文件信息传递给 Agent Executor
 
-### 修改 ChatReq DTO
+### 设计原则
+
+本方案采用 **agent-factory 端注入** 的方式：
+1. 前端传递用户选择的文件列表（只包含文件名）
+2. agent-factory 接收文件列表，直接构建完整路径
+3. agent-factory 将文件信息注入到用户问题（query）中
+4. agent-executor 只接收注入后的完整 query，不感知文件选择逻辑
+
+### 数据流
+
+```
+前端选择文件 → SelectedFiles (仅文件名)
+    ↓
+ChatReq (SelectedFiles, Query)
+    ↓
+GenerateAgentCallReq
+    ├─ buildUserQuery(Query + SelectedFiles) → finalQuery
+    ↓
+agentCallReq.Input["query"] = finalQuery
+    ↓
+agent-executor (只接收 finalQuery，不感知文件信息)
+    ↓
+LLM (在 prompt 中看到文件路径信息)
+```
+
+---
+
+## 7.2 修改 ChatReq DTO
+
+### 定义 SelectedFile 结构体
 
 **driveradapter/api/rdto/agent/req/chat_req.go**：
 
@@ -923,7 +949,7 @@ package req
 // SelectedFile 用户选择的临时区文件
 type SelectedFile struct {
     FileName string `json:"file_name" validate:"required"` // 文件名
-    // 注：完整路径为 /workspace/uploads/temparea/{file_name}
+    // 注：完整路径为 /workspace/{conversation_id}/uploads/temparea/{file_name}
 }
 
 type ChatReq struct {
@@ -952,37 +978,172 @@ type ChatReq struct {
 1. 用户先通过 Sandbox Platform API 上传文件到临时区
 2. 用户发起对话时，可以选择已上传的文件参与本次对话
 3. 前端将选中的文件名通过 `selected_files` 参数传递给后端
-4. 后端将文件信息注入到 Agent 的 WorkspaceContext 中
+4. 后端将文件信息注入到 query 中，传递给 agent-executor
 
-### 修改 GenerateAgentCallReq 函数
+### 删除旧字段
+
+**删除**以下字段（破坏性变更）：
+
+```go
+type ChatReq struct {
+    // ... 其他字段 ...
+
+    // 以下字段已删除
+    // TemporaryAreaID string `json:"temporary_area_id"`  // 已删除
+    // TempFiles      []valueobject.TempFile `json:"temp_files"`  // 已删除
+}
+```
+
+---
+
+## 7.3 实现 buildUserQuery 函数
+
+### 新增文件
+
+**domain/service/agentrunsvc/inject_workspace_context.go**（新建）：
+
+```go
+package agentsvc
+
+import (
+    "fmt"
+    "strings"
+
+    agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
+)
+
+// buildUserQuery 将文件信息注入到用户问题中
+// 生成的格式：
+// 当前会话的临时文件路径：/workspace/{conversation_id}/uploads/temparea/
+//
+// 可用文件：
+// - data.csv (/workspace/conv-123/uploads/temparea/data.csv)
+// - config.json (/workspace/conv-123/uploads/temparea/config.json)
+//
+// 用户问题：{originalQuery}
+func buildUserQuery(originalQuery string, conversationID string, selectedFiles []agentreq.SelectedFile) string {
+    // 如果没有选择文件，直接返回原始问题
+    if len(selectedFiles) == 0 {
+        return originalQuery
+    }
+
+    // 构建文件列表
+    var fileList strings.Builder
+    for _, file := range selectedFiles {
+        filePath := fmt.Sprintf("/workspace/%s/uploads/temparea/%s", conversationID, file.FileName)
+        fileList.WriteString(fmt.Sprintf("- %s (%s)\n", file.FileName, filePath))
+    }
+
+    // 注入文件信息到用户问题之前
+    rootPath := fmt.Sprintf("/workspace/%s/uploads/temparea/", conversationID)
+    injectedQuery := fmt.Sprintf(`当前会话的临时文件路径：%s
+
+可用文件：
+%s用户问题：%s`,
+        rootPath,
+        fileList.String(),
+        originalQuery,
+    )
+
+    return injectedQuery
+}
+```
+
+---
+
+## 7.4 修改 GenerateAgentCallReq 函数
+
+### 修改位置
 
 **domain/service/agentrunsvc/chat_req.go**：
-
-在 `GenerateAgentCallReq` 函数中，添加 Sandbox Session ID 到请求参数：
 
 ```go
 func (agentSvc *agentSvc) GenerateAgentCallReq(
     ctx context.Context,
     req *agentreq.ChatReq,
     contexts []*comvalobj.LLMMessage,
-    agent *agentfactorydto.Agent,
-) (*v2agentexecutordto.V2AgentCallReq, error) {
+    agent agentfactorydto.Agent,
+) (*agentexecutordto.AgentCallReq, error) {
     // ... 现有代码 ...
 
-    agentCallReq := v2agentexecutordto.V2AgentCallReq{
-        // ... 其他字段 ...
-        SandboxSessionID: req.SandboxSessionID, // 新增
+    // 新增：根据 SelectedFiles 注入文件信息到 query
+    finalQuery := buildUserQuery(req.Query, req.ConversationID, req.SelectedFiles)
+
+    agentCallReq := &agentexecutordto.AgentCallReq{
+        ID:           req.AgentID,
+        AgentVersion: req.AgentVersion,
+        Config:       AgentConfig2AgentCallConfig(ctx, &agent.Config, req),
+        Input: map[string]interface{}{
+            "query":        finalQuery,  // 使用注入后的 query（修改点）
+            "history":      contexts,
+            "tool":         req.Tool,
+            "confirm_plan": req.ConfirmPlan,
+        },
+        // ... 其他字段保持不变 ...
     }
+
+    // 删除旧的 TempFiles 处理逻辑（如果有）
+    // 原来的代码可能在 agent.Config.Input.Fields 中处理 type="file" 的字段
+    // 现在不再需要，因为文件信息已经注入到 query 中
+    // agentCallReq.Input[field.Name] = req.TempFiles  // 删除这行
+
+    // ... 其他代码保持不变 ...
 
     return agentCallReq, nil
 }
 ```
 
+### 代码对比
+
+**修改前**：
+```go
+agentCallReq := &agentexecutordto.AgentCallReq{
+    Input: map[string]interface{}{
+        "query": req.Query,  // 直接使用原始 query
+        // ...
+    },
+}
+
+// 旧的处理方式：将 TempFiles 传递给 agent-executor
+if field.Type == "file" {
+    agentCallReq.Input[field.Name] = req.TempFiles
+}
+```
+
+**修改后**：
+```go
+// 先构建注入后的 query
+finalQuery := buildUserQuery(req.Query, req.ConversationID, req.SelectedFiles)
+
+agentCallReq := &agentexecutordto.AgentCallReq{
+    Input: map[string]interface{}{
+        "query": finalQuery,  // 使用注入后的 query
+        // ...
+    },
+}
+
+// 不再需要处理 TempFiles
+// 删除相关代码
+```
+
 ---
 
-## 7.2 Agent Executor 使用 Sandbox Session ID
+## 7.5 agent-executor 端无需修改
 
-Agent Executor 在调用 Sandbox Platform 代码执行工具时，自动使用传递的 `sandbox_session_id`，确保在正确的 Session 环境中执行代码。
+由于文件信息已经在 agent-factory 端注入到 query 中，agent-executor 端**无需任何修改**：
+
+- agent-executor 只接收完整的 query（已包含文件路径信息）
+- LLM 在 prompt 中会看到类似以下内容：
+  ```
+  当前会话的临时文件路径：/workspace/conv-123/uploads/temparea/
+
+  可用文件：
+  - data.csv (/workspace/conv-123/uploads/temparea/data.csv)
+  - config.json (/workspace/conv-123/uploads/temparea/config.json)
+
+  用户问题：分析一下 data.csv 中的销售趋势
+  ```
+- Agent 生成的代码可以直接使用路径 `/workspace/conv-123/uploads/temparea/data.csv`
 
 ### Agent 代码示例
 
@@ -990,12 +1151,11 @@ Agent Executor 在调用 Sandbox Platform 代码执行工具时，自动使用�
 # Agent 生成的代码中引用用户上传的文件
 import pandas as pd
 
-# 文件路径格式：/workspace/uploads/temparea/{filename}
-# Sandbox Platform 会根据 sandbox_session_id 和 conversation_id 自动映射路径
-# Agent 只需要使用约定路径即可
+# 文件路径格式：/workspace/{conversation_id}/uploads/temparea/{filename}
+# Agent 直接使用物理路径，无需 mount 映射
 
-# 读取用户上传的文件
-df = pd.read_csv('/workspace/uploads/temparea/data.csv')
+# 读取用户上传的文件（路径已在 prompt 中提供）
+df = pd.read_csv('/workspace/conv-123/uploads/temparea/data.csv')
 print(df.head())
 
 # 处理数据
@@ -1006,114 +1166,62 @@ with open('/workspace/uploads/result.json', 'w') as f:
     f.write(result.to_json())
 ```
 
-### 路径映射说明
+---
 
-Sandbox Platform 内部会自动进行路径映射：
+## 7.6 完整请求示例
 
-| Agent 使用的路径 | Sandbox Platform 实际路径 |
-|----------------|--------------------------|
-| `/workspace/uploads/temparea/data.csv` | `/workspace/uploads/{sandbox_session_id}/{conversation_id}/temparea/data.csv` |
+### 前端请求
 
-Agent 无需知道完整的物理路径，只需使用约定路径即可。
+```json
+{
+  "query": "分析一下 data.csv 中的销售趋势",
+  "conversation_id": "conv-123",
+  "stream": true,
+  "selected_files": [
+    { "file_name": "data.csv" },
+    { "file_name": "config.json" }
+  ]
+}
+```
+
+### 注入后的 query（传递给 LLM）
+
+```
+当前会话的临时文件路径：/workspace/conv-123/uploads/temparea/
+
+可用文件：
+- data.csv (/workspace/conv-123/uploads/temparea/data.csv)
+- config.json (/workspace/conv-123/uploads/temparea/config.json)
+
+用户问题：分析一下 data.csv 中的销售趋势
+```
 
 ---
 
-## 7.3 WorkspaceContext：文件信息传递
+## 7.7 关键设计决策
 
-### 目的
-让 Agent 知道当前可用的文件列表，无需执行 ls 命令。
+### 为什么选择 agent-factory 端注入？
 
-### 数据结构
+| 对比项 | agent-factory 端注入 | agent-executor 端注入 |
+|--------|---------------------|----------------------|
+| **复杂度** | 低 | 中 |
+| **依赖** | 不依赖 Sandbox Platform API | 需要传递 WorkspaceContext |
+| **修改范围** | 仅 agent-factory | agent-factory + agent-executor |
+| **耦合度** | 低（agent-executor 不感知） | 中（需要接收文件信息） |
+| **灵活性** | 高（注入逻辑集中管理） | 中（注入逻辑分散） |
 
-```go
-// WorkspaceFile 工作区文件信息
-type WorkspaceFile struct {
-    FileName string `json:"file_name"` // 文件名
-    FilePath string `json:"file_path"` // 完整路径
-}
+### 为什么不需要 Sandbox Platform API？
 
-// WorkspaceContext 工作区上下文
-type WorkspaceContext struct {
-    RootPath  string          `json:"root_path"`  // 临时区根路径
-    Files     []WorkspaceFile `json:"files"`      // 可用文件列表
-}
+- 前端传递的 SelectedFiles 已经包含文件名
+- 完整路径可以根据约定规则直接构建：`/workspace/{conversation_id}/uploads/temparea/{file_name}`
+- 避免额外的 API 调用，提升性能
+- 简化错误处理逻辑
 
-// 在 V2AgentCallReq 中增加字段
-type V2AgentCallReq struct {
-    // ... 现有字段 ...
+### 为什么删除旧字段？
 
-    // WorkspaceContext 工作区上下文（新增）
-    WorkspaceContext *WorkspaceContext `json:"workspace_context,omitempty"`
-}
-```
-
-**注**：由于 `ListFiles` API 仅返回文件名列表，不包含文件大小信息，因此 `WorkspaceFile` 结构体不包含 `FileSize` 字段。
-
-### 填充逻辑
-
-在 `GenerateAgentCallReq` 函数中：
-
-```go
-func (agentSvc *agentSvc) GenerateAgentCallReq(
-    ctx context.Context,
-    req *agentreq.ChatReq,
-    contexts []*comvalobj.LLMMessage,
-    agent *agentfactorydto.Agent,
-) (*v2agentexecutordto.V2AgentCallReq, error) {
-    // ... 现有代码 ...
-
-    // 获取文件列表
-    sessionID := fmt.Sprintf("sb-session-%s", req.UserID)
-    files, err := agentSvc.sandboxPlatform.ListFiles(ctx, sessionID, req.ConversationID, "temparea")
-    if err != nil {
-        agentSvc.logger.Warnf("[GenerateAgentCallReq] list files failed: %v", err)
-        files = []string{} // 失败时使用空列表
-    }
-
-    // 构建文件信息
-    workspaceFiles := make([]v2agentexecutordto.WorkspaceFile, 0, len(files))
-    for _, file := range files {
-        workspaceFiles = append(workspaceFiles, v2agentexecutordto.WorkspaceFile{
-            FileName: file,
-            FilePath: fmt.Sprintf("/workspace/uploads/temparea/%s", file),
-        })
-    }
-
-    agentCallReq := v2agentexecutordto.V2AgentCallReq{
-        // ... 其他字段 ...
-        SandboxSessionID: req.SandboxSessionID,
-        WorkspaceContext: &v2agentexecutordto.WorkspaceContext{
-            RootPath: "/workspace/uploads/temparea/",
-            Files:    workspaceFiles,
-        },
-    }
-
-    return agentCallReq, nil
-}
-```
-
-### Agent Prompt 注入
-
-在 Agent Executor 中，将 WorkspaceContext 转换为 System Prompt 片段：
-
-```python
-# Agent Executor 端的 Prompt 模板
-workspace_info = ""
-if workspace_context:
-    files_info = "\n".join([
-        f"- {f['file_name']} ({f['file_path']})"
-        for f in workspace_context['files']
-    ])
-    workspace_info = f"""
-You have access to user-uploaded files in the workspace.
-Workspace root: {workspace_context['root_path']}
-
-Available files:
-{files_info}
-"""
-
-system_prompt = base_prompt + workspace_info
-```
+- `TemporaryAreaID`：不再需要，Sandbox Session 由 `user_id` 生成
+- `TempFiles`：不再需要，文件信息已注入到 query 中
+- 保持 API 简洁，避免字段冗余
 
 ---
 
@@ -1256,7 +1364,7 @@ s.logger.Infof("[EnsureSandboxSession] sandbox session ready: %s (attempts: %d)"
 恶意 Agent 或用户尝试访问其他 Conversation 的文件，例如：
 ```python
 # 尝试访问其他对话的文件
-df = pd.read_csv('/workspace/uploads/temparea/../../conv-999/temparea/secret.csv')
+df = pd.read_csv('/workspace/conv-123/uploads/temparea/../../conv-999/uploads/temparea/secret.csv')
 ```
 
 **防护措施**：
@@ -1266,7 +1374,7 @@ df = pd.read_csv('/workspace/uploads/temparea/../../conv-999/temparea/secret.csv
 // 在 Sandbox Platform 的文件操作中
 func validatePath(sessionID, conversationID, requestedPath string) error {
     // 构建允许的前缀
-    allowedPrefix := fmt.Sprintf("/workspace/uploads/%s/%s/temparea/", sessionID, conversationID)
+    allowedPrefix := fmt.Sprintf("/workspace/%s/uploads/temparea/", conversationID)
 
     // 解析路径，防止 ../ 绕过
     cleanPath := filepath.Clean(requestedPath)
@@ -1319,7 +1427,10 @@ func sanitizeFileName(fileName string) string {
 
 ### 新的 API 设计
 
-由于 Sandbox Session 现在由 `user_id` 自动生成，需要新增 `selected_files` 参数，让用户在对话时可以选择已上传的文件。
+采用 **query 注入**的方式，将用户选择的文件信息注入到用户问题中：
+- 删除 `temporary_area_id` 和 `temp_files` 参数
+- 新增 `selected_files` 参数，只包含文件名
+- agent-factory 将文件信息注入到 query，agent-executor 不感知
 
 ### API 请求参数变更
 
@@ -1393,16 +1504,13 @@ sequenceDiagram
     Note over User,DAP: 步骤2: 用户发起对话并选择文件
     User->>Frontend: 输入问题，选择已上传文件
     Frontend->>DAP: POST /chat/completion {query, selected_files}
-    Note over DAP: 自动生成 session_id = sb-session-{user_id}
-    DAP->>SP: GET /api/v1/sessions/{session_id}
 
-    alt Session 不存在
-        DAP->>SP: POST /api/v1/sessions
-        DAP->>SP: 轮询等待 Session 就绪
-    end
+    Note over DAP: buildUserQuery 注入文件信息
+    DAP->>DAP: final_query = buildUserQuery(query, selected_files)
 
-    Note over DAP: 根据 selected_files 填充 WorkspaceContext
-    DAP->>DAP: 调用 Agent Executor
+    Note over DAP: 调用 Agent Executor（只接收 final_query）
+    DAP->>DAP: AgentExecutor.Call(final_query)
+
     DAP-->>Frontend: 返回 Chat 响应
 ```
 
@@ -1490,42 +1598,6 @@ async function listUploadedFiles(userId: string, conversationId: string) {
 }
 ```
 
-### WorkspaceContext 填充逻辑
-
-后端根据 `selected_files` 填充 `WorkspaceContext`：
-
-```go
-// 在 GenerateAgentCallReq 函数中
-func (agentSvc *agentSvc) GenerateAgentCallReq(
-    ctx context.Context,
-    req *agentreq.ChatReq,
-    contexts []*comvalobj.LLMMessage,
-    agent *agentfactorydto.Agent,
-) (*v2agentexecutordto.V2AgentCallReq, error) {
-    // ... 现有代码 ...
-
-    // 根据用户选择的文件构建 WorkspaceContext
-    workspaceFiles := make([]v2agentexecutordto.WorkspaceFile, 0, len(req.SelectedFiles))
-    for _, selectedFile := range req.SelectedFiles {
-        workspaceFiles = append(workspaceFiles, v2agentexecutordto.WorkspaceFile{
-            FileName: selectedFile.FileName,
-            FilePath: fmt.Sprintf("/workspace/uploads/temparea/%s", selectedFile.FileName),
-        })
-    }
-
-    agentCallReq := v2agentexecutordto.V2AgentCallReq{
-        // ... 其他字段 ...
-        SandboxSessionID: req.SandboxSessionID,
-        WorkspaceContext: &v2agentexecutordto.WorkspaceContext{
-            RootPath: "/workspace/uploads/temparea/",
-            Files:    workspaceFiles,
-        },
-    }
-
-    return agentCallReq, nil
-}
-```
-
 ### API 响应变更
 
 响应结构**保持不变**。
@@ -1534,91 +1606,347 @@ func (agentSvc *agentSvc) GenerateAgentCallReq(
 
 # 9. 实施步骤
 
-## 阶段一：基础设施准备
+## 本次实施范围
 
-1. 创建 Sandbox Platform HTTP 客户端接口和实现
-2. 添加 Sandbox Platform 配置
-3. 更新依赖注入
+本次实现专注于 **query 注入功能**，不涉及 Sandbox Session 管理。
 
----
-
-## 阶段二：核心逻辑实现
-
-1. 实现 `EnsureSandboxSession` 函数
-2. 在 Chat 流程中集成 Sandbox Session 检查/创建
-3. 修改 `GenerateAgentCallReq` 传递 `sandbox_session_id`
-4. 添加错误处理和日志
+- ✅ 实现 `selected_files` 参数接收
+- ✅ 实现文件信息注入到 query
+- ✅ 删除旧的 `temporary_area_id` 和 `temp_files` 字段
+- ❌ 不涉及 Sandbox Session 管理（后续独立实施）
 
 ---
 
-## 阶段三：测试验证
+## 阶段一：DTO 修改
 
-1. 单元测试：`EnsureSandboxSession` 函数
-2. 集成测试：Chat 流程中 Sandbox Session 管理
-3. 并发测试：多请求并发创建 Session
-4. 端到端测试：文件上传 + Agent 执行
+### 1.1 定义 SelectedFile 结构体
+
+**文件**: `driveradapter/api/rdto/agent/req/chat_req.go`
+
+```go
+package req
+
+// SelectedFile 用户选择的临时区文件
+type SelectedFile struct {
+    FileName string `json:"file_name" validate:"required"` // 文件名
+    // 注：完整路径为 /workspace/{conversation_id}/uploads/temparea/{file_name}
+}
+```
+
+### 1.2 修改 ChatReq
+
+**文件**: `driveradapter/api/rdto/agent/req/chat_req.go`
+
+```go
+type ChatReq struct {
+    // ... 现有字段 ...
+
+    // SelectedFiles 用户选择的临时区文件（新增）
+    SelectedFiles []SelectedFile `json:"selected_files,omitempty"`
+
+    // 以下字段已删除
+    // TemporaryAreaID string `json:"temporary_area_id"`  // 已删除
+    // TempFiles      []valueobject.TempFile `json:"temp_files"`  // 已删除
+}
+```
+
+### 1.3 同步修改 DebugReq
+
+**文件**: `driveradapter/api/rdto/agent/req/debug_req.go`
+
+删除 `TempFiles` 字段，保持与 ChatReq 一致。
 
 ---
 
-## 阶段四：API 变更
+## 阶段二：实现 buildUserQuery 函数
 
-1. **删除旧参数**：
-   - 从 `ChatReq` DTO 中删除 `TemporaryAreaID` 字段
-   - 从 `ChatReq` DTO 中删除 `TempFiles` 字段
+### 2.1 创建新文件
 
-2. **新增 selected_files 参数**：
-   ```go
-   // driveradapter/api/rdto/agent/req/chat_req.go
-   type SelectedFile struct {
-       FileName string `json:"file_name" validate:"required"`
-   }
+**文件**: `domain/service/agentrunsvc/inject_workspace_context.go`（新建）
 
-   type ChatReq struct {
-       // ... 现有字段 ...
-       SelectedFiles []SelectedFile `json:"selected_files,omitempty"`
-   }
-   ```
+```go
+package agentsvc
 
-3. **更新 GenerateAgentCallReq**：
-   - 根据 `req.SelectedFiles` 填充 `WorkspaceContext`
-   - 仅将用户选择的文件注入到 Agent Prompt 中
+import (
+    "fmt"
+    "strings"
 
-4. **更新 API 文档**：
-   - 移除 `temporary_area_id` 和 `temp_files` 参数说明
-   - 添加 `selected_files` 参数说明
-   - 添加新的文件上传方式说明（直接调用 Sandbox Platform API）
+    agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
+)
+
+// buildUserQuery 将文件信息注入到用户问题中
+func buildUserQuery(originalQuery string, conversationID string, selectedFiles []agentreq.SelectedFile) string {
+    if len(selectedFiles) == 0 {
+        return originalQuery
+    }
+
+    var fileList strings.Builder
+    for _, file := range selectedFiles {
+        filePath := fmt.Sprintf("/workspace/%s/uploads/temparea/%s", conversationID, file.FileName)
+        fileList.WriteString(fmt.Sprintf("- %s (%s)\n", file.FileName, filePath))
+    }
+
+    rootPath := fmt.Sprintf("/workspace/%s/uploads/temparea/", conversationID)
+    injectedQuery := fmt.Sprintf(`当前会话的临时文件路径：%s
+
+可用文件：
+%s用户问题：%s`,
+        rootPath,
+        fileList.String(),
+        originalQuery,
+    )
+
+    return injectedQuery
+}
+```
+
+---
+
+## 阶段三：修改 GenerateAgentCallReq 函数
+
+### 3.1 修改 ChatReq 处理逻辑
+
+**文件**: `domain/service/agentrunsvc/chat_req.go`
+
+**修改点**：
+1. 添加 `buildUserQuery` 调用
+2. 使用注入后的 `finalQuery`
+3. 删除旧的 `TempFiles` 处理逻辑
+
+**修改前**：
+```go
+agentCallReq := &agentexecutordto.AgentCallReq{
+    Input: map[string]interface{}{
+        "query": req.Query,  // 原始 query
+        // ...
+    },
+}
+
+// 旧的处理方式
+for _, field := range agent.Config.Input.Fields {
+    if field.Type == "file" {
+        agentCallReq.Input[field.Name] = req.TempFiles
+        continue
+    }
+    // ...
+}
+```
+
+**修改后**：
+```go
+// 新增：注入文件信息到 query
+finalQuery := buildUserQuery(req.Query, req.ConversationID, req.SelectedFiles)
+
+agentCallReq := &agentexecutordto.AgentCallReq{
+    Input: map[string]interface{}{
+        "query": finalQuery,  // 使用注入后的 query
+        "history":      contexts,
+        "tool":         req.Tool,
+        "confirm_plan": req.ConfirmPlan,
+    },
+    // ... 其他字段保持不变 ...
+}
+
+// 修改：跳过 type="file" 的字段处理
+excludeFields := []string{"history", "query", "header", "tool", "self_config", "file"}  // 新增 "file"
+
+for _, field := range agent.Config.Input.Fields {
+    // 跳过内置参数和文件字段
+    if slices.Contains(excludeFields, field.Name) {
+        continue
+    }
+    // ...
+}
+```
+
+---
+
+## 阶段四：清理旧代码
+
+### 4.1 删除 TempFile 相关代码
+
+查找并删除以下代码：
+
+1. **TempFile 结构体使用**：
+   - `domain/service/agentrunsvc/chat_msg.go` 中的 `TempFiles` 字段赋值
+   - `domain/service/agentrunsvc/chat_post_process.go` 中的 `TempFiles` 字段赋值
+   - `src/domain/valueobject/temp_file.go`（如果不再使用）
+
+2. **TempFileProcess 相关**（如果完全废弃）：
+   - `domain/entity/dolphintpleo/temp_file_process_content.go`
+   - `domain/enum/cdaenum/dolphin_tpl_key.go` 中的 `DolphinTplKeyTempFileProcess`
+   - 相关的配置和引用
+
+**注意**：如果 `TempFileProcess` 还被其他功能使用，请谨慎删除。
+
+### 4.2 更新单元测试
+
+查找并更新以下测试文件：
+- 测试文件中 `TempFiles` 字段的使用
+- 测试文件中 `TemporaryAreaID` 字段的使用
+- 更新测试用例以使用 `SelectedFiles`
 
 ---
 
 ## 阶段五：前端集成
 
-1. **移除旧的前端代码**：
-   - 删除传递 `temporary_area_id` 的代码
-   - 删除传递 `temp_files` 的代码
+### 5.1 移除旧的前端代码
 
-2. **实现新的文件上传**：
-   - 前端直接调用 Sandbox Platform API 上传文件
-   - 使用 `sb-session-{user_id}` 作为 session_id
+删除以下代码（如果存在）：
+- 传递 `temporary_area_id` 的代码
+- 传递 `temp_files` 的代码
 
-3. **实现文件选择功能**：
-   - 用户上传文件后，前端获取文件列表
-   - 用户在发起对话时可以选择已上传的文件
-   - 将选中的文件通过 `selected_files` 参数传递
+### 5.2 实现文件选择功能
 
-4. **更新前端文档**：
-   - 说明新的文件上传方式
-   - 说明文件选择功能
-   - 更新示例代码
+```typescript
+// 1. 上传文件到 Sandbox Platform
+async function uploadFile(userId: string, conversationId: string, file: File) {
+    const sessionId = `sb-session-${userId}`;
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('conversation_id', conversationId);
+    formData.append('subdir', 'temparea');
+
+    const response = await fetch(
+        `${SANDBOX_API_URL}/api/v1/sessions/${sessionId}/files/upload`,
+        { method: 'POST', body: formData }
+    );
+
+    return response.json();
+}
+
+// 2. 发起对话时选择文件
+interface SelectedFile {
+    file_name: string;
+}
+
+async function chatWithFiles(
+    query: string,
+    conversationId: string,
+    selectedFiles: SelectedFile[]
+) {
+    const response = await fetch('/api/agent-app/v1/app/my-agent/chat/completion', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            query: query,
+            conversation_id: conversationId,
+            stream: true,
+            selected_files: selectedFiles
+        })
+    });
+
+    return response.json();
+}
+
+// 3. 获取可用文件列表
+async function listUploadedFiles(userId: string, conversationId: string) {
+    const sessionId = `sb-session-${userId}`;
+
+    const response = await fetch(
+        `${SANDBOX_API_URL}/api/v1/sessions/${sessionId}/files`,
+        {
+            method: 'GET',
+            headers: {
+                'conversation_id': conversationId,
+                'subdir': 'temparea'
+            }
+        }
+    );
+
+    const data = await response.json();
+    return data.files;
+}
+```
 
 ---
 
-## 阶段六：清理旧代码
+## 阶段六：测试验证
 
-1. 删除旧的 temparea 相关代码（如果存在）
-2. 删除 `t_data_agent_temporary_area` 表（如果不再使用）
-3. 数据迁移：将旧的临时区文件迁移到 Sandbox Platform（如果需要）
-4. 更新单元测试
-5. 更新文档
+### 6.1 单元测试
+
+**测试文件**: `domain/service/agentrunsvc/inject_workspace_context_test.go`（新建）
+
+```go
+package agentsvc_test
+
+import (
+    "testing"
+
+    agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
+    "github.com/stretchr/testify/assert"
+)
+
+func TestBuildUserQuery(t *testing.T) {
+    tests := []struct {
+        name           string
+        originalQuery  string
+        conversationID string
+        selectedFiles  []agentreq.SelectedFile
+        expectedPrefix string
+    }{
+        {
+            name:           "no files selected",
+            originalQuery:  "hello",
+            conversationID: "conv-123",
+            selectedFiles:  []agentreq.SelectedFile{},
+            expectedPrefix: "hello",
+        },
+        {
+            name:           "single file selected",
+            originalQuery:  "analyze data",
+            conversationID: "conv-123",
+            selectedFiles: []agentreq.SelectedFile{
+                {FileName: "data.csv"},
+            },
+            expectedPrefix: "当前会话的临时文件路径：/workspace/conv-123/uploads/temparea/\n\n可用文件：\n- data.csv (/workspace/conv-123/uploads/temparea/data.csv)\n\n用户问题：analyze data",
+        },
+        {
+            name:           "multiple files selected",
+            originalQuery:  "compare files",
+            conversationID: "conv-456",
+            selectedFiles: []agentreq.SelectedFile{
+                {FileName: "data1.csv"},
+                {FileName: "data2.csv"},
+            },
+            expectedPrefix: "当前会话的临时文件路径：/workspace/conv-456/uploads/temparea/",
+        },
+    }
+
+    for _, tt := range tests {
+        t.Run(tt.name, func(t *testing.T) {
+            result := buildUserQuery(tt.originalQuery, tt.conversationID, tt.selectedFiles)
+            assert.Contains(t, result, tt.expectedPrefix)
+        })
+    }
+}
+```
+
+### 6.2 集成测试
+
+1. 测试 `GenerateAgentCallReq` 函数
+2. 测试 `SelectedFiles` 到 `finalQuery` 的转换
+3. 测试完整的 Chat 流程
+
+### 6.3 端到端测试
+
+1. 文件上传 → 选择文件 → 对话 → 验证 LLM 收到正确的文件路径
+2. 验证 Agent 生成的代码能正确访问文件
+
+---
+
+## 阶段七：API 文档更新
+
+### 7.1 更新 API 文档
+
+1. 移除 `temporary_area_id` 和 `temp_files` 参数说明
+2. 添加 `selected_files` 参数说明
+3. 添加新的文件上传方式说明（直接调用 Sandbox Platform API）
+
+### 7.2 更新使用示例
+
+提供完整的前后端集成示例代码。
 
 ---
 
