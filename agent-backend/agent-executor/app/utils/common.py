@@ -2,6 +2,7 @@
 import asyncio
 import gettext
 import inspect
+import math
 import os
 import sys
 import traceback
@@ -11,9 +12,7 @@ from gettext import gettext as _l
 from typing import Any, Callable, Dict, Tuple
 from urllib.parse import urlparse
 
-import pandas as pd
 from fastapi import Request
-from pandas import DataFrame
 from pydantic import BaseModel
 
 from app.domain.enum.common.user_account_header_key import get_user_account_id
@@ -147,7 +146,9 @@ def truncate_by_byte_len(text: str, length: int = 65535) -> str:
     return text[:char_length]
 
 
-def create_subclass(base_class: type, class_name: str, class_attributes: Dict[str, Any]) -> type:
+def create_subclass(
+    base_class: type, class_name: str, class_attributes: Dict[str, Any]
+) -> type:
     """使用type动态创建子类"""
     return type(class_name, (base_class,), class_attributes)
 
@@ -220,14 +221,18 @@ def make_json_serializable(obj: Any) -> Any:
         return make_json_serializable(obj.model_dump())
     elif isinstance(obj, Enum):
         return make_json_serializable(obj.value)
-    elif isinstance(obj, DataFrame):
-        return make_json_serializable(obj.to_dict(orient="records"))
-    elif isinstance(obj, float) and pd.isna(obj):
-        return None
+    elif isinstance(obj, float):
+        import math
+
+        if math.isnan(obj):
+            return None
+        return obj
     return obj
 
 
-async def get_format_error_info(header: Dict[str, str], exc: Exception) -> Dict[str, str]:
+async def get_format_error_info(
+    header: Dict[str, str], exc: Exception
+) -> Dict[str, str]:
     """获取格式化的错误信息"""
     lang_func = get_request_lang_from_header(header)
     if hasattr(exc, "FormatHttpError"):

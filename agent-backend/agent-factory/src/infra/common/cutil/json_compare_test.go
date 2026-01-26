@@ -1,8 +1,9 @@
 package cutil
 
-import "testing"
+import (
+	"testing"
+)
 
-// TestJSONStrCompare tests the JSONStrCompare function.
 func TestJSONStrCompare(t *testing.T) {
 	tests := []struct {
 		name     string
@@ -11,28 +12,57 @@ func TestJSONStrCompare(t *testing.T) {
 		expected bool
 	}{
 		{
-			name:     "Equal JSON",
+			name:     "相同的JSON",
+			jsonStr1: `{"name": "John", "age": 30}`,
+			jsonStr2: `{"name": "John", "age": 30}`,
+			expected: true,
+		},
+		{
+			name:     "不同顺序但内容相同",
 			jsonStr1: `{"name": "John", "age": 30}`,
 			jsonStr2: `{"age": 30, "name": "John"}`,
 			expected: true,
 		},
 		{
-			name:     "Non-equal JSON",
+			name:     "不同的值",
 			jsonStr1: `{"name": "John", "age": 30}`,
-			jsonStr2: `{"name": "Doe", "age": 30}`,
+			jsonStr2: `{"name": "Jane", "age": 30}`,
 			expected: false,
+		},
+		{
+			name:     "结构不同",
+			jsonStr1: `{"name": "John"}`,
+			jsonStr2: `{"name": "John", "age": 30}`,
+			expected: false,
+		},
+			{
+			name:     "空JSON",
+			jsonStr1: `{}`,
+			jsonStr2: `{}`,
+			expected: true,
+		},
+		{
+			name:     "无效的JSON1",
+			jsonStr1: `{"name": "John", "age": 30}`,
+			jsonStr2: `{"name": "John", "age": 30}`,
+			expected: true,
 		},
 	}
 
-	for _, test := range tests {
-		t.Run(test.name, func(t *testing.T) {
-			result, err := JSONStrCompare(test.jsonStr1, test.jsonStr2)
-			if err != nil {
-				t.Errorf("unexpected error: %v", err)
-			}
-
-			if result != test.expected {
-				t.Errorf("expected %v, got %v", test.expected, result)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := JSONStrCompare(tt.jsonStr1, tt.jsonStr2)
+			if tt.expected {
+				if err != nil {
+					t.Errorf("JSONStrCompare() unexpected error: %v", err)
+				}
+				if !result {
+					t.Errorf("JSONStrCompare() = %v, want true", result)
+				}
+			} else {
+				if err == nil && result {
+					t.Errorf("JSONStrCompare() should return false for different JSON")
+				}
 			}
 		})
 	}

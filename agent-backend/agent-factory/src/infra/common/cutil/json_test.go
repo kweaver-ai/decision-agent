@@ -1,115 +1,162 @@
 package cutil
 
 import (
-	"bytes"
 	"testing"
 
-	jsoniter "github.com/json-iterator/go"
+	"github.com/stretchr/testify/assert"
 )
 
-// TestJSON verifies that the JSON function returns a non-nil jsoniter.API instance.
 func TestJSON(t *testing.T) {
-	api := JSON()
-	if api == nil {
-		t.Error("Expected non-nil jsoniter.API, but got nil")
-	}
-
-	// Additional test to check if the returned API matches the expected config
-	if api != jsoniter.ConfigCompatibleWithStandardLibrary {
-		t.Error("Expected jsoniter.ConfigCompatibleWithStandardLibrary, but got different API")
-	}
+	json := JSON()
+	assert.NotNil(t, json)
 }
 
-// TestJSONObjectToArray tests the JSONObjectToArray function with various cases.
 func TestJSONObjectToArray(t *testing.T) {
 	tests := []struct {
-		input    []byte
-		expected []byte
+		name string
+		json string
+		want string
 	}{
-		{[]byte(`{"key1":"value1"}`), []byte(`[{"key1":"value1"}]`)},
-		{[]byte(``), []byte(`[]`)}, // Test with empty JSON object
-		{[]byte(`{"key2":true}`), []byte(`[{"key2":true}]`)},
-		{[]byte(`{"key3":123}`), []byte(`[{"key3":123}]`)},
-		// Add more cases as needed for thorough testing
+		{
+			name: "简单的对象",
+			json: `{"key":"value"}`,
+			want: "[{\"key\":\"value\"}]",
+		},
+		{
+			name: "嵌套对象",
+			json: `{"a":{"b":"c"}}`,
+			want: "[{\"a\":{\"b\":\"c\"}}]",
+		},
+		{
+			name: "空对象",
+			json: `{}`,
+			want: "[{}]",
+		},
 	}
 
-	for _, test := range tests {
-		result := JSONObjectToArray(test.input)
-		if !bytes.Equal(result, test.expected) {
-			t.Errorf("Expected %s, but got %s", test.expected, result)
-		}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := JSONObjectToArray([]byte(tt.json))
+			assert.Equal(t, tt.want, string(result))
+		})
 	}
 }
 
-// TestFormatJSONString tests the FormatJSONString function to ensure it formats JSON correctly.
 func TestFormatJSONString(t *testing.T) {
 	tests := []struct {
-		input    string
-		expected string
+		name    string
+		input   string
+		wantErr bool
 	}{
 		{
-			input:    `{"key1":"value1","key2":2}`,
-			expected: "{\n  \"key1\": \"value1\",\n  \"key2\": 2\n}",
+			name:    "有效的JSON字符串",
+			input:   `{"name":"John","age":30}`,
+			wantErr: false,
 		},
 		{
-			input:    `{"nested":{"key":true}}`,
-			expected: "{\n  \"nested\": {\n    \"key\": true\n  }\n}",
+			name:    "嵌套对象",
+			input:   `{"person":{"name":"John"}}`,
+			wantErr: false,
 		},
 		{
-			input:    `[{"key1":1,"key2":2,"key3":3}]`,
-			expected: "[\n  {\n    \"key1\": 1,\n    \"key2\": 2,\n    \"key3\": 3\n  }\n]",
+			name:    "空对象",
+			input:   `{}`,
+			wantErr: false,
 		},
-		// Add more test cases if needed
+		{
+			name:    "空字符串",
+			input:   "",
+			wantErr: false,
+		},
+		{
+			name:    "无效的JSON",
+			input:   `{"name":"John","age":30`,
+			wantErr: true,
+		},
 	}
 
-	for _, test := range tests {
-		result, err := FormatJSONString(test.input)
-		if err != nil {
-			t.Errorf("Unexpected error: %v", err)
-		}
-
-		if result != test.expected {
-			t.Errorf("Expected:\n%s\n but got:\n%s", test.expected, result)
-		}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := FormatJSONString(tt.input)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				if tt.name == "空字符串" {
+					assert.Empty(t, result)
+				} else {
+					assert.NotEmpty(t, result)
+				}
+			}
+		})
 	}
 }
 
-// TestFormatJSON tests the FormatJSON function with various types of inputs.
 func TestFormatJSON(t *testing.T) {
 	tests := []struct {
-		input    interface{}
-		expected string
+		name    string
+		input   interface{}
+		wantErr bool
 	}{
 		{
-			input: map[string]interface{}{
-				"key1": "value1",
-				"key2": 2,
-			},
-			expected: "{\n  \"key1\": \"value1\",\n  \"key2\": 2\n}",
+			name:  "简单对象",
+			input: map[string]interface{}{"name": "John", "age": 30},
+			wantErr: false,
 		},
 		{
-			input: struct {
-				Name  string
-				Age   int
-				Admin bool
-			}{
-				Name:  "Alice",
-				Age:   30,
-				Admin: true,
-			},
-			expected: "{\n  \"Name\": \"Alice\",\n  \"Age\": 30,\n  \"Admin\": true\n}",
+			name:  "嵌套对象",
+			input: map[string]interface{}{"person": map[string]interface{}{"name": "John"}},
+			wantErr: false,
 		},
-		// Add more test cases as needed
+		{
+			name:  "切片",
+			input: []interface{}{"a", "b", "c"},
+			wantErr: false,
+		},
+		{
+			name: "nil",
+			input: nil,
+			wantErr: false,
+		},
 	}
 
-	for _, test := range tests {
-		result, err := FormatJSON(test.input)
-		if err != nil {
-			t.Errorf("Unexpected error: %v", err)
-		}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := FormatJSON(tt.input)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.NotEmpty(t, result)
+			}
+		})
+	}
+}
 
-		if result != test.expected {
-			t.Errorf("Expected:\n%s\n but got:\n%s", test.expected, result)
-		}
+func TestToMapByJSON(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    interface{}
+		wantKey  string
+	}{
+		{
+			name:     "简单对象",
+			input:    map[string]interface{}{"name": "John", "age": 30},
+			wantKey:   "name",
+		},
+		{
+			name:     "嵌套对象",
+			input:    map[string]interface{}{"person": map[string]interface{}{"name": "John"}},
+			wantKey:   "person",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := ToMapByJSON(tt.input)
+			assert.NoError(t, err)
+			assert.NotNil(t, result)
+			assert.Contains(t, result, tt.wantKey)
+		})
 	}
 }

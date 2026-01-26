@@ -14,54 +14,11 @@
 
 ## 总览
 
-- DocQA_Agent — 文档问答
-- GraphQA_Agent — 图谱问答
 - OnlineSearch_Agent — 在线搜索（智谱搜索）
 - Plan_Agent — 简单任务拆解
 - Task_Plan_Agent — 任务规划
 - Summary_Agent — 总结报告生成
 - deepsearch — 深度搜索 Agent，自动选择并调用上述 Agent 完成深度搜索与总结
-
----
-
-## DocQA_Agent
-
-- 名称: `DocQA_Agent`
-- 说明: 文档问答 Agent
-- 主要逻辑: 
-  - `dolphin` 中通过 `@doc_qa` 工具进行检索，随后基于召回结果进行总结输出到 `answer`
-- 输入: 
-  - `query: string`
-- 输出: 
-  - `answer_var: answer`
-  - `doc_retrieval_var: doc_retrieval_res`
-- 工具依赖 (`skills.tools`):
-  - `doc_qa`（工具箱：搜索工具）
-  - 输入参数：`query`、`props`
-- 模型 (`llms`): `Tome-pro`（max_tokens: 3000）
-- 数据源 (`data_source`):
-  - `doc`: 包含 `ds_id`、`fields`、`address`、`port` 等连接与高级检索配置（如 `document_threshold`, `documents_num`, `retrieval_max_length`）
-- 可编辑项 (`built_in_can_edit_fields`): 允许编辑 `data_source.doc`、`model`；不允许修改 `skills`、`skills.tools.tool_input` 等
-
----
-
-## GraphQA_Agent
-
-- 名称: `GraphQA_Agent`
-- 说明: 图谱问答 Agent
-- 主要逻辑:
-  - `dolphin` 中通过 `@graph_qa` 工具进行检索，并对结果总结为 `answer`
-- 输入:
-  - `query: string`
-- 输出:
-  - `answer_var: answer`
-  - `graph_retrieval_var: graph_retrieval_res`
-- 工具依赖 (`skills.tools`):
-  - `graph_qa`（工具箱：搜索工具），输入参数：`query`、`props`
-- 模型 (`llms`): `Tome-pro`（max_tokens: 30000）
-- 数据源 (`data_source`):
-  - `kg`: 包含 `kg_id`、实体/边字段及高级参数（如 `graph_rag_topk`, `enable_rag`, `retrieval_max_length` 等）
-- 可编辑项 (`built_in_can_edit_fields`): 允许编辑 `data_source.kg`、`model`
 
 ---
 
@@ -136,21 +93,20 @@
 
 - 名称: `deepsearch`
 - 说明: 深度搜索编排 Agent。自动：
-  1) 规划任务；
-  2) 根据可用数据源动态增加“搜索图谱/搜索文档库”的子任务；
-  3) 对每一步通过 LLM 判定选择最合适的子 Agent（OnlineSearch/DocQA/GraphQA/Summary）执行；
-  4) 聚合中间结果，输出最终答案。
+   1) 规划任务；
+   2) 对每一步通过 LLM 判定选择最合适的子 Agent（OnlineSearch/Summary）执行；
+   3) 聚合中间结果，输出最终答案。
 - 输入:
-  - `query: string`
+   - `query: string`
 - 输出:
-  - `answer_var: answer`
-  - 其他变量：`plan_list`, `ref_list`, `plan`, `SelectAgent`
+   - `answer_var: answer`
+   - 其他变量：`plan_list`, `ref_list`, `plan`, `SelectAgent`
 - 工具依赖 (`skills.tools`):
-  - `check`（数据处理工具，带 `intervention=True`）
-  - `pass`（跳过）
-  - `获取agent详情`（DataAgent 配置相关工具，用于检测 `GraphQA_Agent`/`DocQA_Agent` 的数据源可用性）
+   - `check`（数据处理工具，带 `intervention=True`）
+   - `pass`（跳过）
+   - `获取agent详情`（DataAgent 配置相关工具，用于检测数据源可用性）
 - 子 Agent 依赖 (`skills.agents`):
-  - `Plan_Agent`, `OnlineSearch_Agent`, `DocQA_Agent`, `GraphQA_Agent`, `Summary_Agent`
+   - `Plan_Agent`, `OnlineSearch_Agent`, `Summary_Agent`
 - 模型 (`llms`):
   - 默认 `Tome-pro`
   - 可选 `deepseek-r1`（is_default: False）
@@ -171,22 +127,21 @@
 
 ## 典型使用与扩展建议
 
-- 若你的场景仅有文档数据源，推荐直接使用 `DocQA_Agent`；若仅有图谱，使用 `GraphQA_Agent`；需要联网上资料时使用 `OnlineSearch_Agent`。
+- 需要联网上资料时使用 `OnlineSearch_Agent`。
 - 扩展新工具/数据源：
-  - 在对应 Agent 的 `skills.tools` 中增加工具描述与输入映射
+   - 在对应 Agent 的 `skills.tools` 中增加工具描述与输入映射
 - 参数与权限：
-  - `built_in_can_edit_fields` 用于限制前端可编辑字段，避免破坏关键结构；若需要开放配置，请有选择地设置为 `True`。
+   - `built_in_can_edit_fields` 用于限制前端可编辑字段，避免破坏关键结构；若需要开放配置，请有选择地设置为 `True`。
 
 ---
 
 ## 文件清单
 
-- `DocQA_Agent.py`
-- `GraphQA_Agent.py`
 - `OnlineSearch_Agent.py`
 - `Plan_Agent.py`
 - `Task_Plan_Agent.py`
 - `Summary_Agent.py`
 - `deepsearch.py`
 - `__init__.py`
+
 

@@ -1,10 +1,13 @@
 module github.com/kweaver-ai/decision-agent/agent-factory
 
-go 1.24.0
+go 1.24.1
+
+toolchain go1.24.12
 
 require (
 	github.com/PuerkitoBio/goquery v1.11.0
 	github.com/bwmarrin/snowflake v0.3.0
+	github.com/bytedance/sonic v1.15.0
 	github.com/getkin/kin-openapi v0.133.0
 	github.com/go-redis/redismock/v8 v8.11.5
 	github.com/go-redsync/redsync/v4 v4.12.1
@@ -13,8 +16,7 @@ require (
 	github.com/opensearch-project/opensearch-go v1.1.0
 	github.com/smartystreets/goconvey v1.8.1
 	github.com/stretchr/testify v1.11.1
-	github.com/yanyiwu/gojieba v1.4.6
-	go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin v0.63.0
+	go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin v0.42.0
 	go.opentelemetry.io/otel/exporters/otlp/otlplog/otlploghttp v0.15.0
 	go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetrichttp v1.39.0
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.39.0
@@ -35,6 +37,7 @@ require (
 	github.com/hashicorp/errwrap v1.1.0 // indirect
 	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/jtolds/gls v4.20.0+incompatible // indirect
+	github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2 v2.10.3 // indirect
 	github.com/mohae/deepcopy v0.0.0-20170929034955-c48cc78d4826 // indirect
 	github.com/oasdiff/yaml v0.0.0-20250309154309-f31be36b4037 // indirect
 	github.com/oasdiff/yaml3 v0.0.0-20250309153720-d2182401db90 // indirect
@@ -54,8 +57,7 @@ require (
 	github.com/DATA-DOG/go-sqlmock v1.5.2
 	github.com/IBM/sarama v1.46.3 // indirect
 	github.com/avast/retry-go v3.0.0+incompatible // indirect
-	github.com/bytedance/sonic v1.14.2
-	github.com/bytedance/sonic/loader v0.4.0 // indirect
+	github.com/bytedance/sonic/loader v0.5.0 // indirect
 	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/clbanning/mxj/v2 v2.7.0 // indirect
@@ -108,7 +110,6 @@ require (
 	github.com/klauspost/compress v1.18.2 // indirect
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
 	github.com/kweaver-ai/TelemetrySDK-Go/event/v2 v2.10.3 // indirect
-	github.com/kweaver-ai/TelemetrySDK-Go/exporter/v2 v2.10.3 // indirect
 	github.com/kweaver-ai/TelemetrySDK-Go/span/v2 v2.10.3
 	github.com/kweaver-ai/proton-mq-sdk-go v1.9.1
 	github.com/leodido/go-urn v1.4.0 // indirect
@@ -178,7 +179,7 @@ require (
 	golang.org/x/net v0.48.0 // indirect
 	golang.org/x/oauth2 v0.34.0 // indirect
 	golang.org/x/sync v0.19.0
-	golang.org/x/sys v0.39.0 // indirect
+	golang.org/x/sys v0.40.0 // indirect
 	golang.org/x/term v0.38.0 // indirect
 	golang.org/x/text v0.32.0
 	golang.org/x/time v0.14.0 // indirect

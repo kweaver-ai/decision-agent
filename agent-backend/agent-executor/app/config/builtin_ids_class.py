@@ -6,8 +6,6 @@ class BuiltinIdsConfig:
         # 这些ID在执行初始化脚本后会得到具体的值
         self.agent_ids = {
             "deepsearch": "deepsearch",
-            "DocQA_Agent": "DocQA_Agent",
-            "GraphQA_Agent": "GraphQA_Agent",
             "OnlineSearch_Agent": "OnlineSearch_Agent",
             "Plan_Agent": "Plan_Agent",
             "SimpleChat_Agent": "SimpleChat_Agent",
@@ -18,8 +16,6 @@ class BuiltinIdsConfig:
         self.tool_ids = {
             "zhipu_search_tool": "zhipu_search_tool",
             "check": "check",
-            "doc_qa": "doc_qa",
-            "graph_qa": "graph_qa",
             "pass": "pass",
             "search_file_snippets": "search_file_snippets",
             "get_file_full_content": "get_file_full_content",

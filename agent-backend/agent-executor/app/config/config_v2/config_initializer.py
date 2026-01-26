@@ -14,7 +14,6 @@ from .models import (
     RdsConfig,
     RedisConfig,
     GraphDBConfig,
-    OpenSearchConfig,
     ServicesConfig,
     ExternalServicesConfig,
     MemoryConfig,
@@ -36,7 +35,6 @@ class ConfigState:
         self.rds: Optional[RdsConfig] = None
         self.redis: Optional[RedisConfig] = None
         self.graphdb: Optional[GraphDBConfig] = None
-        self.opensearch: Optional[OpenSearchConfig] = None
         self.services: Optional[ServicesConfig] = None
         self.external_services: Optional[ExternalServicesConfig] = None
         self.memory: Optional[MemoryConfig] = None
@@ -61,7 +59,6 @@ class ConfigInitializer:
         state.rds = RdsConfig.from_dict(config.get("rds", {}))
         state.redis = RedisConfig.from_dict(config.get("redis", {}))
         state.graphdb = GraphDBConfig.from_dict(config.get("graphdb", {}))
-        state.opensearch = OpenSearchConfig.from_dict(config.get("opensearch", {}))
         state.services = ServicesConfig.from_dict(config.get("services", {}))
         state.external_services = ExternalServicesConfig.from_dict(
             config.get("external_services", {})

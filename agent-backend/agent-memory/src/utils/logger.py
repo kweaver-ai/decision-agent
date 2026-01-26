@@ -4,9 +4,11 @@ from pathlib import Path
 from logging.handlers import RotatingFileHandler
 from typing import Optional
 
+
 class Logger:
     """日志工具类"""
-    _instance: Optional['Logger'] = None
+
+    _instance: Optional["Logger"] = None
     _initialized = False
 
     def __new__(cls):
@@ -33,20 +35,20 @@ class Logger:
         console_handler = logging.StreamHandler(sys.stdout)
         console_handler.setLevel(logging.INFO)
         console_format = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
         )
         console_handler.setFormatter(console_format)
 
         # 创建文件处理器
         file_handler = RotatingFileHandler(
             log_dir / "agent_memory.log",
-            maxBytes=10*1024*1024,  # 10MB
+            maxBytes=10 * 1024 * 1024,  # 10MB
             backupCount=5,
-            encoding='utf-8'
+            encoding="utf-8",
         )
         file_handler.setLevel(logging.DEBUG)
         file_format = logging.Formatter(
-            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+            "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
         )
         file_handler.setFormatter(file_format)
 
@@ -56,35 +58,54 @@ class Logger:
 
     def info(self, msg: str, *args, **kwargs):
         """记录信息日志"""
-        self.logger.info(msg.format(*args), exc_info=kwargs.get('exc_info'), extra=kwargs.get('extra'))
-
+        self.logger.info(
+            msg.format(*args),
+            exc_info=kwargs.get("exc_info"),
+            extra=kwargs.get("extra"),
+        )
 
     def error(self, msg: str, *args, **kwargs):
         """记录信息日志"""
-        self.logger.error(msg.format(*args), exc_info=kwargs.get('exc_info'), extra=kwargs.get('extra'))
-    
-    def warn(self, msg: str, *args, **kwargs):
-        """记录信息日志"""
-        self.logger.warn(msg.format(*args), exc_info=kwargs.get('exc_info'), extra=kwargs.get('extra'))
+        self.logger.error(
+            msg.format(*args),
+            exc_info=kwargs.get("exc_info"),
+            extra=kwargs.get("extra"),
+        )
+
+    def warning(self, msg: str, *args, **kwargs):
+        """记录警告日志"""
+        self.logger.warning(
+            msg.format(*args),
+            exc_info=kwargs.get("exc_info"),
+            extra=kwargs.get("extra"),
+        )
 
     def debug(self, msg: str, *args, **kwargs):
         """记录信息日志"""
-        self.logger.debug(msg.format(*args), exc_info=kwargs.get('exc_info'), extra=kwargs.get('extra'))
-
+        self.logger.debug(
+            msg.format(*args),
+            exc_info=kwargs.get("exc_info"),
+            extra=kwargs.get("extra"),
+        )
 
     def errorf(self, msg: str, *args, **kwargs):
         """格式化 error 日志"""
-        self.logger.error(msg % args, exc_info=kwargs.get('exc_info'), extra=kwargs.get('extra'))
+        self.logger.error(
+            msg % args, exc_info=kwargs.get("exc_info"), extra=kwargs.get("extra")
+        )
 
     def infof(self, msg: str, *args, **kwargs):
         """格式化 info 日志"""
-        self.logger.info(msg % args, extra=kwargs.get('extra'))
+        self.logger.info(msg % args, extra=kwargs.get("extra"))
+
     def debugf(self, msg: str, *args, **kwargs):
         """格式化 debug 日志"""
-        self.logger.debug(msg % args, extra=kwargs.get('extra'))
-    def warnf(self, msg: str, *args, **kwargs):
-        """格式化 warn 日志"""
-        self.logger.warn(msg % args, extra=kwargs.get('extra'))
+        self.logger.debug(msg % args, extra=kwargs.get("extra"))
+
+    def warningf(self, msg: str, *args, **kwargs):
+        """格式化 warning 日志"""
+        self.logger.warning(msg % args, extra=kwargs.get("extra"))
+
 
 # 创建全局日志实例
-logger = Logger() 
+logger = Logger()
