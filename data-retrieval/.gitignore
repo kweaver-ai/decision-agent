@@ -163,3 +163,8 @@ cython_debug/
 
 .DS_Store
 .vscode/
+
+# Local skills
+.cursor/skills/
+.claude/skills/
+.codex/skills/
