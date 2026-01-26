@@ -180,7 +180,7 @@ func (agentSvc *agentSvc) getSentenceDocScore(sentence string, docCites map[int]
 }
 
 func (agentSvc *agentSvc) sameWordsPercentage(sentence string, sliceContent string) float64 {
-	return agentSvc.Text2Vec.SameWordsPercentage(sentence, sliceContent)
+	return 0.0
 }
 
 type stringIndexInfo struct {

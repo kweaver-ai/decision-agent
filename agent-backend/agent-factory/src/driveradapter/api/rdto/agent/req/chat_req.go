@@ -2,11 +2,16 @@ package agentreq
 
 import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/comvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req/chatopt"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 )
+
+// SelectedFile 用户选择的临时区文件
+type SelectedFile struct {
+	FileName string `json:"file_name" validate:"required"` // 文件名
+	// 注：完整路径为 /workspace/{conversation_id}/uploads/temparea/{file_name}
+}
 
 type ChatReq struct {
 	InternalParam             `json:",inline"`
@@ -15,8 +20,7 @@ type ChatReq struct {
 	AgentKey                  string                  `json:"agent_key"`                        // agentKey
 	AgentVersion              string                  `json:"agent_version,omitempty"`          // agent版本
 	ConversationID            string                  `json:"conversation_id"`                  // 会话ID
-	TemporaryAreaID           string                  `json:"temporary_area_id"`                // 临时区域ID
-	TempFiles                 []valueobject.TempFile  `json:"temp_files"`                       // 临时文件
+	SelectedFiles             []SelectedFile           `json:"selected_files,omitempty"`         // 用户选择的临时区文件
 	Query                     string                  `json:"query"`                            // 查询内容
 	CustomQuerys              map[string]interface{}  `json:"custom_querys"`                    // 自定义查询
 	Tool                      Tool                    `json:"tool"`                             // 工具
@@ -59,7 +63,7 @@ type InternalParam struct {
 	CallType constant.CallType `json:"-"` // 调用类型
 
 	ReqStartTime int64 `json:"-"` // 请求开始时间
-	TTFT         int64 `json:"-"` //  首字节时间
+	TTFT         int64 `json:"-"` // 首字节时间
 
 	// NOTE: 新增参数，替代之前的userID和visitorType
 	XAccountID   string            `json:"-"` // 用户ID
@@ -67,6 +71,9 @@ type InternalParam struct {
 
 	// NOTE: 新增参数，业务域ID请求头
 	XBusinessDomainID string `json:"-"`
+
+	// NOTE: 新增参数，Sandbox Session ID
+	SandboxSessionID string `json:"-"`
 }
 
 type Tool struct {

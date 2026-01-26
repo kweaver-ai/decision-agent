@@ -1,6 +1,7 @@
 package conversationmsgvo
 
 import (
+	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/chat_enum/chatresenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject"
@@ -23,8 +24,8 @@ type Message struct {
 
 //role:user
 type UserContent struct {
-	Text      string                 `json:"text"`
-	TempFiles []valueobject.TempFile `json:"temp_file"`
+	Text          string                 `json:"text"`
+	SelectedFiles []agentreq.SelectedFile `json:"selected_files"` // 用户选择的临时区文件
 }
 
 //role:assistant
@@ -34,12 +35,12 @@ type AssistantContent struct {
 }
 
 type FinalAnswer struct {
-	Query                 string                  `json:"query"`
-	Answer                Answer                  `json:"answer"`
-	TempFiles             []valueobject.TempFile  `json:"temp_files"`
-	Thinking              string                  `json:"thinking"`
-	SkillProcess          []*SkillsProcessItem    `json:"skill_process"`
-	AnswerTypeOther       interface{}             `json:"answer_type_other"`       // 当content_type为other时使用
+	Query                 string                 `json:"query"`
+	Answer                Answer                 `json:"answer"`
+	SelectedFiles         []agentreq.SelectedFile `json:"selected_files"` // 用户选择的临时区文件
+	Thinking              string                 `json:"thinking"`
+	SkillProcess          []*SkillsProcessItem   `json:"skill_process"`
+	AnswerTypeOther       interface{}            `json:"answer_type_other"`       // 当content_type为other时使用
 	OutputVariablesConfig *agentconfigvo.Variable `json:"output_variables_config"` // output 输出变量配置
 
 }

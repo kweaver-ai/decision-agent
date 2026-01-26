@@ -177,8 +177,8 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 	// NOTE: 普通对话则创建userMessage,状态为recieved
 	if IsNormalChat(req) {
 		userContent := conversationmsgvo.UserContent{
-			Text:      req.Query,
-			TempFiles: req.TempFiles,
+			Text:          req.Query,
+			SelectedFiles: req.SelectedFiles,
 		}
 		userContentBytes, _ := sonic.Marshal(userContent)
 		userContentStr := string(userContentBytes)
@@ -224,8 +224,8 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 		}
 
 		userContent := conversationmsgvo.UserContent{
-			Text:      req.Query,
-			TempFiles: req.TempFiles,
+			Text:          req.Query,
+			SelectedFiles: req.SelectedFiles,
 		}
 		userContentBytes, _ := sonic.Marshal(userContent)
 		userContentStr := string(userContentBytes)
