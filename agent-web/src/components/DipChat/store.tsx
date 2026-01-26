@@ -491,19 +491,29 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
       }
 
       const getReqBody = () => {
+        // 说明要恢复对话
+        if (params.recoverConversation) {
+          return {
+            conversation_id: params.body.conversation_id,
+          };
+        }
+        const lastChatItem = chatList[chatList.length - 1] || {};
+        const cloneParamsBody = _.cloneDeep(params.body);
+        delete cloneParamsBody.conversation_id;
+        delete cloneParamsBody.interruptAction;
+        delete cloneParamsBody.interruptModifiedArgs;
+        // 说明是debug
         if (debug) {
-          const paramsBody = _.cloneDeep(params.body);
-          const conversation_id = paramsBody.conversation_id;
-          delete paramsBody.conversation_id;
+          const conversation_id = params.body.conversation_id;
           let agent_id = agentDetails?.id;
           if (!agent_id && typeof canSend === 'string') {
             agent_id = canSend;
           }
-          return {
+          const debugBody: any = {
             agent_id,
             agent_version: 'v0', // v0 可以获取到最新的保存但是未发布的Agent配置
             input: {
-              ...paramsBody,
+              ...cloneParamsBody,
             },
             conversation_id,
             stream: true,
@@ -516,27 +526,26 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
               enable_dependency_cache: false,
             },
           };
-        }
-        // 说明要恢复对话
-        if (params.recoverConversation) {
-          const lastChatItem = chatList[chatList.length - 1];
-          const tempObj: any = {
-            conversation_id: params.body.conversation_id,
-            agent_run_id: lastChatItem.agentRunId,
-          };
+          if (lastChatItem.agentRunId) {
+            debugBody.agent_run_id = lastChatItem.agentRunId;
+          }
           if (lastChatItem.interrupt) {
-            tempObj.resume_interrupt_info = {
+            debugBody.resume_interrupt_info = {
               resume_handle: lastChatItem.interrupt.handle,
+              data: lastChatItem.interrupt.data,
               action: params.body.interruptAction,
               modified_args: params.body.interruptModifiedArgs ?? [],
             };
+            debugBody.interrupted_assistant_message_id = lastChatItem.key;
           }
-          return tempObj;
+          return debugBody;
         }
+        // 非debug
         const agent_id = agentDetails?.id;
         const agent_version = agentDetails?.version;
-        return {
-          ...params.body,
+        const body: any = {
+          ...cloneParamsBody,
+          conversation_id: params.body.conversation_id,
           agent_id,
           agent_version,
           stream: true,
@@ -549,6 +558,19 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
             enable_dependency_cache: true,
           },
         };
+        if (lastChatItem.agentRunId) {
+          body.agent_run_id = lastChatItem.agentRunId;
+        }
+        if (lastChatItem.interrupt) {
+          body.resume_interrupt_info = {
+            data: lastChatItem.interrupt.data,
+            resume_handle: lastChatItem.interrupt.handle,
+            action: params.body.interruptAction,
+            modified_args: params.body.interruptModifiedArgs ?? [],
+          };
+          body.interrupted_assistant_message_id = lastChatItem.key;
+        }
+        return body;
       };
       const reqBody = getReqBody();
       send({
@@ -693,7 +715,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
               recoverConversation = true;
             }
             const ext = isJSONString(item.ext) ? JSON.parse(item.ext) : {};
-            const interrupt_info = _.get(ext, ['interrupt_info']);
+            const interrupt_info = _.get(ext, ['interrupt_info']) || {};
             newChatList.push({
               key: item.id,
               role: 'common',

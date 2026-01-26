@@ -606,13 +606,18 @@ const DecisionAgent = ({ mode: modeFromProps = ModeEnum.DataAgent }: DataAgentsP
         break;
 
       case TemplateActionEnum.CreateAgentFromTemplate: {
-        let url = `/config?templateId=${(agent as any).tpl_id}&mode=createAgent`;
-        const filterParams = getFilterParams();
-        if (!_.isEmpty(filterParams)) {
-          url += `&filterParams=${encodeURIComponent(JSON.stringify(filterParams))}`;
-        }
+        const url = `/config?templateId=${(agent as any).tpl_id}&mode=createAgent`;
+        // const filterParams = getFilterParams();
+        // if (!_.isEmpty(filterParams)) {
+        //   url += `&filterParams=${encodeURIComponent(JSON.stringify(filterParams))}`;
+        // }
         // 使用此模板创建Agent
-        navigate(url);
+        // navigate(url);
+        microWidgetProps?.history.navigateToMicroWidget({
+          name: 'my-agent-list',
+          path: url,
+          isNewTab: true,
+        });
         break;
       }
 

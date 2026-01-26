@@ -153,7 +153,7 @@ const defaultQueryField: InputField = { name: 'query', type: 'string', is_built_
 // 定义4个固定的对象类型变量
 const fixedVariables: InputField[] = [
   { name: 'history', type: 'object', is_built_in: true },
-  { name: 'tool', type: 'object', is_built_in: true },
+  // { name: 'tool', type: 'object', is_built_in: true },
   { name: 'header', type: 'object', is_built_in: true },
   { name: 'self_config', type: 'object', is_built_in: true },
 ];

@@ -110,14 +110,17 @@ const InterruptFormPanel = ({ chatItemIndex }: any) => {
         interruptAction: 'confirm',
         interruptModifiedArgs: args,
       },
-      recoverConversation: true,
     });
   };
 
   const renderMessageTip = () => {
     return (
       <div className="dip-mb-12">
-        <Alert message={interrupt!.data.interrupt_config.confirmation_message} type="info" showIcon />
+        <Alert
+          message={interrupt!.data.interrupt_config.confirmation_message || '请确认该工具下列输入参数是否正确'}
+          type="info"
+          showIcon
+        />
       </div>
     );
   };
@@ -141,7 +144,6 @@ const InterruptFormPanel = ({ chatItemIndex }: any) => {
                   body: {
                     interruptAction: 'skip',
                   },
-                  recoverConversation: true,
                 });
               }}
             >

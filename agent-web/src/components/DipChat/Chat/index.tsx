@@ -11,7 +11,7 @@ import _ from 'lodash';
 import { nanoid } from 'nanoid';
 import type { AiInputRef, AiInputValue } from '../components/AiInput/interface';
 import ScrollBarContainer from '@/components/ScrollBarContainer';
-import { getAgentInputDisplayFields, getTempAreaEnable } from '../utils';
+import { getAgentInputDisplayFields, getConversationByKey, getTempAreaEnable } from '../utils';
 import DipIcon from '@/components/DipIcon';
 import DipButton from '@/components/DipButton';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -48,6 +48,8 @@ const DipChat = () => {
       agentInputParamForm,
       previewFile,
       tempFileList,
+      conversationItems,
+      activeConversationKey,
     },
     setDipChatStore,
     getDipChatStore,
@@ -64,7 +66,7 @@ const DipChat = () => {
   const navigate = useNavigate();
   const [showBackBottom, setShowBackBottom] = useState(false);
   const [size, setSize] = React.useState<number>(280);
-  const isInterrupt = _.get(chatList[chatList.length - 1], 'interrupt');
+  const activeConversation = getConversationByKey(conversationItems, activeConversationKey);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -337,7 +339,7 @@ const DipChat = () => {
                 </div>
               </div>
               <AiInput
-                loading={streamGenerating || !!isInterrupt}
+                loading={streamGenerating || activeConversation?.status === 'processing'}
                 value={aiInputValue}
                 ref={aiInputRef}
                 onSubmit={onSubmit}
