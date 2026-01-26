@@ -127,8 +127,21 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	if err != nil {
 		return nil, err
 	}
-	// NOTE: 生成SessionID
+
+	// NOTE: 确保 Sandbox Session 存在并就绪
+	sessionID := fmt.Sprintf("sb-session-%s", req.UserID)
+	sandboxSessionID, err := agentSvc.EnsureSandboxSession(newCtx, sessionID, req)
+	if err != nil {
+		o11y.Error(newCtx, fmt.Sprintf("[chat] ensure sandbox session failed: %v", err))
+		return nil, err
+	}
+
+	// 将 sandbox_session_id 传递给 Agent Executor
+	req.SandboxSessionID = sandboxSessionID
+
+	// NOTE: 生成ConversationSessionID
 	req.ConversationSessionID = fmt.Sprintf("%s-%d", req.ConversationID, startTime)
+
 
 	// NOTE: 6. 生成agent call请求
 	agentCallReq, err := agentSvc.GenerateAgentCallReq(newCtx, req, contexts, agent)
