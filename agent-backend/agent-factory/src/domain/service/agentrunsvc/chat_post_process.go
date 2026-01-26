@@ -230,7 +230,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 	content := conversationmsgvo.AssistantContent{
 		FinalAnswer: conversationmsgvo.FinalAnswer{
 			Query:                 req.Query,
-			TempFiles:             req.TempFiles,
+			SelectedFiles:         req.SelectedFiles,
 			Answer:                *answer,
 			SkillProcess:          skillsProcess,
 			Thinking:              thinking,
@@ -392,16 +392,6 @@ func (agentSvc *agentSvc) handleMessageAndTempArea(ctx context.Context, req *age
 		agentSvc.logger.Errorf("[handleMessageAndTempArea] update conversationPO err: %v", err)
 
 		return err
-	}
-
-	if req.TemporaryAreaID != "" {
-		err = agentSvc.tempAreaRepo.Bind(ctx, req.TemporaryAreaID, req.ConversationID)
-		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[handleMessageAndTempArea] bind temp area err: %v", err))
-			agentSvc.logger.Errorf("[handleMessageAndTempArea] bind temp area err: %v", err)
-
-			return err
-		}
 	}
 
 	return nil

@@ -29,7 +29,6 @@ type agentSvc struct {
 	conversationMsgRepo idbaccess.IConversationMsgRepo
 	tempAreaRepo        idbaccess.ITempAreaRepo
 	docset              idocsethttp.IDocset
-	Text2Vec            *text2Vec
 }
 
 var _ iportdriver.IAgent = &agentSvc{}
@@ -47,7 +46,6 @@ type NewAgentSvcDto struct {
 	ConversationMsgRepo idbaccess.IConversationMsgRepo
 	TempAreaRepo        idbaccess.ITempAreaRepo
 	Docset              idocsethttp.IDocset
-	Text2Vec            *text2Vec
 	StreamDiffFrequency int
 }
 
@@ -64,7 +62,6 @@ func NewAgentSvc(dto *NewAgentSvcDto) iportdriver.IAgent {
 		conversationMsgRepo: dto.ConversationMsgRepo,
 		tempAreaRepo:        dto.TempAreaRepo,
 		efast:               dto.Efast,
-		Text2Vec:            dto.Text2Vec,
 		docset:              dto.Docset,
 		streamDiffFrequency: dto.StreamDiffFrequency,
 	}

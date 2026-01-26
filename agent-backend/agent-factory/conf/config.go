@@ -31,15 +31,17 @@ func (c MQConf) IsDebug() bool {
 
 type Config struct {
 	*cconf.Config
-	MQ MQConf
+	MQ MQConf 
 
 	// APP 配置字段
-	AgentFactoryConf  *AgentFactoryConf  `yaml:"agent_factory"`
+	AgentFactoryConf *AgentFactoryConf `yaml:"agent_factory"`
 	AgentExecutorConf *AgentExecutorConf `yaml:"agent_executor"`
-	EfastConf         *EfastConf         `yaml:"efast"`
+	FastConf         *EfastConf         `yaml:"efast"`
 	DocsetConf        *DocsetConf        `yaml:"docset"`
-	EcoConfigConf     *EcoConfigConf     `yaml:"ecoconfig"`
-	UniqueryConf      *UniqueryConf      `yaml:"uniquery"`
+	EcoConfigConf    *EcoConfigConf    `yaml:"ecoconfig"`
+	UniqueryConf    *UniqueryConf    `yaml:"uniquery"`
+	SandboxPlatformConf *SandboxPlatformConf `yaml:"sandbox_platform"`
+
 	// 流式响应配置
 	StreamDiffFrequency int `yaml:"stream_diff_frequency"`
 

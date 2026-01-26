@@ -78,7 +78,7 @@ func (h *agentHTTPHandler) Debug(c *gin.Context) {
 		AgentID:        req.AgentID,
 		AgentVersion:   req.AgentVersion,
 		ConversationID: req.ConversationID,
-		TempFiles:      req.Input.TempFiles,
+		SelectedFiles:  req.SelectedFiles,
 		Query:          req.Input.Query,
 		History:        req.Input.History,
 		Tool:           req.Input.Tool,

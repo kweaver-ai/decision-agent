@@ -33,7 +33,6 @@ func NewAgentSvc() iportdriver.IAgent {
 			ConversationMsgRepo: conversationmsgdbacc.NewConversationMsgRepo(),
 			Efast:               httpinject.NewEfastHttpAcc(),
 
-			Text2Vec:     agentsvc.NewText2Vec(),
 			TempAreaRepo: tempareadbacc.NewTempAreaRepo(),
 			Docset:       httpinject.NewDocsetHttpAcc(),
 			// NOTE: streamDiffFrequency must be greater than 0
