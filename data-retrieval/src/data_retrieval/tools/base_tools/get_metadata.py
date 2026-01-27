@@ -219,6 +219,7 @@ class GetMetadataTool(AFTool):
             # 初始化数据源列表
             view_list = []
             metric_list = []
+            kn_data_view_fields = {}
 
             # 从 data_source 中获取直接指定的视图列表和指标列表
             direct_view_list = data_source_dict.get('view_list', [])
@@ -278,6 +279,19 @@ class GetMetadataTool(AFTool):
                             for view in data_views:
                                 view_list.append(view.get("id"))
 
+                                # Build kn_data_view_fields mapping from concept_detail.data_properties
+                                view_id = view.get("id")
+                                concept_detail = view.get("concept_detail", {})
+                                data_properties = concept_detail.get("data_properties", [])
+                                if data_properties and view_id:
+                                    field_names = []
+                                    for prop in data_properties:
+                                        mapped_field = prop.get("mapped_field", {})
+                                        if mapped_field and mapped_field.get("name"):
+                                            field_names.append(mapped_field["name"])
+                                    if field_names:
+                                        kn_data_view_fields[view_id] = field_names
+
                         # 将 metrics 添加到 metric_list
                         if ds_type is None or ds_type == "metric":
                             for metric in metrics:
@@ -294,7 +308,8 @@ class GetMetadataTool(AFTool):
                     token=token,
                     user_id=user_id,
                     account_type=account_type,
-                    base_url=base_url
+                    base_url=base_url,
+                    kn_data_view_fields=kn_data_view_fields if kn_data_view_fields else None
                 )
 
             dip_metric = None

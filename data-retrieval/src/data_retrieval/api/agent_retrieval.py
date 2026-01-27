@@ -7,6 +7,10 @@ from data_retrieval.api.error import (
     AfDataSourceError, AgentRetrievalError
 )
 from data_retrieval.api.base import API, HTTPMethod
+from data_retrieval.api.knowledge_network import (
+    get_knowledge_network_detail_async,
+    build_object_type_view_mapping
+)
 from data_retrieval.logs.logger import logger
 
 from data_retrieval.settings import get_settings
@@ -169,7 +173,19 @@ async def get_datasource_from_agent_retrieval_async(
         data_views = []
         metrics = []
         relations = []
-        concept_data_view_mapping = {}
+
+        # 获取完整知识网络详情，构建 object_type_id -> view_id 映射
+        full_object_type_view_mapping = {}
+        try:
+            kn_detail = await get_knowledge_network_detail_async(
+                kn_id=kn_id,
+                headers=headers,
+                base_url=base_url
+            )
+            full_object_type_view_mapping = build_object_type_view_mapping(kn_detail)
+            logger.info(f"获取完整知识网络映射成功，共 {len(full_object_type_view_mapping)} 个 object_type")
+        except Exception as e:
+            logger.warning(f"获取完整知识网络详情失败，将使用召回结果中的映射: {str(e)}")
 
         concept_map = {}
         concepts = result.get("concepts", [])
@@ -182,7 +198,7 @@ async def get_datasource_from_agent_retrieval_async(
                 concept_map[concept_type] = []
             concept_map[concept_type].append(concept)
 
-        # TODO: 目前只保留 object_types 和 relation_types 类型的概念
+        # 目前只保留 object_types 和 relation_types 类型的概念
         for concept in concept_map.get("object_type", []):
             concept_detail = concept.get("concept_detail", {})
             ds = concept_detail.get("data_source", {})
@@ -192,7 +208,10 @@ async def get_datasource_from_agent_retrieval_async(
                     "view_name": ds.get("name", ""),
                     "concept_detail": concept_detail
                 })
-                concept_data_view_mapping[concept.get("concept_id")] = ds.get("id")
+                # 如果完整映射中没有，则补充到映射中
+                concept_id = concept.get("concept_id")
+                if concept_id and concept_id not in full_object_type_view_mapping:
+                    full_object_type_view_mapping[concept_id] = ds.get("id")
 
             # 处理逻辑属性(指标)
             logic_properties = concept_detail.get("logic_properties", [])
@@ -209,6 +228,31 @@ async def get_datasource_from_agent_retrieval_async(
         relations = []
         for concept in concept_map.get("relation_type", []):
             concept_detail = concept.get("concept_detail", {})
+
+            # Get source and target object type IDs
+            source_object_type_id = concept_detail.get("source_object_type_id", "")
+            target_object_type_id = concept_detail.get("target_object_type_id", "")
+
+            # Resolve view IDs from full_object_type_view_mapping (完整知识网络映射)
+            source_view_id = full_object_type_view_mapping.get(source_object_type_id, "")
+            target_view_id = full_object_type_view_mapping.get(target_object_type_id, "")
+
+            # Populate relations with source/target object type info
+            relation_info = {
+                "concept_id": concept.get("concept_id", ""),
+                "concept_name": concept.get("concept_name", ""),
+                "name": concept_detail.get("name", ""),
+                "source_object_type_id": source_object_type_id,
+                "source_object_type_name": concept_detail.get("source_object_type_name", ""),
+                "source_view_id": source_view_id,
+                "target_object_type_id": target_object_type_id,
+                "target_object_type_name": concept_detail.get("target_object_type_name", ""),
+                "target_view_id": target_view_id,
+                "comment": concept_detail.get("comment", ""),
+                "type": concept_detail.get("type", "")
+            }
+
+            # Keep existing logic to add data_view if present
             relation_type = concept_detail.get("type", "")
             if relation_type == "data_view":
                 mapping_rules = concept_detail.get("mapping_rules", {})
@@ -219,6 +263,9 @@ async def get_datasource_from_agent_retrieval_async(
                         "view_name": data_source.get("name", ""),
                         "concept_detail": concept_detail
                     })
+                    relation_info["data_source"] = data_source
+
+            relations.append(relation_info)
 
         return data_views, metrics, relations
     except AfDataSourceError:

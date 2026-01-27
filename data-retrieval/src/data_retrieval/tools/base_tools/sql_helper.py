@@ -421,6 +421,8 @@ class SQLHelperTool(AFTool):
 
         command = params.get('command', CommandType.EXECUTE_SQL.value)
 
+        kn_data_view_fields = {}
+        relations = []
         if command == CommandType.GET_METADATA.value:
             # 业务知识网络的配置
             if kn_params:
@@ -430,7 +432,7 @@ class SQLHelperTool(AFTool):
                     else:
                         kn_id = kn_param
 
-                    data_views, _, _ = await get_datasource_from_agent_retrieval_async(
+                    data_views, _, kn_relations = await get_datasource_from_agent_retrieval_async(
                         kn_id=kn_id,
                         query=params.get('title', '所有数据'),
                         search_scope=search_scope,
@@ -440,13 +442,29 @@ class SQLHelperTool(AFTool):
                         mode=recall_mode
                     )
                     view_list.extend([view.get("id") for view in data_views])
+                    relations.extend(kn_relations)
+
+                    # Build kn_data_view_fields mapping from concept_detail.data_properties
+                    for view in data_views:
+                        view_id = view.get("id")
+                        concept_detail = view.get("concept_detail", {})
+                        data_properties = concept_detail.get("data_properties", [])
+                        if data_properties and view_id:
+                            field_names = []
+                            for prop in data_properties:
+                                mapped_field = prop.get("mapped_field", {})
+                                if mapped_field and mapped_field.get("name"):
+                                    field_names.append(mapped_field["name"])
+                            if field_names:
+                                kn_data_view_fields[view_id] = field_names
 
         data_source = DataView(
             view_list=view_list,
             base_url=base_url,
             user_id=user_id,
             token=token,
-            account_type=account_type
+            account_type=account_type,
+            kn_data_view_fields=kn_data_view_fields if kn_data_view_fields else None
         )
 
         with_sample = params.get("with_sample", False)
@@ -469,6 +487,38 @@ class SQLHelperTool(AFTool):
 
         # invoke tool
         res = await tool.ainvoke(input=input_dict)
+
+        # 如果是 GET_METADATA 命令，添加关系信息到结果中
+        if command == CommandType.GET_METADATA.value and relations:
+            relation_descriptions = []
+            for rel in relations:
+                if rel.get("source_object_type_id") and rel.get("target_object_type_id"):
+                    source_id = rel.get('source_object_type_id')
+                    target_id = rel.get('target_object_type_id')
+                    source_view_id = rel.get('source_view_id', '')
+                    target_view_id = rel.get('target_view_id', '')
+
+                    if source_view_id:
+                        source_name = f"{source_id}(view_id: {source_view_id})"
+                    else:
+                        source_name = source_id
+                    if target_view_id:
+                        target_name = f"{target_id}(view_id: {target_view_id})"
+                    else:
+                        target_name = target_id
+
+                    desc = f"{source_name} 与 {target_name} 存在关系：{rel.get('concept_name', '')}"
+                    if rel.get("comment"):
+                        desc += f"({rel.get('comment')})"
+                    relation_descriptions.append(desc)
+
+            if relation_descriptions:
+                if isinstance(res, dict):
+                    if "output" in res:
+                        res["output"]["relations"] = relation_descriptions
+                    else:
+                        res["relations"] = relation_descriptions
+
         return res
 
     @staticmethod

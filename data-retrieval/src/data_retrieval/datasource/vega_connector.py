@@ -16,6 +16,7 @@ def connect(
     port=None,
     user_id="",
     view_list=None,
+    kn_data_view_fields=None,
     **kwargs
 ):
     if not url:
@@ -36,6 +37,7 @@ def connect(
         token=kwargs.get("token", ""),
         user_id=user_id,
         view_list=view_list,
+        kn_data_view_fields=kn_data_view_fields,
     )
 
 
@@ -61,7 +63,8 @@ class Connection:
         user_id: str = "dip",
         account_type: str = "user",
         view_list: list = None,
-        vega_type: str = ""
+        vega_type: str = "",
+        kn_data_view_fields: dict = None
     ):
         self.base_url = base_url
 
@@ -72,6 +75,7 @@ class Connection:
         self.view_list = view_list
         self.af_datasource = None
         self.vega_type = vega_type
+        self.kn_data_view_fields = kn_data_view_fields
 
     def _init_datasource(self):
         if not self.af_datasource:
@@ -88,6 +92,7 @@ class Connection:
                 token=token,
                 base_url=self.base_url,
                 account_type=self.account_type,
+                kn_data_view_fields=self.kn_data_view_fields,
             )
 
     def cursor(self):
