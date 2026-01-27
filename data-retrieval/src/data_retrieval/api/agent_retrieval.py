@@ -24,16 +24,14 @@ settings = get_settings()
 
 class AgentRetrievalService:
 
-    def __init__(self, base_url: str = "", headers: dict = {}):
+    def __init__(self, base_url: str = "", headers: dict = None):
         self.base_url: str = settings.DIP_AGENT_RETRIEVAL_URL
         self.outer_dip: bool = False
-        self.headers: dict = headers
+        self.headers: dict = headers or {}
 
         if base_url:
-            self.base_url: str = base_url
+            self.base_url = base_url
             self.outer_dip = True
-        else:
-            self.base_url = settings.DIP_AGENT_RETRIEVAL_URL
 
         self._gen_api_url()
 
@@ -85,9 +83,9 @@ class AgentRetrievalService:
 async def get_datasource_from_agent_retrieval_async(
     kn_id: str,
     query: str,
-    search_scope: dict = [],
-    prev_queries: list = [],
-    headers: dict = {},
+    search_scope: dict = None,
+    prev_queries: list = None,
+    headers: dict = None,
     base_url: str = "",
     max_concepts: int = 5,
     mode: str = ""
@@ -95,6 +93,14 @@ async def get_datasource_from_agent_retrieval_async(
     """
     解析 Agent Retrieval 参数
     """
+    # Handle mutable default arguments
+    if search_scope is None:
+        search_scope = {}
+    if prev_queries is None:
+        prev_queries = []
+    if headers is None:
+        headers = {}
+
     # example:
     # {
     #     "kn_id": "129",

@@ -1071,11 +1071,15 @@ class Text2SQLTool(LLMTool):
                     relation_descriptions.append(desc)
 
             if relation_descriptions:
-                if isinstance(res, dict):
-                    if "output" in res:
-                        res["output"]["relations"] = relation_descriptions
+                try:
+                    res_json = json.loads(res)
+                    if "output" in res_json:
+                        res_json["output"]["relations"] = relation_descriptions
                     else:
-                        res["relations"] = relation_descriptions
+                        res_json["relations"] = relation_descriptions
+                    res = json.dumps(res_json)
+                except Exception as e:
+                    logger.error(f"error when adding relations to result: {e}")
 
         return res
 

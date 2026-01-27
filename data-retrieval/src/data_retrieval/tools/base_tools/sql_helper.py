@@ -2,6 +2,7 @@
 # @Author:  Xavier.chen@aishu.cn
 # @Date: 2024-5-23
 import traceback
+import json
 import uuid
 from typing import Optional, Type, List
 from enum import Enum
@@ -508,17 +509,23 @@ class SQLHelperTool(AFTool):
                         target_name = target_id
 
                     desc = f"{source_name} 与 {target_name} 存在关系：{rel.get('concept_name', '')}"
+                    if rel.get("data_source"):
+                        data_source = rel.get('data_source')
+                        desc += f"，关系来源于数据视图：{data_source.get('name')}(view_id: {data_source.get('id')})"
                     if rel.get("comment"):
                         desc += f"({rel.get('comment')})"
                     relation_descriptions.append(desc)
 
             if relation_descriptions:
-                if isinstance(res, dict):
-                    if "output" in res:
-                        res["output"]["relations"] = relation_descriptions
+                try:
+                    res_json = json.loads(res)
+                    if "output" in res_json:
+                        res_json["output"]["relations"] = relation_descriptions
                     else:
-                        res["relations"] = relation_descriptions
-
+                        res_json["relations"] = relation_descriptions
+                    res = json.dumps(res_json)
+                except Exception as e:
+                    logger.error(f"error when adding relations to result: {e}")
         return res
 
     @staticmethod
