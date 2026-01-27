@@ -280,3 +280,32 @@ async def get_datasource_from_agent_retrieval_async(
     except Exception:
         traceback.print_exc()
         raise
+
+
+def build_kn_data_view_fields(data_views: list) -> dict:
+    """
+    从 data_views 中构建 kn_data_view_fields 映射
+
+    从每个 view 的 concept_detail.data_properties 中提取 mapped_field.name，
+    构建 view_id -> [field_names] 的映射。
+
+    Args:
+        data_views: 数据视图列表，每个元素包含 id 和 concept_detail
+
+    Returns:
+        dict: view_id -> field_names 的映射
+    """
+    kn_data_view_fields = {}
+    for view in data_views:
+        view_id = view.get("id")
+        concept_detail = view.get("concept_detail", {})
+        data_properties = concept_detail.get("data_properties", [])
+        if data_properties and view_id:
+            field_names = []
+            for prop in data_properties:
+                mapped_field = prop.get("mapped_field", {})
+                if mapped_field and mapped_field.get("name"):
+                    field_names.append(mapped_field["name"])
+            if field_names:
+                kn_data_view_fields[view_id] = field_names
+    return kn_data_view_fields

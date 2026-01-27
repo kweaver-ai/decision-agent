@@ -15,7 +15,10 @@ from fastapi import Body
 from data_retrieval.api.error import VirEngineError
 from data_retrieval.errors import SQLHelperException
 from data_retrieval.datasource.dip_dataview import DataView
-from data_retrieval.api.agent_retrieval import get_datasource_from_agent_retrieval_async
+from data_retrieval.api.agent_retrieval import (
+    get_datasource_from_agent_retrieval_async,
+    build_kn_data_view_fields
+)
 from data_retrieval.logs.logger import logger
 from data_retrieval.sessions import CreateSession, BaseChatHistorySession  # 重新导入 session 相关模块
 from data_retrieval.tools.base import ToolName
@@ -446,18 +449,7 @@ class SQLHelperTool(AFTool):
                     relations.extend(kn_relations)
 
                     # Build kn_data_view_fields mapping from concept_detail.data_properties
-                    for view in data_views:
-                        view_id = view.get("id")
-                        concept_detail = view.get("concept_detail", {})
-                        data_properties = concept_detail.get("data_properties", [])
-                        if data_properties and view_id:
-                            field_names = []
-                            for prop in data_properties:
-                                mapped_field = prop.get("mapped_field", {})
-                                if mapped_field and mapped_field.get("name"):
-                                    field_names.append(mapped_field["name"])
-                            if field_names:
-                                kn_data_view_fields[view_id] = field_names
+                    kn_data_view_fields.update(build_kn_data_view_fields(data_views))
 
         data_source = DataView(
             view_list=view_list,
