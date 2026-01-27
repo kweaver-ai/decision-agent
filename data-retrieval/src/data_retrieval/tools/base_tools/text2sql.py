@@ -954,18 +954,22 @@ class Text2SQLTool(LLMTool):
         if relations:
             relation_descriptions = []
             for rel in relations:
-                if rel.get("source_object_type_name") and rel.get("target_object_type_name"):
+                if rel.get("source_object_type_id") and rel.get("target_object_type_id"):
                     # Build description with view IDs if available
-                    source_name = rel.get('source_object_type_name')
-                    target_name = rel.get('target_object_type_name')
+                    source_id = rel.get('source_object_type_id')
+                    target_id = rel.get('target_object_type_id')
                     source_view_id = rel.get('source_view_id', '')
                     target_view_id = rel.get('target_view_id', '')
 
                     # Add view ID info if available
                     if source_view_id:
-                        source_name = f"{source_name}(view_id: {source_view_id})"
+                        source_name = f"{source_id}(view_id: {source_view_id})"
+                    else:
+                        source_name = source_id
                     if target_view_id:
-                        target_name = f"{target_name}(view_id: {target_view_id})"
+                        target_name = f"{target_id}(view_id: {target_view_id})"
+                    else:
+                        target_name = target_id
 
                     desc = f"- {source_name} 与 {target_name} 存在关系：{rel.get('concept_name', '')}"
                     if rel.get("comment"):
@@ -1039,16 +1043,20 @@ class Text2SQLTool(LLMTool):
         if action == ActionType.SHOW_DS.value and relations:
             relation_descriptions = []
             for rel in relations:
-                if rel.get("source_object_type_name") and rel.get("target_object_type_name"):
-                    source_name = rel.get('source_object_type_name')
-                    target_name = rel.get('target_object_type_name')
+                if rel.get("source_object_type_id") and rel.get("target_object_type_id"):
+                    source_id = rel.get('source_object_type_id')
+                    target_id = rel.get('target_object_type_id')
                     source_view_id = rel.get('source_view_id', '')
                     target_view_id = rel.get('target_view_id', '')
 
                     if source_view_id:
-                        source_name = f"{source_name}(view_id: {source_view_id})"
+                        source_name = f"{source_id}(view_id: {source_view_id})"
+                    else:
+                        source_name = source_id
                     if target_view_id:
-                        target_name = f"{target_name}(view_id: {target_view_id})"
+                        target_name = f"{target_id}(view_id: {target_view_id})"
+                    else:
+                        target_name = target_id
 
                     desc = f"{source_name} 与 {target_name} 存在关系：{rel.get('concept_name', '')}"
                     if rel.get("comment"):
