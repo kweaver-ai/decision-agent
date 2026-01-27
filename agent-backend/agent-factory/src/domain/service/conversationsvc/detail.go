@@ -2,19 +2,20 @@ package conversationsvc
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/p2e/conversationp2e"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationresp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
 
 func (svc *conversationSvc) Detail(ctx context.Context, id string) (res conversationresp.ConversationDetail, err error) {
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("conversation_id", id))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
+	otelTrace.SetAttributes(ctx, attribute.String("conversation_id", id))
 
 	conversationDetailEmpty := *conversationresp.NewConversationDetail()
 	// 1. 获取数据

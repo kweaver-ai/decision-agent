@@ -10,14 +10,16 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo/daresvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/efastaccess/efastdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/util"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 	"github.com/pkg/errors"
 )
 
 func (agentSvc *agentSvc) handleRetrievalField(ctx context.Context, result *daresvo.DataAgentRes, markCite bool) (*agentrespvo.DocRetrievalField, any, error) {
 	var err error
 
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
 
 	answer, cites, err := result.DocRetrievalAnswerAndCites()
 	if err != nil {
@@ -39,8 +41,8 @@ func (agentSvc *agentSvc) handleRetrievalField(ctx context.Context, result *dare
 }
 
 func (agentSvc *agentSvc) docCite(ctx context.Context, retrievalField *agentrespvo.DocRetrievalField, markCite bool, cites []*agentrespvo.AnswerCite) (err error) {
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
 
 	var docCites []*agentrespvo.CiteDoc
 
@@ -63,8 +65,8 @@ func (agentSvc *agentSvc) docCite(ctx context.Context, retrievalField *agentresp
 func (agentSvc *agentSvc) answerCiteToCiteDoc(ctx context.Context, cites []*agentrespvo.AnswerCite) ([]*agentrespvo.CiteDoc, error) {
 	var err error
 
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
 
 	docCites := []*agentrespvo.CiteDoc{}
 
@@ -83,7 +85,7 @@ func (agentSvc *agentSvc) answerCiteToCiteDoc(ctx context.Context, cites []*agen
 		switch meta := imeta.(type) {
 		case *agentDebugInfoRetrieversBlockContentTextMetaDocLib:
 			// 用于定位文档召回方面问题
-			o11y.Debug(ctx, fmt.Sprintf("[answerCiteToCiteDoc] meta.ExtType: %s, meta.DocID: %s", meta.ExtType, meta.DocID))
+			otelHelper.Debug(ctx, fmt.Sprintf("[answerCiteToCiteDoc] meta.ExtType: %s, meta.DocID: %s", meta.ExtType, meta.DocID))
 
 			if meta.ExtType == "" {
 				continue
@@ -106,7 +108,7 @@ func (agentSvc *agentSvc) answerCiteToCiteDoc(ctx context.Context, cites []*agen
 			})
 
 		default:
-			o11y.Debug(ctx, fmt.Sprintf("[answerCiteToCiteDoc]  others %T : %v", meta, meta))
+			otelHelper.Debug(ctx, fmt.Sprintf("[answerCiteToCiteDoc]  others %T : %v", meta, meta))
 		}
 	}
 

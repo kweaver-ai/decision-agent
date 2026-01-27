@@ -10,8 +10,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 
-	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
@@ -30,7 +30,7 @@ func (h *conversationHTTPHandler) List(c *gin.Context) {
 	page, err := strconv.Atoi(pageStr)
 	if err != nil {
 		h.logger.Errorf("GetPublishAgentList error cause: %v, err trace: %+v\n", errors.Cause(err), err)
-		o11y.Error(c, fmt.Sprintf("GetPublishAgentList error cause: %v, err trace: %+v\n", errors.Cause(err), err))
+		otelHelper.Error(c, fmt.Sprintf("GetPublishAgentList error cause: %v, err trace: %+v\n", errors.Cause(err), err))
 		httpErr := capierr.New400Err(c, chelper.ErrMsg(err, &req))
 		rest.ReplyError(c, httpErr)
 
@@ -42,7 +42,7 @@ func (h *conversationHTTPHandler) List(c *gin.Context) {
 	size, err := strconv.Atoi(sizeStr)
 	if err != nil {
 		h.logger.Errorf("GetPublishAgentList error cause: %v, err trace: %+v\n", errors.Cause(err), err)
-		o11y.Error(c, fmt.Sprintf("GetPublishAgentList error cause: %v, err trace: %+v\n", errors.Cause(err), err))
+		otelHelper.Error(c, fmt.Sprintf("GetPublishAgentList error cause: %v, err trace: %+v\n", errors.Cause(err), err))
 		httpErr := capierr.New400Err(c, chelper.ErrMsg(err, &req))
 		rest.ReplyError(c, httpErr)
 
@@ -56,7 +56,7 @@ func (h *conversationHTTPHandler) List(c *gin.Context) {
 	list, total, err := h.conversationSvc.List(ctx, req)
 	if err != nil {
 		h.logger.Errorf("list conversation failed cause: %v, err trace: %+v\n", errors.Cause(err), err)
-		o11y.Error(c, fmt.Sprintf("list conversation failed cause: %v, err trace: %+v\n", errors.Cause(err), err))
+		otelHelper.Error(c, fmt.Sprintf("list conversation failed cause: %v, err trace: %+v\n", errors.Cause(err), err))
 		httpErr := rest.NewHTTPError(ctx, http.StatusInternalServerError, apierr.ConversationGetListFailed).WithErrorDetails(
 			"list conversation failed:" + errors.Cause(err).Error(),
 		)

@@ -5,16 +5,16 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/dbhelper2"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 	"go.opentelemetry.io/otel/attribute"
 )
 
 // Update implements idbaccess.IConversationMsgRepo.
 func (repo *ConversationMsgRepo) Update(ctx context.Context, po *dapo.ConversationMsgPO) (err error) {
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, nil)
-	o11y.SetAttributes(ctx, attribute.String("conversationID", po.ConversationID))
-	o11y.SetAttributes(ctx, attribute.String("msgID", po.ID))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, nil)
+	otelTrace.SetAttributes(ctx, attribute.String("conversationID", po.ConversationID))
+	otelTrace.SetAttributes(ctx, attribute.String("msgID", po.ID))
 
 	sr := dbhelper2.NewSQLRunner(repo.db, repo.logger)
 

@@ -3,21 +3,22 @@ package conversationsvc
 import (
 	"context"
 	"database/sql"
-	"fmt"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/p2e/conversationp2e"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationresp"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
 
 // List implements iportdriver.IConversation.
 func (svc *conversationSvc) List(ctx context.Context, req conversationreq.ListReq) (conversationList conversationresp.ListConversationResp, count int64, err error) {
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("app_key", req.AgentAPPKey))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
+	otelTrace.SetAttributes(ctx, attribute.String("app_key", req.AgentAPPKey))
 
 	conversationListEmpty := conversationresp.ListConversationResp{}
 	// 1. 获取数据

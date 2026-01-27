@@ -16,8 +16,8 @@ import (
 
 	"github.com/bytedance/sonic"
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
 // NOTE: API调用，除url不同，其余与外部调用相同，只是token变为长期有效

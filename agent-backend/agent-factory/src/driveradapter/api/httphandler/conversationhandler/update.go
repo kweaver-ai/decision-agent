@@ -1,7 +1,6 @@
 package conversationhandler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationreq"

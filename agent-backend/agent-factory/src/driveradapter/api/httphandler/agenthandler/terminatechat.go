@@ -1,14 +1,13 @@
 package agenthandler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
-	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
 func (h *agentHTTPHandler) TerminateChat(c *gin.Context) {

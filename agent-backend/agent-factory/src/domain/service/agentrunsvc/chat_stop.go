@@ -2,13 +2,14 @@ package agentsvc
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -17,11 +18,11 @@ import (
 func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.ChatReq, session *Session) error {
 	var err error
 
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
-	o11y.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
-	o11y.SetAttributes(ctx, attribute.String("user_id", req.UserID))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
+	otelTrace.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
+	otelTrace.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
+	otelTrace.SetAttributes(ctx, attribute.String("user_id", req.UserID))
 
 	msgResp := session.GetTempMsgResp()
 	bytes, _ := sonic.Marshal(msgResp)
@@ -65,7 +66,7 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 		return errors.Wrapf(err, "[HandleStopChan] update conversationPO err")
 	}
 
-	o11y.Info(ctx, "[HandleStopChan] terminate chat success")
+	otelHelper.Info(ctx, "[HandleStopChan] terminate chat success")
 
 	return nil
 }

@@ -2,19 +2,20 @@ package conversationsvc
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/p2e/conversationp2e"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationresp"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
 
 // ListByAgentID implements iportdriver.IConversationSvc.
 func (svc *conversationSvc) ListByAgentID(ctx context.Context, agentID, title string, page, size int, startTime, endTime int64) (conversationList []conversationresp.ConversationDetail, count int64, err error) {
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("agentID", agentID))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
+	otelTrace.SetAttributes(ctx, attribute.String("agentID", agentID))
 
 	// 1. 获取数据
 	rt, count, err := svc.conversationRepo.ListByAgentID(ctx, agentID, title, page, size)

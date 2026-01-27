@@ -9,6 +9,9 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/util"
 	"go.opentelemetry.io/otel/attribute"
 
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
+
 	"github.com/bytedance/sonic"
 	"github.com/pkg/errors"
 )
@@ -16,10 +19,10 @@ import (
 func (efast *efastHttpAcc) GetObjectFieldByID(ctx context.Context, objectIDs []string, fields ...string) (map[string]*efastdto.DocumentMetaData, error) {
 	var err error
 
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("object_ids", strings.Join(objectIDs, ",")))
-	o11y.SetAttributes(ctx, attribute.String("fields", strings.Join(fields, ",")))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
+	otelTrace.SetAttributes(ctx, attribute.String("object_ids", strings.Join(objectIDs, ",")))
+	otelTrace.SetAttributes(ctx, attribute.String("fields", strings.Join(fields, ",")))
 
 	documentMap := map[string]*efastdto.DocumentMetaData{}
 	if len(objectIDs) == 0 {
@@ -49,7 +52,7 @@ func (efast *efastHttpAcc) GetObjectFieldByID(ctx context.Context, objectIDs []s
 	_, data, err := efast.client.PostNoUnmarshal(ctx, uri, headers, req)
 
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[GetObjectFieldByID] request uri %s err %s, resp %s, req: %v ", uri, err, string(data), req))
+		otelHelper.Error(ctx, fmt.Sprintf("[GetObjectFieldByID] request uri %s err %s, resp %s, req: %v ", uri, err, string(data), req))
 		return documentMap, errors.Wrapf(err, "[GetObjectFieldByID] request uri %s err %s, resp %s, req: %v ", uri, err, string(data), req)
 	}
 

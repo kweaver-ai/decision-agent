@@ -2,20 +2,22 @@ package conversationsvc
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
+
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 )
 
 // Delete implements iportdriver.IConversation.
 func (svc *conversationSvc) Delete(ctx context.Context, id string) (err error) {
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("conversation_id", id))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
+	otelTrace.SetAttributes(ctx, attribute.String("conversation_id", id))
 	// 1. 获取数据
 	_, err = svc.conversationRepo.GetByID(ctx, id)
 	if err != nil {
@@ -63,9 +65,9 @@ func (svc *conversationSvc) Delete(ctx context.Context, id string) (err error) {
 
 // DeleteByAppKey implements iportdriver.IConversation.
 func (svc *conversationSvc) DeleteByAppKey(ctx context.Context, appKey string) (err error) {
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("app_key", appKey))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
+	otelTrace.SetAttributes(ctx, attribute.String("app_key", appKey))
 	// 1. 开始事务
 	tx, err := svc.conversationRepo.BeginTx(ctx)
 	if err != nil {

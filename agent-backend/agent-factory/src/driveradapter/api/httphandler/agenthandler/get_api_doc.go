@@ -9,8 +9,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
-	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/pkg/errors"
 )
 
@@ -35,7 +35,7 @@ func (h *agentHTTPHandler) GetAPIDoc(c *gin.Context) {
 	doc, err := h.agentSvc.GetAPIDoc(ctx, &req)
 	if err != nil {
 		h.logger.Errorf("[GetAPIDoc] error cause: %v, err trace: %+v\n", errors.Cause(err), err)
-		o11y.Error(c, fmt.Sprintf("[GetAPIDoc] error cause: %v, err trace: %+v\n", errors.Cause(err), err))
+		otelHelper.Error(c, fmt.Sprintf("[GetAPIDoc] error cause: %v, err trace: %+v\n", errors.Cause(err), err))
 		rest.ReplyError(c, err)
 
 		return

@@ -1,7 +1,6 @@
 package agenthandler
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -11,8 +10,8 @@ import (
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
-	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/pkg/errors"
 )
 

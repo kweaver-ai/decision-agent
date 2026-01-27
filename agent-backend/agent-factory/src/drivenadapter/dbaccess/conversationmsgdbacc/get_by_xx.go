@@ -5,16 +5,16 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/dbhelper2"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
 
 // GetByID implements idbaccess.IConversationMsgRepo.
 func (repo *ConversationMsgRepo) GetByID(ctx context.Context, id string) (po *dapo.ConversationMsgPO, err error) {
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, nil)
-	o11y.SetAttributes(ctx, attribute.String("msgID", id))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, nil)
+	otelTrace.SetAttributes(ctx, attribute.String("msgID", id))
 
 	po = &dapo.ConversationMsgPO{}
 	sr := dbhelper2.NewSQLRunner(repo.db, repo.logger)
@@ -25,9 +25,9 @@ func (repo *ConversationMsgRepo) GetByID(ctx context.Context, id string) (po *da
 }
 
 func (repo *ConversationMsgRepo) GetMaxIndexByID(ctx context.Context, id string) (maxIndex int, err error) {
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, nil)
-	o11y.SetAttributes(ctx, attribute.String("conversationID", id))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, nil)
+	otelTrace.SetAttributes(ctx, attribute.String("conversationID", id))
 
 	sr := dbhelper2.NewSQLRunner(repo.db, repo.logger)
 	po := &dapo.ConversationMsgPO{}

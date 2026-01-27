@@ -9,6 +9,9 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentfactoryaccess/agentfactorydto"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
+
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 )
 
 type ErrResponse struct {
@@ -19,10 +22,10 @@ type ErrResponse struct {
 func (af *agentFactoryHttpAcc) GetAgent(ctx context.Context, agentID string, version string) (agentfactorydto.Agent, error) {
 	var err error
 
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("agent_id", agentID))
-	o11y.SetAttributes(ctx, attribute.String("version", version))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
+	otelTrace.SetAttributes(ctx, attribute.String("agent_id", agentID))
+	otelTrace.SetAttributes(ctx, attribute.String("version", version))
 
 	agent := agentfactorydto.Agent{}
 

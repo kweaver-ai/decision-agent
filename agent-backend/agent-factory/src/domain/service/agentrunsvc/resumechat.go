@@ -8,6 +8,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 	"go.opentelemetry.io/otel/attribute"
 )
 
@@ -17,10 +19,10 @@ import (
 func (agentSvc *agentSvc) ResumeChat(ctx context.Context, conversationID string, agentRunID string, resumeInterruptInfo *agentreq.ResumeInterruptInfo) (chan []byte, error) {
 	var err error
 
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("conversation_id", conversationID))
-	o11y.SetAttributes(ctx, attribute.String("agent_run_id", agentRunID))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
+	otelTrace.SetAttributes(ctx, attribute.String("conversation_id", conversationID))
+	otelTrace.SetAttributes(ctx, attribute.String("agent_run_id", agentRunID))
 
 	// 判断是否为中断恢复
 	if resumeInterruptInfo != nil {
@@ -36,7 +38,7 @@ func (agentSvc *agentSvc) ResumeChat(ctx context.Context, conversationID string,
 func (agentSvc *agentSvc) resumeFromInterrupt(ctx context.Context, agentRunID string, resumeInterruptInfo *agentreq.ResumeInterruptInfo) (chan []byte, error) {
 	var err error
 
-	o11y.Info(ctx, fmt.Sprintf("[resumeFromInterrupt] agent_run_id: %s, action: %s", agentRunID, resumeInterruptInfo.Action))
+	otelHelper.Info(ctx, fmt.Sprintf("[resumeFromInterrupt] agent_run_id: %s, action: %s", agentRunID, resumeInterruptInfo.Action))
 
 	// 构造 Executor Resume 请求
 	req := &v2agentexecutordto.AgentResumeReq{

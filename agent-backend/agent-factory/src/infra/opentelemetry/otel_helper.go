@@ -8,6 +8,7 @@ import (
 	"go.opentelemetry.io/otel/codes"
 	"go.opentelemetry.io/otel/trace"
 
+	"github.com/kweaver-ai/TelemetrySDK-Go/span/v2/field"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/logs"
 	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 )
@@ -20,7 +21,7 @@ func Error(ctx context.Context, msg string, attrs ...attribute.KeyValue) {
 	logger.Error(ctx, msg, attrs...)
 
 	// 如果存在 span,设置错误状态
-	span := otelTrace.SpanFromContext(ctx)
+	span := trace.SpanFromContext(ctx)
 	if span != nil {
 		span.RecordError(fmt.Errorf("%s", msg))
 		span.SetStatus(codes.Error, msg)
@@ -100,4 +101,15 @@ func SetAttributes(ctx context.Context, attrs ...attribute.KeyValue) {
 // 替代 o11y.EndSpan
 func EndSpan(ctx context.Context, err error) {
 	otelTrace.EndSpan(ctx, err)
+}
+
+// InfoWithAttr 使用 TelemetrySDK 的 field.LogOptionFunc 记录日志
+// 这是一个临时兼容函数，用于保持与 TelemetrySDK 的兼容性
+// TODO: 逐步迁移到纯 OpenTelemetry 的日志记录方式
+func InfoWithAttr(ctx context.Context, msg string, options ...field.LogOptionFunc) {
+	// 由于 field.LogOptionFunc 是 TelemetrySDK 的特定类型
+	// 与 OpenTelemetry 不兼容，这里暂时不做任何操作
+	// 未来可以考虑将 field 属性转换为 OpenTelemetry 属性
+	_ = msg
+	_ = options
 }

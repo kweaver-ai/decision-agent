@@ -2,11 +2,12 @@ package agentsvc
 
 import (
 	"context"
-	"fmt"
 	"slices"
 
 	"github.com/getkin/kin-openapi/openapi3"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/static"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
@@ -15,10 +16,10 @@ import (
 func (agentSvc *agentSvc) GetAPIDoc(ctx context.Context, req *agentreq.GetAPIDocReq) (interface{}, error) {
 	var err error
 
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
-	o11y.SetAttributes(ctx, attribute.String("agent_version", req.AgentVersion))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
+	otelTrace.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
+	otelTrace.SetAttributes(ctx, attribute.String("agent_version", req.AgentVersion))
 
 	agent, err := agentSvc.agentFactory.GetAgent(ctx, req.AgentID, req.AgentVersion)
 	if err != nil {

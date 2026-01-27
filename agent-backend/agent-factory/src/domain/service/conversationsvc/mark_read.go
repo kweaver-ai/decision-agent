@@ -7,6 +7,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
@@ -14,10 +16,10 @@ import (
 
 // MarkRead implements iportdriver.IConversation.
 func (svc *conversationSvc) MarkRead(ctx context.Context, id string, lastestReadIdx int) (err error) {
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("conversation_id", id))
-	o11y.SetAttributes(ctx, attribute.Int("lastest_read_idx", lastestReadIdx))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
+	otelTrace.SetAttributes(ctx, attribute.String("conversation_id", id))
+	otelTrace.SetAttributes(ctx, attribute.Int("lastest_read_idx", lastestReadIdx))
 
 	_, err = svc.conversationRepo.GetByID(ctx, id)
 	if err != nil {

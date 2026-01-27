@@ -16,8 +16,9 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
-	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -26,11 +27,11 @@ import (
 func (agentSvc *agentSvc) MsgResp2MsgPO(ctx context.Context, msgResp agentresp.ChatResp, req *agentreq.ChatReq) (dapo.ConversationMsgPO, bool, error) {
 	var err error
 
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
-	o11y.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
-	o11y.SetAttributes(ctx, attribute.String("user_id", req.UserID))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
+	otelTrace.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
+	otelTrace.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
+	otelTrace.SetAttributes(ctx, attribute.String("user_id", req.UserID))
 
 	content, err := sonic.Marshal(msgResp.Message.Content)
 	if err != nil {
@@ -78,11 +79,11 @@ func (agentSvc *agentSvc) GetHistoryAndMsgIndex(ctx context.Context, req *agentr
 
 	var err error
 
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
-	o11y.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
-	o11y.SetAttributes(ctx, attribute.String("user_id", req.UserID))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
+	otelTrace.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
+	otelTrace.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
+	otelTrace.SetAttributes(ctx, attribute.String("user_id", req.UserID))
 	// NOTE: 从前端请求的conversationID不为空，接口可能为空;
 	// NOTE: 如果会话ID为空，则创建新会话；
 	if req.ConversationID == "" {
@@ -118,7 +119,7 @@ func (agentSvc *agentSvc) GetHistoryAndMsgIndex(ctx context.Context, req *agentr
 		conversationPO, err = agentSvc.conversationRepo.GetByID(ctx, req.ConversationID)
 		if err != nil {
 			if chelper.IsSqlNotFound(err) {
-				o11y.Warn(ctx, fmt.Sprintf("[GetHistoryAndMsgIndex] conversation not found: %v", err))
+				otelHelper.Warn(ctx, fmt.Sprintf("[GetHistoryAndMsgIndex] conversation not found: %v", err))
 				return nil, nil, 0, rest.NewHTTPError(ctx, http.StatusNotFound,
 					apierr.AgentAPP_Agent_GetConversationFailed).WithErrorDetails(fmt.Sprintf("[GetHistoryAndMsgIndex] conversation not found: %v", err))
 			}
@@ -169,11 +170,11 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 
 	var err error
 	// NOTE: ctx变量名
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
-	o11y.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
-	o11y.SetAttributes(ctx, attribute.String("user_id", req.UserID))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
+	otelTrace.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
+	otelTrace.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
+	otelTrace.SetAttributes(ctx, attribute.String("user_id", req.UserID))
 	// NOTE: 普通对话则创建userMessage,状态为recieved
 	if IsNormalChat(req) {
 		userContent := conversationmsgvo.UserContent{

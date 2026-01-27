@@ -8,8 +8,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
-	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/pkg/errors"
 )
 
@@ -52,7 +52,7 @@ func (h *conversationHTTPHandler) MarkRead(c *gin.Context) {
 	err := h.conversationSvc.MarkRead(ctx, id, req.LastestReadIdx)
 	if err != nil {
 		h.logger.Errorf("mark read conversation failed, cause: %v, err trace: %+v\n", errors.Cause(err), err)
-		o11y.Error(c, fmt.Sprintf("mark read conversation failed, cause: %v, err trace: %+v\n", errors.Cause(err), err))
+		otelHelper.Error(c, fmt.Sprintf("mark read conversation failed, cause: %v, err trace: %+v\n", errors.Cause(err), err))
 
 		// 返回错误
 		rest.ReplyError(c, err)

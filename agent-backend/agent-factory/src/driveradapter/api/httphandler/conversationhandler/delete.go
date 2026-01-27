@@ -6,8 +6,8 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
-	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
@@ -30,7 +30,7 @@ func (h *conversationHTTPHandler) Delete(c *gin.Context) {
 	err := h.conversationSvc.Delete(ctx, id)
 	if err != nil {
 		h.logger.Errorf("delete conversation failed, cause: %v, err trace: %+v\n", errors.Cause(err), err)
-		o11y.Error(c, fmt.Sprintf("delete conversation failed, cause: %v, err trace: %+v\n", errors.Cause(err), err))
+		otelHelper.Error(c, fmt.Sprintf("delete conversation failed, cause: %v, err trace: %+v\n", errors.Cause(err), err))
 		// 返回错误
 		rest.ReplyError(c, err)
 
@@ -58,7 +58,7 @@ func (h *conversationHTTPHandler) DeleteByAPPKey(c *gin.Context) {
 	err := h.conversationSvc.DeleteByAppKey(ctx, appKey)
 	if err != nil {
 		h.logger.Errorf("delete conversation failed, cause: %v, err trace: %+v\n", errors.Cause(err), err)
-		o11y.Error(c, fmt.Sprintf("delete conversation failed, cause: %v, err trace: %+v\n", errors.Cause(err), err))
+		otelHelper.Error(c, fmt.Sprintf("delete conversation failed, cause: %v, err trace: %+v\n", errors.Cause(err), err))
 		httpErr := rest.NewHTTPError(c.Request.Context(), http.StatusInternalServerError, apierr.ConversationDeleteFailed).WithErrorDetails(fmt.Sprintf("delete conversation failed: %s", err.Error()))
 		rest.ReplyError(c, httpErr)
 

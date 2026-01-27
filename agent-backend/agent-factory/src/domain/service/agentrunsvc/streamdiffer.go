@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/bytedance/sonic"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 	"github.com/kweaver-ai/kweaver-go-lib/logger"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 )
 
 func formatSSEMessage(data string) []byte {
@@ -59,8 +59,8 @@ func emitJSON(seq *int, out chan []byte, keyPath []interface{}, content interfac
 func StreamDiff(ctx context.Context, lastSeq *int, oldJSON, newJSON []byte, out chan []byte) error {
 	var err error
 
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
 
 	var oldVal, newVal interface{}
 	if err := sonic.Unmarshal(oldJSON, &oldVal); err != nil {

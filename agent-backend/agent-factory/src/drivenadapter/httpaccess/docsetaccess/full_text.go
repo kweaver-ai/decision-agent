@@ -8,14 +8,17 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/docsetaccess/docsetdto"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
+
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 )
 
 func (ds *docsetHttpAcc) FullText(ctx context.Context, req *docsetdto.FullTextReq) (*docsetdto.FullTextRsp, error) {
 	var err error
 
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("doc_id", req.DocID))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
+	otelTrace.SetAttributes(ctx, attribute.String("doc_id", req.DocID))
 
 	rsp := &docsetdto.FullTextRsp{}
 	uri := fmt.Sprintf("%s/api/docset/v1/subdoc/full_text", ds.privateAddress)

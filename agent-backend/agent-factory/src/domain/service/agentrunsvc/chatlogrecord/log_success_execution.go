@@ -8,7 +8,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
 )
 
 // NOTE: 成功日志上报
@@ -76,5 +77,5 @@ func LogSuccessExecution(ctx context.Context, req *agentreq.ChatReq, progressAns
 	options = append(options, field.WithAttribute(toolCallFailedCountAttr))
 
 	// 3. 记录日志
-	o11y.InfoWithAttr(ctx, "After process success", options...)
+	otelHelper.InfoWithAttr(ctx, "After process success", options...)
 }

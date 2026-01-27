@@ -23,8 +23,9 @@ import (
 	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
-	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -37,11 +38,11 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 
 	var isEnd bool
 
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
-	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
-	o11y.SetAttributes(ctx, attribute.String("user_id", req.UserID))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
+	otelTrace.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
+	otelTrace.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
+	otelTrace.SetAttributes(ctx, attribute.String("user_id", req.UserID))
 
 	var chatResponse agentresp.ChatResp
 	// // 1. 获取agentV3
@@ -324,11 +325,11 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 
 // NOTE: 将助手消息持久化，并绑定临时区
 func (agentSvc *agentSvc) handleMessageAndTempArea(ctx context.Context, req *agentreq.ChatReq, messageVO conversationmsgvo.Message) error {
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, nil)
-	o11y.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
-	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
-	o11y.SetAttributes(ctx, attribute.String("user_id", req.UserID))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, nil)
+	otelTrace.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
+	otelTrace.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
+	otelTrace.SetAttributes(ctx, attribute.String("user_id", req.UserID))
 	// NOTE: VO-PO
 	content, err := sonic.Marshal(messageVO.Content)
 	if err != nil {

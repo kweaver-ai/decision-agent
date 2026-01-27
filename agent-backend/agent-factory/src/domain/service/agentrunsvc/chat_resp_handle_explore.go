@@ -6,7 +6,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/conversationmsgvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 )
 
 type handleExploreDto struct {
@@ -15,8 +15,8 @@ type handleExploreDto struct {
 }
 
 func (agentSvc *agentSvc) handleExplore(ctx context.Context, dto handleExploreDto) (mainThinking string, skillsProcess []*conversationmsgvo.SkillsProcessItem, err error) {
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
 
 	skillsProcess = make([]*conversationmsgvo.SkillsProcessItem, 0, len(dto.exploreAnswerList))
 

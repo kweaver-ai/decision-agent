@@ -11,7 +11,8 @@ import (
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
 )
 
 // NOTE: 失败日志上报
@@ -132,5 +133,5 @@ func LogFailedExecution(ctx context.Context, req *agentreq.ChatReq, err error, r
 	options = append(options, field.WithAttribute(startTime))
 	options = append(options, field.WithAttribute(endTime))
 
-	o11y.InfoWithAttr(ctx, "After process failed", options...)
+	otelHelper.InfoWithAttr(ctx, "After process failed", options...)
 }

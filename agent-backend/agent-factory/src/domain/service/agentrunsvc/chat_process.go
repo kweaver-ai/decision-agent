@@ -2,7 +2,6 @@ package agentsvc
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -14,8 +13,9 @@ import (
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
-	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"go.opentelemetry.io/otel/attribute"
 )
 
@@ -45,12 +45,12 @@ func (agentSvc *agentSvc) Process(req *agentreq.ChatReq, agent agentfactorydto.A
 	var err error
 	// NOTE: 使用新的ctx，确保process协程能独立完成请求，不受外界影响
 	ctx := context.Background()
-	ctx, _ = o11y.StartInternalSpan(ctx)
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
 
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
-	o11y.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
-	o11y.SetAttributes(ctx, attribute.String("user_id", req.UserID))
+	defer otelTrace.EndSpan(ctx, err)
+	otelTrace.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
+	otelTrace.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
+	otelTrace.SetAttributes(ctx, attribute.String("user_id", req.UserID))
 	// NOTE: process是对话的核心，process结束时关闭respChan
 	defer close(respChan)
 

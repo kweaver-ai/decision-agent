@@ -7,19 +7,19 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 	"go.opentelemetry.io/otel/attribute"
 )
 
 func (ae *v2AgentExecutorHttpAcc) Call(ctx context.Context, req *v2agentexecutordto.V2AgentCallReq) (chan string, chan error, error) {
 	var err error
 
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("agent_call_req", fmt.Sprintf("%+v", req)))
-	o11y.SetAttributes(ctx, attribute.String("user_id", req.UserID))
-	o11y.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentOptions.AgentRunID))
-	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
+	otelTrace.SetAttributes(ctx, attribute.String("agent_call_req", fmt.Sprintf("%+v", req)))
+	otelTrace.SetAttributes(ctx, attribute.String("user_id", req.UserID))
+	otelTrace.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentOptions.AgentRunID))
+	otelTrace.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
 
 	var url string
 	if req.CallType == constant.DebugChat {

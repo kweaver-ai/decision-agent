@@ -6,6 +6,8 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 	"go.opentelemetry.io/otel/attribute"
 )
 
@@ -14,14 +16,14 @@ import (
 func (agentSvc *agentSvc) TerminateChat(ctx context.Context, conversationID string, agentRunID string) error {
 	var err error
 
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("conversation_id", conversationID))
-	o11y.SetAttributes(ctx, attribute.String("agent_run_id", agentRunID))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, err)
+	otelTrace.SetAttributes(ctx, attribute.String("conversation_id", conversationID))
+	otelTrace.SetAttributes(ctx, attribute.String("agent_run_id", agentRunID))
 
 	// 1. 如果提供了 agentRunID，先调用 Executor 终止
 	if agentRunID != "" {
-		o11y.Info(ctx, fmt.Sprintf("[TerminateChat] calling executor terminate, agentRunID: %s", agentRunID))
+		otelHelper.Info(ctx, fmt.Sprintf("[TerminateChat] calling executor terminate, agentRunID: %s", agentRunID))
 
 		req := &v2agentexecutordto.AgentTerminateReq{
 			AgentRunID: agentRunID,
@@ -43,7 +45,7 @@ func (agentSvc *agentSvc) TerminateChat(ctx context.Context, conversationID stri
 
 	close(stopchan.(chan struct{}))
 	stopChanMap.Delete(conversationID)
-	o11y.Info(ctx, fmt.Sprintf("[TerminateChat] terminate chat success, conversationID: %s", conversationID))
+	otelHelper.Info(ctx, fmt.Sprintf("[TerminateChat] terminate chat success, conversationID: %s", conversationID))
 	agentSvc.logger.Infof("terminate chat success, conversationID: %s", conversationID)
 
 	return nil

@@ -7,7 +7,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/dbhelper2"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 	"go.opentelemetry.io/otel/attribute"
 
 	"github.com/pkg/errors"
@@ -15,10 +15,10 @@ import (
 
 // List implements idbaccess.IConversationRepo.
 func (repo *ConversationRepo) List(ctx context.Context, req conversationreq.ListReq) (rt []*dapo.ConversationPO, count int64, err error) {
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, nil)
-	o11y.SetAttributes(ctx, attribute.String("agentAPPKey", req.AgentAPPKey))
-	o11y.SetAttributes(ctx, attribute.String("userId", req.UserId))
+	ctx, _ = otelTrace.StartInternalSpan(ctx)
+	defer otelTrace.EndSpan(ctx, nil)
+	otelTrace.SetAttributes(ctx, attribute.String("agentAPPKey", req.AgentAPPKey))
+	otelTrace.SetAttributes(ctx, attribute.String("userId", req.UserId))
 
 	sr := dbhelper2.NewSQLRunner(repo.db, repo.logger)
 	srCount := dbhelper2.NewSQLRunner(repo.db, repo.logger)

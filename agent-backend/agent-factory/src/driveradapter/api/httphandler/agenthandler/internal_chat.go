@@ -1,7 +1,6 @@
 package agenthandler
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/bytedance/sonic"
@@ -12,8 +11,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
-	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
 func (h *agentHTTPHandler) InternalChat(c *gin.Context) {
