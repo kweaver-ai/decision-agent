@@ -132,7 +132,7 @@ const CommonPanel = ({ chatItemIndex, readOnly }: any) => {
   };
 
   const renderInterrupt = () => {
-    if (interrupt && chatItemIndex === chatList.length - 1) {
+    if (interrupt && interrupt.data && chatItemIndex === chatList.length - 1) {
       return (
         <div className="dip-mt-16">
           <InterruptFormPanel chatItemIndex={chatItemIndex} />
