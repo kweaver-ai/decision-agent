@@ -973,10 +973,14 @@ class Text2SQLTool(LLMTool):
 
                     desc = f"- {source_name} 与 {target_name} 存在关系：{rel.get('concept_name', '')}"
                     if rel.get("comment"):
-                        desc += f"（{rel.get('comment')}）"
+                        desc += f"({rel.get('comment')})"
+                    if rel.get("data_source"):
+                        desc += "，关系来源于 data_view: "
+                        desc += f"{rel.get('data_source').get('name')}(id: {rel.get('data_source').get('id')})"
                     relation_descriptions.append(desc)
             if relation_descriptions:
-                relation_background = "\n数据视图之间的关系：\n" + "\n".join(relation_descriptions)
+                relation_background = "\n生成 SQL 时，请参考以下的数据视图关系（需要时进行 JOIN 操作）：\n"
+                relation_background += "\n".join(relation_descriptions)
 
         # Add relation background to config_dict
         if relation_background:
@@ -1059,8 +1063,11 @@ class Text2SQLTool(LLMTool):
                         target_name = target_id
 
                     desc = f"{source_name} 与 {target_name} 存在关系：{rel.get('concept_name', '')}"
+                    if rel.get("data_source"):
+                        desc += "，关系来源于 data_view："
+                        desc += f"{rel.get('data_source').get('name')}(id: {rel.get('data_source').get('id')})"
                     if rel.get("comment"):
-                        desc += f"（{rel.get('comment')}）"
+                        desc += f"({rel.get('comment')})"
                     relation_descriptions.append(desc)
 
             if relation_descriptions:

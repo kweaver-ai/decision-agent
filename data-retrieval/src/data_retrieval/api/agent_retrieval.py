@@ -248,9 +248,9 @@ async def get_datasource_from_agent_retrieval_async(
                 "target_object_type_id": target_object_type_id,
                 "target_object_type_name": concept_detail.get("target_object_type_name", ""),
                 "target_view_id": target_view_id,
-                "comment": concept_detail.get("comment", "")
+                "comment": concept_detail.get("comment", ""),
+                "type": concept_detail.get("type", "")
             }
-            relations.append(relation_info)
 
             # Keep existing logic to add data_view if present
             relation_type = concept_detail.get("type", "")
@@ -263,6 +263,9 @@ async def get_datasource_from_agent_retrieval_async(
                         "view_name": data_source.get("name", ""),
                         "concept_detail": concept_detail
                     })
+                    relation_info["data_source"] = data_source
+
+            relations.append(relation_info)
 
         return data_views, metrics, relations
     except AfDataSourceError:
