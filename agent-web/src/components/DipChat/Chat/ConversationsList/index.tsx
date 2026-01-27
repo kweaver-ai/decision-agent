@@ -131,7 +131,12 @@ const ConversationList = ({ startNewConversation, className }: any) => {
                 setDipChatStore({
                   activeConversationKey: item.key,
                 });
-                resetDipChatStore(['activeChatItemIndex', 'chatListAutoScroll', 'activeProgressIndex']);
+                resetDipChatStore([
+                  'activeChatItemIndex',
+                  'chatListAutoScroll',
+                  'activeProgressIndex',
+                  'streamGenerating',
+                ]);
                 getDetailsById(item.key);
               }, 0);
             }
