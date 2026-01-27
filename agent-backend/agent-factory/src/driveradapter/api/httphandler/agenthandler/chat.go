@@ -19,6 +19,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// Chat Agent 对话接口
+// @Summary      Agent 对话
+// @Description  与 Agent 进行对话交互，支持流式响应
+// @Tags         Agent
+// @Accept       json
+// @Produce      json
+// @Param        app_key  path      string        true  "应用 Key"
+// @Param        request  body      swagger.ChatReq  true  "对话请求"
+// @Success      200       {object}  swagger.ChatResp  "成功"
+// @Failure      400       {object}  swagger.APIError   "请求参数错误"
+// @Failure      500       {object}  swagger.APIError   "服务器内部错误"
+// @Router       /v1/app/:app_key/chat/completion [post]
+// @Security     BearerAuth
 func (h *agentHTTPHandler) Chat(c *gin.Context) {
 	reqStartTime := cutil.GetCurrentMSTimestamp()
 	// 1. app_key

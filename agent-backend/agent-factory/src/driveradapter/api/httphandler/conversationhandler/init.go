@@ -14,6 +14,19 @@ import (
 	"github.com/pkg/errors"
 )
 
+// Init 初始化会话
+// @Summary      初始化会话
+// @Description  创建一个新的会话会话
+// @Tags         Conversation
+// @Accept       json
+// @Produce      json
+// @Param        app_key  path      string                     true  "应用 Key"
+// @Param        request  body      conversationreq.InitReq  true  "初始化请求"
+// @Success      200       {string}  string  "成功"
+// @Failure      400      {object}  swagger.APIError   "请求参数错误"
+// @Failure      500      {object}  swagger.APIError   "服务器内部错误"
+// @Router       /v1/app/:app_key/conversation [post]
+// @Security     BearerAuth
 func (h *conversationHTTPHandler) Init(c *gin.Context) {
 	// 接收语言标识转换为 context.Context
 	ctx := rest.GetLanguageCtx(c)

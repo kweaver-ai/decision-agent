@@ -29,6 +29,9 @@ func (s *httpServer) Start() {
 		// 注册路由 - 健康检查
 		s.registerHealthRoutes(engine)
 
+		// 注册路由 - Swagger UI
+		s.registerSwaggerRoutes(engine)
+
 		// 注册路由 - Management侧 (V3)
 		s.registerManagementPubRoutes(engine)
 		s.registerManagementPriRoutes(engine)

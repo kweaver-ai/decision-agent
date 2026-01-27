@@ -12,6 +12,20 @@ import (
 	"github.com/pkg/errors"
 )
 
+// Detail 获取会话详情
+// @Summary      获取会话详情
+// @Description  根据会话 ID 获取会话详细信息
+// @Tags         Conversation
+// @Accept       json
+// @Produce      json
+// @Param        app_key  path      string  true  "应用 Key"
+// @Param        id       path      string  true  "会话 ID"
+// @Success      200       {string}  string  "成功"
+// @Failure      400     {object}  swagger.APIError  "请求参数错误"
+// @Failure      404     {object}  swagger.APIError  "会话不存在"
+// @Failure      500     {object}  swagger.APIError  "服务器内部错误"
+// @Router       /v1/app/:app_key/conversation/:id [get]
+// @Security     BearerAuth
 func (h *conversationHTTPHandler) Detail(c *gin.Context) {
 	// 1. 获取id
 	id := c.Param("id")

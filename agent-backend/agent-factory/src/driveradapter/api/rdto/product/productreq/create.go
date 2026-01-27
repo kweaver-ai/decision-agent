@@ -7,9 +7,9 @@ import (
 
 // CreateReq 表示创建产品的请求
 type CreateReq struct {
-	Name    string `json:"name" binding:"required,max=50"` // 产品名称
-	Profile string `json:"profile" binding:"max=100"`      // 产品简介
-	Key     string `json:"key" binding:"max=50"`           // 产品标识，唯一
+	Name    string `json:"name" binding:"required,max=50" example:"智能客服"`         // 产品名称
+	Profile string `json:"profile" binding:"max=100" example:"这是一个智能客服产品"`        // 产品简介
+	Key     string `json:"key" binding:"max=50" example:"smart-customer-service"` // 产品标识，唯一
 }
 
 func (p *CreateReq) GetErrMsgMap() map[string]string {

@@ -14,6 +14,20 @@ import (
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
+// Update 更新产品
+// @Summary      更新产品
+// @Description  更新产品信息
+// @Tags         Product
+// @Accept       json
+// @Produce      json
+// @Param        id       path      int                     true  "产品 ID"
+// @Param        product  body      productreq.UpdateReq     true  "产品信息"
+// @Success      204
+// @Failure      400  {object}  swagger.APIError           "请求参数错误"
+// @Failure      404  {object}  swagger.APIError           "产品不存在"
+// @Failure      500  {object}  swagger.APIError           "服务器内部错误"
+// @Router       /v3/product/{id} [put]
+// @Security     BearerAuth
 func (h *productHTTPHandler) Update(c *gin.Context) {
 	isPrivate := capimiddleware.IsInternalAPI(c)
 

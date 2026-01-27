@@ -6,8 +6,8 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cglobal"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 
 	"github.com/gin-gonic/gin"
@@ -15,8 +15,31 @@ import (
 
 var hydraInstance rest.Hydra
 
+type MockHydra struct{}
+
+func (m *MockHydra) GetLanguage(c *gin.Context) rest.Language {
+	return rest.SimplifiedChinese
+}
+
+func (m *MockHydra) VerifyToken(ctx context.Context, c *gin.Context) (rest.Visitor, error) {
+	return rest.Visitor{
+		ID:      "e39adc84-6de8-11f0-b206-4a2c3f0cd493",
+		TokenID: "Bearer mock token",
+		Type:    rest.VisitorType_RealName,
+	}, nil
+}
+
+func (m *MockHydra) Introspect(ctx context.Context, token string) (rest.TokenIntrospectInfo, error) {
+	return rest.TokenIntrospectInfo{}, nil
+}
+
 func GetHydra() rest.Hydra {
 	if hydraInstance != nil {
+		return hydraInstance
+	}
+
+	if global.GConfig.MockHydra {
+		hydraInstance = &MockHydra{}
 		return hydraInstance
 	}
 
@@ -34,27 +57,6 @@ func VerifyOAuthMiddleWare() gin.HandlerFunc {
 	hydra := GetHydra()
 
 	return func(c *gin.Context) {
-		// 本地调试 mock
-		if cenvhelper.IsLocalDev(cenvhelper.RunScenario_Aaron_Local_Dev) {
-			visitor := rest.Visitor{
-				// ID:      "mock id",
-				ID:      "e39adc84-6de8-11f0-b206-4a2c3f0cd493", // 6
-				TokenID: "Bearer mock token id",
-				Type:    rest.VisitorType_RealName,
-				// Type: rest.VisitorType_App,
-			}
-
-			ctxKey := cenum.VisitUserInfoCtxKey.String()
-			c.Set(ctxKey, &visitor)
-
-			_ctx := context.WithValue(c.Request.Context(), ctxKey, &visitor)
-			cutil.UpdateGinReqCtx(c, _ctx)
-
-			c.Next()
-
-			return
-		}
-
 		ctx := rest.GetLanguageCtx(c)
 		visitor, err := hydra.VerifyToken(ctx, c)
 

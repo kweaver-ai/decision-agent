@@ -16,6 +16,19 @@ import (
 	"github.com/pkg/errors"
 )
 
+// ResumeChat 恢复对话
+// @Summary      恢复对话
+// @Description  恢复之前的对话会话
+// @Tags         Agent
+// @Accept       json
+// @Produce      json
+// @Param        app_key  path      string                   true  "应用 Key"
+// @Param        request  body      swagger.ResumeReq      true  "恢复请求"
+// @Success      200
+// @Failure      400     {object}  swagger.APIError "请求参数错误"
+// @Failure      500     {object}  swagger.APIError "服务器内部错误"
+// @Router       /v1/app/:app_key/chat/resume [post]
+// @Security     BearerAuth
 func (h *agentHTTPHandler) ResumeChat(c *gin.Context) {
 	req := &agentreq.ResumeReq{}
 	if err := c.ShouldBindJSON(req); err != nil {

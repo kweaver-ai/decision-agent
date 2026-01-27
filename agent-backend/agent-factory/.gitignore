@@ -10,3 +10,5 @@ agent-factory
 .claude/
 CLAUDE.md
 WARP.md
+# Swagger 文档
+/docs/swagger.*

@@ -62,6 +62,16 @@ type Config struct {
 
 	// 是否使用Mock MQ客户端（本地开发时建议设置为true）
 	MockMQClient bool `yaml:"mock_mq_client"`
+
+	// 是否使用Mock Sandbox Platform（本地开发时建议设置为true）
+	MockSandboxPlatform bool `yaml:"mock_sandbox_platform"`
+
+	// 是否使用Mock Hydra（本地开发时建议设置为true）
+	MockHydra bool `yaml:"mock_hydra"`
+
+	// OpenAPI 文档配置
+	EnableSwagger bool   `yaml:"enable_swagger"` // 是否启用 Swagger UI
+	SwaggerToken  string `yaml:"swagger_token"`  // Swagger UI 认证 token (开发模式)
 }
 
 func (c Config) IsDebug() bool {
