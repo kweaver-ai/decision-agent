@@ -926,19 +926,20 @@ class Text2SQLTool(LLMTool):
                 else:
                     kn_id = kn_param
 
-            data_views, _, relations = await get_datasource_from_agent_retrieval_async(
-                kn_id=kn_id,
-                query=params.get('input', ''),
-                search_scope=search_scope,
-                headers=headers,
-                base_url=base_url,
-                max_concepts=config_dict.get('view_num_limit', _SETTINGS.DEFAULT_AGENT_RETRIEVAL_MAX_CONCEPTS),
-                mode=recall_mode
-            )
-            view_list.extend([view.get("id") for view in data_views])
+                data_views, _, kn_relations = await get_datasource_from_agent_retrieval_async(
+                    kn_id=kn_id,
+                    query=params.get('input', ''),
+                    search_scope=search_scope,
+                    headers=headers,
+                    base_url=base_url,
+                    max_concepts=config_dict.get('view_num_limit', _SETTINGS.DEFAULT_AGENT_RETRIEVAL_MAX_CONCEPTS),
+                    mode=recall_mode
+                )
+                view_list.extend([view.get("id") for view in data_views])
+                relations.extend(kn_relations)
 
-            # Build kn_data_view_fields mapping from concept_detail.data_properties
-            kn_data_view_fields.update(build_kn_data_view_fields(data_views))
+                # Build kn_data_view_fields mapping from concept_detail.data_properties
+                kn_data_view_fields.update(build_kn_data_view_fields(data_views))
 
         # Build relation background info from relations
         relation_background = ""
