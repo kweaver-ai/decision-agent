@@ -82,16 +82,9 @@ func LogFailedExecution(ctx context.Context, req *agentreq.ChatReq, err error, r
 			options = append(options, field.WithAttribute(field.NewAttribute("progress", field.MallocJsonField([]agentrespvo.Progress{}))))
 		}
 
-		if val, ok := resp.Message.Ext["total_time"]; ok {
-			if totolTimeVal, ok := val.(float64); ok {
-				totaltime = totolTimeVal
-			}
-		}
-
-		if val, ok := resp.Message.Ext["total_tokens"]; ok {
-			if totalTokensVal, ok := val.(float64); ok {
-				totalTokens = int64(totalTokensVal)
-			}
+		if resp.Message.Ext != nil {
+			totaltime = resp.Message.Ext.TotalTime
+			totalTokens = resp.Message.Ext.TotalTokens
 		}
 		// total time单位是s，存进去变成毫秒
 		totalTimeAttr := field.NewAttribute("total_time", field.MallocJsonField(totaltime*1000))

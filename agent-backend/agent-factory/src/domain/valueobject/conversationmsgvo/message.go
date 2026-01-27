@@ -18,7 +18,11 @@ type Message struct {
 	ReplyID        string                        `json:"reply_id"`
 	AgentInfo      valueobject.AgentInfo         `json:"agent_info"`
 	Index          int                           `json:"index"`
-	Ext            map[string]interface{}        `json:"ext"` // 扩展字段
+	Ext            *MessageExt                   `json:"ext"` // 扩展字段
+}
+
+func (m *Message) IsInterrupted() bool {
+	return m.Ext != nil && m.Ext.IsInterrupted()
 }
 
 //role:user
