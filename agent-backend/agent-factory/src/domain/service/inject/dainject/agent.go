@@ -22,19 +22,19 @@ var (
 func NewAgentSvc() iportdriver.IAgent {
 	agentSvcOnce.Do(func() {
 		dto := &agentsvc.NewAgentSvcDto{
-			SvcBase:             service.NewSvcBase(),
-			Logger:              logger.GetLogger(),
-			AgentFactory:        httpinject.NewAgentFactoryHttpAcc(),
-			AgentExecutorV1:     httpinject.NewAgentExecutorV1HttpAcc(),
-			AgentExecutorV2:     httpinject.NewAgentExecutorV2HttpAcc(),
-			ConversationSvc:     NewConversationSvc(),
-			SessionSvc:          NewSessionSvc(),
-			ConversationRepo:    conversationdbacc.NewConversationRepo(),
-			ConversationMsgRepo: conversationmsgdbacc.NewConversationMsgRepo(),
-			Efast:               httpinject.NewEfastHttpAcc(),
-
-			TempAreaRepo: tempareadbacc.NewTempAreaRepo(),
-			Docset:       httpinject.NewDocsetHttpAcc(),
+			SvcBase:              service.NewSvcBase(),
+			Logger:               logger.GetLogger(),
+			AgentFactory:         httpinject.NewAgentFactoryHttpAcc(),
+			AgentExecutorV1:      httpinject.NewAgentExecutorV1HttpAcc(),
+			AgentExecutorV2:      httpinject.NewAgentExecutorV2HttpAcc(),
+			ConversationSvc:      NewConversationSvc(),
+			SessionSvc:           NewSessionSvc(),
+			SandboxPlatform:      httpinject.NewSandboxPlatformHttpAcc(),
+			SandboxPlatformConf:   global.GConfig.SandboxPlatformConf,
+			ConversationRepo:     conversationdbacc.NewConversationRepo(),
+			ConversationMsgRepo:  conversationmsgdbacc.NewConversationMsgRepo(),
+			TempAreaRepo:         tempareadbacc.NewTempAreaRepo(),
+			Docset:               httpinject.NewDocsetHttpAcc(),
 			// NOTE: streamDiffFrequency must be greater than 0
 			StreamDiffFrequency: max(global.GConfig.StreamDiffFrequency, 1),
 		}

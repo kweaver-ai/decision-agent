@@ -2,15 +2,16 @@ package agentsvc
 
 import (
 	"context"
-	"fmt"
 	"strings"
 	"time"
+
+	"net/http"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/sandboxplatformhttp/sandboxplatformdto"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/pkg/errors"
-	"net/http"
 )
 
 // EnsureSandboxSession 确保 Sandbox Session 存在并就绪
@@ -19,33 +20,34 @@ func (s *agentSvc) EnsureSandboxSession(ctx context.Context, sessionID string, r
 	ctx, _ = o11y.StartInternalSpan(ctx)
 	defer o11y.EndSpan(ctx, nil)
 
-	o11y.SetAttributes(ctx,
-		o11y.String("session_id", sessionID),
-		o11y.String("user_id", req.UserID),
-		o11y.String("agent_id", req.AgentID),
-	)
+	o11y.SetAttributes(ctx) // o11y.String("session_id", sessionID),
+	// o11y.String("user_id", req.UserID),
+	// o11y.String("agent_id", req.AgentID),
 
 	// 1. 检测 Session 状态
 	sessionInfo, err := s.sandboxPlatform.GetSession(ctx, sessionID)
 	if err != nil {
+		// 404 错误表示 Session 不存在，继续创建
 		if s.isSessionNotFoundError(err) {
-			o11y.SetAttributes(ctx, o11y.String("action", "create_new"))
+			// o11y.SetAttributes(ctx, o11y.String("action", "create_new"))
 			return s.createNewSession(ctx, sessionID, req)
 		}
 
-		o11y.SetAttributes(ctx, o11y.String("action", "recover_from_error"))
+		// 其他错误：尝试创建新 Session
+		// o11y.SetAttributes(ctx, o11y.String("action", "recover_from_error"))
 		s.logger.Warnf("[EnsureSandboxSession] get session failed: %v, will create new session", err)
 		return s.createNewSession(ctx, sessionID, req)
 	}
 
 	// 2. 检查 Session 状态
 	if sessionInfo.Status == "running" {
-		o11y.SetAttributes(ctx, o11y.String("action", "reuse_existing"))
+		// o11y.SetAttributes(ctx, o11y.String("action", "reuse_existing"))
 		s.logger.Infof("[EnsureSandboxSession] reuse existing session: %s", sessionID)
 		return sessionID, nil
 	}
 
-	o11y.SetAttributes(ctx, o11y.String("action", "recreate"))
+	// 3. Session 状态非 running，自动重新创建
+	// o11y.SetAttributes(ctx, o11y.String("action", "recreate"))
 	s.logger.Warnf("[EnsureSandboxSession] session status is %s, will recreate: %s", sessionInfo.Status, sessionID)
 	return s.createNewSession(ctx, sessionID, req)
 }
@@ -57,7 +59,7 @@ func (s *agentSvc) createNewSession(ctx context.Context, sessionID string, req *
 		AgentID:          req.AgentID,
 		BusinessDomainID: req.XBusinessDomainID,
 		Config: map[string]interface{}{
-			"session_id": sessionID,
+			"session_id": sessionID, // 使用预生成的 session_id
 			"file_upload_config": map[string]interface{}{
 				"max_file_size":      s.sandboxPlatformConf.DefaultFileUploadConfig.MaxFileSize,
 				"max_file_size_unit": s.sandboxPlatformConf.DefaultFileUploadConfig.MaxFileSizeUnit,
@@ -69,8 +71,10 @@ func (s *agentSvc) createNewSession(ctx context.Context, sessionID string, req *
 
 	createResp, err := s.sandboxPlatform.CreateSession(ctx, createReq)
 	if err != nil {
+		// 检查是否为 "已存在" 错误（并发场景下其他请求已创建）
 		if s.isSessionAlreadyExistsError(err) {
 			s.logger.Infof("[createNewSession] session already exists: %s, will wait for ready", sessionID)
+			// 直接等待现有 Session 就绪
 			return s.waitForSessionReady(ctx, sessionID)
 		}
 
@@ -78,11 +82,13 @@ func (s *agentSvc) createNewSession(ctx context.Context, sessionID string, req *
 		return "", errors.Wrap(err, "create sandbox session failed")
 	}
 
+	// 使用返回的 session_id（可能与请求的预生成 ID 不同）
 	actualSessionID := createResp.SessionID
 	if createResp.SessionID == "" {
 		actualSessionID = sessionID
 	}
 
+	// 等待 Session 就绪
 	return s.waitForSessionReady(ctx, actualSessionID)
 }
 
@@ -90,6 +96,7 @@ func (s *agentSvc) createNewSession(ctx context.Context, sessionID string, req *
 func (s *agentSvc) waitForSessionReady(ctx context.Context, sessionID string) (string, error) {
 	maxRetries := s.sandboxPlatformConf.MaxRetries
 	retryInterval := s.sandboxPlatformConf.RetryInterval
+
 	retryIntervalDuration, err := time.ParseDuration(retryInterval)
 	if err != nil {
 		s.logger.Warnf("[waitForSessionReady] failed to parse retry interval, using default 500ms")
@@ -109,6 +116,7 @@ func (s *agentSvc) waitForSessionReady(ctx context.Context, sessionID string) (s
 			return sessionID, nil
 		}
 
+		// 如果状态是 error/stopped，直接失败
 		if sessionInfo.Status == "error" || sessionInfo.Status == "stopped" {
 			return "", errors.Errorf("session in invalid state: %s", sessionInfo.Status)
 		}
@@ -121,9 +129,10 @@ func (s *agentSvc) waitForSessionReady(ctx context.Context, sessionID string) (s
 
 // isSessionNotFoundError 判断是否为 Session 不存在的错误
 func (s *agentSvc) isSessionNotFoundError(err error) bool {
+	// 检查是否为 rest.HTTPError 类型
 	var httpErr *rest.HTTPError
 	if errors.As(err, &httpErr) {
-		return httpErr.StatusCode == http.StatusNotFound
+		return httpErr.HTTPCode == http.StatusNotFound
 	}
 	return false
 }
@@ -132,7 +141,7 @@ func (s *agentSvc) isSessionNotFoundError(err error) bool {
 func (s *agentSvc) isSessionAlreadyExistsError(err error) bool {
 	var httpErr *rest.HTTPError
 	if errors.As(err, &httpErr) {
-		return httpErr.StatusCode == http.StatusConflict
+		return httpErr.HTTPCode == http.StatusConflict
 	}
 	return strings.Contains(err.Error(), "already exists")
 }

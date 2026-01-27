@@ -29,7 +29,7 @@ func init() {
 // 测试时，可通过initEnv()重新初始化
 func initEnv() {
 	// 1. 获取服务名
-	svcName := cutil.GetEnv("SERVICE_NAME", "")
+	svcName := cutil.GetEnv("SERVICE_NAME", "AGENT_FACTORY")
 	if svcName == "" {
 		panic("env SERVICE_NAME env not set")
 	}

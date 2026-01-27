@@ -5,7 +5,7 @@ import (
 	"sync"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	msqclient "github.com/kweaver-ai/proton-mq-sdk-go"
 )
 
@@ -23,7 +23,7 @@ type mqClient struct {
 
 // NewMQClientWithPath 根据路径创建消息队列
 func NewMQClientWithPath(cfgPath ...string) icmp.IMQClient {
-	if cenvhelper.IsLocalDev(cenvhelper.RunScenario_Aaron_Local_Dev) {
+	if global.GConfig.MockMQClient {
 		return &mqClient{}
 	}
 

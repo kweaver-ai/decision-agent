@@ -24,7 +24,6 @@ func NewTempAreaSvc() iportdriver.ITempAreaSvc {
 			TempAreaRepo: tempareadbacc.NewTempAreaRepo(),
 			AgentFactory: httpinject.NewAgentFactoryHttpAcc(),
 			EcoConfig:    httpinject.NewEcoConfigHttpAcc(),
-			Efast:        httpinject.NewEfastHttpAcc(),
 		}
 		tempAreaSvcImpl = tempareasvc.NewTempAreaService(dto)
 	})

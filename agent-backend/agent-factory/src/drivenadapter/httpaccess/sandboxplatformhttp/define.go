@@ -3,31 +3,32 @@ package sandboxplatformhttp
 import (
 	"sync"
 
-	"github.com/kweaver-ai/decision-agent/agent-factory/cconf"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/httpclient"
+	"github.com/kweaver-ai/decision-agent/agent-factory/conf"
+	"github.com/kweaver-ai/decision-agent/agent-factory/port/driven/ihttpaccess/isandboxplatformhttp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
 type sandboxPlatformHttpAcc struct {
-	logger           icmp.Logger
-	httpClient       httpclient.HTTPClient
+	logger              icmp.Logger
+	client              rest.HTTPClient
 	sandboxPlatformConf *conf.SandboxPlatformConf
-	baseURL          string
+	baseURL             string
 }
 
 var (
 	sandboxPlatformOnce sync.Once
-	sandboxPlatformImpl ISandboxPlatform
+	sandboxPlatformImpl isandboxplatformhttp.ISandboxPlatform
 )
 
-func NewSandboxPlatformHttpAcc(sandboxPlatformConf *conf.SandboxPlatformConf, httpClient httpclient.HTTPClient, logger icmp.Logger) ISandboxPlatform {
+func NewSandboxPlatformHttpAcc(sandboxPlatformConf *conf.SandboxPlatformConf, client rest.HTTPClient, logger icmp.Logger) isandboxplatformhttp.ISandboxPlatform {
 	sandboxPlatformOnce.Do(func() {
 		sandboxPlatformImpl = &sandboxPlatformHttpAcc{
-			logger:             logger,
-			httpClient:       httpClient,
+			logger:              logger,
+			client:              client,
 			sandboxPlatformConf: sandboxPlatformConf,
-			baseURL:          cutil.GetHTTPAccess(sandboxPlatformConf.Svc.Host, sandboxPlatformConf.Svc.Port, sandboxPlatformConf.Svc.Protocol),
+			baseURL:             cutil.GetHTTPAccess(sandboxPlatformConf.SvcConf.Host, sandboxPlatformConf.SvcConf.Port, sandboxPlatformConf.SvcConf.Protocol),
 		}
 	})
 	return sandboxPlatformImpl

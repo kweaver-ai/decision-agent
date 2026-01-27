@@ -31,15 +31,15 @@ func (c MQConf) IsDebug() bool {
 
 type Config struct {
 	*cconf.Config
-	MQ MQConf 
+	MQ MQConf
 
 	// APP 配置字段
-	AgentFactoryConf *AgentFactoryConf `yaml:"agent_factory"`
-	AgentExecutorConf *AgentExecutorConf `yaml:"agent_executor"`
-	FastConf         *EfastConf         `yaml:"efast"`
-	DocsetConf        *DocsetConf        `yaml:"docset"`
-	EcoConfigConf    *EcoConfigConf    `yaml:"ecoconfig"`
-	UniqueryConf    *UniqueryConf    `yaml:"uniquery"`
+	AgentFactoryConf    *AgentFactoryConf    `yaml:"agent_factory"`
+	AgentExecutorConf   *AgentExecutorConf   `yaml:"agent_executor"`
+	FastConf            *EfastConf           `yaml:"efast"`
+	DocsetConf          *DocsetConf          `yaml:"docset"`
+	EcoConfigConf       *EcoConfigConf       `yaml:"ecoconfig"`
+	UniqueryConf        *UniqueryConf        `yaml:"uniquery"`
 	SandboxPlatformConf *SandboxPlatformConf `yaml:"sandbox_platform"`
 
 	// 流式响应配置
@@ -50,6 +50,18 @@ type Config struct {
 
 	// 是否保留老的APP路径，默认false
 	KeepLegacyAppPath bool `yaml:"keep_legacy_app_path"`
+
+	// 是否禁用权限检查，默认false
+	DisablePmsCheck bool `yaml:"disable_pms_check"`
+
+	// 是否禁用业务域初始化，默认false
+	DisableBizDomainInit bool `yaml:"disable_biz_domain_init"`
+
+	// 是否禁用审计日志初始化，默认false
+	DisableAuditInit bool `yaml:"disable_audit_init"`
+
+	// 是否使用Mock MQ客户端（本地开发时建议设置为true）
+	MockMQClient bool `yaml:"mock_mq_client"`
 }
 
 func (c Config) IsDebug() bool {

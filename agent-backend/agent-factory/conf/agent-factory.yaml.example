@@ -2,6 +2,22 @@
 # 是否保留老的APP路径
 keep_legacy_app_path: false
 
+
+# 是否禁用权限检查（本地开发时建议设置为true）
+disable_pms_check: true
+
+# 是否禁用业务域初始化（本地开发时建议设置为true）
+disable_biz_domain_init: true
+
+# 是否禁用审计日志初始化（本地开发时建议设置为true）
+disable_audit_init: true
+
+# 是否使用Mock MQ客户端（本地开发时建议设置为true）
+mock_mq_client: true
+
+# 是否使用Mock Sandbox Platform（本地开发时建议设置为true）
+mock_sandbox_platform: true
+
 # 这个文件只有本地调试用，打包是打不进去的，
 db:
   user_name: anyshare
@@ -59,6 +75,7 @@ project:
   port: 30777
   language: "zh-CN"
   logger_level: info
+  log_file: "./agent-factory.log"
 
   rbac_host: kg-user-rbac
   rbac_port: 6900
@@ -145,7 +162,33 @@ uniquery:
     host: 192.168.232.11
     port: 13011
     protocol: http
-
+biz_domain:
+  public_svc:
+    host: 192.168.232.11
+    port: 13011
+    protocol: http
+  private_svc:
+    host: 192.168.232.11
+    port: 13011
+    protocol: http
+datahubcentral:
+  public_svc:
+    host: 192.168.232.11
+    port: 13011
+    protocol: http
+  private_svc:
+    host: 192.168.232.11
+    port: 13011
+    protocol: http
+authorization:
+  public_svc:
+    host: 192.168.232.11
+    port: 13011
+    protocol: http
+  private_svc:
+    host: 192.168.232.11
+    port: 13011
+    protocol: http
 # OpenTelemetry 配置
 opentelemetry:
   # 服务名称

@@ -5,7 +5,6 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common"
 	_ "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cglobal"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/redishelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/kweaver-go-lib/audit"
@@ -33,9 +32,9 @@ func init() {
 	redishelper.ConnectRedis(&global.GConfig.Redis)
 
 	// 4. 初始化日志
-	logFile := "/app/agent-factory/logs/agent-factory.log"
-	if cenvhelper.IsLocalDev() {
-		logFile = "./agent-factory.log"
+	logFile := global.GConfig.Project.LogFile
+	if logFile == "" {
+		logFile = "/app/agent-factory/logs/agent-factory.log"
 	}
 
 	// new 2025年04月16日14:42:00
@@ -76,16 +75,18 @@ func init() {
 	}
 
 	//8. 初始化审计日志
-	mqSetting := &mq.MQSetting{
-		MQType: global.GConfig.MQ.MQType,
-		MQHost: global.GConfig.MQ.MQHost,
-		MQPort: global.GConfig.MQ.MQPort,
-		Tenant: global.GConfig.MQ.Tenant,
-		Auth: mq.MQAuthSetting{
-			Mechanism: global.GConfig.MQ.Auth.Mechanism,
-			Username:  global.GConfig.MQ.Auth.Username,
-			Password:  global.GConfig.MQ.Auth.Password,
-		},
+	if !global.GConfig.DisableAuditInit {
+		mqSetting := &mq.MQSetting{
+			MQType: global.GConfig.MQ.MQType,
+			MQHost: global.GConfig.MQ.MQHost,
+			MQPort: global.GConfig.MQ.MQPort,
+			Tenant: global.GConfig.MQ.Tenant,
+			Auth: mq.MQAuthSetting{
+				Mechanism: global.GConfig.MQ.Auth.Mechanism,
+				Username:  global.GConfig.MQ.Auth.Username,
+				Password:  global.GConfig.MQ.Auth.Password,
+			},
+		}
+		audit.Init(mqSetting)
 	}
-	audit.Init(mqSetting)
 }
