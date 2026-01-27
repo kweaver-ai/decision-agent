@@ -101,5 +101,5 @@ data:
 
 kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-yaml
+  name: agent-factory-yaml
   namespace: {{ .Values.namespace }}
