@@ -44,7 +44,7 @@ const InterruptFormPanel = ({ chatItemIndex }: any) => {
       // };
       // loop(interrupt.data.tool_args);
 
-      return interrupt.data.tool_args;
+      return interrupt.data?.tool_args;
     }
     return tempArr;
   }, [interrupt]);
