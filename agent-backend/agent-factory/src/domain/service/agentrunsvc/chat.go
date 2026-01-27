@@ -17,9 +17,9 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/ctype"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/logs"
 	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -61,7 +61,7 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	// NOTE: Chat接口请求时，agentID 实际值为agentID, APIChat接口请求时，agentID 实际值为agentKey
 	agent, err := agentSvc.agentFactory.GetAgent(newCtx, req.AgentID, req.AgentVersion)
 	if err != nil {
-		o11y.Error(newCtx, fmt.Sprintf("[chat] get agent failed: %v", err))
+		otelHelper.Errorf(newCtx, "[chat] get agent failed: %v", err)
 
 		attributes := []attribute.KeyValue{}
 		attributes = append(attributes, attribute.String("error", err.Error()))
@@ -83,14 +83,14 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	// NOTE: 2. 获取历史上下文
 	conversationPO, contexts, msgIndex, err := agentSvc.GetHistoryAndMsgIndex(newCtx, req)
 	if err != nil {
-		o11y.Error(newCtx, fmt.Sprintf("[chat] get history and msg index failed: %v", err))
+		otelHelper.Errorf(newCtx, "[chat] get history and msg index failed: %v", err)
 		return nil, err
 	}
 
 	// NOTE: 3. 插入用户消息和助手消息, 并返回userMessageID, assistantMessageID, assistantMessageIndex
 	req.UserMessageID, req.AssistantMessageID, req.AssistantMessageIndex, err = agentSvc.UpsertUserAndAssistantMsg(newCtx, req, msgIndex, conversationPO)
 	if err != nil {
-		o11y.Error(newCtx, fmt.Sprintf("[chat] upsert user and assistant msg failed: %v", err))
+		otelHelper.Errorf(newCtx, "[chat] upsert user and assistant msg failed: %v", err)
 		return nil, err
 	}
 
@@ -134,7 +134,7 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	agentCallReq, err := agentSvc.GenerateAgentCallReq(newCtx, req, contexts, agent)
 	if err != nil {
 		agentSvc.logger.Errorf("[Chat] generate agent call req err: %v", err)
-		o11y.Error(newCtx, fmt.Sprintf("[chat] generate agent call req err: %v", err))
+		otelHelper.Errorf(newCtx, "[chat] generate agent call req err: %v", err)
 
 		return nil, err
 	}
@@ -160,7 +160,7 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 		conversationAssistantMsgPO.Status = cdaenum.MsgStatusFailed
 		agentSvc.conversationMsgRepo.Update(callCtx, conversationAssistantMsgPO)
 		agentSvc.logger.Errorf("[Chat] call agent executor err: %v", err)
-		o11y.Error(newCtx, fmt.Sprintf("[chat] call agent executor err: %v", err))
+		otelHelper.Errorf(newCtx, "[chat] call agent executor err: %v", err)
 
 		return nil, rest.NewHTTPError(newCtx, http.StatusInternalServerError,
 			apierr.AgentAPP_Agent_CallAgentExecutorFailed).WithErrorDetails(fmt.Sprintf("[chat] call agent executor err: %v", err))

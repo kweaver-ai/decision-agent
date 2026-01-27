@@ -9,7 +9,6 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/p2e/conversationp2e"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationresp"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -24,14 +23,14 @@ func (svc *conversationSvc) List(ctx context.Context, req conversationreq.ListRe
 	// 1. 获取数据
 	rt, count, err := svc.conversationRepo.List(ctx, req)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[List] get conversation list error, app_key: %s, err: %v", req.AgentAPPKey, err))
+		otelHelper.Errorf(ctx, "[List] get conversation list error, app_key: %s, err: %v", req.AgentAPPKey, err)
 		return conversationListEmpty, 0, errors.Wrapf(err, "[List] get conversation list error, app_key: %s, err: %v", req.AgentAPPKey, err)
 	}
 
 	// 2. PO转EO
 	eos, err := conversationp2e.Conversations(ctx, rt, svc.conversationMsgRepo)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[List] convert PO to EO error, app_key: %s, err: %v", req.AgentAPPKey, err))
+		otelHelper.Errorf(ctx, "[List] convert PO to EO error, app_key: %s, err: %v", req.AgentAPPKey, err)
 		return conversationListEmpty, 0, errors.Wrapf(err, "[List] convert PO to EO error, app_key: %s, err: %v", req.AgentAPPKey, err)
 	}
 	// 3. 转换为响应DTO
@@ -43,7 +42,7 @@ func (svc *conversationSvc) List(ctx context.Context, req conversationreq.ListRe
 
 		err := conversationDetail.LoadFromEo(eo)
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[List] convert EO to DTO error, app_key: %s, err: %v", req.AgentAPPKey, err))
+			otelHelper.Errorf(ctx, "[List] convert EO to DTO error, app_key: %s, err: %v", req.AgentAPPKey, err)
 			return conversationListEmpty, 0, errors.Wrapf(err, "[List] convert EO to DTO error, app_key: %s, err: %v", req.AgentAPPKey, err)
 		}
 
@@ -56,7 +55,7 @@ func (svc *conversationSvc) List(ctx context.Context, req conversationreq.ListRe
 			if errors.Is(err, sql.ErrNoRows) {
 				conversationList[index].TempareaId = ""
 			} else {
-				o11y.Error(ctx, fmt.Sprintf("[List] get temp area error, app_key: %s, err: %v", req.AgentAPPKey, err))
+				otelHelper.Errorf(ctx, "[List] get temp area error, app_key: %s, err: %v", req.AgentAPPKey, err)
 				return conversationListEmpty, 0, errors.Wrapf(err, "[List] get temp area error, app_key: %s, err: %v", req.AgentAPPKey, err)
 			}
 		} else {

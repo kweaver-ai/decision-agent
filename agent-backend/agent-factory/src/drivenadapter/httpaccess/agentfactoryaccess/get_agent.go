@@ -7,7 +7,6 @@ import (
 
 	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentfactoryaccess/agentfactorydto"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -31,20 +30,20 @@ func (af *agentFactoryHttpAcc) GetAgent(ctx context.Context, agentID string, ver
 	code, res, err := af.client.GetNoUnmarshal(ctx, uri, nil, nil)
 
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[GetAgent] request uri %s err %s", uri, err))
+		otelHelper.Errorf(ctx, "[GetAgent] request uri %s err %s", uri, err)
 		err = errors.Wrapf(err, "[GetAgent] request uri %s err %s", uri, err)
 
 		return agent, err
 	}
 
 	if code != http.StatusOK {
-		o11y.Error(ctx, fmt.Sprintf("[GetAgent] status code: %d , resp %s", code, string(res)))
+		otelHelper.Errorf(ctx, "[GetAgent] status code: %d , resp %s", code, string(res))
 		return agent, fmt.Errorf("status code: %d , resp %s", code, string(res))
 	}
 
 	err = sonic.Unmarshal(res, &agent)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[GetAgent] request uri %s unmarshal err %s,  resp %s ", uri, err, string(res)))
+		otelHelper.Errorf(ctx, "[GetAgent] request uri %s unmarshal err %s,  resp %s ", uri, err, string(res))
 		return agent, errors.Wrapf(err, "[GetAgent] request uri %s unmarshal err %s,  resp %s ", uri, err, string(res))
 	}
 

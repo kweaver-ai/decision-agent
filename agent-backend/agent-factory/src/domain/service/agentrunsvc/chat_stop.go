@@ -9,7 +9,6 @@ import (
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -31,14 +30,14 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 
 	err = sonic.Unmarshal(bytes, &resp)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] unmarshal msgResp err: %v", err))
+		otelHelper.Errorf(ctx, "[HandleStopChan] unmarshal msgResp err: %v", err)
 		return errors.Wrapf(err, "[HandleStopChan] unmarshal msgResp err")
 	}
 
 	// NOTE: 将msgResp转换为msgPO
 	msgPO, _, err := agentSvc.MsgResp2MsgPO(ctx, resp, req)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] convert msgResp to msgPO err: %v", err))
+		otelHelper.Errorf(ctx, "[HandleStopChan] convert msgResp to msgPO err: %v", err)
 		return errors.Wrapf(err, "[HandleStopChan] convert msgResp to msgPO err")
 	}
 
@@ -47,13 +46,13 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 
 	err = agentSvc.conversationMsgRepo.Update(ctx, &msgPO)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] update msgPO err: %v", err))
+		otelHelper.Errorf(ctx, "[HandleStopChan] update msgPO err: %v", err)
 		return errors.Wrapf(err, "[HandleStopChan] update msgPO err")
 	}
 	// 更新会话
 	conversationPO, err := agentSvc.conversationRepo.GetByID(ctx, req.ConversationID)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] get conversationPO err: %v", err))
+		otelHelper.Errorf(ctx, "[HandleStopChan] get conversationPO err: %v", err)
 		return errors.Wrapf(err, "[HandleStopChan] get conversationPO err")
 	}
 
@@ -62,7 +61,7 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 
 	err = agentSvc.conversationRepo.Update(ctx, conversationPO)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] update conversationPO err: %v", err))
+		otelHelper.Errorf(ctx, "[HandleStopChan] update conversationPO err: %v", err)
 		return errors.Wrapf(err, "[HandleStopChan] update conversationPO err")
 	}
 

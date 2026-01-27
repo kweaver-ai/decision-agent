@@ -13,8 +13,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
 )
 
 func (h *agentHTTPHandler) Debug(c *gin.Context) {
@@ -23,7 +23,7 @@ func (h *agentHTTPHandler) Debug(c *gin.Context) {
 	agentAPPKey := c.Param("app_key")
 	if agentAPPKey == "" {
 		err := capierr.New400Err(c, "[Debug] app key is empty")
-		o11y.Error(c, "[Debug] app key is empty")
+		otelHelper.Error(c, "[Debug] app key is empty")
 		h.logger.Errorf("[Debug] app key is empty")
 		rest.ReplyError(c, err)
 
@@ -38,7 +38,7 @@ func (h *agentHTTPHandler) Debug(c *gin.Context) {
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		httpErr := capierr.New400Err(c, fmt.Sprintf("[Debug] should bind json err: %v", err))
-		o11y.Error(c, fmt.Sprintf("[Debug] should bind json err: %v", err))
+		otelHelper.Errorf(c, "[Debug] should bind json err: %v", err)
 		h.logger.Errorf("[Debug] should bind json err: %v", err)
 		rest.ReplyError(c, httpErr)
 
@@ -56,7 +56,7 @@ func (h *agentHTTPHandler) Debug(c *gin.Context) {
 	user := chelper.GetVisitorFromCtx(c)
 	if user == nil {
 		httpErr := capierr.New401Err(c, "[Debug] user not found")
-		o11y.Error(c, "[Debug] user not found")
+		otelHelper.Error(c, "[Debug] user not found")
 		h.logger.Errorf("[Debug] user not found")
 		rest.ReplyError(c, httpErr)
 
@@ -117,7 +117,7 @@ func (h *agentHTTPHandler) Debug(c *gin.Context) {
 
 	channel, err := h.agentSvc.Chat(ctx, chatReq)
 	if err != nil {
-		o11y.Error(c, fmt.Sprintf("[Debug] chat error: %v", err.Error()))
+		otelHelper.Errorf(c, "[Debug] chat error: %v", err.Error())
 		h.logger.Errorf("[Debug] chat error: %v", err.Error())
 		rest.ReplyError(c, err)
 

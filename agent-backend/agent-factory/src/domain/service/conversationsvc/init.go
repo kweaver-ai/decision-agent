@@ -7,7 +7,6 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationresp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 )
 
@@ -29,7 +28,7 @@ func (sv *conversationSvc) Init(ctx context.Context, req conversationreq.InitReq
 
 	po, err = sv.conversationRepo.Create(ctx, po)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[Init] create conversation error, err: %v", err))
+		otelHelper.Errorf(ctx, "[Init] create conversation error, err: %v", err)
 		return rt, errors.Wrapf(err, "update conversation title failed")
 	}
 
@@ -40,7 +39,7 @@ func (sv *conversationSvc) Init(ctx context.Context, req conversationreq.InitReq
 	if req.TempareaId != "" {
 		err = sv.tempAreaRepo.Bind(ctx, req.TempareaId, po.ID)
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[Init] bind temparea failed, err: %v", err))
+			otelHelper.Errorf(ctx, "[Init] bind temparea failed, err: %v", err)
 			return rt, errors.Wrapf(err, "bind temparea failed")
 		}
 	}

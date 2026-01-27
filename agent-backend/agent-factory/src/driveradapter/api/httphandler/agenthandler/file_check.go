@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
 	"github.com/pkg/errors"
 )
 

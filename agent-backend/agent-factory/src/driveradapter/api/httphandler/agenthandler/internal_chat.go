@@ -12,8 +12,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
 )
 
 func (h *agentHTTPHandler) InternalChat(c *gin.Context) {
@@ -21,7 +21,7 @@ func (h *agentHTTPHandler) InternalChat(c *gin.Context) {
 	// 1. app_key
 	agentAPPKey := c.Param("app_key")
 	if agentAPPKey == "" {
-		o11y.Error(c, "[InternalChat] app key is empty")
+		otelHelper.Error(c, "[InternalChat] app key is empty")
 		h.logger.Errorf("[InternalChat] app key is empty")
 
 		err := capierr.New400Err(c, "[InternalChat] app key is empty")
@@ -55,7 +55,7 @@ func (h *agentHTTPHandler) InternalChat(c *gin.Context) {
 	// if req.XAccountType == "app" {
 	// 	errMsg := "应用账号应该使用API Chat接口"
 	// 	h.logger.Errorf("[InternalChat] %s", errMsg)
-	// 	o11y.Error(c, fmt.Sprintf("[InternalChat] %s", errMsg))
+	// 	otelHelper.Errorf(c, "[InternalChat] %s", errMsg)
 	// 	httpErr := capierr.New400Err(c, fmt.Sprintf("[InternalChat] %s", errMsg))
 	// 	rest.ReplyError(c, httpErr)
 	// 	return
@@ -67,7 +67,7 @@ func (h *agentHTTPHandler) InternalChat(c *gin.Context) {
 
 	channel, err := h.agentSvc.Chat(ctx, &req)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[InternalChat] chat error: %v", err.Error()))
+		otelHelper.Errorf(ctx, "[InternalChat] chat error: %v", err.Error())
 		h.logger.Errorf("[InternalChat] chat error: %v", err.Error())
 		rest.ReplyError(c, err)
 

@@ -8,7 +8,6 @@ import (
 	"github.com/getkin/kin-openapi/openapi3"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/static"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -23,7 +22,7 @@ func (agentSvc *agentSvc) GetAPIDoc(ctx context.Context, req *agentreq.GetAPIDoc
 
 	agent, err := agentSvc.agentFactory.GetAgent(ctx, req.AgentID, req.AgentVersion)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[GetAPIDoc] get agent failed: %v", err))
+		otelHelper.Errorf(ctx, "[GetAPIDoc] get agent failed: %v", err)
 		return nil, errors.Wrapf(err, "[GetAPIDoc] get agent failed: %v", err)
 	}
 	// 读取api文档模版并解析为openapi3类型
@@ -31,13 +30,13 @@ func (agentSvc *agentSvc) GetAPIDoc(ctx context.Context, req *agentreq.GetAPIDoc
 
 	docByte, err := static.StaticFiles.ReadFile("agent-api.json")
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[GetAPIDoc] read file failed: %v", err))
+		otelHelper.Errorf(ctx, "[GetAPIDoc] read file failed: %v", err)
 		return nil, errors.Wrapf(err, "[GetAPIDoc] read file failed: %v", err)
 	}
 
 	apiDoc, err := loader.LoadFromData(docByte)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[GetAPIDoc] load api doc err: %v", err))
+		otelHelper.Errorf(ctx, "[GetAPIDoc] load api doc err: %v", err)
 		return nil, errors.Wrapf(err, "[GetAPIDoc] load api doc err: %v", err)
 	}
 

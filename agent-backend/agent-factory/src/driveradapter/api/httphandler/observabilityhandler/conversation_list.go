@@ -7,8 +7,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
 
 	"github.com/gin-gonic/gin"
 
@@ -25,7 +25,7 @@ func (h *observabilityHTTPHandler) ConversationList(c *gin.Context) {
 	agentID := c.Param("agent_id")
 	if agentID == "" {
 		h.logger.Errorf("[ConversationList] agent_id is required")
-		o11y.Error(c, "[ConversationList] agent_id is required")
+		otelHelper.Error(c, "[ConversationList] agent_id is required")
 		httpErr := capierr.New400Err(c, "[ConversationList] agent_id is required")
 		rest.ReplyError(c, httpErr)
 
@@ -36,7 +36,7 @@ func (h *observabilityHTTPHandler) ConversationList(c *gin.Context) {
 	var req observabilityreq.ConversationListReq
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Errorf("[ConversationList] should bind json err: %v", err)
-		o11y.Error(c, fmt.Sprintf("[ConversationList] should bind json err: %v", err))
+		otelHelper.Errorf(c, "[ConversationList] should bind json err: %v", err)
 		httpErr := capierr.New400Err(c, fmt.Sprintf("[ConversationList] should bind json err: %v", err))
 		rest.ReplyError(c, httpErr)
 
@@ -58,7 +58,7 @@ func (h *observabilityHTTPHandler) ConversationList(c *gin.Context) {
 
 	if req.StartTime > req.EndTime {
 		h.logger.Errorf("[ConversationList] start_time must be less than end_time")
-		o11y.Error(c, "[ConversationList] start_time must be less than end_time")
+		otelHelper.Error(c, "[ConversationList] start_time must be less than end_time")
 		httpErr := capierr.New400Err(c, "[ConversationList] start_time must be less than end_time")
 		rest.ReplyError(c, httpErr)
 
@@ -81,7 +81,7 @@ func (h *observabilityHTTPHandler) ConversationList(c *gin.Context) {
 	user := chelper.GetVisitorFromCtx(c)
 	if user == nil {
 		httpErr := capierr.New404Err(c, "[ConversationList] user not found")
-		o11y.Error(c, "[ConversationList] user not found")
+		otelHelper.Error(c, "[ConversationList] user not found")
 		h.logger.Errorf("[ConversationList] user not found: %v", httpErr)
 		rest.ReplyError(c, httpErr)
 
@@ -94,7 +94,7 @@ func (h *observabilityHTTPHandler) ConversationList(c *gin.Context) {
 	data, totalCount, err := h.conversationSvc.ListByAgentID(c.Request.Context(), agentID, req.Title, req.Page, req.Size, req.StartTime, req.EndTime)
 	if err != nil {
 		h.logger.Errorf("[ConversationList] call conversation service error: %v", err)
-		o11y.Error(c, fmt.Sprintf("[ConversationList] call conversation service error: %v", err))
+		otelHelper.Errorf(c, "[ConversationList] call conversation service error: %v", err)
 		httpErr := capierr.New500Err(c, fmt.Sprintf("[ConversationList] call conversation service error: %v", err))
 		rest.ReplyError(c, httpErr)
 

@@ -8,7 +8,6 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"go.opentelemetry.io/otel/attribute"
 )
 
@@ -73,7 +72,7 @@ func (agentSvc *agentSvc) resumeFromInterrupt(ctx context.Context, agentRunID st
 	// 调用 Executor Resume 接口
 	messages, errs, err := agentSvc.agentExecutorV2.Resume(ctx, req)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[resumeFromInterrupt] resume failed: %v", err))
+		otelHelper.Errorf(ctx, "[resumeFromInterrupt] resume failed: %v", err)
 		return nil, capierr.New500Err(ctx, fmt.Sprintf("resume failed: %v", err))
 	}
 
@@ -98,7 +97,7 @@ func (agentSvc *agentSvc) resumeFromInterrupt(ctx context.Context, agentRunID st
 				newResp := []byte(msg)
 				// 使用 StreamDiff 进行增量处理
 				if err := StreamDiff(ctx, seq, oldResp, newResp, channel); err != nil {
-					o11y.Error(ctx, fmt.Sprintf("[resumeFromInterrupt] stream diff err: %v", err))
+					otelHelper.Errorf(ctx, "[resumeFromInterrupt] stream diff err: %v", err)
 					agentSvc.logger.Errorf("[resumeFromInterrupt] stream diff err: %v", err)
 
 					return
@@ -108,7 +107,7 @@ func (agentSvc *agentSvc) resumeFromInterrupt(ctx context.Context, agentRunID st
 
 			case err, ok := <-errs:
 				if ok && err != nil {
-					o11y.Error(ctx, fmt.Sprintf("[resumeFromInterrupt] stream error: %v", err))
+					otelHelper.Errorf(ctx, "[resumeFromInterrupt] stream error: %v", err)
 					agentSvc.logger.Errorf("[resumeFromInterrupt] stream error: %v", err)
 				}
 				// 发送结束标记
@@ -126,7 +125,7 @@ func (agentSvc *agentSvc) resumeFromInterrupt(ctx context.Context, agentRunID st
 func (agentSvc *agentSvc) resumeFromSession(ctx context.Context, conversationID string) (chan []byte, error) {
 	sessionInterface, ok := SessionMap.Load(conversationID)
 	if !ok {
-		o11y.Error(ctx, fmt.Sprintf("[ResumeChat] conversation_id %s not found", conversationID))
+		otelHelper.Errorf(ctx, "[ResumeChat] conversation_id %s not found", conversationID)
 		agentSvc.logger.Errorf("[ResumeChat] conversation_id %s not found", conversationID)
 
 		return nil, capierr.New400Err(ctx, "conversation_id not found")
@@ -156,7 +155,7 @@ func (agentSvc *agentSvc) resumeFromSession(ctx context.Context, conversationID 
 
 		sessionInterface, ok := SessionMap.Load(conversationID)
 		if !ok {
-			o11y.Error(ctx, fmt.Sprintf("[ResumeChat] conversation_id %s not found", conversationID))
+			otelHelper.Errorf(ctx, "[ResumeChat] conversation_id %s not found", conversationID)
 			agentSvc.logger.Errorf("[ResumeChat] conversation_id %s not found", conversationID)
 
 			return
@@ -167,7 +166,7 @@ func (agentSvc *agentSvc) resumeFromSession(ctx context.Context, conversationID 
 
 		newResp, err := sonic.Marshal(session.GetTempMsgResp())
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[ResumeChat] marshal temp msg resp err: %v", err))
+			otelHelper.Errorf(ctx, "[ResumeChat] marshal temp msg resp err: %v", err)
 			agentSvc.logger.Errorf("[ResumeChat] marshal temp msg resp err: %v", err)
 
 			return
@@ -175,7 +174,7 @@ func (agentSvc *agentSvc) resumeFromSession(ctx context.Context, conversationID 
 		// NOTE:先发送一次,把当前的tempMsgResp发送出去
 		if newResp != nil {
 			if err := StreamDiff(ctx, seq, oldResp, newResp, channel); err != nil {
-				o11y.Error(ctx, fmt.Sprintf("[ResumeChat] stream diff err: %v", err))
+				otelHelper.Errorf(ctx, "[ResumeChat] stream diff err: %v", err)
 				agentSvc.logger.Errorf("[ResumeChat] stream diff err: %v", err)
 
 				return
@@ -187,7 +186,7 @@ func (agentSvc *agentSvc) resumeFromSession(ctx context.Context, conversationID 
 			// NOTE: 每当收到信号，就发送一条消息
 			newResp, err := sonic.Marshal(session.GetTempMsgResp())
 			if err != nil {
-				o11y.Error(ctx, fmt.Sprintf("[ResumeChat] marshal temp msg resp err: %v", err))
+				otelHelper.Errorf(ctx, "[ResumeChat] marshal temp msg resp err: %v", err)
 				agentSvc.logger.Errorf("[ResumeChat] marshal temp msg resp err: %v", err)
 
 				break
@@ -197,7 +196,7 @@ func (agentSvc *agentSvc) resumeFromSession(ctx context.Context, conversationID 
 				oldResp = newResp
 			} else {
 				if err := StreamDiff(ctx, seq, oldResp, newResp, channel); err != nil {
-					o11y.Error(ctx, fmt.Sprintf("[ResumeChat] stream diff err: %v", err))
+					otelHelper.Errorf(ctx, "[ResumeChat] stream diff err: %v", err)
 					agentSvc.logger.Errorf("[ResumeChat] stream diff err: %v", err)
 
 					break

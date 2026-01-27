@@ -7,8 +7,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
-
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 
 	"github.com/gin-gonic/gin"
@@ -25,7 +24,7 @@ func (h *conversationHTTPHandler) Update(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Errorf("[Update] should bind json error: %v", errors.Cause(err))
-		o11y.Error(c, fmt.Sprintf("[Update] should bind json error: %v", errors.Cause(err)))
+		otelHelper.Errorf(c, "[Update] should bind json error: %v", errors.Cause(err))
 		err = capierr.New400Err(c, chelper.ErrMsg(err, &req))
 		rest.ReplyError(c, err)
 
@@ -35,7 +34,7 @@ func (h *conversationHTTPHandler) Update(c *gin.Context) {
 	// 2. 验证请求参数
 	if err := req.ReqCheck(); err != nil {
 		h.logger.Errorf("[Update] req check error: %v", errors.Cause(err))
-		o11y.Error(c, fmt.Sprintf("[Update] req check error: %v", errors.Cause(err)))
+		otelHelper.Errorf(c, "[Update] req check error: %v", errors.Cause(err))
 		err = capierr.New400Err(c, err.Error())
 		rest.ReplyError(c, err)
 
@@ -45,7 +44,7 @@ func (h *conversationHTTPHandler) Update(c *gin.Context) {
 	err := h.conversationSvc.Update(ctx, req)
 	if err != nil {
 		h.logger.Errorf("update conversation failed cause: %v, err trace: %+v\n", errors.Cause(err), err)
-		o11y.Error(c, fmt.Sprintf("update conversation failed cause: %v, err trace: %+v\n", errors.Cause(err), err))
+		otelHelper.Errorf(c, "update conversation failed cause: %v, err trace: %+v\n", errors.Cause(err), err)
 		// 返回错误
 		rest.ReplyError(c, err)
 

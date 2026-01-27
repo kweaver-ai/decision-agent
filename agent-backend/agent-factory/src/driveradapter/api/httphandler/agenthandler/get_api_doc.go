@@ -9,8 +9,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
 	"github.com/pkg/errors"
 )
 
@@ -25,7 +25,7 @@ func (h *agentHTTPHandler) GetAPIDoc(c *gin.Context) {
 	if appKey == "" {
 		rest.ReplyError(c, capierr.New400Err(c, "app_key is required"))
 		h.logger.Errorf("[GetAPIDoc] app_key is required")
-		o11y.Error(c, "[GetAPIDoc] app_key is required")
+		otelHelper.Error(c, "[GetAPIDoc] app_key is required")
 
 		return
 	}

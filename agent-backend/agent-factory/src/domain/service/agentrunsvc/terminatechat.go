@@ -6,7 +6,6 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"go.opentelemetry.io/otel/attribute"
 )
 
@@ -28,7 +27,7 @@ func (agentSvc *agentSvc) TerminateChat(ctx context.Context, conversationID stri
 			AgentRunID: agentRunID,
 		}
 		if err := agentSvc.agentExecutorV2.Terminate(ctx, req); err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[TerminateChat] executor terminate failed: %v", err))
+			otelHelper.Errorf(ctx, "[TerminateChat] executor terminate failed: %v", err)
 			// 继续执行原有逻辑，不阻止 channel 关闭
 		}
 	}
@@ -36,7 +35,7 @@ func (agentSvc *agentSvc) TerminateChat(ctx context.Context, conversationID stri
 	// 2. 执行原有的 channel 关闭逻辑
 	stopchan, _ := stopChanMap.Load(conversationID)
 	if stopchan == nil {
-		o11y.Error(ctx, fmt.Sprintf("[TerminateChat] terminate chat failed, conversationID: %s, stopchan not found", conversationID))
+		otelHelper.Errorf(ctx, "[TerminateChat] terminate chat failed, conversationID: %s, stopchan not found", conversationID)
 		agentSvc.logger.Errorf("terminate chat failed, conversationID: %s, stopchan not found", conversationID)
 
 		return capierr.New404Err(ctx, "stopchan not found")

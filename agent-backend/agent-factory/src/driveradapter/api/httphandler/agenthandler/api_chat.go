@@ -16,8 +16,8 @@ import (
 
 	"github.com/bytedance/sonic"
 	"github.com/gin-gonic/gin"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
 )
 
 // NOTE: API调用，除url不同，其余与外部调用相同，只是token变为长期有效
@@ -27,7 +27,7 @@ func (h *agentHTTPHandler) APIChat(c *gin.Context) {
 	agentAPPKey := c.Param("app_key")
 	if agentAPPKey == "" {
 		httpErr := capierr.New400Err(c, "[APIChat] app key is empty")
-		o11y.Error(c, "[APIChat] app key is empty")
+		otelHelper.Error(c, "[APIChat] app key is empty")
 		h.logger.Errorf("[APIChat] app key is empty")
 		rest.ReplyError(c, httpErr)
 
@@ -43,7 +43,7 @@ func (h *agentHTTPHandler) APIChat(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		httpErr := capierr.New400Err(c, fmt.Sprintf("[APIChat] should bind json err: %v", err))
-		o11y.Error(c, fmt.Sprintf("[APIChat] should bind json err: %v", err))
+		otelHelper.Errorf(c, "[APIChat] should bind json err: %v", err)
 		h.logger.Errorf("[APIChat] should bind json err: %v", err)
 		rest.ReplyError(c, httpErr)
 
@@ -58,7 +58,7 @@ func (h *agentHTTPHandler) APIChat(c *gin.Context) {
 	user := chelper.GetVisitorFromCtx(c)
 	if user == nil {
 		httpErr := capierr.New401Err(c, "[APIChat] user not found")
-		o11y.Error(c, "[APIChat] user not found")
+		otelHelper.Error(c, "[APIChat] user not found")
 		h.logger.Errorf("[APIChat] user not found")
 		rest.ReplyError(c, httpErr)
 
@@ -102,7 +102,7 @@ func (h *agentHTTPHandler) APIChat(c *gin.Context) {
 	// 3. 调用服务
 	channel, err := h.agentSvc.Chat(c.Request.Context(), &req)
 	if err != nil {
-		o11y.Error(c, fmt.Sprintf("[APIChat] chat error: %v", err.Error()))
+		otelHelper.Errorf(c, "[APIChat] chat error: %v", err.Error())
 		h.logger.Errorf("[APIChat] chat error: %v", err.Error())
 		rest.ReplyError(c, err)
 

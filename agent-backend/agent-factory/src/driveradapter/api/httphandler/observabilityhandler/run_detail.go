@@ -6,8 +6,8 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
 
 	"github.com/gin-gonic/gin"
 
@@ -23,7 +23,7 @@ func (h *observabilityHTTPHandler) RunDetail(c *gin.Context) {
 
 	if agentID == "" {
 		h.logger.Errorf("[RunDetail] agent_id is required")
-		o11y.Error(c, "[RunDetail] agent_id is required")
+		otelHelper.Error(c, "[RunDetail] agent_id is required")
 		httpErr := capierr.New400Err(c, "[RunDetail] agent_id is required")
 		rest.ReplyError(c, httpErr)
 
@@ -32,7 +32,7 @@ func (h *observabilityHTTPHandler) RunDetail(c *gin.Context) {
 
 	if conversationID == "" {
 		h.logger.Errorf("[RunDetail] conversation_id is required")
-		o11y.Error(c, "[RunDetail] conversation_id is required")
+		otelHelper.Error(c, "[RunDetail] conversation_id is required")
 		httpErr := capierr.New400Err(c, "[RunDetail] conversation_id is required")
 		rest.ReplyError(c, httpErr)
 
@@ -41,7 +41,7 @@ func (h *observabilityHTTPHandler) RunDetail(c *gin.Context) {
 
 	if sessionID == "" {
 		h.logger.Errorf("[RunDetail] session_id is required")
-		o11y.Error(c, "[RunDetail] session_id is required")
+		otelHelper.Error(c, "[RunDetail] session_id is required")
 		httpErr := capierr.New400Err(c, "[RunDetail] session_id is required")
 		rest.ReplyError(c, httpErr)
 
@@ -50,7 +50,7 @@ func (h *observabilityHTTPHandler) RunDetail(c *gin.Context) {
 
 	if runID == "" {
 		h.logger.Errorf("[RunDetail] run_id is required")
-		o11y.Error(c, "[RunDetail] run_id is required")
+		otelHelper.Error(c, "[RunDetail] run_id is required")
 		httpErr := capierr.New400Err(c, "[RunDetail] run_id is required")
 		rest.ReplyError(c, httpErr)
 
@@ -61,7 +61,7 @@ func (h *observabilityHTTPHandler) RunDetail(c *gin.Context) {
 	var req observabilityreq.RunDetailReq
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Errorf("[RunDetail] should bind json err: %v", err)
-		o11y.Error(c, fmt.Sprintf("[RunDetail] should bind json err: %v", err))
+		otelHelper.Errorf(c, "[RunDetail] should bind json err: %v", err)
 		httpErr := capierr.New400Err(c, fmt.Sprintf("[RunDetail] should bind json err: %v", err))
 		rest.ReplyError(c, httpErr)
 
@@ -78,7 +78,7 @@ func (h *observabilityHTTPHandler) RunDetail(c *gin.Context) {
 	if req.StartTime == 0 || req.EndTime == 0 {
 		err := capierr.New400Err(c, "[RunDetail] start_time and end_time are required")
 		h.logger.Errorf("[RunDetail] time range is invalid: %v", err)
-		o11y.Error(c, "[RunDetail] time range is invalid")
+		otelHelper.Error(c, "[RunDetail] time range is invalid")
 		rest.ReplyError(c, err)
 
 		return
@@ -87,7 +87,7 @@ func (h *observabilityHTTPHandler) RunDetail(c *gin.Context) {
 	if req.StartTime > req.EndTime {
 		err := capierr.New400Err(c, "[RunDetail] start_time cannot be greater than end_time")
 		h.logger.Errorf("[RunDetail] time range is invalid: %v", err)
-		o11y.Error(c, "[RunDetail] time range is invalid")
+		otelHelper.Error(c, "[RunDetail] time range is invalid")
 		rest.ReplyError(c, err)
 
 		return
@@ -97,7 +97,7 @@ func (h *observabilityHTTPHandler) RunDetail(c *gin.Context) {
 	user := chelper.GetVisitorFromCtx(c)
 	if user == nil {
 		httpErr := capierr.New404Err(c, "[RunDetail] user not found")
-		o11y.Error(c, "[RunDetail] user not found")
+		otelHelper.Error(c, "[RunDetail] user not found")
 		h.logger.Errorf("[RunDetail] user not found: %v", httpErr)
 		rest.ReplyError(c, httpErr)
 
@@ -116,7 +116,7 @@ func (h *observabilityHTTPHandler) RunDetail(c *gin.Context) {
 	resp, httpErr := h.observabilitySvc.RunDetail(c.Request.Context(), &req)
 	if httpErr != nil {
 		h.logger.Errorf("[RunDetail] call observability service error: %v", httpErr.Error())
-		o11y.Error(c, fmt.Sprintf("[RunDetail] call observability service error: %v", httpErr.Error()))
+		otelHelper.Errorf(c, "[RunDetail] call observability service error: %v", httpErr.Error())
 		rest.ReplyError(c, httpErr)
 
 		return

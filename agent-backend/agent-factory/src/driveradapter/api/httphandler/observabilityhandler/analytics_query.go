@@ -7,8 +7,8 @@ import (
 	observabilityreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/observability/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,7 +18,7 @@ func (h *observabilityHTTPHandler) AnalyticsQuery(c *gin.Context) {
 	var req observabilityreq.AnalyticsQueryReq
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Errorf("[AnalyticsQuery] should bind json err: %v", err)
-		o11y.Error(c, fmt.Sprintf("[AnalyticsQuery] should bind json err: %v", err))
+		otelHelper.Errorf(c, "[AnalyticsQuery] should bind json err: %v", err)
 		httpErr := capierr.New400Err(c, fmt.Sprintf("[AnalyticsQuery] should bind json err: %v", err))
 		rest.ReplyError(c, httpErr)
 
@@ -29,7 +29,7 @@ func (h *observabilityHTTPHandler) AnalyticsQuery(c *gin.Context) {
 	if req.AnalysisLevel == "" {
 		err := capierr.New400Err(c, "[AnalyticsQuery] analysis_level is required")
 		h.logger.Errorf("[AnalyticsQuery] analysis_level is empty: %v", err)
-		o11y.Error(c, "[AnalyticsQuery] analysis_level is empty")
+		otelHelper.Error(c, "[AnalyticsQuery] analysis_level is empty")
 		rest.ReplyError(c, err)
 
 		return
@@ -38,7 +38,7 @@ func (h *observabilityHTTPHandler) AnalyticsQuery(c *gin.Context) {
 	if req.ID == "" {
 		err := capierr.New400Err(c, "[AnalyticsQuery] id is required")
 		h.logger.Errorf("[AnalyticsQuery] id is empty: %v", err)
-		o11y.Error(c, "[AnalyticsQuery] id is empty")
+		otelHelper.Error(c, "[AnalyticsQuery] id is empty")
 		rest.ReplyError(c, err)
 
 		return
@@ -47,7 +47,7 @@ func (h *observabilityHTTPHandler) AnalyticsQuery(c *gin.Context) {
 	if req.StartTime == 0 || req.EndTime == 0 {
 		err := capierr.New400Err(c, "[AnalyticsQuery] start_time and end_time are required")
 		h.logger.Errorf("[AnalyticsQuery] time range is invalid: %v", err)
-		o11y.Error(c, "[AnalyticsQuery] time range is invalid")
+		otelHelper.Error(c, "[AnalyticsQuery] time range is invalid")
 		rest.ReplyError(c, err)
 
 		return
@@ -56,7 +56,7 @@ func (h *observabilityHTTPHandler) AnalyticsQuery(c *gin.Context) {
 	if req.StartTime > req.EndTime {
 		err := capierr.New400Err(c, "[AnalyticsQuery] start_time cannot be greater than end_time")
 		h.logger.Errorf("[AnalyticsQuery] time range is invalid: %v", err)
-		o11y.Error(c, "[AnalyticsQuery] time range is invalid")
+		otelHelper.Error(c, "[AnalyticsQuery] time range is invalid")
 		rest.ReplyError(c, err)
 
 		return
@@ -71,7 +71,7 @@ func (h *observabilityHTTPHandler) AnalyticsQuery(c *gin.Context) {
 	data, httpErr := h.observabilitySvc.AnalyticsQuery(ctx, &req)
 
 	if httpErr != nil {
-		o11y.Error(ctx, fmt.Sprintf("[AnalyticsQuery] analytics query failed: %v", httpErr.Error()))
+		otelHelper.Errorf(ctx, "[AnalyticsQuery] analytics query failed: %v", httpErr.Error())
 		h.logger.Errorf("[AnalyticsQuery] analytics query failed: %v", httpErr.Error())
 		rest.ReplyError(c, httpErr)
 

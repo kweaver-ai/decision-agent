@@ -7,8 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
 	"github.com/pkg/errors"
 )
 
@@ -17,7 +17,7 @@ func (h *conversationHTTPHandler) Detail(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
 		h.logger.Errorf("[Detail] id is empty")
-		o11y.Error(c, "[Detail] id is empty")
+		otelHelper.Error(c, "[Detail] id is empty")
 		err := capierr.New400Err(c, "id is empty")
 		rest.ReplyError(c, err)
 

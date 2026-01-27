@@ -9,8 +9,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
 	"github.com/pkg/errors"
 )
 
@@ -22,7 +22,7 @@ func (h *conversationHTTPHandler) Init(c *gin.Context) {
 	agentAPPKey := c.Param("app_key")
 	if agentAPPKey == "" {
 		h.logger.Errorf("[Init] agent_app_key is empty")
-		o11y.Error(c, "[Init] agent_app_key is empty")
+		otelHelper.Error(c, "[Init] agent_app_key is empty")
 
 		httpErr := capierr.New400Err(ctx, "agent_app_key is empty")
 		rest.ReplyError(c, httpErr)
@@ -35,7 +35,7 @@ func (h *conversationHTTPHandler) Init(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Errorf("[Init] should bind json error: %v", errors.Cause(err))
-		o11y.Error(c, fmt.Sprintf("[Init] should bind json error: %v", errors.Cause(err)))
+		otelHelper.Errorf(c, "[Init] should bind json error: %v", errors.Cause(err))
 		httpErr := capierr.New400Err(c, chelper.ErrMsg(err, &req))
 		rest.ReplyError(c, httpErr)
 
@@ -45,7 +45,7 @@ func (h *conversationHTTPHandler) Init(c *gin.Context) {
 	// 2. 验证请求参数
 	if err := req.ReqCheck(); err != nil {
 		h.logger.Errorf("[Init] req check error: %v", errors.Cause(err))
-		o11y.Error(c, fmt.Sprintf("[Init] req check error: %v", errors.Cause(err)))
+		otelHelper.Errorf(c, "[Init] req check error: %v", errors.Cause(err))
 		httpErr := capierr.New400Err(c, err.Error())
 		rest.ReplyError(c, httpErr)
 

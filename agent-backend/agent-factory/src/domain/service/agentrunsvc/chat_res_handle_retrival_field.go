@@ -10,7 +10,6 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo/daresvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/efastaccess/efastdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/util"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 )
 
@@ -22,7 +21,7 @@ func (agentSvc *agentSvc) handleRetrievalField(ctx context.Context, result *dare
 
 	answer, cites, err := result.DocRetrievalAnswerAndCites()
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[handleRetrievalField] DocRetrievalAnswerAndCites error: %v", err))
+		otelHelper.Errorf(ctx, "[handleRetrievalField] DocRetrievalAnswerAndCites error: %v", err)
 		return nil, nil, errors.Wrapf(err, "[handleRetrievalField] DocRetrievalAnswerAndCites error: %v", err)
 	}
 
@@ -32,7 +31,7 @@ func (agentSvc *agentSvc) handleRetrievalField(ctx context.Context, result *dare
 
 	err = agentSvc.docCite(ctx, docRetrievalField, markCite, cites)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[handleRetrievalField] docCite error: %v", err))
+		otelHelper.Errorf(ctx, "[handleRetrievalField] docCite error: %v", err)
 		return nil, nil, errors.Wrapf(err, "[handleRetrievalField] docCite error: %v", err)
 	}
 
@@ -48,7 +47,7 @@ func (agentSvc *agentSvc) docCite(ctx context.Context, retrievalField *agentresp
 	if len(cites) > 0 {
 		docCites, err = agentSvc.answerCiteToCiteDoc(ctx, cites)
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[docCite] answerCiteToCiteDoc error: %v", err))
+			otelHelper.Errorf(ctx, "[docCite] answerCiteToCiteDoc error: %v", err)
 			return errors.Wrapf(err, "[docCite] answerCiteToCiteDoc error: %v", err)
 		}
 	}
@@ -76,7 +75,7 @@ func (agentSvc *agentSvc) answerCiteToCiteDoc(ctx context.Context, cites []*agen
 		// 1.1 解析cite
 		imeta, e := parseAgentDebugMeta(cite.CiteType, cite.Meta)
 		if e != nil {
-			o11y.Error(ctx, fmt.Sprintf("[answerCiteToCiteDoc] parseAgentDebugMeta err: %v, cite type: %s, cite meta: %v", e, cite.CiteType, cite.Meta))
+			otelHelper.Errorf(ctx, "[answerCiteToCiteDoc] parseAgentDebugMeta err: %v, cite type: %s, cite meta: %v", e, cite.CiteType, cite.Meta)
 			continue
 		}
 
@@ -122,7 +121,7 @@ func (agentSvc *agentSvc) answerCiteToCiteDoc(ctx context.Context, cites []*agen
 
 		docsMap, err = agentSvc.efast.GetObjectFieldByID(ctx, docIDs, "names", "paths", "doc_lib_types")
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[answerCiteToCiteDoc] efast.GetObjectFieldByID docIDs err: %v, docIDs:%v", err, docIDs))
+			otelHelper.Errorf(ctx, "[answerCiteToCiteDoc] efast.GetObjectFieldByID docIDs err: %v, docIDs:%v", err, docIDs)
 			return nil, errors.Wrapf(err, "[answerCiteToCiteDoc] efast.GetObjectFieldByID docIDs err: %v, docIDs:%v", err, docIDs)
 		}
 	}

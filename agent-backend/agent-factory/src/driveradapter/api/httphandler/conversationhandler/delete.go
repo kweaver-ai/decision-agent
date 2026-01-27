@@ -6,8 +6,8 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
 
 	"github.com/gin-gonic/gin"
 	"github.com/pkg/errors"
@@ -20,7 +20,7 @@ func (h *conversationHTTPHandler) Delete(c *gin.Context) {
 	id := c.Param("id")
 	if id == "" {
 		h.logger.Errorf("[Delete] id is empty")
-		o11y.Error(c, "[Delete] id is empty")
+		otelHelper.Error(c, "[Delete] id is empty")
 		httpErr := capierr.New400Err(c, "id is empty")
 		rest.ReplyError(c, httpErr)
 
@@ -48,7 +48,7 @@ func (h *conversationHTTPHandler) DeleteByAPPKey(c *gin.Context) {
 
 	if appKey == "" {
 		h.logger.Errorf("[DeleteByAPPKey] appKey is empty")
-		o11y.Error(c, "[DeleteByAPPKey] appKey is empty")
+		otelHelper.Error(c, "[DeleteByAPPKey] appKey is empty")
 		err := capierr.New400Err(c, "appKey is empty")
 		rest.ReplyError(c, err)
 

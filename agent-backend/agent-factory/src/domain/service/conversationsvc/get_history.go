@@ -9,7 +9,6 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/comvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/conversationmsgvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -25,7 +24,7 @@ func (svc *conversationSvc) GetHistory(ctx context.Context, id string, limit int
 	// NOTE:获取会话详情
 	conversation, err := svc.Detail(ctx, id)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[GetHistory] get conversation detail error, id: %s, err: %v", id, err))
+		otelHelper.Errorf(ctx, "[GetHistory] get conversation detail error, id: %s, err: %v", id, err)
 		return nil, errors.Wrapf(err, "[GetHistory] get conversation detail error, id: %s, err: %v", id, err)
 	}
 
@@ -44,7 +43,7 @@ func (svc *conversationSvc) GetHistory(ctx context.Context, id string, limit int
 			if msg.Content != nil && *msg.Content != "" {
 				err := sonic.Unmarshal([]byte(*msg.Content), &content)
 				if err != nil {
-					o11y.Error(ctx, fmt.Sprintf("[GetHistory] unmarshal assistant content error, id: %s, err: %v", id, err))
+					otelHelper.Errorf(ctx, "[GetHistory] unmarshal assistant content error, id: %s, err: %v", id, err)
 					return nil, errors.Wrapf(err, "[GetHistory] unmarshal assistant content error, id: %s, err: %v", id, err)
 				}
 			}
@@ -81,7 +80,7 @@ func (svc *conversationSvc) GetHistory(ctx context.Context, id string, limit int
 			if msg.Content != nil && *msg.Content != "" {
 				err := sonic.Unmarshal([]byte(*msg.Content), &userContent)
 				if err != nil {
-					o11y.Error(ctx, fmt.Sprintf("[GetHistory] unmarshal user content error, id: %s, err: %v", id, err))
+					otelHelper.Errorf(ctx, "[GetHistory] unmarshal user content error, id: %s, err: %v", id, err)
 					return nil, errors.Wrapf(err, "[GetHistory] unmarshal user content error, id: %s, err: %v", id, err)
 				}
 			}

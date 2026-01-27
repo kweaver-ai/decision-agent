@@ -14,8 +14,8 @@ import (
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
 	"go.opentelemetry.io/otel/attribute"
 )
 
@@ -91,7 +91,7 @@ looplabel:
 			currentData, isEnd, err = agentSvc.AfterProcess(ctx, []byte(message), req, &agent)
 			if err != nil {
 				agentSvc.logger.Errorf("[Process] after process err: %v", err)
-				o11y.Error(ctx, fmt.Sprintf("[Process] after process err: %v", err))
+				otelHelper.Errorf(ctx, "[Process] after process err: %v", err)
 				isEnd = true
 				break looplabel
 			}
@@ -106,7 +106,7 @@ looplabel:
 				err = sonic.Unmarshal(currentData, &val)
 				if err != nil {
 					agentSvc.logger.Errorf("[Process] unmarshal currentData err: %v", err)
-					o11y.Error(ctx, fmt.Sprintf("[Process] unmarshal currentData err: %v", err))
+					otelHelper.Errorf(ctx, "[Process] unmarshal currentData err: %v", err)
 				}
 				sessionInterface, ok := SessionMap.Load(req.ConversationID)
 				if !ok {
@@ -127,7 +127,7 @@ looplabel:
 						err := StreamDiff(ctx, seq, lastData, currentData, respChan)
 						if err != nil {
 							agentSvc.logger.Errorf("[Process] parse event stream message err: %v", err)
-							o11y.Error(ctx, fmt.Sprintf("[Process] parse event stream message err: %v", err))
+							otelHelper.Errorf(ctx, "[Process] parse event stream message err: %v", err)
 						}
 						lastData = currentData
 					} else {
@@ -168,7 +168,7 @@ looplabel:
 			err := agentSvc.HandleStopChan(ctx, req, session)
 			if err != nil {
 				agentSvc.logger.Errorf("[Process] handle stop chan err: %v", err)
-				o11y.Error(ctx, fmt.Sprintf("[Process] handle stop chan err: %v", err))
+				otelHelper.Errorf(ctx, "[Process] handle stop chan err: %v", err)
 			}
 			// NOTE: 取消agent-executor的请求,中断大模型输出
 			cancelFunc()
@@ -184,7 +184,7 @@ looplabel:
 		conversationAssistantMsgPO, errNew := agentSvc.conversationMsgRepo.GetByID(ctx, req.AssistantMessageID)
 		if errNew != nil {
 			agentSvc.logger.Errorf("[Process] get conversation assistant message failed: %v", errNew)
-			o11y.Error(ctx, fmt.Sprintf("[Process] get conversation assistant message failed: %v", errNew))
+			otelHelper.Errorf(ctx, "[Process] get conversation assistant message failed: %v", errNew)
 		}
 
 		conversationAssistantMsgPO.Status = cdaenum.MsgStatusFailed

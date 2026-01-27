@@ -10,7 +10,6 @@ import (
 
 	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/uniqueryaccess/uniquerydto"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -35,14 +34,14 @@ func (uq *uniqueryHttpAcc) GetDataView(ctx context.Context, viewID string, reqDa
 
 	code, res, err := uq.client.PostNoUnmarshal(ctx, uri, headers, reqData)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[GetDataViews] request uri %s err %s", uri, err))
+		otelHelper.Errorf(ctx, "[GetDataViews] request uri %s err %s", uri, err)
 		err = errors.Wrapf(err, "[GetDataViews] request uri %s err %s", uri, err)
 
 		return uniquerydto.ViewResults{}, err
 	}
 
 	if code != http.StatusOK {
-		o11y.Error(ctx, fmt.Sprintf("[GetDataViews] status code: %d , resp %s", code, string(res)))
+		otelHelper.Errorf(ctx, "[GetDataViews] status code: %d , resp %s", code, string(res))
 		return uniquerydto.ViewResults{}, fmt.Errorf("status code: %d , resp %s", code, string(res))
 	}
 
@@ -51,7 +50,7 @@ func (uq *uniqueryHttpAcc) GetDataView(ctx context.Context, viewID string, reqDa
 
 	err = sonic.Unmarshal(res, &response)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[GetDataViews] request uri %s unmarshal err %s,  resp %s ", uri, err, string(res)))
+		otelHelper.Errorf(ctx, "[GetDataViews] request uri %s unmarshal err %s,  resp %s ", uri, err, string(res))
 		return uniquerydto.ViewResults{}, errors.Wrapf(err, "[GetDataViews] request uri %s unmarshal err %s,  resp %s ", uri, err, string(res))
 	}
 

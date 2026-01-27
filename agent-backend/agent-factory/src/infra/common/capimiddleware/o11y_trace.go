@@ -4,8 +4,9 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	semconv "go.opentelemetry.io/otel/semconv/v1.17.0"
+
+	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 )
 
 /*
@@ -22,7 +23,7 @@ func O11yTraceMiddleware() gin.HandlerFunc {
 			c.Request = c.Request.WithContext(savedCtx)
 		}()
 
-		newCtx, _ := o11y.StartServerSpan(c)
+		newCtx, _ := otelTrace.StartServerSpan(c)
 
 		// pass the span through the request context
 		c.Request = c.Request.WithContext(newCtx)
@@ -31,12 +32,12 @@ func O11yTraceMiddleware() gin.HandlerFunc {
 		c.Next()
 
 		status := c.Writer.Status()
-		o11y.SetAttributes(newCtx, semconv.HTTPStatusCode(status))
+		otelTrace.SetAttributes(newCtx, semconv.HTTPStatusCode(status))
 
 		if status/100 >= 4 {
-			o11y.EndSpan(newCtx, fmt.Errorf("request failed"))
+			otelTrace.EndSpan(newCtx, fmt.Errorf("request failed"))
 		} else {
-			o11y.EndSpan(newCtx, nil)
+			otelTrace.EndSpan(newCtx, nil)
 		}
 	}
 }

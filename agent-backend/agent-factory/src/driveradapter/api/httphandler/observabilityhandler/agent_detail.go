@@ -7,8 +7,8 @@ import (
 	observabilityreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/observability/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
 
 	"github.com/gin-gonic/gin"
 )
@@ -18,7 +18,7 @@ func (h *observabilityHTTPHandler) AgentDetail(c *gin.Context) {
 	agentID := c.Param("agent_id")
 	if agentID == "" {
 		h.logger.Errorf("[AgentDetail] agent_id is required")
-		o11y.Error(c, "[AgentDetail] agent_id is required")
+		otelHelper.Error(c, "[AgentDetail] agent_id is required")
 		httpErr := capierr.New400Err(c, "[AgentDetail] agent_id is required")
 		rest.ReplyError(c, httpErr)
 
@@ -29,7 +29,7 @@ func (h *observabilityHTTPHandler) AgentDetail(c *gin.Context) {
 	var req observabilityreq.AgentDetailReq
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Errorf("[AgentDetail] should bind json err: %v", err)
-		o11y.Error(c, fmt.Sprintf("[AgentDetail] should bind json err: %v", err))
+		otelHelper.Errorf(c, "[AgentDetail] should bind json err: %v", err)
 		httpErr := capierr.New400Err(c, fmt.Sprintf("[AgentDetail] should bind json err: %v", err))
 		rest.ReplyError(c, httpErr)
 
@@ -40,7 +40,7 @@ func (h *observabilityHTTPHandler) AgentDetail(c *gin.Context) {
 	if req.StartTime == 0 || req.EndTime == 0 {
 		err := capierr.New400Err(c, "[AgentDetail] start_time and end_time are required")
 		h.logger.Errorf("[AgentDetail] time range is invalid: %v", err)
-		o11y.Error(c, "[AgentDetail] time range is invalid")
+		otelHelper.Error(c, "[AgentDetail] time range is invalid")
 		rest.ReplyError(c, err)
 
 		return
@@ -49,7 +49,7 @@ func (h *observabilityHTTPHandler) AgentDetail(c *gin.Context) {
 	if req.StartTime > req.EndTime {
 		err := capierr.New400Err(c, "[AgentDetail] start_time cannot be greater than end_time")
 		h.logger.Errorf("[AgentDetail] time range is invalid: %v", err)
-		o11y.Error(c, "[AgentDetail] time range is invalid")
+		otelHelper.Error(c, "[AgentDetail] time range is invalid")
 		rest.ReplyError(c, err)
 
 		return
@@ -59,7 +59,7 @@ func (h *observabilityHTTPHandler) AgentDetail(c *gin.Context) {
 	user := chelper.GetVisitorFromCtx(c)
 	if user == nil {
 		httpErr := capierr.New404Err(c, "[AgentDetail] user not found")
-		o11y.Error(c, "[AgentDetail] user not found")
+		otelHelper.Error(c, "[AgentDetail] user not found")
 		h.logger.Errorf("[AgentDetail] user not found: %v", httpErr)
 		rest.ReplyError(c, httpErr)
 
@@ -78,7 +78,7 @@ func (h *observabilityHTTPHandler) AgentDetail(c *gin.Context) {
 	data, httpErr := h.observabilitySvc.AgentDetail(ctx, &req)
 
 	if httpErr != nil {
-		o11y.Error(ctx, fmt.Sprintf("[AgentDetail] agent detail query failed: %v", httpErr.Error()))
+		otelHelper.Errorf(ctx, "[AgentDetail] agent detail query failed: %v", httpErr.Error())
 		h.logger.Errorf("[AgentDetail] agent detail query failed: %v", httpErr.Error())
 		rest.ReplyError(c, httpErr)
 

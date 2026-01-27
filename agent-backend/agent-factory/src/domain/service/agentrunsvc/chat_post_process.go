@@ -23,8 +23,8 @@ import (
 	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -51,7 +51,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 
 	err = outputVariablesS.LoadFromAgent(agent)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[AfterProcess] load output variables err: %v", err))
+		otelHelper.Errorf(ctx, "[AfterProcess] load output variables err: %v", err)
 		httpErr := rest.NewHTTPError(ctx, http.StatusInternalServerError, apierr.AgentAPP_InternalError).WithErrorDetails(err.Error())
 		chatResponse.Error = httpErr
 		bytes, _ := sonic.Marshal(chatResponse)
@@ -60,7 +60,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 	}
 
 	if outputVariablesS.AnswerVar == "" {
-		o11y.Error(ctx, "[AfterProcess] outputVariablesS.AnswerVar is empty")
+		otelHelper.Error(ctx, "[AfterProcess] outputVariablesS.AnswerVar is empty")
 
 		err = errors.New("[getChatDataProcessV3]: outputVariablesS.AnswerVar is empty")
 		httpErr := rest.NewHTTPError(ctx, http.StatusInternalServerError, apierr.AgentAPP_InternalError).WithErrorDetails(err.Error())
@@ -75,7 +75,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 
 	outputVariables, err = outputVariablesS.ToVariable()
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[AfterProcess] to variable err: %v", err))
+		otelHelper.Errorf(ctx, "[AfterProcess] to variable err: %v", err)
 		httpErr := rest.NewHTTPError(ctx, http.StatusInternalServerError, apierr.AgentAPP_InternalError).WithErrorDetails(err.Error())
 		chatResponse.Error = httpErr
 		bytes, _ := sonic.Marshal(chatResponse)
@@ -86,7 +86,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 	// 1. 解析data
 	result, err := daresvo.NewDataAgentRes(ctx, callResult, outputVariablesS)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[AfterProcess] new data agent res err: %v", err))
+		otelHelper.Errorf(ctx, "[AfterProcess] new data agent res err: %v", err)
 		httpErr := rest.NewHTTPError(ctx, http.StatusInternalServerError, apierr.AgentAPP_InternalError).WithErrorDetails(err.Error())
 		chatResponse.Error = httpErr
 		bytes, _ := sonic.Marshal(chatResponse)
@@ -137,7 +137,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 
 		thinking, skillsProcess, err = agentSvc.handleExplore(ctx, dto)
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[AfterProcess] handle explore err: %v", err))
+			otelHelper.Errorf(ctx, "[AfterProcess] handle explore err: %v", err)
 			httpErr := rest.NewHTTPError(ctx, http.StatusInternalServerError, apierr.AgentAPP_InternalError).WithErrorDetails(err.Error())
 			chatResponse.Error = httpErr
 			bytes, _ := sonic.Marshal(chatResponse)
@@ -172,7 +172,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 	// 11. 其他字段
 	otherVariablesMap, err = result.GetOtherVarsMap()
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[AfterProcess] get other vars map err: %v", err))
+		otelHelper.Errorf(ctx, "[AfterProcess] get other vars map err: %v", err)
 		httpErr := rest.NewHTTPError(ctx, http.StatusInternalServerError, apierr.AgentAPP_InternalError).WithErrorDetails(err.Error())
 		chatResponse.Error = httpErr
 		bytes, _ := sonic.Marshal(chatResponse)
@@ -190,7 +190,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 	//TODO: 这里progress 的处理应该还是需要的，只是结果可以不返回
 	progressAns, err := agentSvc.handleProgress(ctx, req, progresses)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[AfterProcess] handle progress err: %v", err))
+		otelHelper.Errorf(ctx, "[AfterProcess] handle progress err: %v", err)
 		httpErr := rest.NewHTTPError(ctx, http.StatusInternalServerError, apierr.AgentAPP_InternalError).WithErrorDetails(err.Error())
 		chatResponse.Error = httpErr
 		bytes, _ := sonic.Marshal(chatResponse)
@@ -280,7 +280,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 	if isEnd {
 		err = agentSvc.handleMessageAndTempArea(ctx, req, messageVO)
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[AfterProcess] handle message and temp area err: %v", err))
+			otelHelper.Errorf(ctx, "[AfterProcess] handle message and temp area err: %v", err)
 			httpErr := rest.NewHTTPError(ctx, http.StatusInternalServerError, apierr.AgentAPP_InternalError).WithErrorDetails(err.Error())
 			chatResponse.Error = httpErr
 			bytes, _ := sonic.Marshal(chatResponse)
@@ -295,7 +295,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 	// 检查状态是否为error
 	if result.Status == "Error" {
 		// 如果报错，记录错误码，直接返回
-		o11y.Error(ctx, fmt.Sprintf("[AfterProcess] agent call failed, error: %v", result.Error))
+		otelHelper.Errorf(ctx, "[AfterProcess] agent call failed, error: %v", result.Error)
 		httpErr := TransformErrorToHTTPError(ctx, result.Error)
 		chatResponse.Error = httpErr
 		bytes, _ := sonic.Marshal(chatResponse)
@@ -307,7 +307,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 	// 15. 将chatResponse序列化
 	newData, err = sonic.Marshal(chatResponse)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[AfterProcess] marshal chat response err: %v", err))
+		otelHelper.Errorf(ctx, "[AfterProcess] marshal chat response err: %v", err)
 		httpErr := rest.NewHTTPError(ctx, http.StatusInternalServerError, apierr.AgentAPP_InternalError).WithErrorDetails(err.Error())
 		chatResponse.Error = httpErr
 		bytes, _ := sonic.Marshal(chatResponse)
@@ -332,7 +332,7 @@ func (agentSvc *agentSvc) handleMessageAndTempArea(ctx context.Context, req *age
 	// NOTE: VO-PO
 	content, err := sonic.Marshal(messageVO.Content)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[handleMessageAndTempArea] marshal msgResp.Message.Content err: %v", err))
+		otelHelper.Errorf(ctx, "[handleMessageAndTempArea] marshal msgResp.Message.Content err: %v", err)
 		agentSvc.logger.Errorf("[handleMessageAndTempArea] marshal msgResp.Message.Content err: %v", err)
 
 		return err
@@ -340,7 +340,7 @@ func (agentSvc *agentSvc) handleMessageAndTempArea(ctx context.Context, req *age
 
 	ext, err := sonic.Marshal(messageVO.Ext)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[handleMessageAndTempArea] marshal msgResp.Message.Ext err: %v", err))
+		otelHelper.Errorf(ctx, "[handleMessageAndTempArea] marshal msgResp.Message.Ext err: %v", err)
 		agentSvc.logger.Errorf("[handleMessageAndTempArea] marshal msgResp.Message.Ext err: %v", err)
 
 		return err
@@ -369,7 +369,7 @@ func (agentSvc *agentSvc) handleMessageAndTempArea(ctx context.Context, req *age
 
 	err = agentSvc.conversationMsgRepo.Update(ctx, &msgPO)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[handleMessageAndTempArea] update msgPO err: %v", err))
+		otelHelper.Errorf(ctx, "[handleMessageAndTempArea] update msgPO err: %v", err)
 		agentSvc.logger.Errorf("[handleMessageAndTempArea] update msgPO err: %v", err)
 
 		return err
@@ -377,7 +377,7 @@ func (agentSvc *agentSvc) handleMessageAndTempArea(ctx context.Context, req *age
 	// NOTE: 获取消息的下标，更新会话的更新时间和最大下标
 	conversationPO, err := agentSvc.conversationRepo.GetByID(ctx, req.ConversationID)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[handleMessageAndTempArea] get conversationPO err: %v", err))
+		otelHelper.Errorf(ctx, "[handleMessageAndTempArea] get conversationPO err: %v", err)
 		agentSvc.logger.Errorf("[handleMessageAndTempArea] get conversationPO err: %v", err)
 
 		return err
@@ -388,7 +388,7 @@ func (agentSvc *agentSvc) handleMessageAndTempArea(ctx context.Context, req *age
 
 	err = agentSvc.conversationRepo.Update(ctx, conversationPO)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[handleMessageAndTempArea] update conversationPO err: %v", err))
+		otelHelper.Errorf(ctx, "[handleMessageAndTempArea] update conversationPO err: %v", err)
 		agentSvc.logger.Errorf("[handleMessageAndTempArea] update conversationPO err: %v", err)
 
 		return err
@@ -397,7 +397,7 @@ func (agentSvc *agentSvc) handleMessageAndTempArea(ctx context.Context, req *age
 	if req.TemporaryAreaID != "" {
 		err = agentSvc.tempAreaRepo.Bind(ctx, req.TemporaryAreaID, req.ConversationID)
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[handleMessageAndTempArea] bind temp area err: %v", err))
+			otelHelper.Errorf(ctx, "[handleMessageAndTempArea] bind temp area err: %v", err)
 			agentSvc.logger.Errorf("[handleMessageAndTempArea] bind temp area err: %v", err)
 
 			return err
@@ -413,7 +413,7 @@ func (agentSvc *agentSvc) addCitesToProgress(ctx context.Context, progresses []*
 		if progress.AgentName == "doc_qa" && progress.Status == "completed" {
 			bytes, err := sonic.Marshal(progress.Answer)
 			if err != nil {
-				o11y.Error(ctx, fmt.Sprintf("[addCitesToProgress] marshal progress answer err: %v", err))
+				otelHelper.Errorf(ctx, "[addCitesToProgress] marshal progress answer err: %v", err)
 				agentSvc.logger.Errorf("[addCitesToProgress] marshal progress answer err: %v", err)
 
 				continue
@@ -423,7 +423,7 @@ func (agentSvc *agentSvc) addCitesToProgress(ctx context.Context, progresses []*
 
 			err = sonic.Unmarshal(bytes, &docRetrievalAns)
 			if err != nil {
-				o11y.Error(ctx, fmt.Sprintf("[addCitesToProgress] unmarshal progress answer err: %v", err))
+				otelHelper.Errorf(ctx, "[addCitesToProgress] unmarshal progress answer err: %v", err)
 				agentSvc.logger.Errorf("[addCitesToProgress] unmarshal progress answer err: %v", err)
 
 				continue
@@ -447,7 +447,7 @@ func (agentSvc *agentSvc) addCitesToProgress(ctx context.Context, progresses []*
 
 			err = agentSvc.docCite(ctx, docRetrievalField, markCite, cites)
 			if err != nil {
-				o11y.Error(ctx, fmt.Sprintf("[addCitesToProgress] docCite error: %v", err))
+				otelHelper.Errorf(ctx, "[addCitesToProgress] docCite error: %v", err)
 				agentSvc.logger.Errorf("[addCitesToProgress] docCite error: %v", err)
 
 				continue
@@ -473,7 +473,7 @@ func TransformErrorToHTTPError(ctx context.Context, err interface{}) *rest.HTTPE
 		if errCode, ok := errMap["error_code"]; ok {
 			errCodeStr, ok := errCode.(string)
 			if !ok {
-				o11y.Error(ctx, fmt.Sprintf("[TransformErrorToHTTPError] errCode is not a string: %v", errCode))
+				otelHelper.Errorf(ctx, "[TransformErrorToHTTPError] errCode is not a string: %v", errCode)
 				return rest.NewHTTPError(ctx, http.StatusInternalServerError, apierr.AgentAPP_InternalError).WithErrorDetails(fmt.Sprintf("[AfterProcess]: agent call failed, error: %v", err))
 			}
 
@@ -488,7 +488,7 @@ func TransformErrorToHTTPError(ctx context.Context, err interface{}) *rest.HTTPE
 				return rest.NewHTTPError(ctx, http.StatusInternalServerError, apierr.AgentAPP_Agent_ExecutorExecption).WithErrorDetails(fmt.Sprintf("[AfterProcess]: agent call failed, cause: %v", errMap["error_details"]))
 			}
 		} else {
-			o11y.Error(ctx, fmt.Sprintf("[TransformErrorToHTTPError] error code is nil: %v", err))
+			otelHelper.Errorf(ctx, "[TransformErrorToHTTPError] error code is nil: %v", err)
 			return rest.NewHTTPError(ctx, http.StatusInternalServerError, apierr.AgentAPP_InternalError).WithErrorDetails(fmt.Sprintf("[AfterProcess]: agent call failed, error: %v", err))
 		}
 	}

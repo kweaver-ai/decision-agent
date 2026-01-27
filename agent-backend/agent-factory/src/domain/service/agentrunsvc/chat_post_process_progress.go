@@ -9,7 +9,6 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/conversationmsgvo"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -93,7 +92,7 @@ func (agentSvc *agentSvc) forResumeInterrupt(ctx context.Context, req *agentreq.
 		if assistantMsgPO.Content != nil && *assistantMsgPO.Content != "" {
 			err = sonic.Unmarshal([]byte(*assistantMsgPO.Content), &content)
 			if err != nil {
-				o11y.Error(ctx, fmt.Sprintf("[handleProgress] unmarshal assistant content error, id: %s, err: %v", req.InterruptedAssistantMsgID, err))
+				otelHelper.Errorf(ctx, "[handleProgress] unmarshal assistant content error, id: %s, err: %v", req.InterruptedAssistantMsgID, err)
 				err = errors.Wrapf(err, "[handleProgress] unmarshal assistant content error, id: %s, err: %v", req.InterruptedAssistantMsgID, err)
 				return
 			}

@@ -10,7 +10,6 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -24,7 +23,7 @@ func (svc *conversationSvc) Update(ctx context.Context, req conversationreq.Upda
 	_, err = svc.conversationRepo.GetByID(ctx, req.ID)
 	if err != nil {
 		if chelper.IsSqlNotFound(err) {
-			o11y.Error(ctx, fmt.Sprintf("[Update] get conversation error, id: %s, err: %v", req.ID, err))
+			otelHelper.Errorf(ctx, "[Update] get conversation error, id: %s, err: %v", req.ID, err)
 			err = capierr.NewCustom404Err(ctx, apierr.ConversationNotFound, fmt.Sprintf("[Update] get conversation error, id: %s, err: %v", req.ID, err))
 
 			return
@@ -47,14 +46,14 @@ func (svc *conversationSvc) Update(ctx context.Context, req conversationreq.Upda
 	// 2. 更新标题
 	err = svc.conversationRepo.Update(ctx, &dapo.ConversationPO{ID: req.ID, Title: req.Title, UpdateTime: currentTimestamp})
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[Update] update conversation error, id: %s, err: %v", req.ID, err))
+		otelHelper.Errorf(ctx, "[Update] update conversation error, id: %s, err: %v", req.ID, err)
 		return errors.Wrapf(err, "[Update] update conversation error, id: %s, err: %v", req.ID, err)
 	}
 	// 3. 更新临时区域
 	if req.TempareaId != "" {
 		err = svc.tempAreaRepo.Bind(ctx, req.TempareaId, req.ID)
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[Update] update conversation title failed, id: %s, err: %v", req.ID, err))
+			otelHelper.Errorf(ctx, "[Update] update conversation title failed, id: %s, err: %v", req.ID, err)
 			return errors.Wrapf(err, "[Update] update conversation title failed, id: %s, err: %v", req.ID, err)
 		}
 	}

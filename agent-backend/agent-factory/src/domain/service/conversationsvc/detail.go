@@ -7,7 +7,6 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/p2e/conversationp2e"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationresp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -22,11 +21,11 @@ func (svc *conversationSvc) Detail(ctx context.Context, id string) (res conversa
 	po, err := svc.conversationRepo.GetByID(ctx, id)
 	if err != nil {
 		if chelper.IsSqlNotFound(err) {
-			o11y.Error(ctx, fmt.Sprintf("[Detail] conversation not found, id: %s", id))
+			otelHelper.Errorf(ctx, "[Detail] conversation not found, id: %s", id)
 			return conversationDetailEmpty, errors.Wrapf(err, "数据智能体配置不存在")
 		}
 
-		o11y.Error(ctx, fmt.Sprintf("[Detail] get conversation by id error, id: %s, err: %v", id, err))
+		otelHelper.Errorf(ctx, "[Detail] get conversation by id error, id: %s, err: %v", id, err)
 
 		return conversationDetailEmpty, errors.Wrapf(err, "获取数据失败")
 	}
@@ -34,7 +33,7 @@ func (svc *conversationSvc) Detail(ctx context.Context, id string) (res conversa
 	// 2. PO转EO
 	eo, err := conversationp2e.Conversation(ctx, po, svc.conversationMsgRepo, true)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[Detail] conversation p2e error, id: %s, err: %v", id, err))
+		otelHelper.Errorf(ctx, "[Detail] conversation p2e error, id: %s, err: %v", id, err)
 		return conversationDetailEmpty, errors.Wrapf(err, "PO转EO失败")
 	}
 

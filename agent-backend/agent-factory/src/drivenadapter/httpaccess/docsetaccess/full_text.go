@@ -6,7 +6,6 @@ import (
 
 	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/docsetaccess/docsetdto"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -26,7 +25,7 @@ func (ds *docsetHttpAcc) FullText(ctx context.Context, req *docsetdto.FullTextRe
 
 	code, data, err := ds.client.PostNoUnmarshal(ctx, uri, headers, req)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[FullText] request uri %s err %s,  code %d, resp %s ", uri, err, code, string(data)))
+		otelHelper.Errorf(ctx, "[FullText] request uri %s err %s,  code %d, resp %s ", uri, err, code, string(data))
 		err = errors.Wrapf(err, "request uri %s err %s,  code %d, resp %s ", uri, err, code, string(data))
 
 		return nil, err
@@ -34,7 +33,7 @@ func (ds *docsetHttpAcc) FullText(ctx context.Context, req *docsetdto.FullTextRe
 
 	err = sonic.Unmarshal(data, rsp)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[FullText] request uri %s unmarshal err %s, resp %s ", uri, err, string(data)))
+		otelHelper.Errorf(ctx, "[FullText] request uri %s unmarshal err %s, resp %s ", uri, err, string(data))
 		err = errors.Wrapf(err, "request uri %s unmarshal err %s, resp %s ", uri, err, string(data))
 
 		return nil, err

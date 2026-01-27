@@ -6,8 +6,8 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
+	otelHelper "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry"
 
 	"github.com/gin-gonic/gin"
 
@@ -22,7 +22,7 @@ func (h *observabilityHTTPHandler) SessionDetail(c *gin.Context) {
 
 	if agentID == "" {
 		h.logger.Errorf("[SessionDetail] agent_id is required")
-		o11y.Error(c, "[SessionDetail] agent_id is required")
+		otelHelper.Error(c, "[SessionDetail] agent_id is required")
 		httpErr := capierr.New400Err(c, "[SessionDetail] agent_id is required")
 		rest.ReplyError(c, httpErr)
 
@@ -31,7 +31,7 @@ func (h *observabilityHTTPHandler) SessionDetail(c *gin.Context) {
 
 	if conversationID == "" {
 		h.logger.Errorf("[SessionDetail] conversation_id is required")
-		o11y.Error(c, "[SessionDetail] conversation_id is required")
+		otelHelper.Error(c, "[SessionDetail] conversation_id is required")
 		httpErr := capierr.New400Err(c, "[SessionDetail] conversation_id is required")
 		rest.ReplyError(c, httpErr)
 
@@ -40,7 +40,7 @@ func (h *observabilityHTTPHandler) SessionDetail(c *gin.Context) {
 
 	if sessionID == "" {
 		h.logger.Errorf("[SessionDetail] session_id is required")
-		o11y.Error(c, "[SessionDetail] session_id is required")
+		otelHelper.Error(c, "[SessionDetail] session_id is required")
 		httpErr := capierr.New400Err(c, "[SessionDetail] session_id is required")
 		rest.ReplyError(c, httpErr)
 
@@ -51,7 +51,7 @@ func (h *observabilityHTTPHandler) SessionDetail(c *gin.Context) {
 	var req observabilityreq.SessionDetailReq
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Errorf("[SessionDetail] should bind json err: %v", err)
-		o11y.Error(c, fmt.Sprintf("[SessionDetail] should bind json err: %v", err))
+		otelHelper.Errorf(c, "[SessionDetail] should bind json err: %v", err)
 		httpErr := capierr.New400Err(c, fmt.Sprintf("[SessionDetail] should bind json err: %v", err))
 		rest.ReplyError(c, httpErr)
 
@@ -67,7 +67,7 @@ func (h *observabilityHTTPHandler) SessionDetail(c *gin.Context) {
 	if req.StartTime == 0 || req.EndTime == 0 {
 		err := capierr.New400Err(c, "[SessionDetail] start_time and end_time are required")
 		h.logger.Errorf("[SessionDetail] time range is invalid: %v", err)
-		o11y.Error(c, "[SessionDetail] time range is invalid")
+		otelHelper.Error(c, "[SessionDetail] time range is invalid")
 		rest.ReplyError(c, err)
 
 		return
@@ -76,7 +76,7 @@ func (h *observabilityHTTPHandler) SessionDetail(c *gin.Context) {
 	if req.StartTime > req.EndTime {
 		err := capierr.New400Err(c, "[SessionDetail] start_time cannot be greater than end_time")
 		h.logger.Errorf("[SessionDetail] time range is invalid: %v", err)
-		o11y.Error(c, "[SessionDetail] time range is invalid")
+		otelHelper.Error(c, "[SessionDetail] time range is invalid")
 		rest.ReplyError(c, err)
 
 		return
@@ -86,7 +86,7 @@ func (h *observabilityHTTPHandler) SessionDetail(c *gin.Context) {
 	user := chelper.GetVisitorFromCtx(c)
 	if user == nil {
 		httpErr := capierr.New404Err(c, "[SessionDetail] user not found")
-		o11y.Error(c, "[SessionDetail] user not found")
+		otelHelper.Error(c, "[SessionDetail] user not found")
 		h.logger.Errorf("[SessionDetail] user not found: %v", httpErr)
 		rest.ReplyError(c, httpErr)
 
@@ -105,7 +105,7 @@ func (h *observabilityHTTPHandler) SessionDetail(c *gin.Context) {
 	resp, httpErr := h.observabilitySvc.SessionDetail(c.Request.Context(), &req)
 	if httpErr != nil {
 		h.logger.Errorf("[SessionDetail] call observability service error: %v", httpErr.Error())
-		o11y.Error(c, fmt.Sprintf("[SessionDetail] call observability service error: %v", httpErr.Error()))
+		otelHelper.Errorf(c, "[SessionDetail] call observability service error: %v", httpErr.Error())
 		rest.ReplyError(c, httpErr)
 
 		return

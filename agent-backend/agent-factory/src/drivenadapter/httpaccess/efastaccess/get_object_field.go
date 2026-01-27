@@ -7,7 +7,6 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/efastaccess/efastdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/util"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"go.opentelemetry.io/otel/attribute"
 
 	"github.com/bytedance/sonic"
@@ -58,7 +57,7 @@ func (efast *efastHttpAcc) GetObjectFieldByID(ctx context.Context, objectIDs []s
 
 	err = sonic.Unmarshal(data, &arr)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[GetObjectFieldByID] request uri %s unmarshal err %s, resp %s ", uri, err, string(data)))
+		otelHelper.Errorf(ctx, "[GetObjectFieldByID] request uri %s unmarshal err %s, resp %s ", uri, err, string(data))
 		return documentMap, errors.Wrapf(err, "[GetObjectFieldByID] request uri %s unmarshal err %s, resp %s ", uri, err, string(data))
 	}
 

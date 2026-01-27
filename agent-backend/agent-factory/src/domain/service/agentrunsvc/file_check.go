@@ -9,7 +9,6 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/docsetaccess/docsetdto"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 )
 
@@ -27,7 +26,7 @@ func (a *agentSvc) FileCheck(ctx context.Context, req *agentreq.FileCheckReq) (a
 			DocID: file.ID,
 		})
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[FileCheck] FullText error: %s", err.Error()))
+			otelHelper.Errorf(ctx, "[FileCheck] FullText error: %s", err.Error())
 			err = errors.Wrapf(err, "[FileCheck] FullText error: %s", err.Error())
 
 			return *rsp, err
