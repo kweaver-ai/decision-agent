@@ -1068,7 +1068,7 @@ class Text2SQLTool(LLMTool):
                         res_json["output"]["relations"] = relation_descriptions
                     else:
                         res_json["relations"] = relation_descriptions
-                    res = json.dumps(res_json)
+                    res = json.dumps(res_json, ensure_ascii=False)
                 except Exception as e:
                     logger.error(f"error when adding relations to result: {e}")
 
