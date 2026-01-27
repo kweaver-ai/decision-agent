@@ -84,7 +84,8 @@ def _query_generator(cur, query: str, as_dict):
         for row in res:
             if as_dict:
                 yield dict(zip(headers, row))
-            yield row
+            else:
+                yield row
 
     return headers, result_gen()
 

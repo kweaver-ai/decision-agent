@@ -65,6 +65,89 @@ class TestDataViewKnFieldsFilter:
         assert data_view.kn_data_view_fields == {}
 
 
+class TestGetViewEn2Type:
+    """测试 get_view_en2type 函数"""
+
+    def test_get_view_en2type_success(self):
+        """测试正常情况：有 meta_table_name 时返回正确结果"""
+        from data_retrieval.datasource.dip_dataview import get_view_en2type
+
+        resp_column = {
+            "name": "测试视图",
+            "id": "view_001",
+            "meta_table_name": "catalog.schema.table_name",
+            "fields": [
+                {"original_name": "col1", "type": "string"},
+                {"original_name": "col2", "type": "integer"},
+            ]
+        }
+
+        en2type, column_name, table, zh_table = get_view_en2type(resp_column)
+
+        assert en2type == {"col1": "string", "col2": "integer"}
+        assert column_name == ['"col1"', '"col2"']
+        assert table == "catalog.schema.table_name"
+        assert zh_table == "测试视图"
+
+    def test_get_view_en2type_raises_error_when_no_table(self):
+        """测试异常情况：没有 meta_table_name 时抛出 AfDataSourceError"""
+        from data_retrieval.datasource.dip_dataview import get_view_en2type
+        from data_retrieval.api.error import AfDataSourceError
+        import pytest
+
+        resp_column = {
+            "name": "自定义视图",
+            "id": "view_002",
+            "meta_table_name": "",  # 空字符串
+            "fields": [
+                {"original_name": "col1", "type": "string"},
+            ]
+        }
+
+        with pytest.raises(AfDataSourceError) as exc_info:
+            get_view_en2type(resp_column)
+
+        assert "自定义视图" in str(exc_info.value.reason)
+        assert "can't be used as a table" in str(exc_info.value.reason)
+
+    def test_get_view_en2type_raises_error_for_custom_view(self):
+        """测试异常情况：custom 类型视图没有 meta_table_name 时抛出错误"""
+        from data_retrieval.datasource.dip_dataview import get_view_en2type
+        from data_retrieval.api.error import AfDataSourceError
+        import pytest
+
+        resp_column = {
+            "name": "自定义视图",
+            "id": "view_003",
+            "type": "custom",
+            "meta_table_name": None,  # None 值
+            "fields": [
+                {"original_name": "col1", "type": "string"},
+            ]
+        }
+
+        with pytest.raises(AfDataSourceError):
+            get_view_en2type(resp_column)
+
+    def test_get_view_en2type_missing_meta_table_name_key(self):
+        """测试异常情况：缺少 meta_table_name 键时抛出错误"""
+        from data_retrieval.datasource.dip_dataview import get_view_en2type
+        from data_retrieval.api.error import AfDataSourceError
+        import pytest
+
+        resp_column = {
+            "name": "测试视图",
+            "id": "view_004",
+            # 没有 meta_table_name 键
+            "fields": [
+                {"original_name": "col1", "type": "string"},
+            ]
+        }
+
+        with pytest.raises(AfDataSourceError):
+            get_view_en2type(resp_column)
+
+
 class TestKnFieldsFilterLogic:
     """测试 kn_data_view_fields 过滤逻辑"""
 

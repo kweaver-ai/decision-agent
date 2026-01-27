@@ -39,12 +39,12 @@ def get_view_en2type(resp_column):
         # else:
         #     logger.warning(f"unknown view type: {resp_column.get('type')}")
         # table = f"custom_view_source.\"default\".\"{resp_column['view_id']}\""
-    raise AfDataSourceError(
-        detail=(
-            f"View Name: {resp_column['name']}, View ID: {resp_column['id']}, "
-            "Reason: Can't be used as a table, maybe it's a custom view"
-        ),
-        reason=f"View {resp_column['name']} can't be used as a table")
+        raise AfDataSourceError(
+            detail=(
+                f"View Name: {resp_column['name']}, View ID: {resp_column['id']}, "
+                "Reason: Can't be used as a table, maybe it's a custom view"
+            ),
+            reason=f"View {resp_column['name']} can't be used as a table")
 
     zh_table = resp_column["name"]
     return en2type, column_name, table, zh_table
@@ -102,7 +102,8 @@ def _query_generator(cur, query: str, as_dict):
         for row in res:
             if as_dict:
                 yield dict(zip(headers, row))
-            yield row
+            else:
+                yield row
 
     return headers, result_gen()
 
@@ -160,9 +161,6 @@ class DataView(DataSource):
                 "x-account-type": self.account_type,
             }
 
-        self.view_list = self.view_list
-        self.views_in_concept = self.views_in_concept
-
         self.service = DataModelService(base_url=self.base_url)
 
         self.dimension_reduce = DimensionReduce(
@@ -170,9 +168,6 @@ class DataView(DataSource):
             token=self.token,
             user_id=self.user_id,
         )
-        self.model_data_view_fields = self.model_data_view_fields
-        self.special_data_view_fields = self.special_data_view_fields
-        self.kn_data_view_fields = self.kn_data_view_fields
 
         view_details_cache = self.__dict__.get("_view_details_cache")
         if not isinstance(view_details_cache, dict):
