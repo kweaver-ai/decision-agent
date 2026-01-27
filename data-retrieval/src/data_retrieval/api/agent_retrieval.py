@@ -24,16 +24,14 @@ settings = get_settings()
 
 class AgentRetrievalService:
 
-    def __init__(self, base_url: str = "", headers: dict = {}):
+    def __init__(self, base_url: str = "", headers: dict = None):
         self.base_url: str = settings.DIP_AGENT_RETRIEVAL_URL
         self.outer_dip: bool = False
-        self.headers: dict = headers
+        self.headers: dict = headers or {}
 
         if base_url:
-            self.base_url: str = base_url
+            self.base_url = base_url
             self.outer_dip = True
-        else:
-            self.base_url = settings.DIP_AGENT_RETRIEVAL_URL
 
         self._gen_api_url()
 
@@ -85,9 +83,9 @@ class AgentRetrievalService:
 async def get_datasource_from_agent_retrieval_async(
     kn_id: str,
     query: str,
-    search_scope: dict = [],
-    prev_queries: list = [],
-    headers: dict = {},
+    search_scope: dict = None,
+    prev_queries: list = None,
+    headers: dict = None,
     base_url: str = "",
     max_concepts: int = 5,
     mode: str = ""
@@ -95,6 +93,14 @@ async def get_datasource_from_agent_retrieval_async(
     """
     解析 Agent Retrieval 参数
     """
+    # Handle mutable default arguments
+    if search_scope is None:
+        search_scope = {}
+    if prev_queries is None:
+        prev_queries = []
+    if headers is None:
+        headers = {}
+
     # example:
     # {
     #     "kn_id": "129",
@@ -274,3 +280,32 @@ async def get_datasource_from_agent_retrieval_async(
     except Exception:
         traceback.print_exc()
         raise
+
+
+def build_kn_data_view_fields(data_views: list) -> dict:
+    """
+    从 data_views 中构建 kn_data_view_fields 映射
+
+    从每个 view 的 concept_detail.data_properties 中提取 mapped_field.name，
+    构建 view_id -> [field_names] 的映射。
+
+    Args:
+        data_views: 数据视图列表，每个元素包含 id 和 concept_detail
+
+    Returns:
+        dict: view_id -> field_names 的映射
+    """
+    kn_data_view_fields = {}
+    for view in data_views:
+        view_id = view.get("id")
+        concept_detail = view.get("concept_detail", {})
+        data_properties = concept_detail.get("data_properties", [])
+        if data_properties and view_id:
+            field_names = []
+            for prop in data_properties:
+                mapped_field = prop.get("mapped_field", {})
+                if mapped_field and mapped_field.get("name"):
+                    field_names.append(mapped_field["name"])
+            if field_names:
+                kn_data_view_fields[view_id] = field_names
+    return kn_data_view_fields

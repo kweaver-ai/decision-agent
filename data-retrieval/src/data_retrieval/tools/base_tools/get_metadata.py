@@ -14,7 +14,10 @@ from data_retrieval.tools.base import api_tool_decorator, validate_openapi_schem
 
 from data_retrieval.datasource.dip_metric import DIPMetric
 from data_retrieval.datasource.dip_dataview import DataView
-from data_retrieval.api.agent_retrieval import get_datasource_from_agent_retrieval_async
+from data_retrieval.api.agent_retrieval import (
+    get_datasource_from_agent_retrieval_async,
+    build_kn_data_view_fields
+)
 from data_retrieval.settings import get_settings
 from fastapi import Body
 
@@ -276,21 +279,9 @@ class GetMetadataTool(AFTool):
                         # ds_type 为 None 表示获取全部类型
                         # 将 data_views 添加到 view_list
                         if ds_type is None or ds_type == "data_view":
-                            for view in data_views:
-                                view_list.append(view.get("id"))
-
-                                # Build kn_data_view_fields mapping from concept_detail.data_properties
-                                view_id = view.get("id")
-                                concept_detail = view.get("concept_detail", {})
-                                data_properties = concept_detail.get("data_properties", [])
-                                if data_properties and view_id:
-                                    field_names = []
-                                    for prop in data_properties:
-                                        mapped_field = prop.get("mapped_field", {})
-                                        if mapped_field and mapped_field.get("name"):
-                                            field_names.append(mapped_field["name"])
-                                    if field_names:
-                                        kn_data_view_fields[view_id] = field_names
+                            view_list.extend([view.get("id") for view in data_views])
+                            # Build kn_data_view_fields mapping from concept_detail.data_properties
+                            kn_data_view_fields.update(build_kn_data_view_fields(data_views))
 
                         # 将 metrics 添加到 metric_list
                         if ds_type is None or ds_type == "metric":

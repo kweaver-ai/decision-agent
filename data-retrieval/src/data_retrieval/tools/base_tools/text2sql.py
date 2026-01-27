@@ -24,7 +24,10 @@ from data_retrieval.api.error import (
 from data_retrieval.errors import Text2SQLException
 from data_retrieval.datasource.db_base import DataSource
 from data_retrieval.datasource.dip_dataview import DataView
-from data_retrieval.api.agent_retrieval import get_datasource_from_agent_retrieval_async
+from data_retrieval.api.agent_retrieval import (
+    get_datasource_from_agent_retrieval_async,
+    build_kn_data_view_fields
+)
 from data_retrieval.logs.logger import logger
 from data_retrieval.parsers.base import BaseJsonParser
 from data_retrieval.parsers.text2sql_parser import JsonText2SQLRuleBaseParser
@@ -923,31 +926,20 @@ class Text2SQLTool(LLMTool):
                 else:
                     kn_id = kn_param
 
-            data_views, _, relations = await get_datasource_from_agent_retrieval_async(
-                kn_id=kn_id,
-                query=params.get('input', ''),
-                search_scope=search_scope,
-                headers=headers,
-                base_url=base_url,
-                max_concepts=config_dict.get('view_num_limit', _SETTINGS.DEFAULT_AGENT_RETRIEVAL_MAX_CONCEPTS),
-                mode=recall_mode
-            )
-            view_list.extend([view.get("id") for view in data_views])
+                data_views, _, kn_relations = await get_datasource_from_agent_retrieval_async(
+                    kn_id=kn_id,
+                    query=params.get('input', ''),
+                    search_scope=search_scope,
+                    headers=headers,
+                    base_url=base_url,
+                    max_concepts=config_dict.get('view_num_limit', _SETTINGS.DEFAULT_AGENT_RETRIEVAL_MAX_CONCEPTS),
+                    mode=recall_mode
+                )
+                view_list.extend([view.get("id") for view in data_views])
+                relations.extend(kn_relations)
 
-            # Build kn_data_view_fields mapping from concept_detail.data_properties
-            for view in data_views:
-                view_id = view.get("id")
-                concept_detail = view.get("concept_detail", {})
-                data_properties = concept_detail.get("data_properties", [])
-                if data_properties and view_id:
-                    # Extract mapped_field names
-                    field_names = []
-                    for prop in data_properties:
-                        mapped_field = prop.get("mapped_field", {})
-                        if mapped_field and mapped_field.get("name"):
-                            field_names.append(mapped_field["name"])
-                    if field_names:
-                        kn_data_view_fields[view_id] = field_names
+                # Build kn_data_view_fields mapping from concept_detail.data_properties
+                kn_data_view_fields.update(build_kn_data_view_fields(data_views))
 
         # Build relation background info from relations
         relation_background = ""
@@ -1071,11 +1063,15 @@ class Text2SQLTool(LLMTool):
                     relation_descriptions.append(desc)
 
             if relation_descriptions:
-                if isinstance(res, dict):
-                    if "output" in res:
-                        res["output"]["relations"] = relation_descriptions
+                try:
+                    res_json = json.loads(res)
+                    if "output" in res_json:
+                        res_json["output"]["relations"] = relation_descriptions
                     else:
-                        res["relations"] = relation_descriptions
+                        res_json["relations"] = relation_descriptions
+                    res = json.dumps(res_json, ensure_ascii=False)
+                except Exception as e:
+                    logger.error(f"error when adding relations to result: {e}")
 
         return res
 

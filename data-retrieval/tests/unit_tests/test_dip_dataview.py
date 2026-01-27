@@ -11,6 +11,8 @@ import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', 'src'))
 
+from data_retrieval.api.agent_retrieval import build_kn_data_view_fields  # noqa: E402
+
 
 class TestDataViewKnFieldsFilter:
     """测试 DataView 的 kn_data_view_fields 过滤功能"""
@@ -272,19 +274,7 @@ class TestKnDataViewFieldsExtraction:
             }
         ]
 
-        kn_data_view_fields = {}
-        for view in data_views:
-            view_id = view.get("id")
-            concept_detail = view.get("concept_detail", {})
-            data_properties = concept_detail.get("data_properties", [])
-            if data_properties and view_id:
-                field_names = []
-                for prop in data_properties:
-                    mapped_field = prop.get("mapped_field", {})
-                    if mapped_field and mapped_field.get("name"):
-                        field_names.append(mapped_field["name"])
-                if field_names:
-                    kn_data_view_fields[view_id] = field_names
+        kn_data_view_fields = build_kn_data_view_fields(data_views)
 
         assert "view_1" in kn_data_view_fields
         assert "view_2" in kn_data_view_fields
@@ -303,19 +293,7 @@ class TestKnDataViewFieldsExtraction:
             }
         ]
 
-        kn_data_view_fields = {}
-        for view in data_views:
-            view_id = view.get("id")
-            concept_detail = view.get("concept_detail", {})
-            data_properties = concept_detail.get("data_properties", [])
-            if data_properties and view_id:
-                field_names = []
-                for prop in data_properties:
-                    mapped_field = prop.get("mapped_field", {})
-                    if mapped_field and mapped_field.get("name"):
-                        field_names.append(mapped_field["name"])
-                if field_names:
-                    kn_data_view_fields[view_id] = field_names
+        kn_data_view_fields = build_kn_data_view_fields(data_views)
 
         assert "view_1" not in kn_data_view_fields
 
@@ -337,19 +315,7 @@ class TestKnDataViewFieldsExtraction:
             }
         ]
 
-        kn_data_view_fields = {}
-        for view in data_views:
-            view_id = view.get("id")
-            concept_detail = view.get("concept_detail", {})
-            data_properties = concept_detail.get("data_properties", [])
-            if data_properties and view_id:
-                field_names = []
-                for prop in data_properties:
-                    mapped_field = prop.get("mapped_field", {})
-                    if mapped_field and mapped_field.get("name"):
-                        field_names.append(mapped_field["name"])
-                if field_names:
-                    kn_data_view_fields[view_id] = field_names
+        kn_data_view_fields = build_kn_data_view_fields(data_views)
 
         assert "view_1" not in kn_data_view_fields
 
@@ -363,19 +329,7 @@ class TestKnDataViewFieldsExtraction:
             }
         ]
 
-        kn_data_view_fields = {}
-        for view in data_views:
-            view_id = view.get("id")
-            concept_detail = view.get("concept_detail", {})
-            data_properties = concept_detail.get("data_properties", [])
-            if data_properties and view_id:
-                field_names = []
-                for prop in data_properties:
-                    mapped_field = prop.get("mapped_field", {})
-                    if mapped_field and mapped_field.get("name"):
-                        field_names.append(mapped_field["name"])
-                if field_names:
-                    kn_data_view_fields[view_id] = field_names
+        kn_data_view_fields = build_kn_data_view_fields(data_views)
 
         assert "view_1" not in kn_data_view_fields
 
