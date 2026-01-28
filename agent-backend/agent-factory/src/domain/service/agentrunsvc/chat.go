@@ -129,7 +129,7 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	}
 
 	// NOTE: 确保 Sandbox Session 存在并就绪
-	sessionID := fmt.Sprintf("sb-session-%s", req.UserID)
+	sessionID := fmt.Sprintf("sess-%s", req.UserID)
 	sandboxSessionID, err := agentSvc.EnsureSandboxSession(newCtx, sessionID, req)
 	if err != nil {
 		o11y.Error(newCtx, fmt.Sprintf("[chat] ensure sandbox session failed: %v", err))

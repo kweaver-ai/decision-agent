@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/bytedance/sonic"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/pkg/errors"
 
 	sandboxdto "github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/sandboxplatformhttp/sandboxplatformdto"
@@ -47,6 +48,9 @@ func (s *sandboxPlatformHttpAcc) GetSession(ctx context.Context, sessionID strin
 
 	if code != http.StatusOK {
 		s.logger.Errorf("[SandboxPlatform] get session status code: %d, resp: %s", code, string(res))
+		if code == http.StatusNotFound {
+			return nil, rest.NewHTTPError(ctx, http.StatusNotFound, rest.PublicError_NotFound)
+		}
 		return nil, fmt.Errorf("get sandbox session failed: status code %d, resp %s", code, string(res))
 	}
 

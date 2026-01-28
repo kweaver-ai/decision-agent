@@ -72,6 +72,7 @@ func (s *agentSvc) createNewSession(ctx context.Context, sessionID string, req *
 	}
 
 	createReq := sandboxplatformdto.CreateSessionReq{
+		ID:         &sessionID,
 		TemplateID: s.sandboxPlatformConf.DefaultTemplateID,
 		Timeout:    int(timeout),
 		CPU:        cpu,

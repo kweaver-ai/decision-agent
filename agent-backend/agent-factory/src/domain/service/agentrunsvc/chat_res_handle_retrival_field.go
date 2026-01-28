@@ -7,37 +7,11 @@ import (
 
 	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo/daresvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/efastaccess/efastdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/util"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 )
-
-func (agentSvc *agentSvc) handleRetrievalField(ctx context.Context, result *daresvo.DataAgentRes, markCite bool) (*agentrespvo.DocRetrievalField, any, error) {
-	var err error
-
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-
-	answer, cites, err := result.DocRetrievalAnswerAndCites()
-	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[handleRetrievalField] DocRetrievalAnswerAndCites error: %v", err))
-		return nil, nil, errors.Wrapf(err, "[handleRetrievalField] DocRetrievalAnswerAndCites error: %v", err)
-	}
-
-	docRetrievalField := &agentrespvo.DocRetrievalField{
-		Text: answer,
-	}
-
-	err = agentSvc.docCite(ctx, docRetrievalField, markCite, cites)
-	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[handleRetrievalField] docCite error: %v", err))
-		return nil, nil, errors.Wrapf(err, "[handleRetrievalField] docCite error: %v", err)
-	}
-
-	return docRetrievalField, nil, nil
-}
 
 func (agentSvc *agentSvc) docCite(ctx context.Context, retrievalField *agentrespvo.DocRetrievalField, markCite bool, cites []*agentrespvo.AnswerCite) (err error) {
 	ctx, _ = o11y.StartInternalSpan(ctx)

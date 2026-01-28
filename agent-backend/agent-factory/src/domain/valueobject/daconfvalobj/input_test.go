@@ -110,7 +110,7 @@ func TestInput_ValObjCheck(t *testing.T) {
 					DataSource: &AugmentDataSource{
 						Kg: []KgSource{},
 					},
-				}
+				},
 			},
 			wantErr: false,
 		},
@@ -128,53 +128,3 @@ func TestInput_ValObjCheck(t *testing.T) {
 	}
 }
 
-func TestInput_SetIsTempZoneEnabled(t *testing.T) {
-	tests := []struct {
-		name               string
-		input              *Input
-		wantTempZoneStatus cdaenum.TempZoneStatus
-	}{
-		{
-			name: "包含文件字段",
-			input: &Input{
-				Fields: Fields{
-					&Field{Name: "file1", Type: cdaenum.InputFieldTypeFile},
-				},
-			},
-			wantTempZoneStatus: cdaenum.TempZoneEnabled,
-		},
-		{
-			name: "不包含文件字段",
-			input: &Input{
-				Fields: Fields{
-					&Field{Name: "field1", Type: cdaenum.InputFieldTypeString},
-				},
-			},
-			wantTempZoneStatus: cdaenum.TempZoneDisabled,
-		},
-		{
-			name: "空字段列表",
-			input: &Input{
-				Fields: Fields{},
-			},
-			wantTempZoneStatus: cdaenum.TempZoneDisabled,
-		},
-		{
-			name: "混合字段包含文件",
-			input: &Input{
-				Fields: Fields{
-					&Field{Name: "field1", Type: cdaenum.InputFieldTypeString},
-					&Field{Name: "file1", Type: cdaenum.InputFieldTypeFile},
-				},
-			},
-			wantTempZoneStatus: cdaenum.TempZoneEnabled,
-		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			tt.input.SetIsTempZoneEnabled()
-			assert.Equal(t, tt.wantTempZoneStatus, tt.input.IsTempZoneEnabled, "IsTempZoneEnabled should match expected")
-		})
-	}
-}

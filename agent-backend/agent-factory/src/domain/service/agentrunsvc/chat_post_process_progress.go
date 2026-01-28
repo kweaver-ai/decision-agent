@@ -34,6 +34,7 @@ func (agentSvc *agentSvc) handleProgress(ctx context.Context, req *agentreq.Chat
 
 	// 2. 遍历 progresses
 	for _, progress := range progresses {
+
 		if progress.Status == "completed" || progress.Status == "failed" {
 			if _, ok := set[progress.ID]; !ok {
 				if v, ok := progressMap.Load(req.AssistantMessageID); !ok {

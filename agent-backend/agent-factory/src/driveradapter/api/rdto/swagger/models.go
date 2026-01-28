@@ -4,7 +4,6 @@ import (
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationreq"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationresp"
 )
 
 // APIError API 错误响应
@@ -22,15 +21,6 @@ type PaginatedResponse struct {
 
 // ChatResp Agent 对话响应
 type ChatResp = agentresp.ChatResp
-
-// FileCheckRes 文件检查响应
-type FileCheckRes = agentresp.FileCheckRes
-
-// ListRes 会话列表响应
-type ListRes = conversationresp.ListRes
-
-// DetailRes 会话详情响应
-type DetailRes = conversationresp.DetailRes
 
 // ChatReq Agent 对话请求
 type ChatReq = agentreq.ChatReq
