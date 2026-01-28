@@ -46,6 +46,21 @@ class AgentTool(Tool):
         self.tool_map_list = agent_skill.agent_input or []
         self.agent_options = agent_skill.inner_dto.agent_options or {}
 
+        # 根据 intervention 配置生成 interrupt_config
+        # 供 Dolphin SDK 使用，在 SDK 内部触发中断
+        if self.intervention:
+            intervention_message = getattr(
+                agent_skill,
+                'intervention_confirmation_message',
+                f"Agent工具 {self.name} 需要确认执行"  # 默认值
+            )
+            self.interrupt_config = {
+                "requires_confirmation": True,
+                "confirmation_message": intervention_message,
+            }
+        else:
+            self.interrupt_config = None
+
     def _parse_agent_inputs(self, agent_skill: AgentSkillVo):
         """解析Agent输入参数"""
         inputs = {}
@@ -66,24 +81,8 @@ class AgentTool(Tool):
         tool_input, props = parse_kwargs(**kwargs)
         tool_input.pop("props", None)
 
-        """异步流式执行Agent"""
-        # 如果Agent需要干预，则抛出ToolInterrupt异常
-        if isinstance(props, dict) and "intervention" in props:
-            intervention = props["intervention"]
-        else:
-            intervention = self.intervention
-
-        if intervention:
-            tool_args = []
-            for key, value in tool_input.items():
-                tool_args.append(
-                    {
-                        "key": key,
-                        "value": value,
-                        "type": self.inputs.get(key, {}).get("type"),
-                    }
-                )
-            raise ToolInterrupt(tool_name=self.name, tool_args=tool_args)
+        # 注意：中断逻辑已移至 Dolphin SDK 内部，通过 interrupt_config 触发
+        # 此处不再主动抛出 ToolInterrupt 异常
 
         gvp: "Context" = props.get("gvp")
 

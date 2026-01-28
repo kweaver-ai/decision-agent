@@ -44,7 +44,7 @@ const InterruptFormPanel = ({ chatItemIndex }: any) => {
       // };
       // loop(interrupt.data.tool_args);
 
-      return interrupt.data.tool_args;
+      return interrupt.data?.tool_args;
     }
     return tempArr;
   }, [interrupt]);
@@ -91,10 +91,13 @@ const InterruptFormPanel = ({ chatItemIndex }: any) => {
 
   const updateInterrupt = () => {
     const formValues = form.getFieldsValue();
-    const args = Object.keys(formValues).map(key => ({
-      key,
-      value: formValues[key],
-    }));
+    // 只收集用户修改过的参数，仅包含 key 和 value
+    const args = fields
+      .filter(field => formValues[field.key] !== field.value)
+      .map(field => ({
+        key: field.key,
+        value: formValues[field.key],
+      }));
     const userChatItem = chatList[chatItemIndex - 1];
     const reqBody: any = {};
     if (userChatItem.fileList) {
@@ -110,14 +113,17 @@ const InterruptFormPanel = ({ chatItemIndex }: any) => {
         interruptAction: 'confirm',
         interruptModifiedArgs: args,
       },
-      recoverConversation: true,
     });
   };
 
   const renderMessageTip = () => {
     return (
       <div className="dip-mb-12">
-        <Alert message={interrupt!.data.interrupt_config.confirmation_message} type="info" showIcon />
+        <Alert
+          message={interrupt!.data.interrupt_config.confirmation_message || '请确认该工具下列输入参数是否正确'}
+          type="info"
+          showIcon
+        />
       </div>
     );
   };
@@ -141,7 +147,6 @@ const InterruptFormPanel = ({ chatItemIndex }: any) => {
                   body: {
                     interruptAction: 'skip',
                   },
-                  recoverConversation: true,
                 });
               }}
             >

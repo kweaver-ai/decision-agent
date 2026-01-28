@@ -80,7 +80,7 @@ export default defineConfig({
   output: {
     // 开发环境生成 sourcemap，生产环境不生成
     sourceMap: {
-      js: process.env.NODE_ENV === 'development' ? 'eval-source-map' : false,
+      js: process.env.NODE_ENV === 'development' ? 'cheap-module-source-map' : false,
       css: process.env.NODE_ENV === 'development',
     },
     assetPrefix: './', // 静态资源路径前缀，用于解决相对路径问题
@@ -95,15 +95,24 @@ export default defineConfig({
 
   // ========== 开发环境配置 ==========
   server: {
-    publicDir: false, // 禁用默认的拷贝public目录到dist/public（因为它是平铺拷贝的，所以禁用）
+    publicDir: {
+      name: 'public',
+      copyOnBuild: false, // 禁用默认的构建拷贝，避免与 output.copy 冲突
+    }, // 启用 public 目录服务
     port: DEV_PORT,
     headers: {
       'Access-Control-Allow-Origin': '*',
     },
+    proxy: {
+      '/api/': {
+        target: 'https://dip.aishu.cn',
+        changeOrigin: true,
+      },
+    },
   },
 
   dev: {
-    assetPrefix: './', // 静态资源路径前缀，用于解决相对路径问题
+    assetPrefix: `http://localhost:${DEV_PORT}/`, // 使用完整路径，同时支持独立运行（含嵌套路由）和微前端模式
     client: {
       protocol: 'ws',
       host: 'localhost',

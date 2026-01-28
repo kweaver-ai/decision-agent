@@ -21,7 +21,7 @@ func LogSuccessExecution(ctx context.Context, req *agentreq.ChatReq, progressAns
 	sessionIDAttr := field.NewAttribute("session_id", field.MallocJsonField(req.ConversationSessionID))
 	callTypeAttr := field.NewAttribute("call_type", field.MallocJsonField(req.CallType))
 
-	//NOTE 转为json字符串
+	// NOTE 转为json字符串
 	progressJsonStr, _ := json.Marshal(progressAns)
 	progressAttr := field.NewAttribute("progress", field.MallocJsonField(string(progressJsonStr)))
 

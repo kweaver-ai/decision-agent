@@ -3,6 +3,7 @@ package afresvo
 import (
 	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentresperr"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/conversationmsgvo"
 	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
 )
 
@@ -34,10 +35,11 @@ func HandleAFErrorForChatProcess(data []byte) (newData []byte, isErr bool) {
 	}
 
 	chatResponse := &agentresp.ChatResp{}
+	chatResponse.Message.Ext = &conversationmsgvo.MessageExt{}
 
 	respErr := agentresperr.NewRespError(agentresperr.RespErrorTypeAgentFactory, afErr)
 
-	chatResponse.Message.Ext["error"] = respErr
+	chatResponse.Message.Ext.Error = respErr
 
 	newData, _ = sonic.Marshal(chatResponse)
 
