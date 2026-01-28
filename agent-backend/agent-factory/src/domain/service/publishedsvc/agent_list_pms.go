@@ -5,9 +5,9 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/published/pubedreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/published/pubedresp"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/pkg/errors"
 )
@@ -21,7 +21,7 @@ func (svc *publishedSvc) getPmsAgentPos(ctx context.Context, req *pubedreq.Pubed
 		okSize   = 0
 	)
 
-	if !common.IsDisablePmsCheck() {
+	if !global.GConfig.DisablePmsCheck {
 		if req.Size <= 1000 {
 			req.Size = 1000
 		}
@@ -61,7 +61,7 @@ func (svc *publishedSvc) getPmsAgentPos(ctx context.Context, req *pubedreq.Pubed
 		}
 
 		// 2. 如果禁用权限检查，直接返回
-		if common.IsDisablePmsCheck() {
+		if global.GConfig.DisablePmsCheck {
 			filteredPos = append(filteredPos, pos...)
 			return
 		}

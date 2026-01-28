@@ -4,18 +4,18 @@ import "testing"
 
 func TestNewPlanMode(t *testing.T) {
 	tests := []struct {
-		name       string
-		isEnabled  bool
+		name          string
+		isEnabled     bool
 		wantIsEnabled bool
 	}{
 		{
-			name:       "启用",
-			isEnabled:  true,
+			name:          "启用",
+			isEnabled:     true,
 			wantIsEnabled: true,
 		},
 		{
-			name:       "禁用",
-			isEnabled:  false,
+			name:          "禁用",
+			isEnabled:     false,
 			wantIsEnabled: false,
 		},
 	}

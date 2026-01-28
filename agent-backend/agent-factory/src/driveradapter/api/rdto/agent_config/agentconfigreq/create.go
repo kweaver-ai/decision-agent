@@ -25,7 +25,7 @@ func (p *CreateReq) GetErrMsgMap() map[string]string {
 }
 
 func (p *CreateReq) D2e() (eo *daconfeo.DataAgent, err error) {
-	// 1. 生成allowed_file_types和 set is_temp_zone_enabled
+	// 1. 生成allowed_file_types
 	err = HandleConfig(p.Config)
 	if err != nil {
 		err = errors.Wrap(err, "[CreateReq]: HandleConfig failed")
@@ -57,7 +57,6 @@ func (p *CreateReq) ReqCheckWithCtx(ctx context.Context) (err error) {
 		err = errors.Wrap(err, "[CreateReq]: update_req is invalid")
 		return
 	}
-
 	// 3. 验证is_private_api相关
 	if !p.IsInternalAPI {
 		if p.CreatedBy != "" {

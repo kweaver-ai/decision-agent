@@ -11,7 +11,7 @@ func TestCopyStructUseJSON_Advanced(t *testing.T) {
 		Name string
 		Age  int
 	}
-	
+
 	type Employee struct {
 		Person
 		Company string

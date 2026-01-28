@@ -75,9 +75,9 @@ func TestGetRestHttpErr(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	tests := []struct {
-		name  string
-		err   error
-		want  bool
+		name string
+		err  error
+		want bool
 	}{
 		{
 			name: "nil错误",

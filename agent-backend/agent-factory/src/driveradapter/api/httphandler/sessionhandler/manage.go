@@ -13,6 +13,19 @@ import (
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
+// Manage 管理对话session
+// @Summary      管理对话session
+// @Description  管理指定的对话会话状态
+// @Tags         Session
+// @Accept       json
+// @Produce      json
+// @Param        conversation_id  path      string                 true  "会话 ID"
+// @Param        request         body      sessionreq.ManageReq  true  "管理请求"
+// @Success      200       {string}  string  "成功"
+// @Failure      400      {object}  swagger.APIError  "请求参数错误"
+// @Failure      500      {object}  swagger.APIError  "服务器内部错误"
+// @Router       /v1/conversation/session/:conversation_id [put]
+// @Security     BearerAuth
 func (h *sessionHTTPHandler) Manage(c *gin.Context) {
 	// 1. 获取请求参数
 	var req sessionreq.ManageReq

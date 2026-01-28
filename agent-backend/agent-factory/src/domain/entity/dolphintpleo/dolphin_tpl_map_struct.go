@@ -7,7 +7,6 @@ import (
 
 type DolphinTplMapStruct struct {
 	MemoryRetrieve  *MemoryRetrieveContent  `json:"memory_retrieve"`
-	TempFileProcess *TempFileProcessContent `json:"temp_file_process"`
 	DocRetrieve     *DocRetrieveContent     `json:"doc_retrieve"`
 	GraphRetrieve   *GraphRetrieveContent   `json:"graph_retrieve"`
 	ContextOrganize *ContextOrganizeContent `json:"context_organize"`
@@ -17,13 +16,11 @@ type DolphinTplMapStruct struct {
 
 func NewDolphinTplMapStruct() *DolphinTplMapStruct {
 	memoryRetrieve := NewMemoryRetrieveContent()
-	tempFileProcess := NewTempFileProcessContent()
 	docRetrieve := NewDocRetrieveContent()
 	graphRetrieve := NewGraphRetrieveContent()
 
 	otherTplStruct := &OtherTplStruct{
 		MemoryRetrieve:  memoryRetrieve,
-		TempFileProcess: tempFileProcess,
 		DocRetrieve:     docRetrieve,
 		GraphRetrieve:   graphRetrieve,
 	}
@@ -34,7 +31,6 @@ func NewDolphinTplMapStruct() *DolphinTplMapStruct {
 
 	return &DolphinTplMapStruct{
 		MemoryRetrieve:   memoryRetrieve,
-		TempFileProcess:  tempFileProcess,
 		DocRetrieve:      docRetrieve,
 		GraphRetrieve:    graphRetrieve,
 		ContextOrganize:  contextOrganize,
@@ -45,7 +41,6 @@ func NewDolphinTplMapStruct() *DolphinTplMapStruct {
 // builtInAgentKey 为内置agent的key，用于内置agent的一些特殊处理
 func (s *DolphinTplMapStruct) LoadFromConfig(config *daconfvalobj.Config, builtInAgentKey builtinagentenum.AgentKey, isNeedHandleBuiltinAgent bool) {
 	s.MemoryRetrieve.LoadFromConfig(config)
-	s.TempFileProcess.LoadFromConfig(config)
 
 	isBuiltInDocQAAgent := builtInAgentKey.IsDocQA() && isNeedHandleBuiltinAgent
 	s.DocRetrieve.LoadFromConfig(config, isBuiltInDocQAAgent)

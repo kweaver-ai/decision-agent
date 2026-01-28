@@ -10,6 +10,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/httphelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/pkg/errors"
 )
 
@@ -41,7 +42,7 @@ func (a *authZHttpAcc) ResourceFilter(ctx context.Context, req *authzhttpreq.Res
 }
 
 func (a *authZHttpAcc) FilterCanUseAgentIDs(ctx context.Context, uid string, agentIDs []string) (filteredAgentIDs []string, err error) {
-	if cenvhelper.IsDisablePmsCheck() {
+	if global.GConfig.DisablePmsCheck {
 		filteredAgentIDs = make([]string, len(agentIDs))
 		copy(filteredAgentIDs, agentIDs)
 

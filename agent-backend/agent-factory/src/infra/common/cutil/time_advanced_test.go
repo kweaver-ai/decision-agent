@@ -8,9 +8,9 @@ import (
 
 func TestParseTime_Advanced(t *testing.T) {
 	tests := []struct {
-		name     string
-		timeStr  string
-		wantErr  bool
+		name    string
+		timeStr string
+		wantErr bool
 	}{
 		{
 			name:    "valid time - zero values",

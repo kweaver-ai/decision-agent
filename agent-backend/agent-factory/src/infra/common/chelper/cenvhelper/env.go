@@ -1,7 +1,6 @@
 package cenvhelper
 
 import (
-	"os"
 	"strings"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
@@ -10,8 +9,7 @@ import (
 var (
 	isLocalDev  EnvStr
 	isDebugMode EnvStr
-
-	isSQLPrint EnvStr
+	isSQLPrint  EnvStr
 
 	projPath EnvStr
 
@@ -22,6 +20,7 @@ var (
 	isEnvInited bool
 )
 
+// 测试时，可通过initEnv()重新初始化
 func init() {
 	initEnv()
 }
@@ -31,7 +30,7 @@ func initEnv() {
 	// 1. 获取服务名
 	svcName := cutil.GetEnv("SERVICE_NAME", "AGENT_FACTORY")
 	if svcName == "" {
-		panic("env SERVICE_NAME env not set")
+		panic("env SERVICE_NAME not set")
 	}
 
 	// 2. 获取环境前缀
@@ -47,7 +46,7 @@ func initEnv() {
 
 	runScenarioEnv = NewEnvStr("RUN_SCENARIO", envPrefix) // example: AGENT_FACTORY_RUN_SCENARIO
 
-	// 4. 设置“是否初始化完成”
+	// 4. 设置"是否初始化完成"
 	isEnvInited = true
 }
 
@@ -81,11 +80,4 @@ func ConfigPathFromEnv() string {
 	}
 
 	return configPath.Value()
-}
-
-// AGENT_FACTORY_DISABLE_PMS_CHECK 禁用权限检查
-var AgentFactoryDisablePmsCheck = os.Getenv("AGENT_FACTORY_DISABLE_PMS_CHECK")
-
-func IsDisablePmsCheck() bool {
-	return AgentFactoryDisablePmsCheck == "true"
 }

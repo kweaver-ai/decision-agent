@@ -6,8 +6,8 @@ import (
 
 func TestAugment_DataSource_ValObjCheck(t *testing.T) {
 	validKg := KgSource{
-		KgID:    "kg1",
-		Fields:   []string{"field1", "field2"},
+		KgID:   "kg1",
+		Fields: []string{"field1", "field2"},
 	}
 	invalidKg := KgSource{
 		KgID: "kg-invalid",

@@ -2,12 +2,14 @@
 # 是否保留老的APP路径
 keep_legacy_app_path: false
 
-
 # 是否禁用权限检查（本地开发时建议设置为true）
 disable_pms_check: true
 
 # 是否禁用业务域初始化（本地开发时建议设置为true）
 disable_biz_domain_init: true
+
+# 是否使用全局默认业务域（本地开发时建议设置为true）
+use_default_biz_domain: true
 
 # 是否禁用审计日志初始化（本地开发时建议设置为true）
 disable_audit_init: true
@@ -18,14 +20,27 @@ mock_mq_client: true
 # 是否使用Mock Sandbox Platform（本地开发时建议设置为true）
 mock_sandbox_platform: true
 
+# 是否使用Mock Hydra（本地开发时建议设置为true）
+mock_hydra: true
+
+# 是否使用Mock AuthZ（本地开发时建议设置为true）
+mock_authz: true
+
+# 是否使用Mock BizDomain（本地开发时建议设置为true）
+mock_biz_domain: true
+
+# OpenAPI 文档配置
+enable_swagger: true
+swagger_token: ""
+
 # 这个文件只有本地调试用，打包是打不进去的，
 db:
-  user_name: anyshare
-  user_pwd: "********"
-  db_host: mariadb-mariadb-cluster.resource
-  db_port: 3330
-  db_host_read: 192.168.232.11
-  db_port_read: 3330
+  user_name: root
+  user_pwd: "password"
+  db_host: localhost
+  db_port: 3306
+  db_host_read: localhost
+  db_port_read: 3306
   db_name: adp
   db_charset: utf8mb4
   timeout: 10
@@ -35,15 +50,15 @@ db:
   max_open_read_conns: 30
 
 redis:
-  connect_type: "sentinel"
-  password: "********"
-  username: "root"
+  connect_type: "standalone"
+  password: ""
+  username: ""
 
   db: 3
 
   # standalone 单机模式
-  host: "192.168.232.11"
-  port: "36379"
+  host: "localhost"
+  port: "6379"
 
   # sentinel 模式配置
   master_group_name: "mymaster"
@@ -198,7 +213,7 @@ opentelemetry:
 
   # Trace 配置
   trace:
-    enabled: true
+    enabled: false
     # 上报方式: console 或 http
     exporter: "console"
     # HTTP 上报端点 (当 exporter 为 http 时生效)
@@ -208,7 +223,7 @@ opentelemetry:
 
   # Log 配置
   log:
-    enabled: true
+    enabled: false
     # 上报方式: console 或 http
     exporter: "console"
     # HTTP 上报端点 (当 exporter 为 http 时生效)
@@ -218,7 +233,7 @@ opentelemetry:
 
   # Metric 配置
   metric:
-    enabled: true
+    enabled: false
     # 上报方式: console 或 http
     exporter: "console"
     # HTTP 上报端点 (当 exporter 为 http 时生效)

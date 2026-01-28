@@ -28,12 +28,12 @@ func TestSupportDataType_EnumCheck(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "包含文件和无效类型",
+			name:    "包含文件和无效类型",
 			c:       SupportDataTypes{"file", "invalid"},
 			wantErr: true,
 		},
 		{
-			name: "包含重复的有效类型",
+			name:    "包含重复的有效类型",
 			c:       SupportDataTypes{"file", "file"},
 			wantErr: false,
 		},

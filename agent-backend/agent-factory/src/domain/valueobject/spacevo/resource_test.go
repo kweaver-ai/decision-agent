@@ -1,8 +1,8 @@
 package spacevo
 
 import (
-	"testing"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestResourceUniq(t *testing.T) {
@@ -43,9 +43,9 @@ func TestResourceUniq(t *testing.T) {
 
 func TestResourceAssoc(t *testing.T) {
 	tests := []struct {
-		name    string
-		assoc   ResourceAssoc
-		wantID  int64
+		name   string
+		assoc  ResourceAssoc
+		wantID int64
 	}{
 		{
 			name: "有效关联ID",

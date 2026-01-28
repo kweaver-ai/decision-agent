@@ -4,9 +4,9 @@ import (
 	"sync"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/conf"
-	"github.com/kweaver-ai/decision-agent/agent-factory/port/driven/ihttpaccess/isandboxplatformhttp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/isandboxhtpp"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
@@ -19,10 +19,10 @@ type sandboxPlatformHttpAcc struct {
 
 var (
 	sandboxPlatformOnce sync.Once
-	sandboxPlatformImpl isandboxplatformhttp.ISandboxPlatform
+	sandboxPlatformImpl isandboxhtpp.ISandboxPlatform
 )
 
-func NewSandboxPlatformHttpAcc(sandboxPlatformConf *conf.SandboxPlatformConf, client rest.HTTPClient, logger icmp.Logger) isandboxplatformhttp.ISandboxPlatform {
+func NewSandboxPlatformHttpAcc(sandboxPlatformConf *conf.SandboxPlatformConf, client rest.HTTPClient, logger icmp.Logger) isandboxhtpp.ISandboxPlatform {
 	sandboxPlatformOnce.Do(func() {
 		sandboxPlatformImpl = &sandboxPlatformHttpAcc{
 			logger:              logger,

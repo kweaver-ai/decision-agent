@@ -1,14 +1,14 @@
 package spacevo
 
 import (
-	"testing"
 	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestMemberUniq(t *testing.T) {
 	tests := []struct {
-		name     string
-		member   *MemberUniq
+		name   string
+		member *MemberUniq
 	}{
 		{
 			name: "用户类型",
@@ -43,12 +43,12 @@ func TestMemberUniq(t *testing.T) {
 
 func TestMemberAssoc(t *testing.T) {
 	tests := []struct {
-		name    string
-		assoc   MemberAssoc
-		wantID  int64
+		name   string
+		assoc  MemberAssoc
+		wantID int64
 	}{
 		{
-			name:   "有效关联ID",
+			name: "有效关联ID",
 			assoc: MemberAssoc{
 				MemberUniq: MemberUniq{
 					ObjType: "user",

@@ -57,6 +57,9 @@ type Config struct {
 	// 是否禁用业务域初始化，默认false
 	DisableBizDomainInit bool `yaml:"disable_biz_domain_init"`
 
+	// 是否使用全局默认业务域，默认false
+	UseDefaultBizDomain bool `yaml:"use_default_biz_domain"`
+
 	// 是否禁用审计日志初始化，默认false
 	DisableAuditInit bool `yaml:"disable_audit_init"`
 
@@ -68,6 +71,12 @@ type Config struct {
 
 	// 是否使用Mock Hydra（本地开发时建议设置为true）
 	MockHydra bool `yaml:"mock_hydra"`
+
+	// 是否使用Mock AuthZ（本地开发时建议设置为true）
+	MockAuthZ bool `yaml:"mock_authz"`
+
+	// 是否使用Mock BizDomain（本地开发时建议设置为true）
+	MockBizDomain bool `yaml:"mock_biz_domain"`
 
 	// OpenAPI 文档配置
 	EnableSwagger bool   `yaml:"enable_swagger"` // 是否启用 Swagger UI

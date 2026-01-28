@@ -3,43 +3,82 @@ package sandboxplatformhttp
 import (
 	"context"
 
-	"github.com/kweaver-ai/decision-agent/agent-factory/port/driven/ihttpaccess/isandboxplatformhttp"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp"
 	sandboxdto "github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/sandboxplatformhttp/sandboxplatformdto"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/isandboxhtpp"
 )
 
 type mockSandboxPlatform struct {
 	logger icmp.Logger
 }
 
-func NewMockSandboxPlatform(logger icmp.Logger) isandboxplatformhttp.ISandboxPlatform {
+func NewMockSandboxPlatform(logger icmp.Logger) isandboxhtpp.ISandboxPlatform {
 	return &mockSandboxPlatform{
 		logger: logger,
 	}
 }
 
 func (m *mockSandboxPlatform) CreateSession(ctx context.Context, req sandboxdto.CreateSessionReq) (*sandboxdto.CreateSessionResp, error) {
-	m.logger.Infof("[MockSandboxPlatform] create session: userID=%s, agentID=%s", req.UserID, req.AgentID)
+	m.logger.Infof("[MockSandboxPlatform] create session: templateID=%s", req.TemplateID)
 
-	resp := &sandboxdto.CreateSessionResp{
-		SessionID: "mock-session-" + req.UserID + "-" + req.AgentID,
-		Status:    "running",
-		CreatedAt: 0,
-		TTL:       3600,
+	cpu := "1"
+	if req.CPU != "" {
+		cpu = req.CPU
+	}
+	memory := "512Mi"
+	if req.Memory != "" {
+		memory = req.Memory
+	}
+	disk := "1Gi"
+	if req.Disk != "" {
+		disk = req.Disk
+	}
+	timeout := 300
+	if req.Timeout > 0 {
+		timeout = req.Timeout
 	}
 
-	m.logger.Infof("[MockSandboxPlatform] create session success: %s", resp.SessionID)
+	resp := &sandboxdto.CreateSessionResp{
+		ID:          "mock-session-" + req.TemplateID,
+		TemplateID:  req.TemplateID,
+		Status:      "running",
+		RuntimeType: "python3.11",
+		ResourceLimit: &sandboxdto.ResourceLimit{
+			CPU:          cpu,
+			Memory:       memory,
+			Disk:         disk,
+			MaxProcesses: new(int),
+		},
+		EnvVars:   req.EnvVars,
+		Timeout:   timeout,
+		CreatedAt: "2024-01-01T00:00:00Z",
+		UpdatedAt: "2024-01-01T00:00:00Z",
+	}
+	*(resp.ResourceLimit.MaxProcesses) = 128
+
+	m.logger.Infof("[MockSandboxPlatform] create session success: %s", resp.ID)
 	return resp, nil
 }
 
 func (m *mockSandboxPlatform) GetSession(ctx context.Context, sessionID string) (*sandboxdto.GetSessionResp, error) {
 	m.logger.Infof("[MockSandboxPlatform] get session: %s", sessionID)
 
+	maxProcesses := 128
 	resp := &sandboxdto.GetSessionResp{
-		SessionID: sessionID,
-		Status:    "running",
-		CreatedAt: 0,
-		TTL:       3600,
+		ID:          sessionID,
+		TemplateID:  "python3.11",
+		Status:      "running",
+		RuntimeType: "python3.11",
+		ResourceLimit: &sandboxdto.ResourceLimit{
+			CPU:          "1",
+			Memory:       "512Mi",
+			Disk:         "1Gi",
+			MaxProcesses: &maxProcesses,
+		},
+		EnvVars:   map[string]string{},
+		Timeout:   300,
+		CreatedAt: "2024-01-01T00:00:00Z",
+		UpdatedAt: "2024-01-01T00:00:00Z",
 	}
 
 	m.logger.Infof("[MockSandboxPlatform] get session success: %s, status: %s", sessionID, resp.Status)

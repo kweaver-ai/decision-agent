@@ -75,7 +75,7 @@ func TestSafeRenderTemplate_Advanced(t *testing.T) {
 			data:    nil,
 		},
 		{
-			name: "nested map with nested key",
+			name:    "nested map with nested key",
 			tmplStr: "{{.user.profile.name}}",
 			data: map[string]interface{}{
 				"user": map[string]interface{}{
@@ -86,7 +86,7 @@ func TestSafeRenderTemplate_Advanced(t *testing.T) {
 			},
 		},
 		{
-			name: "deeply nested map with missing key",
+			name:    "deeply nested map with missing key",
 			tmplStr: "{{.a.b.c.d}}",
 			data: map[string]interface{}{
 				"a": map[string]interface{}{
@@ -97,7 +97,7 @@ func TestSafeRenderTemplate_Advanced(t *testing.T) {
 			},
 		},
 		{
-			name: "map with number values",
+			name:    "map with number values",
 			tmplStr: "{{.count}}:{{.value}}",
 			data: map[string]interface{}{
 				"count": 100,
@@ -105,7 +105,7 @@ func TestSafeRenderTemplate_Advanced(t *testing.T) {
 			},
 		},
 		{
-			name: "map with boolean values",
+			name:    "map with boolean values",
 			tmplStr: "{{.enabled}}:{{.active}}",
 			data: map[string]interface{}{
 				"enabled": true,
@@ -113,7 +113,7 @@ func TestSafeRenderTemplate_Advanced(t *testing.T) {
 			},
 		},
 		{
-			name: "map with nil value",
+			name:    "map with nil value",
 			tmplStr: "{{.nilValue}}",
 			data: map[string]interface{}{
 				"nilValue": nil,

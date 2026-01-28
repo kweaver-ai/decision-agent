@@ -31,7 +31,7 @@ func (s *sandboxPlatformHttpAcc) CreateSession(ctx context.Context, req sandboxd
 		return nil, errors.Wrap(err, "unmarshal response failed")
 	}
 
-	s.logger.Infof("[SandboxPlatform] create session success: %s", resp.SessionID)
+	s.logger.Infof("[SandboxPlatform] create session success: %s", resp.ID)
 	return &resp, nil
 }
 

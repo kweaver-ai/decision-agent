@@ -50,20 +50,6 @@ func (svc *conversationSvc) List(ctx context.Context, req conversationreq.ListRe
 		conversationList[i] = *conversationDetail
 	}
 
-	for index, conversation := range conversationList {
-		tempArea, err := svc.tempAreaRepo.GetByConversationID(ctx, conversation.ID)
-		if err != nil {
-			if errors.Is(err, sql.ErrNoRows) {
-				conversationList[index].TempareaId = ""
-			} else {
-				o11y.Error(ctx, fmt.Sprintf("[List] get temp area error, app_key: %s, err: %v", req.AgentAPPKey, err))
-				return conversationListEmpty, 0, errors.Wrapf(err, "[List] get temp area error, app_key: %s, err: %v", req.AgentAPPKey, err)
-			}
-		} else {
-			conversationList[index].TempareaId = tempArea.ID
-		}
-	}
-
 	// NOTE: 获取会话最新消息的状态
 	for index, conversation := range conversationList {
 		po, err := svc.conversationMsgRepo.GetLatestMsgByConversationID(ctx, conversation.ID)

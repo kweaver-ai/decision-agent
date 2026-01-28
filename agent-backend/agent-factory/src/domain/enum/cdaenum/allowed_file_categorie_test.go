@@ -89,76 +89,76 @@ func TestAllowedFileCategory_EnumCheck(t *testing.T) {
 
 func TestAllowedFileCategories_GetAllowedFileTypes(t *testing.T) {
 	tests := []struct {
-		name      string
+		name       string
 		categories AllowedFileCategories
-		wantTypes []string
-		wantErr   bool
+		wantTypes  []string
+		wantErr    bool
 	}{
 		{
-			name:      "文档类别",
+			name:       "文档类别",
 			categories: AllowedFileCategories{"document"},
-			wantTypes: []string{"docx", "dotx", "dot", "doc", "odt", "wps", "docm", "dotm"},
-			wantErr:   false,
+			wantTypes:  []string{"docx", "dotx", "dot", "doc", "odt", "wps", "docm", "dotm"},
+			wantErr:    false,
 		},
 		{
-			name:      "电子表格类别",
+			name:       "电子表格类别",
 			categories: AllowedFileCategories{"spreadsheet"},
-			wantTypes: []string{"xlsx", "xlsm", "xlsb", "xls", "et", "xla", "xlam", "xltm", "xltx", "xlt", "ods", "csv"},
-			wantErr:   false,
+			wantTypes:  []string{"xlsx", "xlsm", "xlsb", "xls", "et", "xla", "xlam", "xltm", "xltx", "xlt", "ods", "csv"},
+			wantErr:    false,
 		},
 		{
-			name:      "演示文稿类别",
+			name:       "演示文稿类别",
 			categories: AllowedFileCategories{"presentation"},
-			wantTypes: []string{"pptx", "ppt", "pot", "pps", "ppsx", "dps", "potm", "ppsm", "potx", "pptm", "odp"},
-			wantErr:   false,
+			wantTypes:  []string{"pptx", "ppt", "pot", "pps", "ppsx", "dps", "potm", "ppsm", "potx", "pptm", "odp"},
+			wantErr:    false,
 		},
 		{
-			name:      "PDF类别",
+			name:       "PDF类别",
 			categories: AllowedFileCategories{"pdf"},
-			wantTypes: []string{"pdf"},
-			wantErr:   false,
+			wantTypes:  []string{"pdf"},
+			wantErr:    false,
 		},
 		{
-			name:      "文本类别",
+			name:       "文本类别",
 			categories: AllowedFileCategories{"text"},
-			wantTypes: []string{"txt", "html"},
-			wantErr:   false,
+			wantTypes:  []string{"txt", "html"},
+			wantErr:    false,
 		},
 		{
-			name:      "音频类别",
+			name:       "音频类别",
 			categories: AllowedFileCategories{"audio"},
-			wantTypes: []string{"aac", "ape", "flac", "m4a", "mp3", "wav", "wma", "ogg"},
-			wantErr: false,
+			wantTypes:  []string{"aac", "ape", "flac", "m4a", "mp3", "wav", "wma", "ogg"},
+			wantErr:    false,
 		},
 		{
-			name:      "视频类别",
+			name:       "视频类别",
 			categories: AllowedFileCategories{"video"},
-			wantTypes: []string{"3gp", "avi", "asf", "flv", "mov", "m2ts", "mkv", "mp4", "mpeg", "mpg", "mts", "rm", "rmvb", "wmv"},
-			wantErr: false,
+			wantTypes:  []string{"3gp", "avi", "asf", "flv", "mov", "m2ts", "mkv", "mp4", "mpeg", "mpg", "mts", "rm", "rmvb", "wmv"},
+			wantErr:    false,
 		},
 		{
-			name:      "其他类别",
+			name:       "其他类别",
 			categories: AllowedFileCategories{"other"},
-			wantTypes: []string{"dwg"},
-			wantErr:   false,
+			wantTypes:  []string{"dwg"},
+			wantErr:    false,
 		},
 		{
-			name:      "Wiki文档类别",
+			name:       "Wiki文档类别",
 			categories: AllowedFileCategories{"wikidoc"},
-			wantTypes: []string{"wikidoc"},
-			wantErr:   false,
+			wantTypes:  []string{"wikidoc"},
+			wantErr:    false,
 		},
 		{
-			name:      "FAQ类别",
+			name:       "FAQ类别",
 			categories: AllowedFileCategories{"faq"},
-			wantTypes: []string{"faq"},
-			wantErr:   false,
+			wantTypes:  []string{"faq"},
+			wantErr:    false,
 		},
 		{
-			name:      "无效类别",
+			name:       "无效类别",
 			categories: AllowedFileCategories{"invalid"},
-			wantTypes: nil,
-			wantErr:   true,
+			wantTypes:  nil,
+			wantErr:    true,
 		},
 	}
 

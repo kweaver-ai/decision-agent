@@ -20,7 +20,7 @@ type ChatReq struct {
 	AgentKey                  string                  `json:"agent_key"`                        // agentKey
 	AgentVersion              string                  `json:"agent_version,omitempty"`          // agent版本
 	ConversationID            string                  `json:"conversation_id"`                  // 会话ID
-	SelectedFiles             []SelectedFile           `json:"selected_files,omitempty"`         // 用户选择的临时区文件
+	SelectedFiles             []SelectedFile          `json:"selected_files,omitempty"`         // 用户选择的临时区文件
 	Query                     string                  `json:"query"`                            // 查询内容
 	CustomQuerys              map[string]interface{}  `json:"custom_querys"`                    // 自定义查询
 	Tool                      Tool                    `json:"tool"`                             // 工具

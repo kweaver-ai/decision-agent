@@ -37,13 +37,5 @@ func (sv *conversationSvc) Init(ctx context.Context, req conversationreq.InitReq
 		ID: po.ID,
 	}
 
-	if req.TempareaId != "" {
-		err = sv.tempAreaRepo.Bind(ctx, req.TempareaId, po.ID)
-		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[Init] bind temparea failed, err: %v", err))
-			return rt, errors.Wrapf(err, "bind temparea failed")
-		}
-	}
-
 	return
 }

@@ -14,8 +14,8 @@ func TestDataAgentUniqFlag_ValObjCheck(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name: "完整配置",
-			flag: NewDataAgentUniqFlag("agent-123", "v1.0"),
+			name:    "完整配置",
+			flag:    NewDataAgentUniqFlag("agent-123", "v1.0"),
 			wantErr: false,
 		},
 		{
@@ -35,7 +35,7 @@ func TestDataAgentUniqFlag_ValObjCheck(t *testing.T) {
 		{
 			name: "两者都为空",
 			flag: &DataAgentUniqFlag{
-				AgentID:     "",
+				AgentID:      "",
 				AgentVersion: "",
 			},
 			wantErr: true,

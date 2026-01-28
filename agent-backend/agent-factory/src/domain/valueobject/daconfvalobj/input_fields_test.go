@@ -22,8 +22,8 @@ func TestFields_ValObjCheck(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name: "空字段列表",
-			fields: Fields{},
+			name:    "空字段列表",
+			fields:  Fields{},
 			wantErr: false,
 		},
 		{
@@ -134,9 +134,9 @@ func TestFields_IsFieldNameRepeat(t *testing.T) {
 
 func TestFields_GenNotFileDolphinStr(t *testing.T) {
 	tests := []struct {
-		name          string
-		fields        Fields
-		wantContains  []string
+		name           string
+		fields         Fields
+		wantContains   []string
 		wantNotContain []string
 	}{
 		{
@@ -145,7 +145,7 @@ func TestFields_GenNotFileDolphinStr(t *testing.T) {
 				&Field{Name: "field1", Type: cdaenum.InputFieldTypeString},
 				&Field{Name: "field2", Type: cdaenum.InputFieldTypeJSONObject},
 			},
-			wantContains:  []string{`"field1: " + $field1`, `"field2: " + $field2`, " -> all_inputs \n"},
+			wantContains:   []string{`"field1: " + $field1`, `"field2: " + $field2`, " -> all_inputs \n"},
 			wantNotContain: []string{},
 		},
 		{
@@ -154,7 +154,7 @@ func TestFields_GenNotFileDolphinStr(t *testing.T) {
 				&Field{Name: "file1", Type: cdaenum.InputFieldTypeFile},
 				&Field{Name: "text1", Type: cdaenum.InputFieldTypeString},
 			},
-			wantContains:  []string{`"text1: " + $text1`, " -> all_inputs \n"},
+			wantContains:   []string{`"text1: " + $text1`, " -> all_inputs \n"},
 			wantNotContain: []string{`file1`},
 		},
 		{
@@ -164,19 +164,19 @@ func TestFields_GenNotFileDolphinStr(t *testing.T) {
 				&Field{Name: "tool", Type: cdaenum.InputFieldTypeString},
 				&Field{Name: "field1", Type: cdaenum.InputFieldTypeString},
 			},
-			wantContains:  []string{`"field1: " + $field1`, " -> all_inputs \n"},
+			wantContains:   []string{`"field1: " + $field1`, " -> all_inputs \n"},
 			wantNotContain: []string{`history`, `tool`},
 		},
 		{
-			name: "只有文件字段",
-			fields: Fields{&Field{Name: "file1", Type: cdaenum.InputFieldTypeFile}},
-			wantContains:  []string{" -> all_inputs \n"},
+			name:           "只有文件字段",
+			fields:         Fields{&Field{Name: "file1", Type: cdaenum.InputFieldTypeFile}},
+			wantContains:   []string{" -> all_inputs \n"},
 			wantNotContain: []string{`file1`},
 		},
 		{
-			name: "空字段列表",
-			fields: Fields{},
-			wantContains:  []string{" -> all_inputs \n"},
+			name:           "空字段列表",
+			fields:         Fields{},
+			wantContains:   []string{" -> all_inputs \n"},
 			wantNotContain: []string{},
 		},
 	}
@@ -200,9 +200,9 @@ func TestFields_GenNotFileDolphinStr(t *testing.T) {
 
 func TestFields_GenFileDolphinStr(t *testing.T) {
 	tests := []struct {
-		name          string
-		fields        Fields
-		wantContains  []string
+		name           string
+		fields         Fields
+		wantContains   []string
 		wantNotContain []string
 	}{
 		{
@@ -211,19 +211,19 @@ func TestFields_GenFileDolphinStr(t *testing.T) {
 				&Field{Name: "file1", Type: cdaenum.InputFieldTypeFile},
 				&Field{Name: "text1", Type: cdaenum.InputFieldTypeString},
 			},
-			wantContains:  []string{`@process_file_intelligent(query=$query, file_infos=$file1)`},
+			wantContains:   []string{`@process_file_intelligent(query=$query, file_infos=$file1)`},
 			wantNotContain: []string{`text1`},
 		},
 		{
-			name:          "不包含文件类型字段",
-			fields:        Fields{&Field{Name: "text1", Type: cdaenum.InputFieldTypeString}},
-			wantContains:  []string{},
+			name:           "不包含文件类型字段",
+			fields:         Fields{&Field{Name: "text1", Type: cdaenum.InputFieldTypeString}},
+			wantContains:   []string{},
 			wantNotContain: []string{`process_file_intelligent`},
 		},
 		{
-			name:          "空字段列表",
-			fields:        Fields{},
-			wantContains:  []string{},
+			name:           "空字段列表",
+			fields:         Fields{},
+			wantContains:   []string{},
 			wantNotContain: []string{},
 		},
 	}

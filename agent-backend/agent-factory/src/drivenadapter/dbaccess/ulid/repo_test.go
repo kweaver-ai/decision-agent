@@ -1,6 +1,7 @@
 package dbaulid
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -66,5 +67,4 @@ func TestUlidMake_Unique(t *testing.T) {
 	ulid2 := UlidMake()
 
 	assert.NotEqual(t, ulid1, ulid2, "UlidMake should generate unique ULIDs")
-}
 }

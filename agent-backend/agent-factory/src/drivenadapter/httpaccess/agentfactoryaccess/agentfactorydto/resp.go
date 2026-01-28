@@ -58,11 +58,9 @@ type TempZoneConfig struct {
 }
 
 type AgentConfigInput struct {
-	Fields            []Field        `json:"fields"`
-	Rewrite           Rewrite        `json:"rewrite"`
-	Augment           Augment        `json:"augment"`
-	IsTempZoneEnabled int            `json:"is_temp_zone_enabled"`
-	TempZoneConfig    TempZoneConfig `json:"temp_zone_config"`
+	Fields  []Field `json:"fields"`
+	Rewrite Rewrite `json:"rewrite"`
+	Augment Augment `json:"augment"`
 }
 
 type AgentConfigOutput struct {

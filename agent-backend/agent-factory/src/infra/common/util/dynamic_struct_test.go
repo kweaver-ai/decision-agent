@@ -60,10 +60,10 @@ func TestDynamicFieldsHolder_GetField(t *testing.T) {
 	holder.SetField("key2", 42)
 
 	tests := []struct {
-		name      string
-		key       string
-		wantVal   interface{}
-		wantOk    bool
+		name    string
+		key     string
+		wantVal interface{}
+		wantOk  bool
 	}{
 		{"获取存在的key", "key1", "value1", true},
 		{"获取另一个存在的key", "key2", 42, true},
@@ -140,9 +140,9 @@ func TestDynamicFieldsHolder_GetFieldsByPrefix(t *testing.T) {
 	holder.SetField("other.key", "value")
 
 	tests := []struct {
-		name  string
+		name   string
 		prefix string
-		want  int
+		want   int
 	}{
 		{"获取user前缀", "user.", 3},
 		{"获取product前缀", "product.", 2},
@@ -176,10 +176,10 @@ func TestDynamicFieldsHolder_GetFieldSliceStr(t *testing.T) {
 	holder.SetField("not_slice", "string")
 
 	tests := []struct {
-		name     string
-		key      string
-		want     []string
-		wantNil  bool
+		name      string
+		key       string
+		want      []string
+		wantNil   bool
 		wantPanic bool
 	}{
 		{"获取[]string", "str_slice", []string{"a", "b", "c"}, false, false},

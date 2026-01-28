@@ -67,8 +67,8 @@ func TestGenerateTypeCacheKey(t *testing.T) {
 	}
 
 	tests := []struct {
-		name  string
-		prop  *JSONSchemaProperty
+		name string
+		prop *JSONSchemaProperty
 	}{
 		{
 			name: "string property",

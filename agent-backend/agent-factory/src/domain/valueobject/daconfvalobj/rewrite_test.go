@@ -43,7 +43,7 @@ func TestRewrite_ValObjCheck(t *testing.T) {
 		{
 			name: "启用但LlmConfig为空",
 			rewrite: &Rewrite{
-				Enable: func() *bool { b := true; return &b }(),
+				Enable:    func() *bool { b := true; return &b }(),
 				LlmConfig: nil,
 			},
 			wantErr: true,

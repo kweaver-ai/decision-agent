@@ -39,7 +39,7 @@ func TestRoleInfo(t *testing.T) {
 
 func TestUserInfo(t *testing.T) {
 	tests := []struct {
-		name      string
+		name     string
 		userInfo UserInfo
 	}{
 		{
@@ -105,7 +105,7 @@ func TestUserGroupInfo(t *testing.T) {
 
 func TestDepartmentInfo(t *testing.T) {
 	tests := []struct {
-		name            string
+		name           string
 		departmentInfo DepartmentInfo
 	}{
 		{
@@ -138,7 +138,7 @@ func TestDepartmentInfo(t *testing.T) {
 
 func TestAppAccountInfo(t *testing.T) {
 	tests := []struct {
-		name          string
+		name           string
 		appAccountInfo AppAccountInfo
 	}{
 		{

@@ -35,7 +35,7 @@ func TestJSONStrCompare(t *testing.T) {
 			jsonStr2: `{"name": "John", "age": 30}`,
 			expected: false,
 		},
-			{
+		{
 			name:     "空JSON",
 			jsonStr1: `{}`,
 			jsonStr2: `{}`,

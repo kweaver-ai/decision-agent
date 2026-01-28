@@ -49,33 +49,33 @@ func TestPrintFormatJSONString(t *testing.T) {
 
 func TestPrintFormatJSON(t *testing.T) {
 	tests := []struct {
-		name  string
-		input interface{}
+		name   string
+		input  interface{}
 		prefix string
 	}{
 		{
-			name:  "simple map",
-			input: map[string]interface{}{"name": "John", "age": 30},
+			name:   "simple map",
+			input:  map[string]interface{}{"name": "John", "age": 30},
 			prefix: "Data",
 		},
 		{
-			name:  "nested map",
-			input: map[string]interface{}{"person": map[string]interface{}{"name": "John"}},
+			name:   "nested map",
+			input:  map[string]interface{}{"person": map[string]interface{}{"name": "John"}},
 			prefix: "Nested",
 		},
 		{
-			name:  "slice",
-			input: []interface{}{"a", "b", "c"},
+			name:   "slice",
+			input:  []interface{}{"a", "b", "c"},
 			prefix: "Slice",
 		},
 		{
-			name:  "string",
-			input: "test",
+			name:   "string",
+			input:  "test",
 			prefix: "String",
 		},
 		{
-			name:  "nil",
-			input: nil,
+			name:   "nil",
+			input:  nil,
 			prefix: "Nil",
 		},
 	}

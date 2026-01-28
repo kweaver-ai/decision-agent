@@ -99,23 +99,23 @@ func TestFormatJSON(t *testing.T) {
 		wantErr bool
 	}{
 		{
-			name:  "简单对象",
-			input: map[string]interface{}{"name": "John", "age": 30},
+			name:    "简单对象",
+			input:   map[string]interface{}{"name": "John", "age": 30},
 			wantErr: false,
 		},
 		{
-			name:  "嵌套对象",
-			input: map[string]interface{}{"person": map[string]interface{}{"name": "John"}},
+			name:    "嵌套对象",
+			input:   map[string]interface{}{"person": map[string]interface{}{"name": "John"}},
 			wantErr: false,
 		},
 		{
-			name:  "切片",
-			input: []interface{}{"a", "b", "c"},
+			name:    "切片",
+			input:   []interface{}{"a", "b", "c"},
 			wantErr: false,
 		},
 		{
-			name: "nil",
-			input: nil,
+			name:    "nil",
+			input:   nil,
 			wantErr: false,
 		},
 	}
@@ -135,19 +135,19 @@ func TestFormatJSON(t *testing.T) {
 
 func TestToMapByJSON(t *testing.T) {
 	tests := []struct {
-		name     string
-		input    interface{}
-		wantKey  string
+		name    string
+		input   interface{}
+		wantKey string
 	}{
 		{
-			name:     "简单对象",
-			input:    map[string]interface{}{"name": "John", "age": 30},
-			wantKey:   "name",
+			name:    "简单对象",
+			input:   map[string]interface{}{"name": "John", "age": 30},
+			wantKey: "name",
 		},
 		{
-			name:     "嵌套对象",
-			input:    map[string]interface{}{"person": map[string]interface{}{"name": "John"}},
-			wantKey:   "person",
+			name:    "嵌套对象",
+			input:   map[string]interface{}{"person": map[string]interface{}{"name": "John"}},
+			wantKey: "person",
 		},
 	}
 

@@ -6,14 +6,14 @@ import (
 
 func TestPagination(t *testing.T) {
 	tests := []struct {
-		name    string
-		p       Pagination
+		name string
+		p    Pagination
 	}{
 		{
 			name: "完整的分页信息",
 			p: Pagination{
 				Offset: 10,
-				Limit: 20,
+				Limit:  20,
 			},
 		},
 		{
@@ -27,16 +27,16 @@ func TestPagination(t *testing.T) {
 			name: "大数值",
 			p: Pagination{
 				Offset: 1000,
-				Limit: 500,
+				Limit:  500,
 			},
 		},
 		{
 			name: "负数",
 			p: Pagination{
 				Offset: -10,
-				Limit: -20,
+				Limit:  -20,
 			},
-	},
+		},
 	}
 
 	for _, tt := range tests {

@@ -142,7 +142,6 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	// NOTE: 生成ConversationSessionID
 	req.ConversationSessionID = fmt.Sprintf("%s-%d", req.ConversationID, startTime)
 
-
 	// NOTE: 6. 生成agent call请求
 	agentCallReq, err := agentSvc.GenerateAgentCallReq(newCtx, req, contexts, agent)
 	if err != nil {

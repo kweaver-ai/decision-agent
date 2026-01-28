@@ -18,8 +18,8 @@ func TestLlmConfig_ValObjCheck(t *testing.T) {
 			config: &LlmConfig{
 				ID:               "model-123",
 				Name:             "gpt-4",
-				ModelType:         cdaenum.ModelTypeLlm,
-				Temperature:       0.7,
+				ModelType:        cdaenum.ModelTypeLlm,
+				Temperature:      0.7,
 				TopP:             0.9,
 				TopK:             40,
 				FrequencyPenalty: 0.0,
@@ -41,11 +41,11 @@ func TestLlmConfig_ValObjCheck(t *testing.T) {
 		{
 			name: "Temperature超出范围",
 			config: &LlmConfig{
-				ID:           "model-789",
-				Name:         "gpt-4",
-				ModelType:    cdaenum.ModelTypeLlm,
-				Temperature:  3.0,
-				MaxTokens:    2048,
+				ID:          "model-789",
+				Name:        "gpt-4",
+				ModelType:   cdaenum.ModelTypeLlm,
+				Temperature: 3.0,
+				MaxTokens:   2048,
 			},
 			wantErr: true,
 		},
@@ -105,8 +105,8 @@ func TestLlmConfig_ValObjCheck(t *testing.T) {
 			config: &LlmConfig{
 				ID:               "model-606",
 				Name:             "gpt-4",
-				ModelType:         cdaenum.ModelTypeLlm,
-				Temperature:       0.0,
+				ModelType:        cdaenum.ModelTypeLlm,
+				Temperature:      0.0,
 				TopP:             0.0,
 				TopK:             0,
 				FrequencyPenalty: -2.0,
@@ -120,8 +120,8 @@ func TestLlmConfig_ValObjCheck(t *testing.T) {
 			config: &LlmConfig{
 				ID:               "model-707",
 				Name:             "gpt-4",
-				ModelType:         cdaenum.ModelTypeLlm,
-				Temperature:       2.0,
+				ModelType:        cdaenum.ModelTypeLlm,
+				Temperature:      2.0,
 				TopP:             1.0,
 				TopK:             100,
 				FrequencyPenalty: 2.0,
@@ -139,11 +139,11 @@ func TestLlmConfig_ValObjCheck(t *testing.T) {
 				assert.Error(t, err, "expected error")
 			} else {
 				assert.NoError(t, err, "expected no error")
-				
+
 				if tt.config.MaxTokens == 0 {
 					assert.Equal(t, 500, tt.config.MaxTokens, "MaxTokens should be set to default 500")
 				}
-				
+
 				if tt.config.ModelType == "" {
 					assert.Equal(t, cdaenum.ModelTypeLlm, tt.config.ModelType, "ModelType should be set to default ModelTypeLlm")
 				}
@@ -184,8 +184,8 @@ func TestLlmConfig_Validate(t *testing.T) {
 			name: "所有参数有效",
 			config: &LlmConfig{
 				Name:             "gpt-4",
-				ModelType:         cdaenum.ModelTypeLlm,
-				Temperature:       0.7,
+				ModelType:        cdaenum.ModelTypeLlm,
+				Temperature:      0.7,
 				TopP:             0.9,
 				TopK:             40,
 				FrequencyPenalty: 0.0,

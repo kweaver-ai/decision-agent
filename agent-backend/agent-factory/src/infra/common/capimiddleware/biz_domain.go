@@ -20,7 +20,7 @@ func HandleBizDomain(isUseDefault bool) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-
+		
 		// 1.1 验证业务域ID是否存在，如果不存在且不使用默认值，则返回错误
 		if !isExist && !isUseDefault {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "biz domain id is required"})

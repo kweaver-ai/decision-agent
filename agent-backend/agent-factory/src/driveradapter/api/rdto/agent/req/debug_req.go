@@ -6,10 +6,10 @@ import (
 )
 
 type DebugReq struct {
-	AgentID        string        `json:"agent_id"`        // agentID
-	AgentVersion   string        `json:"agent_version"`   // agent版本
-	Input          DebugInput    `json:"input"`           // 输入
-	ConversationID string        `json:"conversation_id"` // 会话ID
+	AgentID        string         `json:"agent_id"`                 // agentID
+	AgentVersion   string         `json:"agent_version"`            // agent版本
+	Input          DebugInput     `json:"input"`                    // 输入
+	ConversationID string         `json:"conversation_id"`          // 会话ID
 	SelectedFiles  []SelectedFile `json:"selected_files,omitempty"` // 用户选择的临时区文件
 
 	ChatMode string `json:"chat_mode"` // 聊天模式

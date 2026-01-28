@@ -12,6 +12,17 @@ import (
 )
 
 // PublishedAgentList 已发布智能体列表
+// @Summary      获取已发布智能体列表
+// @Description  获取已发布的智能体列表，支持分页和筛选
+// @Tags         Published
+// @Accept       json
+// @Produce      json
+// @Param        request  body      pubedreq.PubedAgentListReq  true  "查询参数"
+// @Success      200       {string}  string  "成功"
+// @Failure      400      {object}  swagger.APIError  "请求参数错误"
+// @Failure      500      {object}  swagger.APIError  "服务器内部错误"
+// @Router       /v3/published/agent [post]
+// @Security     BearerAuth
 func (h *publishedHandler) PublishedAgentList(c *gin.Context) {
 	// 构建请求参数
 	req := &pubedreq.PubedAgentListReq{}

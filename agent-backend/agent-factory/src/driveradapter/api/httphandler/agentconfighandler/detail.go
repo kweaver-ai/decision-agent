@@ -8,6 +8,19 @@ import (
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
+// Detail 获取Agent详情
+// @Summary      获取Agent详情
+// @Description  根据 Agent ID 获取 Agent 配置详细信息
+// @Tags         AgentConfig
+// @Accept       json
+// @Produce      json
+// @Param        agent_id path      string  true  "Agent ID"
+// @Success      200       {object}  agentconfigresp.DetailRes  "成功"
+// @Failure      400      {object}  swagger.APIError  "请求参数错误"
+// @Failure      404      {object}  swagger.APIError  "Agent不存在"
+// @Failure      500      {object}  swagger.APIError  "服务器内部错误"
+// @Router       /v3/agent/:agent_id [get]
+// @Security     BearerAuth
 func (h *daConfHTTPHandler) Detail(c *gin.Context) {
 	// 1. 获取id
 	id := c.Param("agent_id")

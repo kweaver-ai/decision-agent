@@ -23,11 +23,11 @@ func TestNewDocRetrieveContent(t *testing.T) {
 
 func TestDocRetrieveContent_LoadFromConfig(t *testing.T) {
 	tests := []struct {
-		name               string
-		config             *daconfvalobj.Config
+		name                string
+		config              *daconfvalobj.Config
 		isBuiltInDocQAAgent bool
-		wantIsEnable       bool
-		wantContent        string
+		wantIsEnable        bool
+		wantContent         string
 	}{
 		{
 			name: "built-in doc QA agent",
@@ -37,8 +37,8 @@ func TestDocRetrieveContent_LoadFromConfig(t *testing.T) {
 				},
 			},
 			isBuiltInDocQAAgent: true,
-			wantIsEnable: false,
-			wantContent: "",
+			wantIsEnable:        false,
+			wantContent:         "",
 		},
 		{
 			name: "doc data source enabled",
@@ -48,7 +48,7 @@ func TestDocRetrieveContent_LoadFromConfig(t *testing.T) {
 				},
 			},
 			isBuiltInDocQAAgent: false,
-			wantIsEnable: true,
+			wantIsEnable:        true,
 			wantContent: `
  /judge/(tools=["doc_qa"], history=True)判断【$query】是否需要到文档中召回，如果不需要召回，则直接返回"不需要文档召回"，否则执行工具对【$query】进行召回 -> doc_retrieval_res
  `,
@@ -61,8 +61,8 @@ func TestDocRetrieveContent_LoadFromConfig(t *testing.T) {
 				},
 			},
 			isBuiltInDocQAAgent: false,
-			wantIsEnable: false,
-			wantContent: "",
+			wantIsEnable:        false,
+			wantContent:         "",
 		},
 		{
 			name: "nil data source",
@@ -70,8 +70,8 @@ func TestDocRetrieveContent_LoadFromConfig(t *testing.T) {
 				DataSource: nil,
 			},
 			isBuiltInDocQAAgent: false,
-			wantIsEnable: false,
-			wantContent: "",
+			wantIsEnable:        false,
+			wantContent:         "",
 		},
 	}
 

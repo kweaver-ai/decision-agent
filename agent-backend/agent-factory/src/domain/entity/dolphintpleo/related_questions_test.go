@@ -22,8 +22,8 @@ func TestNewRelatedQuestionsContent(t *testing.T) {
 
 func TestRelatedQuestionsContent_LoadFromConfig(t *testing.T) {
 	tests := []struct {
-		name        string
-		config      *daconfvalobj.Config
+		name         string
+		config       *daconfvalobj.Config
 		wantIsEnable bool
 	}{
 		{
@@ -45,15 +45,15 @@ func TestRelatedQuestionsContent_LoadFromConfig(t *testing.T) {
 			wantIsEnable: false,
 		},
 		{
-			name:        "nil related question",
+			name: "nil related question",
 			config: &daconfvalobj.Config{
 				RelatedQuestion: nil,
 			},
 			wantIsEnable: false,
 		},
 		{
-			name:        "nil config",
-			config:      nil,
+			name:         "nil config",
+			config:       nil,
 			wantIsEnable: false,
 		},
 	}

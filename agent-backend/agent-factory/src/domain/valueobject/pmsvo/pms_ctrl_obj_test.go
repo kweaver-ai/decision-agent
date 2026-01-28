@@ -6,8 +6,8 @@ import (
 
 func TestPmsControlObjS(t *testing.T) {
 	tests := []struct {
-		name     string
-		pmsObj   PmsControlObjS
+		name   string
+		pmsObj PmsControlObjS
 	}{
 		{
 			name: "完整权限对象",

@@ -8,7 +8,7 @@ import (
 
 func TestPublishedAgentEo(t *testing.T) {
 	eo := &PublishedAgentEo{
-		Config: &daconfvalobj.Config{},
+		Config:          &daconfvalobj.Config{},
 		PublishedByName: "John Doe",
 	}
 
@@ -22,7 +22,7 @@ func TestPublishedAgentEo(t *testing.T) {
 
 func TestPublishedTpl(t *testing.T) {
 	eo := &PublishedTpl{
-		Config: &daconfvalobj.Config{},
+		Config:      &daconfvalobj.Config{},
 		ProductName: "Test Product",
 	}
 

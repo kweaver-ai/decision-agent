@@ -54,7 +54,7 @@ func TestInput_ValObjCheck(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:  "Fields为空",
+			name: "Fields为空",
 			input: &Input{
 				Fields: nil,
 			},
@@ -68,23 +68,6 @@ func TestInput_ValObjCheck(t *testing.T) {
 				},
 			},
 			wantErr: true,
-		},
-		{
-			name: "包含文件字段且有TempZoneConfig",
-			input: &Input{
-				Fields: Fields{
-					&Field{Name: "file1", Type: cdaenum.InputFieldTypeFile},
-				},
-				TempZoneConfig: &TempZoneConfig{
-					Name: "test",
-					TmpFileUseType: cdaenum.TmpFileUseTypeUpload,
-					SingleFileSizeLimit: 10,
-					SingleFileSizeLimitUnit: cdaenum.MB,
-					SupportDataType: cdaenum.SupportDataTypes{"file"},
-					AllowedFileCategories: cdaenum.AllowedFileCategories{"document"},
-				},
-			},
-			wantErr: false,
 		},
 		{
 			name: "包含Rewrite且有效",
@@ -127,15 +110,7 @@ func TestInput_ValObjCheck(t *testing.T) {
 					DataSource: &AugmentDataSource{
 						Kg: []KgSource{},
 					},
-				},
-				TempZoneConfig: &TempZoneConfig{
-					Name: "test",
-					TmpFileUseType: cdaenum.TmpFileUseTypeUpload,
-					SingleFileSizeLimit: 10,
-					SingleFileSizeLimitUnit: cdaenum.MB,
-					SupportDataType: cdaenum.SupportDataTypes{"file"},
-					AllowedFileCategories: cdaenum.AllowedFileCategories{"document"},
-				},
+				}
 			},
 			wantErr: false,
 		},

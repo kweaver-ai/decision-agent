@@ -8,7 +8,7 @@ import (
 
 func TestSliceToStr(t *testing.T) {
 	tests := []struct {
-		name string
+		name  string
 		slice []string
 		sep   string
 		want  string
