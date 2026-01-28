@@ -59,7 +59,6 @@ func VerifyOAuthMiddleWare() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		ctx := rest.GetLanguageCtx(c)
 		visitor, err := hydra.VerifyToken(ctx, c)
-
 		if err != nil {
 			httpError := rest.NewHTTPError(ctx, http.StatusUnauthorized, rest.PublicError_Unauthorized).
 				WithErrorDetails(err.Error())

@@ -187,7 +187,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 		progresses = agentSvc.addCitesToProgress(ctx, progresses, true)
 	}
 
-	//TODO: 这里progress 的处理应该还是需要的，只是结果可以不返回
+	// TODO: 这里progress 的处理应该还是需要的，只是结果可以不返回
 	progressAns, err := agentSvc.handleProgress(ctx, req, progresses)
 	if err != nil {
 		o11y.Error(ctx, fmt.Sprintf("[AfterProcess] handle progress err: %v", err))
@@ -259,12 +259,12 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 			// AgentStatus:  agent.Status,
 		},
 		Index: req.AssistantMessageIndex,
-		Ext: map[string]interface{}{
-			"interrupt_info":  interruptInfo,
-			"related_queries": qs,
-			"total_time":      totalTime,
-			"total_tokens":    totalTokens,
-			"ttft":            req.TTFT,
+		Ext: &conversationmsgvo.MessageExt{
+			InterruptInfo:  interruptInfo,
+			RelatedQueries: qs,
+			TotalTime:      totalTime,
+			TotalTokens:    totalTokens,
+			TTFT:           req.TTFT,
 		},
 	}
 	chatResponse = agentresp.ChatResp{
@@ -365,6 +365,10 @@ func (agentSvc *agentSvc) handleMessageAndTempArea(ctx context.Context, req *age
 		Ext:         &extStr,
 		UpdateTime:  cutil.GetCurrentMSTimestamp(),
 		UpdateBy:    req.UserID,
+	}
+
+	if messageVO.IsInterrupted() {
+		msgPO.Status = cdaenum.MsgStatusProcessing
 	}
 
 	err = agentSvc.conversationMsgRepo.Update(ctx, &msgPO)

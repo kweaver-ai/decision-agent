@@ -5,125 +5,18 @@ import (
 	"fmt"
 
 	"github.com/bytedance/sonic"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
-	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"go.opentelemetry.io/otel/attribute"
 )
 
-// ResumeChat 恢复聊天
-// 如果 resumeInterruptInfo != nil，走中断恢复逻辑（调用 Executor Resume 接口）
-// 如果 resumeInterruptInfo == nil，走原有逻辑（SessionMap 恢复）
-func (agentSvc *agentSvc) ResumeChat(ctx context.Context, conversationID string, agentRunID string, resumeInterruptInfo *agentreq.ResumeInterruptInfo) (chan []byte, error) {
+// ResumeChat 恢复聊天（Session恢复）
+func (agentSvc *agentSvc) ResumeChat(ctx context.Context, conversationID string) (chan []byte, error) {
 	var err error
 
 	ctx, _ = o11y.StartInternalSpan(ctx)
 	defer o11y.EndSpan(ctx, err)
 	o11y.SetAttributes(ctx, attribute.String("conversation_id", conversationID))
-	o11y.SetAttributes(ctx, attribute.String("agent_run_id", agentRunID))
-
-	// 判断是否为中断恢复
-	if resumeInterruptInfo != nil {
-		// 中断恢复：调用 Executor Resume 接口
-		return agentSvc.resumeFromInterrupt(ctx, agentRunID, resumeInterruptInfo)
-	}
-
-	// 非中断恢复：保持现有逻辑
-	return agentSvc.resumeFromSession(ctx, conversationID)
-}
-
-// resumeFromInterrupt 中断恢复逻辑（调用 Executor Resume 接口）
-func (agentSvc *agentSvc) resumeFromInterrupt(ctx context.Context, agentRunID string, resumeInterruptInfo *agentreq.ResumeInterruptInfo) (chan []byte, error) {
-	var err error
-
-	o11y.Info(ctx, fmt.Sprintf("[resumeFromInterrupt] agent_run_id: %s, action: %s", agentRunID, resumeInterruptInfo.Action))
-
-	// 构造 Executor Resume 请求
-	req := &v2agentexecutordto.AgentResumeReq{
-		AgentRunID: agentRunID,
-		ResumeInfo: &v2agentexecutordto.AgentResumeInfo{
-			Action: resumeInterruptInfo.Action,
-		},
-	}
-
-	// 转换 ResumeHandle（复用 InterruptHandle）
-	if resumeInterruptInfo.ResumeHandle != nil {
-		req.ResumeInfo.ResumeHandle = &v2agentexecutordto.InterruptHandle{
-			FrameID:       resumeInterruptInfo.ResumeHandle.FrameID,
-			SnapshotID:    resumeInterruptInfo.ResumeHandle.SnapshotID,
-			ResumeToken:   resumeInterruptInfo.ResumeHandle.ResumeToken,
-			InterruptType: resumeInterruptInfo.ResumeHandle.InterruptType,
-			CurrentBlock:  resumeInterruptInfo.ResumeHandle.CurrentBlock,
-			RestartBlock:  resumeInterruptInfo.ResumeHandle.RestartBlock,
-		}
-	}
-
-	// 转换 ModifiedArgs
-	if len(resumeInterruptInfo.ModifiedArgs) > 0 {
-		req.ResumeInfo.ModifiedArgs = make([]v2agentexecutordto.ModifiedArg, len(resumeInterruptInfo.ModifiedArgs))
-		for i, arg := range resumeInterruptInfo.ModifiedArgs {
-			req.ResumeInfo.ModifiedArgs[i] = v2agentexecutordto.ModifiedArg{
-				Key:   arg.Key,
-				Value: arg.Value,
-			}
-		}
-	}
-
-	// 调用 Executor Resume 接口
-	messages, errs, err := agentSvc.agentExecutorV2.Resume(ctx, req)
-	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[resumeFromInterrupt] resume failed: %v", err))
-		return nil, capierr.New500Err(ctx, fmt.Sprintf("resume failed: %v", err))
-	}
-
-	// 转换 channel 类型，添加 StreamDiff 增量处理
-	channel := make(chan []byte)
-	go func() {
-		defer close(channel)
-
-		oldResp := []byte(`{}`)
-		seq := new(int)
-		*seq = 0
-
-		for {
-			select {
-			case msg, ok := <-messages:
-				if !ok {
-					// 流结束，发送结束标记
-					emitJSON(seq, channel, []interface{}{}, nil, "end")
-					return
-				}
-
-				newResp := []byte(msg)
-				// 使用 StreamDiff 进行增量处理
-				if err := StreamDiff(ctx, seq, oldResp, newResp, channel); err != nil {
-					o11y.Error(ctx, fmt.Sprintf("[resumeFromInterrupt] stream diff err: %v", err))
-					agentSvc.logger.Errorf("[resumeFromInterrupt] stream diff err: %v", err)
-
-					return
-				}
-
-				oldResp = newResp
-
-			case err, ok := <-errs:
-				if ok && err != nil {
-					o11y.Error(ctx, fmt.Sprintf("[resumeFromInterrupt] stream error: %v", err))
-					agentSvc.logger.Errorf("[resumeFromInterrupt] stream error: %v", err)
-				}
-				// 发送结束标记
-				emitJSON(seq, channel, []interface{}{}, nil, "end")
-
-				return
-			}
-		}
-	}()
-
-	return channel, nil
-}
-
-// resumeFromSession 原有的 Session 恢复逻辑
-func (agentSvc *agentSvc) resumeFromSession(ctx context.Context, conversationID string) (chan []byte, error) {
 	sessionInterface, ok := SessionMap.Load(conversationID)
 	if !ok {
 		o11y.Error(ctx, fmt.Sprintf("[ResumeChat] conversation_id %s not found", conversationID))

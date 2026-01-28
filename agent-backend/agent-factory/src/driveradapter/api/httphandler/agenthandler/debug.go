@@ -66,35 +66,32 @@ func (h *agentHTTPHandler) Debug(c *gin.Context) {
 	req.UserID = user.ID
 	req.Token = strings.TrimPrefix(user.TokenID, "Bearer ")
 
-	if req.Input.Tool.SessionID != "" {
-		req.SessionID = req.Input.Tool.SessionID
-	} else {
-		req.SessionID = cutil.UlidMake()
+	// 如果AgentRunID为空，则生成新的ID
+	if req.AgentRunID == "" {
+		req.AgentRunID = cutil.UlidMake()
 	}
 
 	// NOTE: 目前Debug 和chat 内部实现逻辑一致，先复用
 	chatReq := &agentreq.ChatReq{
-		AgentAPPKey:    req.AgentAPPKey,
-		AgentID:        req.AgentID,
-		AgentVersion:   req.AgentVersion,
-		ConversationID: req.ConversationID,
-		SelectedFiles:  req.SelectedFiles,
-		Query:          req.Input.Query,
-		History:        req.Input.History,
-		Tool:           req.Input.Tool,
-		CustomQuerys:   req.Input.CustomQuerys,
-		// ConfirmPlan:  req.ConfirmPlan,
-		ChatMode:  req.ChatMode,
-		Stream:    req.Stream,
-		IncStream: req.IncStream,
+		AgentAPPKey:               req.AgentAPPKey,
+		AgentID:                   req.AgentID,
+		AgentVersion:              req.AgentVersion,
+		ConversationID:            req.ConversationID,
+		Query:                     req.Input.Query,
+		History:                   req.Input.History,
+		CustomQuerys:              req.Input.CustomQuerys,
+		AgentRunID:                req.AgentRunID,
+		ResumeInterruptInfo:       req.ResumeInterruptInfo,
+		InterruptedAssistantMsgID: req.InterruptedAssistantMsgID,
+		ChatMode:                  req.ChatMode,
+		Stream:                    req.Stream,
+		IncStream:                 req.IncStream,
 		InternalParam: agentreq.InternalParam{
 			UserID:       req.UserID,
 			Token:        req.Token,
-			AgentRunID:   req.SessionID,
 			ReqStartTime: reqStartTime,
 		},
 		ExecutorVersion: req.ExecutorVersion,
-		// ConversationSessionID: req.ConversationSessionID,
 		ChatOption: chatopt.ChatOption{
 			EnableDependencyCache:        req.ChatOption.EnableDependencyCache,
 			IsNeedDocRetrivalPostProcess: req.ChatOption.IsNeedDocRetrivalPostProcess,

@@ -1,4 +1,4 @@
-from typing import Any, AsyncGenerator, Dict, Optional
+from typing import Any, AsyncGenerator, Dict, Optional, TYPE_CHECKING
 from dolphin.core import flags
 from app.common.exceptions.tool_interrupt import ToolInterruptException
 from dolphin.core.common.constants import KEY_SESSION_ID, KEY_USER_ID
@@ -15,7 +15,6 @@ from app.domain.vo.agentvo import AgentInputVo, AgentConfigVo, AgentRunOptionsVo
 
 from .exception import ExceptionHandler
 from .interrupt import InterruptHandler
-from .dialog_log import DialogLogHandler
 from .memory import MemoryHandler
 from .output import OutputHandler
 from .warm_up import WarmUpHandler
@@ -39,6 +38,11 @@ from .input_handler_pkg import (
 )
 
 from .run_dolphin import run_dolphin
+from .agent_instance_manager import agent_instance_manager
+
+if TYPE_CHECKING:
+    from dolphin.sdk.agent.dolphin_agent import DolphinAgent
+    from app.router.agent_controller_pkg.rdto.v2.req.resume_agent import ResumeInfo
 
 
 # AgentConfigVo
@@ -63,7 +67,6 @@ class AgentCoreV2:
 
     memory_handler: MemoryHandler = None
 
-    dialog_log_handler: DialogLogHandler = None
 
     output_handler: OutputHandler = None
 
@@ -82,7 +85,6 @@ class AgentCoreV2:
         self.run_options_vo: AgentRunOptionsVo = AgentRunOptionsVo()
 
         self.memory_handler: MemoryHandler = MemoryHandler()
-        self.dialog_log_handler: DialogLogHandler = DialogLogHandler(self)
         self.output_handler: OutputHandler = OutputHandler(self)
 
         self.cache_handler: CacheHandler = CacheHandler(self)
@@ -115,6 +117,43 @@ class AgentCoreV2:
 
     def set_run_options(self, run_options_vo: AgentRunOptionsVo):
         self.run_options_vo = run_options_vo
+
+    def _get_resume_info_from_options(self) -> Optional["ResumeInfo"]:
+        """从 run_options 中获取 resume_info，并转换为 ResumeInfo 类型"""
+        if hasattr(self.run_options_vo, 'resume_info') and self.run_options_vo.resume_info:
+            resume_info_data = self.run_options_vo.resume_info
+            
+            # 如果已经是 ResumeInfo 类型，直接返回
+            from app.router.agent_controller_pkg.rdto.v2.req.resume_agent import ResumeInfo
+            if isinstance(resume_info_data, ResumeInfo):
+                return resume_info_data
+            
+            # 如果是 dict 类型（JSON 反序列化后），转换为 ResumeInfo 对象
+            if isinstance(resume_info_data, dict):
+                return ResumeInfo(**resume_info_data)
+            
+            # 其他情况尝试直接返回
+            return resume_info_data
+        return None
+
+    def _get_registered_agent_instance(self, agent_run_id: str) -> "DolphinAgent":
+        """根据 agent_run_id 获取已注册的 DolphinAgent 实例
+        
+        Args:
+            agent_run_id: Agent 运行 ID
+            
+        Returns:
+            DolphinAgent 实例
+            
+        Raises:
+            ValueError: 当实例不存在时
+        """
+        result = agent_instance_manager.get(agent_run_id)
+        if result is None:
+            raise ValueError(f"Agent instance not found for agent_run_id: {agent_run_id}")
+        
+        agent, _ = result
+        return agent
 
     @internal_span()
     async def run(
@@ -197,10 +236,26 @@ class AgentCoreV2:
             output_vars = agent_config.output_vars or []
 
             try:
-                # 运行Dolphin引擎
-                output_generator = run_dolphin(
-                    self, agent_config, context_variables, headers, is_debug, temp_files
-                )
+                # 判断是否为恢复执行场景
+                resume_info = self._get_resume_info_from_options()
+                
+                if resume_info:
+                    # 恢复执行：使用 resume_dolphin_agent_run
+                    from .resume_dolphin_agent_run import resume_dolphin_agent_run
+                    
+                    # 获取已注册的 DolphinAgent 实例
+                    agent = self._get_registered_agent_instance(event_key)
+                    
+                    StandLogger.info(f"Resume agent with agent_run_id: {event_key}")
+                    output_generator = resume_dolphin_agent_run(
+                        self, agent, event_key, resume_info,
+                        agent_config, context_variables, headers, is_debug
+                    )
+                else:
+                    # 首次执行：走原有 run_dolphin 流程
+                    output_generator = run_dolphin(
+                        self, agent_config, context_variables, headers, is_debug, temp_files
+                    )
 
                 if output_vars:
                     output_generator = self.output_handler.partial_output(

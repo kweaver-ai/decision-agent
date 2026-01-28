@@ -64,7 +64,7 @@ def run_blocking(coro):
     If you're in an async context, use `await` directly instead.
     """
     try:
-        loop = asyncio.get_running_loop()
+        asyncio.get_running_loop()
     except RuntimeError:
         # No running loop, safe to use asyncio.run()
         return asyncio.run(coro)

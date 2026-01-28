@@ -42,6 +42,8 @@
 - 移除废弃的函数错误类
 - 简化 Dockerfile 统一复制命令
 - 添加 opencode 工作流用于自动化代码审查
+- 删除 tests/tools/fetch-log/build 中的编译产物以减少仓库大小
+- 更新 .gitignore 排除构建产物和日志文件
 
 ### 数据检索 (Data Retrieval)
 - 添加 Jupyter Gateway runner 用于代码执行

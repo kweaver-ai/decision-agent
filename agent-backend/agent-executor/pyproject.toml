@@ -20,7 +20,7 @@ dependencies = [
     "opentelemetry-sdk>=1.21.0",
     "pycryptodome==3.20.0",
     "pydantic==2.12.2",
-    "python-multipart==0.0.20",
+    "python-multipart==0.0.22",
     "pyyaml==6.0.1",
     "redis==4.6.0",
     "requests==2.31.0",
@@ -28,12 +28,12 @@ dependencies = [
     "structlog==24.1.0",
     "tika==3.1.1",
     "uvicorn==0.38.0",
-    "mq-sdk@git+ssh://devops.aishu.cn:22/AISHUDevOps/One-Architecture/_git/proton-mq-python@1.7.4",
+      "mq-sdk@git+ssh://devops.aishu.cn:22/AISHUDevOps/One-Architecture/_git/proton-mq-python@1.7.4",
     #    "mq-sdk@git+https://github.com/kweaver-ai/proton-mq-sdk-py@release/1.9.0",
-     "telemetrysdk-python@git+ssh://devops.aishu.cn:22/AISHUDevOps/One-Architecture/_git/TelemetrySDK-Python@2.6.1",
+      "telemetrysdk-python@git+ssh://devops.aishu.cn:22/AISHUDevOps/One-Architecture/_git/TelemetrySDK-Python@2.6.1",
     #    "telemetrysdk-python@git+https://github.com/kweaver-ai/TelemetrySDK-Python@2.4.2",
     #    "tlogging",
-    #    "kweaver-dolphin",
+        "kweaver-dolphin==0.2.0",
 ]
 
 

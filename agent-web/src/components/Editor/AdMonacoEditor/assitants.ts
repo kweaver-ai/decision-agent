@@ -9,16 +9,22 @@ import { Chrome_DevTools_Theme, Clouds_Theme, Dolphin_Theme } from '../static';
 export const initAdMonacoEditor = () => {
   const baseUrl = getHttpBaseUrl();
   const lang = getConfig('lang');
+
+  // 判断是否为独立运行环境
+  const isStandalone = !(window as any).__POWERED_BY_QIANKUN__;
+  // 独立运行时，资源路径直接从根路径开始；微前端环境下添加前缀
+  const resourcePrefix = isStandalone ? '' : '/agent-web/public';
+
   // 使用本地资源，支持离线使用
   loader.config({
-    paths: { vs: `${baseUrl}/agent-web/public/monaco/vs` },
+    paths: { vs: `${baseUrl}${resourcePrefix}/monaco/vs` },
     'vs/nls': {
       availableLanguages: { '*': lang === 'zh-cn' ? 'zh-cn' : lang === 'zh-tw' ? 'zh-tw' : '' }, // 国际化
     },
   });
 
   // 设置codicon字体(codicon字体文件的src，是在css中设置的，子应用不能在css中设置url，会导致路径不正确，所以需要在js中重新设置)
-  loadAndApplyCodiconFont(baseUrl);
+  loadAndApplyCodiconFont(baseUrl, resourcePrefix);
 
   // 定义主题, 定义完成的主题  可以在onMount的时候 使用
   loader.init().then(monaco => {
@@ -31,11 +37,11 @@ export const initAdMonacoEditor = () => {
   });
 };
 
-function loadAndApplyCodiconFont(baseUrl: string) {
+function loadAndApplyCodiconFont(baseUrl: string, resourcePrefix: string) {
   // 创建一个新的 FontFace 对象
   const font = new FontFace(
     'codicon',
-    `url(${baseUrl}/agent-web/public/monaco/vs/base/browser/ui/codicons/codicon/codicon.ttf)`
+    `url(${baseUrl}${resourcePrefix}/monaco/vs/base/browser/ui/codicons/codicon/codicon.ttf)`
   );
 
   // 加载字体

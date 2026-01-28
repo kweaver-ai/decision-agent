@@ -39,7 +39,7 @@ func (h *agentHTTPHandler) ResumeChat(c *gin.Context) {
 		return
 	}
 
-	channel, err := h.agentSvc.ResumeChat(c.Request.Context(), req.ConversationID, req.AgentRunID, req.ResumeInterruptInfo)
+	channel, err := h.agentSvc.ResumeChat(c.Request.Context(), req.ConversationID)
 	if err != nil {
 		o11y.Error(c, fmt.Sprintf("[ResumeChat] resume chat error: %v", err))
 		h.logger.Errorf("[ResumeChat] resume chat error cause: %v,err trace: %+v\n", errors.Cause(err), err)

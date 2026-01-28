@@ -36,7 +36,6 @@ func (agentSvc *agentSvc) GenerateAgentCallReq(ctx context.Context, req *agentre
 	if len(req.History) > 0 {
 		contexts = req.History
 	}
-
 	// 新增：根据 SelectedFiles 注入文件信息到 query
 	finalQuery := buildUserQuery(req.Query, req.ConversationID, req.SelectedFiles)
 
@@ -46,10 +45,9 @@ func (agentSvc *agentSvc) GenerateAgentCallReq(ctx context.Context, req *agentre
 		AgentVersion: req.AgentVersion,
 		Config:       AgentConfig2AgentCallConfig(ctx, &agent.Config, req),
 		Input: map[string]interface{}{
-			"query":        finalQuery,
-			"history":      contexts,
-			"tool":         req.Tool,
-			"confirm_plan": req.ConfirmPlan,
+			"query":   finalQuery,
+			"history": contexts,
+			//"confirm_plan": req.ConfirmPlan,
 		},
 		CallType:          req.CallType,
 		ExecutorVersion:   req.ExecutorVersion,
@@ -65,9 +63,13 @@ func (agentSvc *agentSvc) GenerateAgentCallReq(ctx context.Context, req *agentre
 		},
 	}
 	// NOTE: 将agent.Config.Input.Fields 转换为map，排除一些内置参数
-	excludeFields := []string{"history", "query", "header", "tool", "self_config", "file"}
+	excludeFields := []string{"history", "query", "header", "tool", "self_config"}
 
 	for _, field := range agent.Config.Input.Fields {
+		if field.Type == "file" {
+			agentCallReq.Input[field.Name] = req.TempFiles
+			continue
+		}
 		// NOTE: 如果field.Name为内置参数则不进行处理
 		if slices.Contains(excludeFields, field.Name) {
 			continue
@@ -124,6 +126,9 @@ func (agentSvc *agentSvc) GenerateAgentCallReq(ctx context.Context, req *agentre
 	agentCallReq.UserID = req.UserID
 	agentCallReq.Token = req.Token
 	agentCallReq.VisitorType = req.VisitorType
+
+	// 新增：传递中断恢复信息（统一 Run 接口支持恢复执行）
+	agentCallReq.ResumeInterruptInfo = req.ResumeInterruptInfo
 
 	return agentCallReq, nil
 }

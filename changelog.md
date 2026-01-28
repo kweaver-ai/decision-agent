@@ -42,6 +42,8 @@
 - Remove deprecated function error classes
 - Simplify Dockerfile with unified copy command
 - Add opencode workflow for automated code review
+- Remove compiled artifacts from tests/tools/fetch-log/build to reduce repository size
+- Update .gitignore to exclude build artifacts and log files
 
 ### Data Retrieval
 - Add Jupyter Gateway runner for code execution
