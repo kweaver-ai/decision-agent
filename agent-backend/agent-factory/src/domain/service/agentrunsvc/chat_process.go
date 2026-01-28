@@ -224,6 +224,8 @@ looplabel:
 		stopChanMap.Delete(req.ConversationID)
 		progressMap.Delete(req.AssistantMessageID)
 		progressSet.Delete(req.AssistantMessageID)
+		
+		isInterruptPreProgressGetMap.Delete(req.AssistantMessageID)
 
 		if req.Stream {
 			emitJSON(seq, respChan, []interface{}{}, nil, "end")
