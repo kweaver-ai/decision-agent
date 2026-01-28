@@ -72,6 +72,8 @@ data:
       {{- toYaml .Values.depServices.authorization | nindent 6 }}
     agent_factory:
       {{- toYaml .Values.depServices.agentFactory | nindent 6 }}
+    sandbox_platform:
+      {{- toYaml .Values.depServices.sandboxPlatform | nindent 6 }}
     # ========== 新增必需配置 ==========
     agent_executor:
       private_svc:

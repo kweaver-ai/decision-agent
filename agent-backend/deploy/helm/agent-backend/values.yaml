@@ -217,6 +217,35 @@ depServices:
       host: mdl-uniquery-svc
       port: 13011
       protocol: http
+  # ========== Sandbox Platform 配置 ==========
+  sandboxPlatform:
+    public_svc:
+      host: sandbox-platform-public
+      port: 8000
+      protocol: http
+    private_svc:
+      host: sandbox-platform-private
+      port: 8000
+      protocol: http
+    default_ttl: 3600         # 默认 Session TTL（秒），最大 3600
+    max_retries: 10           # 等待 Session 就绪的最大重试次数
+    retry_interval: "500ms"   # 重试间隔
+    default_template_id: "python-basic"  # 默认模板 ID
+    default_cpu: "1"          # 默认 CPU 核心数
+    default_memory: "512Mi"   # 默认内存
+    default_disk: "1Gi"       # 默认磁盘
+    default_timeout: 300      # 默认超时时间（秒）
+    file_upload_config:
+      max_file_size: 10       # 最大文件大小（数值）
+      max_file_size_unit: "MB"  # 单位：KB/MB/GB
+      max_file_count: 10      # 最大文件数量
+      allowed_file_types:     # 允许的文件类型
+        - ".txt"
+        - ".py"
+        - ".js"
+        - ".json"
+        - ".csv"
+        - ".md"
   # ========== LLM/Embedding 外部服务 (Executor/Memory共用) ==========
   llm_ad:
     embeddingUrl: ""

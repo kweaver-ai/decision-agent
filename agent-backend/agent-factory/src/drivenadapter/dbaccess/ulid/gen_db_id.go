@@ -16,7 +16,7 @@ var node *snowflake.Node
 
 func init() {
 	node, _ = snowflake.NewNode(0)
-	return
+
 }
 
 // 雪花ID统一用19位数字转字符串

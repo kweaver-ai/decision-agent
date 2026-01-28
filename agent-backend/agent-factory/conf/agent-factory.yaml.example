@@ -18,7 +18,7 @@ disable_audit_init: true
 mock_mq_client: true
 
 # 是否使用Mock Sandbox Platform（本地开发时建议设置为true）
-mock_sandbox_platform: true
+mock_sandbox_platform: false
 
 # 是否使用Mock Hydra（本地开发时建议设置为true）
 mock_hydra: true
@@ -108,15 +108,17 @@ project:
 
   debug: true
   debug_host: 192.168.232.11
-#  debug_host: 192.168.167.12
 model_factory:
-  public_svc:
-    host: model-factory-private
-    port: 8443
-    protocol: http
   llm:
-    defaultModelName: ""
-    apiKey: ""
+    api_key: xxx
+  model_api_svc:
+    host: mf-model-api
+    port: 9898
+    protocol: http
+  model_manager_svc:
+    host: mf-model-manager
+    port: 9898
+    protocol: http
 eco_index:
   private_svc:
     host: 192.168.232.11
@@ -124,21 +126,21 @@ eco_index:
     protocol: http
 agent_executor:
   public_svc:
-    host: 192.168.232.11
+    host: localhost
     port: 30778
     protocol: http
   private_svc:
-    host: 192.168.232.11
+    host: localhost
     port: 30778
     protocol: http
 agent_factory:
   public_svc:
-    host: 192.168.232.11
-    port: 32020
+    host: localhost
+    port: 30777
     protocol: http
   private_svc:
-    host: 192.168.232.11
-    port: 32020
+    host: localhost
+    port: 30777
     protocol: http
 efast:
   private_svc:
@@ -177,6 +179,35 @@ uniquery:
     host: 192.168.232.11
     port: 13011
     protocol: http
+# Sandbox Platform 配置
+sandbox_platform:
+  public_svc:
+    host: localhost
+    port: 8000
+    protocol: http
+  private_svc:
+    host: localhost
+    port: 8000
+    protocol: http
+  default_ttl: 3600         # 默认 Session TTL（秒），最大 3600
+  max_retries: 10           # 等待 Session 就绪的最大重试次数
+  retry_interval: "500ms"   # 重试间隔
+  default_template_id: "python-basic"  # 默认模板 ID
+  default_cpu: "1"          # 默认 CPU 核心数
+  default_memory: "512Mi"   # 默认内存
+  default_disk: "1Gi"       # 默认磁盘
+  default_timeout: 300      # 默认超时时间（秒）
+  file_upload_config:
+    max_file_size: 10       # 最大文件大小（数值）
+    max_file_size_unit: "MB"  # 单位：KB/MB/GB
+    max_file_count: 10      # 最大文件数量
+    allowed_file_types:     # 允许的文件类型
+      - ".txt"
+      - ".py"
+      - ".js"
+      - ".json"
+      - ".csv"
+      - ".md"
 biz_domain:
   public_svc:
     host: 192.168.232.11
@@ -187,10 +218,6 @@ biz_domain:
     port: 13011
     protocol: http
 datahubcentral:
-  public_svc:
-    host: 192.168.232.11
-    port: 13011
-    protocol: http
   private_svc:
     host: 192.168.232.11
     port: 13011
