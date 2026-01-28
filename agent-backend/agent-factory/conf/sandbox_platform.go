@@ -4,11 +4,17 @@ import "github.com/kweaver-ai/decision-agent/agent-factory/cconf"
 
 // SandboxPlatformConf Sandbox Platform 配置
 type SandboxPlatformConf struct {
-	SvcConf                 cconf.SvcConf    `yaml:"svc"`
-	DefaultTTL              int64            `yaml:"default_ttl"`    // 默认 Session TTL（秒）
-	MaxRetries              int              `yaml:"max_retries"`    // 等待 Session 就绪的最大重试次数
-	RetryInterval           string           `yaml:"retry_interval"` // 重试间隔（如 "500ms"）
+	PublicSvc              cconf.SvcConf    `yaml:"public_svc"`
+	PrivateSvc             cconf.SvcConf    `yaml:"private_svc"`
+	DefaultTTL             int64            `yaml:"default_ttl"`    // 默认 Session TTL（秒）
+	MaxRetries             int              `yaml:"max_retries"`    // 等待 Session 就绪的最大重试次数
+	RetryInterval          string           `yaml:"retry_interval"` // 重试间隔（如 "500ms"）
 	DefaultFileUploadConfig FileUploadConfig `yaml:"file_upload_config"`
+	DefaultTemplateID      string           `yaml:"default_template_id"` // 默认模板 ID
+	DefaultCPU             string           `yaml:"default_cpu"`         // 默认 CPU 核心数（如 "1"）
+	DefaultMemory          string           `yaml:"default_memory"`      // 默认内存（如 "512Mi"）
+	DefaultDisk            string           `yaml:"default_disk"`        // 默认磁盘（如 "1Gi"）
+	DefaultTimeout         int64            `yaml:"default_timeout"`     // 默认超时时间（秒）
 }
 
 // FileUploadConfig 文件上传配置

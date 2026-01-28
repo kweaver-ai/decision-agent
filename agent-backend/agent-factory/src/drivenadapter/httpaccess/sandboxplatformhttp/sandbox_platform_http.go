@@ -14,7 +14,7 @@ import (
 func (s *sandboxPlatformHttpAcc) CreateSession(ctx context.Context, req sandboxdto.CreateSessionReq) (*sandboxdto.CreateSessionResp, error) {
 	var resp sandboxdto.CreateSessionResp
 
-	uri := s.baseURL + "/sessions"
+	uri := s.baseURL + "/api/v1/sessions"
 	code, res, err := s.client.PostNoUnmarshal(ctx, uri, nil, req)
 	if err != nil {
 		s.logger.Errorf("[SandboxPlatform] create session failed: %v", err)
@@ -38,7 +38,7 @@ func (s *sandboxPlatformHttpAcc) CreateSession(ctx context.Context, req sandboxd
 func (s *sandboxPlatformHttpAcc) GetSession(ctx context.Context, sessionID string) (*sandboxdto.GetSessionResp, error) {
 	var resp sandboxdto.GetSessionResp
 
-	uri := s.baseURL + "/sessions/" + sessionID
+	uri := s.baseURL + "/api/v1/sessions/" + sessionID
 	code, res, err := s.client.GetNoUnmarshal(ctx, uri, nil, nil)
 	if err != nil {
 		s.logger.Errorf("[SandboxPlatform] get session failed: %v", err)
@@ -60,7 +60,7 @@ func (s *sandboxPlatformHttpAcc) GetSession(ctx context.Context, sessionID strin
 }
 
 func (s *sandboxPlatformHttpAcc) DeleteSession(ctx context.Context, sessionID string) error {
-	uri := s.baseURL + "/sessions/" + sessionID
+	uri := s.baseURL + "/api/v1/sessions/" + sessionID
 	code, res, err := s.client.DeleteNoUnmarshal(ctx, uri, nil)
 	if err != nil {
 		s.logger.Errorf("[SandboxPlatform] delete session failed: %v", err)
@@ -76,31 +76,14 @@ func (s *sandboxPlatformHttpAcc) DeleteSession(ctx context.Context, sessionID st
 	return nil
 }
 
-func (s *sandboxPlatformHttpAcc) DeleteConversationFiles(ctx context.Context, sessionID, conversationID string) error {
-	uri := s.baseURL + "/sessions/" + sessionID + "/conversations/" + conversationID + "/files"
-	code, res, err := s.client.DeleteNoUnmarshal(ctx, uri, nil)
-	if err != nil {
-		s.logger.Errorf("[SandboxPlatform] delete conversation files failed: %v", err)
-		return errors.Wrap(err, "delete conversation files failed")
-	}
-
-	if code != http.StatusOK && code != http.StatusNoContent {
-		s.logger.Errorf("[SandboxPlatform] delete conversation files status code: %d, resp: %s", code, string(res))
-		return fmt.Errorf("delete conversation files failed: status code %d, resp %s", code, string(res))
-	}
-
-	s.logger.Infof("[SandboxPlatform] delete conversation files success: session=%s, conversation=%s", sessionID, conversationID)
-	return nil
-}
-
-func (s *sandboxPlatformHttpAcc) ListFiles(ctx context.Context, sessionID, conversationID, subdir string) ([]string, error) {
+func (s *sandboxPlatformHttpAcc) ListFiles(ctx context.Context, sessionID string, limit int) ([]string, error) {
 	var resp struct {
 		Files []string `json:"files"`
 	}
 
-	uri := s.baseURL + "/sessions/" + sessionID + "/conversations/" + conversationID + "/files"
-	if subdir != "" {
-		uri += "?subdir=" + subdir
+	uri := s.baseURL + "/api/v1/sessions/" + sessionID + "/files"
+	if limit > 0 {
+		uri += "?limit=" + fmt.Sprintf("%d", limit)
 	}
 
 	code, res, err := s.client.GetNoUnmarshal(ctx, uri, nil, nil)

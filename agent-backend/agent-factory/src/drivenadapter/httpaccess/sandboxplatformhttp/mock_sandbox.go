@@ -19,7 +19,7 @@ func NewMockSandboxPlatform(logger icmp.Logger) isandboxhtpp.ISandboxPlatform {
 }
 
 func (m *mockSandboxPlatform) CreateSession(ctx context.Context, req sandboxdto.CreateSessionReq) (*sandboxdto.CreateSessionResp, error) {
-	m.logger.Infof("[MockSandboxPlatform] create session: templateID=%s", req.TemplateID)
+	m.logger.Infof("[MockSandboxPlatform] create session: templateID=%s, id=%v", req.TemplateID, req.ID)
 
 	cpu := "1"
 	if req.CPU != "" {
@@ -38,8 +38,13 @@ func (m *mockSandboxPlatform) CreateSession(ctx context.Context, req sandboxdto.
 		timeout = req.Timeout
 	}
 
+	sessionID := "mock-session-" + req.TemplateID
+	if req.ID != nil && *req.ID != "" {
+		sessionID = *req.ID
+	}
+
 	resp := &sandboxdto.CreateSessionResp{
-		ID:          "mock-session-" + req.TemplateID,
+		ID:          sessionID,
 		TemplateID:  req.TemplateID,
 		Status:      "running",
 		RuntimeType: "python3.11",
@@ -91,19 +96,18 @@ func (m *mockSandboxPlatform) DeleteSession(ctx context.Context, sessionID strin
 	return nil
 }
 
-func (m *mockSandboxPlatform) DeleteConversationFiles(ctx context.Context, sessionID, conversationID string) error {
-	m.logger.Infof("[MockSandboxPlatform] delete conversation files: session=%s, conversation=%s", sessionID, conversationID)
-	m.logger.Infof("[MockSandboxPlatform] delete conversation files success: session=%s, conversation=%s", sessionID, conversationID)
-	return nil
-}
-
-func (m *mockSandboxPlatform) ListFiles(ctx context.Context, sessionID, conversationID, subdir string) ([]string, error) {
-	m.logger.Infof("[MockSandboxPlatform] list files: session=%s, conversation=%s, subdir=%s", sessionID, conversationID, subdir)
+func (m *mockSandboxPlatform) ListFiles(ctx context.Context, sessionID string, limit int) ([]string, error) {
+	m.logger.Infof("[MockSandboxPlatform] list files: sessionID=%s, limit=%d", sessionID, limit)
 
 	files := []string{
 		sessionID + "/file1.txt",
 		sessionID + "/file2.py",
 		sessionID + "/file3.json",
+	}
+
+	// Apply limit if specified
+	if limit > 0 && limit < len(files) {
+		files = files[:limit]
 	}
 
 	m.logger.Infof("[MockSandboxPlatform] list files success: found %d files", len(files))

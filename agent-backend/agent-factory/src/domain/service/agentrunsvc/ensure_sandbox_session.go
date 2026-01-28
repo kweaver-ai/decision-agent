@@ -54,12 +54,34 @@ func (s *agentSvc) EnsureSandboxSession(ctx context.Context, sessionID string, r
 
 // createNewSession 创建新的 Sandbox Session
 func (s *agentSvc) createNewSession(ctx context.Context, sessionID string, req *agentreq.ChatReq) (string, error) {
+	cpu := s.sandboxPlatformConf.DefaultCPU
+	if cpu == "" {
+		cpu = "1"
+	}
+	memory := s.sandboxPlatformConf.DefaultMemory
+	if memory == "" {
+		memory = "512Mi"
+	}
+	disk := s.sandboxPlatformConf.DefaultDisk
+	if disk == "" {
+		disk = "1Gi"
+	}
+	timeout := s.sandboxPlatformConf.DefaultTimeout
+	if timeout == 0 {
+		timeout = 300
+	}
+
 	createReq := sandboxplatformdto.CreateSessionReq{
-		UserID:           req.UserID,
-		AgentID:          req.AgentID,
-		BusinessDomainID: req.XBusinessDomainID,
-		Config: map[string]interface{}{
-			"session_id": sessionID, // 使用预生成的 session_id
+		TemplateID: s.sandboxPlatformConf.DefaultTemplateID,
+		Timeout:    int(timeout),
+		CPU:        cpu,
+		Memory:     memory,
+		Disk:       disk,
+		Event: map[string]interface{}{
+			"session_id":         sessionID,
+			"user_id":            req.UserID,
+			"agent_id":           req.AgentID,
+			"business_domain_id": req.XBusinessDomainID,
 			"file_upload_config": map[string]interface{}{
 				"max_file_size":      s.sandboxPlatformConf.DefaultFileUploadConfig.MaxFileSize,
 				"max_file_size_unit": s.sandboxPlatformConf.DefaultFileUploadConfig.MaxFileSizeUnit,
@@ -71,10 +93,8 @@ func (s *agentSvc) createNewSession(ctx context.Context, sessionID string, req *
 
 	createResp, err := s.sandboxPlatform.CreateSession(ctx, createReq)
 	if err != nil {
-		// 检查是否为 "已存在" 错误（并发场景下其他请求已创建）
 		if s.isSessionAlreadyExistsError(err) {
 			s.logger.Infof("[createNewSession] session already exists: %s, will wait for ready", sessionID)
-			// 直接等待现有 Session 就绪
 			return s.waitForSessionReady(ctx, sessionID)
 		}
 
@@ -82,13 +102,11 @@ func (s *agentSvc) createNewSession(ctx context.Context, sessionID string, req *
 		return "", errors.Wrap(err, "create sandbox session failed")
 	}
 
-	// 使用返回的 session_id（可能与请求的预生成 ID 不同）
-	actualSessionID := createResp.SessionID
-	if createResp.SessionID == "" {
+	actualSessionID := createResp.ID
+	if createResp.ID == "" {
 		actualSessionID = sessionID
 	}
 
-	// 等待 Session 就绪
 	return s.waitForSessionReady(ctx, actualSessionID)
 }
 

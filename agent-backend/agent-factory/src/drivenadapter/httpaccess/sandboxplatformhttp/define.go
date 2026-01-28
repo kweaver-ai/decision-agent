@@ -28,7 +28,7 @@ func NewSandboxPlatformHttpAcc(sandboxPlatformConf *conf.SandboxPlatformConf, cl
 			logger:              logger,
 			client:              client,
 			sandboxPlatformConf: sandboxPlatformConf,
-			baseURL:             cutil.GetHTTPAccess(sandboxPlatformConf.SvcConf.Host, sandboxPlatformConf.SvcConf.Port, sandboxPlatformConf.SvcConf.Protocol),
+			baseURL:             cutil.GetHTTPAccess(sandboxPlatformConf.PrivateSvc.Host, sandboxPlatformConf.PrivateSvc.Port, sandboxPlatformConf.PublicSvc.Protocol),
 		}
 	})
 	return sandboxPlatformImpl
