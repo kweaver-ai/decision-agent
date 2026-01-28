@@ -49,7 +49,7 @@
   },
   "dependence": [
     {
-      "name": "agent-app"
+      "name": "agent-backend"
     }
   ]
 }

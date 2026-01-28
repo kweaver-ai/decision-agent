@@ -29,9 +29,11 @@ var (
 	stopChanMap sync.Map = sync.Map{}
 	// NOTE: session map，用于对话恢复，key为会话ID，value为session
 	SessionMap sync.Map = sync.Map{}
+
 	// NOTE: key 为assistantMessageID，value 为progress的数组,存储所有状态不为processing的progress，不重复
 	// progressMap map[string][]*agentrespvo.Progress = make(map[string][]*agentrespvo.Progress)
 	progressMap sync.Map = sync.Map{}
+
 	// NOTE: key 为assistantMessageID，value 为map[srting]bool ,判断一个progress的ID是否已经存在
 	// progressSet map[string]map[string]bool = make(map[string]map[string]bool)
 	progressSet sync.Map = sync.Map{}

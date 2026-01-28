@@ -3,6 +3,7 @@ package agentsvc
 import (
 	"context"
 	"fmt"
+	"sync"
 
 	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo"
@@ -14,7 +15,12 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 )
 
-func (agentSvc *agentSvc) handleProgress(ctx context.Context, req *agentreq.ChatReq, progresses []*agentrespvo.Progress) ([]*agentrespvo.Progress, error) {
+var (
+	// NOTE: key 为assistantMessageID，value 为bool ,判断是否已经获取过中断前的progress
+	isInterruptPreProgressGetMap sync.Map = sync.Map{}
+)
+
+func (agentSvc *agentSvc) handleProgressOld(ctx context.Context, req *agentreq.ChatReq, progresses []*agentrespvo.Progress) ([]*agentrespvo.Progress, error) {
 	ctx, _ = o11y.StartInternalSpan(ctx)
 	defer o11y.EndSpan(ctx, nil)
 	o11y.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
@@ -68,10 +74,85 @@ func (agentSvc *agentSvc) handleProgress(ctx context.Context, req *agentreq.Chat
 	return ans, nil
 }
 
+func (agentSvc *agentSvc) handleProgress(ctx context.Context, req *agentreq.ChatReq, progresses []*agentrespvo.Progress) (newPgs []*agentrespvo.Progress,err error) {
+
+	ctx, _ = o11y.StartInternalSpan(ctx)
+	defer o11y.EndSpan(ctx, nil)
+	o11y.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
+	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
+	o11y.SetAttributes(ctx, attribute.String("user_id", req.UserID))
+
+	aMsgID:=req.AssistantMessageID
+
+	setInterface, _ := progressSet.Load(aMsgID)
+
+	// 1. 初始化 set
+	set, _ := setInterface.(map[string]bool)
+	if set == nil {
+		set = make(map[string]bool)
+		progressSet.Store(aMsgID, set)
+		agentSvc.logger.Infof("[handleProgress] progressSet is nil, store new set for assistantMessageID: %s", aMsgID)
+	}
+
+	// 2. NOTE： 如果是中断，还需要将中断前的结果拿到并拼接
+	prePgs, err := agentSvc.forResumeInterrupt(ctx, req)
+	if err != nil {
+		return 
+	}
+
+	pgs:=append(prePgs, progresses...)
+
+	var currentProgress *agentrespvo.Progress
+
+	// 3. 遍历 progresses
+	for _, pg := range pgs{
+
+		//fmt.Printf("pid: %s,status: %s\n", pg.ID, pg.Status)
+
+		if _, exist := set[pg.ID]; exist {
+			continue
+		}
+
+		if pg.Status == "completed" || pg.Status == "failed" || pg.Status == "skipped" {
+
+			if v, _exist := progressMap.Load(aMsgID); !_exist {
+				progressMap.Store(aMsgID, []*agentrespvo.Progress{pg})
+			} else {
+				progressMap.Store(aMsgID, append(v.([]*agentrespvo.Progress), pg))
+			}
+
+			set[pg.ID] = true
+
+		} else if pg.Status == "processing" {
+
+			currentProgress = pg
+		}
+	}
+
+
+
+	// 4. append
+	if v, ok := progressMap.Load(aMsgID); ok {
+		newPgs = append(newPgs, v.([]*agentrespvo.Progress)...)
+	}
+
+	// 5. append currentProgress
+	if currentProgress != nil {
+		newPgs = append(newPgs, currentProgress)
+	}
+
+	return 
+}
+
 func (agentSvc *agentSvc) forResumeInterrupt(ctx context.Context, req *agentreq.ChatReq) (ans []*agentrespvo.Progress, err error) {
 	ans = make([]*agentrespvo.Progress, 0)
 
 	if req.InterruptedAssistantMsgID != "" {
+
+		// 0. 检查是否已经获取过中断前的progress
+		if _, ok := isInterruptPreProgressGetMap.Load(req.AssistantMessageID); ok {
+			return
+		}
 
 		var assistantMsgPO *dapo.ConversationMsgPO
 
@@ -104,6 +185,9 @@ func (agentSvc *agentSvc) forResumeInterrupt(ctx context.Context, req *agentreq.
 		} else {
 			agentSvc.logger.Warnf("[handleProgress] skipped appending progress for interrupted msg %s: MiddleAnswer is nil", req.InterruptedAssistantMsgID)
 		}
+
+		// 5. 标记已获取过中断前的progress
+		isInterruptPreProgressGetMap.Store(req.AssistantMessageID, true)
 	}
 
 	return
