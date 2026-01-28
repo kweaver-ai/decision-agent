@@ -716,7 +716,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
               content: getChatItemContent(item),
               interrupt: interrupt_info,
               error: item.status === 'failed' ? '{}' : undefined,
-              agentRunId: _.get(item, 'agent_run_id'),
+              agentRunId: _.get(ext, 'agent_run_id'),
             });
             // 说明要恢复未完成的对话 (中断的情况不能直接恢复接口)
             if (index === data.length - 1 && item.status === 'processing') {
