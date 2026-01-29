@@ -51,10 +51,10 @@ RUN set -ex; \
     ssh-keyscan -t rsa devops.aishu.cn >> /root/.ssh/known_hosts; \
     cd /build; \
     uv sync; \
-    # Dolphin from test.pypi
-    # uv pip install --index-url https://test.pypi.org/simple/ \
-    #     --extra-index-url https://pypi.tuna.tsinghua.edu.cn/simple/ \
-    #     --index-strategy unsafe-best-match kweaver-dolphin; \
+     Dolphin from test.pypi
+     uv pip install --index-url https://test.pypi.org/simple/ \
+         --extra-index-url https://pypi.tuna.tsinghua.edu.cn/simple/ \
+         --index-strategy unsafe-best-match kweaver-dolphin; \
     uv run pyinstaller agent-executor.spec
 
 # ==================== 构建阶段：agent-memory (Python/PyInstaller) ====================

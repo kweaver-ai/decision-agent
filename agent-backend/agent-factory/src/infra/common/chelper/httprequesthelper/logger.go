@@ -11,10 +11,11 @@ import (
 
 // Logger HTTP请求日志记录器
 type Logger struct {
-	config    *Config
-	formatter *Formatter
-	writer    Writer
-	mu        sync.RWMutex
+	config       *Config
+	formatter    *Formatter
+	writer       Writer
+	singleWriter *SingleFileWriter
+	mu           sync.RWMutex
 }
 
 var (
@@ -53,11 +54,24 @@ func NewLogger(config *Config) (*Logger, error) {
 		writer = NewConsoleWriter()
 	}
 
-	return &Logger{
+	logger := &Logger{
 		config:    config,
 		formatter: formatter,
 		writer:    writer,
-	}, nil
+	}
+
+	// 如果配置了 SingleFileMaxEntries，则初始化 singleWriter
+	if config.SingleFileMaxEntries > 0 {
+		singleWriter, err := NewSingleFileWriter(config)
+		if err != nil {
+			// single writer 创建失败不影响主日志记录
+			// 只是不记录到 single 文件
+		} else {
+			logger.singleWriter = singleWriter
+		}
+	}
+
+	return logger, nil
 }
 
 // GetDefaultLogger 获取默认日志记录器（单例）
@@ -122,9 +136,17 @@ func (l *Logger) LogRequest(ctx context.Context, req *http.Request, reqBody stri
 
 	formatted := l.formatter.Format(logRecord)
 	_ = l.writer.Write(formatted, userID)
+
+	// 同时写入到 single 日志
+	if l.singleWriter != nil {
+		_ = l.singleWriter.Write(formatted)
+	}
 }
 
 // Close 关闭日志记录器
 func (l *Logger) Close() error {
+	if l.singleWriter != nil {
+		_ = l.singleWriter.Close()
+	}
 	return l.writer.Close()
 }

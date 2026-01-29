@@ -33,6 +33,9 @@ service:
           - /api/agent-factory/v2
           - /api/agent-factory/v3
           - /api/agent-app/v1
+  agentApp:
+    port: 30777
+    nodePort: 31023
   type: ClusterIP
   enableDualStack: false
   port: 13020
