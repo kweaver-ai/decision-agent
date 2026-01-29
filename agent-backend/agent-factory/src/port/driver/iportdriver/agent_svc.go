@@ -14,7 +14,8 @@ type IAgent interface {
 	ResumeChat(ctx context.Context, conversationID string) (chan []byte, error)
 	// TerminateChat 终止聊天
 	// 如果 agentRunID 不为空，先调用 Executor 终止，再执行原有逻辑
-	TerminateChat(ctx context.Context, conversationID string, agentRunID string) error
+	// 如果 interruptedAssistantMessageID 不为空，更新消息状态为 cancelled
+	TerminateChat(ctx context.Context, conversationID string, agentRunID string, interruptedAssistantMessageID string) error
 	GetAPIDoc(ctx context.Context, req *agentreq.GetAPIDocReq) (interface{}, error)
 	FileCheck(ctx context.Context, req *agentreq.FileCheckReq) (agentresp.FileCheckResp, error)
 
