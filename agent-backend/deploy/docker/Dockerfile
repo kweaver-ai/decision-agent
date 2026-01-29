@@ -51,7 +51,7 @@ RUN set -ex; \
     ssh-keyscan -t rsa devops.aishu.cn >> /root/.ssh/known_hosts; \
     cd /build; \
     uv sync; \
-     Dolphin from test.pypi
+    #     Dolphin from test.pypi
      uv pip install --index-url https://test.pypi.org/simple/ \
          --extra-index-url https://pypi.tuna.tsinghua.edu.cn/simple/ \
          --index-strategy unsafe-best-match kweaver-dolphin; \
