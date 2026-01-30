@@ -35,7 +35,7 @@ dependencies = [
     "telemetrysdk-python@git+ssh://devops.aishu.cn:22/AISHUDevOps/One-Architecture/_git/TelemetrySDK-Python@2.6.1",
     #    "telemetrysdk-python@git+https://github.com/kweaver-ai/TelemetrySDK-Python@2.4.2",
     #    "tlogging",
-    #        "kweaver-dolphin==0.2.0",
+    "kweaver-dolphin==0.2.1",
 ]
 
 
