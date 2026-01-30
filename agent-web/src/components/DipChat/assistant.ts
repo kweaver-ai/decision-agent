@@ -49,7 +49,10 @@ export const handleChatItemContent = (
     }
   });
   const { user_message_id, assistant_message_id, message } = contentObj;
-  const progress = _.get(message, 'content.middle_answer.progress');
+  const progress = _.get(message, 'content.middle_answer.progress') ?? [];
+  if (progress.length === 0) {
+    return;
+  }
   console.log(progress, '++通用场景处理Progress++');
   newChatList[lastIndex].loading = response.pending;
   newChatList[lastIndex].generating = response.generating;
