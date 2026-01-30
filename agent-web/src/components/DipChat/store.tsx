@@ -119,7 +119,6 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
   const newChatListRef = useRef<DipChatItem[]>([]);
   const conversationSessionTimer = useRef<any>(null);
   const conversationSessionExpiredTime = useRef<any>('');
-  const lastChatItem = store.chatList[store.chatList.length - 1];
 
   useEffect(() => {
     if (debug) {
@@ -262,6 +261,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
     }
     const { chatList, agentAppKey, activeConversationKey, toolAutoExpand } = getStore();
     let currentConversationId: string = '';
+    let currentConversationLoading = response.generating;
     newChatListRef.current = _.cloneDeep(chatList);
     const newSingleStreamResult = [];
     if (newChatListRef.current.length > 0) {
@@ -302,9 +302,17 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
       handleConversation(currentConversationId);
     }
 
+    if (!currentConversationLoading) {
+      const lastChatItem = newChatListRef.current[newChatListRef.current.length - 1];
+      // 看是否存在中断
+      if (!_.isEmpty(lastChatItem?.interrupt) && _.isEmpty(lastChatItem?.error) && !lastChatItem?.cancel) {
+        currentConversationLoading = true;
+      }
+    }
+
     setDipChatStore({
       chatList: newChatListRef.current,
-      streamGenerating: response.generating,
+      streamGenerating: currentConversationLoading,
       singleStreamResult: newSingleStreamResult,
       ...toolAutoExpandUpdateObj,
     });
@@ -584,7 +592,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
   };
 
   /** 终止会话 */
-  const stopChat = () => {
+  const stopChat = async () => {
     const { chatList, activeConversationKey, agentAppKey } = getStore();
     stop();
     const newChatList = _.cloneDeep(chatList);
@@ -592,12 +600,19 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
     if (newChatList[lastIndex]) {
       newChatList[lastIndex].cancel = true;
       newChatList[lastIndex].loading = false;
+      newChatList[lastIndex].status = 'cancelled';
       delete newChatList[lastIndex].interrupt;
-      setDipChatStore({
-        chatList: newChatList,
-      });
       const agentRunId = newChatList[lastIndex].agentRunId!;
-      stopConversation(agentAppKey, activeConversationKey, agentRunId);
+      const res = await stopConversation(agentAppKey, activeConversationKey, agentRunId, newChatList[lastIndex].key);
+      if (res) {
+        // console.log('终止会话成功', newChatList);
+        setDipChatStore({
+          chatList: newChatList,
+          streamGenerating: false,
+          activeProgressIndex: -1,
+          activeChatItemIndex: -1,
+        });
+      }
     }
   };
 
@@ -680,6 +695,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
       const res: any = await getConversationDetailsById(agentAppKey, key);
       if (res && res.Messages) {
         let recoverConversation = false;
+        let conversationLoading = false;
         const data = res.Messages.map((item: any) => ({
           ...item,
           content: isJSONString(item.content) ? JSON.parse(item.content) : {},
@@ -714,14 +730,17 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
               key: item.id,
               role: 'common',
               content: getChatItemContent(item),
-              interrupt: interrupt_info,
+              interrupt: item.status === 'processing' ? interrupt_info : undefined,
               error: item.status === 'failed' ? '{}' : undefined,
               agentRunId: _.get(ext, 'agent_run_id'),
+              cancel: item.status === 'cancelled',
+              status: item.status,
             });
             // 说明要恢复未完成的对话 (中断的情况不能直接恢复接口)
             if (index === data.length - 1 && item.status === 'processing') {
               recoverConversation = true;
               if (!_.isEmpty(interrupt_info)) {
+                conversationLoading = true;
                 recoverConversation = false;
               }
             }
@@ -729,6 +748,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
         });
         resolve({
           recoverConversation,
+          conversationLoading,
           chatList: newChatList,
           read_message_index: res.read_message_index,
           message_index: res.message_index,
@@ -743,8 +763,6 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
       value={{
         dipChatStore: {
           ...store,
-          streamGenerating:
-            (store.streamGenerating || !_.isEmpty(lastChatItem?.interrupt)) && _.isEmpty(lastChatItem?.error),
         },
         setDipChatStore,
         getDipChatStore: getStore,
