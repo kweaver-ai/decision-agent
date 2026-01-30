@@ -14,7 +14,10 @@ from data_retrieval.tools.base import api_tool_decorator, validate_openapi_schem
 
 from data_retrieval.datasource.dip_metric import DIPMetric
 from data_retrieval.datasource.dip_dataview import DataView
-from data_retrieval.api.agent_retrieval import get_datasource_from_agent_retrieval_async
+from data_retrieval.api.agent_retrieval import (
+    get_datasource_from_agent_retrieval_async,
+    build_kn_data_view_fields
+)
 from data_retrieval.settings import get_settings
 from fastapi import Body
 
@@ -219,6 +222,7 @@ class GetMetadataTool(AFTool):
             # 初始化数据源列表
             view_list = []
             metric_list = []
+            kn_data_view_fields = {}
 
             # 从 data_source 中获取直接指定的视图列表和指标列表
             direct_view_list = data_source_dict.get('view_list', [])
@@ -275,8 +279,9 @@ class GetMetadataTool(AFTool):
                         # ds_type 为 None 表示获取全部类型
                         # 将 data_views 添加到 view_list
                         if ds_type is None or ds_type == "data_view":
-                            for view in data_views:
-                                view_list.append(view.get("id"))
+                            view_list.extend([view.get("id") for view in data_views])
+                            # Build kn_data_view_fields mapping from concept_detail.data_properties
+                            kn_data_view_fields.update(build_kn_data_view_fields(data_views))
 
                         # 将 metrics 添加到 metric_list
                         if ds_type is None or ds_type == "metric":
@@ -294,7 +299,8 @@ class GetMetadataTool(AFTool):
                     token=token,
                     user_id=user_id,
                     account_type=account_type,
-                    base_url=base_url
+                    base_url=base_url,
+                    kn_data_view_fields=kn_data_view_fields if kn_data_view_fields else None
                 )
 
             dip_metric = None

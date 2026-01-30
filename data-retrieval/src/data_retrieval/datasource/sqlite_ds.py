@@ -45,7 +45,8 @@ class SQLiteDataSource(DataSource):
             for row in res:
                 if as_dict:
                     yield dict(zip(headers, row))
-                yield row
+                else:
+                    yield row
 
         return headers, result_gen()
 

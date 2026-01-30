@@ -24,7 +24,10 @@ from data_retrieval.api.error import (
 from data_retrieval.errors import Text2SQLException
 from data_retrieval.datasource.db_base import DataSource
 from data_retrieval.datasource.dip_dataview import DataView
-from data_retrieval.api.agent_retrieval import get_datasource_from_agent_retrieval_async
+from data_retrieval.api.agent_retrieval import (
+    get_datasource_from_agent_retrieval_async,
+    build_kn_data_view_fields
+)
 from data_retrieval.logs.logger import logger
 from data_retrieval.parsers.base import BaseJsonParser
 from data_retrieval.parsers.text2sql_parser import JsonText2SQLRuleBaseParser
@@ -914,6 +917,8 @@ class Text2SQLTool(LLMTool):
                 token = f"Bearer {token}"
             headers["Authorization"] = token
 
+        kn_data_view_fields = {}
+        relations = []
         if kn_params:
             for kn_param in kn_params:
                 if isinstance(kn_param, dict):
@@ -921,23 +926,66 @@ class Text2SQLTool(LLMTool):
                 else:
                     kn_id = kn_param
 
-            data_views, _, _ = await get_datasource_from_agent_retrieval_async(
-                kn_id=kn_id,
-                query=params.get('input', ''),
-                search_scope=search_scope,
-                headers=headers,
-                base_url=base_url,
-                max_concepts=config_dict.get('view_num_limit', _SETTINGS.DEFAULT_AGENT_RETRIEVAL_MAX_CONCEPTS),
-                mode=recall_mode
-            )
-            view_list.extend([view.get("id") for view in data_views])
+                data_views, _, kn_relations = await get_datasource_from_agent_retrieval_async(
+                    kn_id=kn_id,
+                    query=params.get('input', ''),
+                    search_scope=search_scope,
+                    headers=headers,
+                    base_url=base_url,
+                    max_concepts=config_dict.get('view_num_limit', _SETTINGS.DEFAULT_AGENT_RETRIEVAL_MAX_CONCEPTS),
+                    mode=recall_mode
+                )
+                view_list.extend([view.get("id") for view in data_views])
+                relations.extend(kn_relations)
+
+                # Build kn_data_view_fields mapping from concept_detail.data_properties
+                kn_data_view_fields.update(build_kn_data_view_fields(data_views))
+
+        # Build relation background info from relations
+        relation_background = ""
+        if relations:
+            relation_descriptions = []
+            for rel in relations:
+                if rel.get("source_object_type_id") and rel.get("target_object_type_id"):
+                    # Build description with view IDs if available
+                    source_id = rel.get('source_object_type_id')
+                    target_id = rel.get('target_object_type_id')
+                    source_view_id = rel.get('source_view_id', '')
+                    target_view_id = rel.get('target_view_id', '')
+
+                    # Add view ID info if available
+                    if source_view_id:
+                        source_name = f"{source_id}(view_id: {source_view_id})"
+                    else:
+                        source_name = source_id
+                    if target_view_id:
+                        target_name = f"{target_id}(view_id: {target_view_id})"
+                    else:
+                        target_name = target_id
+
+                    desc = f"- {source_name} 与 {target_name} 存在关系：{rel.get('concept_name', '')}"
+                    if rel.get("comment"):
+                        desc += f"({rel.get('comment')})"
+                    if rel.get("data_source"):
+                        desc += "，关系来源于 data_view: "
+                        desc += f"{rel.get('data_source').get('name')}(id: {rel.get('data_source').get('id')})"
+                    relation_descriptions.append(desc)
+            if relation_descriptions:
+                relation_background = "\n生成 SQL 时，请参考以下的数据视图关系（需要时进行 JOIN 操作）：\n"
+                relation_background += "\n".join(relation_descriptions)
+
+        # Add relation background to config_dict
+        if relation_background:
+            existing_background = config_dict.get("background", "")
+            config_dict["background"] = existing_background + relation_background
 
         data_source = DataView(
             view_list=view_list,
             base_url=base_url,
             user_id=userid,
             token=token,
-            account_type=account_type
+            account_type=account_type,
+            kn_data_view_fields=kn_data_view_fields if kn_data_view_fields else None
         )
 
         # LLM Params
@@ -985,6 +1033,46 @@ class Text2SQLTool(LLMTool):
 
         # invoke tool
         res = await tool.ainvoke(input=in_put_infos)
+
+        # 如果是 show_ds 模式，添加关系信息到结果中
+        action = in_put_infos.get('action', ActionType.GEN_EXEC.value)
+        if action == ActionType.SHOW_DS.value and relations:
+            relation_descriptions = []
+            for rel in relations:
+                if rel.get("source_object_type_id") and rel.get("target_object_type_id"):
+                    source_id = rel.get('source_object_type_id')
+                    target_id = rel.get('target_object_type_id')
+                    source_view_id = rel.get('source_view_id', '')
+                    target_view_id = rel.get('target_view_id', '')
+
+                    if source_view_id:
+                        source_name = f"{source_id}(view_id: {source_view_id})"
+                    else:
+                        source_name = source_id
+                    if target_view_id:
+                        target_name = f"{target_id}(view_id: {target_view_id})"
+                    else:
+                        target_name = target_id
+
+                    desc = f"{source_name} 与 {target_name} 存在关系：{rel.get('concept_name', '')}"
+                    if rel.get("data_source"):
+                        desc += "，关系来源于 data_view："
+                        desc += f"{rel.get('data_source').get('name')}(id: {rel.get('data_source').get('id')})"
+                    if rel.get("comment"):
+                        desc += f"({rel.get('comment')})"
+                    relation_descriptions.append(desc)
+
+            if relation_descriptions:
+                try:
+                    res_json = json.loads(res)
+                    if "output" in res_json:
+                        res_json["output"]["relations"] = relation_descriptions
+                    else:
+                        res_json["relations"] = relation_descriptions
+                    res = json.dumps(res_json, ensure_ascii=False)
+                except Exception as e:
+                    logger.error(f"error when adding relations to result: {e}")
+
         return res
 
     @staticmethod

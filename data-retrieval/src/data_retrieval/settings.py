@@ -120,6 +120,9 @@ class DIPSettings(BaseSettings):
     DEFAULT_AGENT_RETRIEVAL_MAX_CONCEPTS: int = 10
     DEFAULT_AGENT_RETRIEVAL_MODE: str = "keyword_vector_retrieval"
 
+    # 知识网络管理接口
+    KNOWLEDGE_NETWORK_API_BASE: str = "http://ontology-manager-svc:13014/api/ontology-manager"
+
     # 新增 DEBUG 配置项
     DEBUG: bool = False
     # DEBUG: bool = True
