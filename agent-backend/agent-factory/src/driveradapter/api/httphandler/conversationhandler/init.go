@@ -25,7 +25,7 @@ import (
 // @Success      200       {string}  string  "成功"
 // @Failure      400      {object}  swagger.APIError   "请求参数错误"
 // @Failure      500      {object}  swagger.APIError   "服务器内部错误"
-// @Router       /v1/app/:app_key/conversation [post]
+// @Router       /v1/app/{app_key}/conversation [post]
 // @Security     BearerAuth
 func (h *conversationHTTPHandler) Init(c *gin.Context) {
 	// 接收语言标识转换为 context.Context

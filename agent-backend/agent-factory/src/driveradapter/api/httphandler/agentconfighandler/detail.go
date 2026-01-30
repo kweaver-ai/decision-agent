@@ -19,7 +19,7 @@ import (
 // @Failure      400      {object}  swagger.APIError  "请求参数错误"
 // @Failure      404      {object}  swagger.APIError  "Agent不存在"
 // @Failure      500      {object}  swagger.APIError  "服务器内部错误"
-// @Router       /v3/agent/:agent_id [get]
+// @Router       /v3/agent/{agent_id} [get]
 // @Security     BearerAuth
 func (h *daConfHTTPHandler) Detail(c *gin.Context) {
 	// 1. 获取id

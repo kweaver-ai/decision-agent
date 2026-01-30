@@ -24,7 +24,7 @@ import (
 // @Failure      400     {object}  swagger.APIError  "请求参数错误"
 // @Failure      404     {object}  swagger.APIError  "会话不存在"
 // @Failure      500     {object}  swagger.APIError  "服务器内部错误"
-// @Router       /v1/app/:app_key/conversation/:id [get]
+// @Router       /v1/app/{app_key}/conversation/{id} [get]
 // @Security     BearerAuth
 func (h *conversationHTTPHandler) Detail(c *gin.Context) {
 	// 1. 获取id

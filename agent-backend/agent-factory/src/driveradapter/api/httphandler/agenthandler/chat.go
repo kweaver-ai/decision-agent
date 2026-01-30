@@ -30,7 +30,7 @@ import (
 // @Success      200       {object}  swagger.ChatResp  "成功"
 // @Failure      400       {object}  swagger.APIError   "请求参数错误"
 // @Failure      500       {object}  swagger.APIError   "服务器内部错误"
-// @Router       /v1/app/:app_key/chat/completion [post]
+// @Router       /v1/app/{app_key}/chat/completion [post]
 // @Security     BearerAuth
 func (h *agentHTTPHandler) Chat(c *gin.Context) {
     reqStartTime := cutil.GetCurrentMSTimestamp()

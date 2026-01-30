@@ -25,7 +25,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/v1/app/:app_key/chat/completion": {
+        "/v1/app/{app_key}/chat/completion": {
             "post": {
                 "security": [
                     {
@@ -83,7 +83,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/app/:app_key/chat/resume": {
+        "/v1/app/{app_key}/chat/resume": {
             "post": {
                 "security": [
                     {
@@ -138,7 +138,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/app/:app_key/conversation": {
+        "/v1/app/{app_key}/conversation": {
             "get": {
                 "security": [
                     {
@@ -257,7 +257,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/app/:app_key/conversation/:id": {
+        "/v1/app/{app_key}/conversation/{id}": {
             "get": {
                 "security": [
                     {
@@ -319,7 +319,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v1/conversation/session/:conversation_id": {
+        "/v1/conversation/session/{conversation_id}": {
             "put": {
                 "security": [
                     {
@@ -482,7 +482,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/v3/agent/:agent_id": {
+        "/v3/agent/{agent_id}": {
             "get": {
                 "security": [
                     {
@@ -1020,75 +1020,6 @@ const docTemplate = `{
                 }
             }
         },
-        "agentreq.ModifiedArg": {
-            "type": "object",
-            "properties": {
-                "key": {
-                    "description": "参数名称",
-                    "type": "string"
-                },
-                "value": {
-                    "description": "参数值"
-                }
-            }
-        },
-        "agentreq.ResumeHandle": {
-            "type": "object",
-            "properties": {
-                "current_block": {
-                    "description": "当前代码块索引",
-                    "type": "integer"
-                },
-                "frame_id": {
-                    "description": "执行帧ID",
-                    "type": "string"
-                },
-                "interrupt_type": {
-                    "description": "中断类型",
-                    "type": "string"
-                },
-                "restart_block": {
-                    "description": "是否重启代码块",
-                    "type": "boolean"
-                },
-                "resume_token": {
-                    "description": "恢复令牌",
-                    "type": "string"
-                },
-                "snapshot_id": {
-                    "description": "快照ID",
-                    "type": "string"
-                }
-            }
-        },
-        "agentreq.ResumeInterruptInfo": {
-            "type": "object",
-            "required": [
-                "action",
-                "resume_handle"
-            ],
-            "properties": {
-                "action": {
-                    "description": "操作类型: confirm | skip",
-                    "type": "string"
-                },
-                "modified_args": {
-                    "description": "修改后的参数",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/agentreq.ModifiedArg"
-                    }
-                },
-                "resume_handle": {
-                    "description": "恢复句柄",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/agentreq.ResumeHandle"
-                        }
-                    ]
-                }
-            }
-        },
         "agentreq.SelectedFile": {
             "type": "object",
             "required": [
@@ -1101,34 +1032,29 @@ const docTemplate = `{
                 }
             }
         },
-        "agentreq.Tool": {
+        "agentresperr.RespError": {
             "type": "object",
             "properties": {
-                "session_id": {
-                    "type": "string"
-                },
-                "tool_args": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/agentreq.ToolArg"
-                    }
-                },
-                "tool_name": {
-                    "type": "string"
+                "error": {},
+                "type": {
+                    "$ref": "#/definitions/agentresperr.RespErrorType"
                 }
             }
         },
-        "agentreq.ToolArg": {
-            "type": "object",
-            "properties": {
-                "key": {
-                    "type": "string"
-                },
-                "type": {},
-                "value": {
-                    "description": "NOTE： 值类型不确定可能是string、array"
-                }
-            }
+        "agentresperr.RespErrorType": {
+            "type": "string",
+            "enum": [
+                "agent_factory",
+                "agent_executor"
+            ],
+            "x-enum-comments": {
+                "RespErrorTypeAgentExecutor": "来自agent-executor的错误",
+                "RespErrorTypeAgentFactory": "来自agent-factory的错误"
+            },
+            "x-enum-varnames": [
+                "RespErrorTypeAgentFactory",
+                "RespErrorTypeAgentExecutor"
+            ]
         },
         "cdaenum.AvatarType": {
             "type": "integer",
@@ -1365,8 +1291,11 @@ const docTemplate = `{
                 },
                 "ext": {
                     "description": "扩展字段",
-                    "type": "object",
-                    "additionalProperties": true
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/conversationmsgvo.MessageExt"
+                        }
+                    ]
                 },
                 "id": {
                     "type": "string"
@@ -1382,6 +1311,46 @@ const docTemplate = `{
                 },
                 "status": {
                     "$ref": "#/definitions/cdaenum.ConversationMsgStatus"
+                }
+            }
+        },
+        "conversationmsgvo.MessageExt": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "description": "错误信息",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/agentresperr.RespError"
+                        }
+                    ]
+                },
+                "interrupt_info": {
+                    "description": "中断信息",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/v2agentexecutordto.ToolInterruptInfo"
+                        }
+                    ]
+                },
+                "related_queries": {
+                    "description": "相关问题（query 列表）",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "total_time": {
+                    "description": "总耗时（秒）",
+                    "type": "number"
+                },
+                "total_tokens": {
+                    "description": "总 token 数",
+                    "type": "integer"
+                },
+                "ttft": {
+                    "description": "首 token 时间（毫秒）",
+                    "type": "integer"
                 }
             }
         },
@@ -2868,6 +2837,10 @@ const docTemplate = `{
                     "description": "agentKey",
                     "type": "string"
                 },
+                "agent_run_id": {
+                    "description": "Agent运行ID（中断恢复时由前端传入）",
+                    "type": "string"
+                },
                 "agent_version": {
                     "description": "agent版本",
                     "type": "string"
@@ -2878,10 +2851,6 @@ const docTemplate = `{
                 },
                 "chat_option": {
                     "$ref": "#/definitions/chatopt.ChatOption"
-                },
-                "confirm_plan": {
-                    "description": "是否确认计划",
-                    "type": "boolean"
                 },
                 "conversation_id": {
                     "description": "会话ID",
@@ -2928,8 +2897,16 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "regenerate_user_message_id": {
-                    "description": "重新生成的用户消息ID",
+                    "description": "ConfirmPlan               bool                                ` + "`" + `json:\"confirm_plan\"` + "`" + `                     // 是否确认计划",
                     "type": "string"
+                },
+                "resume_interrupt_info": {
+                    "description": "中断恢复信息（为nil时走正常流程）",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/v2agentexecutordto.AgentResumeInfo"
+                        }
+                    ]
                 },
                 "selected_files": {
                     "description": "用户选择的临时区文件",
@@ -2942,13 +2919,12 @@ const docTemplate = `{
                     "description": "NOTE: 新增stream参数，控制流式返回",
                     "type": "boolean"
                 },
-                "tool": {
-                    "description": "工具",
-                    "allOf": [
-                        {
-                            "$ref": "#/definitions/agentreq.Tool"
-                        }
-                    ]
+                "temp_files": {
+                    "description": "临时文件",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/valueobject.TempFile"
+                    }
                 }
             }
         },
@@ -2995,19 +2971,158 @@ const docTemplate = `{
                 "conversation_id"
             ],
             "properties": {
-                "agent_run_id": {
-                    "description": "Agent运行ID（中断恢复时必填）",
-                    "type": "string"
-                },
                 "conversation_id": {
                     "description": "会话ID",
                     "type": "string"
+                }
+            }
+        },
+        "v2agentexecutordto.AgentResumeInfo": {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "description": "操作类型: confirm | skip",
+                    "type": "string"
                 },
-                "resume_interrupt_info": {
-                    "description": "中断恢复信息（为nil时走原逻辑）",
+                "data": {
+                    "description": "中断详情数据（从响应透传）",
                     "allOf": [
                         {
-                            "$ref": "#/definitions/agentreq.ResumeInterruptInfo"
+                            "$ref": "#/definitions/v2agentexecutordto.InterruptData"
+                        }
+                    ]
+                },
+                "modified_args": {
+                    "description": "修改后的参数",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/v2agentexecutordto.ModifiedArg"
+                    }
+                },
+                "resume_handle": {
+                    "description": "复用 InterruptHandle",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/v2agentexecutordto.InterruptHandle"
+                        }
+                    ]
+                }
+            }
+        },
+        "v2agentexecutordto.InterruptConfig": {
+            "type": "object",
+            "properties": {
+                "confirmation_message": {
+                    "description": "确认提示消息",
+                    "type": "string"
+                },
+                "requires_confirmation": {
+                    "description": "是否需要用户确认",
+                    "type": "boolean"
+                }
+            }
+        },
+        "v2agentexecutordto.InterruptData": {
+            "type": "object",
+            "properties": {
+                "interrupt_config": {
+                    "description": "中断配置",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/v2agentexecutordto.InterruptConfig"
+                        }
+                    ]
+                },
+                "tool_args": {
+                    "description": "工具参数列表",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/v2agentexecutordto.ToolArg"
+                    }
+                },
+                "tool_description": {
+                    "description": "工具描述",
+                    "type": "string"
+                },
+                "tool_name": {
+                    "description": "工具名称",
+                    "type": "string"
+                }
+            }
+        },
+        "v2agentexecutordto.InterruptHandle": {
+            "type": "object",
+            "properties": {
+                "current_block": {
+                    "description": "当前代码块索引",
+                    "type": "integer"
+                },
+                "frame_id": {
+                    "description": "执行帧ID",
+                    "type": "string"
+                },
+                "interrupt_type": {
+                    "description": "中断类型",
+                    "type": "string"
+                },
+                "restart_block": {
+                    "description": "是否重启代码块",
+                    "type": "boolean"
+                },
+                "resume_token": {
+                    "description": "恢复令牌",
+                    "type": "string"
+                },
+                "snapshot_id": {
+                    "description": "快照ID",
+                    "type": "string"
+                }
+            }
+        },
+        "v2agentexecutordto.ModifiedArg": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "description": "参数名称",
+                    "type": "string"
+                },
+                "value": {
+                    "description": "参数值"
+                }
+            }
+        },
+        "v2agentexecutordto.ToolArg": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "description": "参数名称",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "参数类型",
+                    "type": "string"
+                },
+                "value": {
+                    "description": "参数值"
+                }
+            }
+        },
+        "v2agentexecutordto.ToolInterruptInfo": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "description": "中断详情",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/v2agentexecutordto.InterruptData"
+                        }
+                    ]
+                },
+                "handle": {
+                    "description": "恢复句柄",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/v2agentexecutordto.InterruptHandle"
                         }
                     ]
                 }
@@ -3026,6 +3141,21 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "agent_version": {
+                    "type": "string"
+                }
+            }
+        },
+        "valueobject.TempFile": {
+            "type": "object",
+            "properties": {
+                "details": {},
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "type": {
                     "type": "string"
                 }
             }

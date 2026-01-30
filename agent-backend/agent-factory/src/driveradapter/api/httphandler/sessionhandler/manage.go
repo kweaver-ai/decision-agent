@@ -24,7 +24,7 @@ import (
 // @Success      200       {string}  string  "成功"
 // @Failure      400      {object}  swagger.APIError  "请求参数错误"
 // @Failure      500      {object}  swagger.APIError  "服务器内部错误"
-// @Router       /v1/conversation/session/:conversation_id [put]
+// @Router       /v1/conversation/session/{conversation_id} [put]
 // @Security     BearerAuth
 func (h *sessionHTTPHandler) Manage(c *gin.Context) {
 	// 1. 获取请求参数
