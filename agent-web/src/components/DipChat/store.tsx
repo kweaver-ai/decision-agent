@@ -534,7 +534,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
             enable_dependency_cache: false,
           },
         };
-        if (lastChatItem.agentRunId) {
+        if (lastChatItem.agentRunId && !lastChatItem.cancel && !_.isEmpty(lastChatItem.interrupt)) {
           debugBody.agent_run_id = lastChatItem.agentRunId;
         }
         if (!_.isEmpty(lastChatItem.interrupt)) {
@@ -566,7 +566,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
           enable_dependency_cache: true,
         },
       };
-      if (lastChatItem.agentRunId) {
+      if (lastChatItem.agentRunId && !lastChatItem.cancel && !_.isEmpty(lastChatItem.interrupt)) {
         body.agent_run_id = lastChatItem.agentRunId;
       }
       if (!_.isEmpty(lastChatItem.interrupt)) {
