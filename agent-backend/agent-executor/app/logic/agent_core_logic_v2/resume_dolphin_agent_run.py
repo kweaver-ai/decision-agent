@@ -1,5 +1,5 @@
 import json
-from typing import Any, AsyncGenerator, Dict, List, Optional, TYPE_CHECKING, Union
+from typing import Any, AsyncGenerator, Dict, Optional, TYPE_CHECKING
 from dolphin.sdk.agent.dolphin_agent import DolphinAgent
 from dolphin.core.config.global_config import GlobalConfig
 from dolphin.sdk.skill.traditional_toolkit import TriditionalToolkit
@@ -52,7 +52,7 @@ async def resume_dolphin_agent_run(
     agent_run_id: str,
     resume_info: "ResumeInfo",
     config: AgentConfigVo,
-    context_variables: Dict[str, Union[str, int, float, bool, List, Dict]],
+    context_variables: Dict[str, Any],
     headers: Dict[str, str],
     is_debug: bool = False,
 
@@ -112,6 +112,8 @@ async def resume_dolphin_agent_run(
     
     async for output in process_arun_loop(agent, is_debug):
         yield output
+
+    yield output
 
     # 使用新的日志生成函数
     dialog_log_handler = DialogLogHandler(agent, config, headers)
