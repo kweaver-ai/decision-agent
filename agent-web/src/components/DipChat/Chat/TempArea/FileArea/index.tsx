@@ -232,50 +232,20 @@ const FileArea = ({ onPreviewFile }: any) => {
     // eslint-disable-next-line no-async-promise-executor
     new Promise(async resolve => {
       const { activeConversationKey } = getDipChatStore();
-      const agent_id = agentDetails!.id;
-      const agent_version = agentDetails!.version;
       const filesParam = files.map(item => ({
         id: item.id,
         type: item.type,
       }));
-      if (!activeConversation?.temparea_id) {
+      if (!activeConversationKey) {
         // 创建临时区ID，通过会话接口存下来
-        const res: any = await createTemp({ source: filesParam, agent_id, agent_version });
-        if (res) {
-          tempAreaInit.current = true;
-          if (activeConversationKey) {
-            await updateConversation(agentAppKey, activeConversationKey, {
-              temparea_id: res.id,
-              title: activeConversation?.label || '新会话',
-            });
-            getConversationData();
-          } else {
-            const conversationRes = await createConversation(agentAppKey, {
-              temparea_id: res.id,
-              agent_id: agentDetails.id,
-              agent_version: debug ? 'v0' : agentDetails.version,
-              executor_version: 'v2',
-            });
-            if (conversationRes) {
-              const conversation_id = conversationRes.id;
-              handleConversation(conversation_id);
-            }
-          }
-          resolve(true);
-        } else {
-          resolve(false);
-        }
-      } else {
-        const res: any = await addFileToTemp({
-          id: activeConversation.temparea_id,
-          source: filesParam,
-          agent_id,
-          agent_version,
+        const conversationRes = await createConversation(agentAppKey, {
+          agent_id: agentDetails.id,
+          agent_version: debug ? 'v0' : agentDetails.version,
+          executor_version: 'v2',
         });
-        if (res) {
-          resolve(true);
-        } else {
-          resolve(false);
+        if (conversationRes) {
+          const conversation_id = conversationRes.id;
+          handleConversation(conversation_id);
         }
       }
     });
@@ -286,10 +256,7 @@ const FileArea = ({ onPreviewFile }: any) => {
       <div className="dip-flex-space-between dip-pl-8 dip-pr-8">
         <span className="dip-font-weight-700">临时文件</span>
         <FileUploadBtn
-          value={tempFileList}
-          onChange={fileChange}
-          agentConfig={agentConfig}
-          onNewUploadChange={onNewUploadChange}
+          customBtn={<Button type="text" size="small" icon={<DipIcon type="icon-dip-upload" />} />}
         />
       </div>
       <ScrollBarContainer className="dip-flex-item-full-height dip-pl-8 dip-pr-8">{renderContent()}</ScrollBarContainer>

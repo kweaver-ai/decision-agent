@@ -104,6 +104,10 @@ export default defineConfig({
       'Access-Control-Allow-Origin': '*',
     },
     proxy: {
+      '/api/v1/sessions': {
+        target: 'https://r71yp95wh0ww.share.zrok.io',
+        changeOrigin: true,
+      },
       '/api/': {
         target: 'https://dip.aishu.cn',
         changeOrigin: true,

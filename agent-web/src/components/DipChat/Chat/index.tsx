@@ -463,20 +463,21 @@ const DipChat = () => {
   }
 
   const hiddenTempArea = () => {
-    const agentConfig = agentDetails.config;
-    const { data_source } = agentDetails?.config || {};
-    const knSpaceTreeDataSource = data_source?.kg ?? [];
-    const knExperimentalDataSource = data_source?.knowledge_network ?? [];
-    const docTreeDataSource = data_source?.doc ?? [];
-    const metricTreeDataSource = data_source?.metric ?? [];
-    const contentDataSource = docTreeDataSource.filter((item: any) => item.ds_id === '0'); // 内容数据库数据源
-    return (
-      !getTempAreaEnable(agentConfig) &&
-      knSpaceTreeDataSource.length === 0 &&
-      knExperimentalDataSource.length === 0 &&
-      metricTreeDataSource.length === 0 &&
-      contentDataSource.length === 0
-    );
+    return false
+    // const agentConfig = agentDetails.config;
+    // const { data_source } = agentDetails?.config || {};
+    // const knSpaceTreeDataSource = data_source?.kg ?? [];
+    // const knExperimentalDataSource = data_source?.knowledge_network ?? [];
+    // const docTreeDataSource = data_source?.doc ?? [];
+    // const metricTreeDataSource = data_source?.metric ?? [];
+    // const contentDataSource = docTreeDataSource.filter((item: any) => item.ds_id === '0'); // 内容数据库数据源
+    // return (
+    //   !getTempAreaEnable(agentConfig) &&
+    //   knSpaceTreeDataSource.length === 0 &&
+    //   knExperimentalDataSource.length === 0 &&
+    //   metricTreeDataSource.length === 0 &&
+    //   contentDataSource.length === 0
+    // );
   };
 
   return (

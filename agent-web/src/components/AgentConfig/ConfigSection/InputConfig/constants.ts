@@ -3,7 +3,7 @@ import intl from 'react-intl-universal';
 // 输入字段类型
 export const getInputTypes = () => [
   { value: 'string', label: intl.get('dataAgent.config.string') },
-  { value: 'file', label: intl.get('dataAgent.config.file') },
+  // { value: 'file', label: intl.get('dataAgent.config.file') },
   { value: 'object', label: intl.get('dataAgent.config.object') },
 ];
 
