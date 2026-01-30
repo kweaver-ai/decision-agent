@@ -12,6 +12,4 @@ var (
 	GoArch        string = runtime.GOARCH
 )
 
-var (
-	TraceInstrumentationName = "Opentelemetry@1.39.0/exporter"
-)
+var TraceInstrumentationName = "Opentelemetry@1.39.0/exporter"

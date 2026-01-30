@@ -36,7 +36,7 @@ class InterruptHandler:
 
         StandLogger.info(f"ToolInterruptException: {tool_interrupt}")
 
-        # 直接使用 interrupt_info
+        # 直接使用 interrupt_info（dataclass 会被 custom_serializer 正确序列化）
         res["interrupt_info"] = tool_interrupt.interrupt_info
 
         res["status"] = "True"

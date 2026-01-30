@@ -1,5 +1,39 @@
 # Changelog
 
+## 0.2.2
+
+### Bug Fixes
+- Fix agent interrupt parameter passing in frontend
+- Fix conversation interface white screen issue
+- Fix configuration type dropdown selection failure
+- Fix template creation agent 404 error
+- Fix agent-memory permission error and improve observability
+
+### Features & Improvements
+- Add tool interrupt resume support via unified Run API
+- Make TelemetrySDK optional dependency in agent-executor
+- Optimize message extension structure and add status handling
+- Simplify interrupt handling and type conversion
+- Optimize chat resume with unified DTO types and interrupt recovery
+
+### Frontend (agent-web)
+- Support standalone operation without micro-frontend
+- Streamline interrupt chat interface to only pass changed parameters
+- Remove redundant changelog files
+
+## 0.2.1
+
+### Bug Fixes
+- Fix agent-web installation blocking issue
+- Fix agent retrieval functionality (#37, #38)
+
+### Infrastructure
+- Rename Helm Chart from agent-factory to agent-backend
+- Remove compiled artifacts from tests/tools to reduce repository size
+
+### Documentation
+- Update changelog for recent changes
+
 ## 0.2.0
 
 ### Architecture & Deployment
@@ -42,6 +76,8 @@
 - Remove deprecated function error classes
 - Simplify Dockerfile with unified copy command
 - Add opencode workflow for automated code review
+- Remove compiled artifacts from tests/tools/fetch-log/build to reduce repository size
+- Update .gitignore to exclude build artifacts and log files
 
 ### Data Retrieval
 - Add Jupyter Gateway runner for code execution

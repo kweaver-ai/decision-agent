@@ -20,6 +20,7 @@ import { apis } from '@aishu-tech/components/dist/dip-components.min';
 import '@aishu-tech/components/dist/dip-components.min.css';
 import dayjs from 'dayjs';
 import 'dayjs/locale/zh-cn';
+import { mainAppProps } from './mockMainAppProps.ts';
 dayjs.locale('zh-cn');
 
 // 常量定义
@@ -178,6 +179,17 @@ export function createEntry(AppComponent: React.ComponentType<any>, options: Qia
       console.error('Unmount error:', error);
     }
   };
+
+  // 独立运行时自动挂载
+  if (!(window as any).__POWERED_BY_QIANKUN__) {
+    mount({
+      ...mainAppProps,
+      history: {
+        ...mainAppProps.history,
+        getBasePath: window.location.pathname,
+      },
+    });
+  }
 
   return { bootstrap, mount, unmount };
 }

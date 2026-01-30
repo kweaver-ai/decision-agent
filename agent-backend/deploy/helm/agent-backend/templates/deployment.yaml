@@ -219,6 +219,105 @@ spec:
                     key: REDISWRITEPASS
               {{- end }}
 
+              # ========== Memory特有环境变量 (从agent-memory-yaml ConfigMap获取) ==========
+              - name: HOST_IP
+                valueFrom:
+                  fieldRef:
+                    fieldPath: status.hostIP
+              - name: TRACE_URL
+                valueFrom:
+                  configMapKeyRef:
+                    key: TRACE_URL
+                    name: agent-memory-yaml
+              - name: TRACE_ENABLE
+                valueFrom:
+                  configMapKeyRef:
+                    key: TRACE_ENABLE
+                    name: agent-memory-yaml
+              - name: GRAPHDB_TYPE
+                valueFrom:
+                  configMapKeyRef:
+                    key: GRAPHDB_TYPE
+                    name: agent-memory-yaml
+              - name: GRAPHDB_HOST
+                valueFrom:
+                  configMapKeyRef:
+                    key: GRAPHDB_HOST
+                    name: agent-memory-yaml
+              - name: GRAPHDB_PORT
+                valueFrom:
+                  configMapKeyRef:
+                    key: GRAPHDB_PORT
+                    name: agent-memory-yaml
+              - name: GRAPHDB_USER
+                valueFrom:
+                  configMapKeyRef:
+                    key: GRAPHDB_USER
+                    name: agent-memory-yaml
+              - name: GRAPHDB_PASSWORD
+                valueFrom:
+                  configMapKeyRef:
+                    key: GRAPHDB_PASSWORD
+                    name: agent-memory-yaml
+              {{- if eq .Values.depServices.graphDatabase.type "nebulaGraph" }}
+              - name: GRAPHDB_READ_ONLY_USER
+                valueFrom:
+                  configMapKeyRef:
+                    key: GRAPHDB_READ_ONLY_USER
+                    name: agent-memory-yaml
+              - name: GRAPHDB_READ_ONLY_PASSWORD
+                valueFrom:
+                  configMapKeyRef:
+                    key: GRAPHDB_READ_ONLY_PASSWORD
+                    name: agent-memory-yaml
+              {{- end }}
+              - name: EMBEDDING_MODEL
+                valueFrom:
+                  configMapKeyRef:
+                    key: EMBEDDING_MODEL
+                    name: agent-memory-yaml
+              - name: EMB_URL
+                valueFrom:
+                  configMapKeyRef:
+                    key: EMB_URL
+                    name: agent-memory-yaml
+              - name: EMBEDDING_DIMENSION
+                valueFrom:
+                  configMapKeyRef:
+                    key: EMBEDDING_DIMENSION
+                    name: agent-memory-yaml
+              - name: LLM_BASE_URL
+                valueFrom:
+                  configMapKeyRef:
+                    key: LLM_BASE_URL
+                    name: agent-memory-yaml
+              - name: LLM_MODEL
+                valueFrom:
+                  configMapKeyRef:
+                    key: LLM_MODEL
+                    name: agent-memory-yaml
+              - name: EMBEDDING_MODEL_BASE_URL
+                valueFrom:
+                  configMapKeyRef:
+                    key: EMBEDDING_MODEL_BASE_URL
+                    name: agent-memory-yaml
+              - name: EMBEDDING_MODEL_DIMS
+                valueFrom:
+                  configMapKeyRef:
+                    key: EMBEDDING_MODEL_DIMS
+                    name: agent-memory-yaml
+              - name: RERANK_MODEL
+                valueFrom:
+                  configMapKeyRef:
+                    key: RERANK_MODEL
+                    name: agent-memory-yaml
+              - name: RERANK_URL
+                valueFrom:
+                  configMapKeyRef:
+                    key: RERANK_URL
+                    name: agent-memory-yaml
+              # ========== Memory环境变量结束 ==========
+
               - name: DM_SVC_PATH
                 value: /tmp/rds_conf/
           ports:

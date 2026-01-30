@@ -261,6 +261,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
     }
     const { chatList, agentAppKey, activeConversationKey, toolAutoExpand } = getStore();
     let currentConversationId: string = '';
+    let currentConversationLoading = response.generating;
     newChatListRef.current = _.cloneDeep(chatList);
     const newSingleStreamResult = [];
     if (newChatListRef.current.length > 0) {
@@ -295,17 +296,26 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
         }
       }
     }
-    setDipChatStore({
-      chatList: newChatListRef.current,
-      streamGenerating: response.generating,
-      singleStreamResult: newSingleStreamResult,
-      ...toolAutoExpandUpdateObj,
-    });
 
     // 流式过程中发现当前没有选中一个conversation的话，则根据流式返回的conversation_id去选中会话，因为默认由流式接口来创建会话
     if (!activeConversationKey && currentConversationId) {
       handleConversation(currentConversationId);
     }
+
+    if (!currentConversationLoading) {
+      const lastChatItem = newChatListRef.current[newChatListRef.current.length - 1];
+      // 看是否存在中断
+      if (!_.isEmpty(lastChatItem?.interrupt) && _.isEmpty(lastChatItem?.error) && !lastChatItem?.cancel) {
+        currentConversationLoading = true;
+      }
+    }
+
+    setDipChatStore({
+      chatList: newChatListRef.current,
+      streamGenerating: currentConversationLoading,
+      singleStreamResult: newSingleStreamResult,
+      ...toolAutoExpandUpdateObj,
+    });
 
     // 流式结束后要做的事情
     if (!response.generating) {
@@ -408,7 +418,6 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
   /** 流式接口发送 */
   const sendChat = async (params: SendChatPram) => {
     const {
-      streamGenerating,
       activeChatItemIndex,
       activeConversationKey,
       aiInputValue,
@@ -419,126 +428,102 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
       chatList,
     } = getStore();
 
-    if (!streamGenerating) {
+    setDipChatStore({
+      chatListAutoScroll: true,
+      streamGenerating: true,
+      toolAutoExpand: true,
+      singleStreamResult: [],
+    });
+
+    let canSend: any = true;
+    // debugger 模式下，先调用一次保存接口，触发Agent配置页面的报错
+    if (debug && onSaveAgent) {
+      canSend = await onSaveAgent();
+    }
+    if (!canSend) {
       setDipChatStore({
-        chatListAutoScroll: true,
-        streamGenerating: true,
-        toolAutoExpand: true,
-        singleStreamResult: [],
+        streamGenerating: false,
       });
+      return;
+    }
 
-      let canSend: any = true;
-      // debugger 模式下，先调用一次保存接口，触发Agent配置页面的报错
-      if (debug && onSaveAgent) {
-        canSend = await onSaveAgent();
-      }
-      if (!canSend) {
-        setDipChatStore({
-          streamGenerating: false,
-        });
-        return;
-      }
+    if (debug) {
+      // debug模式下，每次发送，都要打开Debugger区域
+      setDipChatStore({
+        showDebuggerArea: true,
+      });
+    }
 
-      if (debug) {
-        // debug模式下，每次发送，都要打开Debugger区域
-        setDipChatStore({
-          showDebuggerArea: true,
-        });
-      }
+    if (activeConversationKey) {
+      params.body.conversation_id = activeConversationKey;
+    }
 
-      if (activeConversationKey) {
-        params.body.conversation_id = activeConversationKey;
+    // 是否带上文件，看有没有开启临时区域  决定文件如何传递
+    if (!params.body.temp_files) {
+      let files = aiInputValue.fileList;
+      // 调试模式下，临时区域不会渲染，故上传的文件只可能在对话框里面上传
+      if (!debug && getTempAreaEnabled()) {
+        files = tempFileList.filter(file => file.checked);
       }
-
-      // 是否带上文件，看有没有开启临时区域  决定文件如何传递
-      if (!params.body.temp_files) {
-        let files = aiInputValue.fileList;
-        // 调试模式下，临时区域不会渲染，故上传的文件只可能在对话框里面上传
-        if (!debug && getTempAreaEnabled()) {
-          files = tempFileList.filter(file => file.checked);
-        }
-        if (files.length > 0) {
-          params.body.temp_files = files.map(item => ({
-            id: item.id,
-            name: item.name,
-            type: item.type,
-            details: {
-              docid: item.docid,
-              size: item.size,
-            },
-          }));
-          // 将文件回显到用户的问题上
-          if (params.chatList) {
-            params.chatList.forEach((item, index) => {
-              if (item.role === 'user' && index === params.chatList!.length - 2) {
-                item.fileList = files;
-              }
-            });
-          }
+      if (files.length > 0) {
+        params.body.temp_files = files.map(item => ({
+          id: item.id,
+          name: item.name,
+          type: item.type,
+          details: {
+            docid: item.docid,
+            size: item.size,
+          },
+        }));
+        // 将文件回显到用户的问题上
+        if (params.chatList) {
+          params.chatList.forEach((item, index) => {
+            if (item.role === 'user' && index === params.chatList!.length - 2) {
+              item.fileList = files;
+            }
+          });
         }
       }
+    }
 
-      // 是否更新聊天列表
-      if (params.chatList) {
-        let chatItemIndex = -1;
-        if (activeChatItemIndex !== -1) {
-          chatItemIndex = params.activeChatItemIndex ?? params.chatList.length - 1;
-        }
-        setDipChatStore({
-          chatList: params.chatList,
-          activeChatItemIndex: chatItemIndex,
-        });
+    // 是否更新聊天列表
+    if (params.chatList) {
+      let chatItemIndex = -1;
+      if (activeChatItemIndex !== -1) {
+        chatItemIndex = params.activeChatItemIndex ?? params.chatList.length - 1;
       }
+      setDipChatStore({
+        chatList: params.chatList,
+        activeChatItemIndex: chatItemIndex,
+      });
+    }
 
-      const getReqBody = () => {
-        if (debug) {
-          const paramsBody = _.cloneDeep(params.body);
-          const conversation_id = paramsBody.conversation_id;
-          delete paramsBody.conversation_id;
-          let agent_id = agentDetails?.id;
-          if (!agent_id && typeof canSend === 'string') {
-            agent_id = canSend;
-          }
-          return {
-            agent_id,
-            agent_version: 'v0', // v0 可以获取到最新的保存但是未发布的Agent配置
-            input: {
-              ...paramsBody,
-            },
-            conversation_id,
-            stream: true,
-            inc_stream: true,
-            executor_version: 'v2',
-            chat_option: {
-              is_need_history: true,
-              is_need_doc_retrival_post_process: true,
-              is_need_progress: true,
-              enable_dependency_cache: false,
-            },
-          };
-        }
-        // 说明要恢复对话
-        if (params.recoverConversation) {
-          const lastChatItem = chatList[chatList.length - 1];
-          const tempObj: any = {
-            conversation_id: params.body.conversation_id,
-            agent_run_id: lastChatItem.agentRunId,
-          };
-          if (lastChatItem.interrupt) {
-            tempObj.resume_interrupt_info = {
-              resume_handle: lastChatItem.interrupt.handle,
-              action: params.body.interruptAction,
-              modified_args: params.body.interruptModifiedArgs ?? [],
-            };
-          }
-          return tempObj;
-        }
-        const agent_id = agentDetails?.id;
-        const agent_version = agentDetails?.version;
+    const getReqBody = () => {
+      // 说明要恢复对话
+      if (params.recoverConversation) {
         return {
-          ...params.body,
+          conversation_id: params.body.conversation_id,
+        };
+      }
+      const lastChatItem = chatList[chatList.length - 1] || {};
+      const cloneParamsBody = _.cloneDeep(params.body);
+      delete cloneParamsBody.conversation_id;
+      delete cloneParamsBody.interruptAction;
+      delete cloneParamsBody.interruptModifiedArgs;
+      // 说明是debug
+      if (debug) {
+        const conversation_id = params.body.conversation_id;
+        let agent_id = agentDetails?.id;
+        if (!agent_id && typeof canSend === 'string') {
+          agent_id = canSend;
+        }
+        const debugBody: any = {
           agent_id,
-          agent_version,
+          agent_version: 'v0', // v0 可以获取到最新的保存但是未发布的Agent配置
+          input: {
+            ...cloneParamsBody,
+          },
+          conversation_id,
           stream: true,
           inc_stream: true,
           executor_version: 'v2',
@@ -546,37 +531,87 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
             is_need_history: true,
             is_need_doc_retrival_post_process: true,
             is_need_progress: true,
-            enable_dependency_cache: true,
+            enable_dependency_cache: false,
           },
         };
-      };
-      const reqBody = getReqBody();
-      send({
-        body: { ...reqBody },
-        url: getChatUrl(agentAppKey ?? reqBody.agent_id, params.recoverConversation, debug),
-        increase_stream: true,
-      });
-      if (!debug) {
-        clearTempAreaFileChecked();
+        if (lastChatItem.agentRunId && !lastChatItem.cancel && !_.isEmpty(lastChatItem.interrupt)) {
+          debugBody.agent_run_id = lastChatItem.agentRunId;
+        }
+        if (!_.isEmpty(lastChatItem.interrupt)) {
+          debugBody.resume_interrupt_info = {
+            resume_handle: lastChatItem.interrupt.handle,
+            data: lastChatItem.interrupt.data,
+            action: params.body.interruptAction,
+            modified_args: params.body.interruptModifiedArgs ?? [],
+          };
+          debugBody.interrupted_assistant_message_id = lastChatItem.key;
+        }
+        return debugBody;
       }
+      // 非debug
+      const agent_id = agentDetails?.id;
+      const agent_version = agentDetails?.version;
+      const body: any = {
+        ...cloneParamsBody,
+        conversation_id: params.body.conversation_id,
+        agent_id,
+        agent_version,
+        stream: true,
+        inc_stream: true,
+        executor_version: 'v2',
+        chat_option: {
+          is_need_history: true,
+          is_need_doc_retrival_post_process: true,
+          is_need_progress: true,
+          enable_dependency_cache: true,
+        },
+      };
+      if (lastChatItem.agentRunId && !lastChatItem.cancel && !_.isEmpty(lastChatItem.interrupt)) {
+        body.agent_run_id = lastChatItem.agentRunId;
+      }
+      if (!_.isEmpty(lastChatItem.interrupt)) {
+        body.resume_interrupt_info = {
+          data: lastChatItem.interrupt.data,
+          resume_handle: lastChatItem.interrupt.handle,
+          action: params.body.interruptAction,
+          modified_args: params.body.interruptModifiedArgs ?? [],
+        };
+        body.interrupted_assistant_message_id = lastChatItem.key;
+      }
+      return body;
+    };
+    const reqBody = getReqBody();
+    send({
+      body: { ...reqBody },
+      url: getChatUrl(agentAppKey ?? reqBody.agent_id, params.recoverConversation, debug),
+      increase_stream: true,
+    });
+    if (!debug) {
+      clearTempAreaFileChecked();
     }
   };
 
   /** 终止会话 */
-  const stopChat = () => {
-    const { chatList, streamGenerating, activeConversationKey, agentAppKey } = getStore();
-    if (streamGenerating) {
-      stop();
-      const newChatList = _.cloneDeep(chatList);
-      const lastIndex = newChatList.length - 1;
-      if (newChatList[lastIndex]) {
-        newChatList[lastIndex].cancel = true;
-        newChatList[lastIndex].loading = false;
+  const stopChat = async () => {
+    const { chatList, activeConversationKey, agentAppKey } = getStore();
+    stop();
+    const newChatList = _.cloneDeep(chatList);
+    const lastIndex = newChatList.length - 1;
+    if (newChatList[lastIndex]) {
+      newChatList[lastIndex].cancel = true;
+      newChatList[lastIndex].loading = false;
+      newChatList[lastIndex].status = 'cancelled';
+      delete newChatList[lastIndex].interrupt;
+      const agentRunId = newChatList[lastIndex].agentRunId!;
+      const res = await stopConversation(agentAppKey, activeConversationKey, agentRunId, newChatList[lastIndex].key);
+      if (res) {
+        // console.log('终止会话成功', newChatList);
         setDipChatStore({
           chatList: newChatList,
+          streamGenerating: false,
+          activeProgressIndex: -1,
+          activeChatItemIndex: -1,
         });
-        const agentRunId = newChatList[lastIndex].agentRunId!;
-        stopConversation(agentAppKey, activeConversationKey, agentRunId);
       }
     }
   };
@@ -660,6 +695,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
       const res: any = await getConversationDetailsById(agentAppKey, key);
       if (res && res.Messages) {
         let recoverConversation = false;
+        let conversationLoading = false;
         const data = res.Messages.map((item: any) => ({
           ...item,
           content: isJSONString(item.content) ? JSON.parse(item.content) : {},
@@ -688,24 +724,31 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
             });
           }
           if (item.origin === 'assistant') {
-            // 说明要恢复未完成的对话
-            if (index === data.length - 1 && item.status === 'processing') {
-              recoverConversation = true;
-            }
             const ext = isJSONString(item.ext) ? JSON.parse(item.ext) : {};
-            const interrupt_info = _.get(ext, ['interrupt_info']);
+            const interrupt_info = _.get(ext, ['interrupt_info']) || {};
             newChatList.push({
               key: item.id,
               role: 'common',
               content: getChatItemContent(item),
-              interrupt: interrupt_info,
+              interrupt: item.status === 'processing' ? interrupt_info : undefined,
               error: item.status === 'failed' ? '{}' : undefined,
-              agentRunId: _.get(item, 'agent_run_id'),
+              agentRunId: _.get(ext, 'agent_run_id'),
+              cancel: item.status === 'cancelled',
+              status: item.status,
             });
+            // 说明要恢复未完成的对话 (中断的情况不能直接恢复接口)
+            if (index === data.length - 1 && item.status === 'processing') {
+              recoverConversation = true;
+              if (!_.isEmpty(interrupt_info)) {
+                conversationLoading = true;
+                recoverConversation = false;
+              }
+            }
           }
         });
         resolve({
           recoverConversation,
+          conversationLoading,
           chatList: newChatList,
           read_message_index: res.read_message_index,
           message_index: res.message_index,
@@ -718,7 +761,9 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
   return (
     <DipChatContext.Provider
       value={{
-        dipChatStore: store,
+        dipChatStore: {
+          ...store,
+        },
         setDipChatStore,
         getDipChatStore: getStore,
         resetDipChatStore: resetStore,

@@ -1,4 +1,4 @@
-import React, { CSSProperties, useState } from 'react';
+import React, { type CSSProperties, useState } from 'react';
 import { Button } from 'antd';
 import { useDipChatStore } from '../../store';
 // import { copyToBoard } from '@/utils/handle-function';

@@ -1,7 +1,14 @@
 import styles from './index.module.less';
 import { useEffect, useRef, useState } from 'react';
 import { Button, Dropdown, message, Modal, Popover, Spin, Tooltip } from 'antd';
-import { ClockCircleOutlined, EditOutlined, LeftOutlined, LoadingOutlined, MessageOutlined } from '@ant-design/icons';
+import {
+  ClockCircleOutlined,
+  CloseCircleFilled,
+  EditOutlined,
+  LeftOutlined,
+  LoadingOutlined,
+  MessageOutlined,
+} from '@ant-design/icons';
 import classNames from 'classnames';
 import { useDipChatStore } from '@/components/DipChat/store';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -85,7 +92,7 @@ const ConversationList = ({ startNewConversation, className }: any) => {
   const getDetailsById = async (id: string) => {
     const res: any = await getConversationDetailsByKey(id);
     if (res) {
-      const { recoverConversation, chatList, read_message_index, message_index } = res;
+      const { recoverConversation, chatList, read_message_index, message_index, conversationLoading } = res;
       if (recoverConversation) {
         setDipChatStore({
           activeConversationKey: id,
@@ -96,7 +103,7 @@ const ConversationList = ({ startNewConversation, className }: any) => {
           recoverConversation: true,
         });
       } else {
-        setDipChatStore({ chatList });
+        setDipChatStore({ chatList, streamGenerating: conversationLoading });
         if (read_message_index !== message_index) {
           // 标记会话已读
           await markReadConversation(agentAppKey, id, message_index);
@@ -123,7 +130,6 @@ const ConversationList = ({ startNewConversation, className }: any) => {
               cancelChat();
               // 此处用 setTimeout 的目的是：要等cancelChat涉及的状态全部执行完毕
               setTimeout(() => {
-                console.log('取消会话了哈哈哈哈 ++++ cancelChat');
                 const url = new URL(window.location.href);
                 url.searchParams.set('conversation_id', item.key);
                 // 使用history API更新URL而不刷新页面
@@ -131,7 +137,12 @@ const ConversationList = ({ startNewConversation, className }: any) => {
                 setDipChatStore({
                   activeConversationKey: item.key,
                 });
-                resetDipChatStore(['activeChatItemIndex', 'chatListAutoScroll', 'activeProgressIndex']);
+                resetDipChatStore([
+                  'activeChatItemIndex',
+                  'chatListAutoScroll',
+                  'activeProgressIndex',
+                  'streamGenerating',
+                ]);
                 getDetailsById(item.key);
               }, 0);
             }
@@ -155,6 +166,7 @@ const ConversationList = ({ startNewConversation, className }: any) => {
               <Spin className="dip-ml-8" size="small" indicator={<LoadingOutlined style={{ fontSize: 14 }} spin />} />
             </Tooltip>
           )}
+          {item.status === 'failed' && <CloseCircleFilled className="dip-text-color-error" />}
           <Dropdown
             trigger={['click']}
             menu={{
