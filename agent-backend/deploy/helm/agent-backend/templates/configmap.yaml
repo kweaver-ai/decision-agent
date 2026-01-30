@@ -46,11 +46,48 @@ data:
 
   agent-factory.yaml: |
     # 配置文件路径/sysvol/conf/agent-factory.yaml
+
+    # ========== 开发环境控制开关 ==========
+    # 生产环境建议设置为 false
+    disable_pms_check: {{ .Values.service.disablePmsCheck | default false }}
+    disable_biz_domain_init: {{ .Values.service.disableBizDomainInit | default false }}
+    use_default_biz_domain: {{ .Values.service.useDefaultBizDomain | default false }}
+    disable_audit_init: {{ .Values.service.disableAuditInit | default false }}
+    mock_mq_client: {{ .Values.service.mockMqClient | default false }}
+    mock_sandbox_platform: {{ .Values.service.mockSandboxPlatform | default false }}
+    mock_hydra: {{ .Values.service.mockHydra | default false }}
+    mock_authz: {{ .Values.service.mockAuthz | default false }}
+    mock_biz_domain: {{ .Values.service.mockBizDomain | default false }}
+    # ========================================
+
+    # ========== Swagger 文档配置 ==========
+    enable_swagger: {{ .Values.service.enableSwagger | default false }}
+    swagger_token: {{ .Values.service.swaggerToken | quote | default "" }}
+    # ========================================
+
     project:
       language: {{ .Values.service.language }}
       host: "0.0.0.0"
       port: {{ .Values.service.port }}
       logger_level: {{ .Values.service.loggerLevel }}
+      log_file: {{ .Values.service.logFile | quote | default "/var/log/agent-factory/agent-factory.log" }}
+
+      # ========== 依赖服务配置 ==========
+      rbac_host: {{ .Values.depServices.rbac.host | quote }}
+      rbac_port: {{ .Values.depServices.rbac.port }}
+      intelli_qa_host: {{ .Values.depServices.intelliQa.host | quote }}
+      intelli_qa_port: {{ .Values.depServices.intelliQa.port }}
+      builder_host: {{ .Values.depServices.builder.host | quote }}
+      builder_port: {{ .Values.depServices.builder.port }}
+      auth_host: {{ .Values.depServices.auth.host | quote }}
+      auth_port: {{ .Values.depServices.auth.port }}
+      agent_app_host: {{ .Values.depServices.agentApp.host | quote }}
+      agent_app_port: {{ .Values.depServices.agentApp.port }}
+
+      debug: {{ .Values.service.debug | default false }}
+      debug_host: {{ .Values.service.debugHost | quote | default "" }}
+      # ========================================
+
     keep_legacy_app_path: {{ .Values.service.keep_legacy_app_path }}
     hydra:
       user-mgnt:
@@ -72,19 +109,43 @@ data:
       {{- toYaml .Values.depServices.authorization | nindent 6 }}
     agent_factory:
       {{- toYaml .Values.depServices.agentFactory | nindent 6 }}
+    # ========== Sandbox Platform 配置 ==========
     sandbox_platform:
-      {{- toYaml .Values.depServices.sandboxPlatform | nindent 6 }}
-    # ========== 新增必需配置 ==========
+      public_svc:
+        host: {{ .Values.depServices.sandboxPlatform.publicSvc.host | quote }}
+        port: {{ .Values.depServices.sandboxPlatform.publicSvc.port }}
+        protocol: {{ .Values.depServices.sandboxPlatform.publicSvc.protocol | quote }}
+      private_svc:
+        host: {{ .Values.depServices.sandboxPlatform.privateSvc.host | quote }}
+        port: {{ .Values.depServices.sandboxPlatform.privateSvc.port }}
+        protocol: {{ .Values.depServices.sandboxPlatform.privateSvc.protocol | quote }}
+      default_ttl: {{ .Values.depServices.sandboxPlatform.defaultTtl | default 3600 }}
+      max_retries: {{ .Values.depServices.sandboxPlatform.maxRetries | default 10 }}
+      retry_interval: {{ .Values.depServices.sandboxPlatform.retryInterval | quote | default "500ms" }}
+      default_template_id: {{ .Values.depServices.sandboxPlatform.defaultTemplateId | quote | default "python-basic" }}
+      default_cpu: {{ .Values.depServices.sandboxPlatform.defaultCpu | quote | default "1" }}
+      default_memory: {{ .Values.depServices.sandboxPlatform.defaultMemory | quote | default "512Mi" }}
+      default_disk: {{ .Values.depServices.sandboxPlatform.defaultDisk | quote | default "1Gi" }}
+      default_timeout: {{ .Values.depServices.sandboxPlatform.defaultTimeout | default 300 }}
+      file_upload_config:
+        max_file_size: {{ .Values.depServices.sandboxPlatform.fileUploadConfig.maxFileSize | default 10 }}
+        max_file_size_unit: {{ .Values.depServices.sandboxPlatform.fileUploadConfig.maxFileSizeUnit | quote | default "MB" }}
+        max_file_count: {{ .Values.depServices.sandboxPlatform.fileUploadConfig.maxFileCount | default 10 }}
+        allowed_file_types:
+        {{- toYaml .Values.depServices.sandboxPlatform.fileUploadConfig.allowedFileTypes | nindent 8 }}
+    # ========================================
+    # ========== Agent Executor 配置 ==========
     agent_executor:
       private_svc:
-        host: localhost
-        port: {{ .Values.agentExecutor.port | default 30778 }}
-        protocol: http
+        host: {{ .Values.depServices.agentExecutor.privateSvc.host | quote }}
+        port: {{ .Values.depServices.agentExecutor.privateSvc.port }}
+        protocol: {{ .Values.depServices.agentExecutor.privateSvc.protocol | quote }}
       public_svc:
-        host: localhost
-        port: {{ .Values.agentExecutor.port | default 30778 }}
-        protocol: http
-      use_v2: {{ .Values.depServices.agentExecutor.use_v2 | default true }}
+        host: {{ .Values.depServices.agentExecutor.publicSvc.host | quote }}
+        port: {{ .Values.depServices.agentExecutor.publicSvc.port }}
+        protocol: {{ .Values.depServices.agentExecutor.publicSvc.protocol | quote }}
+      use_v2: {{ .Values.depServices.agentExecutor.useV2 | default true }}
+    # ========================================
     efast:
       {{- toYaml .Values.depServices.efast | nindent 6 }}
     docset:
