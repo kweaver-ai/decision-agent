@@ -40,7 +40,9 @@ func (agentSvc *agentSvc) TerminateChat(ctx context.Context, conversationID stri
 	stopchan, ok := stopChanMap.Load(conversationID)
 	if ok && stopchan != nil {
 		// 找到 stopchan 且不为 nil，执行关闭操作
-		close(stopchan.(chan struct{}))
+		if ch, ok := stopchan.(chan struct{}); ok && ch != nil {
+			close(ch)
+		}
 		stopChanMap.Delete(conversationID)
 		o11y.Info(ctx, fmt.Sprintf("[TerminateChat] terminate chat success, conversationID: %s", conversationID))
 		agentSvc.logger.Infof("terminate chat success, conversationID: %s", conversationID)
@@ -91,4 +93,3 @@ func (agentSvc *agentSvc) TerminateChat(ctx context.Context, conversationID stri
 
 	return
 }
-

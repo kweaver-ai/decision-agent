@@ -130,7 +130,6 @@ const ConversationList = ({ startNewConversation, className }: any) => {
               cancelChat();
               // 此处用 setTimeout 的目的是：要等cancelChat涉及的状态全部执行完毕
               setTimeout(() => {
-                console.log('取消会话了哈哈哈哈 ++++ cancelChat');
                 const url = new URL(window.location.href);
                 url.searchParams.set('conversation_id', item.key);
                 // 使用history API更新URL而不刷新页面
