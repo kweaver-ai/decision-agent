@@ -996,58 +996,63 @@ type ChatReq struct {
 
 ---
 
-## 7.3 实现 buildUserQuery 函数
+## 7.3 实现 buildWorkspaceContextMessage 函数
 
 ### 新增文件
 
-**domain/service/agentrunsvc/inject_workspace_context.go**（新建）：
+**domain/service/util/workspace_util.go**（新建）：
 
 ```go
-package agentsvc
+package util
 
 import (
     "fmt"
+    "path"
     "strings"
 
     agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 )
 
-// buildUserQuery 将文件信息注入到用户问题中
-// 生成的格式：
-// 当前会话的临时文件路径：/workspace/{conversation_id}/uploads/temparea/
-//
-// 可用文件：
-// - data.csv (/workspace/conv-123/uploads/temparea/data.csv)
-// - config.json (/workspace/conv-123/uploads/temparea/config.json)
-//
-// 用户问题：{originalQuery}
-func buildUserQuery(originalQuery string, conversationID string, selectedFiles []agentreq.SelectedFile) string {
-    // 如果没有选择文件，直接返回原始问题
+// BuildWorkspaceContextMessage 生成独立的工作区上下文消息
+// 作为单独的 "user" 角色消息插入，与用户问题分离
+// selectedFiles.FileName 包含完整路径，例如：/workspace/conv-123/uploads/temparea/data.csv
+func BuildWorkspaceContextMessage(conversationID string, userID string, selectedFiles []agentreq.SelectedFile) string {
     if len(selectedFiles) == 0 {
-        return originalQuery
+        return ""
     }
 
-    // 构建文件列表
     var fileList strings.Builder
     for _, file := range selectedFiles {
-        filePath := fmt.Sprintf("/workspace/%s/uploads/temparea/%s", conversationID, file.FileName)
-        fileList.WriteString(fmt.Sprintf("- %s (%s)\n", file.FileName, filePath))
+        // file.FileName 现在是完整路径，例如：/workspace/conv-123/uploads/temparea/data.csv
+        fullPath := file.FileName
+        fileName := path.Base(fullPath)
+        fileList.WriteString(fmt.Sprintf("- %s (%s)\n", fileName, fullPath))
     }
 
-    // 注入文件信息到用户问题之前
     rootPath := fmt.Sprintf("/workspace/%s/uploads/temparea/", conversationID)
-    injectedQuery := fmt.Sprintf(`当前会话的临时文件路径：%s
+    sandboxSessionID := fmt.Sprintf("sess-%s", userID)
+    contextMsg := fmt.Sprintf(`【System auto-generated context - not user query】
 
-可用文件：
-%s用户问题：%s`,
+Current workspace path: %s
+Sandbox Session ID: %s (IMPORTANT: This ID MUST be passed as the 'session_id' parameter when calling code execution tools...)
+
+Available files:
+%s`,
         rootPath,
+        sandboxSessionID,
         fileList.String(),
-        originalQuery,
     )
 
-    return injectedQuery
+    return contextMsg
 }
 ```
+
+### 设计说明
+
+1. **独立消息而非拼接**：上下文作为独立的 LLMMessage 插入，不与用户查询拼接
+2. **使用 "user" 角色**：文件是短生命周期状态，不同于长期缓存的 system prompt
+3. **包含 Sandbox Session ID**：明确告知 LLM 代码执行时需要传递的 session_id 参数
+4. **完整路径处理**：从 `SelectedFiles.FileName`（完整路径）中提取文件名用于显示
 
 ---
 
@@ -1066,28 +1071,36 @@ func (agentSvc *agentSvc) GenerateAgentCallReq(
 ) (*agentexecutordto.AgentCallReq, error) {
     // ... 现有代码 ...
 
-    // 新增：根据 SelectedFiles 注入文件信息到 query
-    finalQuery := buildUserQuery(req.Query, req.ConversationID, req.SelectedFiles)
+    if contexts == nil {
+        contexts = []*comvalobj.LLMMessage{}
+    }
+    // NOTE: 如果req.History不为空，应该直接使用req.History
+    if len(req.History) > 0 {
+        contexts = req.History
+    }
+
+    // 新增：将当前消息的上下文添加到 contexts
+    // 如果有选中的文件，先插入工作区上下文消息
+    // 注意：当前用户查询不需要添加到 contexts，因为它已经通过 Input["query"] 单独传递
+    if len(req.SelectedFiles) > 0 {
+        contextMsg := &comvalobj.LLMMessage{
+            Role:    "user",
+            Content: util.BuildWorkspaceContextMessage(req.ConversationID, req.UserID, req.SelectedFiles),
+        }
+        contexts = append(contexts, contextMsg)
+    }
 
     agentCallReq := &agentexecutordto.AgentCallReq{
         ID:           req.AgentID,
         AgentVersion: req.AgentVersion,
         Config:       AgentConfig2AgentCallConfig(ctx, &agent.Config, req),
         Input: map[string]interface{}{
-            "query":        finalQuery,  // 使用注入后的 query（修改点）
-            "history":      contexts,
-            "tool":         req.Tool,
-            "confirm_plan": req.ConfirmPlan,
+            "query":   req.Query,  // 使用干净的原始 query
+            "history": contexts,    // 包含历史 + 上下文消息（如果有文件）
+            // ... 其他字段 ...
         },
         // ... 其他字段保持不变 ...
     }
-
-    // 删除旧的 TempFiles 处理逻辑（如果有）
-    // 原来的代码可能在 agent.Config.Input.Fields 中处理 type="file" 的字段
-    // 现在不再需要，因为文件信息已经注入到 query 中
-    // agentCallReq.Input[field.Name] = req.TempFiles  // 删除这行
-
-    // ... 其他代码保持不变 ...
 
     return agentCallReq, nil
 }
@@ -1095,55 +1108,86 @@ func (agentSvc *agentSvc) GenerateAgentCallReq(
 
 ### 代码对比
 
-**修改前**：
+**修改前**（旧实现 - 将文件信息拼接进 query）：
 ```go
-agentCallReq := &agentexecutordto.AgentCallReq{
-    Input: map[string]interface{}{
-        "query": req.Query,  // 直接使用原始 query
-        // ...
-    },
-}
-
-// 旧的处理方式：将 TempFiles 传递给 agent-executor
-if field.Type == "file" {
-    agentCallReq.Input[field.Name] = req.TempFiles
-}
-```
-
-**修改后**：
-```go
-// 先构建注入后的 query
+// 旧方式：拼接文件信息到 query
 finalQuery := buildUserQuery(req.Query, req.ConversationID, req.SelectedFiles)
 
 agentCallReq := &agentexecutordto.AgentCallReq{
     Input: map[string]interface{}{
-        "query": finalQuery,  // 使用注入后的 query
-        // ...
+        "query": finalQuery,  // 包含文件信息的拼接字符串
+        "history": contexts,
     },
 }
+```
 
-// 不再需要处理 TempFiles
-// 删除相关代码
+**修改后**（新实现 - 独立上下文消息）：
+```go
+// 新方式：上下文作为独立消息插入
+if len(req.SelectedFiles) > 0 {
+    contextMsg := &comvalobj.LLMMessage{
+        Role:    "user",
+        Content: util.BuildWorkspaceContextMessage(req.ConversationID, req.UserID, req.SelectedFiles),
+    }
+    contexts = append(contexts, contextMsg)
+}
+
+agentCallReq := &agentexecutordto.AgentCallReq{
+    Input: map[string]interface{}{
+        "query":   req.Query,  // 干净的原始 query
+        "history": contexts,    // history 中包含上下文消息
+    },
+}
+```
+
+### 历史消息重建
+
+**domain/service/conversationsvc/get_history.go**：
+
+```go
+// 在 GetHistory 函数中，为有 SelectedFiles 的用户消息重建上下文
+for _, msg := range conversation.Messages {
+    if msg.Role == cdaenum.MsgRoleUser {
+        userContent := conversationmsgvo.UserContent{}
+        if msg.Content != nil && *msg.Content != "" {
+            err := sonic.Unmarshal([]byte(*msg.Content), &userContent)
+            // ...
+        }
+
+        // NEW: 如果用户选中了文件，先插入工作区上下文消息
+        if len(userContent.SelectedFiles) > 0 {
+            contextMsg := &comvalobj.LLMMessage{
+                Role:    "user",
+                Content: util.BuildWorkspaceContextMessage(msg.ConversationID, conversation.CreateBy, userContent.SelectedFiles),
+            }
+            history = append(history, contextMsg)
+        }
+
+        // 然后添加实际的用户查询
+        history = append(history, &comvalobj.LLMMessage{
+            Role:    string(msg.Role),
+            Content: userContent.Text,
+        })
+    }
+}
 ```
 
 ---
 
 ## 7.5 agent-executor 端无需修改
 
-由于文件信息已经在 agent-factory 端注入到 query 中，agent-executor 端**无需任何修改**：
+由于文件信息已经作为独立的上下文消息注入到 `history` 中，agent-executor 端**无需任何修改**：
 
-- agent-executor 只接收完整的 query（已包含文件路径信息）
-- LLM 在 prompt 中会看到类似以下内容：
+- agent-executor 接收干净的 `query` 和包含上下文的 `history`
+- LLM 在 messages 中会看到类似以下结构：
+  ```json
+  [
+    { "role": "system", "content": "..." },
+    { "role": "user", "content": "【System auto-generated context - not user query】\n\nCurrent workspace path: /workspace/conv-123/uploads/temparea/\nSandbox Session ID: sess-user-123\n\nAvailable files:\n- data.csv (/workspace/conv-123/uploads/temparea/data.csv)" },
+    { "role": "user", "content": "分析一下 data.csv 中的销售趋势" }
+  ]
   ```
-  当前会话的临时文件路径：/workspace/conv-123/uploads/temparea/
-
-  可用文件：
-  - data.csv (/workspace/conv-123/uploads/temparea/data.csv)
-  - config.json (/workspace/conv-123/uploads/temparea/config.json)
-
-  用户问题：分析一下 data.csv 中的销售趋势
-  ```
-- Agent 生成的代码可以直接使用路径 `/workspace/conv-123/uploads/temparea/data.csv`
+- Agent 生成的代码可以直接使用路径和 session_id
 
 ### Agent 代码示例
 
@@ -1151,10 +1195,7 @@ agentCallReq := &agentexecutordto.AgentCallReq{
 # Agent 生成的代码中引用用户上传的文件
 import pandas as pd
 
-# 文件路径格式：/workspace/{conversation_id}/uploads/temparea/{filename}
-# Agent 直接使用物理路径，无需 mount 映射
-
-# 读取用户上传的文件（路径已在 prompt 中提供）
+# 读取用户上传的文件（路径已在 context 中提供）
 df = pd.read_csv('/workspace/conv-123/uploads/temparea/data.csv')
 print(df.head())
 
@@ -1164,6 +1205,9 @@ result = df.describe()
 # Agent 生成结果文件（可选，不在 temparea 目录）
 with open('/workspace/uploads/result.json', 'w') as f:
     f.write(result.to_json())
+
+# 注意：如果需要执行代码，必须传递 session_id
+# execute_code(session_id="sess-user-123", code="...")
 ```
 
 ---
@@ -1176,52 +1220,76 @@ with open('/workspace/uploads/result.json', 'w') as f:
 {
   "query": "分析一下 data.csv 中的销售趋势",
   "conversation_id": "conv-123",
+  "user_id": "user-123",
   "stream": true,
   "selected_files": [
-    { "file_name": "data.csv" },
-    { "file_name": "config.json" }
+    { "file_name": "/workspace/conv-123/uploads/temparea/data.csv" },
+    { "file_name": "/workspace/conv-123/uploads/temparea/config.json" }
   ]
 }
 ```
 
-### 注入后的 query（传递给 LLM）
+### 传递给 agent-executor 的 Input
 
+```json
+{
+  "query": "分析一下 data.csv 中的销售趋势",
+  "history": [
+    {
+      "role": "system",
+      "content": "You are a helpful assistant..."
+    },
+    {
+      "role": "user",
+      "content": "【System auto-generated context - not user query】\n\nCurrent workspace path: /workspace/conv-123/uploads/temparea/\nSandbox Session ID: sess-user-123 (IMPORTANT: This ID MUST be passed as the 'session_id' parameter when calling code execution tools...)\n\nAvailable files:\n- data.csv (/workspace/conv-123/uploads/temparea/data.csv)\n- config.json (/workspace/conv-123/uploads/temparea/config.json)"
+    },
+    {
+      "role": "user",
+      "content": "分析一下 data.csv 中的销售趋势"
+    }
+  ]
+}
 ```
-当前会话的临时文件路径：/workspace/conv-123/uploads/temparea/
 
-可用文件：
-- data.csv (/workspace/conv-123/uploads/temparea/data.csv)
-- config.json (/workspace/conv-123/uploads/temparea/config.json)
+### 关键变化说明
 
-用户问题：分析一下 data.csv 中的销售趋势
-```
+1. **query 保持干净**：`query` 字段只包含用户原始问题
+2. **上下文独立消息**：文件信息和 session_id 作为独立的 user 角色消息插入 history
+3. **session_id 明确传递**：上下文消息中明确告知 LLM 需要使用的 session_id
+4. **持久化保证**：`SelectedFiles` 已持久化到数据库，`GetHistory` 自动重建上下文
 
 ---
 
 ## 7.7 关键设计决策
 
-### 为什么选择 agent-factory 端注入？
+### 为什么选择独立上下文消息而非拼接？
 
-| 对比项 | agent-factory 端注入 | agent-executor 端注入 |
-|--------|---------------------|----------------------|
-| **复杂度** | 低 | 中 |
-| **依赖** | 不依赖 Sandbox Platform API | 需要传递 WorkspaceContext |
-| **修改范围** | 仅 agent-factory | agent-factory + agent-executor |
-| **耦合度** | 低（agent-executor 不感知） | 中（需要接收文件信息） |
-| **灵活性** | 高（注入逻辑集中管理） | 中（注入逻辑分散） |
+| 对比项 | 独立上下文消息 | 拼接到 query |
+|--------|---------------|-------------|
+| **语义清晰度** | 高（系统上下文 vs 用户问题明确分离） | 低（LLM 可能混淆） |
+| **模型行为** | 不会重复路径/文件名 | 倾向于重复提示信息 |
+| **持久化** | 从 `SelectedFiles` 重建，支持重入 | 需要额外处理拼接逻辑 |
+| **可维护性** | 上下文逻辑集中管理 | 拼接逻辑分散在各处 |
+
+### 为什么使用 "user" 角色而非 "system"？
+
+- **文件是短生命周期状态**：每次对话可能变化
+- **system prompt 是长期缓存**：相对稳定不变
+- **语义一致性**：文件属于用户会话上下文，而非系统级配置
 
 ### 为什么不需要 Sandbox Platform API？
 
-- 前端传递的 SelectedFiles 已经包含文件名
-- 完整路径可以根据约定规则直接构建：`/workspace/{conversation_id}/uploads/temparea/{file_name}`
+- 前端传递的 `SelectedFiles` 已经包含完整路径
+- 直接使用 `SelectedFiles.FileName` 作为完整路径
 - 避免额外的 API 调用，提升性能
 - 简化错误处理逻辑
 
-### 为什么删除旧字段？
+### 为什么独立上下文能解决重入问题？
 
-- `TemporaryAreaID`：不再需要，Sandbox Session 由 `user_id` 生成
-- `TempFiles`：不再需要，文件信息已注入到 query 中
-- 保持 API 简洁，避免字段冗余
+- **`SelectedFiles` 已持久化**：存储在数据库的 `UserContent` 中
+- **`GetHistory` 重建上下文**：读取历史消息时自动重建
+- **无需额外存储**：不增加消息索引污染
+- **自动同步**：文件变化时，新上下文自动反映当前状态
 
 ---
 
@@ -1658,9 +1726,55 @@ type ChatReq struct {
 
 ---
 
-## 阶段二：实现 buildUserQuery 函数
+## 阶段二：实现 buildWorkspaceContextMessage 函数
 
-### 2.1 创建新文件
+### 2.1 创建共享工具文件
+
+**文件**: `domain/service/util/workspace_util.go`（新建）
+
+```go
+package util
+
+import (
+    "fmt"
+    "path"
+    "strings"
+
+    agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
+)
+
+// BuildWorkspaceContextMessage 生成独立的工作区上下文消息
+func BuildWorkspaceContextMessage(conversationID string, userID string, selectedFiles []agentreq.SelectedFile) string {
+    if len(selectedFiles) == 0 {
+        return ""
+    }
+
+    var fileList strings.Builder
+    for _, file := range selectedFiles {
+        fullPath := file.FileName
+        fileName := path.Base(fullPath)
+        fileList.WriteString(fmt.Sprintf("- %s (%s)\n", fileName, fullPath))
+    }
+
+    rootPath := fmt.Sprintf("/workspace/%s/uploads/temparea/", conversationID)
+    sandboxSessionID := fmt.Sprintf("sess-%s", userID)
+    contextMsg := fmt.Sprintf(`【System auto-generated context - not user query】
+
+Current workspace path: %s
+Sandbox Session ID: %s (IMPORTANT: This ID MUST be passed as the 'session_id' parameter when calling code execution tools...)
+
+Available files:
+%s`,
+        rootPath,
+        sandboxSessionID,
+        fileList.String(),
+    )
+
+    return contextMsg
+}
+```
+
+### 2.2 创建包装函数（可选）
 
 **文件**: `domain/service/agentrunsvc/inject_workspace_context.go`（新建）
 
@@ -1668,35 +1782,30 @@ type ChatReq struct {
 package agentsvc
 
 import (
-    "fmt"
-    "strings"
-
+    "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/util"
     agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 )
 
-// buildUserQuery 将文件信息注入到用户问题中
-func buildUserQuery(originalQuery string, conversationID string, selectedFiles []agentreq.SelectedFile) string {
-    if len(selectedFiles) == 0 {
-        return originalQuery
-    }
+// buildWorkspaceContextMessage 生成独立的工作区上下文消息
+// 实际逻辑已移至 util.BuildWorkspaceContextMessage
+func buildWorkspaceContextMessage(conversationID string, userID string, selectedFiles []agentreq.SelectedFile) string {
+    return util.BuildWorkspaceContextMessage(conversationID, userID, selectedFiles)
+}
+```
 
-    var fileList strings.Builder
-    for _, file := range selectedFiles {
-        filePath := fmt.Sprintf("/workspace/%s/uploads/temparea/%s", conversationID, file.FileName)
-        fileList.WriteString(fmt.Sprintf("- %s (%s)\n", file.FileName, filePath))
-    }
+**文件**: `domain/service/conversationsvc/helpers.go`（更新）
 
-    rootPath := fmt.Sprintf("/workspace/%s/uploads/temparea/", conversationID)
-    injectedQuery := fmt.Sprintf(`当前会话的临时文件路径：%s
+```go
+package conversationsvc
 
-可用文件：
-%s用户问题：%s`,
-        rootPath,
-        fileList.String(),
-        originalQuery,
-    )
+import (
+    "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/util"
+    agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
+)
 
-    return injectedQuery
+// buildWorkspaceContextMessage 生成独立的工作区上下文消息
+func buildWorkspaceContextMessage(conversationID string, userID string, selectedFiles []agentreq.SelectedFile) string {
+    return util.BuildWorkspaceContextMessage(conversationID, userID, selectedFiles)
 }
 ```
 
@@ -1709,53 +1818,63 @@ func buildUserQuery(originalQuery string, conversationID string, selectedFiles [
 **文件**: `domain/service/agentrunsvc/chat_req.go`
 
 **修改点**：
-1. 添加 `buildUserQuery` 调用
-2. 使用注入后的 `finalQuery`
+1. 将上下文消息插入到 `contexts`（而非修改 query）
+2. 使用干净的原始 `req.Query`
 3. 删除旧的 `TempFiles` 处理逻辑
-
-**修改前**：
-```go
-agentCallReq := &agentexecutordto.AgentCallReq{
-    Input: map[string]interface{}{
-        "query": req.Query,  // 原始 query
-        // ...
-    },
-}
-
-// 旧的处理方式
-for _, field := range agent.Config.Input.Fields {
-    if field.Type == "file" {
-        agentCallReq.Input[field.Name] = req.TempFiles
-        continue
-    }
-    // ...
-}
-```
 
 **修改后**：
 ```go
-// 新增：注入文件信息到 query
-finalQuery := buildUserQuery(req.Query, req.ConversationID, req.SelectedFiles)
+// 新增：将当前消息的上下文添加到 contexts
+// 如果有选中的文件，先插入工作区上下文消息
+if len(req.SelectedFiles) > 0 {
+    contextMsg := &comvalobj.LLMMessage{
+        Role:    "user",
+        Content: buildWorkspaceContextMessage(req.ConversationID, req.UserID, req.SelectedFiles),
+    }
+    contexts = append(contexts, contextMsg)
+}
+
+// 注意：不需要将当前用户查询添加到 contexts，因为它通过 Input["query"] 单独传递
 
 agentCallReq := &agentexecutordto.AgentCallReq{
     Input: map[string]interface{}{
-        "query": finalQuery,  // 使用注入后的 query
-        "history":      contexts,
-        "tool":         req.Tool,
-        "confirm_plan": req.ConfirmPlan,
+        "query":   req.Query,  // 使用干净的原始 query
+        "history": contexts,    // 包含历史 + 上下文消息
+        // ...
     },
     // ... 其他字段保持不变 ...
 }
+```
 
-// 修改：跳过 type="file" 的字段处理
-excludeFields := []string{"history", "query", "header", "tool", "self_config", "file"}  // 新增 "file"
+### 3.2 修改 GetHistory 函数
 
-for _, field := range agent.Config.Input.Fields {
-    // 跳过内置参数和文件字段
-    if slices.Contains(excludeFields, field.Name) {
-        continue
+**文件**: `domain/service/conversationsvc/get_history.go`
+
+**修改点**：为有 `SelectedFiles` 的用户消息重建上下文
+
+```go
+// 在处理用户消息时
+if msg.Role == cdaenum.MsgRoleUser {
+    userContent := conversationmsgvo.UserContent{}
+    if msg.Content != nil && *msg.Content != "" {
+        err := sonic.Unmarshal([]byte(*msg.Content), &userContent)
+        // ...
     }
-    // ...
+
+    // NEW: 如果用户选中了文件，先插入工作区上下文消息
+    if len(userContent.SelectedFiles) > 0 {
+        contextMsg := &comvalobj.LLMMessage{
+            Role:    "user",
+            Content: buildWorkspaceContextMessage(msg.ConversationID, conversation.CreateBy, userContent.SelectedFiles),
+        }
+        history = append(history, contextMsg)
+    }
+
+    // 然后添加实际的用户查询
+    history = append(history, &comvalobj.LLMMessage{
+        Role:    string(msg.Role),
+        Content: userContent.Text,
+    })
 }
 ```
 
@@ -1875,49 +1994,59 @@ import (
     "testing"
 
     agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
+    "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/util"
     "github.com/stretchr/testify/assert"
 )
 
-func TestBuildUserQuery(t *testing.T) {
+func TestBuildWorkspaceContextMessage(t *testing.T) {
     tests := []struct {
-        name           string
-        originalQuery  string
-        conversationID string
-        selectedFiles  []agentreq.SelectedFile
-        expectedPrefix string
+        name            string
+        conversationID  string
+        userID          string
+        selectedFiles   []agentreq.SelectedFile
+        expectedPrefix  string
+        expectedContent string
     }{
         {
             name:           "no files selected",
-            originalQuery:  "hello",
             conversationID: "conv-123",
+            userID:         "user-123",
             selectedFiles:  []agentreq.SelectedFile{},
-            expectedPrefix: "hello",
+            expectedPrefix: "",
         },
         {
             name:           "single file selected",
-            originalQuery:  "analyze data",
             conversationID: "conv-123",
+            userID:         "user-456",
             selectedFiles: []agentreq.SelectedFile{
-                {FileName: "data.csv"},
+                {FileName: "/workspace/conv-123/uploads/temparea/data.csv"},
             },
-            expectedPrefix: "当前会话的临时文件路径：/workspace/conv-123/uploads/temparea/\n\n可用文件：\n- data.csv (/workspace/conv-123/uploads/temparea/data.csv)\n\n用户问题：analyze data",
+            expectedPrefix:  "【System auto-generated context - not user query】",
+            expectedContent: "Sandbox Session ID: sess-user-456",
         },
         {
             name:           "multiple files selected",
-            originalQuery:  "compare files",
             conversationID: "conv-456",
+            userID:         "user-789",
             selectedFiles: []agentreq.SelectedFile{
-                {FileName: "data1.csv"},
-                {FileName: "data2.csv"},
+                {FileName: "/workspace/conv-456/uploads/temparea/data1.csv"},
+                {FileName: "/workspace/conv-456/uploads/temparea/data2.csv"},
             },
-            expectedPrefix: "当前会话的临时文件路径：/workspace/conv-456/uploads/temparea/",
+            expectedPrefix: "【System auto-generated context - not user query】",
         },
     }
 
     for _, tt := range tests {
         t.Run(tt.name, func(t *testing.T) {
-            result := buildUserQuery(tt.originalQuery, tt.conversationID, tt.selectedFiles)
-            assert.Contains(t, result, tt.expectedPrefix)
+            result := util.BuildWorkspaceContextMessage(tt.conversationID, tt.userID, tt.selectedFiles)
+            if tt.expectedPrefix == "" {
+                assert.Empty(t, result)
+            } else {
+                assert.Contains(t, result, tt.expectedPrefix)
+            }
+            if tt.expectedContent != "" {
+                assert.Contains(t, result, tt.expectedContent)
+            }
         })
     }
 }
@@ -1926,13 +2055,18 @@ func TestBuildUserQuery(t *testing.T) {
 ### 6.2 集成测试
 
 1. 测试 `GenerateAgentCallReq` 函数
-2. 测试 `SelectedFiles` 到 `finalQuery` 的转换
-3. 测试完整的 Chat 流程
+   - 验证上下文消息正确插入到 `contexts`
+   - 验证 `query` 保持干净（不包含文件信息）
+2. 测试 `GetHistory` 函数
+   - 验证历史消息的上下文重建
+   - 验证 `SelectedFiles` 正确解析
 
 ### 6.3 端到端测试
 
 1. 文件上传 → 选择文件 → 对话 → 验证 LLM 收到正确的文件路径
 2. 验证 Agent 生成的代码能正确访问文件
+3. 验证退出重进后上下文正确恢复
+4. 验证 session_id 正确传递给代码执行工具
 
 ---
 

@@ -147,27 +147,52 @@ Workspace Root
 
 ### 4.7 Agent Prompt 路径注入
 
-为避免 LLM 盲猜路径（如 /data/），必须在 Agent 的 User Prompt 中动态注入路径信息：
+为避免 LLM 盲猜路径（如 /data/），必须在 Agent 的上下文中动态注入路径信息。
+
+**设计原则**：
+- **分离上下文与用户问题**：将文件上下文作为独立的 "user" 角色消息，与用户原始问题分离
+- **避免语义混淆**：LLM 不会将文件列表误认为用户提供的背景信息
+- **支持重入恢复**：上下文从持久化的 `SelectedFiles` 字段重建，退出重进不会丢失
 
 **注入内容**：
 - 临时区根路径：`/workspace/{conversation_id}/uploads/temparea/`
-- 当前可用的文件列表
-- 每个文件的完整路径
+- Sandbox Session ID：`sess-{user_id}`（用于代码执行工具调用）
+- 当前可用的文件列表（文件名 + 完整路径）
 
-**注入时机**：每次用户提问时动态注入到用户提示词
+**注入时机**：
+- **当前消息**：在 `GenerateAgentCallReq` 中，如果有选中文件，将上下文消息插入到 `contexts`
+- **历史消息**：在 `GetHistory` 中，为每个有 `SelectedFiles` 的用户消息重建上下文消息
 
-**注入位置**：作为用户查询的一部分，在用户原始问题之前注入
+**注入方式**：
+- 作为独立的 `LLMMessage` 插入到 `contexts` 数组
+- 用户查询保持干净，通过 `Input["query"]` 单独传递
 
-**注入示例**（在用户问题前注入）：
+**最终消息结构**：
 ```
-当前会话的临时文件路径：/workspace/conv-123/uploads/temparea/
+[
+  { "role": "system", "content": "..." },
+  { "role": "assistant", "content": "..." },  // 历史助手回复
+  { "role": "user", "content": "【System auto-generated context...】\nCurrent workspace path: ...\nSandbox Session ID: sess-user-123\nAvailable files:\n- data.csv (...)" },  // 上下文消息
+  { "role": "user", "content": "请分析 data.csv" },  // 实际用户问题
+]
+```
 
-可用文件：
+**上下文消息格式**：
+```
+【System auto-generated context - not user query】
+
+Current workspace path: /workspace/conv-123/uploads/temparea/
+Sandbox Session ID: sess-user-123 (IMPORTANT: This ID MUST be passed as the 'session_id' parameter when calling code execution tools...)
+
+Available files:
 - data.csv (/workspace/conv-123/uploads/temparea/data.csv)
 - config.json (/workspace/conv-123/uploads/temparea/config.json)
-
-用户问题：请分析 data.csv 中的数据...
 ```
+
+**持久化保证**：
+- `SelectedFiles` 字段已持久化在 `UserContent` 中
+- `GetHistory` 从数据库读取后重建上下文消息
+- 用户退出重进后，上下文自动恢复
 
 ### 4.8 生命周期管理
 
