@@ -36,8 +36,17 @@ func (agentSvc *agentSvc) GenerateAgentCallReq(ctx context.Context, req *agentre
 	if len(req.History) > 0 {
 		contexts = req.History
 	}
-	// 新增：根据 SelectedFiles 注入文件信息到 query
-	finalQuery := buildUserQuery(req.Query, req.ConversationID, req.SelectedFiles)
+
+	// 新增：将当前消息的上下文添加到 contexts
+	// 如果有选中的文件，先插入工作区上下文消息
+	// 注意：当前用户查询不需要添加到 contexts，因为它已经通过 Input["query"] 单独传递
+	if len(req.SelectedFiles) > 0 {
+		contextMsg := &comvalobj.LLMMessage{
+			Role:    "user",
+			Content: buildWorkspaceContextMessage(req.ConversationID, req.UserID, req.SelectedFiles),
+		}
+		contexts = append(contexts, contextMsg)
+	}
 
 	// NOTE: 动态字段 file  和 自定义变量
 	agentCallReq := &agentexecutordto.AgentCallReq{
@@ -45,7 +54,7 @@ func (agentSvc *agentSvc) GenerateAgentCallReq(ctx context.Context, req *agentre
 		AgentVersion: req.AgentVersion,
 		Config:       AgentConfig2AgentCallConfig(ctx, &agent.Config, req),
 		Input: map[string]interface{}{
-			"query":   finalQuery,
+			"query":   req.Query,
 			"history": contexts,
 			//"confirm_plan": req.ConfirmPlan,
 		},

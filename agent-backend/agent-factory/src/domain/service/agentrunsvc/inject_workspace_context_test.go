@@ -4,62 +4,60 @@ import (
 	"testing"
 
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/util"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestBuildUserQuery(t *testing.T) {
+func TestBuildWorkspaceContextMessage(t *testing.T) {
 	tests := []struct {
-		name           string
-		originalQuery  string
-		conversationID string
-		selectedFiles  []agentreq.SelectedFile
-		expectedPrefix string
-		expectedQuery  string
+		name            string
+		conversationID  string
+		userID          string
+		selectedFiles   []agentreq.SelectedFile
+		expectedPrefix  string
+		expectedContent string
 	}{
 		{
 			name:           "no files selected",
-			originalQuery:  "hello",
 			conversationID: "conv-123",
+			userID:         "user-123",
 			selectedFiles:  []agentreq.SelectedFile{},
-			expectedPrefix: "hello",
-			expectedQuery:  "hello",
+			expectedPrefix: "",
 		},
 		{
 			name:           "single file selected",
-			originalQuery:  "analyze data",
 			conversationID: "conv-123",
+			userID:         "user-456",
 			selectedFiles: []agentreq.SelectedFile{
-				{FileName: "data.csv"},
+				{FileName: "/workspace/conv-123/uploads/temparea/data.csv"},
 			},
-			expectedPrefix: "当前会话的临时文件路径：/workspace/conv-123/uploads/temparea/\n\n可用文件：\n- data.csv (/workspace/conv-123/uploads/temparea/data.csv)\n\n用户问题：analyze data",
-			expectedQuery:  "当前会话的临时文件路径：/workspace/conv-123/uploads/temparea/\n\n可用文件：\n- data.csv (/workspace/conv-123/uploads/temparea/data.csv)\n\n用户问题：analyze data",
+			expectedPrefix:  "【System auto-generated context - not user query】",
+			expectedContent: "- data.csv (/workspace/conv-123/uploads/temparea/data.csv)",
 		},
 		{
 			name:           "multiple files selected",
-			originalQuery:  "compare files",
 			conversationID: "conv-456",
+			userID:         "user-789",
 			selectedFiles: []agentreq.SelectedFile{
-				{FileName: "data1.csv"},
-				{FileName: "data2.csv"},
-				{FileName: "config.json"},
+				{FileName: "/workspace/conv-456/uploads/temparea/data1.csv"},
+				{FileName: "/workspace/conv-456/uploads/temparea/data2.csv"},
+				{FileName: "/workspace/conv-456/uploads/temparea/config.json"},
 			},
-			expectedPrefix: "当前会话的临时文件路径：/workspace/conv-456/uploads/temparea/",
-		},
-		{
-			name:           "empty query with files",
-			originalQuery:  "",
-			conversationID: "conv-789",
-			selectedFiles: []agentreq.SelectedFile{
-				{FileName: "test.csv"},
-			},
-			expectedPrefix: "当前会话的临时文件路径：/workspace/conv-789/uploads/temparea/\n\n可用文件：\n- test.csv (/workspace/conv-789/uploads/temparea/test.csv)\n\n用户问题：",
+			expectedPrefix: "【System auto-generated context - not user query】",
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			result := buildUserQuery(tt.originalQuery, tt.conversationID, tt.selectedFiles)
-			assert.Contains(t, result, tt.expectedPrefix)
+			result := util.BuildWorkspaceContextMessage(tt.conversationID, tt.userID, tt.selectedFiles)
+			if tt.expectedPrefix == "" {
+				assert.Empty(t, result)
+			} else {
+				assert.Contains(t, result, tt.expectedPrefix)
+			}
+			if tt.expectedContent != "" {
+				assert.Contains(t, result, tt.expectedContent)
+			}
 		})
 	}
 }

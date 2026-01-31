@@ -1,6 +1,6 @@
-openapi: 3.1.0
+openapi: 3.0.1
 info:
-  title: Sandbox Control Plane
+  title: Sandbox_Control_Plane
   description: 代码沙箱管理平台 API
   version: 2.1.0
 servers:
@@ -10,7 +10,7 @@ paths:
     post:
       tags:
       - executions
-      summary: Execute Code Sync
+      summary: Execute_Code_Sync
       description: 'Synchronous code execution endpoint
 
 
@@ -68,6 +68,27 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/ExecuteCodeRequest'
+            examples:
+              simple:
+                value:
+                  code: 'def handler(event):
+    name = event.get("name", "World")
+    return {"message": f"Hello, {name}!"}'
+                  event:
+                    name: World
+                  language: python
+                  timeout: 10
+              advanced:
+                value:
+                  code: 'def handler(event):
+    name = event.get("name", "World")
+    age = event.get("age", 0)
+    return {"message": f"Hello, {name}!", "age_doubled": age * 2}'
+                  event:
+                    age: 25
+                    name: Alice
+                  language: python
+                  timeout: 30
       responses:
         '200':
           description: Successful Response
@@ -102,9 +123,7 @@ components:
           format: date-time
           title: Created At
         checksum:
-          anyOf:
-          - type: string
-          - type: 'null'
+          type: string
           title: Checksum
       type: object
       required:
@@ -139,10 +158,9 @@ components:
           description: 执行超时（秒）
           default: 30
         event:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
+          type: object
+          additionalProperties: true
+          nullable: true
           title: Event
           description: 事件数据
       type: object
@@ -151,20 +169,6 @@ components:
       - language
       title: ExecuteCodeRequest
       description: 执行代码请求
-      examples:
-      - code: "def handler(event):\n    name = event.get(\"name\", \"World\")\n    return {\"message\": f\"Hello, {name}!\"\
-          }"
-        event:
-          name: World
-        language: python
-        timeout: 10
-      - code: "def handler(event):\n    name = event.get(\"name\", \"World\")\n    age = event.get(\"age\", 0)\n    return\
-          \ {\"message\": f\"Hello, {name}!\", \"age_doubled\": age * 2}"
-        event:
-          age: 25
-          name: Alice
-        language: python
-        timeout: 30
     ExecutionResponse:
       properties:
         id:
@@ -177,44 +181,36 @@ components:
           type: string
           title: Status
         code:
-          anyOf:
-          - type: string
-          - type: 'null'
+          type: string
+          nullable: true
           title: Code
         language:
-          anyOf:
-          - type: string
-          - type: 'null'
+          type: string
+          nullable: true
           title: Language
         timeout:
-          anyOf:
-          - type: integer
-          - type: 'null'
+          type: integer
+          nullable: true
           title: Timeout
         exit_code:
-          anyOf:
-          - type: integer
-          - type: 'null'
+          type: integer
+          nullable: true
           title: Exit Code
         error_message:
-          anyOf:
-          - type: string
-          - type: 'null'
+          type: string
+          nullable: true
           title: Error Message
         execution_time:
-          anyOf:
-          - type: number
-          - type: 'null'
+          type: number
+          nullable: true
           title: Execution Time
         stdout:
-          anyOf:
-          - type: string
-          - type: 'null'
+          type: string
+          nullable: true
           title: Stdout
         stderr:
-          anyOf:
-          - type: string
-          - type: 'null'
+          type: string
+          nullable: true
           title: Stderr
         artifacts:
           items:
@@ -227,33 +223,29 @@ components:
           title: Retry Count
           default: 0
         created_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
+          type: string
+          format: date-time
+          nullable: true
           title: Created At
         started_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
+          type: string
+          format: date-time
+          nullable: true
           title: Started At
         completed_at:
-          anyOf:
-          - type: string
-            format: date-time
-          - type: 'null'
+          type: string
+          format: date-time
+          nullable: true
           title: Completed At
         return_value:
-          anyOf:
-          - {}
-          - type: 'null'
+          type: object
+          additionalProperties: true
+          nullable: true
           title: Return Value
         metrics:
-          anyOf:
-          - additionalProperties: true
-            type: object
-          - type: 'null'
+          type: object
+          additionalProperties: true
+          nullable: true
           title: Metrics
       type: object
       required:
