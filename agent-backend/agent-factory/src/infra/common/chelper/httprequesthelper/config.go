@@ -32,6 +32,10 @@ type Config struct {
 
 	// IncludeResponseBody 是否记录响应体
 	IncludeResponseBody bool
+
+	// SingleFileMaxEntries single日志最大保留条目数，0表示禁用single日志
+	// single日志会将所有请求记录到 LogDir/single/all_requests.log 文件中
+	SingleFileMaxEntries int
 }
 
 // OutputMode 输出模式
@@ -78,4 +82,15 @@ func (c *Config) EnsureLogDir() error {
 	}
 
 	return os.MkdirAll(c.LogDir, 0o755)
+}
+
+// GetSingleFilePath 获取single日志文件路径
+func (c *Config) GetSingleFilePath() string {
+	return filepath.Join(c.LogDir, "single", "all_requests.log")
+}
+
+// EnsureSingleFileDir 确保single日志目录存在
+func (c *Config) EnsureSingleFileDir() error {
+	singleDir := filepath.Join(c.LogDir, "single")
+	return os.MkdirAll(singleDir, 0o755)
 }

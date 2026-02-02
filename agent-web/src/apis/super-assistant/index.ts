@@ -116,12 +116,18 @@ export const updateConversation = async (app_key: string, conversation_id: strin
   }
 };
 
-export const stopConversation = async (app_key: string, conversationId: string, agent_run_id: string) => {
+export const stopConversation = async (
+  app_key: string,
+  conversationId: string,
+  agent_run_id: string,
+  interrupted_assistant_message_id: string
+) => {
   try {
     const res = await post(`${agentAppV1BaseUrl}/app/${app_key}/chat/termination`, {
       body: {
         conversation_id: conversationId,
         agent_run_id,
+        interrupted_assistant_message_id,
       },
     });
     return res || true;

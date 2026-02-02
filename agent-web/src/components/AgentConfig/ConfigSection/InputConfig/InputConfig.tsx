@@ -153,7 +153,7 @@ const defaultQueryField: InputField = { name: 'query', type: 'string', is_built_
 // 定义4个固定的对象类型变量
 const fixedVariables: InputField[] = [
   { name: 'history', type: 'object', is_built_in: true },
-  { name: 'tool', type: 'object', is_built_in: true },
+  // { name: 'tool', type: 'object', is_built_in: true },
   { name: 'header', type: 'object', is_built_in: true },
   { name: 'self_config', type: 'object', is_built_in: true },
 ];
@@ -242,8 +242,8 @@ const InputConfig: React.FC = () => {
       message.warning(intl.get('dataAgent.variableNameExistsModifyBeforeSubmit'));
     }
 
-    // 内置变量的展开/收起，之间的index差了3
-    const actualIndex = builtInVariablesExpanded ? index : index + 3;
+    // 内置变量的展开/收起，之间的index差了 fixedVariables.length - 1
+    const actualIndex = builtInVariablesExpanded ? index : index + (fixedVariables.length - 1);
 
     // 允许用户输入任何值（包括重复的名称），但会给出提示
     const updatedFields = inputConfig.fields.map((field: any, i: number) => {
@@ -263,8 +263,8 @@ const InputConfig: React.FC = () => {
   const handleTypeChange = (value: string, _record: any, index: number) => {
     if (!canEditInputConfig) return;
 
-    // 内置变量的展开/收起，之间的index差了3
-    const actualIndex = builtInVariablesExpanded ? index : index + 3;
+    // 内置变量的展开/收起，之间的index差了 fixedVariables.length - 1
+    const actualIndex = builtInVariablesExpanded ? index : index + (fixedVariables.length - 1);
     const updatedFields = inputConfig.fields.map((field: any, i: number) => {
       return i === actualIndex ? { ...field, type: value } : field;
     });
@@ -309,8 +309,8 @@ const InputConfig: React.FC = () => {
       return;
     }
 
-    // 内置变量的展开/收起，之间的index差了3
-    const actualIndex = builtInVariablesExpanded ? index : index + 3;
+    // 内置变量的展开/收起，之间的index差了 fixedVariables.length - 1
+    const actualIndex = builtInVariablesExpanded ? index : index + (fixedVariables.length - 1);
     const updatedFields = inputConfig.fields.filter((_field: any, i: number) => i !== actualIndex);
 
     setInputConfig((prev: any) => ({

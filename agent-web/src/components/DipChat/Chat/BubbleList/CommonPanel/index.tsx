@@ -30,7 +30,7 @@ const CommonPanel = ({ chatItemIndex, readOnly }: any) => {
     sendChat,
   } = useDipChatStore();
   const chatItem = chatList[chatItemIndex];
-  const { generating, interrupt } = chatItem;
+  const { generating, interrupt, cancel } = chatItem;
   const content: DipChatItemContentType = chatItem.content || { progress: [], cites: {}, related_queries: [] };
   const skeletonLoading = !content?.progress?.length && streamGenerating && chatItemIndex === chatList.length - 1;
   const renderFooter = () => {
@@ -132,7 +132,7 @@ const CommonPanel = ({ chatItemIndex, readOnly }: any) => {
   };
 
   const renderInterrupt = () => {
-    if (interrupt && chatItemIndex === chatList.length - 1) {
+    if (!_.isEmpty(interrupt) && interrupt.data && chatItemIndex === chatList.length - 1 && !cancel) {
       return (
         <div className="dip-mt-16">
           <InterruptFormPanel chatItemIndex={chatItemIndex} />

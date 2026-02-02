@@ -26,7 +26,7 @@ func SetInternalAPIUserInfo(isCheckAccountType bool, supportAccountTypes ...cenu
 	}
 
 	return func(c *gin.Context) {
-		//log.Println("in SetInternalAPIUserInfo...")
+		// log.Println("in SetInternalAPIUserInfo...")
 		// 1. 从header中获取account-id和account-type
 		uid, isExist, err := chelper.GetAccountIDFromContext(c)
 		if err != nil {

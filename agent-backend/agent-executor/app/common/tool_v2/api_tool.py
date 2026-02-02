@@ -80,6 +80,20 @@ class APITool(APIToolInputHandler):
 
                     self.result_process_strategy_cfg.append(tmp_strategy_cfg)
 
+        # 5. 根据 intervention 配置生成 interrupt_config
+        # 供 Dolphin SDK 使用，在 SDK 内部触发中断
+        if self.intervention:
+            intervention_message = tool_config.get(
+                "intervention_confirmation_message",
+                f"工具 {self.name} 需要确认执行"  # 默认值
+            )
+            self.interrupt_config = {
+                "requires_confirmation": True,
+                "confirmation_message": intervention_message,
+            }
+        else:
+            self.interrupt_config = None
+
     def _parse_description(self, tool_info):
         """解析工具描述"""
         description = tool_info.get("description", "")
@@ -181,30 +195,13 @@ class APITool(APIToolInputHandler):
         tool_input.pop("props", None)
         """异步流式执行工具"""
 
-        # 1. 如果工具需要干预，则抛出ToolInterrupt异常
-        if isinstance(props, dict) and "intervention" in props:
-            intervention = props["intervention"]
-        else:
-            intervention = self.intervention
+        # 注意：中断逻辑已移至 Dolphin SDK 内部，通过 interrupt_config 触发
+        # 此处不再主动抛出 ToolInterrupt 异常
 
-        if intervention:
-            tool_args = []
-            for key, value in tool_input.items():
-                tool_args.append(
-                    {
-                        "key": key,
-                        "value": value,
-                        "type": self.unfiltered_inputs.get("properties", {})
-                        .get(key, {})
-                        .get("type"),
-                    }
-                )
-            raise ToolInterrupt(tool_name=self.name, tool_args=tool_args)
-
-        # 2. 获取gvp
+        # 1. 获取gvp
         gvp: "Context" = props.get("gvp")
 
-        # 3. 处理参数
+        # 2. 处理参数
         path_params, query_params, body_params, header_params = self.process_params(
             tool_input,
             self.tool_info.get("metadata", {}).get("api_spec", {}),

@@ -71,7 +71,7 @@ func (repo *personalSpaceRepo) buildSql(arg *psdbarg.AgentListArg) (selectFields
 	fromClause += fmt.Sprintf(" LEFT JOIN %s AS r ON cfg.f_id = r.f_agent_id ", releasePO.TableName())
 
 	order = "cfg.f_updated_at DESC,cfg.f_id DESC"
-	//order = "r.f_update_time DESC, cfg.f_updated_at DESC"
+	// order = "r.f_update_time DESC, cfg.f_updated_at DESC"
 
 	// 4. 构建WHERE条件
 	wb := sqlhelper2.NewWhereBuilder()
@@ -135,7 +135,7 @@ func (repo *personalSpaceRepo) buildSql(arg *psdbarg.AgentListArg) (selectFields
 
 	// 4.6. 发布标识过滤
 	if req.PublishToBe != "" {
-		//fromClause += fmt.Sprintf(" INNER JOIN %s AS r ON cfg.f_id = r.f_agent_id ", releasePO.TableName())
+		// fromClause += fmt.Sprintf(" INNER JOIN %s AS r ON cfg.f_id = r.f_agent_id ", releasePO.TableName())
 		order = "r.f_update_time DESC, cfg.f_updated_at DESC"
 
 		switch req.PublishToBe {

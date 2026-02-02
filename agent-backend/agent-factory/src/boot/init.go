@@ -75,7 +75,7 @@ func init() {
 		return
 	}
 
-	//8. 初始化审计日志
+	// 8. 初始化审计日志
 	mqSetting := &mq.MQSetting{
 		MQType: global.GConfig.MQ.MQType,
 		MQHost: global.GConfig.MQ.MQHost,

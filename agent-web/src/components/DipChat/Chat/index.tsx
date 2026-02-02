@@ -48,6 +48,8 @@ const DipChat = () => {
       agentInputParamForm,
       previewFile,
       tempFileList,
+      conversationItems,
+      activeConversationKey,
     },
     setDipChatStore,
     getDipChatStore,
@@ -64,7 +66,6 @@ const DipChat = () => {
   const navigate = useNavigate();
   const [showBackBottom, setShowBackBottom] = useState(false);
   const [size, setSize] = React.useState<number>(280);
-  const isInterrupt = _.get(chatList[chatList.length - 1], 'interrupt');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -209,6 +210,7 @@ const DipChat = () => {
       'agentInputParamsFormErrorFields',
       'agentInputParamsFormValue',
       'activeProgressIndex',
+      'streamGenerating',
     ]);
     agentInputParamForm?.resetFields();
     setShowBackBottom(false);
@@ -337,7 +339,8 @@ const DipChat = () => {
                 </div>
               </div>
               <AiInput
-                loading={streamGenerating || !!isInterrupt}
+                // loading={streamGenerating || activeConversation?.status === 'processing'}
+                loading={streamGenerating}
                 value={aiInputValue}
                 ref={aiInputRef}
                 onSubmit={onSubmit}

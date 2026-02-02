@@ -8,7 +8,7 @@ from fastapi import Request, Response
 from opentelemetry import trace
 from opentelemetry.propagate import extract
 
-from app.common.config import Config
+from app.utils.observability.sdk_available import TELEMETRY_SDK_AVAILABLE
 from app.utils.observability.observability_log import get_logger as o11y_logger
 
 
@@ -35,7 +35,11 @@ async def o11y_trace(request: Request, call_next) -> Response:
     headers = dict(request.headers)
     ctx = extract(headers)
 
-    if not Config.o11y.trace_enabled:
+    # 延迟导入 Config 避免循环依赖
+    from app.common.config import Config
+
+    # 如果 SDK 不可用或追踪未启用，直接调用下一个中间件
+    if not TELEMETRY_SDK_AVAILABLE or not Config.o11y.trace_enabled:
         return await call_next(request)
 
     from exporter.ar_trace.trace_exporter import tracer
@@ -57,13 +61,17 @@ async def o11y_trace(request: Request, call_next) -> Response:
 
             # 添加响应状态码到 span
             span.set_attribute("http.status_code", response.status_code)
-            o11y_logger().info(f"http status {response.status_code}")
+            logger = o11y_logger()
+            if logger:
+                logger.info(f"http status {response.status_code}")
 
             return response
         except Exception as e:
             # 错误处理
             span.set_attribute("http.status_code", 500)
-            o11y_logger().error(f"Error: {e}")
+            logger = o11y_logger()
+            if logger:
+                logger.error(f"Error: {e}")
 
             span.record_exception(e)
             raise

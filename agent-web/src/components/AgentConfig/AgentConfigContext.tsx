@@ -1,14 +1,14 @@
-import React, { createContext, useContext, useState, ReactNode, useCallback, useRef, useMemo } from 'react';
+import React, { createContext, useContext, useState, type ReactNode, useCallback, useRef, useMemo } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import intl from 'react-intl-universal';
 import { debounce, omit } from 'lodash';
 import { createAgent, editAgent, editTemplate, getDolphinTemplateList } from '@/apis/agent-factory';
 import { message } from 'antd';
-import {
+import type {
   AgentConfig,
   LLMConfig,
   PrePostDolphinType,
-  type DolphinTemplateType,
+  DolphinTemplateType,
   AgentDetailType,
 } from '@/apis/agent-factory/type';
 import { useDeepCompareEffect } from '@/hooks';

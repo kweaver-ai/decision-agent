@@ -102,7 +102,17 @@ const Header: React.FC<HeaderProps> = ({
       location.replace(redirectUrl);
     } else {
       const filterParams = getParam('filterParams');
-      navigate(filterParams ? `/?filterParams=${filterParams}` : '/');
+      const mode = getParam('mode');
+      const templateId = getParam('templateId');
+      if (mode === 'createAgent' && !!templateId) {
+        // 说明是模版创建agent跳转过来的
+        microWidgetProps?.history.navigateToMicroWidget({
+          name: 'my-agent-list',
+          path: '/',
+        });
+      } else {
+        navigate(filterParams ? `/?filterParams=${filterParams}` : '/');
+      }
     }
   };
 

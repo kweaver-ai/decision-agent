@@ -23,6 +23,7 @@ from app.common.tool_v2.tool import build_tools
 from app.utils.observability.trace_wrapper import internal_span
 from opentelemetry.trace import Span
 from app.utils.observability.observability_log import get_logger as o11y_logger
+from .dialog_log import DialogLogHandler
 
 from .trace import span_set_attrs
 from .input_handler_pkg import (
@@ -210,7 +211,7 @@ async def run_dolphin(
 
     
     # 12. 执行agent
-    output = {"answer": {}}
+    output = {}
     
     # 使用公共的 arun 循环处理方法
     from .interrupt_utils import process_arun_loop
@@ -224,7 +225,8 @@ async def run_dolphin(
     # )
 
     # 使用新的日志生成函数
-    ac.dialog_log_handler.save_dialog_logs(config, headers)
+    dialog_log_handler = DialogLogHandler(agent, config, headers)
+    dialog_log_handler.save_dialog_logs()
 
     ac.memory_handler.start_memory_build_thread(
         config, context_variables, headers, output

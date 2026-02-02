@@ -1,4 +1,4 @@
-import React, { ReactNode, CSSProperties } from 'react';
+import { type ReactNode, type CSSProperties } from 'react';
 import styles from './index.module.less';
 import classNames from 'classnames';
 import DipButton from '@/components/DipButton';
