@@ -101,10 +101,8 @@ const InterruptFormPanel = ({ chatItemIndex }: any) => {
     const userChatItem = chatList[chatItemIndex - 1];
     const reqBody: any = {};
     if (userChatItem.fileList) {
-      reqBody.temp_files = userChatItem.fileList.map((item: any) => ({
-        id: item.id,
-        name: item.name,
-        type: item.type,
+      reqBody.selected_files = userChatItem.fileList.map((item: any) => ({
+        file_name: item.container_path,
       }));
     }
     sendChat({

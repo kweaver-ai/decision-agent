@@ -8,13 +8,12 @@ import { Col, Collapse, Row, Button, type GetRef } from 'antd';
 import PanelFooter from '../PanelFooter';
 import { nanoid } from 'nanoid';
 import { Sender } from '@ant-design/x';
-import { getChatItemRoleByMode } from '@/components/DipChat/utils';
 import intl from 'react-intl-universal';
 import dayjs from 'dayjs';
 
 const UserPanel = ({ chatItemIndex, readOnly }: any) => {
   const {
-    dipChatStore: { chatList, aiInputValue, agentAppType },
+    dipChatStore: { chatList },
     sendChat,
     setDipChatStore,
     closeSideBar,
@@ -120,7 +119,7 @@ const UserPanel = ({ chatItemIndex, readOnly }: any) => {
 
     newChatList.push({
       key: nanoid(),
-      role: getChatItemRoleByMode(aiInputValue.mode, agentAppType),
+      role: 'common',
       content: '',
       loading: true,
     });
@@ -130,10 +129,8 @@ const UserPanel = ({ chatItemIndex, readOnly }: any) => {
     };
     if (fileList && fileList.length > 0) {
       // 说明有文件
-      body.temp_files = fileList.map((item: any) => ({
-        id: item.id,
-        name: item.name,
-        type: item.type,
+      body.selected_files = fileList.map(item => ({
+        file_name: item.container_path,
       }));
     }
     closeSideBar();

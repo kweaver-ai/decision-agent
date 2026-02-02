@@ -5,13 +5,12 @@ import AgentIcon from '@/components/AgentIcon';
 import Markdown from '@/components/Markdown';
 import classNames from 'classnames';
 import { nanoid } from 'nanoid';
-import { getChatItemRoleByMode } from '@/components/DipChat/utils';
 import type { ChatBody } from '@/components/DipChat/interface';
 import dayjs from 'dayjs';
 
 const AgentDescription = () => {
   const {
-    dipChatStore: { agentDetails, chatList, agentAppType, aiInputValue },
+    dipChatStore: { agentDetails, chatList },
     sendChat,
   } = useDipChatStore();
   const agentConfig = _.get(agentDetails, ['config']) || {};
@@ -37,7 +36,7 @@ const AgentDescription = () => {
                 });
                 cloneChatList.push({
                   key: nanoid(),
-                  role: getChatItemRoleByMode(aiInputValue.mode, agentAppType),
+                  role: 'common',
                   content: '',
                   loading: true,
                 });

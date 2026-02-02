@@ -43,27 +43,6 @@ const TempArea = () => {
       );
     }
 
-    // // 只配置了配置了数据源
-    // if (
-    //   !getTempAreaEnable(agentConfig) &&
-    //   (knSpaceTreeDataSource.length > 0 ||
-    //     knExperimentalDataSource.length > 0 ||
-    //     metricTreeDataSource.length > 0 ||
-    //     contentDataSource.length > 0)
-    // ) {
-    //   return (
-    //     <DataSourceArea
-    //       onPreviewFile={(file: FileItem) => {
-    //         setPreviewFile({
-    //           fileId: file.id,
-    //           fileExt: getFileExtension(file.name),
-    //           fileName: file.name,
-    //         });
-    //       }}
-    //     />
-    //   );
-    // }
-
     return (
       <Splitter layout="vertical">
         <Splitter.Panel>

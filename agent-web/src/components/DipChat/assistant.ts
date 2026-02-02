@@ -136,7 +136,6 @@ export const handleConversationGroup = (entries: any[]) => {
     groupedItems[group].push({
       label: listItem.title,
       key: listItem.id,
-      temparea_id: listItem.temparea_id,
       timestamp: time,
       status: listItem.status,
       unRead: listItem.message_index > listItem.read_message_index,

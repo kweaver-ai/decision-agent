@@ -68,10 +68,8 @@ const PanelFooter = ({ chatItemIndex, className, onEdit }: PanelFooterProps) => 
     };
     if (fileList.length > 0) {
       // 说明有文件
-      body.temp_files = fileList.map((item: any) => ({
-        id: item.id,
-        name: item.name,
-        type: item.type,
+      body.selected_files = fileList.map((item: any) => ({
+        file_name: item.container_path,
       }));
     }
     closeSideBar();
@@ -122,9 +120,6 @@ const PanelFooter = ({ chatItemIndex, className, onEdit }: PanelFooterProps) => 
   const renderCopyBtn = () => {
     if (!chatItem.error) {
       let text = '';
-      if (chatItem.role === 'net') {
-        text = chatItem.content.result;
-      }
       if (chatItem.role === 'common') {
         chatItem.content?.progress?.forEach((item: any) => {
           if (item.type === 'llm' && item.llmResult?.text) {

@@ -1,18 +1,24 @@
 import { Button, message, Upload } from 'antd';
 import DipIcon from '@/components/DipIcon';
-import { type ReactNode } from 'react';
+import { forwardRef, type ReactNode, useImperativeHandle } from 'react';
 import type { UploadProps } from 'antd';
 import { useDipChatStore } from '@/components/DipChat/store.tsx';
-import { post } from '@/utils/http';
 import { createConversation } from '@/apis/super-assistant';
 import { useMicroWidgetProps } from '@/hooks';
+import { getFileListFromSandBox, uploadFileToSandBox } from '@/apis/sandbox';
 
 export type FileUploadBtnProps = {
   disabled?: boolean;
   customBtn?: ReactNode;
+  onSuccess?: () => void;
 };
 
-const FileUploadBtn = (props: FileUploadBtnProps) => {
+export type FileUploadBtnRef = {
+  getFileList: () => void;
+  clearFileList: () => void;
+};
+
+const FileUploadBtn = forwardRef<FileUploadBtnRef, FileUploadBtnProps>((props, ref) => {
   const microWidgetProps = useMicroWidgetProps();
   const {
     dipChatStore: { agentDetails, agentAppKey, debug },
@@ -23,6 +29,34 @@ const FileUploadBtn = (props: FileUploadBtnProps) => {
   const { disabled = false, customBtn } = props;
   const [messageApi, contextHolder] = message.useMessage();
   const sessionId = `sess-${microWidgetProps.userid}`;
+
+  useImperativeHandle(ref, () => ({
+    getFileList,
+    clearFileList,
+  }));
+
+  const clearFileList = () => {
+    setDipChatStore({ tempFileList: [] });
+  };
+
+  const getFileList = async () => {
+    const conversationId = getDipChatStore().activeConversationKey;
+    const path = `${conversationId}/uploads/temparea`;
+    const res: any = await getFileListFromSandBox({
+      sessionId,
+      path,
+      limit: 1000,
+    });
+    if (res) {
+      console.log(res, '文件列表');
+      const list = res.files.map((item: any) => ({
+        ...item,
+        checked: debug,
+        status: 'completed',
+      }));
+      setDipChatStore({ tempFileList: list });
+    }
+  };
 
   // 处理对话创建后的 store 和 URL 更新
   const handleConversation = (conversation_id: string) => {
@@ -41,7 +75,6 @@ const FileUploadBtn = (props: FileUploadBtnProps) => {
 
     try {
       let conversationId = getDipChatStore().activeConversationKey;
-
       // 1. 如果没有 activeConversationKey，先创建对话
       if (!conversationId) {
         const conversationRes = await createConversation(agentAppKey, {
@@ -56,24 +89,23 @@ const FileUploadBtn = (props: FileUploadBtnProps) => {
 
         conversationId = conversationRes.id;
         // 更新 URL 和 store
-        handleConversation(conversationId);
+        if (!debug) {
+          handleConversation(conversationId);
+        } else {
+          setDipChatStore({ activeConversationKey: conversationId });
+        }
       }
-
-      // 2. 构建上传 URL
-      const customPath = `${conversationId}/uploads/temparea/${uploadFile.name}`;
-      const uploadUrl = `/api/v1/sessions/${sessionId}/files/upload?path=${customPath}`;
-
-      // 3. 使用 FormData 上传文件
-      const formData = new FormData();
-      formData.append('file', uploadFile);
-
-      const res = await post(uploadUrl, {
-        body: formData,
-        headers: { 'Content-Type': 'multipart/form-data' },
+      const filePath = `${conversationId}/uploads/temparea/${uploadFile.name}`;
+      const res = await uploadFileToSandBox({
+        file: uploadFile,
+        sessionId,
+        filePath,
       });
-
-      onSuccess?.(res);
-      // TODO: 上传成功后，根据实际需求更新 tempFileList
+      if (res) {
+        onSuccess?.(res);
+        getFileList?.();
+        props.onSuccess?.();
+      }
     } catch (error: any) {
       messageApi.error(error.message || '上传失败');
       onError?.(error);
@@ -93,6 +125,6 @@ const FileUploadBtn = (props: FileUploadBtnProps) => {
       <Upload {...uploadProps}>{customBtn || <Button icon={<DipIcon type="icon-dip-attachment" />} />}</Upload>
     </>
   );
-};
-
+});
+FileUploadBtn.displayName = 'FileUploadBtn';
 export default FileUploadBtn;

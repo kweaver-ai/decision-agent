@@ -673,10 +673,6 @@ export const getChatItemContent = (message: any): DipChatItemContentType => {
   };
 };
 
-export const getChatItemRoleByMode = () => {
-  return 'common';
-};
-
 /** 从Agent身上获取临时区config */
 export const getTempAreaConfigFromAgent = (agentConfig: any) => {
   return agentConfig?.input?.temp_zone_config ?? {};
