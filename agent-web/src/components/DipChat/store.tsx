@@ -118,7 +118,6 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
   const newChatListRef = useRef<DipChatItem[]>([]);
   const conversationSessionTimer = useRef<any>(null);
   const conversationSessionExpiredTime = useRef<any>('');
-  const lastChatItem = store.chatList[store.chatList.length - 1];
 
   useEffect(() => {
     if (debug) {
@@ -407,16 +406,8 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
 
   /** 流式接口发送 */
   const sendChat = async (params: SendChatPram) => {
-    const {
-      activeChatItemIndex,
-      activeConversationKey,
-      aiInputValue,
-      agentDetails,
-      agentAppKey,
-      tempFileList,
-      debug,
-      chatList,
-    } = getStore();
+    const { activeChatItemIndex, activeConversationKey, agentDetails, agentAppKey, tempFileList, debug, chatList } =
+      getStore();
 
     setDipChatStore({
       chatListAutoScroll: true,
@@ -449,22 +440,10 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
     }
 
     // 是否带上文件，看有没有开启临时区域  决定文件如何传递
-    if (!params.body.temp_files) {
-      let files = aiInputValue.fileList;
-      // 调试模式下，临时区域不会渲染，故上传的文件只可能在对话框里面上传
-      if (!debug && getTempAreaEnabled()) {
-        files = tempFileList.filter(file => file.checked);
-      }
+    if (!params.body.selected_files) {
+      const files = tempFileList.filter(file => file.checked);
       if (files.length > 0) {
-        params.body.temp_files = files.map(item => ({
-          id: item.id,
-          name: item.name,
-          type: item.type,
-          details: {
-            docid: item.docid,
-            size: item.size,
-          },
-        }));
+        params.body.selected_files = files.map(file => ({ file_name: file.container_path }));
         // 将文件回显到用户的问题上
         if (params.chatList) {
           params.chatList.forEach((item, index) => {

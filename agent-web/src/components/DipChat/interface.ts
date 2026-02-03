@@ -136,7 +136,6 @@ export type ConversationItemType = {
   label: string;
   key: string;
   status: 'processing' | 'completed' | 'failed' | 'cancelled';
-  temparea_id: string;
   children?: ConversationItemType[];
   unRead: boolean;
   timestamp: number;
