@@ -481,6 +481,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
       delete cloneParamsBody.interruptModifiedArgs;
       // 说明是debug
       if (debug) {
+        delete cloneParamsBody.selected_files;
         const conversation_id = params.body.conversation_id;
         let agent_id = agentDetails?.id;
         if (!agent_id && typeof canSend === 'string') {
@@ -492,6 +493,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
           input: {
             ...cloneParamsBody,
           },
+          selected_files: params.body.selected_files,
           conversation_id,
           stream: true,
           inc_stream: true,
