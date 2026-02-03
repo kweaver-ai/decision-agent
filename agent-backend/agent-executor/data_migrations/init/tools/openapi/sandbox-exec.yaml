@@ -11,32 +11,54 @@ paths:
       tags:
       - executions
       summary: Execute_Code_Sync
-      description: 'Synchronous code execution endpoint
+      description: |-
+        Synchronous code execution endpoint. Polls for result until terminal state (COMPLETED, FAILED, TIMEOUT, CRASHED) or sync_timeout reached.
 
+        Query Parameters:
+        - poll_interval: default 0.5s, range 0.1-10s
+        - sync_timeout: default 300s, range 10-3600s
 
-        Internally calls async execution and polls for result until:
+        Request Body:
+        - code: Lambda handler format (see template below)
+        - language: python/javascript/shell
+        - timeout: execution timeout in seconds
+        - event: input data
 
-        - Execution reaches terminal state (COMPLETED, FAILED, TIMEOUT, CRASHED)
+        Code Template (Python):
+        ```python
+        from typing import Dict, Any
 
-        - sync_timeout is reached
+        def handler(event: Dict[str, Any]) -> Any:
+            """
+            Generic Python tool handler function.
 
+            Each file must export a function named 'handler'. This is the entry point of the tool.
 
-        - **poll_interval**: Polling interval in seconds (default: 0.5, range: 0.1-10.0)
+            Parameters:
+            event: dict
+                The main input parameters for function execution.
+                Use event.get("key", default_value) to retrieve specific input values.
 
-        - **sync_timeout**: Maximum wait time in seconds (default: 300, range: 10-3600)
+            Return:
+            Any data object
+                The return data should match the declared output format.
+                Remember to define input/output in metadata to help LLM identify and use the tool.
+            """
 
-        - **code**: Code to execute
+            # TODO: Insert actual logic here
+            # Example:
+            # name = event.get("name", "default")
+            # return {"message": f"Hello, {name}"}
 
-        - **language**: Programming language (python, javascript, shell)
-
-        - **timeout**: Execution timeout in seconds
-
-        - **event**: Event data'
+            result = {}
+            return result
+        ```
       operationId: execute_code_sync_api_v1_executions_sessions__session_id__execute_sync_post
       parameters:
       - name: session_id
         in: path
         required: true
+        description: Sandbox session ID
         schema:
           type: string
           title: Session Id

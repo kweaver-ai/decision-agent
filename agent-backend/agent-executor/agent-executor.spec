@@ -10,7 +10,6 @@ project_root = os.path.abspath('.')
 # Data files to include
 datas = [
     ("data_migrations", "data_migrations"),
-    ("last_commit_info.txt", "."),  # 包含 commit info 文件
     # 包含配置文件和数据文件
     ("app/logic/retriever/AS_doc/config/stop_words.txt", "app/logic/retriever/AS_doc/config"),
     ("app/resources/data/sensitive_words.txt", "app/resources/data"),

@@ -22,7 +22,6 @@ class TestAppConfig(TestCase):
         self.assertEqual(config.log_level, "info")
         self.assertEqual(config.app_root, "")
         self.assertFalse(config.enable_dolphin_agent_verbose)
-        self.assertFalse(config.is_print_last_commit_info)
         self.assertFalse(config.log_conversation_session_init)
         self.assertFalse(config.is_write_exception_log_to_file)
 
@@ -39,7 +38,6 @@ class TestAppConfig(TestCase):
             log_level="debug",
             app_root="/app",
             enable_dolphin_agent_verbose=True,
-            is_print_last_commit_info=True,
             log_conversation_session_init=True,
             is_write_exception_log_to_file=True,
         )
@@ -54,7 +52,6 @@ class TestAppConfig(TestCase):
         self.assertEqual(config.log_level, "debug")
         self.assertEqual(config.app_root, "/app")
         self.assertTrue(config.enable_dolphin_agent_verbose)
-        self.assertTrue(config.is_print_last_commit_info)
         self.assertTrue(config.log_conversation_session_init)
         self.assertTrue(config.is_write_exception_log_to_file)
 
@@ -78,7 +75,6 @@ class TestAppConfig(TestCase):
             "enable_system_log": "true",
             "log_level": "debug",
             "enable_dolphin_agent_verbose": True,
-            "is_print_last_commit_info": True,
             "log_conversation_session_init": True,
             "is_write_exception_log_to_file": True,
         }
@@ -93,7 +89,6 @@ class TestAppConfig(TestCase):
         self.assertEqual(config.enable_system_log, "true")
         self.assertEqual(config.log_level, "debug")
         self.assertTrue(config.enable_dolphin_agent_verbose)
-        self.assertTrue(config.is_print_last_commit_info)
         self.assertTrue(config.log_conversation_session_init)
         self.assertTrue(config.is_write_exception_log_to_file)
 

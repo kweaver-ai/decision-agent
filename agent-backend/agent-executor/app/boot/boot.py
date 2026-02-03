@@ -18,13 +18,7 @@ def on_boot_run():
 
     built_in.handle_built_in()
 
-    # 4. 输出last_commit_info.txt的内容
-    if Config.app.is_print_last_commit_info:
-        from . import output_commit_info
-
-        output_commit_info.output_last_commit_info()
-
-    # 5. 启动时输出Config信息
+    # 4. 启动时输出Config信息
     if Config.local_dev.is_show_config_on_boot:
         from app.common.struct_logger import struct_logger
 
