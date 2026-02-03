@@ -12,8 +12,6 @@ class DocumentConfig:
     # 是否启用敏感词检测
     enable_sensitive_word_detection: bool = False
 
-    # 停用词文件路径（运行时设置）
-    stop_words_file: str = ""
 
     @classmethod
     def from_dict(cls, data: dict) -> "DocumentConfig":
