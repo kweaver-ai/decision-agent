@@ -29,7 +29,7 @@ func (h *agentHTTPHandler) TerminateChat(c *gin.Context) {
 		return
 	}
 
-	err := h.agentSvc.TerminateChat(c.Request.Context(), req.ConversationID, req.AgentRunID)
+	err := h.agentSvc.TerminateChat(c.Request.Context(), req.ConversationID, req.AgentRunID, req.InterruptedAssistantMessageID)
 	if err != nil {
 		h.logger.Errorf("[TerminateChat] terminate chat error: %v", err)
 		o11y.Error(c, fmt.Sprintf("[TerminateChat] terminate chat error: %v", err))

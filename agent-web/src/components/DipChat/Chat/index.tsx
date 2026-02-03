@@ -48,6 +48,8 @@ const DipChat = () => {
       agentInputParamForm,
       previewFile,
       tempFileList,
+      conversationItems,
+      activeConversationKey,
     },
     setDipChatStore,
     getDipChatStore,

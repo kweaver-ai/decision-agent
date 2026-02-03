@@ -17,6 +17,10 @@ type DebugReq struct {
 	ResumeInterruptInfo       *v2agentexecutordto.AgentResumeInfo `json:"resume_interrupt_info"`            // 中断恢复信息（为nil时走正常流程）
 	InterruptedAssistantMsgID string                              `json:"interrupted_assistant_message_id"` // 中断的助手消息ID
 
+	AgentRunID                string                              `json:"agent_run_id"`                     // Agent运行ID（中断恢复时由前端传入）
+	ResumeInterruptInfo       *v2agentexecutordto.AgentResumeInfo `json:"resume_interrupt_info"`            // 中断恢复信息（为nil时走正常流程）
+	InterruptedAssistantMsgID string                              `json:"interrupted_assistant_message_id"` // 中断的助手消息ID
+
 	ChatMode string `json:"chat_mode"` // 聊天模式
 	// NOTE: 新增stream参数，控制流式返回
 	Stream    bool `json:"stream,omitempty"`     // 是否流式返回

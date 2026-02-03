@@ -29,14 +29,15 @@ func initHTTPServerRequestLog() {
 	// 本地开发环境或debug模式下启用日志
 	isEnabled := cenvhelper.IsLocalDev() || cenvhelper.IsDebugMode()
 	config := &httprequesthelper.Config{
-		Enabled:             isEnabled,
-		OutputMode:          httprequesthelper.OutputModeFile, // 输出到文件
-		LogDir:              logDir,
-		FileNamePattern:     "requests_2006-01-02.log",
-		PrettyJSON:          false, // 生产环境不格式化JSON
-		MaxBodySize:         10 * 1024,
-		IncludeHeaders:      true,
-		IncludeResponseBody: true,
+		Enabled:              isEnabled,
+		OutputMode:           httprequesthelper.OutputModeFile, // 输出到文件
+		LogDir:               logDir,
+		FileNamePattern:      "requests_2006-01-02.log",
+		PrettyJSON:           false, // 生产环境不格式化JSON
+		MaxBodySize:          10 * 1024,
+		IncludeHeaders:       true,
+		IncludeResponseBody:  true,
+		SingleFileMaxEntries: 500, // 同时记录到 single/all_requests.log，保留最近500条
 	}
 
 	// 本地开发环境同时输出到控制台

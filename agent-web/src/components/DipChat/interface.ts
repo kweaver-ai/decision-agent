@@ -129,12 +129,14 @@ export type DipChatItem = {
   sourceData?: any; // 流式接口返回的原始数据
   updateTime?: number;
   agentRunId?: string;
+  status?: 'processing' | 'completed' | 'failed' | 'cancelled';
 };
 
 export type ConversationItemType = {
   label: string;
   key: string;
-  status: 'processing' | 'completed' | 'failed';
+  status: 'processing' | 'completed' | 'failed' | 'cancelled';
+  temparea_id: string;
   children?: ConversationItemType[];
   unRead: boolean;
   timestamp: number;
@@ -232,6 +234,7 @@ export type DipChatContextType = {
   getConversationData: (params?: GetConversationListOption) => void; // 获取会话列表
   getConversationDetailsByKey: (key: string) => Promise<
     | {
+        conversationLoading: boolean;
         recoverConversation: boolean;
         chatList: DipChatItem[];
         read_message_index: number;

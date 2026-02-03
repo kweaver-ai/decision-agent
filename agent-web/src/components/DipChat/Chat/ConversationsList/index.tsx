@@ -1,7 +1,14 @@
 import styles from './index.module.less';
 import { useEffect, useRef, useState } from 'react';
 import { Button, Dropdown, message, Modal, Popover, Spin, Tooltip } from 'antd';
-import { ClockCircleOutlined, EditOutlined, LeftOutlined, LoadingOutlined, MessageOutlined } from '@ant-design/icons';
+import {
+  ClockCircleOutlined,
+  CloseCircleFilled,
+  EditOutlined,
+  LeftOutlined,
+  LoadingOutlined,
+  MessageOutlined,
+} from '@ant-design/icons';
 import classNames from 'classnames';
 import { useDipChatStore } from '@/components/DipChat/store';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -85,7 +92,7 @@ const ConversationList = ({ startNewConversation, className }: any) => {
   const getDetailsById = async (id: string) => {
     const res: any = await getConversationDetailsByKey(id);
     if (res) {
-      const { recoverConversation, chatList, read_message_index, message_index } = res;
+      const { recoverConversation, chatList, read_message_index, message_index, conversationLoading } = res;
       if (recoverConversation) {
         setDipChatStore({
           activeConversationKey: id,
@@ -96,7 +103,7 @@ const ConversationList = ({ startNewConversation, className }: any) => {
           recoverConversation: true,
         });
       } else {
-        setDipChatStore({ chatList });
+        setDipChatStore({ chatList, streamGenerating: conversationLoading });
         if (read_message_index !== message_index) {
           // 标记会话已读
           await markReadConversation(agentAppKey, id, message_index);
@@ -160,6 +167,7 @@ const ConversationList = ({ startNewConversation, className }: any) => {
               <Spin className="dip-ml-8" size="small" indicator={<LoadingOutlined style={{ fontSize: 14 }} spin />} />
             </Tooltip>
           )}
+          {item.status === 'failed' && <CloseCircleFilled className="dip-text-color-error" />}
           <Dropdown
             trigger={['click']}
             menu={{

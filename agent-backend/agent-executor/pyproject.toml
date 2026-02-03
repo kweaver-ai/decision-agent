@@ -28,18 +28,18 @@ dependencies = [
     "structlog==24.1.0",
     "tika==3.1.1",
     "uvicorn==0.38.0",
-      "mq-sdk@git+ssh://devops.aishu.cn:22/AISHUDevOps/One-Architecture/_git/proton-mq-python@1.7.4",
+    "mq-sdk@git+ssh://devops.aishu.cn:22/AISHUDevOps/One-Architecture/_git/proton-mq-python@1.7.4",
     #    "mq-sdk@git+https://github.com/kweaver-ai/proton-mq-sdk-py@release/1.9.0",
-      "telemetrysdk-python@git+ssh://devops.aishu.cn:22/AISHUDevOps/One-Architecture/_git/TelemetrySDK-Python@2.6.1",
+    "telemetrysdk-python@git+ssh://devops.aishu.cn:22/AISHUDevOps/One-Architecture/_git/TelemetrySDK-Python@2.6.1",
     #    "telemetrysdk-python@git+https://github.com/kweaver-ai/TelemetrySDK-Python@2.4.2",
     #    "tlogging",
-        "kweaver-dolphin==0.2.0",
+    "kweaver-dolphin==0.2.1",
 ]
 
 
 [dependency-groups]
 
- dev = [
+dev = [
     "ruff>=0.14.1",
     "mypy>=1.0.0",
     "pyinstaller>=6.16.0",
