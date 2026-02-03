@@ -1,14 +1,9 @@
 import logging
 import time
 
-import arrow
-
-# from exporter.resource.resource import log_resource
-from fastapi import Request
 
 from app.common.config import Config
 from app.utils.common import GetCallerInfo, IsInPod
-from app.domain.enum.common.user_account_header_key import get_user_account_id
 
 # from tlogging import SamplerLogger
 import os
@@ -279,52 +274,6 @@ def get_error_log(message, caller_frame, caller_traceback=""):
     log_info["stack"] = caller_traceback
     log_info["time"] = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(time.time()))
     return log_info
-
-
-def get_operation_log(
-    request: Request,
-    operation: str,
-    object_id,
-    target_object: dict,
-    description: str,
-    object_type: str = "kg",
-) -> dict:
-    """
-    获取待打印的用户行为日志
-    @user_name: 用户名
-    @operation: 操作类型(CREATE, DELETE, DOWNLOAD, UPDATE, UPLOAD, LOGIN)
-    @object_id: 操作对象id（也可以是一个列表）
-    @target_object: 操作结果对象，类型为dict
-    @description: 行为描述（传参只应包括具体动作，例如：修改了知识图谱{id=3}，结果为{name:"知识图谱2"}）
-    @object_type: 操作对象类型(知识网络:kn, 知识图谱:kg, 数据源:ds, 词库:lexicon, 函数:function, 本体:otl)
-    """
-    user_id = get_user_account_id(request.headers)
-    user_name = request.headers.get("username")
-    agent_type = request.headers.get("User-Agent")
-    ip = request.headers.get("X-Forwarded-For")
-    agent = {"type": agent_type, "ip": ip}
-    operator = {
-        "type": "authenticated_user",
-        "id": user_id,
-        "name": user_name,
-        "agent": agent,
-    }
-    object_info = {"id": object_id, "type": object_type}
-    now_time = arrow.now().format("YYYY-MM-DD HH:mm:ss")
-    description = (
-        "用户{id=%s,name=%s}在客户端{ip=%s,type=%s}"
-        % (user_id, user_name, ip, agent_type)
-        + description
-    )
-    operation_log = {
-        "operator": operator,
-        "operation": operation,
-        "object": object_info,
-        "targetObject": target_object,
-        "description": description,
-        "time": now_time,
-    }
-    return operation_log
 
 
 # StandLogger = StandLog()

@@ -49,7 +49,6 @@ class ConfigLoader:
 
         config_path = cls.get_config_path()
         config_file = os.path.join(config_path, "agent-executor.yaml")
-
         if not os.path.exists(config_file):
             print(
                 f"Warning: Config file not found at {config_file}, using default values"
