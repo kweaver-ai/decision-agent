@@ -80,6 +80,7 @@ func (h *agentHTTPHandler) Debug(c *gin.Context) {
 		Query:                     req.Input.Query,
 		History:                   req.Input.History,
 		CustomQuerys:              req.Input.CustomQuerys,
+		SelectedFiles:             req.SelectedFiles,
 		AgentRunID:                req.AgentRunID,
 		ResumeInterruptInfo:       req.ResumeInterruptInfo,
 		InterruptedAssistantMsgID: req.InterruptedAssistantMsgID,
