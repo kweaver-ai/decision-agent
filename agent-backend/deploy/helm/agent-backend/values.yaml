@@ -267,11 +267,11 @@ depServices:
   # ========== Sandbox Platform 配置 ==========
   sandboxPlatform:
     publicSvc:
-      host: sandbox-platform-public
+      host: sandbox-control-plane
       port: 8000
       protocol: http
     privateSvc:
-      host: sandbox-platform-private
+      host: sandbox-control-plane
       port: 8000
       protocol: http
     defaultTtl: 3600         # 默认 Session TTL（秒），最大 3600

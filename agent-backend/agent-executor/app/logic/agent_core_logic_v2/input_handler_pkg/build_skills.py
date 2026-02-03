@@ -27,7 +27,7 @@ async def build_skills(
 
     span_set_attrs(
         span=span,
-        agent_id=config.agent_config.agent_id or "",
+        agent_id=config.agent_id or "",
         user_id=get_user_account_id(headers) or "",
     )
 
