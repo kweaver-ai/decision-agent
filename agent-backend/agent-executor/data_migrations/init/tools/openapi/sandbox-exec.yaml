@@ -4,7 +4,7 @@ info:
   description: 代码沙箱管理平台 API
   version: 2.1.0
 servers:
-  - url: http://sandbox-control-plane:8000/
+  - url: http://sandbox-control-plane:8000
 paths:
   /api/v1/executions/sessions/{session_id}/execute-sync:
     post:
