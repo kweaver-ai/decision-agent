@@ -118,7 +118,7 @@ const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
               <Col span={colSpan} key={item.container_path}>
                 <div
                   onClick={() => {
-                    onPreviewFile?.(item);
+                    // onPreviewFile?.(item);
                   }}
                   className={classNames(styles.fileItem, 'dip-flex-align-center')}
                 >
@@ -129,14 +129,14 @@ const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
                     </div>
                     {renderStatusIcon(item)}
                   </div>
-                  <div
-                    className={styles.delete}
-                    onClick={e => {
-                      e.stopPropagation();
-                    }}
-                  >
-                    <CloseCircleFilled />
-                  </div>
+                  {/*<div*/}
+                  {/*  className={styles.delete}*/}
+                  {/*  onClick={e => {*/}
+                  {/*    e.stopPropagation();*/}
+                  {/*  }}*/}
+                  {/*>*/}
+                  {/*  <CloseCircleFilled />*/}
+                  {/*</div>*/}
                 </div>
               </Col>
             ))}
