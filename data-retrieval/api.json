@@ -2,7 +2,7 @@
     "openapi": "3.0.3",
     "info": {
         "title": "基础结构化数据分析工具箱2",
-        "description": "支持对结构话数据进行处理的工具箱，工具包含: \n1. text2sql\n2. text2metric\n3. sql_helper\n4. knowledge_item\n5. get_metadata\n6. json2plot\n7. execute_code_legacy\n8. execute_command_legacy\n9. read_file_legacy\n10. create_file_legacy\n11. list_files_legacy\n12. get_status_legacy\n13. close_sandbox_legacy\n14. download_from_efast_legacy\n15. execute_code\n16. create_file\n17. read_file\n18. list_files\n19. terminate_session\n20. knowledge_rerank\n21. kn_search\n22. kn_path_search\n23. cypher_query\n",
+        "description": "支持对结构话数据进行处理的工具箱，工具包含: \n1. text2sql\n2. text2metric\n3. sql_helper\n4. knowledge_item\n5. get_metadata\n6. json2plot\n7. execute_code\n8. create_file\n9. read_file\n10. list_files\n11. terminate_session\n12. knowledge_rerank\n13. kn_search\n14. kn_path_search\n15. cypher_query\n16. execute_code_legacy\n17. execute_command_legacy\n18. read_file_legacy\n19. create_file_legacy\n20. list_files_legacy\n21. get_status_legacy\n22. close_sandbox_legacy\n23. download_from_efast_legacy\n",
         "version": "1.0.11"
     },
     "servers": [
@@ -1891,1121 +1891,6 @@
                                                 "营收收入指标": 12312312
                                             }
                                         ]
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/tools/execute_code_legacy": {
-            "post": {
-                "summary": "execute_code_legacy",
-                "description": "在沙箱环境中执行 Python 代码，支持 pandas 等数据分析库，注意沙箱环境是受限环境，没有网络连接，不能使用 pip 安装第三方库。运行代码时，需要通过 print 输出结果，或者设置输出变量 output_params 参数，返回结果",
-                "parameters": [
-                    {
-                        "name": "stream",
-                        "in": "query",
-                        "description": "是否流式返回",
-                        "schema": {
-                            "type": "boolean",
-                            "default": false
-                        }
-                    },
-                    {
-                        "name": "mode",
-                        "in": "query",
-                        "description": "请求模式",
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "http",
-                                "sse"
-                            ],
-                            "default": "http"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "server_url": {
-                                        "type": "string",
-                                        "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
-                                        "default": "http://sandbox-runtime:9101"
-                                    },
-                                    "session_id": {
-                                        "type": "string",
-                                        "description": "沙箱会话ID"
-                                    },
-                                    "timeout": {
-                                        "type": "number",
-                                        "description": "超时时间",
-                                        "default": 120
-                                    },
-                                    "title": {
-                                        "type": "string",
-                                        "description": "对于当前操作的简单描述，便于用户理解"
-                                    },
-                                    "content": {
-                                        "type": "string",
-                                        "description": "要执行的 Python 代码内容"
-                                    },
-                                    "filename": {
-                                        "type": "string",
-                                        "description": "文件名，用于指定代码文件的名称"
-                                    },
-                                    "args": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string"
-                                        },
-                                        "description": "代码执行参数"
-                                    },
-                                    "output_params": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string"
-                                        },
-                                        "description": "输出参数列表，用于指定要返回的变量名"
-                                    }
-                                },
-                                "required": [
-                                    "content"
-                                ]
-                            },
-                            "examples": {
-                                "basic_execution": {
-                                    "summary": "基础代码执行",
-                                    "description": "执行简单的 Python 代码",
-                                    "value": {
-                                        "content": "print('Hello World')\nx = 10\ny = 20\nresult = x + y\nprint(f'{x} + {y} = {result}')",
-                                        "filename": "hello.py",
-                                        "output_params": [
-                                            "result"
-                                        ],
-                                        "server_url": "http://localhost:8080",
-                                        "session_id": "test_session_123"
-                                    }
-                                },
-                                "data_analysis": {
-                                    "summary": "数据分析示例",
-                                    "description": "使用 pandas 进行数据分析",
-                                    "value": {
-                                        "content": "import pandas as pd\nimport numpy as np\n\n# 创建示例数据\ndata = {\n    'name': ['Alice', 'Bob', 'Charlie'],\n    'age': [25, 30, 35],\n    'salary': [50000, 60000, 70000]\n}\ndf = pd.DataFrame(data)\n\n# 计算统计信息\nstats = {\n    'mean_age': df['age'].mean(),\n    'mean_salary': df['salary'].mean(),\n    'total_records': len(df)\n}\n\nprint('数据统计:')\nfor key, value in stats.items():\n    print(f'{key}: {value}')\n\nresult = stats",
-                                        "filename": "data_analysis.py",
-                                        "output_params": [
-                                            "result",
-                                            "df"
-                                        ],
-                                        "server_url": "http://localhost:8080",
-                                        "session_id": "test_session_123"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "result": {
-                                            "type": "object",
-                                            "description": "操作结果, 包含标准输出、标准错误输出、返回值"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "description": "操作状态消息"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "description": "错误信息"
-                                        },
-                                        "detail": {
-                                            "type": "string",
-                                            "description": "详细错误信息"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/tools/execute_command_legacy": {
-            "post": {
-                "summary": "execute_command_legacy",
-                "description": "在沙箱环境中执行系统命令，如 ls、cat、grep 等 Linux 命令",
-                "parameters": [
-                    {
-                        "name": "stream",
-                        "in": "query",
-                        "description": "是否流式返回",
-                        "schema": {
-                            "type": "boolean",
-                            "default": false
-                        }
-                    },
-                    {
-                        "name": "mode",
-                        "in": "query",
-                        "description": "请求模式",
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "http",
-                                "sse"
-                            ],
-                            "default": "http"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "server_url": {
-                                        "type": "string",
-                                        "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
-                                        "default": "http://sandbox-runtime:9101"
-                                    },
-                                    "session_id": {
-                                        "type": "string",
-                                        "description": "沙箱会话ID"
-                                    },
-                                    "timeout": {
-                                        "type": "number",
-                                        "description": "超时时间",
-                                        "default": 120
-                                    },
-                                    "title": {
-                                        "type": "string",
-                                        "description": "对于当前操作的简单描述，便于用户理解"
-                                    },
-                                    "command": {
-                                        "type": "string",
-                                        "description": "要执行的系统命令"
-                                    },
-                                    "args": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "string"
-                                        },
-                                        "description": "命令参数列表"
-                                    }
-                                },
-                                "required": [
-                                    "command"
-                                ]
-                            },
-                            "examples": {
-                                "list_files": {
-                                    "summary": "列出文件",
-                                    "description": "列出当前目录下的所有文件",
-                                    "value": {
-                                        "command": "ls",
-                                        "args": [
-                                            "-la"
-                                        ],
-                                        "server_url": "http://localhost:8080",
-                                        "session_id": "test_session_123"
-                                    }
-                                },
-                                "view_file": {
-                                    "summary": "查看文件内容",
-                                    "description": "查看指定文件的内容",
-                                    "value": {
-                                        "command": "cat",
-                                        "args": [
-                                            "hello.py"
-                                        ],
-                                        "server_url": "http://localhost:8080",
-                                        "session_id": "test_session_123"
-                                    }
-                                },
-                                "search_content": {
-                                    "summary": "搜索内容",
-                                    "description": "在文件中搜索指定内容",
-                                    "value": {
-                                        "command": "grep",
-                                        "args": [
-                                            "-n",
-                                            "print",
-                                            "*.py"
-                                        ],
-                                        "server_url": "http://localhost:8080",
-                                        "session_id": "test_session_123"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "result": {
-                                            "type": "object",
-                                            "description": "操作结果, 包含标准输出、标准错误输出、返回值"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "description": "操作状态消息"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "description": "错误信息"
-                                        },
-                                        "detail": {
-                                            "type": "string",
-                                            "description": "详细错误信息"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/tools/read_file_legacy": {
-            "post": {
-                "summary": "read_file_legacy",
-                "description": "读取沙箱环境中的文件内容，支持文本文件和二进制文件",
-                "parameters": [
-                    {
-                        "name": "stream",
-                        "in": "query",
-                        "description": "是否流式返回",
-                        "schema": {
-                            "type": "boolean",
-                            "default": false
-                        }
-                    },
-                    {
-                        "name": "mode",
-                        "in": "query",
-                        "description": "请求模式",
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "http",
-                                "sse"
-                            ],
-                            "default": "http"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "server_url": {
-                                        "type": "string",
-                                        "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
-                                        "default": "http://sandbox-runtime:9101"
-                                    },
-                                    "session_id": {
-                                        "type": "string",
-                                        "description": "沙箱会话ID"
-                                    },
-                                    "timeout": {
-                                        "type": "number",
-                                        "description": "超时时间",
-                                        "default": 120
-                                    },
-                                    "title": {
-                                        "type": "string",
-                                        "description": "对于当前操作的简单描述，便于用户理解"
-                                    },
-                                    "filename": {
-                                        "type": "string",
-                                        "description": "要读取的文件名"
-                                    },
-                                    "session_type": {
-                                        "type": "string",
-                                        "description": "会话类型, 可选值为: redis, in_memory, 默认值为 redis"
-                                    }
-                                },
-                                "required": [
-                                    "filename"
-                                ]
-                            },
-                            "examples": {
-                                "read_python_file": {
-                                    "summary": "读取 Python 文件",
-                                    "description": "读取 Python 源代码文件",
-                                    "value": {
-                                        "filename": "hello.py",
-                                        "server_url": "http://localhost:8080",
-                                        "session_id": "test_session_123"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "result": {
-                                            "type": "object",
-                                            "description": "操作结果, 包含标准输出、标准错误输出、返回值"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "description": "操作状态消息"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "description": "错误信息"
-                                        },
-                                        "detail": {
-                                            "type": "string",
-                                            "description": "详细错误信息"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/tools/create_file_legacy": {
-            "post": {
-                "summary": "create_file_legacy",
-                "description": "在沙箱环境中创建新文件，支持文本内容或从缓存中获取内容",
-                "parameters": [
-                    {
-                        "name": "stream",
-                        "in": "query",
-                        "description": "是否流式返回",
-                        "schema": {
-                            "type": "boolean",
-                            "default": false
-                        }
-                    },
-                    {
-                        "name": "mode",
-                        "in": "query",
-                        "description": "请求模式",
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "http",
-                                "sse"
-                            ],
-                            "default": "http"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "server_url": {
-                                        "type": "string",
-                                        "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
-                                        "default": "http://sandbox-runtime:9101"
-                                    },
-                                    "session_id": {
-                                        "type": "string",
-                                        "description": "沙箱会话ID"
-                                    },
-                                    "timeout": {
-                                        "type": "number",
-                                        "description": "超时时间",
-                                        "default": 120
-                                    },
-                                    "title": {
-                                        "type": "string",
-                                        "description": "对于当前操作的简单描述，便于用户理解"
-                                    },
-                                    "content": {
-                                        "type": "string",
-                                        "description": "文件内容, 如果 result_cache_key 参数不为空，则无需设置该参数"
-                                    },
-                                    "filename": {
-                                        "type": "string",
-                                        "description": "要创建的文件名"
-                                    },
-                                    "session_type": {
-                                        "type": "string",
-                                        "description": "会话类型, 可选值为: redis, in_memory, 默认值为 redis"
-                                    },
-                                    "result_cache_key": {
-                                        "type": "string",
-                                        "description": "之前工具的结果缓存key，可以用于将结果写入到文件中，有此参数则无需设置 content 参数"
-                                    }
-                                },
-                                "required": [
-                                    "filename"
-                                ]
-                            },
-                            "examples": {
-                                "create_python_file": {
-                                    "summary": "创建 Python 文件",
-                                    "description": "创建包含 Python 代码的文件",
-                                    "value": {
-                                        "content": "def fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)\n\n# 计算前10个斐波那契数\nfor i in range(10):\n    print(f'F({i}) = {fibonacci(i)}')",
-                                        "filename": "fibonacci.py",
-                                        "server_url": "http://localhost:8080",
-                                        "session_id": "test_session_123"
-                                    }
-                                },
-                                "create_from_cache": {
-                                    "summary": "从缓存创建文件",
-                                    "description": "使用缓存中的数据创建文件",
-                                    "value": {
-                                        "filename": "data.json",
-                                        "result_cache_key": "cached_data_123",
-                                        "server_url": "http://localhost:8080",
-                                        "session_id": "test_session_123"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "result": {
-                                            "type": "object",
-                                            "description": "操作结果, 包含标准输出、标准错误输出、返回值"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "description": "操作状态消息"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "description": "错误信息"
-                                        },
-                                        "detail": {
-                                            "type": "string",
-                                            "description": "详细错误信息"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/tools/list_files_legacy": {
-            "post": {
-                "summary": "list_files_legacy",
-                "description": "列出沙箱环境中的所有文件和目录",
-                "parameters": [
-                    {
-                        "name": "stream",
-                        "in": "query",
-                        "description": "是否流式返回",
-                        "schema": {
-                            "type": "boolean",
-                            "default": false
-                        }
-                    },
-                    {
-                        "name": "mode",
-                        "in": "query",
-                        "description": "请求模式",
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "http",
-                                "sse"
-                            ],
-                            "default": "http"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "server_url": {
-                                        "type": "string",
-                                        "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
-                                        "default": "http://sandbox-runtime:9101"
-                                    },
-                                    "session_id": {
-                                        "type": "string",
-                                        "description": "沙箱会话ID"
-                                    },
-                                    "timeout": {
-                                        "type": "number",
-                                        "description": "超时时间",
-                                        "default": 120
-                                    },
-                                    "title": {
-                                        "type": "string",
-                                        "description": "对于当前操作的简单描述，便于用户理解"
-                                    }
-                                },
-                                "required": []
-                            },
-                            "examples": {
-                                "list_all_files": {
-                                    "summary": "列出所有文件",
-                                    "description": "列出沙箱环境中的所有文件和目录",
-                                    "value": {
-                                        "server_url": "http://localhost:8080",
-                                        "session_id": "test_session_123"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "result": {
-                                            "type": "object",
-                                            "description": "操作结果, 包含标准输出、标准错误输出、返回值"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "description": "操作状态消息"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "description": "错误信息"
-                                        },
-                                        "detail": {
-                                            "type": "string",
-                                            "description": "详细错误信息"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/tools/get_status_legacy": {
-            "post": {
-                "summary": "get_status_legacy",
-                "description": "获取沙箱环境的当前状态信息",
-                "parameters": [
-                    {
-                        "name": "stream",
-                        "in": "query",
-                        "description": "是否流式返回",
-                        "schema": {
-                            "type": "boolean",
-                            "default": false
-                        }
-                    },
-                    {
-                        "name": "mode",
-                        "in": "query",
-                        "description": "请求模式",
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "http",
-                                "sse"
-                            ],
-                            "default": "http"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "server_url": {
-                                        "type": "string",
-                                        "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
-                                        "default": "http://sandbox-runtime:9101"
-                                    },
-                                    "session_id": {
-                                        "type": "string",
-                                        "description": "沙箱会话ID"
-                                    },
-                                    "timeout": {
-                                        "type": "number",
-                                        "description": "超时时间",
-                                        "default": 120
-                                    },
-                                    "title": {
-                                        "type": "string",
-                                        "description": "对于当前操作的简单描述，便于用户理解"
-                                    }
-                                },
-                                "required": []
-                            },
-                            "examples": {
-                                "get_sandbox_status": {
-                                    "summary": "获取沙箱状态",
-                                    "description": "获取沙箱环境的当前状态信息",
-                                    "value": {
-                                        "server_url": "http://localhost:8080",
-                                        "session_id": "test_session_123"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "result": {
-                                            "type": "object",
-                                            "description": "操作结果, 包含标准输出、标准错误输出、返回值"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "description": "操作状态消息"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "description": "错误信息"
-                                        },
-                                        "detail": {
-                                            "type": "string",
-                                            "description": "详细错误信息"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/tools/close_sandbox_legacy": {
-            "post": {
-                "summary": "close_sandbox_legacy",
-                "description": "清理沙箱工作区，关闭沙箱连接",
-                "parameters": [
-                    {
-                        "name": "stream",
-                        "in": "query",
-                        "description": "是否流式返回",
-                        "schema": {
-                            "type": "boolean",
-                            "default": false
-                        }
-                    },
-                    {
-                        "name": "mode",
-                        "in": "query",
-                        "description": "请求模式",
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "http",
-                                "sse"
-                            ],
-                            "default": "http"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "server_url": {
-                                        "type": "string",
-                                        "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
-                                        "default": "http://sandbox-runtime:9101"
-                                    },
-                                    "session_id": {
-                                        "type": "string",
-                                        "description": "沙箱会话ID"
-                                    },
-                                    "timeout": {
-                                        "type": "number",
-                                        "description": "超时时间",
-                                        "default": 120
-                                    },
-                                    "title": {
-                                        "type": "string",
-                                        "description": "对于当前操作的简单描述，便于用户理解"
-                                    }
-                                },
-                                "required": []
-                            },
-                            "examples": {
-                                "close_sandbox": {
-                                    "summary": "清理工作区",
-                                    "description": "清理沙箱工作区，关闭沙箱连接",
-                                    "value": {
-                                        "server_url": "http://localhost:8080",
-                                        "session_id": "test_session_123"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "result": {
-                                            "type": "object",
-                                            "description": "操作结果, 包含标准输出、标准错误输出、返回值"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "description": "操作状态消息"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "description": "错误信息"
-                                        },
-                                        "detail": {
-                                            "type": "string",
-                                            "description": "详细错误信息"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/tools/download_from_efast_legacy": {
-            "post": {
-                "summary": "download_from_efast_legacy",
-                "description": "从文档库(EFAST)下载文件到沙箱环境，支持批量下载多个文件。需要提供文件参数列表，格式为[{'id': '...', 'type': 'doc', 'name': '...', 'details': {'docid': 'gns://...', 'size': ...}}]",
-                "parameters": [
-                    {
-                        "name": "stream",
-                        "in": "query",
-                        "description": "是否流式返回",
-                        "schema": {
-                            "type": "boolean",
-                            "default": false
-                        }
-                    },
-                    {
-                        "name": "mode",
-                        "in": "query",
-                        "description": "请求模式",
-                        "schema": {
-                            "type": "string",
-                            "enum": [
-                                "http",
-                                "sse"
-                            ],
-                            "default": "http"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "server_url": {
-                                        "type": "string",
-                                        "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
-                                        "default": "http://sandbox-runtime:9101"
-                                    },
-                                    "session_id": {
-                                        "type": "string",
-                                        "description": "沙箱会话ID"
-                                    },
-                                    "timeout": {
-                                        "type": "integer",
-                                        "description": "超时时间(秒)，可选，默认300秒",
-                                        "default": 300
-                                    },
-                                    "title": {
-                                        "type": "string",
-                                        "description": "对于当前操作的简单描述，便于用户理解"
-                                    },
-                                    "file_params": {
-                                        "type": "array",
-                                        "items": {
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "type": "string",
-                                                    "description": "文档ID"
-                                                },
-                                                "name": {
-                                                    "type": "string",
-                                                    "description": "文档名称"
-                                                },
-                                                "details": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "docid": {
-                                                            "type": "string",
-                                                            "description": "完整的文档ID"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "docid"
-                                                    ]
-                                                }
-                                            },
-                                            "required": [
-                                                "details"
-                                            ]
-                                        },
-                                        "description": "下载文件参数列表"
-                                    },
-                                    "save_path": {
-                                        "type": "string",
-                                        "description": "保存路径，可选，默认保存到会话目录"
-                                    },
-                                    "efast_url": {
-                                        "type": "string",
-                                        "description": "EFAST地址，可选，默认使用默认URL"
-                                    },
-                                    "token": {
-                                        "type": "string",
-                                        "description": "认证令牌"
-                                    }
-                                },
-                                "required": [
-                                    "file_params"
-                                ]
-                            },
-                            "examples": {
-                                "single_file": {
-                                    "summary": "下载单个文件",
-                                    "description": "从文档库(EFAST)下载单个文件",
-                                    "value": {
-                                        "file_params": [
-                                            {
-                                                "id": "5CB5AA515EBD4CB785918D43982FCE42",
-                                                "type": "doc",
-                                                "name": "新能源汽车产业分析 (10).docx",
-                                                "details": {
-                                                    "docid": "gns://00328E97423F42AC9DEE87B4F4B4631E/83D893844A0B4A34A64DFFB343BEF416/5CB5AA515EBD4CB785918D43982FCE42",
-                                                    "size": 15635
-                                                }
-                                            }
-                                        ],
-                                        "save_path": "",
-                                        "efast_url": "https://efast.example.com",
-                                        "timeout": 300,
-                                        "token": "1234567890",
-                                        "server_url": "",
-                                        "session_id": "test_session_123"
-                                    }
-                                },
-                                "multiple_files": {
-                                    "summary": "批量下载文件",
-                                    "description": "从文档库(EFAST)批量下载多个文件",
-                                    "value": {
-                                        "file_params": [
-                                            {
-                                                "id": "5CB5AA515EBD4CB785918D43982FCE42",
-                                                "type": "doc",
-                                                "name": "新能源汽车产业分析 (10).docx",
-                                                "details": {
-                                                    "docid": "gns://00328E97423F42AC9DEE87B4F4B4631E/83D893844A0B4A34A64DFFB343BEF416/5CB5AA515EBD4CB785918D43982FCE42",
-                                                    "size": 15635
-                                                }
-                                            },
-                                            {
-                                                "id": "6CB5AA515EBD4CB785918D43982FCE43",
-                                                "type": "doc",
-                                                "name": "市场分析报告.pdf",
-                                                "details": {
-                                                    "docid": "gns://00328E97423F42AC9DEE87B4F4B4631E/83D893844A0B4A34A64DFFB343BEF416/6CB5AA515EBD4CB785918D43982FCE43",
-                                                    "size": 24567
-                                                }
-                                            }
-                                        ],
-                                        "save_path": "",
-                                        "timeout": 600,
-                                        "token": "1234567890",
-                                        "server_url": "",
-                                        "session_id": "test_session_123"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Successful operation",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "result": {
-                                            "type": "object",
-                                            "description": "操作结果, 包含标准输出、标准错误输出、返回值"
-                                        },
-                                        "message": {
-                                            "type": "string",
-                                            "description": "操作状态消息"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad request",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "properties": {
-                                        "error": {
-                                            "type": "string",
-                                            "description": "错误信息"
-                                        },
-                                        "detail": {
-                                            "type": "string",
-                                            "description": "详细错误信息"
-                                        }
                                     }
                                 }
                             }
@@ -4968,6 +3853,1121 @@
                                         "error": {
                                             "type": "string",
                                             "description": "错误信息"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tools/execute_code_legacy": {
+            "post": {
+                "summary": "execute_code_legacy",
+                "description": "在沙箱环境中执行 Python 代码，支持 pandas 等数据分析库，注意沙箱环境是受限环境，没有网络连接，不能使用 pip 安装第三方库。运行代码时，需要通过 print 输出结果，或者设置输出变量 output_params 参数，返回结果",
+                "parameters": [
+                    {
+                        "name": "stream",
+                        "in": "query",
+                        "description": "是否流式返回",
+                        "schema": {
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "description": "请求模式",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "http",
+                                "sse"
+                            ],
+                            "default": "http"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "server_url": {
+                                        "type": "string",
+                                        "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
+                                        "default": "http://sandbox-runtime:9101"
+                                    },
+                                    "session_id": {
+                                        "type": "string",
+                                        "description": "沙箱会话ID"
+                                    },
+                                    "timeout": {
+                                        "type": "number",
+                                        "description": "超时时间",
+                                        "default": 120
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "description": "对于当前操作的简单描述，便于用户理解"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "description": "要执行的 Python 代码内容"
+                                    },
+                                    "filename": {
+                                        "type": "string",
+                                        "description": "文件名，用于指定代码文件的名称"
+                                    },
+                                    "args": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "description": "代码执行参数"
+                                    },
+                                    "output_params": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "description": "输出参数列表，用于指定要返回的变量名"
+                                    }
+                                },
+                                "required": [
+                                    "content"
+                                ]
+                            },
+                            "examples": {
+                                "basic_execution": {
+                                    "summary": "基础代码执行",
+                                    "description": "执行简单的 Python 代码",
+                                    "value": {
+                                        "content": "print('Hello World')\nx = 10\ny = 20\nresult = x + y\nprint(f'{x} + {y} = {result}')",
+                                        "filename": "hello.py",
+                                        "output_params": [
+                                            "result"
+                                        ],
+                                        "server_url": "http://localhost:8080",
+                                        "session_id": "test_session_123"
+                                    }
+                                },
+                                "data_analysis": {
+                                    "summary": "数据分析示例",
+                                    "description": "使用 pandas 进行数据分析",
+                                    "value": {
+                                        "content": "import pandas as pd\nimport numpy as np\n\n# 创建示例数据\ndata = {\n    'name': ['Alice', 'Bob', 'Charlie'],\n    'age': [25, 30, 35],\n    'salary': [50000, 60000, 70000]\n}\ndf = pd.DataFrame(data)\n\n# 计算统计信息\nstats = {\n    'mean_age': df['age'].mean(),\n    'mean_salary': df['salary'].mean(),\n    'total_records': len(df)\n}\n\nprint('数据统计:')\nfor key, value in stats.items():\n    print(f'{key}: {value}')\n\nresult = stats",
+                                        "filename": "data_analysis.py",
+                                        "output_params": [
+                                            "result",
+                                            "df"
+                                        ],
+                                        "server_url": "http://localhost:8080",
+                                        "session_id": "test_session_123"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "type": "object",
+                                            "description": "操作结果, 包含标准输出、标准错误输出、返回值"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "操作状态消息"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "description": "错误信息"
+                                        },
+                                        "detail": {
+                                            "type": "string",
+                                            "description": "详细错误信息"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tools/execute_command_legacy": {
+            "post": {
+                "summary": "execute_command_legacy",
+                "description": "在沙箱环境中执行系统命令，如 ls、cat、grep 等 Linux 命令",
+                "parameters": [
+                    {
+                        "name": "stream",
+                        "in": "query",
+                        "description": "是否流式返回",
+                        "schema": {
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "description": "请求模式",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "http",
+                                "sse"
+                            ],
+                            "default": "http"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "server_url": {
+                                        "type": "string",
+                                        "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
+                                        "default": "http://sandbox-runtime:9101"
+                                    },
+                                    "session_id": {
+                                        "type": "string",
+                                        "description": "沙箱会话ID"
+                                    },
+                                    "timeout": {
+                                        "type": "number",
+                                        "description": "超时时间",
+                                        "default": 120
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "description": "对于当前操作的简单描述，便于用户理解"
+                                    },
+                                    "command": {
+                                        "type": "string",
+                                        "description": "要执行的系统命令"
+                                    },
+                                    "args": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "description": "命令参数列表"
+                                    }
+                                },
+                                "required": [
+                                    "command"
+                                ]
+                            },
+                            "examples": {
+                                "list_files": {
+                                    "summary": "列出文件",
+                                    "description": "列出当前目录下的所有文件",
+                                    "value": {
+                                        "command": "ls",
+                                        "args": [
+                                            "-la"
+                                        ],
+                                        "server_url": "http://localhost:8080",
+                                        "session_id": "test_session_123"
+                                    }
+                                },
+                                "view_file": {
+                                    "summary": "查看文件内容",
+                                    "description": "查看指定文件的内容",
+                                    "value": {
+                                        "command": "cat",
+                                        "args": [
+                                            "hello.py"
+                                        ],
+                                        "server_url": "http://localhost:8080",
+                                        "session_id": "test_session_123"
+                                    }
+                                },
+                                "search_content": {
+                                    "summary": "搜索内容",
+                                    "description": "在文件中搜索指定内容",
+                                    "value": {
+                                        "command": "grep",
+                                        "args": [
+                                            "-n",
+                                            "print",
+                                            "*.py"
+                                        ],
+                                        "server_url": "http://localhost:8080",
+                                        "session_id": "test_session_123"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "type": "object",
+                                            "description": "操作结果, 包含标准输出、标准错误输出、返回值"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "操作状态消息"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "description": "错误信息"
+                                        },
+                                        "detail": {
+                                            "type": "string",
+                                            "description": "详细错误信息"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tools/read_file_legacy": {
+            "post": {
+                "summary": "read_file_legacy",
+                "description": "读取沙箱环境中的文件内容，支持文本文件和二进制文件",
+                "parameters": [
+                    {
+                        "name": "stream",
+                        "in": "query",
+                        "description": "是否流式返回",
+                        "schema": {
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "description": "请求模式",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "http",
+                                "sse"
+                            ],
+                            "default": "http"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "server_url": {
+                                        "type": "string",
+                                        "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
+                                        "default": "http://sandbox-runtime:9101"
+                                    },
+                                    "session_id": {
+                                        "type": "string",
+                                        "description": "沙箱会话ID"
+                                    },
+                                    "timeout": {
+                                        "type": "number",
+                                        "description": "超时时间",
+                                        "default": 120
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "description": "对于当前操作的简单描述，便于用户理解"
+                                    },
+                                    "filename": {
+                                        "type": "string",
+                                        "description": "要读取的文件名"
+                                    },
+                                    "session_type": {
+                                        "type": "string",
+                                        "description": "会话类型, 可选值为: redis, in_memory, 默认值为 redis"
+                                    }
+                                },
+                                "required": [
+                                    "filename"
+                                ]
+                            },
+                            "examples": {
+                                "read_python_file": {
+                                    "summary": "读取 Python 文件",
+                                    "description": "读取 Python 源代码文件",
+                                    "value": {
+                                        "filename": "hello.py",
+                                        "server_url": "http://localhost:8080",
+                                        "session_id": "test_session_123"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "type": "object",
+                                            "description": "操作结果, 包含标准输出、标准错误输出、返回值"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "操作状态消息"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "description": "错误信息"
+                                        },
+                                        "detail": {
+                                            "type": "string",
+                                            "description": "详细错误信息"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tools/create_file_legacy": {
+            "post": {
+                "summary": "create_file_legacy",
+                "description": "在沙箱环境中创建新文件，支持文本内容或从缓存中获取内容",
+                "parameters": [
+                    {
+                        "name": "stream",
+                        "in": "query",
+                        "description": "是否流式返回",
+                        "schema": {
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "description": "请求模式",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "http",
+                                "sse"
+                            ],
+                            "default": "http"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "server_url": {
+                                        "type": "string",
+                                        "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
+                                        "default": "http://sandbox-runtime:9101"
+                                    },
+                                    "session_id": {
+                                        "type": "string",
+                                        "description": "沙箱会话ID"
+                                    },
+                                    "timeout": {
+                                        "type": "number",
+                                        "description": "超时时间",
+                                        "default": 120
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "description": "对于当前操作的简单描述，便于用户理解"
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "description": "文件内容, 如果 result_cache_key 参数不为空，则无需设置该参数"
+                                    },
+                                    "filename": {
+                                        "type": "string",
+                                        "description": "要创建的文件名"
+                                    },
+                                    "session_type": {
+                                        "type": "string",
+                                        "description": "会话类型, 可选值为: redis, in_memory, 默认值为 redis"
+                                    },
+                                    "result_cache_key": {
+                                        "type": "string",
+                                        "description": "之前工具的结果缓存key，可以用于将结果写入到文件中，有此参数则无需设置 content 参数"
+                                    }
+                                },
+                                "required": [
+                                    "filename"
+                                ]
+                            },
+                            "examples": {
+                                "create_python_file": {
+                                    "summary": "创建 Python 文件",
+                                    "description": "创建包含 Python 代码的文件",
+                                    "value": {
+                                        "content": "def fibonacci(n):\n    if n <= 1:\n        return n\n    return fibonacci(n-1) + fibonacci(n-2)\n\n# 计算前10个斐波那契数\nfor i in range(10):\n    print(f'F({i}) = {fibonacci(i)}')",
+                                        "filename": "fibonacci.py",
+                                        "server_url": "http://localhost:8080",
+                                        "session_id": "test_session_123"
+                                    }
+                                },
+                                "create_from_cache": {
+                                    "summary": "从缓存创建文件",
+                                    "description": "使用缓存中的数据创建文件",
+                                    "value": {
+                                        "filename": "data.json",
+                                        "result_cache_key": "cached_data_123",
+                                        "server_url": "http://localhost:8080",
+                                        "session_id": "test_session_123"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "type": "object",
+                                            "description": "操作结果, 包含标准输出、标准错误输出、返回值"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "操作状态消息"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "description": "错误信息"
+                                        },
+                                        "detail": {
+                                            "type": "string",
+                                            "description": "详细错误信息"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tools/list_files_legacy": {
+            "post": {
+                "summary": "list_files_legacy",
+                "description": "列出沙箱环境中的所有文件和目录",
+                "parameters": [
+                    {
+                        "name": "stream",
+                        "in": "query",
+                        "description": "是否流式返回",
+                        "schema": {
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "description": "请求模式",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "http",
+                                "sse"
+                            ],
+                            "default": "http"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "server_url": {
+                                        "type": "string",
+                                        "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
+                                        "default": "http://sandbox-runtime:9101"
+                                    },
+                                    "session_id": {
+                                        "type": "string",
+                                        "description": "沙箱会话ID"
+                                    },
+                                    "timeout": {
+                                        "type": "number",
+                                        "description": "超时时间",
+                                        "default": 120
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "description": "对于当前操作的简单描述，便于用户理解"
+                                    }
+                                },
+                                "required": []
+                            },
+                            "examples": {
+                                "list_all_files": {
+                                    "summary": "列出所有文件",
+                                    "description": "列出沙箱环境中的所有文件和目录",
+                                    "value": {
+                                        "server_url": "http://localhost:8080",
+                                        "session_id": "test_session_123"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "type": "object",
+                                            "description": "操作结果, 包含标准输出、标准错误输出、返回值"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "操作状态消息"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "description": "错误信息"
+                                        },
+                                        "detail": {
+                                            "type": "string",
+                                            "description": "详细错误信息"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tools/get_status_legacy": {
+            "post": {
+                "summary": "get_status_legacy",
+                "description": "获取沙箱环境的当前状态信息",
+                "parameters": [
+                    {
+                        "name": "stream",
+                        "in": "query",
+                        "description": "是否流式返回",
+                        "schema": {
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "description": "请求模式",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "http",
+                                "sse"
+                            ],
+                            "default": "http"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "server_url": {
+                                        "type": "string",
+                                        "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
+                                        "default": "http://sandbox-runtime:9101"
+                                    },
+                                    "session_id": {
+                                        "type": "string",
+                                        "description": "沙箱会话ID"
+                                    },
+                                    "timeout": {
+                                        "type": "number",
+                                        "description": "超时时间",
+                                        "default": 120
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "description": "对于当前操作的简单描述，便于用户理解"
+                                    }
+                                },
+                                "required": []
+                            },
+                            "examples": {
+                                "get_sandbox_status": {
+                                    "summary": "获取沙箱状态",
+                                    "description": "获取沙箱环境的当前状态信息",
+                                    "value": {
+                                        "server_url": "http://localhost:8080",
+                                        "session_id": "test_session_123"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "type": "object",
+                                            "description": "操作结果, 包含标准输出、标准错误输出、返回值"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "操作状态消息"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "description": "错误信息"
+                                        },
+                                        "detail": {
+                                            "type": "string",
+                                            "description": "详细错误信息"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tools/close_sandbox_legacy": {
+            "post": {
+                "summary": "close_sandbox_legacy",
+                "description": "清理沙箱工作区，关闭沙箱连接",
+                "parameters": [
+                    {
+                        "name": "stream",
+                        "in": "query",
+                        "description": "是否流式返回",
+                        "schema": {
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "description": "请求模式",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "http",
+                                "sse"
+                            ],
+                            "default": "http"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "server_url": {
+                                        "type": "string",
+                                        "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
+                                        "default": "http://sandbox-runtime:9101"
+                                    },
+                                    "session_id": {
+                                        "type": "string",
+                                        "description": "沙箱会话ID"
+                                    },
+                                    "timeout": {
+                                        "type": "number",
+                                        "description": "超时时间",
+                                        "default": 120
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "description": "对于当前操作的简单描述，便于用户理解"
+                                    }
+                                },
+                                "required": []
+                            },
+                            "examples": {
+                                "close_sandbox": {
+                                    "summary": "清理工作区",
+                                    "description": "清理沙箱工作区，关闭沙箱连接",
+                                    "value": {
+                                        "server_url": "http://localhost:8080",
+                                        "session_id": "test_session_123"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "type": "object",
+                                            "description": "操作结果, 包含标准输出、标准错误输出、返回值"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "操作状态消息"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "description": "错误信息"
+                                        },
+                                        "detail": {
+                                            "type": "string",
+                                            "description": "详细错误信息"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tools/download_from_efast_legacy": {
+            "post": {
+                "summary": "download_from_efast_legacy",
+                "description": "从文档库(EFAST)下载文件到沙箱环境，支持批量下载多个文件。需要提供文件参数列表，格式为[{'id': '...', 'type': 'doc', 'name': '...', 'details': {'docid': 'gns://...', 'size': ...}}]",
+                "parameters": [
+                    {
+                        "name": "stream",
+                        "in": "query",
+                        "description": "是否流式返回",
+                        "schema": {
+                            "type": "boolean",
+                            "default": false
+                        }
+                    },
+                    {
+                        "name": "mode",
+                        "in": "query",
+                        "description": "请求模式",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "http",
+                                "sse"
+                            ],
+                            "default": "http"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "server_url": {
+                                        "type": "string",
+                                        "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
+                                        "default": "http://sandbox-runtime:9101"
+                                    },
+                                    "session_id": {
+                                        "type": "string",
+                                        "description": "沙箱会话ID"
+                                    },
+                                    "timeout": {
+                                        "type": "integer",
+                                        "description": "超时时间(秒)，可选，默认300秒",
+                                        "default": 300
+                                    },
+                                    "title": {
+                                        "type": "string",
+                                        "description": "对于当前操作的简单描述，便于用户理解"
+                                    },
+                                    "file_params": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string",
+                                                    "description": "文档ID"
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "description": "文档名称"
+                                                },
+                                                "details": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "docid": {
+                                                            "type": "string",
+                                                            "description": "完整的文档ID"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "docid"
+                                                    ]
+                                                }
+                                            },
+                                            "required": [
+                                                "details"
+                                            ]
+                                        },
+                                        "description": "下载文件参数列表"
+                                    },
+                                    "save_path": {
+                                        "type": "string",
+                                        "description": "保存路径，可选，默认保存到会话目录"
+                                    },
+                                    "efast_url": {
+                                        "type": "string",
+                                        "description": "EFAST地址，可选，默认使用默认URL"
+                                    },
+                                    "token": {
+                                        "type": "string",
+                                        "description": "认证令牌"
+                                    }
+                                },
+                                "required": [
+                                    "file_params"
+                                ]
+                            },
+                            "examples": {
+                                "single_file": {
+                                    "summary": "下载单个文件",
+                                    "description": "从文档库(EFAST)下载单个文件",
+                                    "value": {
+                                        "file_params": [
+                                            {
+                                                "id": "5CB5AA515EBD4CB785918D43982FCE42",
+                                                "type": "doc",
+                                                "name": "新能源汽车产业分析 (10).docx",
+                                                "details": {
+                                                    "docid": "gns://00328E97423F42AC9DEE87B4F4B4631E/83D893844A0B4A34A64DFFB343BEF416/5CB5AA515EBD4CB785918D43982FCE42",
+                                                    "size": 15635
+                                                }
+                                            }
+                                        ],
+                                        "save_path": "",
+                                        "efast_url": "https://efast.example.com",
+                                        "timeout": 300,
+                                        "token": "1234567890",
+                                        "server_url": "",
+                                        "session_id": "test_session_123"
+                                    }
+                                },
+                                "multiple_files": {
+                                    "summary": "批量下载文件",
+                                    "description": "从文档库(EFAST)批量下载多个文件",
+                                    "value": {
+                                        "file_params": [
+                                            {
+                                                "id": "5CB5AA515EBD4CB785918D43982FCE42",
+                                                "type": "doc",
+                                                "name": "新能源汽车产业分析 (10).docx",
+                                                "details": {
+                                                    "docid": "gns://00328E97423F42AC9DEE87B4F4B4631E/83D893844A0B4A34A64DFFB343BEF416/5CB5AA515EBD4CB785918D43982FCE42",
+                                                    "size": 15635
+                                                }
+                                            },
+                                            {
+                                                "id": "6CB5AA515EBD4CB785918D43982FCE43",
+                                                "type": "doc",
+                                                "name": "市场分析报告.pdf",
+                                                "details": {
+                                                    "docid": "gns://00328E97423F42AC9DEE87B4F4B4631E/83D893844A0B4A34A64DFFB343BEF416/6CB5AA515EBD4CB785918D43982FCE43",
+                                                    "size": 24567
+                                                }
+                                            }
+                                        ],
+                                        "save_path": "",
+                                        "timeout": 600,
+                                        "token": "1234567890",
+                                        "server_url": "",
+                                        "session_id": "test_session_123"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful operation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "type": "object",
+                                            "description": "操作结果, 包含标准输出、标准错误输出、返回值"
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "description": "操作状态消息"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "error": {
+                                            "type": "string",
+                                            "description": "错误信息"
+                                        },
+                                        "detail": {
+                                            "type": "string",
+                                            "description": "详细错误信息"
                                         }
                                     }
                                 }
