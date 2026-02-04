@@ -91,7 +91,7 @@ const FileArea = ({ onPreviewFile }: any) => {
                   onClick={e => {
                     console.log(file, '预览的文件----FileArea');
                     e.stopPropagation();
-                    onPreviewFile(file);
+                    // onPreviewFile(file);
                   }}
                 >
                   <FileTypeIcon extension={getFileExtension(file.name)} fontSize={16} />
@@ -108,19 +108,19 @@ const FileArea = ({ onPreviewFile }: any) => {
                   )}
                 </div>
               </div>
-              <span className={styles.btn}>
-                <Tooltip title={intl.get('dipChat.remove')}>
-                  <DipButton
-                    onClick={e => {
-                      e.stopPropagation();
-                      deleteFile([file.container_path]);
-                    }}
-                    size="small"
-                    type="text"
-                    icon={<DipIcon type="icon-dip-trash" />}
-                  />
-                </Tooltip>
-              </span>
+              {/*<span className={styles.btn}>*/}
+              {/*  <Tooltip title={intl.get('dipChat.remove')}>*/}
+              {/*    <DipButton*/}
+              {/*      onClick={e => {*/}
+              {/*        e.stopPropagation();*/}
+              {/*        deleteFile([file.container_path]);*/}
+              {/*      }}*/}
+              {/*      size="small"*/}
+              {/*      type="text"*/}
+              {/*      icon={<DipIcon type="icon-dip-trash" />}*/}
+              {/*    />*/}
+              {/*  </Tooltip>*/}
+              {/*</span>*/}
             </div>
           );
         })}

@@ -39,21 +39,28 @@ const FileUploadBtn = forwardRef<FileUploadBtnRef, FileUploadBtnProps>((props, r
     setDipChatStore({ tempFileList: [] });
   };
 
-  const getFileList = async () => {
+  const getFileList = async (debugFilePath?: string) => {
     const conversationId = getDipChatStore().activeConversationKey;
-    const path = `${conversationId}/uploads/temparea`;
+    const path = `conversation-${conversationId}/uploads/temparea`;
     const res: any = await getFileListFromSandBox({
       sessionId,
       path,
       limit: 1000,
     });
     if (res) {
-      console.log(res, '文件列表');
-      const list = res.files.map((item: any) => ({
-        ...item,
-        checked: debug,
-        status: 'completed',
-      }));
+      let files = res.files;
+      if (debugFilePath) {
+        files = files.filter((item: any) => item.container_path.includes(debugFilePath));
+      }
+      const list = files.map((item: any) => {
+        const fileName = item.name.split('/temparea/').pop();
+        return {
+          ...item,
+          checked: debug,
+          status: 'completed',
+          name: fileName,
+        };
+      });
       setDipChatStore({ tempFileList: list });
     }
   };
@@ -95,15 +102,19 @@ const FileUploadBtn = forwardRef<FileUploadBtnRef, FileUploadBtnProps>((props, r
           setDipChatStore({ activeConversationKey: conversationId });
         }
       }
-      const filePath = `${conversationId}/uploads/temparea/${uploadFile.name}`;
-      const res = await uploadFileToSandBox({
+      const filePath = `conversation-${conversationId}/uploads/temparea/${encodeURIComponent(uploadFile.name)}`;
+      const res: any = await uploadFileToSandBox({
         file: uploadFile,
         sessionId,
         filePath,
       });
       if (res) {
         onSuccess?.(res);
-        getFileList?.();
+        if (debug) {
+          getFileList?.(res.file_path);
+        } else {
+          getFileList?.();
+        }
         props.onSuccess?.();
       }
     } catch (error: any) {

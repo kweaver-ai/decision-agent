@@ -319,11 +319,11 @@ const AgentConfig: React.FC = () => {
           className="dip-flex-item-full-height dip-w-100"
           style={{ display: activeTab === 'trace-analysis' ? 'block' : 'none' }}
         >
-          <TraceAnalysis
-            refreshTraceAnalysis={refreshTraceAnalysis}
-            userPermissions={userPermissions}
-            isSkillAgent={isSkillAgent}
-          />
+          {/*<TraceAnalysis*/}
+          {/*  refreshTraceAnalysis={refreshTraceAnalysis}*/}
+          {/*  userPermissions={userPermissions}*/}
+          {/*  isSkillAgent={isSkillAgent}*/}
+          {/*/>*/}
         </div>
       </div>
     </AgentConfigProvider>

@@ -256,7 +256,7 @@ const Header: React.FC<HeaderProps> = ({
           <AgentIcon avatar_type={state.avatar_type} avatar={state.avatar} name={state.name} size={24} />
           <div>{state.name || intl.get('dataAgent.config.untitled')}</div>
         </div>
-        {renderTab()}
+        {/*{renderTab()}*/}
         <div className={styles.headerRight}>
           {process.env.NODE_ENV === 'development' && (
             <Button
