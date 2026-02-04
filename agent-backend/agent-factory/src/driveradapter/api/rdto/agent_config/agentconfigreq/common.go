@@ -19,10 +19,6 @@ func HandleConfig(config *daconfvalobj.Config) (err error) {
 	// 1. 设置默认值
 	setDefaultValue(config)
 
-	// 2. 清除ds_doc的datasets
-	// 创建和编辑时，不需要通过接口来传递这个，这里置空。后面会有逻辑给这个赋值
-	config.ClearDsDocDatasets()
-
 	return
 }
 

@@ -438,14 +438,6 @@ func (agentSvc *agentSvc) addCitesToProgress(ctx context.Context, progresses []*
 				Text: answer,
 			}
 
-			err = agentSvc.docCite(ctx, docRetrievalField, markCite, cites)
-			if err != nil {
-				o11y.Error(ctx, fmt.Sprintf("[addCitesToProgress] docCite error: %v", err))
-				agentSvc.logger.Errorf("[addCitesToProgress] docCite error: %v", err)
-
-				continue
-			}
-
 			progress.Answer.(map[string]interface{})["full_result"].(map[string]interface{})["text"] = docRetrievalField.Text
 			progress.Answer.(map[string]interface{})["full_result"].(map[string]interface{})["cites"] = docRetrievalField.Cites
 			// NOTE: 将references清空

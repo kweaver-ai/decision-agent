@@ -100,15 +100,23 @@ data:
         host: {{ .Values.depServices.hydra.hydraAdmin.host }}
         port: {{ .Values.depServices.hydra.hydraAdmin.port }}
     model_factory:
-      {{- toYaml .Values.depServices.modelFactory | nindent 6 }}
-    eco_index:
-      {{- toYaml .Values.depServices.ecoIndex | nindent 6 }}
-    datahubcentral:
-      {{- toYaml .Values.depServices.datahubcentral | nindent 6 }}
+      model_api_svc:
+        host: {{ .Values.depServices.modelFactory.modelApiSvc.host }}
+        port: {{ .Values.depServices.modelFactory.modelApiSvc.port }}
+        protocol: {{ .Values.depServices.modelFactory.modelApiSvc.protocol | quote }}
+      model_manager_svc:
+        host: {{ .Values.depServices.modelFactory.modelManagerSvc.host }}
+        port: {{ .Values.depServices.modelFactory.modelManagerSvc.port }}
+        protocol: {{ .Values.depServices.modelFactory.modelManagerSvc.protocol | quote }}
     authorization:
-      {{- toYaml .Values.depServices.authorization | nindent 6 }}
-    agent_factory:
-      {{- toYaml .Values.depServices.agentFactory | nindent 6 }}
+      public_svc:
+        host: {{ .Values.depServices.authorization.publicSvc.host | quote }}
+        port: {{ .Values.depServices.authorization.publicSvc.port }}
+        protocol: {{ .Values.depServices.authorization.publicSvc.protocol | quote }}
+      private_svc:
+        host: {{ .Values.depServices.authorization.privateSvc.host | quote }}
+        port: {{ .Values.depServices.authorization.privateSvc.port }}
+        protocol: {{ .Values.depServices.authorization.privateSvc.protocol | quote }}
     # ========== Sandbox Platform 配置 ==========
     sandbox_platform:
       public_svc:
@@ -134,29 +142,38 @@ data:
         allowed_file_types:
         {{- toYaml .Values.depServices.sandboxPlatform.fileUploadConfig.allowedFileTypes | nindent 8 }}
     # ========================================
+
+    agent_factory:
+      private_svc:
+        host: {{ .Values.depServices.agentFactory.privateSvc.host | quote }}
+        port: {{ .Values.depServices.agentFactory.privateSvc.port }}
+        protocol: {{ .Values.depServices.agentFactory.privateSvc.protocol | quote }}
     # ========== Agent Executor 配置 ==========
     agent_executor:
       private_svc:
         host: {{ .Values.depServices.agentExecutor.privateSvc.host | quote }}
         port: {{ .Values.depServices.agentExecutor.privateSvc.port }}
         protocol: {{ .Values.depServices.agentExecutor.privateSvc.protocol | quote }}
-      public_svc:
-        host: {{ .Values.depServices.agentExecutor.publicSvc.host | quote }}
-        port: {{ .Values.depServices.agentExecutor.publicSvc.port }}
-        protocol: {{ .Values.depServices.agentExecutor.publicSvc.protocol | quote }}
-      use_v2: {{ .Values.depServices.agentExecutor.useV2 | default true }}
     # ========================================
-    efast:
-      {{- toYaml .Values.depServices.efast | nindent 6 }}
-    docset:
-      {{- toYaml .Values.depServices.docset | nindent 6 }}
-    ecoconfig:
-      {{- toYaml .Values.depServices.ecoconfig | nindent 6 }}
     uniquery:
-      {{- toYaml .Values.depServices.uniquery | nindent 6 }}
+      public_svc:
+        host: {{ .Values.depServices.uniquery.publicSvc.host | quote }}
+        port: {{ .Values.depServices.uniquery.publicSvc.port }}
+        protocol: {{ .Values.depServices.uniquery.publicSvc.protocol | quote }}
+      private_svc:
+        host: {{ .Values.depServices.uniquery.privateSvc.host | quote }}
+        port: {{ .Values.depServices.uniquery.privateSvc.port }}
+        protocol: {{ .Values.depServices.uniquery.privateSvc.protocol | quote }}
     # ========================================
     biz_domain:
-      {{- toYaml .Values.depServices.bizDomain | nindent 6 }}
+      public_svc:
+        host: {{ .Values.depServices.bizDomain.publicSvc.host | quote }}
+        port: {{ .Values.depServices.bizDomain.publicSvc.port }}
+        protocol: {{ .Values.depServices.bizDomain.publicSvc.protocol | quote }}
+      private_svc:
+        host: {{ .Values.depServices.bizDomain.privateSvc.host | quote }}
+        port: {{ .Values.depServices.bizDomain.privateSvc.port }}
+        protocol: {{ .Values.depServices.bizDomain.privateSvc.protocol | quote }}
     opentelemetry:
       {{- toYaml .Values.opentelemetry | nindent 6 }}
   mq_config.yaml: |

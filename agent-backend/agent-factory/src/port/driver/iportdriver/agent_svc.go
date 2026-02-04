@@ -4,7 +4,6 @@ import (
 	"context"
 
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
-	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
 )
 
 //go:generate mockgen -source=./agent_svc.go -destination ./iportdrivermock/agent_svc.go -package iportdrivermock
@@ -17,7 +16,6 @@ type IAgent interface {
 	// 如果 interruptedAssistantMessageID 不为空，更新消息状态为 cancelled
 	TerminateChat(ctx context.Context, conversationID string, agentRunID string, interruptedAssistantMessageID string) error
 	GetAPIDoc(ctx context.Context, req *agentreq.GetAPIDocReq) (interface{}, error)
-	FileCheck(ctx context.Context, req *agentreq.FileCheckReq) (agentresp.FileCheckResp, error)
 
 	// ConversationSessionInit(ctx context.Context, req *agentreq.ConversationSessionInitReq) (resp *agentresp.ConversationSessionInitResp, err error)
 }

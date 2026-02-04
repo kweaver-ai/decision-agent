@@ -21,7 +21,6 @@ type agentHTTPHandler struct {
 func (h *agentHTTPHandler) RegPubRouter(router *gin.RouterGroup) {
 	router.POST("/app/:app_key/chat/resume", h.ResumeChat)
 	router.POST("/app/:app_key/chat/termination", h.TerminateChat)
-	router.POST("/file/check", h.FileCheck)
 
 	permissionRouter := router.Group("",
 		apimiddleware.CheckAgentUsePms(),

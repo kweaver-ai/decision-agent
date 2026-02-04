@@ -258,12 +258,6 @@ func (svc *releaseSvc) Publish(ctx context.Context, req *releasereq.PublishReq) 
 		return
 	}
 
-	// 16. 处理数据源相关
-	err = svc.handlePublishDatasource(ctx, tx, po)
-	if err != nil {
-		err = errors.Wrap(err, "handle publish datasource failed")
-		return
-	}
 
 	err = tx.Commit()
 	if err != nil {

@@ -40,8 +40,6 @@ type Config struct {
 	Hydra   HydraCfg  `yaml:"hydra"`
 
 	ModelFactory   *ModelFactoryConf   `yaml:"model_factory"`
-	EcoIndex       *EcoIndexConf       `yaml:"eco_index"`
-	DataHubCentral *DataHubCentralConf `yaml:"datahubcentral"`
 	Authorization  *AuthzCfg           `yaml:"authorization"`
 	AgentFactory   *AgentFactoryConf   `yaml:"agent_factory"`
 	BizDomain      *BizDomainConf      `yaml:"biz_domain"`

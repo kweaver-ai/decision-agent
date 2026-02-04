@@ -16,7 +16,6 @@ type releaseSvc struct {
 	agentConfigRepo        idbaccess.IDataAgentConfigRepo
 	releaseCategoryRelRepo idbaccess.IReleaseCategoryRelRepo
 	releasePermissionRepo  idbaccess.IReleasePermissionRepo
-	dsSvc                  iv3portdriver.IDsSvc
 
 	categoryRepo      idbaccess.ICategoryRepo
 	spaceResourceRepo idbaccess.ISpaceResourceRepo
@@ -38,7 +37,6 @@ func NewReleaseService(dto *NewReleaseSvcDto) iv3portdriver.IReleaseSvc {
 		agentConfigRepo:        dto.AgentConfigRepo,
 		releaseCategoryRelRepo: dto.ReleaseCategoryRepo,
 		releasePermissionRepo:  dto.ReleasePermissionRepo,
-		dsSvc:                  dto.DsIndexSvc,
 		categoryRepo:           dto.CategoryRepo,
 		spaceResourceRepo:      dto.SpaceResourceRepo,
 		umHttp:                 dto.UmHttp,
@@ -56,7 +54,6 @@ type NewReleaseSvcDto struct {
 	AgentConfigRepo       idbaccess.IDataAgentConfigRepo
 	ReleaseCategoryRepo   idbaccess.IReleaseCategoryRelRepo
 	ReleasePermissionRepo idbaccess.IReleasePermissionRepo
-	DsIndexSvc            iv3portdriver.IDsSvc
 
 	CategoryRepo      idbaccess.ICategoryRepo
 	SpaceResourceRepo idbaccess.ISpaceResourceRepo

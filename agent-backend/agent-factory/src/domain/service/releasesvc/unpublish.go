@@ -113,12 +113,6 @@ func (svc *releaseSvc) UnPublish(ctx context.Context, agentID string) (auditlogi
 		return
 	}
 
-	// 8. handle datasource
-	err = svc.handleUnPublishDatasource(ctx, tx, releasePo)
-	if err != nil {
-		err = errors.Wrap(err, "handle unpublish datasource failed")
-		return
-	}
 
 	// 9. 从“权限平台”删除Agent使用权限
 	err = svc.removeUsePmsByHTTPAcc(ctx, agentID)

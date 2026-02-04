@@ -5,7 +5,6 @@ import (
 )
 
 type AgentExecutorConf struct {
-	PublicSvc  cconf.SvcConf `yaml:"public_svc"`
 	PrivateSvc cconf.SvcConf `yaml:"private_svc"`
 	// UseV2 控制是否使用 v2 版本的 Agent Executor 接口
 	// true: 使用 v2 接口 (agent_id, agent_config, agent_input)

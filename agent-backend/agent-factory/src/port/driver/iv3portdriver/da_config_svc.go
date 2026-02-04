@@ -5,7 +5,6 @@ import (
 	"database/sql"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/docindexobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/auditlogdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigresp"
@@ -26,8 +25,6 @@ type IDataAgentConfigSvc interface {
 	AIAutogenV3(ctx *gin.Context, req *agentconfigreq.AiAutogenReq) (messageChan chan string, errorChan chan error, err error)
 
 	AIAutogenNotStream(ctx *gin.Context, req *agentconfigreq.AiAutogenReq) (questions agentconfigresp.PreSetQuestions, err error)
-
-	BatchCheckIndexStatus(ctx *gin.Context, req *agentconfigreq.BatchCheckIndexStatusReq) (res []*docindexobj.AgentDocIndexStatusInfo, err error)
 
 	TmpTest(ctx context.Context, req *agentconfigreq.TestTmpReq) (err error)
 

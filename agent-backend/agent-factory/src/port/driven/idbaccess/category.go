@@ -6,7 +6,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 )
 
-//go:generate mockgen -source=./category.go -destination ./idbaccessmock/category.go -package idbaccessmock
+//go:generate mockgen -package idbaccessmock -destination ./idbaccessmock/category.go github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess ICategoryRepo
 type ICategoryRepo interface {
 	GetByReleaseId(ctx context.Context, releaaseId string) (rt []*dapo.CategoryPO, err error)
 	List(ctx context.Context, req interface{}) (rt []*dapo.CategoryPO, err error)

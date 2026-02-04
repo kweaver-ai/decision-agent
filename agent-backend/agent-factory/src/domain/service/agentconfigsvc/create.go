@@ -4,10 +4,8 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/daconstant"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/e2p/daconfe2p"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/types/dto/daconfigdto/dsdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/bizdomainhttp/bizdomainhttpreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
@@ -86,26 +84,6 @@ func (s *dataAgentConfigSvc) Create(ctx context.Context, req *agentconfigreq.Cre
 
 	defer chelper.TxRollback(tx, &err, s.logger)
 
-	// 4. 创建数据集
-	isHasBuiltInDocSource := req.Config.IsHasBuiltInDocSource()
-
-	var (
-		datasetId   string
-		isReusable  bool
-		dsCreateDto *dsdto.DsComDto
-	)
-
-	if isHasBuiltInDocSource {
-		dsCreateDto = dsdto.NewDsComDto(id, daconstant.AgentVersionUnpublished, req.Config)
-
-		datasetId, isReusable, err = s.dsSvc.Create(ctx, tx, dsCreateDto)
-		if err != nil {
-			return
-		}
-
-		eo.SetDatasetId(datasetId)
-	}
-
 	// 5. 调用 repo 层创建数据
 	po, err := daconfe2p.DataAgent(eo)
 	if err != nil {
@@ -149,14 +127,6 @@ func (s *dataAgentConfigSvc) Create(ctx context.Context, req *agentconfigreq.Cre
 	err = tx.Commit()
 	if err != nil {
 		return
-	}
-
-	// 6. 触发向量索引
-	if isHasBuiltInDocSource && !isReusable {
-		err = s.dsSvc.AddIndex(ctx, dsCreateDto, datasetId)
-		if err != nil {
-			return
-		}
 	}
 
 	// 7. 发送审计日志

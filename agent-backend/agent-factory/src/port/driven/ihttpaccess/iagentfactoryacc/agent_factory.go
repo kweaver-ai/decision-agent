@@ -6,7 +6,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentfactoryhttp/afhttpdto"
 )
 
-//go:generate mockgen -source=./agent_factory.go -destination ./agent_factory_mock.go -package agent_factory_mock
+//go:generate mockgen -package agentfactorymock -destination ./agentfactorymock/agent_factory.go github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iagentfactoryacc IAgentFactoryHttpAcc
 type IAgentFactoryHttpAcc interface {
 	CheckAgentUsePermission(ctx context.Context, req *afhttpdto.CheckPmsReq) (ok bool, err error)
 }

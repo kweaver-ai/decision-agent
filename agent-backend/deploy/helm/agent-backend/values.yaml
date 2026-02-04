@@ -66,7 +66,7 @@ service:
   # ========================================
 
   # ========== 日志和调试配置 ==========
-  logFile: "/var/log/agent-factory/agent-factory.log"
+  logFile: "/app/agent-factory/log/agent-factory.log"
   debug: false
   debugHost: ""
   # ========================================
@@ -167,16 +167,6 @@ depServices:
       protocol: http
     llm:
       apiKey: xxx
-  ecoIndex:
-    privateSvc:
-      host: ecoindex-private
-      port: 32130
-      protocol: http
-  datahubcentral:
-    privateSvc:
-      host: datahubcentral-private
-      port: 9002
-      protocol: http
   authorization:
     privateSvc:
       host: authorization-private
@@ -185,11 +175,6 @@ depServices:
     publicSvc:
       host: authorization-public
       port: 30920
-      protocol: http
-  agentFactory:
-    privateSvc:
-      host: agent-factory
-      port: 13020
       protocol: http
   bizDomain:
     privateSvc:
@@ -217,12 +202,14 @@ depServices:
     host: agent-app
     port: 30778
   # ========================================
+
+  agentFactory:
+    privateSvc:
+      host: agent-factory
+      port: 13020
+      protocol: http
   # APP 特有服务
   agentExecutor:
-    publicSvc:
-      host: agent-executor-public
-      port: 30778
-      protocol: http
     privateSvc:
       host: agent-executor
       port: 30778

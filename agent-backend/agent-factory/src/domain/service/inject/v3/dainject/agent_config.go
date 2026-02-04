@@ -45,7 +45,6 @@ func NewDaConfSvc() iv3portdriver.IDataAgentConfigSvc {
 			PubedAgentRepo:    pubedagentdbacc.NewPubedAgentRepo(),
 			Logger:            logger.GetLogger(),
 			OpenAICmp:         openAICmp,
-			DsIndexSvc:        NewDsSvc(),
 			UmHttp:            usermanagementacc.NewClient(),
 			ProductRepo:       productdbacc.NewProductRepo(),
 			SpaceResourceRepo: spaceresourcedbacc.NewSpaceResourceRepo(),

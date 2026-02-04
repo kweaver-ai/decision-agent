@@ -6,7 +6,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 )
 
-//go:generate mockgen -source=./release.go -destination ./idbaccessmock/release.go -package idbaccessmock
+//go:generate mockgen -package idbaccessmock -destination ./idbaccessmock/visit_history.go github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess IVisitHistoryRepo
 type IVisitHistoryRepo interface {
 	IncVisitCount(ctx context.Context, po *dapo.VisitHistoryPO) (err error)
 }

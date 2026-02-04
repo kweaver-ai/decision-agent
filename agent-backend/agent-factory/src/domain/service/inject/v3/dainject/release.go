@@ -29,7 +29,6 @@ func NewReleaseSvc() iv3portdriver.IReleaseSvc {
 			ReleaseCategoryRepo:   releaseacc.NewReleaseCategoryRelRepo(),
 			ReleasePermissionRepo: releaseacc.NewReleasePermissionRepo(),
 			AgentConfigRepo:       daconfdbacc.NewDataAgentRepo(),
-			DsIndexSvc:            NewDsSvc(),
 			Logger:                logger.GetLogger(),
 			CategoryRepo:          categoryacc.NewCategoryRepo(),
 			UmHttp:                chttpinject.NewUmHttpAcc(),

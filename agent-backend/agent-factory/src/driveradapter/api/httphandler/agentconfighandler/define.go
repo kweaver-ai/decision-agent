@@ -29,8 +29,6 @@ func (h *daConfHTTPHandler) RegPubRouter(router *gin.RouterGroup) {
 
 	router.POST("/agent/ai-autogen", h.AIAutogenContent)
 
-	router.POST("/agent/batch-check-index-status", h.BatchCheckIndexStatus)
-
 	// 复制相关接口
 	router.POST("/agent/:agent_id/copy", h.Copy)                               // 复制Agent
 	router.POST("/agent/:agent_id/copy2tpl", h.Copy2Tpl)                       // 复制Agent为模板

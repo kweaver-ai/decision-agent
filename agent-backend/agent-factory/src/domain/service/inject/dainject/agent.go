@@ -32,7 +32,6 @@ func NewAgentSvc() iportdriver.IAgent {
 			SandboxPlatformConf: global.GConfig.SandboxPlatformConf,
 			ConversationRepo:    conversationdbacc.NewConversationRepo(),
 			ConversationMsgRepo: conversationmsgdbacc.NewConversationMsgRepo(),
-			Docset:              httpinject.NewDocsetHttpAcc(),
 			// NOTE: streamDiffFrequency must be greater than 0
 			StreamDiffFrequency: max(global.GConfig.StreamDiffFrequency, 1),
 		}

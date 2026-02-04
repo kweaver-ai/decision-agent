@@ -2,13 +2,11 @@ package daconfvalobj
 
 import (
 	"context"
-	"sort"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj/datasourcevalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj/skillvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	"github.com/pkg/errors"
 )
 
@@ -217,74 +215,6 @@ func (p *Config) GetBuiltInDsDocSourceFields() (fields []*datasourcevalobj.DocSo
 	}
 
 	return
-}
-
-func (p *Config) GetDocIDsHash() (indexKey string, err error) {
-	ids := p.GetBuiltInDocObjIDs()
-	if len(ids) == 0 {
-		err = errors.New("[daconfvalobj][Config]: 没有内置doc数据源")
-		return
-	}
-
-	// 排序
-	sort.Strings(ids)
-
-	bys, err := cutil.JSON().Marshal(ids)
-	if err != nil {
-		return
-	}
-
-	indexKey = cutil.Hash256(bys)
-
-	return
-}
-
-func (p *Config) GetBuiltInDocObjIDs() (ids []string) {
-	fields := p.GetBuiltInDsDocSourceFields()
-	for _, field := range fields {
-		id := field.GetDirObjID()
-		if id != "" {
-			ids = append(ids, id)
-		}
-	}
-
-	return
-}
-
-func (p *Config) IsHasBuiltInDocSource() (has bool) {
-	has = len(p.GetBuiltInDocObjIDs()) > 0
-
-	return
-}
-
-func (p *Config) GetBuiltInDocDatasetId() (datasetId string) {
-	if p.DataSource == nil {
-		return
-	}
-
-	if len(p.DataSource.Doc) == 0 {
-		return
-	}
-
-	datasetId = p.DataSource.GetFirstDocDatasetId()
-
-	return
-}
-
-func (p *Config) ClearDsDocDatasets() {
-	if p.DataSource == nil {
-		return
-	}
-
-	if len(p.DataSource.Doc) == 0 {
-		return
-	}
-
-	for _, doc := range p.DataSource.Doc {
-		if doc.Datasets != nil {
-			doc.Datasets = []string{}
-		}
-	}
 }
 
 func (p *Config) GetConfigMetadata() *ConfigMetadata {
