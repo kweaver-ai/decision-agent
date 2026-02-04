@@ -127,21 +127,14 @@ class BaseToolAPIRouter(APIRouter):
         return schemas
 
 
-# class SandboxToolAPIRouter(BaseToolAPIRouter):
-#     name: str = "沙箱环境工具箱"
-#     description: str = "支持对沙箱环境进行操作, 沙箱是一个 Linux 环境, 有一个工作区目录, 其中安装了 python3, pandas 等基础库,"
-
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(tools_mapping=SANDBOX_TOOLS_MAPPING, *args, **kwargs)
-#         self._init_tools()
-
-
 def create_app():
+    # 主工具 Router (包含所有工具：基础工具、旧沙箱工具_legacy、新沙箱工具、知识网络工具)
     router = BaseToolAPIRouter(
         prefix="/tools",
         tools_mapping=ALL_TOOLS_MAPPING,
         tools_without_api_docs=list(KNOWLEDGE_NETWORK_TOOLS_MAPPING.keys())
     )
+
     app = FastAPI(
         title="AF Agent Tools API",
         description="AF Agent Tools API",

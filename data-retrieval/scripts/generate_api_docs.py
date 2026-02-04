@@ -54,10 +54,10 @@ class APIDocsGenerator:
             toolbox_desc = self.description + "，工具包含: \n"
         else:
             toolbox_desc = "工具包含: \n"
-        
+
         for idx, tool_name in enumerate(tools):
             toolbox_desc += f"{idx + 1}. {tool_name}\n"
-        
+
         # 构建基础 schema
         schemas = {
             "openapi": "3.0.3",
@@ -86,7 +86,7 @@ class APIDocsGenerator:
                     print(f"[FAIL] Generate {tool_name} API schema failed: {e}")
             else:
                 print(f"[SKIP] {tool_name} has no get_api_schema method")
-        
+
         return schemas
 
 
