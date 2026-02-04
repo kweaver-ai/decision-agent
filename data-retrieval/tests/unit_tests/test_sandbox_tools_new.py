@@ -67,10 +67,10 @@ class TestBaseSandboxToolNew:
         """测试基类字段"""
         from data_retrieval.tools.sandbox_tools_new.base_sandbox_tool import BaseSandboxToolNew
 
-        assert 'session_id' in BaseSandboxToolNew.__fields__
+        assert 'user_id' in BaseSandboxToolNew.__fields__
         assert 'server_url' in BaseSandboxToolNew.__fields__
         assert 'template_id' in BaseSandboxToolNew.__fields__
-        assert 'session_type' in BaseSandboxToolNew.__fields__
+        assert 'cache_type' in BaseSandboxToolNew.__fields__
         assert 'sync_execution' in BaseSandboxToolNew.__fields__
 
     def test_base_tool_input_fields(self):
@@ -123,7 +123,7 @@ class TestCreateFileTool:
         assert 'content' in CreateFileInput.__fields__
         assert 'filename' in CreateFileInput.__fields__
         assert 'result_cache_key' in CreateFileInput.__fields__
-        assert 'session_type' in CreateFileInput.__fields__
+        assert 'cache_type' in CreateFileInput.__fields__
         assert 'title' in CreateFileInput.__fields__
 
 
@@ -144,7 +144,7 @@ class TestReadFileTool:
         from data_retrieval.tools.sandbox_tools_new.read_file import ReadFileInput
 
         assert 'filename' in ReadFileInput.__fields__
-        assert 'session_type' in ReadFileInput.__fields__
+        assert 'cache_type' in ReadFileInput.__fields__
         assert 'title' in ReadFileInput.__fields__
 
 

@@ -19,9 +19,9 @@ class ReadFileInput(BaseSandboxToolInput):
     filename: str = Field(
         description="要读取的文件名（包含路径）"
     )
-    session_type: Optional[str] = Field(
+    cache_type: Optional[str] = Field(
         default="redis",
-        description="会话类型, 可选值为: redis, in_memory, 默认值为 redis"
+        description="缓存类型, 可选值为: redis, in_memory, 默认值为 redis"
     )
 
 
@@ -63,8 +63,9 @@ class ReadFileTool(BaseSandboxToolNew):
         try:
             result = await self._read_file(filename)
 
-            if self._random_session_id:
-                result["session_id"] = self.session_id
+            if self._random_user_id:
+                result["user_id"] = self.user_id
+                result["session_id"] = self._session_id
 
             if title:
                 result["title"] = title
@@ -157,9 +158,9 @@ class ReadFileTool(BaseSandboxToolNew):
                 "type": "string",
                 "description": "要读取的文件名（包含路径）"
             },
-            "session_type": {
+            "cache_type": {
                 "type": "string",
-                "description": "会话类型, 可选值为: redis, in_memory, 默认值为 redis"
+                "description": "缓存类型, 可选值为: redis, in_memory, 默认值为 redis"
             }
         })
         base_schema["post"]["requestBody"]["content"]["application/json"]["schema"]["required"] = ["filename"]
@@ -172,7 +173,7 @@ class ReadFileTool(BaseSandboxToolNew):
                 "value": {
                     "template_id": "python3.11-base",
                     "filename": "hello.py",
-                    "session_id": "test_session_123"
+                    "user_id": "user_123"
                 }
             },
             "read_json_file": {
@@ -181,7 +182,7 @@ class ReadFileTool(BaseSandboxToolNew):
                 "value": {
                     "template_id": "python3.11-base",
                     "filename": "data.json",
-                    "session_id": "test_session_123"
+                    "user_id": "user_123"
                 }
             }
         }

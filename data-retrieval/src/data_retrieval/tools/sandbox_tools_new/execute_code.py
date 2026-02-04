@@ -105,8 +105,9 @@ class ExecuteCodeTool(BaseSandboxToolNew):
                 sync_execution=sync_execution
             )
 
-            if self._random_session_id:
-                result["session_id"] = self.session_id
+            if self._random_user_id:
+                result["user_id"] = self.user_id
+                result["session_id"] = self._session_id
 
             if title:
                 result["title"] = title
@@ -231,7 +232,7 @@ class ExecuteCodeTool(BaseSandboxToolNew):
                     "code": "def handler(event):\n    return {'msg': 'Hello'}",
                     "language": "python",
                     "event": {"name": "Alice"},
-                    "session_id": "test_session_123"
+                    "user_id": "user_123"
                 }
             },
             "data_analysis": {
@@ -242,7 +243,7 @@ class ExecuteCodeTool(BaseSandboxToolNew):
                     "code": "def handler(event):\n    import pandas as pd\n    return {}",
                     "language": "python",
                     "event": {"data": [{"a": 1}]},
-                    "session_id": "test_session_123"
+                    "user_id": "user_123"
                 }
             }
         }

@@ -4,14 +4,16 @@ Sandbox Tools (New API) - Tools for interacting with the new sandbox RESTful API
 This package provides tools for the new Sandbox Control Plane API (v2.1.0),
 using direct HTTP calls instead of the SDK.
 
+Session ID is automatically generated from user_id as "sess-{user_id}".
+
 Example usage:
 
     from data_retrieval.tools.sandbox_tools_new import ExecuteCodeTool
 
-    # Create tool with required template_id
+    # Create tool with user_id (session_id will be "sess-my_user")
     tool = ExecuteCodeTool(
-        template_id="python3.11-base",
-        session_id="my_session"
+        template_id="python-basic",
+        user_id="my_user"
     )
 
     # Execute code
@@ -22,8 +24,8 @@ Example usage:
 
     # Or use API style
     result = await ExecuteCodeTool.as_async_api_cls(params={
-        "template_id": "python3.11-base",
-        "session_id": "my_session",
+        "template_id": "python-basic",
+        "user_id": "my_user",
         "code": "def handler(event):\\n    return {'message': 'Hello'}"
     })
 """

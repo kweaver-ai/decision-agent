@@ -64,8 +64,9 @@ class TerminateSessionTool(BaseSandboxToolNew):
         try:
             result = await self._terminate_session()
 
-            if self._random_session_id:
-                result["session_id"] = self.session_id
+            if self._random_user_id:
+                result["user_id"] = self.user_id
+                result["session_id"] = self._session_id
 
             if title:
                 result["title"] = title
@@ -93,7 +94,8 @@ class TerminateSessionTool(BaseSandboxToolNew):
             return {
                 "action": "terminate_session",
                 "result": {
-                    "session_id": self.session_id,
+                    "user_id": self.user_id,
+                    "session_id": self._session_id,
                     "status": result.get("status", "terminated")
                 },
                 "message": "会话已终止，工作区清理成功"
@@ -115,17 +117,17 @@ class TerminateSessionTool(BaseSandboxToolNew):
             "这是软终止操作，会销毁容器和工作区文件，但保留会话记录用于审计。"
         )
 
-        # Update request body schema - session_id required for termination
-        base_schema["post"]["requestBody"]["content"]["application/json"]["schema"]["required"] = ["session_id"]
+        # Update request body schema - user_id required for termination
+        base_schema["post"]["requestBody"]["content"]["application/json"]["schema"]["required"] = ["user_id"]
 
         # Add examples
         base_schema["post"]["requestBody"]["content"]["application/json"]["examples"] = {
             "terminate_session": {
                 "summary": "终止会话",
-                "description": "终止指定的沙箱会话",
+                "description": "终止指定用户的沙箱会话",
                 "value": {
-                    "template_id": "python3.11-base",
-                    "session_id": "test_session_123"
+                    "template_id": "python-basic",
+                    "user_id": "user_123"
                 }
             }
         }

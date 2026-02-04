@@ -38,34 +38,40 @@ class BaseSandboxToolNew(AFTool):
     - 需要 template_id 参数
     - 支持配置 sync/async 执行模式
     - 自动创建会话（如果不存在）
+    - 使用 user_id 生成 session_id（格式：sess-{user_id}）
     """
 
-    session_id: str = ""
+    user_id: str = ""
     server_url: str = _settings.SANDBOX_URL
     template_id: str = "python-basic"  # Default template for session creation
     session: Optional[BaseChatHistorySession] = None
-    session_type: Optional[str] = "redis"
+    cache_type: Optional[str] = "redis"
     sync_execution: bool = True  # Use sync execution by default
 
     _client: Optional[SandboxAPIClient] = PrivateAttr(None)
-    _random_session_id: bool = PrivateAttr(False)
+    _session_id: str = PrivateAttr("")
+    _random_user_id: bool = PrivateAttr(False)
     _result_cache_key: str = PrivateAttr("")
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        # Generate random session_id if not provided
-        if not self.session_id:
-            self.session_id = str(uuid.uuid4())
-            self._random_session_id = True
-            logger.info(f"Randomly generated session_id: {self.session_id}")
+        # Generate random user_id if not provided
+        if not self.user_id:
+            self.user_id = uuid.uuid4().hex[:16]
+            self._random_user_id = True
+            logger.info(f"Randomly generated user_id: {self.user_id}")
 
-        logger.info(f"BaseSandboxToolNew initialized with session_id: {self.session_id}")
+        # Generate session_id from user_id
+        self._session_id = f"sess-{self.user_id}"
+
+        logger.info(f"BaseSandboxToolNew initialized with user_id: {self.user_id}")
+        logger.info(f"BaseSandboxToolNew initialized with session_id: {self._session_id}")
         logger.info(f"BaseSandboxToolNew initialized with template_id: {self.template_id}")
-        logger.info(f"BaseSandboxToolNew initialized with session_type: {self.session_type}")
+        logger.info(f"BaseSandboxToolNew initialized with cache_type: {self.cache_type}")
 
         # Initialize chat history session for caching
-        self.session = CreateSession(self.session_type)
+        self.session = CreateSession(self.cache_type)
 
         # Validate server URL
         if not is_valid_url(self.server_url):
@@ -73,7 +79,7 @@ class BaseSandboxToolNew(AFTool):
             logger.warning(f"Invalid server URL, using default: {_settings.SANDBOX_URL}")
 
         # Generate result cache key
-        self._result_cache_key = f"sandbox_result_{self.session_id}_{uuid.uuid4().hex[:8]}"
+        self._result_cache_key = f"sandbox_result_{self._session_id}_{uuid.uuid4().hex[:8]}"
 
     def _get_client(self) -> SandboxAPIClient:
         """获取或创建 API 客户端实例"""
@@ -87,7 +93,7 @@ class BaseSandboxToolNew(AFTool):
             self._client = SandboxAPIClient(
                 server_url=self.server_url,
                 template_id=self.template_id,
-                session_id=self.session_id
+                session_id=self._session_id
             )
         return self._client
 
@@ -151,8 +157,8 @@ class BaseSandboxToolNew(AFTool):
     ):
         """异步API调用方法，由子类继承使用"""
         server_url = params.get("server_url", _settings.SANDBOX_URL)
-        session_id = params.get("session_id", "")
-        session_type = params.get("session_type", "redis")
+        user_id = params.get("user_id", "")
+        cache_type = params.get("cache_type", "redis")
         template_id = params.get("template_id", "")
         sync_execution = params.get("sync_execution", True)
 
@@ -160,8 +166,8 @@ class BaseSandboxToolNew(AFTool):
 
         tool = cls(
             server_url=server_url,
-            session_id=session_id,
-            session_type=session_type,
+            user_id=user_id,
+            cache_type=cache_type,
             template_id=template_id,
             sync_execution=sync_execution
         )
@@ -169,7 +175,7 @@ class BaseSandboxToolNew(AFTool):
         # 移除通用参数，保留工具特定参数
         tool_params = {
             k: v for k, v in params.items()
-            if k not in ["server_url", "session_id", "session_type", "template_id", "sync_execution"]
+            if k not in ["server_url", "user_id", "cache_type", "template_id", "sync_execution"]
         }
 
         # invoke tool
@@ -215,9 +221,9 @@ class BaseSandboxToolNew(AFTool):
                                         "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
                                         "default": _settings.SANDBOX_URL
                                     },
-                                    "session_id": {
+                                    "user_id": {
                                         "type": "string",
-                                        "description": "沙箱会话ID，如不提供则自动生成"
+                                        "description": "用户ID，用于生成会话ID（格式：sess-{user_id}），如不提供则自动生成"
                                     },
                                     "template_id": {
                                         "type": "string",

@@ -64,8 +64,9 @@ class ListFilesTool(BaseSandboxToolNew):
         try:
             result = await self._list_files(path=path, limit=limit)
 
-            if self._random_session_id:
-                result["session_id"] = self.session_id
+            if self._random_user_id:
+                result["user_id"] = self.user_id
+                result["session_id"] = self._session_id
 
             if title:
                 result["title"] = title
@@ -137,7 +138,7 @@ class ListFilesTool(BaseSandboxToolNew):
                 "description": "列出沙箱环境中的所有文件和目录",
                 "value": {
                     "template_id": "python3.11-base",
-                    "session_id": "test_session_123"
+                    "user_id": "user_123"
                 }
             },
             "list_directory": {
@@ -147,7 +148,7 @@ class ListFilesTool(BaseSandboxToolNew):
                     "template_id": "python3.11-base",
                     "path": "src/",
                     "limit": 100,
-                    "session_id": "test_session_123"
+                    "user_id": "user_123"
                 }
             }
         }

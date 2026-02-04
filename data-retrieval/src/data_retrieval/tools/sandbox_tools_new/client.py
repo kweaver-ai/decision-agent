@@ -190,7 +190,9 @@ class SandboxAPIClient:
                 logger.warning(f"Session {self.session_id} not found, creating new session")
 
         # Create new session
+        logger.warning(f"Creating new session for user {self.user_id}")
         await self.create_session()
+        logger.warning(f"New session created: {self.session_id}")
         return self.session_id
 
     # ==================== Code Execution ====================

@@ -22,9 +22,9 @@ class CreateFileInput(BaseSandboxToolInput):
     filename: str = Field(
         description="要创建的文件名（包含路径）"
     )
-    session_type: Optional[str] = Field(
+    cache_type: Optional[str] = Field(
         default="redis",
-        description="会话类型, 可选值为: redis, in_memory, 默认值为 redis"
+        description="缓存类型, 可选值为: redis, in_memory, 默认值为 redis"
     )
     result_cache_key: Optional[str] = Field(
         default="",
@@ -81,8 +81,9 @@ class CreateFileTool(BaseSandboxToolNew):
                 result_cache_key=result_cache_key
             )
 
-            if self._random_session_id:
-                result["session_id"] = self.session_id
+            if self._random_user_id:
+                result["user_id"] = self.user_id
+                result["session_id"] = self._session_id
 
             if title:
                 result["title"] = title
@@ -162,9 +163,9 @@ class CreateFileTool(BaseSandboxToolNew):
                 "type": "string",
                 "description": "要创建的文件名（包含路径）"
             },
-            "session_type": {
+            "cache_type": {
                 "type": "string",
-                "description": "会话类型, 可选值为: redis, in_memory, 默认值为 redis"
+                "description": "缓存类型, 可选值为: redis, in_memory, 默认值为 redis"
             },
             "result_cache_key": {
                 "type": "string",
@@ -182,7 +183,7 @@ class CreateFileTool(BaseSandboxToolNew):
                     "template_id": "python3.11-base",
                     "content": "def fib(n):\n    return n if n <= 1 else fib(n-1) + fib(n-2)",
                     "filename": "fibonacci.py",
-                    "session_id": "test_session_123"
+                    "user_id": "user_123"
                 }
             },
             "create_from_cache": {
@@ -192,7 +193,7 @@ class CreateFileTool(BaseSandboxToolNew):
                     "template_id": "python3.11-base",
                     "filename": "data.json",
                     "result_cache_key": "cached_data_123",
-                    "session_id": "test_session_123"
+                    "user_id": "user_123"
                 }
             }
         }

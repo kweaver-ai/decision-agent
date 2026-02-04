@@ -3053,9 +3053,9 @@
                                         "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
                                         "default": "http://sandbox-runtime:9101"
                                     },
-                                    "session_id": {
+                                    "user_id": {
                                         "type": "string",
-                                        "description": "沙箱会话ID，如不提供则自动生成"
+                                        "description": "用户ID，用于生成会话ID（格式：sess-{user_id}），如不提供则自动生成"
                                     },
                                     "template_id": {
                                         "type": "string",
@@ -3110,7 +3110,7 @@
                                         "event": {
                                             "name": "Alice"
                                         },
-                                        "session_id": "test_session_123"
+                                        "user_id": "user_123"
                                     }
                                 },
                                 "data_analysis": {
@@ -3127,7 +3127,7 @@
                                                 }
                                             ]
                                         },
-                                        "session_id": "test_session_123"
+                                        "user_id": "user_123"
                                     }
                                 }
                             }
@@ -3217,9 +3217,9 @@
                                         "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
                                         "default": "http://sandbox-runtime:9101"
                                     },
-                                    "session_id": {
+                                    "user_id": {
                                         "type": "string",
-                                        "description": "沙箱会话ID，如不提供则自动生成"
+                                        "description": "用户ID，用于生成会话ID（格式：sess-{user_id}），如不提供则自动生成"
                                     },
                                     "template_id": {
                                         "type": "string",
@@ -3248,9 +3248,9 @@
                                         "type": "string",
                                         "description": "要创建的文件名（包含路径）"
                                     },
-                                    "session_type": {
+                                    "cache_type": {
                                         "type": "string",
-                                        "description": "会话类型, 可选值为: redis, in_memory, 默认值为 redis"
+                                        "description": "缓存类型, 可选值为: redis, in_memory, 默认值为 redis"
                                     },
                                     "result_cache_key": {
                                         "type": "string",
@@ -3269,7 +3269,7 @@
                                         "template_id": "python3.11-base",
                                         "content": "def fib(n):\n    return n if n <= 1 else fib(n-1) + fib(n-2)",
                                         "filename": "fibonacci.py",
-                                        "session_id": "test_session_123"
+                                        "user_id": "user_123"
                                     }
                                 },
                                 "create_from_cache": {
@@ -3279,7 +3279,7 @@
                                         "template_id": "python3.11-base",
                                         "filename": "data.json",
                                         "result_cache_key": "cached_data_123",
-                                        "session_id": "test_session_123"
+                                        "user_id": "user_123"
                                     }
                                 }
                             }
@@ -3369,9 +3369,9 @@
                                         "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
                                         "default": "http://sandbox-runtime:9101"
                                     },
-                                    "session_id": {
+                                    "user_id": {
                                         "type": "string",
-                                        "description": "沙箱会话ID，如不提供则自动生成"
+                                        "description": "用户ID，用于生成会话ID（格式：sess-{user_id}），如不提供则自动生成"
                                     },
                                     "template_id": {
                                         "type": "string",
@@ -3396,9 +3396,9 @@
                                         "type": "string",
                                         "description": "要读取的文件名（包含路径）"
                                     },
-                                    "session_type": {
+                                    "cache_type": {
                                         "type": "string",
-                                        "description": "会话类型, 可选值为: redis, in_memory, 默认值为 redis"
+                                        "description": "缓存类型, 可选值为: redis, in_memory, 默认值为 redis"
                                     }
                                 },
                                 "required": [
@@ -3412,7 +3412,7 @@
                                     "value": {
                                         "template_id": "python3.11-base",
                                         "filename": "hello.py",
-                                        "session_id": "test_session_123"
+                                        "user_id": "user_123"
                                     }
                                 },
                                 "read_json_file": {
@@ -3421,7 +3421,7 @@
                                     "value": {
                                         "template_id": "python3.11-base",
                                         "filename": "data.json",
-                                        "session_id": "test_session_123"
+                                        "user_id": "user_123"
                                     }
                                 }
                             }
@@ -3511,9 +3511,9 @@
                                         "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
                                         "default": "http://sandbox-runtime:9101"
                                     },
-                                    "session_id": {
+                                    "user_id": {
                                         "type": "string",
-                                        "description": "沙箱会话ID，如不提供则自动生成"
+                                        "description": "用户ID，用于生成会话ID（格式：sess-{user_id}），如不提供则自动生成"
                                     },
                                     "template_id": {
                                         "type": "string",
@@ -3554,7 +3554,7 @@
                                     "description": "列出沙箱环境中的所有文件和目录",
                                     "value": {
                                         "template_id": "python3.11-base",
-                                        "session_id": "test_session_123"
+                                        "user_id": "user_123"
                                     }
                                 },
                                 "list_directory": {
@@ -3564,7 +3564,7 @@
                                         "template_id": "python3.11-base",
                                         "path": "src/",
                                         "limit": 100,
-                                        "session_id": "test_session_123"
+                                        "user_id": "user_123"
                                     }
                                 }
                             }
@@ -3654,9 +3654,9 @@
                                         "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
                                         "default": "http://sandbox-runtime:9101"
                                     },
-                                    "session_id": {
+                                    "user_id": {
                                         "type": "string",
-                                        "description": "沙箱会话ID，如不提供则自动生成"
+                                        "description": "用户ID，用于生成会话ID（格式：sess-{user_id}），如不提供则自动生成"
                                     },
                                     "template_id": {
                                         "type": "string",
@@ -3679,16 +3679,16 @@
                                     }
                                 },
                                 "required": [
-                                    "session_id"
+                                    "user_id"
                                 ]
                             },
                             "examples": {
                                 "terminate_session": {
                                     "summary": "终止会话",
-                                    "description": "终止指定的沙箱会话",
+                                    "description": "终止指定用户的沙箱会话",
                                     "value": {
-                                        "template_id": "python3.11-base",
-                                        "session_id": "test_session_123"
+                                        "template_id": "python-basic",
+                                        "user_id": "user_123"
                                     }
                                 }
                             }
