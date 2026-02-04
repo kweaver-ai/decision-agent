@@ -1,6 +1,7 @@
 package cconf
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -52,6 +53,13 @@ func (c *Config) IsDebug() bool {
 	return c.Project.Debug
 }
 
+func (c *Config) String() string {
+	b, err := json.Marshal(c)
+	if err != nil {
+		return fmt.Sprintf("Config{error: %v}", err)
+	}
+	return "======= Config =======\n" + string(b) + "\n======= End Config ======="
+}
 func (c *Config) Check() (err error) {
 	err = c.Project.Check()
 	if err != nil {
@@ -122,14 +130,15 @@ func BaseDefConfig() (defConf *Config) {
 		},
 	}
 
-	defConf.MqCfgPath = filepath.Join(GetConfigPath(), "mq_config.yaml")
+	mqConfigPath := filepath.Join(GetConfigPath(), "mq_config.yaml")
+	defConf.MqCfgPath = mqConfigPath
 
 	return
 }
 
 func GetConfigBys(fileName string) []byte {
 	configFilePath := filepath.Join(GetConfigPath(), fileName)
-
+	log.Printf("Loading config file: %s\n", configFilePath)
 	file, err := os.ReadFile(configFilePath)
 	if err != nil {
 		log.Fatalf("load %v failed: %v", configFilePath, err)
@@ -148,7 +157,7 @@ func LoadConfig(file []byte, configImpl IConf) IConf {
 
 	if configImpl.IsDebug() {
 		conf := configImpl
-		fmt.Println(conf)
+		log.Println(conf)
 	}
 
 	return configImpl
