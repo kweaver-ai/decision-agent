@@ -1,4 +1,19 @@
-# 沙箱工具包 (Sandbox Toolkit)
+# 沙箱工具包 (Sandbox Toolkit) - Legacy
+
+> **注意**: 这些工具已标记为 Legacy（旧版），API 路径已添加 `_legacy` 后缀。
+> 
+> 推荐使用新版沙箱工具：`sandbox_tools_new`，它使用 RESTful API 实现，功能更完善。
+> 
+> | Legacy 工具 (旧版) | 新版工具 |
+> |-------------------|---------|
+> | `/tools/execute_code_legacy` | `/tools/execute_code` |
+> | `/tools/create_file_legacy` | `/tools/create_file` |
+> | `/tools/read_file_legacy` | `/tools/read_file` |
+> | `/tools/list_files_legacy` | `/tools/list_files` |
+> | `/tools/close_sandbox_legacy` | `/tools/terminate_session` |
+> | `/tools/execute_command_legacy` | (使用 execute_code 替代) |
+> | `/tools/get_status_legacy` | (新版无需此功能) |
+> | `/tools/download_from_efast_legacy` | (新版无需此功能) |
 
 这个目录包含独立的沙箱工具。每个工具都是独立的，可以单独使用，也可以组合使用。
 
