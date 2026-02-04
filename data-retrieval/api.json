@@ -1901,7 +1901,7 @@
         },
         "/tools/execute_code_legacy": {
             "post": {
-                "summary": "execute_code",
+                "summary": "execute_code_legacy",
                 "description": "在沙箱环境中执行 Python 代码，支持 pandas 等数据分析库，注意沙箱环境是受限环境，没有网络连接，不能使用 pip 安装第三方库。运行代码时，需要通过 print 输出结果，或者设置输出变量 output_params 参数，返回结果",
                 "parameters": [
                     {
@@ -2056,7 +2056,7 @@
         },
         "/tools/execute_command_legacy": {
             "post": {
-                "summary": "execute_command",
+                "summary": "execute_command_legacy",
                 "description": "在沙箱环境中执行系统命令，如 ls、cat、grep 等 Linux 命令",
                 "parameters": [
                     {
@@ -2211,7 +2211,7 @@
         },
         "/tools/read_file_legacy": {
             "post": {
-                "summary": "read_file",
+                "summary": "read_file_legacy",
                 "description": "读取沙箱环境中的文件内容，支持文本文件和二进制文件",
                 "parameters": [
                     {
@@ -2334,7 +2334,7 @@
         },
         "/tools/create_file_legacy": {
             "post": {
-                "summary": "create_file",
+                "summary": "create_file_legacy",
                 "description": "在沙箱环境中创建新文件，支持文本内容或从缓存中获取内容",
                 "parameters": [
                     {
@@ -2476,7 +2476,7 @@
         },
         "/tools/list_files_legacy": {
             "post": {
-                "summary": "list_files",
+                "summary": "list_files_legacy",
                 "description": "列出沙箱环境中的所有文件和目录",
                 "parameters": [
                     {
@@ -2588,7 +2588,7 @@
         },
         "/tools/get_status_legacy": {
             "post": {
-                "summary": "get_status",
+                "summary": "get_status_legacy",
                 "description": "获取沙箱环境的当前状态信息",
                 "parameters": [
                     {
@@ -2700,7 +2700,7 @@
         },
         "/tools/close_sandbox_legacy": {
             "post": {
-                "summary": "close_sandbox",
+                "summary": "close_sandbox_legacy",
                 "description": "清理沙箱工作区，关闭沙箱连接",
                 "parameters": [
                     {
@@ -2812,7 +2812,7 @@
         },
         "/tools/download_from_efast_legacy": {
             "post": {
-                "summary": "download_from_efast",
+                "summary": "download_from_efast_legacy",
                 "description": "从文档库(EFAST)下载文件到沙箱环境，支持批量下载多个文件。需要提供文件参数列表，格式为[{'id': '...', 'type': 'doc', 'name': '...', 'details': {'docid': 'gns://...', 'size': ...}}]",
                 "parameters": [
                     {

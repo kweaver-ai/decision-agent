@@ -81,7 +81,7 @@ class CloseSandboxTool(BaseSandboxTool):
     async def get_api_schema():
         """获取 API Schema"""
         base_schema = await BaseSandboxTool.get_api_schema()
-        base_schema["post"]["summary"] = "close_sandbox"
+        base_schema["post"]["summary"] = "close_sandbox_legacy"
         base_schema["post"]["description"] = "清理沙箱工作区，关闭沙箱连接"
 
         # 更新请求体 schema - 不需要额外参数

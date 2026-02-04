@@ -122,7 +122,7 @@ class CreateFileTool(BaseSandboxTool):
     async def get_api_schema():
         """获取 API Schema"""
         base_schema = await BaseSandboxTool.get_api_schema()
-        base_schema["post"]["summary"] = "create_file"
+        base_schema["post"]["summary"] = "create_file_legacy"
         base_schema["post"]["description"] = "在沙箱环境中创建新文件，支持文本内容或从缓存中获取内容"
 
         # 更新请求体 schema，添加工具特定参数

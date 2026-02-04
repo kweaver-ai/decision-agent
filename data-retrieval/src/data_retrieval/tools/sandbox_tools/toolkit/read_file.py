@@ -158,7 +158,7 @@ class ReadFileTool(BaseSandboxTool):
     async def get_api_schema():
         """获取 API Schema"""
         base_schema = await BaseSandboxTool.get_api_schema()
-        base_schema["post"]["summary"] = "read_file"
+        base_schema["post"]["summary"] = "read_file_legacy"
         base_schema["post"]["description"] = "读取沙箱环境中的文件内容，支持文本文件和二进制文件"
 
         # 更新请求体 schema，添加工具特定参数
