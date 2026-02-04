@@ -38,9 +38,6 @@ services:
   mf_model_api:
     host: "mf-model-api"
     port: "9898"
-  agent_app:
-    host: "agent-app"
-    port: "30777"
   agent_factory:
     host: "localhost"
     port: "13020"

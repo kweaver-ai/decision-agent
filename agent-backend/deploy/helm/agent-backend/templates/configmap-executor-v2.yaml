@@ -98,9 +98,6 @@ data:
       mf_model_api:
         host: "mf-model-api"
         port: "9898"
-      agent_app:
-        host: "agent-app"
-        port: "30777"
       agent_executor:
         host: "localhost"
         port: "30778"
@@ -111,7 +108,7 @@ data:
         host: "agent-operator-integration"
         port: "9000"
       agent_memory:
-        host: "agent-memory"
+        host: "localhost"
         port: "30790"
       kn_data_query:
         host: "kn-data-query"

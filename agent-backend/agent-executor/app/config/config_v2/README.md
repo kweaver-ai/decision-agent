@@ -95,8 +95,7 @@ print(Config.rds.port)
 print(Config.redis.cluster_mode)  # Redis配置
 print(Config.redis.host)
 
-print(Config.services.agent_app.host)      # 服务配置
-print(Config.services.agent_factory.port)
+print(Config.services.agent_factory.port) # 服务配置
 
 print(Config.memory.limit)         # 记忆配置
 print(Config.features.use_explore_block_v2)  # 特性开关

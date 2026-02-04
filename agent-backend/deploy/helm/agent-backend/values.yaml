@@ -198,20 +198,17 @@ depServices:
   auth:
     host: kg-data-auth
     port: 7000
-  agentApp:
-    host: agent-app
-    port: 30778
   # ========================================
 
   agentFactory:
     privateSvc:
-      host: agent-factory
+      host: localhost
       port: 13020
       protocol: http
   # APP 特有服务
   agentExecutor:
     privateSvc:
-      host: agent-executor
+      host: localhost
       port: 30778
       protocol: http
     useV2: true

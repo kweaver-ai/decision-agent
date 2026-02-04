@@ -81,8 +81,6 @@ data:
       builder_port: {{ .Values.depServices.builder.port }}
       auth_host: {{ .Values.depServices.auth.host | quote }}
       auth_port: {{ .Values.depServices.auth.port }}
-      agent_app_host: {{ .Values.depServices.agentApp.host | quote }}
-      agent_app_port: {{ .Values.depServices.agentApp.port }}
 
       debug: {{ .Values.service.debug | default false }}
       debug_host: {{ .Values.service.debugHost | quote | default "" }}

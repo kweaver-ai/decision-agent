@@ -23,7 +23,6 @@ class ServicesConfig:
     mf_model_api: ServiceEndpoint = None
 
     # Agent相关服务
-    agent_app: ServiceEndpoint = None
     agent_executor: ServiceEndpoint = None
     agent_factory: ServiceEndpoint = None
     agent_operator_integration: ServiceEndpoint = None
@@ -50,8 +49,6 @@ class ServicesConfig:
             self.mf_model_manager = ServiceEndpoint("mf-model-manager", "9898")
         if self.mf_model_api is None:
             self.mf_model_api = ServiceEndpoint("mf-model-api", "9898")
-        if self.agent_app is None:
-            self.agent_app = ServiceEndpoint("agent-app", "30777")
         if self.agent_executor is None:
             self.agent_executor = ServiceEndpoint("agent-executor", "30778")
         if self.agent_factory is None:
@@ -96,7 +93,6 @@ class ServicesConfig:
             mf_model_factory=get_endpoint(data.get("mf_model_factory", {})),
             mf_model_manager=get_endpoint(data.get("mf_model_manager", {})),
             mf_model_api=get_endpoint(data.get("mf_model_api", {})),
-            agent_app=get_endpoint(data.get("agent_app", {})),
             agent_executor=get_endpoint(data.get("agent_executor", {})),
             agent_factory=get_endpoint(data.get("agent_factory", {})),
             agent_operator_integration=get_endpoint(
