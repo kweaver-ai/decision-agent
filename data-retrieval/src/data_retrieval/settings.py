@@ -90,7 +90,7 @@ class DIPSettings(BaseSettings):
     SAILOR_URL: str = "http://af-sailor:9797"
 
     # Sandbox Settings
-    SANDBOX_URL: str = "http://sandbox-runtime:9101"
+    SANDBOX_URL: str = "http://sandbox-control-plane:8000"
 
     # AD CONFIG
     AD_VERSION: str = "3.0.1.4"

@@ -1936,7 +1936,7 @@
                                     "server_url": {
                                         "type": "string",
                                         "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
-                                        "default": "http://sandbox-runtime:9101"
+                                        "default": "http://:9101"
                                     },
                                     "user_id": {
                                         "type": "string",
@@ -2100,7 +2100,7 @@
                                     "server_url": {
                                         "type": "string",
                                         "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
-                                        "default": "http://sandbox-runtime:9101"
+                                        "default": "http://:9101"
                                     },
                                     "user_id": {
                                         "type": "string",
@@ -2252,7 +2252,7 @@
                                     "server_url": {
                                         "type": "string",
                                         "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
-                                        "default": "http://sandbox-runtime:9101"
+                                        "default": "http://:9101"
                                     },
                                     "user_id": {
                                         "type": "string",
@@ -2394,7 +2394,7 @@
                                     "server_url": {
                                         "type": "string",
                                         "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
-                                        "default": "http://sandbox-runtime:9101"
+                                        "default": "http://
                                     },
                                     "user_id": {
                                         "type": "string",
@@ -2537,7 +2537,7 @@
                                     "server_url": {
                                         "type": "string",
                                         "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
-                                        "default": "http://sandbox-runtime:9101"
+                                        "default": "http://
                                     },
                                     "user_id": {
                                         "type": "string",
@@ -3899,7 +3899,7 @@
                                     "server_url": {
                                         "type": "string",
                                         "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
-                                        "default": "http://sandbox-runtime:9101"
+                                        "default": "http://:9101"
                                     },
                                     "session_id": {
                                         "type": "string",
@@ -4054,7 +4054,7 @@
                                     "server_url": {
                                         "type": "string",
                                         "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
-                                        "default": "http://sandbox-runtime:9101"
+                                        "default": "http://:9101"
                                     },
                                     "session_id": {
                                         "type": "string",
@@ -4209,7 +4209,7 @@
                                     "server_url": {
                                         "type": "string",
                                         "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
-                                        "default": "http://sandbox-runtime:9101"
+                                        "default": "http://:9101"
                                     },
                                     "session_id": {
                                         "type": "string",
@@ -4332,7 +4332,7 @@
                                     "server_url": {
                                         "type": "string",
                                         "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
-                                        "default": "http://sandbox-runtime:9101"
+                                        "default": "http://
                                     },
                                     "session_id": {
                                         "type": "string",
@@ -4474,7 +4474,7 @@
                                     "server_url": {
                                         "type": "string",
                                         "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
-                                        "default": "http://sandbox-runtime:9101"
+                                        "default": "http://:9101"
                                     },
                                     "session_id": {
                                         "type": "string",
@@ -4586,7 +4586,7 @@
                                     "server_url": {
                                         "type": "string",
                                         "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
-                                        "default": "http://sandbox-runtime:9101"
+                                        "default": "http://:9101"
                                     },
                                     "session_id": {
                                         "type": "string",
@@ -4698,7 +4698,7 @@
                                     "server_url": {
                                         "type": "string",
                                         "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
-                                        "default": "http://sandbox-runtime:9101"
+                                        "default": "http://:9101"
                                     },
                                     "session_id": {
                                         "type": "string",
@@ -4810,7 +4810,7 @@
                                     "server_url": {
                                         "type": "string",
                                         "description": "可选，沙箱服务器URL，默认使用配置文件中的 SANDBOX_URL",
-                                        "default": "http://sandbox-runtime:9101"
+                                        "default": "http://:9101"
                                     },
                                     "session_id": {
                                         "type": "string",
