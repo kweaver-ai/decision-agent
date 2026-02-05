@@ -4,6 +4,7 @@ import "github.com/kweaver-ai/decision-agent/agent-factory/cconf"
 
 // SandboxPlatformConf Sandbox Platform 配置
 type SandboxPlatformConf struct {
+	Enable                 bool             `yaml:"enable"`               // 是否启用沙箱功能
 	PublicSvc              cconf.SvcConf    `yaml:"public_svc"`
 	PrivateSvc             cconf.SvcConf    `yaml:"private_svc"`
 	DefaultTTL             int64            `yaml:"default_ttl"`    // 默认 Session TTL（秒）
