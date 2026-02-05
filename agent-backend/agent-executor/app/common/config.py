@@ -20,7 +20,6 @@ server_info = ServerInfo(
 )
 
 ## 2. 初始化配置
-# TODO: 这里的环境需要在配置中添加环境变量
 observability_config = ObservabilitySetting(
     log=LogSetting(
         log_enabled=os.getenv("O11Y_LOG_ENABLED", "false") == "true",
