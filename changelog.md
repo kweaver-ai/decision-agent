@@ -1,4 +1,44 @@
 # Changelog
+## 0.3.0
+
+### Features & Improvements
+
+- Add Sandbox Platform integration for code execution and file management
+- Add PyCodeGenerate agent with sandbox execution tools
+- Add Swagger documentation support for agent-factory
+- Add SelectedFiles field to debug endpoint
+- Add development control switches and new configuration options for Helm Chart
+- Update kweaver-dolphin dependency to v0.2.4
+
+### Bug Fixes
+
+- Fix tool execution status display error when user skips interrupted tool steps
+- Fix interrupted JSON value type rendering error
+- Fix file display issue in debug mode
+- Fix debug mode file parameter passing
+
+### Refactoring & Cleanup
+
+- Remove EcoIndex and DataHubCentral configurations
+- Remove deprecated doc_qa and graph_qa tools
+- Remove pandas dependency from agent-executor
+- Remove deprecated service classes and prompt utilities
+- Remove unused data access objects and old dataset tables
+- Simplify configuration and remove unused stop words file config
+- Hide Agent Trajectory Analysis Module
+- Remove batch-check-index-status interface call in frontend
+
+### Testing
+
+- Add comprehensive unit tests for agent-memory module
+- Add unit tests for config loader and utility functions
+
+### Frontend (agent-web)
+
+- Support skipped status display for interrupted tool execution
+- Adapt Agent conversation for sandbox file upload
+- Remove file-related configurations from Agent config interface
+- Remove file deletion and preview functions from debug mode
 
 ## 0.2.3
 
