@@ -407,7 +407,14 @@ export const getChatItemContent = (message: any): DipChatItemContentType => {
             continue;
           }
 
-          const defaultTitle = `${name}${status === 'completed' ? '执行完成...' : '执行中...'}`;
+          let defaultTitle = `${name}执行中...`;
+          if (status === 'completed') {
+            defaultTitle = `${name}执行完成`;
+          } else if (status === 'failed') {
+            defaultTitle = `${name}执行失败`;
+          } else if (status === 'skipped') {
+            defaultTitle = `已跳过${name}`;
+          }
 
           const commonSkillRes: any = {
             consumeTime: (end_time - start_time).toFixed(2),
