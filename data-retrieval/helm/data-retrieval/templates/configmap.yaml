@@ -44,6 +44,8 @@ data:
   EMBEDDING_DIMENSION: {{ .Values.depServices.mf_model_api.embeddingDimension | quote }}
   #reranker
   RERANKER_URL: {{ .Values.depServices.mf_model_api.rerank_url | quote }}
+  # sandbox
+  SANDBOX_URL: {{ .Values.depServices.sandbox.url | quote }}
 
 
 kind: ConfigMap
