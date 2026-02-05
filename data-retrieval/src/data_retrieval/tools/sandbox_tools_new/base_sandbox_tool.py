@@ -159,7 +159,7 @@ class BaseSandboxToolNew(AFTool):
         server_url = params.get("server_url", _settings.SANDBOX_URL)
         user_id = params.get("user_id", "")
         cache_type = params.get("cache_type", "redis")
-        template_id = params.get("template_id", "")
+        template_id = params.get("template_id", "python-basic")
         sync_execution = params.get("sync_execution", True)
 
         logger.info(f"as_async_api_cls params: {params}")
