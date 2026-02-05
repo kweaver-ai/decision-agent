@@ -267,43 +267,6 @@ create table if not exists t_custom_space_resource
 
 -- 空间表 end
 
--- 数据集相关表 start
-create table if not exists t_data_agent_datasource_dataset_assoc
-(
-    f_id            bigint      not null auto_increment,
-    f_agent_id      varchar(40) not null comment 'agent_id',
-    f_agent_version varchar(32) not null comment 'agent版本',
-    f_dataset_id    varchar(40) not null comment '数据集id 对应t_data_agent_datasource_dataset的f_id',
-    f_created_at    bigint      not null default 0 comment '创建时间',
-
-    primary key (f_id),
-    unique key uk_agent_id_agent_version (f_agent_id, f_agent_version),
-    index idx_dataset_id (f_dataset_id)
-) engine = innodb comment ='data agent 数据源数据集关联表';
-
-create table if not exists t_data_agent_datasource_dataset
-(
-    f_id          varchar(40) not null,
-    f_hash_sha256 varchar(64) not null comment 'hash_sha256',
-    f_created_at  bigint      not null default 0 comment '创建时间',
-
-    primary key (f_id),
-    index idx_hash_sha256 (f_hash_sha256)
-) engine = innodb comment ='data agent 数据源数据集表';
-
-create table if not exists t_data_agent_datasource_dataset_obj
-(
-    f_id          bigint      not null auto_increment,
-    f_dataset_id  varchar(40) not null comment '数据集id 对应t_data_agent_datasource_dataset的f_id',
-    f_object_id   varchar(40) not null comment 'object_id',
-    f_object_type varchar(32)          default 'dir' not null comment 'object_type，预留，暂未使用',
-    f_created_at  bigint      not null default 0 comment '创建时间',
-
-    primary key (f_id),
-    unique key uk_dataset_id_object_id_object_type (f_dataset_id, f_object_type, f_object_id)
-) engine = innodb comment ='data agent 数据源数据集对象表';
--- 数据集相关表 end
-
 -- 发布表
 create table if not exists t_data_agent_release
 (
