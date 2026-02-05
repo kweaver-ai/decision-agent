@@ -172,27 +172,33 @@ class SandboxAPIClient:
         self._session_created = False
 
     async def ensure_session(self) -> str:
-        """Ensure a session exists, creating one if necessary."""
-        if self.session_id and self._session_created:
+        """
+        Ensure session_id is available and optionally check if session exists.
+
+        Note: This method does NOT create sessions proactively.
+        The sandbox control plane API will create sessions automatically
+        when needed (e.g., on first execute_code call).
+        """
+        if not self.session_id:
+            raise SandboxError(reason="Session ID required", detail="session_id must be provided")
+
+        # Already verified session exists
+        if self._session_created:
             return self.session_id
 
-        if self.session_id:
-            # Check if session exists
-            try:
-                session = await self.get_session()
-                status = session.get("status", "")
-                if status in ["running", "pending", "creating"]:
-                    self._session_created = True
-                    return self.session_id
-                else:
-                    logger.warning(f"Session {self.session_id} is in status {status}, creating new session")
-            except SandboxError:
-                logger.warning(f"Session {self.session_id} not found, creating new session")
+        # Check if session exists
+        try:
+            session = await self.get_session()
+            status = session.get("status", "")
+            if status in ["running", "pending", "creating"]:
+                self._session_created = True
+                logger.debug(f"Session {self.session_id} exists with status: {status}")
+            else:
+                logger.debug(f"Session {self.session_id} status: {status}, will be created on first operation")
+        except SandboxError:
+            # Session doesn't exist yet, will be created on first operation
+            logger.debug(f"Session {self.session_id} not found, will be created on first operation")
 
-        # Create new session
-        logger.info(f"Creating new session (template: {self.template_id})")
-        await self.create_session()
-        logger.info(f"New session created: {self.session_id}")
         return self.session_id
 
     # ==================== Code Execution ====================
