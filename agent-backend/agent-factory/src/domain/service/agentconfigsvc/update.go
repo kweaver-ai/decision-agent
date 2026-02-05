@@ -4,12 +4,8 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/daconstant"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/e2p/daconfe2p"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/daconfeo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/p2e/daconfp2e"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/types/dto/daconfigdto/dsdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/auditlogdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
@@ -92,12 +88,6 @@ func (s *dataAgentConfigSvc) Update(ctx context.Context, req *agentconfigreq.Upd
 
 	defer chelper.TxRollbackOrCommit(tx, &err, s.logger)
 
-	// 5. 数据源相关处理
-	err = s.hlDatasource(ctx, req, id, oldPo, tx, eo)
-	if err != nil {
-		return
-	}
-
 	// 6. EO转PO
 	po, err := daconfe2p.DataAgent(eo)
 	if err != nil {
@@ -112,59 +102,6 @@ func (s *dataAgentConfigSvc) Update(ctx context.Context, req *agentconfigreq.Upd
 
 	// 8. 发送审计日志
 	// err = s.sendAuditLog(ctx, eo, persrecenums.MngLogOpTypeUpdate, tx)
-
-	return
-}
-
-// hlDatasource 数据源相关处理
-func (s *dataAgentConfigSvc) hlDatasource(ctx context.Context, req *agentconfigreq.UpdateReq, id string, oldPo *dapo.DataAgentPo, tx *sql.Tx, eo *daconfeo.DataAgent) (err error) {
-	var (
-		datasetId        string
-		isDatasetChanged bool
-		oldEoSimple      *daconfeo.DataAgent
-	)
-
-	oldEoSimple, err = daconfp2e.DataAgentSimple(ctx, oldPo)
-	if err != nil {
-		return
-	}
-
-	// 1. 判断是否使用了内置文档数据源
-	isHasBuiltInDocSource := req.Config.IsHasBuiltInDocSource()
-
-	dsUpdateDto := dsdto.NewDsUpdateDto(id, daconstant.AgentVersionUnpublished, req.Config, oldEoSimple.Config)
-
-	// 2. 更新前后数据集是否发生变化
-	isDatasetChanged = dsUpdateDto.IsDatasetChanged()
-
-	// 3. 如果使用了内置文档数据源
-	if isHasBuiltInDocSource {
-		// 3.1 如果数据集发生变化
-		if isDatasetChanged {
-			datasetId, err = s.dsSvc.Update(ctx, tx, dsUpdateDto)
-			if err != nil {
-				return
-			}
-
-			eo.SetDatasetId(datasetId)
-		} else {
-			// 3.2 如果数据集没有发生变化
-			datasetId, err = s.dsSvc.GetAgentDatasetID(ctx, dsUpdateDto.DsUniqDto)
-			if err != nil {
-				return
-			}
-
-			eo.SetDatasetId(datasetId)
-		}
-	} else {
-		//	4. 如果新的没有使用内置文档数据源，删除旧的
-		dsDto := dsdto.NewDsComDto(id, daconstant.AgentVersionUnpublished, oldEoSimple.Config)
-
-		err = s.dsSvc.Delete(ctx, tx, dsDto)
-		if err != nil {
-			return
-		}
-	}
 
 	return
 }

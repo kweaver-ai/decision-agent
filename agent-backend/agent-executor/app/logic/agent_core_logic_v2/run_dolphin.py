@@ -5,10 +5,6 @@ from dolphin.core.config.global_config import GlobalConfig
 from dolphin.sdk.skill.traditional_toolkit import TriditionalToolkit
 from dolphin.core.utils.tools import ToolInterrupt
 
-# from DolphinLanguageSDK.context_engineer.core.context_manager import (
-#     ContextManager,
-# )
-
 from app.common.config import Config
 from app.common.stand_log import StandLogger
 from app.common.struct_logger import struct_logger
@@ -92,7 +88,7 @@ async def run_dolphin(
     if ac.is_warmup:
         return
 
-    tool_dict = await build_tools(ac,skills)
+    tool_dict = await build_tools(ac, skills)
 
     # 3.2 构造toolkit
     toolkit = TriditionalToolkit.buildFromTooldict(tool_dict)
@@ -131,16 +127,6 @@ async def run_dolphin(
         f"{COLORS['red']}{COLORS['bold']}LLM Config:{COLORS['end']} {json.dumps(llm_config, indent=2, ensure_ascii=False, cls=EnumEncoder)}\n"
         f"{COLORS['blue']}========================================{COLORS['end']}"
     )
-
-    # todo
-    # strategy_registry = StrategyRegistry()
-    # test_strategy = TestStrategy()
-    # 注册自定义策略
-    # strategy_registry.register("test", test_strategy, category="frontend")
-
-    # skillkit_hook = SkillkitHook(
-    #     strategy_registry=strategy_registry,
-    # )
 
     # 6. 构造init_params
     init_params = {
@@ -209,13 +195,12 @@ async def run_dolphin(
     if agent_run_id:
         agent_instance_manager.register(agent_run_id, agent, ac)
 
-    
     # 12. 执行agent
     output = {}
     
     # 使用公共的 arun 循环处理方法
     from .interrupt_utils import process_arun_loop
-    
+
     async for output in process_arun_loop(agent, is_debug):
         yield output
 

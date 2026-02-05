@@ -2,7 +2,6 @@
 // 定义状态类型
 import type { GetStateAction } from '@/hooks/useLatestState';
 import type { AiInputValue } from './components/AiInput/interface';
-import { TempFileTypeEnum } from '@/apis/intelli-search/type';
 import type { FormInstance, TableColumnsType } from 'antd';
 import type { EChartsOption } from 'echarts';
 import type { GetConversationListOption } from '@/apis/super-assistant';
@@ -27,7 +26,7 @@ export type InterruptDataType = {
   };
 };
 
-export type DipChatItemRole = 'user' | 'net' | 'common';
+export type DipChatItemRole = 'user' | 'common';
 
 export type DipChatItemContentProgressType = {
   title?: string; // 工具的标题 大模型的回答没有标题
@@ -137,7 +136,6 @@ export type ConversationItemType = {
   label: string;
   key: string;
   status: 'processing' | 'completed' | 'failed' | 'cancelled';
-  temparea_id: string;
   children?: ConversationItemType[];
   unRead: boolean;
   timestamp: number;
@@ -150,11 +148,9 @@ export type PreviewFileType = {
 };
 
 export type FileItem = {
-  id: string;
-  type: TempFileTypeEnum.Doc;
+  container_path: string;
   name: string;
   size: number;
-  docid: string;
   error: string;
   status: 'processing' | 'failed' | 'completed';
   checked: boolean;
@@ -191,9 +187,7 @@ export type DipChatState = {
 };
 
 export type TempFileType = {
-  id: string; // 文件的docid
-  type: 'doc'; // 文件的类型
-  name: string; // 文件的名称
+  file_name: string;
 };
 
 export type ChatBody = {
@@ -210,7 +204,7 @@ export type ChatBody = {
   temporary_area_id?: string;
   stream?: boolean;
   inc_stream?: boolean;
-  temp_files?: TempFileType[];
+  selected_files?: TempFileType[];
   // 中断的参数
   interruptAction?: 'confirm' | 'skip';
   interruptModifiedArgs?: Array<{ key: string; value: any }>;

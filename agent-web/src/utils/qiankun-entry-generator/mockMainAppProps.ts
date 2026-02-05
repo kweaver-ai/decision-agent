@@ -27,4 +27,5 @@ export const mainAppProps = {
   history: {
     navigateToMicroWidget: () => {},
   },
+  userid: '4b91118a-6f67-11f0-b0dc-36fa540cff80',
 };

@@ -8,7 +8,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 )
 
-//go:generate mockgen -source=./conversation.go -destination ./idbaccessmock/conversation.go -package idbaccessmock
+//go:generate mockgen -package idbaccessmock -destination ./idbaccessmock/conversation_message.go github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess IConversationMsgRepo
 type IConversationMsgRepo interface {
 	IDBAccBaseRepo
 

@@ -4,15 +4,11 @@ import (
 	"context"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/inject/v3/dainject"
-	_ "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 )
 
 func initPermission() (err error) {
-	//if common.IsDisablePmsCheck() {
-	//	return
-	//}
-	if cenvhelper.IsLocalDev(cenvhelper.RunScenario_Aaron_Local_Dev) {
+	if global.GConfig.DisablePmsCheck {
 		return
 	}
 

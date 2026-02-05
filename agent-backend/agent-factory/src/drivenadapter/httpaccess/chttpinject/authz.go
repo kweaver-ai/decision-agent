@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/authzhttp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iauthzacc"
 	"github.com/kweaver-ai/kweaver-go-lib/logger"
 )
@@ -15,9 +16,15 @@ var (
 
 func NewAuthZHttpAcc() iauthzacc.AuthZHttpAcc {
 	authZOnce.Do(func() {
-		authZImpl = authzhttp.NewAuthZHttpAcc(
-			logger.GetLogger(),
-		)
+		if global.GConfig.MockAuthZ {
+			authZImpl = authzhttp.NewMockAuthZHttpAcc(
+				logger.GetLogger(),
+			)
+		} else {
+			authZImpl = authzhttp.NewAuthZHttpAcc(
+				logger.GetLogger(),
+			)
+		}
 	})
 
 	return authZImpl

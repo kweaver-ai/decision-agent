@@ -1,121 +1,235 @@
 package cutil
 
 import (
-	"fmt"
-	"regexp"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGenerateRandomString(t *testing.T) {
-	t.Run("基本长度测试", func(t *testing.T) {
-		testCases := []int{1, 5, 10, 50, 100}
-		for _, length := range testCases {
-			str := GenerateRandomString(length)
-			if len(str) != length {
-				t.Errorf("长度 %d: 期望字符串长度 %d, 实际得到 %d", length, length, len(str))
+func TestMustParseInt(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		want     int
+		panicMsg string
+	}{
+		{
+			name:  "valid positive integer",
+			input: "123",
+			want:  123,
+		},
+		{
+			name:  "valid zero",
+			input: "0",
+			want:  0,
+		},
+		{
+			name:  "valid negative integer",
+			input: "-456",
+			want:  -456,
+		},
+		{
+			name:     "invalid string",
+			input:    "abc",
+			panicMsg: "invalid",
+		},
+		{
+			name:     "empty string",
+			input:    "",
+			panicMsg: "invalid",
+		},
+		{
+			name:     "float string",
+			input:    "123.45",
+			panicMsg: "invalid",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.panicMsg != "" {
+				assert.Panics(t, func() {
+					MustParseInt(tt.input)
+				}, "Should panic for invalid input")
+			} else {
+				result := MustParseInt(tt.input)
+				assert.Equal(t, tt.want, result, "Result should match expected value")
 			}
-		}
-	})
-
-	t.Run("字符集合法性测试", func(t *testing.T) {
-		// 测试生成的字符串只包含预期的字符集
-		validChars := regexp.MustCompile(`^[a-zA-Z0-9]+$`)
-		str := GenerateRandomString(50)
-
-		if !validChars.MatchString(str) {
-			t.Errorf("生成的字符串包含非法字符: %s", str)
-		}
-	})
-
-	t.Run("随机性测试", func(t *testing.T) {
-		// 生成多个字符串，验证它们不完全相同
-		const testCount = 10
-
-		const stringLength = 20
-
-		strings := make([]string, testCount)
-
-		for i := 0; i < testCount; i++ {
-			strings[i] = GenerateRandomString(stringLength)
-		}
-
-		// 检查是否有重复的字符串（概率极低但可能发生）
-		duplicateCount := 0
-
-		for i := 0; i < testCount; i++ {
-			for j := i + 1; j < testCount; j++ {
-				if strings[i] == strings[j] {
-					duplicateCount++
-				}
-			}
-		}
-
-		// 允许少量重复，但不应该全部相同
-		if duplicateCount > testCount/2 {
-			t.Errorf("生成的字符串重复率过高: %d/%d", duplicateCount, testCount)
-		}
-	})
-
-	t.Run("边界值测试", func(t *testing.T) {
-		// 测试最小值
-		str1 := GenerateRandomString(1)
-		if len(str1) != 1 {
-			t.Errorf("最小长度测试失败: 期望长度 1, 实际得到 %d", len(str1))
-		}
-
-		// 测试最大值
-		str100 := GenerateRandomString(100)
-		if len(str100) != 100 {
-			t.Errorf("最大长度测试失败: 期望长度 100, 实际得到 %d", len(str100))
-		}
-	})
-
-	t.Run("异常情况测试", func(t *testing.T) {
-		// 测试非法长度值应该触发panic
-		testCases := []int{0, -1, -10, 101, 200}
-
-		for _, length := range testCases {
-			t.Run(fmt.Sprintf("length_%d", length), func(t *testing.T) {
-				defer func() {
-					if r := recover(); r == nil {
-						t.Errorf("长度 %d 应该触发panic，但没有", length)
-					}
-				}()
-				GenerateRandomString(length)
-			})
-		}
-	})
-
-	t.Run("字符分布测试", func(t *testing.T) {
-		// 生成一个较长的字符串，验证字符分布的合理性
-		str := GenerateRandomString(100)
-
-		hasLower := false
-		hasUpper := false
-		hasDigit := false
-
-		for _, char := range str {
-			if char >= 'a' && char <= 'z' {
-				hasLower = true
-			} else if char >= 'A' && char <= 'Z' {
-				hasUpper = true
-			} else if char >= '0' && char <= '9' {
-				hasDigit = true
-			}
-		}
-
-		// 对于100个字符的字符串，应该有合理的概率包含各种类型的字符
-		// 注意：这是概率性测试，极小概率可能失败
-		if !hasLower && !hasUpper && !hasDigit {
-			t.Error("生成的字符串字符分布异常")
-		}
-	})
+		})
+	}
 }
 
-func TestStringSplitAndJoin(t *testing.T) {
-	t.Parallel()
+func TestMustParseInt64(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    string
+		want     int64
+		panicMsg string
+	}{
+		{
+			name:  "valid positive integer",
+			input: "123",
+			want:  123,
+		},
+		{
+			name:  "valid zero",
+			input: "0",
+			want:  0,
+		},
+		{
+			name:  "valid negative integer",
+			input: "-456",
+			want:  -456,
+		},
+		{
+			name:  "large number",
+			input: "9223372036854775807",
+			want:  9223372036854775807,
+		},
+		{
+			name:     "invalid string",
+			input:    "abc",
+			panicMsg: "invalid",
+		},
+		{
+			name:     "empty string",
+			input:    "",
+			panicMsg: "invalid",
+		},
+		{
+			name:     "float string",
+			input:    "123.45",
+			panicMsg: "invalid",
+		},
+	}
 
-	assert.Equal(t, "a\nb\nc", StringSplitAndJoin("a:b:c"))
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.panicMsg != "" {
+				assert.Panics(t, func() {
+					MustParseInt64(tt.input)
+				}, "Should panic for invalid input")
+			} else {
+				result := MustParseInt64(tt.input)
+				assert.Equal(t, tt.want, result, "Result should match expected value")
+			}
+		})
+	}
+}
+
+func TestStringToBool(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  bool
+	}{
+		{
+			name:  "true lowercase",
+			input: "true",
+			want:  true,
+		},
+		{
+			name:  "true uppercase",
+			input: "TRUE",
+			want:  true,
+		},
+		{
+			name:  "true mixed case",
+			input: "True",
+			want:  true,
+		},
+		{
+			name:  "false lowercase",
+			input: "false",
+			want:  false,
+		},
+		{
+			name:  "false uppercase",
+			input: "FALSE",
+			want:  false,
+		},
+		{
+			name:  "false mixed case",
+			input: "False",
+			want:  false,
+		},
+		{
+			name:  "empty string",
+			input: "",
+			want:  false,
+		},
+		{
+			name:  "random string",
+			input: "random",
+			want:  true,
+		},
+		{
+			name:  "number 1",
+			input: "1",
+			want:  true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := StringToBool(tt.input)
+			assert.Equal(t, tt.want, result, "Result should match expected value")
+		})
+	}
+}
+
+func TestRuneLength(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  int
+	}{
+		{
+			name:  "ASCII string",
+			input: "hello",
+			want:  5,
+		},
+		{
+			name:  "empty string",
+			input: "",
+			want:  0,
+		},
+		{
+			name:  "single character",
+			input: "a",
+			want:  1,
+		},
+		{
+			name:  "Chinese characters",
+			input: "你好",
+			want:  2,
+		},
+		{
+			name:  "mixed ASCII and Chinese",
+			input: "hello你好",
+			want:  7,
+		},
+		{
+			name:  "emoji",
+			input: "😀😀",
+			want:  2,
+		},
+		{
+			name:  "with spaces",
+			input: "hello world",
+			want:  11,
+		},
+		{
+			name:  "special characters",
+			input: "!@#$%",
+			want:  5,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := RuneLength(tt.input)
+			assert.Equal(t, tt.want, result, "Result should match expected length")
+		})
+	}
 }

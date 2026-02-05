@@ -14,7 +14,6 @@ from .models import (
     RdsConfig,
     RedisConfig,
     GraphDBConfig,
-    OpenSearchConfig,
     ServicesConfig,
     ExternalServicesConfig,
     MemoryConfig,
@@ -36,7 +35,6 @@ class ConfigState:
         self.rds: Optional[RdsConfig] = None
         self.redis: Optional[RedisConfig] = None
         self.graphdb: Optional[GraphDBConfig] = None
-        self.opensearch: Optional[OpenSearchConfig] = None
         self.services: Optional[ServicesConfig] = None
         self.external_services: Optional[ExternalServicesConfig] = None
         self.memory: Optional[MemoryConfig] = None
@@ -61,7 +59,6 @@ class ConfigInitializer:
         state.rds = RdsConfig.from_dict(config.get("rds", {}))
         state.redis = RedisConfig.from_dict(config.get("redis", {}))
         state.graphdb = GraphDBConfig.from_dict(config.get("graphdb", {}))
-        state.opensearch = OpenSearchConfig.from_dict(config.get("opensearch", {}))
         state.services = ServicesConfig.from_dict(config.get("services", {}))
         state.external_services = ExternalServicesConfig.from_dict(
             config.get("external_services", {})
@@ -81,9 +78,6 @@ class ConfigInitializer:
 
         # 后处理：设置HOST_IP
         ConfigInitializer._post_process_host_ip(state.app)
-
-        # 后处理：设置STOP_WORDS_FILE路径
-        ConfigInitializer._post_process_document_config(state.app, state.document)
 
     @staticmethod
     def _post_process_app_config(app_config: AppConfig):
@@ -112,9 +106,7 @@ class ConfigInitializer:
 
             # 检查打包后的数据文件是否存在
             data_files_to_check = [
-                "logic/retriever/AS_doc/config/stop_words.txt",
                 "resources/data/sensitive_words.txt",
-                "resources/executors/graph_rag_block/stop_words.txt",
             ]
             print("[CONFIG] Checking packaged data files:", flush=True)
             for data_file in data_files_to_check:
@@ -139,11 +131,3 @@ class ConfigInitializer:
         except ValueError:
             app_config.host_ip = "0.0.0.0"
 
-    @staticmethod
-    def _post_process_document_config(
-        app_config: AppConfig, document_config: DocumentConfig
-    ):
-        """后处理文档配置 - 设置STOP_WORDS_FILE路径"""
-        document_config.stop_words_file = os.path.join(
-            app_config.app_root, "logic/retriever/AS_doc/config/stop_words.txt"
-        )

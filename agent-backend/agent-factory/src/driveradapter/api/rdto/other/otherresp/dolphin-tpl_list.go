@@ -27,10 +27,6 @@ func (b *DolphinTplListResp) LoadFromConfig(req *otherreq.DolphinTplListReq) (er
 		b.PreDolphin = append(b.PreDolphin, dolTplMapStruct.MemoryRetrieve.ToDolphinTplEo())
 	}
 
-	if dolTplMapStruct.TempFileProcess.IsEnable {
-		b.PreDolphin = append(b.PreDolphin, dolTplMapStruct.TempFileProcess.ToDolphinTplEo())
-	}
-
 	if dolTplMapStruct.DocRetrieve.IsEnable {
 		b.PreDolphin = append(b.PreDolphin, dolTplMapStruct.DocRetrieve.ToDolphinTplEo())
 	}

@@ -8,10 +8,15 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/bddbacc/bdagenttpldbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/daconfdbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/daconftpldbacc"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 )
 
 // initBizDomainRel 初始化业务域关联关系
 func initBizDomainRel() (err error) {
+	if global.GConfig.DisableBizDomainInit {
+		return
+	}
+
 	bizDomainSvc := dainject.NewBizDomainSvc()
 	ctx := context.Background()
 

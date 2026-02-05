@@ -58,18 +58,38 @@ func (mr *MockIHttpClientMockRecorder) Delete(ctx, url any) *gomock.Call {
 }
 
 // DeleteExpect2xx mocks base method.
-func (m *MockIHttpClient) DeleteExpect2xx(ctx context.Context, url string) (string, error) {
+func (m *MockIHttpClient) DeleteExpect2xx(ctx context.Context, url string, data ...any) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "DeleteExpect2xx", ctx, url)
+	varargs := []any{ctx, url}
+	for _, a := range data {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "DeleteExpect2xx", varargs...)
 	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
 // DeleteExpect2xx indicates an expected call of DeleteExpect2xx.
-func (mr *MockIHttpClientMockRecorder) DeleteExpect2xx(ctx, url any) *gomock.Call {
+func (mr *MockIHttpClientMockRecorder) DeleteExpect2xx(ctx, url any, data ...any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteExpect2xx", reflect.TypeOf((*MockIHttpClient)(nil).DeleteExpect2xx), ctx, url)
+	varargs := append([]any{ctx, url}, data...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteExpect2xx", reflect.TypeOf((*MockIHttpClient)(nil).DeleteExpect2xx), varargs...)
+}
+
+// DeleteExpect2xxWithQueryParams mocks base method.
+func (m *MockIHttpClient) DeleteExpect2xxWithQueryParams(ctx context.Context, url string, queryData any) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteExpect2xxWithQueryParams", ctx, url, queryData)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteExpect2xxWithQueryParams indicates an expected call of DeleteExpect2xxWithQueryParams.
+func (mr *MockIHttpClientMockRecorder) DeleteExpect2xxWithQueryParams(ctx, url, queryData any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteExpect2xxWithQueryParams", reflect.TypeOf((*MockIHttpClient)(nil).DeleteExpect2xxWithQueryParams), ctx, url, queryData)
 }
 
 // Do mocks base method.

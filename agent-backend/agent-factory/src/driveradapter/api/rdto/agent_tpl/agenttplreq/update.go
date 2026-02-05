@@ -28,7 +28,7 @@ func (p *UpdateReq) GetErrMsgMap() map[string]string {
 }
 
 func (p *UpdateReq) D2e() (eo *daconfeo.DataAgentTpl, err error) {
-	// 1. 生成allowed_file_types和 set is_temp_zone_enabled
+	// 1. 生成allowed_file_types
 	err = agentconfigreq.HandleConfig(p.Config)
 	if err != nil {
 		err = errors.Wrap(err, "[UpdateReq]: d2eCommon failed")

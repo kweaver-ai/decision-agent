@@ -31,7 +31,7 @@ const BubbleList = ({ readOnly = false }: BubbleListProps) => {
         },
       };
     }
-    if (chatItem.role === 'common' || chatItem.role === 'net') {
+    if (chatItem.role === 'common') {
       return {
         placement: 'start',
         variant: 'borderless',

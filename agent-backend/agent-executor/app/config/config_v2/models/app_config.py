@@ -34,8 +34,7 @@ class AppConfig:
     # dolphin agent 是否启用详细输出模式
     enable_dolphin_agent_verbose: bool = False
 
-    # 是否打印最后提交信息
-    is_print_last_commit_info: bool = False
+
 
     # 是否记录 conversation-session/init 请求日志
     log_conversation_session_init: bool = False
@@ -62,7 +61,6 @@ class AppConfig:
             enable_dolphin_agent_verbose=data.get(
                 "enable_dolphin_agent_verbose", False
             ),
-            is_print_last_commit_info=data.get("is_print_last_commit_info", False),
             log_conversation_session_init=data.get(
                 "log_conversation_session_init", False
             ),

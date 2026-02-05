@@ -7,14 +7,14 @@ from src.utils.logger import logger
 
 def connect_execute_commit_close_db(func):
     def wrapper(*args, **kwargs):
-        retry_count = 3 
-        for attemp in range(retry_count):
+        retry_count = 3
+        for attempt in range(retry_count):
             try:
                 pymysql_pool = PymysqlPool.get_pool()
                 connection = pymysql_pool.connection()
                 cursor = connection.cursor()
-                kwargs['connection'] = connection
-                kwargs['cursor'] = cursor
+                kwargs["connection"] = connection
+                kwargs["cursor"] = cursor
                 try:
                     ret = func(*args, **kwargs)
                     connection.commit()
@@ -26,8 +26,10 @@ def connect_execute_commit_close_db(func):
                     cursor.close()
                     connection.close()
             except (ConnectionResetError, rdsdriver.OperationalError) as e:
-                if attemp < retry_count - 1:
-                    logger.warnf(f"ConnectionResetError, retrying... Attempt: {attemp + 1}")
+                if attempt < retry_count - 1:
+                    logger.warningf(
+                        f"ConnectionResetError, retrying... Attempt: {attempt + 1}"
+                    )
                 raise e
         return None
 
@@ -37,13 +39,13 @@ def connect_execute_commit_close_db(func):
 def connect_execute_close_db(func):
     def wrapper(*args, **kwargs):
         retry = 3
-        for attemp in range(retry):
+        for attempt in range(retry):
             try:
                 pymysql_pool = PymysqlPool.get_pool()
                 connection = pymysql_pool.connection()
-                kwargs['connection'] = connection
+                kwargs["connection"] = connection
                 cursor = connection.cursor()
-                kwargs['cursor'] = cursor
+                kwargs["cursor"] = cursor
                 try:
                     ret = func(*args, **kwargs)
                     return ret
@@ -53,10 +55,11 @@ def connect_execute_close_db(func):
                     cursor.close()
                     connection.close()
             except (ConnectionResetError, rdsdriver.OperationalError) as e:
-                if attemp < retry - 1:
-                    logger.warnf(f"ConnectionResetError, retrying... Attempt: {attemp + 1}")
+                if attempt < retry - 1:
+                    logger.warningf(
+                        f"ConnectionResetError, retrying... Attempt: {attempt + 1}"
+                    )
                 raise e
         return None
 
     return wrapper
-

@@ -44,7 +44,7 @@ class Mem0MemoryAdapter:
             await self.create()
 
         # Extract context from kwargs
-        context = kwargs.get("context", {})
+        context = kwargs.get("context")
 
         # Remove context from kwargs to avoid passing it to mem0
         kwargs.pop("context", None)

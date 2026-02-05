@@ -6,7 +6,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 )
 
-//go:generate mockgen -source=./product.go -destination ./idbaccessmock/product.go -package idbaccessmock
+//go:generate mockgen -package idbaccessmock -destination ./idbaccessmock/product.go github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess IProductRepo
 type IProductRepo interface {
 	// 基本CRUD操作
 	Create(ctx context.Context, po *dapo.ProductPo) (key string, err error)

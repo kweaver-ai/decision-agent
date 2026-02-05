@@ -34,12 +34,14 @@ type Config struct {
 	MQ MQConf
 
 	// APP 配置字段
-	AgentFactoryConf  *AgentFactoryConf  `yaml:"agent_factory"`
-	AgentExecutorConf *AgentExecutorConf `yaml:"agent_executor"`
-	EfastConf         *EfastConf         `yaml:"efast"`
-	DocsetConf        *DocsetConf        `yaml:"docset"`
-	EcoConfigConf     *EcoConfigConf     `yaml:"ecoconfig"`
-	UniqueryConf      *UniqueryConf      `yaml:"uniquery"`
+	AgentFactoryConf    *AgentFactoryConf    `yaml:"agent_factory"`
+	AgentExecutorConf   *AgentExecutorConf   `yaml:"agent_executor"`
+	FastConf            *EfastConf           `yaml:"efast"`
+	DocsetConf          *DocsetConf          `yaml:"docset"`
+	EcoConfigConf       *EcoConfigConf       `yaml:"ecoconfig"`
+	UniqueryConf        *UniqueryConf        `yaml:"uniquery"`
+	SandboxPlatformConf *SandboxPlatformConf `yaml:"sandbox_platform"`
+
 	// 流式响应配置
 	StreamDiffFrequency int `yaml:"stream_diff_frequency"`
 
@@ -48,6 +50,37 @@ type Config struct {
 
 	// 是否保留老的APP路径，默认false
 	KeepLegacyAppPath bool `yaml:"keep_legacy_app_path"`
+
+	// 是否禁用权限检查，默认false
+	DisablePmsCheck bool `yaml:"disable_pms_check"`
+
+	// 是否禁用业务域初始化，默认false
+	DisableBizDomainInit bool `yaml:"disable_biz_domain_init"`
+
+	// 是否使用全局默认业务域，默认false
+	UseDefaultBizDomain bool `yaml:"use_default_biz_domain"`
+
+	// 是否禁用审计日志初始化，默认false
+	DisableAuditInit bool `yaml:"disable_audit_init"`
+
+	// 是否使用Mock MQ客户端（本地开发时建议设置为true）
+	MockMQClient bool `yaml:"mock_mq_client"`
+
+	// 是否使用Mock Sandbox Platform（本地开发时建议设置为true）
+	MockSandboxPlatform bool `yaml:"mock_sandbox_platform"`
+
+	// 是否使用Mock Hydra（本地开发时建议设置为true）
+	MockHydra bool `yaml:"mock_hydra"`
+
+	// 是否使用Mock AuthZ（本地开发时建议设置为true）
+	MockAuthZ bool `yaml:"mock_authz"`
+
+	// 是否使用Mock BizDomain（本地开发时建议设置为true）
+	MockBizDomain bool `yaml:"mock_biz_domain"`
+
+	// OpenAPI 文档配置
+	EnableSwagger bool   `yaml:"enable_swagger"` // 是否启用 Swagger UI
+	SwaggerToken  string `yaml:"swagger_token"`  // Swagger UI 认证 token (开发模式)
 }
 
 func (c Config) IsDebug() bool {

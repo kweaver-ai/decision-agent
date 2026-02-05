@@ -31,7 +31,7 @@ import {
   handleStreamingError,
   handleChatItemContent,
 } from './assistant';
-import { getChatItemContent, getTempAreaEnable, handleAgentConfigFileExt } from '@/components/DipChat/utils';
+import { getChatItemContent, handleAgentConfigFileExt } from '@/components/DipChat/utils';
 import { getAgentsByPost, getAllFileExt } from '@/apis/agent-factory';
 import AgentNotExist from '@/components/AgentNotExist';
 
@@ -46,7 +46,6 @@ const initStoreData: DipChatState = {
   activeChatItemIndex: -1,
   aiInputValue: {
     inputValue: '',
-    fileList: [],
     mode: 'normal',
     deepThink: false,
   },
@@ -233,11 +232,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
         const body: any = { query: item.content };
         if (item.fileList && item.fileList.length > 0) {
           // 说明有文件
-          body.temp_files = item.fileList.map(fileItem => ({
-            id: fileItem.id,
-            name: fileItem.name,
-            type: fileItem.type,
-          }));
+          setDipChatStore({ tempFileList: item.fileList.map(fileItem => ({ ...fileItem, checked: true })) });
         }
         sendChat({
           body,
@@ -376,12 +371,6 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
     });
   };
 
-  const getTempAreaEnabled = () => {
-    const { agentDetails } = getStore();
-    const agentConfig = agentDetails.config;
-    return getTempAreaEnable(agentConfig);
-  };
-
   const clearTempAreaFileChecked = () => {
     const { tempFileList } = getStore();
     setDipChatStore({
@@ -417,16 +406,8 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
 
   /** 流式接口发送 */
   const sendChat = async (params: SendChatPram) => {
-    const {
-      activeChatItemIndex,
-      activeConversationKey,
-      aiInputValue,
-      agentDetails,
-      agentAppKey,
-      tempFileList,
-      debug,
-      chatList,
-    } = getStore();
+    const { activeChatItemIndex, activeConversationKey, agentDetails, agentAppKey, tempFileList, debug, chatList } =
+      getStore();
 
     setDipChatStore({
       chatListAutoScroll: true,
@@ -459,22 +440,10 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
     }
 
     // 是否带上文件，看有没有开启临时区域  决定文件如何传递
-    if (!params.body.temp_files) {
-      let files = aiInputValue.fileList;
-      // 调试模式下，临时区域不会渲染，故上传的文件只可能在对话框里面上传
-      if (!debug && getTempAreaEnabled()) {
-        files = tempFileList.filter(file => file.checked);
-      }
+    if (!params.body.selected_files) {
+      const files = tempFileList.filter(file => file.checked);
       if (files.length > 0) {
-        params.body.temp_files = files.map(item => ({
-          id: item.id,
-          name: item.name,
-          type: item.type,
-          details: {
-            docid: item.docid,
-            size: item.size,
-          },
-        }));
+        params.body.selected_files = files.map(file => ({ file_name: file.container_path }));
         // 将文件回显到用户的问题上
         if (params.chatList) {
           params.chatList.forEach((item, index) => {
@@ -512,6 +481,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
       delete cloneParamsBody.interruptModifiedArgs;
       // 说明是debug
       if (debug) {
+        delete cloneParamsBody.selected_files;
         const conversation_id = params.body.conversation_id;
         let agent_id = agentDetails?.id;
         if (!agent_id && typeof canSend === 'string') {
@@ -523,6 +493,7 @@ const DipChatStore: React.FC<PropsWithChildren<DipChatProps>> = props => {
           input: {
             ...cloneParamsBody,
           },
+          selected_files: params.body.selected_files,
           conversation_id,
           stream: true,
           inc_stream: true,

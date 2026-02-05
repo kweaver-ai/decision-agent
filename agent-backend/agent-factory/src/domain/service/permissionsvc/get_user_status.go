@@ -5,8 +5,8 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdapmsenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/rdto/agent_permission/cpmsresp"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/pkg/errors"
 )
 
@@ -14,7 +14,7 @@ import (
 func (svc *permissionSvc) GetUserStatus(ctx context.Context) (resp *cpmsresp.UserStatusResp, err error) {
 	resp = cpmsresp.NewUserStatusResp()
 
-	if common.IsDisablePmsCheck() {
+	if global.GConfig.DisablePmsCheck {
 		resp = cpmsresp.NewUserStatusRespAllAllowed()
 		return
 	}

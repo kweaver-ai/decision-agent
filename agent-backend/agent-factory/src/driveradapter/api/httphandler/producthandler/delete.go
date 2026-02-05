@@ -13,6 +13,19 @@ import (
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
+// Delete 删除产品
+// @Summary      删除产品
+// @Description  根据产品 ID 删除产品
+// @Tags         Product
+// @Accept       json
+// @Produce      json
+// @Param        id  path      int  true  "产品 ID"
+// @Success      204
+// @Failure      400  {object}  swagger.APIError           "请求参数错误"
+// @Failure      404  {object}  swagger.APIError           "产品不存在"
+// @Failure      500  {object}  swagger.APIError           "服务器内部错误"
+// @Router       /v3/product/{id} [delete]
+// @Security     BearerAuth
 func (h *productHTTPHandler) Delete(c *gin.Context) {
 	isPrivate := capimiddleware.IsInternalAPI(c)
 

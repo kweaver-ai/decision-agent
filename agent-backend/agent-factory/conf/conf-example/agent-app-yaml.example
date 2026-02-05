@@ -65,8 +65,6 @@ project:
   builder_port: 6475
   auth_host: kg-data-auth
   auth_port: 7000
-  agent_app_host: 192.168.232.11
-  agent_app_port: 30778
 
   model_factory_host: mf-model-factory
   model_factory_port: 9898

@@ -4,6 +4,7 @@ import { useDeepCompareMemo } from '@/hooks';
 import _ from 'lodash';
 import { AdMonacoEditor } from '@/components/Editor/AdMonacoEditor';
 import { SKILL_TYPE } from '@/components/DipChat/enum.ts';
+import { isJSONString } from '@/utils/handle-function';
 
 const FormItem = Form.Item;
 type FieldType = {
@@ -53,7 +54,7 @@ const InterruptFormPanel = ({ chatItemIndex }: any) => {
     if (item.type === 'string') {
       return <Input.TextArea autoSize={{ minRows: 1, maxRows: 5 }} placeholder={`请输入${item.key}`} />;
     }
-    if (item.type === 'object') {
+    if (item.type === 'object' || item.type === 'dict') {
       return (
         <AdMonacoEditor
           placeholder={`请输入${item.key}`}
@@ -93,18 +94,23 @@ const InterruptFormPanel = ({ chatItemIndex }: any) => {
     const formValues = form.getFieldsValue();
     // 只收集用户修改过的参数，仅包含 key 和 value
     const args = fields
-      .filter(field => formValues[field.key] !== field.value)
+      .filter(field => {
+        let fieldValue = formValues[field.key];
+        if (field.type === 'object' || field.type === 'dict') {
+          fieldValue = isJSONString(fieldValue) ? JSON.parse(fieldValue) : fieldValue;
+        }
+        return !_.isEqual(fieldValue, field.value);
+      })
       .map(field => ({
         key: field.key,
-        value: formValues[field.key],
+        value:
+          field.type === 'object' || field.type === 'dict' ? JSON.parse(formValues[field.key]) : formValues[field.key],
       }));
     const userChatItem = chatList[chatItemIndex - 1];
     const reqBody: any = {};
     if (userChatItem.fileList) {
-      reqBody.temp_files = userChatItem.fileList.map((item: any) => ({
-        id: item.id,
-        name: item.name,
-        type: item.type,
+      reqBody.selected_files = userChatItem.fileList.map((item: any) => ({
+        file_name: item.container_path,
       }));
     }
     sendChat({
@@ -128,12 +134,19 @@ const InterruptFormPanel = ({ chatItemIndex }: any) => {
     );
   };
 
+  const getInitialValue = (item: any) => {
+    if (item.type === 'object' || item.type === 'dict') {
+      return JSON.stringify(item.value, null, 2);
+    }
+    return item.value;
+  };
+
   return (
     <div>
       {renderMessageTip()}
       <Form colon form={form} layout="vertical" onFinish={updateInterrupt}>
         {fields.map((item: FieldType) => (
-          <FormItem key={item.key} label={item.key} name={item.key} initialValue={item.value}>
+          <FormItem key={item.key} label={item.key} name={item.key} initialValue={getInitialValue(item)}>
             {renderInput(item)}
           </FormItem>
         ))}

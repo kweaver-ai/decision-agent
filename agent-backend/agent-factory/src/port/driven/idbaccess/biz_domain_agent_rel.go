@@ -7,7 +7,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 )
 
-//go:generate mockgen -source=./biz_domain_agent_rel.go -destination ./idbaccessmock/biz_domain_agent_rel.go -package idbaccessmock
+//go:generate mockgen -package idbaccessmock -destination ./idbaccessmock/biz_domain_agent_rel.go github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess IBizDomainAgentRelRepo
 
 // IBizDomainAgentRelRepo 业务域与agent关联表操作接口
 type IBizDomainAgentRelRepo interface {

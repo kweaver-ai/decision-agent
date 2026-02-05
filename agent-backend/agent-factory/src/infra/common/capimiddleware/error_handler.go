@@ -43,7 +43,7 @@ func ErrorHandler() gin.HandlerFunc {
 
 				errMSg := fmt.Sprintf("[ErrorHandler][ErrMsg]: \nerror cause: %v \n err trace: %+v\n", errCause, errTrace)
 
-				log.Printf(errMSg)
+				log.Print(errMSg)
 
 				_ = cutil.PrintFormatJSON(_err, "[ErrorHandler][PrintFormatJSON]: request error")
 			}

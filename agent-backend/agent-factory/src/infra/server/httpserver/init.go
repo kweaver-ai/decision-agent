@@ -20,7 +20,6 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/httphandler/conversationhandler"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/httphandler/observabilityhandler"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/httphandler/sessionhandler"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/httphandler/tempareahandler"
 )
 
 // NewHTTPServer 创建HTTP服务器实例
@@ -46,7 +45,6 @@ func NewHTTPServer() IServer {
 		// Run侧 (V1)
 		agentHandler:         agenthandler.NewAgentHTTPHandler(),
 		conversationHandler:  conversationhandler.NewConversationHTTPHandler(),
-		tempareaHandler:      tempareahandler.NewTempareaHTTPHandler(),
 		observabilityHandler: observabilityhandler.NewObservabilityHTTPHandler(),
 		sessionHandler:       sessionhandler.NewSessionHTTPHandler(),
 	}

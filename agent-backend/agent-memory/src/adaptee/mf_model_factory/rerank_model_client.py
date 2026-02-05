@@ -2,7 +2,6 @@ from typing import List, Optional, Dict, Any
 from dataclasses import dataclass
 import aiohttp
 import asyncio
-import asyncio
 
 
 @dataclass
@@ -59,7 +58,6 @@ class Config:
 
 
 class RerankModelClient:
-
     def __init__(self, config: Config):
         self.config = config
 

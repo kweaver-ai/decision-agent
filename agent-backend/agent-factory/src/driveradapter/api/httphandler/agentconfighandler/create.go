@@ -17,6 +17,18 @@ import (
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
+// Create 创建Agent
+// @Summary      创建Agent
+// @Description  创建一个新的 Agent 配置
+// @Tags         AgentConfig
+// @Accept       json
+// @Produce      json
+// @Param        request  body      agentconfigreq.CreateReq  true  "Agent 配置"
+// @Success      201      {object}  agentconfigresp.DetailRes  "成功"
+// @Failure      400      {object}  swagger.APIError   "请求参数错误"
+// @Failure      500      {object}  swagger.APIError   "服务器内部错误"
+// @Router       /v3/agent [post]
+// @Security     BearerAuth
 func (h *daConfHTTPHandler) Create(c *gin.Context) {
 	// 1. 获取请求参数
 	var req agentconfigreq.CreateReq

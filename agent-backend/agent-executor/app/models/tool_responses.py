@@ -44,20 +44,3 @@ class SchemaInfo(BaseModel):
     """图数据库模式信息"""
 
     schema_data: Dict[str, Any] = Field(..., description="数据库模式", alias="schema")
-
-
-class FileUrlInfo(BaseModel):
-    """文件URL信息"""
-
-    name: str = Field(..., description="文件名")
-    id: str = Field(..., description="文件ID")
-    url: Optional[str] = Field(None, description="下载URL")
-    error: Optional[str] = Field(None, description="错误信息")
-
-
-class GetFileDownloadUrlResponse(BaseModel):
-    """获取文件下载URL响应"""
-
-    file_urls: List[FileUrlInfo] = Field(..., description="文件URL信息列表")
-    total_count: int = Field(..., description="总文件数量")
-    success_count: int = Field(..., description="成功获取URL的文件数量")

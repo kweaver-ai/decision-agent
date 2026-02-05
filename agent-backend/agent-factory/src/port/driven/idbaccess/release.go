@@ -9,7 +9,11 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 )
 
-//go:generate mockgen -source=./release.go -destination ./idbaccessmock/release.go -package idbaccessmock
+//go:generate mockgen -package idbaccessmock -destination ./idbaccessmock/release.go github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess IReleaseRepo
+//go:generate mockgen -package idbaccessmock -destination ./idbaccessmock/release_history.go github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess IReleaseHistoryRepo
+//go:generate mockgen -package idbaccessmock -destination ./idbaccessmock/release_category_rel.go github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess IReleaseCategoryRelRepo
+//go:generate mockgen -package idbaccessmock -destination ./idbaccessmock/release_permission.go github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess IReleasePermissionRepo
+//go:generate mockgen -package idbaccessmock -destination ./idbaccessmock/conversation_history.go github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess IConversationHistoryRepo
 type IReleaseRepo interface {
 	IDBAccBaseRepo
 	Create(ctx context.Context, tx *sql.Tx, po *dapo.ReleasePO) (id string, err error)

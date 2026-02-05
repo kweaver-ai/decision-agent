@@ -9,7 +9,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 )
 
-//go:generate mockgen -source=./space_repo.go -destination ./idbaccessmock/space_repo.go -package idbaccessmock
+//go:generate mockgen -package idbaccessmock -destination ./idbaccessmock/space_repo.go github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess ISpaceRepo
 
 // ISpaceRepo 空间仓库接口
 type ISpaceRepo interface {

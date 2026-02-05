@@ -76,7 +76,6 @@ export const getBotIdByAgentKey = async (agentKey: string) =>
 
 type ConversationType = {
   title?: string;
-  temparea_id?: string;
   agent_id?: string;
   agent_version?: string;
   executor_version?: 'v1' | 'v2';

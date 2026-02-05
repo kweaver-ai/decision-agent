@@ -14,6 +14,18 @@ import (
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
+// Create 创建产品
+// @Summary      创建产品
+// @Description  创建一个新的产品
+// @Tags         Product
+// @Accept       json
+// @Produce      json
+// @Param        product  body      productreq.CreateReq  true  "产品信息"
+// @Success      201     {object}  productresp.CreateRes  "创建成功"
+// @Failure      400     {object}  swagger.APIError         "请求参数错误"
+// @Failure      500     {object}  swagger.APIError         "服务器内部错误"
+// @Router       /v3/product [post]
+// @Security     BearerAuth
 func (h *productHTTPHandler) Create(c *gin.Context) {
 	isPrivate := capimiddleware.IsInternalAPI(c)
 

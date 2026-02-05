@@ -15,7 +15,6 @@ import (
 	reflect "reflect"
 
 	gin "github.com/gin-gonic/gin"
-	docindexobj "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/docindexobj"
 	auditlogdto "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/auditlogdto"
 	agentconfigreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
 	agentconfigresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigresp"
@@ -77,21 +76,6 @@ func (m *MockIDataAgentConfigSvc) AIAutogenV3(ctx *gin.Context, req *agentconfig
 func (mr *MockIDataAgentConfigSvcMockRecorder) AIAutogenV3(ctx, req any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AIAutogenV3", reflect.TypeOf((*MockIDataAgentConfigSvc)(nil).AIAutogenV3), ctx, req)
-}
-
-// BatchCheckIndexStatus mocks base method.
-func (m *MockIDataAgentConfigSvc) BatchCheckIndexStatus(ctx *gin.Context, req *agentconfigreq.BatchCheckIndexStatusReq) ([]*docindexobj.AgentDocIndexStatusInfo, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "BatchCheckIndexStatus", ctx, req)
-	ret0, _ := ret[0].([]*docindexobj.AgentDocIndexStatusInfo)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// BatchCheckIndexStatus indicates an expected call of BatchCheckIndexStatus.
-func (mr *MockIDataAgentConfigSvcMockRecorder) BatchCheckIndexStatus(ctx, req any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "BatchCheckIndexStatus", reflect.TypeOf((*MockIDataAgentConfigSvc)(nil).BatchCheckIndexStatus), ctx, req)
 }
 
 // BatchFields mocks base method.

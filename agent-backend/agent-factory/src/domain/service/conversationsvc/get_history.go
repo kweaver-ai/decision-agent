@@ -86,6 +86,17 @@ func (svc *conversationSvc) GetHistory(ctx context.Context, id string, limit int
 				}
 			}
 
+			// NOTE: 如果用户选中了文件，先插入工作区上下文消息
+			// 这样可以在历史消息中重建完整的上下文，即使退出重进也不会丢失
+			if len(userContent.SelectedFiles) > 0 {
+				contextMsg := &comvalobj.LLMMessage{
+					Role:    "user",
+					Content: buildWorkspaceContextMessage(msg.ConversationID, conversation.CreateBy, userContent.SelectedFiles),
+				}
+				history = append(history, contextMsg)
+			}
+
+			// 然后添加实际的用户查询
 			history = append(history, &comvalobj.LLMMessage{
 				Role:    string(msg.Role),
 				Content: userContent.Text,

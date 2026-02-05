@@ -957,19 +957,19 @@ const DecisionAgent = ({ mode: modeFromProps = ModeEnum.DataAgent }: DataAgentsP
     [mode]
   );
 
-  // 在获取分类数据后开始轮询处理状态
-  useEffect(() => {
-    // 只有我的agent，才需要查询处理状态
-    if (mode !== ModeEnum.MyAgent) return;
-
-    if (agentList?.list.length > 0) {
-      startPollingProcessingStatuses();
-    }
-
-    return () => {
-      stopPollingProcessingStatuses();
-    };
-  }, [mode, agentList?.list]);
+  // // 在获取分类数据后开始轮询处理状态
+  // useEffect(() => {
+  //   // 只有我的agent，才需要查询处理状态
+  //   if (mode !== ModeEnum.MyAgent) return;
+  //
+  //   if (agentList?.list.length > 0) {
+  //     startPollingProcessingStatuses();
+  //   }
+  //
+  //   return () => {
+  //     stopPollingProcessingStatuses();
+  //   };
+  // }, [mode, agentList?.list]);
 
   // Function to render Agent cards
   const renderAgentCard = (agent: Agent, cls: string = '') => {

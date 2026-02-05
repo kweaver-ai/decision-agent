@@ -22,9 +22,9 @@ RUN set -ex; \
     export GOPROXY=${GOPROXY} && \
     go mod download && \
     if [ "${ARCH_TYPE}" = "arm64" ]; then \
-      go build -ldflags '-s -w' -o agent-factory ./main.go; \
+    go build -ldflags '-s -w' -o agent-factory ./main.go; \
     else \
-      go build -ldflags '-s -w -checklinkname=0' -o agent-factory ./main.go; \
+    go build -ldflags '-s -w -checklinkname=0' -o agent-factory ./main.go; \
     fi && \
     chmod +x agent-factory
 
@@ -44,14 +44,13 @@ COPY agent-executor/app /build/app
 COPY agent-executor/main.py /build/main.py
 COPY agent-executor/data_migrations /build/data_migrations
 COPY agent-executor/mq-sdk-lib /build/mq-sdk-lib
-COPY agent-executor/last_commit_info.txt /build/last_commit_info.txt
 
 # 安装依赖并构建 agent-executor
 RUN set -ex; \
     ssh-keyscan -t rsa devops.aishu.cn >> /root/.ssh/known_hosts; \
     cd /build; \
     uv sync; \
-    #     Dolphin from test.pypi
+    # Dolphin from test.pypi
 #     uv pip install --index-url https://test.pypi.org/simple/ \
 #         --extra-index-url https://pypi.tuna.tsinghua.edu.cn/simple/ \
 #         --index-strategy unsafe-best-match kweaver-dolphin; \
@@ -109,9 +108,9 @@ COPY --from=builder-memory --chown=$UID:$GID /build/dist/agent-memory /app/agent
 # 处理 mq-sdk-lib 动态库
 COPY --from=builder-executor /build/mq-sdk-lib /tmp/mq-sdk-lib
 RUN if [ "$ARCH_TYPE" = "amd64" ]; then \
-        mv /tmp/mq-sdk-lib/x86/* /usr/lib/; \
+    mv /tmp/mq-sdk-lib/x86/* /usr/lib/; \
     elif [ "$ARCH_TYPE" = "arm64" ]; then \
-        mv /tmp/mq-sdk-lib/arm/* /usr/lib/; \
+    mv /tmp/mq-sdk-lib/arm/* /usr/lib/; \
     fi; \
     rm -rf /tmp/mq-sdk-lib
 
@@ -133,7 +132,7 @@ EXPOSE 13020 30778 30790
 # 健康检查
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
     CMD curl -f http://localhost:13020/health/ready && \
-        curl -f http://localhost:30778/health/ready || exit 1
+    curl -f http://localhost:30778/health/ready || exit 1
 
 # 使用 supervisor 启动所有服务
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf", "-n"]

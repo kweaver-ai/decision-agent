@@ -1,20 +1,17 @@
 import styles from './index.module.less';
 import classNames from 'classnames';
 import { Attachments, Sender, Suggestion } from '@ant-design/x';
-import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react';
 import type { AiInputProps, AiInputRef, AiInputValue } from './interface';
 import _ from 'lodash';
 import { Col, type GetRef, Row, Tooltip } from 'antd';
 import { CloseCircleFilled, LoadingOutlined } from '@ant-design/icons';
 import { useLatestState } from '@/hooks';
 import { FileTypeIcon, getFileExtension } from '@/utils/doc';
-import { TempFileTypeEnum } from '@/apis/intelli-search/type';
-import FileUploadBtn from '../FileUploadBtn';
-import { getFileUploadEnable, getTempAreaEnable } from '../../utils';
-import { checkFileStatus } from '@/apis/agent-app';
+import FileUploadBtn, { type FileUploadBtnRef } from '../FileUploadBtn';
 import ResizeObserver from '@/components/ResizeObserver';
 import type { FileItem } from '@/components/DipChat/interface';
-import intl from 'react-intl-universal';
+
 const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
   const {
     value,
@@ -32,12 +29,12 @@ const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
     ...restProps
   } = props;
 
+  const fileUploadBtnRef = useRef<FileUploadBtnRef>(null);
   const senderRef = React.useRef<GetRef<typeof Sender>>(null);
   const valueRef = useRef<AiInputValue>(value);
 
   // 文件相关props
   const attachmentsRef = React.useRef<GetRef<typeof Attachments>>(null);
-  const fileResolveTimer = useRef<any>();
 
   // 建议项相关props
   const [suggestionOpen, setSuggestionOpen] = useLatestState(false);
@@ -53,38 +50,6 @@ const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
     reset: resetForm,
   }));
 
-  const fileListIds = value.fileList.map(file => file.id).join(',');
-  useEffect(() => {
-    if (fileListIds) {
-      getFileStatus();
-    }
-    return () => {
-      if (fileResolveTimer.current) {
-        clearTimeout(fileResolveTimer.current);
-        fileResolveTimer.current = null;
-      }
-    };
-  }, [fileListIds]);
-
-  const getFileStatus = () => {
-    const reqParams = value.fileList.map(file => ({
-      id: file.id,
-      type: TempFileTypeEnum.Doc,
-    }));
-    checkFileIndexStatus(reqParams, (_process: number, fileStatusData: any) => {
-      const newValue = _.cloneDeep(valueRef.current);
-      newValue.fileList = newValue.fileList.map(file => {
-        const target = fileStatusData.find((item: any) => item.id === file.id);
-        return {
-          ...file,
-          status: target?.status ?? 'processing',
-          error: target?.status === 'failed' ? (target?.msg ?? intl.get('dipChat.fileParseError')) : '',
-        };
-      });
-      handleChange(newValue);
-    });
-  };
-
   const handleChange = (newValue: AiInputValue) => {
     valueRef.current = newValue;
     onChange?.(newValue);
@@ -93,9 +58,11 @@ const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
   const resetForm = () => {
     const newValue = _.cloneDeep(value);
     newValue.inputValue = '';
-    newValue.fileList = [];
     handleChange(newValue);
     senderRef.current?.focus();
+    if (agentConfig.debug) {
+      fileUploadBtnRef.current?.clearFileList();
+    }
   };
 
   const suggestionSelect = () => {
@@ -109,15 +76,7 @@ const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
     handleChange(newValue);
   };
 
-  const fileResolveFinish = useMemo(() => {
-    if (value.fileList.length > 0) {
-      return value.fileList.some(file => file.status === 'completed');
-    }
-    return true;
-  }, [value.fileList]);
-
-  const inputDisabled =
-    !fileResolveFinish || (!value.inputValue && value.fileList.length === 0 && tempFileList.length === 0);
+  const inputDisabled = !value.inputValue && tempFileList.length === 0;
 
   const handleSubmit = () => {
     if (!inputDisabled && !loading) {
@@ -126,16 +85,6 @@ const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
       if (clearAfterSend) {
         resetForm();
       }
-    }
-  };
-
-  const checkFileIndexStatus = async (files: any, cb: any) => {
-    const { progress, process_info } = await checkFileStatus(files);
-    cb(progress, process_info);
-    if (progress !== 100) {
-      fileResolveTimer.current = setTimeout(() => {
-        checkFileIndexStatus(files, cb);
-      }, 3000);
     }
   };
 
@@ -153,10 +102,9 @@ const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
   };
 
   const senderHeader = (
-    <Sender.Header title="" open={value.fileList.length > 0} closable={false}>
+    <Sender.Header title="" open={tempFileList.length > 0 && agentConfig.debug} closable={false}>
       <ResizeObserver
         onResize={({ width }) => {
-          console.log(width, 'width');
           if (width < 400) {
             setColPan(12);
           } else {
@@ -166,11 +114,11 @@ const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
       >
         <div className="dip-full">
           <Row gutter={[16, 16]} className={styles.fileWrapper}>
-            {value.fileList.map(item => (
-              <Col span={colSpan} key={item.id}>
+            {tempFileList.map(item => (
+              <Col span={colSpan} key={item.container_path}>
                 <div
                   onClick={() => {
-                    onPreviewFile?.(item);
+                    // onPreviewFile?.(item);
                   }}
                   className={classNames(styles.fileItem, 'dip-flex-align-center')}
                 >
@@ -181,17 +129,14 @@ const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
                     </div>
                     {renderStatusIcon(item)}
                   </div>
-                  <div
-                    className={styles.delete}
-                    onClick={e => {
-                      e.stopPropagation();
-                      const newValue = _.cloneDeep(value);
-                      newValue.fileList = newValue.fileList.filter(file => file.id !== item.id);
-                      handleChange(newValue);
-                    }}
-                  >
-                    <CloseCircleFilled />
-                  </div>
+                  {/*<div*/}
+                  {/*  className={styles.delete}*/}
+                  {/*  onClick={e => {*/}
+                  {/*    e.stopPropagation();*/}
+                  {/*  }}*/}
+                  {/*>*/}
+                  {/*  <CloseCircleFilled />*/}
+                  {/*</div>*/}
                 </div>
               </Col>
             ))}
@@ -207,22 +152,14 @@ const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
     let show = false;
     if (agentConfig.debug) {
       // 调试模式下，无论文件上传怎么配置，上传文件按钮都是在对话框里面
-      if (getTempAreaEnable(agentConfig) || getFileUploadEnable(agentConfig)) {
-        show = true;
-      }
-    } else if (getFileUploadEnable(agentConfig)) {
       show = true;
     }
     if (show) {
       return (
         <FileUploadBtn
-          agentConfig={agentConfig}
+          ref={fileUploadBtnRef}
           disabled={fileBtnDisabled}
-          value={value.fileList}
-          onChange={fileData => {
-            const newValue = _.cloneDeep(value);
-            newValue.fileList = fileData;
-            handleChange(newValue);
+          onSuccess={() => {
             senderRef.current?.focus();
           }}
         />

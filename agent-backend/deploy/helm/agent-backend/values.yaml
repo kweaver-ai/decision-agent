@@ -47,6 +47,29 @@ service:
   streamDiffFrequency: 5
   # 是否保留老的APP路径
   keep_legacy_app_path: true
+
+  # ========== 开发环境控制开关（生产环境建议设置为 false）==========
+  disablePmsCheck: false
+  disableBizDomainInit: false
+  useDefaultBizDomain: false
+  disableAuditInit: false
+  mockMqClient: false
+  mockSandboxPlatform: false
+  mockHydra: false
+  mockAuthz: false
+  mockBizDomain: false
+  # ========================================
+
+  # ========== Swagger 文档配置 ==========
+  enableSwagger: false
+  swaggerToken: ""
+  # ========================================
+
+  # ========== 日志和调试配置 ==========
+  logFile: "/app/agent-factory/log/agent-factory.log"
+  debug: false
+  debugHost: ""
+  # ========================================
   sessionAffinity: ClientIP
   sessionAffinityConfig:
     clientIP:
@@ -134,92 +157,127 @@ depServices:
     protocol: sasl_plaintext
     tenant: default
   modelFactory:
-    model_api_svc:
+    modelApiSvc:
       host: mf-model-api
       port: 9898
       protocol: http
-    model_manager_svc:
+    modelManagerSvc:
       host: mf-model-manager
       port: 9898
       protocol: http
     llm:
-      api_key: xxx
-  ecoIndex:
-    private_svc:
-      host: ecoindex-private
-      port: 32130
-      protocol: http
-  datahubcentral:
-    private_svc:
-      host: datahubcentral-private
-      port: 9002
-      protocol: http
+      apiKey: xxx
   authorization:
-    private_svc:
+    privateSvc:
       host: authorization-private
       port: 30920
       protocol: http
-    public_svc:
+    publicSvc:
       host: authorization-public
       port: 30920
       protocol: http
-  agentFactory:
-    private_svc:
-      host: agent-factory
-      port: 13020
-      protocol: http
   bizDomain:
-    private_svc:
+    privateSvc:
       host: business-system-service
       port: 80
       protocol: http
+    publicSvc:
+      host: business-system-service
+      port: 80
+      protocol: http
+  # ========== 依赖服务配置 ==========
+  rbac:
+    host: kg-user-rbac
+    port: 6900
+  intelliQa:
+    host: intelli-qa
+    port: 8887
+  builder:
+    host: kg-builder
+    port: 6475
+  auth:
+    host: kg-data-auth
+    port: 7000
+  # ========================================
+
+  agentFactory:
+    privateSvc:
+      host: localhost
+      port: 13020
+      protocol: http
   # APP 特有服务
   agentExecutor:
-    public_svc:
-      host: agent-executor-public
+    privateSvc:
+      host: localhost
       port: 30778
       protocol: http
-    private_svc:
-      host: agent-executor
-      port: 30778
-      protocol: http
-    use_v2: true
+    useV2: true
   efast:
-    private_svc:
+    privateSvc:
       host: efast-private
       port: 9123
       protocol: http
-    public_svc:
+    publicSvc:
       host: efast-public
       port: 9123
       protocol: http
   docset:
-    public_svc:
+    publicSvc:
       host: docset-public
       port: 32596
       protocol: http
-    private_svc:
+    privateSvc:
       host: docset-private
       port: 32597
       protocol: http
   ecoconfig:
-    private_svc:
+    privateSvc:
       host: ecoconfig-private
       port: 32128
       protocol: http
-    public_svc:
+    publicSvc:
       host: ecoconfig-public
       port: 32127
       protocol: http
   uniquery:
-    public_svc:
+    publicSvc:
       host: mdl-uniquery-svc
       port: 13011
       protocol: http
-    private_svc:
+    privateSvc:
       host: mdl-uniquery-svc
       port: 13011
       protocol: http
+  # ========== Sandbox Platform 配置 ==========
+  sandboxPlatform:
+    enable: true              # 是否启用沙箱功能
+    publicSvc:
+      host: sandbox-control-plane
+      port: 8000
+      protocol: http
+    privateSvc:
+      host: sandbox-control-plane
+      port: 8000
+      protocol: http
+    defaultTtl: 3600         # 默认 Session TTL（秒），最大 3600
+    maxRetries: 10           # 等待 Session 就绪的最大重试次数
+    retryInterval: "500ms"   # 重试间隔
+    defaultTemplateId: "python-basic"  # 默认模板 ID
+    defaultCpu: "1"          # 默认 CPU 核心数
+    defaultMemory: "512Mi"   # 默认内存
+    defaultDisk: "1Gi"       # 默认磁盘
+    defaultTimeout: 300      # 默认超时时间（秒）
+    fileUploadConfig:
+      maxFileSize: 10        # 最大文件大小（数值）
+      maxFileSizeUnit: "MB"  # 单位：KB/MB/GB
+      maxFileCount: 10       # 最大文件数量
+      allowedFileTypes:      # 允许的文件类型
+        - ".txt"
+        - ".py"
+        - ".js"
+        - ".json"
+        - ".csv"
+        - ".md"
   # ========== LLM/Embedding 外部服务 (Executor/Memory共用) ==========
   llm_ad:
     embeddingUrl: ""

@@ -6,10 +6,10 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/rdto/agent_permission/cpmsreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/rdto/agent_permission/cpmsresp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/pkg/errors"
 )
@@ -18,7 +18,7 @@ import (
 func (svc *permissionSvc) CheckUsePermission(ctx context.Context, req *cpmsreq.CheckAgentRunReq) (resp *cpmsresp.CheckRunResp, err error) {
 	resp = &cpmsresp.CheckRunResp{}
 
-	if common.IsDisablePmsCheck() {
+	if global.GConfig.DisablePmsCheck {
 		resp.IsAllowed = true
 		return
 	}

@@ -111,7 +111,9 @@ async def retrieval_memory(request: Request, retrieval_request: RetrievalMemoryR
     )
 
     # 转换结果格式
-    memory_list = [_convert_to_memory_response(item) for item in results["results"]]
+    memory_list = [
+        _convert_to_memory_response(item) for item in results.get("results", results)
+    ]
     logger.infof(
         "Memories retrievaled successfully, count=%s, user_id=%s",
         len(memory_list),
@@ -147,10 +149,10 @@ async def get_all_memories(request: Request, params: GetAllMemoriesRequest = Dep
     )
     logger.info(
         "All memories retrieved successfully",
-        count=len(results["results"]),
+        count=len(results.get("results", results)),
         extra=results,
     )
-    return {"result": results["results"], "total": len(results["results"])}
+    return results
 
 
 @external_router.put("/memory/{memory_id}")

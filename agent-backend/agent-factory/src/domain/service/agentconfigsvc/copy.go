@@ -2,13 +2,10 @@ package v3agentconfigsvc
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/daconstant"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/daenum"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/p2e/daconfp2e"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/types/dto/daconfigdto/dsdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/bizdomainhttp/bizdomainhttpreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/auditlogdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
@@ -68,13 +65,6 @@ func (s *dataAgentConfigSvc) Copy(ctx context.Context, agentID string, req *agen
 	err = s.agentConfRepo.Create(ctx, tx, newID, newPo)
 	if err != nil {
 		err = errors.Wrapf(err, "保存新Agent失败")
-		return
-	}
-
-	// 7. 处理datasource
-	err = s.handleDatasourceForCopy(ctx, tx, newPo, newID)
-	if err != nil {
-		err = errors.Wrapf(err, "处理datasource失败")
 		return
 	}
 
@@ -205,30 +195,6 @@ func (s *dataAgentConfigSvc) copyAgentPo(ctx context.Context, newPo, sourcePo *d
 
 	// 设置创建类型为复制
 	newPo.CreatedType = daenum.AgentCreatedTypeCopy
-
-	return
-}
-
-func (s *dataAgentConfigSvc) handleDatasourceForCopy(ctx context.Context, tx *sql.Tx, newPo *dapo.DataAgentPo, agentID string) (err error) {
-	// 1. 获取新agent的datasetID
-	// p2e
-	eoSimple, err := daconfp2e.DataAgentSimple(ctx, newPo)
-	if err != nil {
-		return
-	}
-
-	datasetID := eoSimple.Config.GetBuiltInDocDatasetId()
-	if datasetID == "" {
-		return
-	}
-
-	// 2. 创建assoc
-	dsDto := dsdto.NewDsIndexUniqDto(agentID, daconstant.AgentVersionUnpublished)
-
-	err = s.dsSvc.CreateAssocOnly(ctx, tx, dsDto, datasetID)
-	if err != nil {
-		return
-	}
 
 	return
 }

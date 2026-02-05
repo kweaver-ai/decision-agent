@@ -9,7 +9,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 )
 
-//go:generate mockgen -source=./pubed_agent.go -destination ./idbaccessmock/pubed_agent.go -package idbaccessmock
+//go:generate mockgen -package idbaccessmock -destination ./idbaccessmock/pubed_agent.go github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess IPubedAgentRepo
 type IPubedAgentRepo interface {
 	IDBAccBaseRepo
 

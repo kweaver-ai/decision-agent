@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/bizdomainhttp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/ibizdomainacc"
 	"github.com/kweaver-ai/kweaver-go-lib/logger"
 )
@@ -15,9 +16,15 @@ var (
 
 func NewBizDomainHttpAcc() ibizdomainacc.BizDomainHttpAcc {
 	bizDomainOnce.Do(func() {
-		bizDomainImpl = bizdomainhttp.NewBizDomainHttpAcc(
-			logger.GetLogger(),
-		)
+		if global.GConfig.MockBizDomain {
+			bizDomainImpl = bizdomainhttp.NewMockBizDomainHttpAcc(
+				logger.GetLogger(),
+			)
+		} else {
+			bizDomainImpl = bizdomainhttp.NewBizDomainHttpAcc(
+				logger.GetLogger(),
+			)
+		}
 	})
 
 	return bizDomainImpl

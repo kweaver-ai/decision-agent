@@ -41,7 +41,7 @@ func (s *httpServer) runPubRouter(engine *gin.Engine, basePath string) {
 		// 新增 Hydra 接口鉴权，开发环境可以临时屏蔽
 		capimiddleware.VerifyOAuthMiddleWare(),
 		// 注入业务域id
-		capimiddleware.HandleBizDomain(true),
+		capimiddleware.HandleBizDomain(global.GConfig.UseDefaultBizDomain),
 
 		// 注入OpenTelemetry中间件
 		otelgin.Middleware(global.GConfig.OtelConfig.ServiceName),
@@ -51,7 +51,6 @@ func (s *httpServer) runPubRouter(engine *gin.Engine, basePath string) {
 
 	s.agentHandler.RegPubRouter(router)
 	s.conversationHandler.RegPubRouter(router)
-	s.tempareaHandler.RegPubRouter(router)
 	s.observabilityHandler.RegPubRouter(router)
 	s.sessionHandler.RegPubRouter(router)
 }

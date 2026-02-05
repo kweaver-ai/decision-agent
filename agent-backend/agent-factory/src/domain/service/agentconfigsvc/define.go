@@ -25,8 +25,6 @@ type dataAgentConfigSvc struct {
 
 	umHttp iusermanagementacc.UserMgnt
 
-	dsSvc iv3portdriver.IDsSvc
-
 	productRepo idbaccess.IProductRepo
 
 	spaceResourceRepo idbaccess.ISpaceResourceRepo
@@ -58,7 +56,6 @@ type NewDaConfSvcDto struct {
 	PubedAgentRepo    idbaccess.IPubedAgentRepo
 	Logger            icmp.Logger
 	OpenAICmp         icmp.IOpenAI
-	DsIndexSvc        iv3portdriver.IDsSvc
 	UmHttp            iusermanagementacc.UserMgnt
 	ProductRepo       idbaccess.IProductRepo
 	SpaceResourceRepo idbaccess.ISpaceResourceRepo
@@ -87,7 +84,6 @@ func NewDataAgentConfigService(dto *NewDaConfSvcDto) iv3portdriver.IDataAgentCon
 		pubedAgentRepo:    dto.PubedAgentRepo,
 		logger:            dto.Logger,
 		OpenAICmp:         dto.OpenAICmp,
-		dsSvc:             dto.DsIndexSvc,
 		umHttp:            dto.UmHttp,
 		productRepo:       dto.ProductRepo,
 		spaceResourceRepo: dto.SpaceResourceRepo,

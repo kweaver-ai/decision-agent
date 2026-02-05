@@ -6,7 +6,6 @@ export type SuggestionItems = SuggestionProps['items'];
 export type AiInputMode = 'normal';
 
 export type AiInputValue = {
-  fileList: FileItem[];
   mode: AiInputMode; // 模式
   inputValue: string;
   deepThink: boolean;

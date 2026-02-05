@@ -1,5 +1,25 @@
 package main
 
+// @title           Agent Factory API
+// @version         1.0
+// @description     Agent Factory 智能体工厂 API 文档
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name   API Support
+// @contact.url    http://www.swagger.io/support
+// @contact.email  support@swagger.io
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @BasePath  /api/agent-factory
+// @host      localhost:30777
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Bearer {token} - 需要有效的 OAuth 访问令牌
+
 import (
 	"context"
 	"log"

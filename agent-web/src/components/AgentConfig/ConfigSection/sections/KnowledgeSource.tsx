@@ -792,7 +792,7 @@ const KnowledgeSource: React.FC<KnowledgeSourceProps> = () => {
   const renderKnowledgeNetworkExperimentalHeader = () => (
     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
       <Space>
-        <span>{intl.get('dataAgent.config.businessKnowledgeNetwork')}（试验版）</span>
+        <span>{intl.get('dataAgent.config.businessKnowledgeNetwork')}</span>
       </Space>
       {(!state.config?.data_source?.knowledge_network ||
         state.config?.data_source?.knowledge_network?.length === 0) && (
@@ -1113,126 +1113,126 @@ const KnowledgeSource: React.FC<KnowledgeSourceProps> = () => {
             setActiveKey(key);
           }}
         >
-          <Panel header={renderDocumentHeader()} key="documents" style={{ border: 'none' }}>
-            <List
-              size="small"
-              dataSource={documents}
-              renderItem={item => (
-                <List.Item
-                  style={{
-                    padding: '8px 0',
-                    border: 'none',
-                  }}
-                  actions={[
-                    <Button
-                      type="text"
-                      size="small"
-                      className="dip-c-subtext"
-                      disabled={!canEditDataSourceDoc}
-                      onClick={() => canEditDataSourceDoc && handleDeleteDocument(item.source)}
-                      icon={<DipIcon type="icon-dip-trash" />}
-                    />,
-                  ]}
-                >
-                  <div className="dip-flex-align-center dip-ml-24 dip-gap-8 dip-overflow-hidden">
-                    <FileTypeIcon name={item.name} size={item.type === 'file' ? undefined : -1} />
-                    <span title={item.path} className="dip-flex-item-full-width dip-ellipsis">
-                      {item.name}
-                    </span>
-                  </div>
-                </List.Item>
-              )}
-            />
-          </Panel>
+          {/*<Panel header={renderDocumentHeader()} key="documents" style={{ border: 'none' }}>*/}
+          {/*  <List*/}
+          {/*    size="small"*/}
+          {/*    dataSource={documents}*/}
+          {/*    renderItem={item => (*/}
+          {/*      <List.Item*/}
+          {/*        style={{*/}
+          {/*          padding: '8px 0',*/}
+          {/*          border: 'none',*/}
+          {/*        }}*/}
+          {/*        actions={[*/}
+          {/*          <Button*/}
+          {/*            type="text"*/}
+          {/*            size="small"*/}
+          {/*            className="dip-c-subtext"*/}
+          {/*            disabled={!canEditDataSourceDoc}*/}
+          {/*            onClick={() => canEditDataSourceDoc && handleDeleteDocument(item.source)}*/}
+          {/*            icon={<DipIcon type="icon-dip-trash" />}*/}
+          {/*          />,*/}
+          {/*        ]}*/}
+          {/*      >*/}
+          {/*        <div className="dip-flex-align-center dip-ml-24 dip-gap-8 dip-overflow-hidden">*/}
+          {/*          <FileTypeIcon name={item.name} size={item.type === 'file' ? undefined : -1} />*/}
+          {/*          <span title={item.path} className="dip-flex-item-full-width dip-ellipsis">*/}
+          {/*            {item.name}*/}
+          {/*          </span>*/}
+          {/*        </div>*/}
+          {/*      </List.Item>*/}
+          {/*    )}*/}
+          {/*  />*/}
+          {/*</Panel>*/}
 
-          <Panel header={renderKnowledgeNetworkHeader()} key="knowledgeNetwork" style={{ border: 'none' }}>
-            <List
-              size="small"
-              dataSource={state.config?.data_source?.kg || []}
-              renderItem={(item: any) => {
-                const name1 = networkName[item.kg_id] || '';
-                const name2 = ((treeData.flatMap(node => node.children || []) as any).find(
-                  child => child.key === item.kg_id
-                )?.title || '') as string;
-                const name = name1 || name2;
-                const checkedKeys = Object.entries(item?.field_properties).flatMap(([entityName, properties]) =>
-                  properties.map(property => `${entityName}-${property}`)
-                );
-                const isInvalid = invalidKgIds.current.includes(item.kg_id);
+          {/*<Panel header={renderKnowledgeNetworkHeader()} key="knowledgeNetwork" style={{ border: 'none' }}>*/}
+          {/*  <List*/}
+          {/*    size="small"*/}
+          {/*    dataSource={state.config?.data_source?.kg || []}*/}
+          {/*    renderItem={(item: any) => {*/}
+          {/*      const name1 = networkName[item.kg_id] || '';*/}
+          {/*      const name2 = ((treeData.flatMap(node => node.children || []) as any).find(*/}
+          {/*        child => child.key === item.kg_id*/}
+          {/*      )?.title || '') as string;*/}
+          {/*      const name = name1 || name2;*/}
+          {/*      const checkedKeys = Object.entries(item?.field_properties).flatMap(([entityName, properties]) =>*/}
+          {/*        properties.map(property => `${entityName}-${property}`)*/}
+          {/*      );*/}
+          {/*      const isInvalid = invalidKgIds.current.includes(item.kg_id);*/}
 
-                return (
-                  <List.Item
-                    key={item.kg_id}
-                    style={{
-                      padding: '8px 0',
-                      border: 'none',
-                    }}
-                    actions={[
-                      // 无效时，屏蔽此按钮
-                      isInvalid ? null : (
-                        <Button
-                          type="text"
-                          icon={<EditOutlined />}
-                          size="small"
-                          disabled={!canEditDataSourceKg}
-                          onClick={() => {
-                            if (canEditDataSourceKg) {
-                              setSelectedNetworkId(item.kg_id);
-                              setCheckedKeys(checkedKeys);
-                              setKnowledgeNetworkPopoverVisible(true);
-                            }
-                          }}
-                          style={{ color: canEditDataSourceKg ? '#8c8c8c' : '#d9d9d9' }}
-                        />
-                      ),
-                      // 无效时，屏蔽此按钮
-                      isInvalid ? null : (
-                        <Button
-                          type="text"
-                          icon={<ControlOutlined />}
-                          size="small"
-                          disabled={!canEditDataSourceKg}
-                          onClick={() => {
-                            if (canEditDataSourceKg) {
-                              setSelectedNetworkId(item.kg_id);
-                              setResultRangeOptions(item?.fields);
-                              setKnowledgeNetworkResultRangeVisible(true);
-                            }
-                          }}
-                          style={{ color: canEditDataSourceKg ? '#8c8c8c' : '#d9d9d9' }}
-                        />
-                      ),
-                      <Button
-                        type="text"
-                        icon={<DipIcon type="icon-dip-trash" />}
-                        size="small"
-                        disabled={!canEditDataSourceKg}
-                        onClick={() => {
-                          canEditDataSourceKg && handleDeleteKnowledgeNetwork(item.kg_id);
-                        }}
-                        className="dip-c-subtext"
-                      />,
-                    ].filter(Boolean)}
-                  >
-                    <div className="dip-flex-align-center dip-ml-24 dip-gap-8 dip-overflow-hidden">
-                      <NetworkIcon
-                        style={{ color: '#1890ff', width: 16, height: 16 }}
-                        className="dip-flex dip-flex-shrink-0"
-                      />
-                      <span
-                        title={name}
-                        className={classNames('dip-ellipsis', {
-                          'dip-text-color-error': isInvalid,
-                        })}
-                      >
-                        {isInvalid ? '---' : name.split('/')[1] || name}
-                      </span>
-                    </div>
-                  </List.Item>
-                );
-              }}
-            />
-          </Panel>
+          {/*      return (*/}
+          {/*        <List.Item*/}
+          {/*          key={item.kg_id}*/}
+          {/*          style={{*/}
+          {/*            padding: '8px 0',*/}
+          {/*            border: 'none',*/}
+          {/*          }}*/}
+          {/*          actions={[*/}
+          {/*            // 无效时，屏蔽此按钮*/}
+          {/*            isInvalid ? null : (*/}
+          {/*              <Button*/}
+          {/*                type="text"*/}
+          {/*                icon={<EditOutlined />}*/}
+          {/*                size="small"*/}
+          {/*                disabled={!canEditDataSourceKg}*/}
+          {/*                onClick={() => {*/}
+          {/*                  if (canEditDataSourceKg) {*/}
+          {/*                    setSelectedNetworkId(item.kg_id);*/}
+          {/*                    setCheckedKeys(checkedKeys);*/}
+          {/*                    setKnowledgeNetworkPopoverVisible(true);*/}
+          {/*                  }*/}
+          {/*                }}*/}
+          {/*                style={{ color: canEditDataSourceKg ? '#8c8c8c' : '#d9d9d9' }}*/}
+          {/*              />*/}
+          {/*            ),*/}
+          {/*            // 无效时，屏蔽此按钮*/}
+          {/*            isInvalid ? null : (*/}
+          {/*              <Button*/}
+          {/*                type="text"*/}
+          {/*                icon={<ControlOutlined />}*/}
+          {/*                size="small"*/}
+          {/*                disabled={!canEditDataSourceKg}*/}
+          {/*                onClick={() => {*/}
+          {/*                  if (canEditDataSourceKg) {*/}
+          {/*                    setSelectedNetworkId(item.kg_id);*/}
+          {/*                    setResultRangeOptions(item?.fields);*/}
+          {/*                    setKnowledgeNetworkResultRangeVisible(true);*/}
+          {/*                  }*/}
+          {/*                }}*/}
+          {/*                style={{ color: canEditDataSourceKg ? '#8c8c8c' : '#d9d9d9' }}*/}
+          {/*              />*/}
+          {/*            ),*/}
+          {/*            <Button*/}
+          {/*              type="text"*/}
+          {/*              icon={<DipIcon type="icon-dip-trash" />}*/}
+          {/*              size="small"*/}
+          {/*              disabled={!canEditDataSourceKg}*/}
+          {/*              onClick={() => {*/}
+          {/*                canEditDataSourceKg && handleDeleteKnowledgeNetwork(item.kg_id);*/}
+          {/*              }}*/}
+          {/*              className="dip-c-subtext"*/}
+          {/*            />,*/}
+          {/*          ].filter(Boolean)}*/}
+          {/*        >*/}
+          {/*          <div className="dip-flex-align-center dip-ml-24 dip-gap-8 dip-overflow-hidden">*/}
+          {/*            <NetworkIcon*/}
+          {/*              style={{ color: '#1890ff', width: 16, height: 16 }}*/}
+          {/*              className="dip-flex dip-flex-shrink-0"*/}
+          {/*            />*/}
+          {/*            <span*/}
+          {/*              title={name}*/}
+          {/*              className={classNames('dip-ellipsis', {*/}
+          {/*                'dip-text-color-error': isInvalid,*/}
+          {/*              })}*/}
+          {/*            >*/}
+          {/*              {isInvalid ? '---' : name.split('/')[1] || name}*/}
+          {/*            </span>*/}
+          {/*          </div>*/}
+          {/*        </List.Item>*/}
+          {/*      );*/}
+          {/*    }}*/}
+          {/*  />*/}
+          {/*</Panel>*/}
 
           <Panel
             header={renderKnowledgeNetworkExperimentalHeader()}

@@ -223,27 +223,3 @@ if __name__ == "__main__":
     dump = agent_input.model_dump()
     print(dump)
 
-# jctd
-NL2NGQL_PROMPTS = {
-    "lf_generation_prompt": {
-        "system_message": "你是一个精通知识图谱schema和nebula查询语句的专家,能够根据用户问题、图谱本体信息,总结出来一种固定的Logic Form的json报文.\n用户查询问题为企业员工场景的一个知识网络.接下来给你10个一步步思考的问题示例：\n{{cot_list}}\n",
-        "human_message": "我有这样一个问题《{{query}}》，其相关的schema信息可以参考：《{{schema_linking_res}}》，若其中的属性值与问题不相干的，可以忽略。按照上述我给出的示例进行分析并返回Logic Form的json报文,其中包含用户问题涉及到的子图信息(related_subgraph),\n筛选条件(filtered_condition),返回目标(return_target)及其他限制(other_limits)这四个部分.请注意在用户问题涉及到最值问题时,尤其涉及到date,datetime,int,bool类型的属性,请你仔细分析图谱schema,并给出筛选条件.\n注意:\n1.当出现需要同时存在的两条具有相同边但实体点不同的路径时，注意子图信息(related_subgraph)分为两条路径的写法。\n2.当schema中properties的values中的属性值与query中不一致，但语义相似时，filter_condition中的属性值必须与schema中values中的值一致。\n3.碰到问题中的属性值单位与图谱中不一致，必须将Logic Form中的属性值换算为与图谱中统一单位的数值。换算结果如下：\n{{unit_tr_str}}\n生成Logic Form时必须使用换算后的数值。\n不需要返回思考过程，直接返回你总结的Logic Form。返回格式如下：\nFinal Answer:总结的Logic Form json\n注意，不要重复输出多个以上格式的内容，只需要输出一遍",
-    },
-    "sk_generation_prompt": {},
-    "reflexion_prompt": {
-        # 'system_message': '你是一个nebula查询语句的评论员，你的任务是判断nebula查询语句哪个筛选条件可以删除，或者哪条路径可以删除，并进行修改。',
-        # 'human_message': '用户问题：{{query}}\nnebula查询语句：{{ngql}}\n图谱相关信息：{schema_linking_res}\n以上nebula查询语句执行失败，或未得到答案，请分析nebula查询语句中的路径和筛选条件，并返回修改后正确的查询语句。\n请按以下步骤进行：\n1.分析nebula查询语句中的错误\n2.分析where开头的筛选条件，修改或者删除一个与用户问题相关度低的条件\n请注意查询语句使用Nebula3的格式要求，表示实体属性时需要带上实体类名，如实体person的属性name，表示为v.person.name\n返回格式如下：\nThought：你的分析过程\nAnswer：正确的nebula查询语句'
-    },
-}
-# as
-NL2NGQL_PROMPTS_AS = {
-    "lf_generation_prompt": {
-        "system_message": "你是一个精通知识图谱schema和nebula查询语句的专家,能够根据用户问题、图谱本体信息,总结出来一种固定的Logic Form的json报文.\n用户查询问题为企业员工场景的一个知识网络.接下来给你10个一步步思考的问题示例：\n{{cot_list}}\n",
-        "human_message": "我有这样一个问题《{{query}}》，其相关的schema信息可以参考：《{{schema_linking_res}}》，若其中的属性值与问题不相干的，可以忽略。按照上述我给出的示例进行分析并返回Logic Form的json报文,其中包含用户问题涉及到的子图信息(related_subgraph),\n筛选条件(filtered_condition),返回目标(return_target)及其他限制(other_limits)这四个部分.请注意在用户问题涉及到最值问题时,尤其涉及到date,datetime,int,bool类型的属性,请你仔细分析图谱schema,并给出筛选条件.\n注意:\n1.当出现需要同时存在的两条具有相同边但实体点不同的路径时，注意子图信息(related_subgraph)分为两条路径的写法。\n2.当schema中properties的values中的属性值与query中不一致，但语义相似时，filter_condition中的属性值必须与schema中values中的值一致。\n3.碰到问题中的属性值单位与图谱中不一致，必须将Logic Form中的属性值换算为与图谱中统一单位的数值。换算结果如下：\n{{unit_tr_str}}\n生成Logic Form时必须使用换算后的数值。\n这是一些先验知识：AB代表上层组织为AnyBackup，AR代表上层组织为AnyRobot，AD代表上层组织为AnyDATA，AS代表上层组织为AnyShare，AF代表上层组织为AnyFabric。\n你拥有足够的思考时间,并请你一步步认真仔细地回答,你的回答将直接影响我的职业生涯.不需要返回思考过程，直接返回你总结的Logic Form。返回格式如下：\nFinal Answer:总结的Logic Form json\n注意，不要重复输出多个以上格式的内容，只需要输出一遍",
-    },
-    "sk_generation_prompt": {},
-    "reflexion_prompt": {
-        "system_message": "你是一个nebula查询语句的评论员，你的任务是判断nebula查询语句哪个筛选条件可以删除，或者哪条路径可以删除，并进行修改。",
-        "human_message": "用户问题：{{query}}\nnebula查询语句：{{ngql}}\n图谱相关信息：{schema_linking_res}\n以上nebula查询语句执行失败，或未得到答案，请分析nebula查询语句中的路径和筛选条件，并返回修改后正确的查询语句。\n请按以下步骤进行：\n1.分析nebula查询语句中的错误\n2.分析where开头的筛选条件，修改或者删除一个与用户问题相关度低的条件\n请注意查询语句使用Nebula3的格式要求，表示实体属性时需要带上实体类名，如实体person的属性name，表示为v.person.name\n这是一些先验知识：AB代表上层组织为AnyBackup，AR代表上层组织为AnyRobot，AD代表上层组织为AnyDATA，AS代表上层组织为AnyShare，AF代表上层组织为AnyFabric。\n不需要返回思考过程，直接返回正确的nebula查询语句。返回格式如下：\nAnswer:正确的nebula查询语句",
-    },
-}

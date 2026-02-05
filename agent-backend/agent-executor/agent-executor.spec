@@ -10,11 +10,8 @@ project_root = os.path.abspath('.')
 # Data files to include
 datas = [
     ("data_migrations", "data_migrations"),
-    ("last_commit_info.txt", "."),  # 包含 commit info 文件
     # 包含配置文件和数据文件
-    ("app/logic/retriever/AS_doc/config/stop_words.txt", "app/logic/retriever/AS_doc/config"),
     ("app/resources/data/sensitive_words.txt", "app/resources/data"),
-    ("app/resources/executors/graph_rag_block/stop_words.txt", "app/resources/executors/graph_rag_block"),
     # Dolphin 包已更新，不再需要单独的 installed 文件
     # (".venv/lib64/python3.10/site-packages/DolphinLanguageSDK/skill/installed", "DolphinLanguageSDK/skill/installed")
 ]

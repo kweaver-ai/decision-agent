@@ -87,12 +87,6 @@ class AgentOperatorIntegrationService:
         failure_threshold=GetFailureThreshold(), recovery_timeout=GetRecoveryTimeout()
     )
     async def get_tool_info(self, box_id, tool_id) -> dict:
-        # from myTest.tools.tools import tool_box_info  # TODO: debug
-        # for box in tool_box_info:
-        #     if box["box_id"] == box_id:
-        #         return box
-        # return {}
-
         # if Config.LOCAL_DEV_AARON:
         #     return self.get_mock_tool_info()
 

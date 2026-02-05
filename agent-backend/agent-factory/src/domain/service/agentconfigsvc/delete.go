@@ -3,10 +3,7 @@ package v3agentconfigsvc
 import (
 	"context"
 
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/daconstant"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/p2e/daconfp2e"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/types/dto/daconfigdto/dsdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/bizdomainhttp/bizdomainhttpreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/auditlogdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
@@ -77,19 +74,6 @@ func (s *dataAgentConfigSvc) Delete(ctx context.Context, id, uid string, isPriva
 
 	// 5. 调用repo层删除数据
 	err = s.agentConfRepo.Delete(ctx, tx, id)
-	if err != nil {
-		return
-	}
-
-	// 6. 处理数据源
-	oldEoSimple, err := daconfp2e.DataAgentSimple(ctx, po)
-	if err != nil {
-		return
-	}
-
-	dsDto := dsdto.NewDsComDto(id, daconstant.AgentVersionUnpublished, oldEoSimple.Config)
-
-	err = s.dsSvc.Delete(ctx, tx, dsDto)
 	if err != nil {
 		return
 	}

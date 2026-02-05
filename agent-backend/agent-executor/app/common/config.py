@@ -52,30 +52,3 @@ Config = ConfigClassV2()
 # 4. 初始化BuiltinIds配置
 # 创建内置ID配置实例
 BuiltinIds = BuiltinIdsConfig()
-
-
-# 5. 调试模式下的一些处理 (这些可能是不需要的 先注释掉 2025年10月23日16:56:46）
-# if Config.is_debug_mode() :
-#     # 更新内置ID
-#     from app.driven.dip.agent_operator_integration_service import (
-#         agent_operator_integration_service,
-#     )
-#
-#     async def update_builtin_ids():
-#
-#         tool_box_list = await agent_operator_integration_service.get_tool_box_list()
-#
-#         for tool_box in tool_box_list["data"]:
-#
-#             BuiltinIds.set_tool_box_id(tool_box["box_name"], tool_box["box_id"])
-#
-#             tool_list = await agent_operator_integration_service.get_tool_list(
-#                 tool_box["box_id"]
-#             )
-#
-#             for tool in tool_list["tools"]:
-#                 BuiltinIds.set_tool_id(tool["name"], tool["tool_id"])
-#
-#     loop = asyncio.get_event_loop()
-#     loop.run_until_complete(update_builtin_ids())
-#

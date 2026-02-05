@@ -5,15 +5,15 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdapmsenum"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/pkg/errors"
 )
 
 func (svc *permissionSvc) GetSingleMgmtPermission(ctx context.Context, resourceType cdaenum.ResourceType, operator cdapmsenum.Operator) (allAllowed bool, err error) {
 	// 1. 检查是否禁用权限检查
-	if common.IsDisablePmsCheck() {
+	if global.GConfig.DisablePmsCheck {
 		allAllowed = true
 		return
 	}

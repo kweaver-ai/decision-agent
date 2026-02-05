@@ -1,4 +1,44 @@
 # 版本 changelog 说明
+## 0.3.0
+
+### 功能与改进
+
+- 新增沙盒平台集成，支持代码执行和文件管理
+- 新增 PyCodeGenerate Agent 及沙盒执行工具
+- 为 agent-factory 添加 Swagger 文档支持
+- 调试接口添加 SelectedFiles 字段
+- Helm Chart 添加开发控制开关和新配置选项
+- 更新 kweaver-dolphin 依赖到 v0.2.4
+
+### Bug 修复
+
+- 修复用户跳过中断工具步骤时执行状态显示错误
+- 修复中断时 JSON 值类型渲染错误
+- 修复调试模式文件显示问题
+- 修复调试模式文件参数传递方式
+
+### 重构与清理
+
+- 移除 EcoIndex 和 DataHubCentral 配置
+- 移除废弃的 doc_qa 和 graph_qa 工具
+- 从 agent-executor 移除 pandas 依赖
+- 移除废弃的服务类和提示工具
+- 移除未使用的数据访问对象和旧 dataset 表
+- 简化配置并移除未使用的停用词文件配置
+- 隐藏 Agent 轨迹分析模块
+- 前端移除批量检查索引状态接口调用
+
+### 测试
+
+- 为 agent-memory 模块添加全面的单元测试
+- 添加配置加载器和工具函数的单元测试
+
+### 前端 (agent-web)
+
+- 支持中断工具执行的跳过状态(skipped)显示
+- Agent 对话适配沙盒文件上传
+- 从 Agent 配置界面移除文件相关配置
+- 从调试模式移除文件删除和预览功能
 
 ## 0.2.3
 

@@ -7,15 +7,37 @@ import (
 )
 
 func TestParseHost(t *testing.T) {
-	// 测试解析IP地址
-	ip := "192.168.1.1"
-	assert.Equal(t, ip, ParseHost(ip))
+	tests := []struct {
+		name   string
+		host   string
+		wanted string
+	}{
+		{
+			name:   "带端口的IP",
+			host:   "192.168.1.1:8080",
+			wanted: "[192.168.1.1:8080]",
+		},
+		{
+			name:   "IPv4地址",
+			host:   "192.168.1.1",
+			wanted: "192.168.1.1",
+		},
+		{
+			name:   "域名",
+			host:   "example.com",
+			wanted: "example.com",
+		},
+		{
+			name:   "localhost",
+			host:   "localhost:3000",
+			wanted: "[localhost:3000]",
+		},
+	}
 
-	// 测试解析域名
-	host := "example.com"
-	assert.Equal(t, host, ParseHost(host))
-
-	// 测试解析IPv6地址
-	ipv6 := "2001:0db8:85a3:0000:0000:8a2e:0370:7334"
-	assert.Equal(t, "["+ipv6+"]", ParseHost(ipv6))
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := ParseHost(tt.host)
+			assert.Equal(t, tt.wanted, result)
+		})
+	}
 }

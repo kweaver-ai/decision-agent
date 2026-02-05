@@ -50,14 +50,6 @@ func (svc *conversationSvc) Update(ctx context.Context, req conversationreq.Upda
 		o11y.Error(ctx, fmt.Sprintf("[Update] update conversation error, id: %s, err: %v", req.ID, err))
 		return errors.Wrapf(err, "[Update] update conversation error, id: %s, err: %v", req.ID, err)
 	}
-	// 3. 更新临时区域
-	if req.TempareaId != "" {
-		err = svc.tempAreaRepo.Bind(ctx, req.TempareaId, req.ID)
-		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[Update] update conversation title failed, id: %s, err: %v", req.ID, err))
-			return errors.Wrapf(err, "[Update] update conversation title failed, id: %s, err: %v", req.ID, err)
-		}
-	}
 
 	return
 }

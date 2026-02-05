@@ -1,17 +1,14 @@
 package dolphintpleo
 
 import (
-	"fmt"
-
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 )
 
 type OtherTplStruct struct {
-	MemoryRetrieve  *MemoryRetrieveContent  `json:"memory_retrieve"`
-	TempFileProcess *TempFileProcessContent `json:"temp_file_process"`
-	DocRetrieve     *DocRetrieveContent     `json:"doc_retrieve"`
-	GraphRetrieve   *GraphRetrieveContent   `json:"graph_retrieve"`
+	MemoryRetrieve *MemoryRetrieveContent `json:"memory_retrieve"`
+	DocRetrieve    *DocRetrieveContent    `json:"doc_retrieve"`
+	GraphRetrieve  *GraphRetrieveContent  `json:"graph_retrieve"`
 }
 
 type ContextOrganizeContent struct {
@@ -37,7 +34,6 @@ func (c *ContextOrganizeContent) LoadFromConfig(config *daconfvalobj.Config) {
 	referenceEnable := false
 
 	// 1. 根据config中的pre_dolphin和post_dolphin，判断一个dolphin tpl是否被用户禁用
-	isTempFileProcessDisabledFromConfig := config.IsOneDolphinTplDisabled(cdaenum.DolphinTplKeyTempFileProcess)
 	isDocRetrieveDisabledFromConfig := config.IsOneDolphinTplDisabled(cdaenum.DolphinTplKeyDocRetrieve)
 	isGraphRetrieveDisabledFromConfig := config.IsOneDolphinTplDisabled(cdaenum.DolphinTplKeyGraphRetrieve)
 
@@ -58,17 +54,6 @@ func (c *ContextOrganizeContent) LoadFromConfig(config *daconfvalobj.Config) {
     $reference + "业务知识网络召回的内容：" + $graph_retrieval_res['answer']['result'] + "\n" -> reference
 /end/
 `
-		referenceEnable = true
-	}
-
-	// 4. 如果配置了临时区文件处理数据源，并没有禁用临时区文件处理dolphin tpl，则添加临时区文件处理内容
-	tempFileProcess := c.OtherTplStruct.TempFileProcess
-	if tempFileProcess.IsEnable && !isTempFileProcessDisabledFromConfig {
-		c.TempZoneContent = fmt.Sprintf(`
-/if/ "answer" in $%s and $%s['answer']:
-    $reference + '用户上传的文件内容为: ' + $%s['answer'] + '\n' -> reference
-/end/
-`, tempFileProcess.TempZoneFieldName, tempFileProcess.TempZoneFieldName, tempFileProcess.TempZoneFieldName)
 		referenceEnable = true
 	}
 

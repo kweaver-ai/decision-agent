@@ -6,6 +6,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentconfigvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo"
+	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 )
 
 type Message struct {
@@ -27,8 +28,8 @@ func (m *Message) IsInterrupted() bool {
 
 //role:user
 type UserContent struct {
-	Text      string                 `json:"text"`
-	TempFiles []valueobject.TempFile `json:"temp_file"`
+	Text          string                  `json:"text"`
+	SelectedFiles []agentreq.SelectedFile `json:"selected_files"` // 用户选择的临时区文件
 }
 
 //role:assistant
@@ -40,7 +41,7 @@ type AssistantContent struct {
 type FinalAnswer struct {
 	Query                 string                  `json:"query"`
 	Answer                Answer                  `json:"answer"`
-	TempFiles             []valueobject.TempFile  `json:"temp_files"`
+	SelectedFiles         []agentreq.SelectedFile `json:"selected_files"` // 用户选择的临时区文件
 	Thinking              string                  `json:"thinking"`
 	SkillProcess          []*SkillsProcessItem    `json:"skill_process"`
 	AnswerTypeOther       interface{}             `json:"answer_type_other"`       // 当content_type为other时使用

@@ -7,8 +7,8 @@ import (
 
 // UpdateReq 表示更新产品的请求
 type UpdateReq struct {
-	Name    string `json:"name" binding:"required,max=50"` // 产品名称
-	Profile string `json:"profile" binding:"max=100"`      // 产品简介
+	Name    string `json:"name" binding:"required,max=50" example:"智能客服"`  // 产品名称
+	Profile string `json:"profile" binding:"max=100" example:"这是一个智能客服产品"` // 产品简介
 }
 
 func (p *UpdateReq) GetErrMsgMap() map[string]string {

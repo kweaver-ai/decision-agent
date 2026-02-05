@@ -16,19 +16,8 @@ import uvicorn
 
 server_instance = None
 
-# 删除config.json fastapi app使用环境变量的Config
-config_json_path = os.path.join(
-    os.path.dirname(__file__), "app", "common", "config.json"
-)
-if os.path.exists(config_json_path):
-    os.remove(config_json_path)
-
 from app.common.config import Config
 from app.router import app
-
-# ----->国际化
-# from app.common.international import compile_all
-# compile_all()
 
 
 def signal_handler(signum, frame):
@@ -45,11 +34,11 @@ def signal_handler(signum, frame):
 def asyncio_exception_handler(loop, context):
     """Asyncio 异常处理器 - 抑制 KeyboardInterrupt 警告"""
     exception = context.get("exception")
-    
+
     # 忽略 KeyboardInterrupt 和 CancelledError
     if isinstance(exception, (KeyboardInterrupt, asyncio.CancelledError)):
         return
-    
+
     # 其他异常正常处理
     if exception:
         print(f"Asyncio 异常: {exception}")
@@ -57,21 +46,23 @@ def asyncio_exception_handler(loop, context):
 
 class HealthCheckFilter(logging.Filter):
     """过滤健康检查端点的日志"""
+
     def filter(self, record: logging.LogRecord) -> bool:
         # 过滤掉健康检查端点的访问日志
         message = record.getMessage()
-        if '/health/alive' in message or '/health/ready' in message:
+        if "/health/alive" in message or "/health/ready" in message:
             return False
         return True
 
 
 class ASGIExceptionFilter(logging.Filter):
     """过滤 uvicorn 的 ASGI 异常日志（因为我们已经用 error_logger 处理了）"""
+
     def filter(self, record: logging.LogRecord) -> bool:
         message = record.getMessage()
         # 过滤掉 "Exception in ASGI application" 日志
         # 因为我们已经在 enhanced_unknown_handler 中用 error_logger 记录了详细信息
-        if 'Exception in ASGI application' in message:
+        if "Exception in ASGI application" in message:
             return False
         return True
 
@@ -89,9 +80,13 @@ def main():
 
     # 配置 Uvicorn 日志格式，添加时间信息
     log_config = uvicorn.config.LOGGING_CONFIG
-    log_config["formatters"]["default"]["fmt"] = "%(asctime)s - %(levelname)s - %(message)s"
+    log_config["formatters"]["default"]["fmt"] = (
+        "%(asctime)s - %(levelname)s - %(message)s"
+    )
     log_config["formatters"]["default"]["datefmt"] = "%Y-%m-%d %H:%M:%S"
-    log_config["formatters"]["access"]["fmt"] = '%(asctime)s - %(levelname)s - %(client_addr)s - "%(request_line)s" %(status_code)s'
+    log_config["formatters"]["access"]["fmt"] = (
+        '%(asctime)s - %(levelname)s - %(client_addr)s - "%(request_line)s" %(status_code)s'
+    )
     log_config["formatters"]["access"]["datefmt"] = "%Y-%m-%d %H:%M:%S"
 
     # 添加日志过滤器

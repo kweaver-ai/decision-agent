@@ -14,6 +14,7 @@ type Project struct {
 	LoggerLevel zapcore.Level `yaml:"logger_level"`
 	Debug       bool          `yaml:"debug" env:"DEBUG"`
 	DebugHost   string        `yaml:"debug_host"`
+	LogFile     string        `yaml:"log_file"`
 }
 
 func (p *Project) Check() (err error) {

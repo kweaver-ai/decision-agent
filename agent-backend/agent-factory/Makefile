@@ -36,6 +36,19 @@ goGenerate:
 goTest:
 	go test -v ./...
 
+# Swagger 文档生成
+gen-swag:
+	swag init -g main.go -o docs --parseDependency
+
+# 查看 Swagger 文档（需要先启动服务）
+view-swag:
+	@echo "Swagger UI: http://localhost:30777/swagger/index.html"
+
+# 清理并重新生成 Swagger
+clean-swag:
+	rm -rf docs
+	$(MAKE) gen-swag
+
 add:
 	goimports -w ./**/*.go
 	git add .
@@ -52,15 +65,15 @@ localRun:
 	export AD_STRATEGY_CENTER_AR_TRACE_DEBUG=true;\
 	export AD_STRATEGY_CENTER_LOCAL_DEV=true;\
 	export AGENT_FACTORY_AR_TRACE_DEBUG=true;\
-	export AGENT_FACTORY_CONFIG_PATH=./.local/conf/;\
+	export AGENT_FACTORY_CONFIG_PATH=./conf/;\
 	export AGENT_FACTORY_LOCAL_DEV=true;\
+	export AGENT_FACTORY_LOCAL_DEV_LOG_ROOT_DIR=./log/;\
 	export AGENT_FACTORY_LOCAL_DEV_AARON=true;\
 	export AGENT_FACTORY_SQL_PRINT=false;\
-	export STRATEGY_CENTER_CONFIG_PATH=./.local/conf/;\
+	export STRATEGY_CENTER_CONFIG_PATH=./conf/;\
 	export STRATEGY_CENTER_SQL_PRINT=false;\
 	export SERVICE_NAME=agent-factory;\
-	go build -o agent-factory ./main.go;\
-	./agent-factory
+	go run ./main.go
 
 killLocal:
 	lsof -i :13020 | awk 'NR!=1 {print $2}' | xargs kill -9

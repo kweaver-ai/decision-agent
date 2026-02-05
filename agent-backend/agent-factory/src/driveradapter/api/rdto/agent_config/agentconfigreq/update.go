@@ -51,7 +51,7 @@ func (p *UpdateReq) GetErrMsgMap() map[string]string {
 }
 
 func (p *UpdateReq) D2e() (eo *daconfeo.DataAgent, err error) {
-	// 1. 生成allowed_file_types和 set is_temp_zone_enabled
+	// 1. 生成allowed_file_types
 	err = HandleConfig(p.Config)
 	if err != nil {
 		err = errors.Wrap(err, "[UpdateReq]: HandleConfig failed")

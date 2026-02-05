@@ -11,7 +11,7 @@ import _ from 'lodash';
 import { nanoid } from 'nanoid';
 import type { AiInputRef, AiInputValue } from '../components/AiInput/interface';
 import ScrollBarContainer from '@/components/ScrollBarContainer';
-import { getAgentInputDisplayFields, getTempAreaEnable } from '../utils';
+import { getAgentInputDisplayFields } from '../utils';
 import DipIcon from '@/components/DipIcon';
 import DipButton from '@/components/DipButton';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -48,8 +48,6 @@ const DipChat = () => {
       agentInputParamForm,
       previewFile,
       tempFileList,
-      conversationItems,
-      activeConversationKey,
     },
     setDipChatStore,
     getDipChatStore,
@@ -357,7 +355,7 @@ const DipChat = () => {
                   debug,
                 }}
                 autoSize={{ minRows: 1, maxRows: 6 }}
-                tempFileList={tempFileList.filter(item => item.checked)}
+                tempFileList={tempFileList}
                 onPreviewFile={(file: FileItem) => {
                   setDipChatStore({
                     previewFile: {
@@ -463,20 +461,7 @@ const DipChat = () => {
   }
 
   const hiddenTempArea = () => {
-    const agentConfig = agentDetails.config;
-    const { data_source } = agentDetails?.config || {};
-    const knSpaceTreeDataSource = data_source?.kg ?? [];
-    const knExperimentalDataSource = data_source?.knowledge_network ?? [];
-    const docTreeDataSource = data_source?.doc ?? [];
-    const metricTreeDataSource = data_source?.metric ?? [];
-    const contentDataSource = docTreeDataSource.filter((item: any) => item.ds_id === '0'); // 内容数据库数据源
-    return (
-      !getTempAreaEnable(agentConfig) &&
-      knSpaceTreeDataSource.length === 0 &&
-      knExperimentalDataSource.length === 0 &&
-      metricTreeDataSource.length === 0 &&
-      contentDataSource.length === 0
-    );
+    return false;
   };
 
   return (
