@@ -38,17 +38,20 @@ func (sv *conversationSvc) Init(ctx context.Context, req conversationreq.InitReq
 		return rt, errors.Wrapf(err, "update conversation title failed")
 	}
 
-	// 确保 Sandbox Session 存在并就绪
-	sessionID := fmt.Sprintf("sess-%s", req.UserID)
-	sandboxSessionID, err := sv.ensureSandboxSession(ctx, sessionID, &req)
-	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[Init] ensure sandbox session failed: %v", err))
-		return rt, errors.Wrapf(err, "ensure sandbox session failed")
+	// 确保 Sandbox Session 存在并就绪（仅在启用沙箱时执行）
+	var sandboxSessionID string
+	if sv.sandboxPlatformConf.Enable {
+		sessionID := fmt.Sprintf("sess-%s", req.UserID)
+		var sandboxErr error
+		sandboxSessionID, sandboxErr = sv.ensureSandboxSession(ctx, sessionID, &req)
+		if sandboxErr != nil {
+			o11y.Warn(ctx, fmt.Sprintf("[Init] ensure sandbox session failed: %v", sandboxErr))
+		}
 	}
 
 	rt = conversationresp.InitConversationResp{
-		ID:                po.ID,
-		SandboxSessionID:  sandboxSessionID,
+		ID:               po.ID,
+		SandboxSessionID: sandboxSessionID,
 	}
 
 	return

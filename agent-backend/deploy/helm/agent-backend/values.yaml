@@ -250,6 +250,7 @@ depServices:
       protocol: http
   # ========== Sandbox Platform 配置 ==========
   sandboxPlatform:
+    enable: true              # 是否启用沙箱功能
     publicSvc:
       host: sandbox-control-plane
       port: 8000
