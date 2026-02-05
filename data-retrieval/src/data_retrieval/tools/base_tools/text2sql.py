@@ -716,6 +716,7 @@ class Text2SQLTool(LLMTool):
                 }
 
                 cites = []
+                valid_tables = []  # Track tables that are actually in dataview
                 for table in tables:
                     # Table 名称有可能出错，比如包含 ""
                     if table not in dataview:
@@ -724,11 +725,12 @@ class Text2SQLTool(LLMTool):
                         fixed_table_name = self._fix_table_name(table)
                         logger.warning(f"try to fix table {table} to {fixed_table_name}")
                         if fixed_table_name not in dataview:
-                            logger.warning("datavire still not found in dataview")
+                            logger.warning("dataview still not found in dataview")
                             continue
                         else:
                             table = fixed_table_name
 
+                    valid_tables.append(table)  # Track valid table
                     cites.append({
                         "id": dataview[table]["id"],
                         "name": dataview[table]["name"],
@@ -747,7 +749,7 @@ class Text2SQLTool(LLMTool):
 
                 # 获取所有en2cn 信息
                 en2cn_info = dict()
-                for table in tables:
+                for table in valid_tables:  # Use valid_tables instead of tables to avoid KeyError
                     data_view_single = dataview[table]
                     if "en2cn" in data_view_single:
                         en2cn_info.update(data_view_single["en2cn"])
