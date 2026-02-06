@@ -10,11 +10,7 @@ project_root = os.path.abspath('.')
 # Data files to include
 datas = [
     ("data_migrations", "data_migrations"),
-    # 包含配置文件和数据文件
-    ("app/resources/data/sensitive_words.txt", "app/resources/data"),
-    # Dolphin 包已更新，不再需要单独的 installed 文件
-    # (".venv/lib64/python3.10/site-packages/DolphinLanguageSDK/skill/installed", "DolphinLanguageSDK/skill/installed")
-]
+    
 
 # Analysis configuration
 a = Analysis(

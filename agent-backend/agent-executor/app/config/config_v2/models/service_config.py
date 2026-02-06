@@ -103,22 +103,3 @@ class ServicesConfig:
         )
 
 
-@dataclass
-class ExternalServicesConfig:
-    """外部服务配置"""
-
-    # Embedding服务
-    emb_url: str = ""
-    embedding_dimension: int = 768
-
-    # Rerank服务
-    rerank_url: str = ""
-
-    @classmethod
-    def from_dict(cls, data: dict) -> "ExternalServicesConfig":
-        """从字典创建配置对象"""
-        return cls(
-            emb_url=data.get("emb_url", ""),
-            embedding_dimension=int(data.get("embedding_dimension", 768)),
-            rerank_url=data.get("rerank_url", ""),
-        )

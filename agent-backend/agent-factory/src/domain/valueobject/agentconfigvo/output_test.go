@@ -211,6 +211,29 @@ func TestOutputVariablesS_LoadFromAgent(t *testing.T) {
 				assert.Empty(t, v.MiddleOutputVars)
 			},
 		},
+		{
+			name: "load from agent with existing middle output vars (should not extract)",
+			agent: &agentfactorydto.Agent{
+				Config: daconfvalobj.Config{
+					IsDolphinMode: cdaenum.DolphinModeEnabled,
+					Dolphin:       " -> output_test1\n -> output_test2",
+					Output: &daconfvalobj.Output{
+						Variables: &daconfvalobj.VariablesS{
+							AnswerVar:         "answer",
+							MiddleOutputVars: []string{"existing_var1", "existing_var2"},
+						},
+					},
+				},
+			},
+			wantErr: false,
+			check: func(t *testing.T, v *OutputVariablesS) {
+				assert.Equal(t, "answer", v.AnswerVar)
+				// MiddleOutputVars should remain as is, not extracted from dolphin
+				assert.Len(t, v.MiddleOutputVars, 2)
+				assert.Contains(t, v.MiddleOutputVars, "existing_var1")
+				assert.Contains(t, v.MiddleOutputVars, "existing_var2")
+			},
+		},
 	}
 
 	for _, tt := range tests {

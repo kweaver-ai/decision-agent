@@ -17,7 +17,6 @@ from app.domain.vo.agentvo import AgentConfigVo, AgentInputVo
 from app.utils.observability.observability_log import get_logger as o11y_logger
 
 from .process_options import process_options
-from .history_delete_sensitive import history_delete_sensitive
 from ..rdto.v2.req.run_agent import V2RunAgentReq
 
 
@@ -99,8 +98,6 @@ async def prepare(
     # 6. set agent version
     agent_config.agent_version = req.agent_version
 
-    # 7. delete sensitive words
-    agent_input = history_delete_sensitive(agent_input)
 
     # 8. check agent permission
     if not await agent_factory_service.check_agent_permission(

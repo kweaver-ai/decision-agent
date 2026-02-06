@@ -15,7 +15,6 @@ from app.common.struct_logger import struct_logger
 from app.domain.vo.agentvo import AgentConfigVo
 from app.logic.agent_core_logic_v2.output_variables import get_output_variables
 from app.logic.agent_core_logic_v2.prompt_builder import PromptBuilder
-from app.logic.sensitive_word_detection import check_sensitive_word
 from app.utils.common import (
     get_dolphin_var_value,
 )

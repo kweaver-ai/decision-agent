@@ -11,7 +11,6 @@ from app.common.struct_logger import struct_logger
 from app.domain.vo.agentvo import AgentConfigVo
 from app.logic.agent_core_logic_v2.output_variables import get_output_variables
 from app.logic.agent_core_logic_v2.prompt_builder import PromptBuilder
-from app.logic.sensitive_word_detection import check_sensitive_word
 from app.utils.common import (
     get_dolphin_var_value,
 )
@@ -135,13 +134,6 @@ async def run_dolphin(
         "skillkit": toolkit,
         # "skillkit_hook": skillkit_hook,
     }
-
-    # 7. 检查敏感词
-    if check_sensitive_word(dolphin_prompt + str(context_variables)):
-        message = "抱歉，您输入的内容包含敏感词汇，请重新编辑您的信息"
-        output = {"answer": message}
-        yield output
-        return
 
     o11y_logger().info(f"[run_dolphin] agent_init init_params = {init_params}")
     o11y_logger().info(f"[run_dolphin] agent_run dolphin_prompt = {dolphin_prompt}")

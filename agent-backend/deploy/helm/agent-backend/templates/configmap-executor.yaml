@@ -131,21 +131,11 @@ data:
         host: "datahubcentral-private"
         port: ""
     
-    # 依赖的外部接入的服务
-    external_services:
-      emb_url: {{ .Values.depServices.llm_ad.embeddingUrl | quote }}
-      embedding_dimension: {{ .Values.depServices.llm_ad.embeddingDimension }}
-      rerank_url: {{ .Values.depServices.rerank_ad.rerankUrl | quote }}
-    
     # 7. 记忆相关
     memory:
       limit: 50
       threshold: 0.5
       rerank_threshold: 0.1
-    
-    # 8. 文档问答相关
-    document:
-      enable_sensitive_word_detection: {{ .Values.agentExecutor.enableSensitiveWordDetection }}
     
     # 9. 一些特性控制
     features:

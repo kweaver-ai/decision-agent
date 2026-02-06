@@ -20,7 +20,6 @@ class TestConfigInitializer(TestCase):
         mock_config = {
             "app": {"debug": True, "host": "0.0.0.0"},
             "services": {},
-            "external_services": {"embedding_dimension": 768},
             "memory": {"limit": 5000},
             "document": {},
             "local_dev": {},
@@ -36,6 +35,4 @@ class TestConfigInitializer(TestCase):
 
         self.assertIsNotNone(self.state.app)
         self.assertIsNotNone(self.state.services)
-        self.assertIsNotNone(self.state.external_services)
         self.assertIsNotNone(self.state.memory)
-        self.assertIsNotNone(self.state.document)

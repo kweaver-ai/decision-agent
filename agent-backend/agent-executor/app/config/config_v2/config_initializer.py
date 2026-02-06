@@ -15,9 +15,7 @@ from .models import (
     RedisConfig,
     GraphDBConfig,
     ServicesConfig,
-    ExternalServicesConfig,
     MemoryConfig,
-    DocumentConfig,
     LocalDevConfig,
     OuterLLMConfig,
     FeaturesConfig,
@@ -36,9 +34,7 @@ class ConfigState:
         self.redis: Optional[RedisConfig] = None
         self.graphdb: Optional[GraphDBConfig] = None
         self.services: Optional[ServicesConfig] = None
-        self.external_services: Optional[ExternalServicesConfig] = None
         self.memory: Optional[MemoryConfig] = None
-        self.document: Optional[DocumentConfig] = None
         self.local_dev: Optional[LocalDevConfig] = None
         self.outer_llm: Optional[OuterLLMConfig] = None
         self.features: Optional[FeaturesConfig] = None
@@ -60,11 +56,7 @@ class ConfigInitializer:
         state.redis = RedisConfig.from_dict(config.get("redis", {}))
         state.graphdb = GraphDBConfig.from_dict(config.get("graphdb", {}))
         state.services = ServicesConfig.from_dict(config.get("services", {}))
-        state.external_services = ExternalServicesConfig.from_dict(
-            config.get("external_services", {})
-        )
         state.memory = MemoryConfig.from_dict(config.get("memory", {}))
-        state.document = DocumentConfig.from_dict(config.get("document", {}))
         state.local_dev = LocalDevConfig.from_dict(config.get("local_dev", {}))
         state.outer_llm = OuterLLMConfig.from_dict(config.get("outer_llm", {}))
         state.features = FeaturesConfig.from_dict(config.get("features", {}))
@@ -104,19 +96,6 @@ class ConfigInitializer:
         if getattr(sys, "frozen", False):
             print(f"[CONFIG] _MEIPASS: {sys._MEIPASS}", flush=True)
 
-            # 检查打包后的数据文件是否存在
-            data_files_to_check = [
-                "resources/data/sensitive_words.txt",
-            ]
-            print("[CONFIG] Checking packaged data files:", flush=True)
-            for data_file in data_files_to_check:
-                file_path = os.path.join(app_config.app_root, data_file)
-                exists = os.path.exists(file_path)
-                status = "✓" if exists else "✗"
-                print(f"[CONFIG]   {status} {data_file}: {file_path}", flush=True)
-                if exists:
-                    file_size = os.path.getsize(file_path)
-                    print(f"[CONFIG]      Size: {file_size} bytes", flush=True)
 
     @staticmethod
     def _post_process_host_ip(app_config: AppConfig):

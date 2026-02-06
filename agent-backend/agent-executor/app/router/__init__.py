@@ -12,7 +12,6 @@ from pydantic import BaseModel, Field
 from app.common.config import Config, observability_config, server_info
 from app.common.stand_log import StandLogger
 from app.common.struct_logger import struct_logger
-from app.logic.sensitive_word_detection import build_sensitive_detector
 from app.utils.observability.observability import (
     init_observability,
     shutdown_observability,
@@ -62,7 +61,6 @@ async def ready():
 
 @app.on_event("startup")
 async def startup_event():
-    build_sensitive_detector()
     init_observability(server_info, observability_config)
     AioHttpClientInstrumentor().instrument()
 

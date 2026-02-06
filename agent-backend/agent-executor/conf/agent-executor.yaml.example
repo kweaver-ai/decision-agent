@@ -41,21 +41,12 @@ services:
     host: "agent-memory"
     port: "30790"
 
-# 依赖的外部接入的服务
-external_services:
-  emb_url: ""
-  embedding_dimension: 768
-  rerank_url: ""
 
 # 4. 记忆相关
 memory:
   limit: 50
   threshold: 0.5
   rerank_threshold: 0.1
-
-# 5. 文档问答相关
-document:
-  enable_sensitive_word_detection: false
 
 # 6. 一些特性控制
 features:

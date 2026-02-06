@@ -1,6 +1,7 @@
 package constant
 
 import (
+	"context"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -87,4 +88,24 @@ func TestVisitorType_Constants(t *testing.T) {
 	assert.Equal(t, VisitorType("realname"), RealName)
 	assert.Equal(t, VisitorType("anonymous"), Anonymous)
 	assert.Equal(t, VisitorType("business"), Business)
+}
+
+func TestIsShowOriginResponseFromCtx_True(t *testing.T) {
+	ctx := context.WithValue(context.Background(), CtxKeyIsShowOriginResponse, "true")
+	assert.True(t, IsShowOriginResponseFromCtx(ctx))
+}
+
+func TestIsShowOriginResponseFromCtx_False(t *testing.T) {
+	ctx := context.WithValue(context.Background(), CtxKeyIsShowOriginResponse, "false")
+	assert.False(t, IsShowOriginResponseFromCtx(ctx))
+}
+
+func TestIsShowOriginResponseFromCtx_NotSet(t *testing.T) {
+	ctx := context.Background()
+	assert.False(t, IsShowOriginResponseFromCtx(ctx))
+}
+
+func TestIsShowOriginResponseFromCtx_OtherValue(t *testing.T) {
+	ctx := context.WithValue(context.Background(), CtxKeyIsShowOriginResponse, "yes")
+	assert.False(t, IsShowOriginResponseFromCtx(ctx))
 }

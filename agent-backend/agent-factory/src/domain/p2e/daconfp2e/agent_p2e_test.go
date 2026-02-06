@@ -2,6 +2,7 @@ package daconfp2e
 
 import (
 	"context"
+	"errors"
 	"os"
 	"testing"
 
@@ -355,4 +356,46 @@ func TestDataAgents_WithEmptyCreatedBy(t *testing.T) {
 	assert.Len(t, eos, 1)
 	assert.Empty(t, eos[0].CreatedByName)
 	assert.Equal(t, "user1_name", eos[0].UpdatedByName)
+}
+
+func TestDataAgents_WithEmptyProductKey(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockProductRepo := idbaccessmock.NewMockIProductRepo(ctrl)
+	pos := []*dapo.DataAgentPo{
+		{ID: "1", Key: "test-agent", Name: "Test Agent", ProductKey: "", CreatedBy: "user1", UpdatedBy: "user2"},
+	}
+
+	// When ProductKey is empty, GetByNameMapByKeys is still called with empty productKeys list
+	mockProductRepo.EXPECT().GetByNameMapByKeys(ctx, []string{}).Return(map[string]string{}, nil)
+
+	eos, err := DataAgents(ctx, pos, mockProductRepo, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 1)
+	assert.Equal(t, "user1_name", eos[0].CreatedByName)
+	assert.Equal(t, "user2_name", eos[0].UpdatedByName)
+	assert.Empty(t, eos[0].ProductName) // No product name when ProductKey is empty
+}
+
+func TestDataAgents_ProductRepoError(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockProductRepo := idbaccessmock.NewMockIProductRepo(ctrl)
+	pos := []*dapo.DataAgentPo{
+		{ID: "1", Key: "test-agent", Name: "Test Agent", ProductKey: "test-product", CreatedBy: "user1", UpdatedBy: "user2"},
+	}
+
+	// Simulate an error from productRepo
+	mockProductRepo.EXPECT().GetByNameMapByKeys(ctx, []string{"test-product"}).Return(nil, errors.New("database error"))
+
+	_, err := DataAgents(ctx, pos, mockProductRepo, nil)
+
+	assert.Error(t, err)
+	// Note: eos may not be nil even on error, just check that error is returned
 }

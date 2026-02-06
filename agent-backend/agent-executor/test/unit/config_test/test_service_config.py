@@ -5,7 +5,6 @@ from unittest import TestCase
 from app.config.config_v2.models.service_config import (
     ServiceEndpoint,
     ServicesConfig,
-    ExternalServicesConfig,
 )
 
 
@@ -134,74 +133,3 @@ class TestServicesConfig(TestCase):
         self.assertEqual(config.ecoindex_private.port, "32130")
         self.assertEqual(config.docset_private.port, "32597")
 
-
-class TestExternalServicesConfig(TestCase):
-    """测试 ExternalServicesConfig 类"""
-
-    def test_init_default(self):
-        """测试默认初始化"""
-        config = ExternalServicesConfig()
-        self.assertEqual(config.emb_url, "")
-        self.assertEqual(config.embedding_dimension, 768)
-        self.assertEqual(config.rerank_url, "")
-
-    def test_init_with_values(self):
-        """测试带值初始化"""
-        config = ExternalServicesConfig(
-            emb_url="http://embedding-service",
-            embedding_dimension=1536,
-            rerank_url="http://rerank-service",
-        )
-        self.assertEqual(config.emb_url, "http://embedding-service")
-        self.assertEqual(config.embedding_dimension, 1536)
-        self.assertEqual(config.rerank_url, "http://rerank-service")
-
-    def test_from_dict_empty(self):
-        """测试从空字典创建"""
-        config = ExternalServicesConfig.from_dict({})
-        self.assertEqual(config.emb_url, "")
-        self.assertEqual(config.embedding_dimension, 768)
-        self.assertEqual(config.rerank_url, "")
-
-    def test_from_dict_with_values(self):
-        """测试从字典创建"""
-        data = {
-            "emb_url": "http://embedding-service",
-            "embedding_dimension": 1536,
-            "rerank_url": "http://rerank-service",
-        }
-        config = ExternalServicesConfig.from_dict(data)
-        self.assertEqual(config.emb_url, "http://embedding-service")
-        self.assertEqual(config.embedding_dimension, 1536)
-        self.assertEqual(config.rerank_url, "http://rerank-service")
-
-    def test_from_dict_partial(self):
-        """测试从字典创建（部分值）"""
-        data = {"emb_url": "http://embedding-service"}
-        config = ExternalServicesConfig.from_dict(data)
-        self.assertEqual(config.emb_url, "http://embedding-service")
-        self.assertEqual(config.embedding_dimension, 768)
-        self.assertEqual(config.rerank_url, "")
-
-    def test_from_dict_dimension_conversion(self):
-        """测试维度类型转换"""
-        data = {"embedding_dimension": "1024"}
-        config = ExternalServicesConfig.from_dict(data)
-        self.assertEqual(config.embedding_dimension, 1024)
-        self.assertIsInstance(config.embedding_dimension, int)
-
-    def test_from_dict_partial_embedding_dimension(self):
-        """测试仅部分embedding_dimension"""
-        data = {"embedding_dimension": 1024}
-        config = ExternalServicesConfig.from_dict(data)
-        self.assertEqual(config.embedding_dimension, 1024)
-        self.assertEqual(config.emb_url, "")
-        self.assertEqual(config.rerank_url, "")
-
-    def test_from_dict_partial_rerank_url(self):
-        """测试仅部分rerank_url"""
-        data = {"rerank_url": "http://rerank-service"}
-        config = ExternalServicesConfig.from_dict(data)
-        self.assertEqual(config.rerank_url, "http://rerank-service")
-        self.assertEqual(config.emb_url, "")
-        self.assertEqual(config.embedding_dimension, 768)

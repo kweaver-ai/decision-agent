@@ -1,29 +1,75 @@
 """Unit test configuration - mock missing external dependencies"""
 import sys
 from unittest.mock import MagicMock, Mock
+from types import ModuleType
+
+
+def create_dolphin_module(fullname):
+    """Create a mock module with proper structure"""
+    mock_module = ModuleType(fullname)
+    mock_module.__name__ = fullname
+    mock_module.__file__ = f"{fullname.replace('.', '/')}/__init__.py"
+    mock_module.__loader__ = None
+
+    if '.' in fullname:
+        mock_module.__package__ = fullname.rsplit('.', 1)[0]
+        mock_module.__path__ = []  # Make it a package
+    else:
+        mock_module.__package__ = fullname
+        mock_module.__path__ = []  # Make it a package
+
+    # Add mock submodules as needed
+    if fullname == "dolphin.core":
+        mock_module.ModelException = type('ModelException', (Exception,), {})
+        mock_module.SkillException = type('SkillException', (Exception,), {})
+        mock_module.DolphinException = type('DolphinException', (Exception,), {})
+
+    if fullname == "dolphin.core.common.exceptions":
+        mock_module.ModelException = type('ModelException', (Exception,), {})
+        mock_module.SkillException = type('SkillException', (Exception,), {})
+        mock_module.DolphinException = type('DolphinException', (Exception,), {})
+
+    return mock_module
 
 
 class DolphinModuleFinder:
     """A custom module finder that creates mock modules for dolphin.* imports"""
     def find_spec(self, fullname, path, target=None):
         if fullname.startswith("dolphin.") or fullname == "dolphin" or fullname == "limiter":
+            # Ensure parent modules are created first
+            if '.' in fullname:
+                parent_name = fullname.rsplit('.', 1)[0]
+                if parent_name not in sys.modules:
+                    # Import parent to trigger its creation
+                    try:
+                        __import__(parent_name)
+                    except ImportError:
+                        pass
+
             # Create a mock spec for the module
             from importlib.machinery import ModuleSpec
-            mock_module = MagicMock(name=fullname)
-            mock_module.__name__ = fullname
-            mock_module.__package__ = fullname.rsplit('.', 1)[0] if '.' in fullname else fullname
-            mock_module.__path__ = []  # Make it a package
 
             spec = ModuleSpec(fullname, self, origin="mock")
             spec.loader = self
+            spec.submodule_search_locations = []  # Make it a package
             return spec
         return None
 
     def create_module(self, spec):
-        mock_module = MagicMock(name=spec.name)
-        mock_module.__name__ = spec.name
-        mock_module.__package__ = spec.name.rsplit('.', 1)[0] if '.' in spec.name else spec.name
-        mock_module.__path__ = []
+        mock_module = create_dolphin_module(spec.name)
+
+        # Special handling for Tool base class
+        if spec.name == "dolphin.core.utils.tools":
+            # Create a real class that mimics Tool
+            class MockTool:
+                pass
+            mock_module.Tool = MockTool
+
+        # Special handling for Context
+        if spec.name == "dolphin.core.context.context":
+            class MockContext:
+                pass
+            mock_module.Context = MockContext
 
         # Special handling for VarOutput.is_serialized_dict to return False
         if spec.name == "dolphin.core.context.var_output":
@@ -43,6 +89,12 @@ class DolphinModuleFinder:
                     self.current_block = current_block
                     self.restart_block = restart_block
             mock_module.ResumeHandle = MockResumeHandle
+
+        # Special handling for exceptions
+        if spec.name == "dolphin.core.common.exceptions":
+            mock_module.ModelException = type('ModelException', (Exception,), {})
+            mock_module.SkillException = type('SkillException', (Exception,), {})
+            mock_module.DolphinException = type('DolphinException', (Exception,), {})
 
         return mock_module
 
