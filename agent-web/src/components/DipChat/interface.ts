@@ -184,6 +184,7 @@ export type DipChatState = {
   singleStreamResult: any[]; // 供调试用，用于开发和测试快速查看流式返回的完整结果
   toolAutoExpand: boolean; // 是否自动展开工具
   logQueryAgentDetails: Record<string, any>; // 日志查询智能体详情
+  tempAreaOpen: boolean;
 };
 
 export type TempFileType = {
