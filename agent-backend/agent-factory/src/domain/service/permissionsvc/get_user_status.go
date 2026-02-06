@@ -14,7 +14,7 @@ import (
 func (svc *permissionSvc) GetUserStatus(ctx context.Context) (resp *cpmsresp.UserStatusResp, err error) {
 	resp = cpmsresp.NewUserStatusResp()
 
-	if global.GConfig.DisablePmsCheck {
+	if global.GConfig.SwitchFields.DisablePmsCheck {
 		resp = cpmsresp.NewUserStatusRespAllAllowed()
 		return
 	}

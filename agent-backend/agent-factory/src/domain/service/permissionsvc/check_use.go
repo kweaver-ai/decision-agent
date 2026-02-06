@@ -18,7 +18,7 @@ import (
 func (svc *permissionSvc) CheckUsePermission(ctx context.Context, req *cpmsreq.CheckAgentRunReq) (resp *cpmsresp.CheckRunResp, err error) {
 	resp = &cpmsresp.CheckRunResp{}
 
-	if global.GConfig.DisablePmsCheck {
+	if global.GConfig.SwitchFields.DisablePmsCheck {
 		resp.IsAllowed = true
 		return
 	}

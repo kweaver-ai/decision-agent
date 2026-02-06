@@ -13,7 +13,7 @@ import (
 
 func (svc *permissionSvc) GetSingleMgmtPermission(ctx context.Context, resourceType cdaenum.ResourceType, operator cdapmsenum.Operator) (allAllowed bool, err error) {
 	// 1. 检查是否禁用权限检查
-	if global.GConfig.DisablePmsCheck {
+	if global.GConfig.SwitchFields.DisablePmsCheck {
 		allAllowed = true
 		return
 	}

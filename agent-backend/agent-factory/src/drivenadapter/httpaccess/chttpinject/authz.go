@@ -16,7 +16,7 @@ var (
 
 func NewAuthZHttpAcc() iauthzacc.AuthZHttpAcc {
 	authZOnce.Do(func() {
-		if global.GConfig.MockAuthZ {
+		if global.GConfig.SwitchFields.Mock.MockAuthZ {
 			authZImpl = authzhttp.NewMockAuthZHttpAcc(
 				logger.GetLogger(),
 			)

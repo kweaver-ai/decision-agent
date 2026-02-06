@@ -75,7 +75,7 @@ func init() {
 	}
 
 	//8. 初始化审计日志
-	if !global.GConfig.DisableAuditInit {
+	if !global.GConfig.SwitchFields.DisableAuditInit {
 		mqSetting := &mq.MQSetting{
 			MQType: global.GConfig.MQ.MQType,
 			MQHost: global.GConfig.MQ.MQHost,

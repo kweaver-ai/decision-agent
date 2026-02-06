@@ -38,7 +38,7 @@ func GetHydra() rest.Hydra {
 		return hydraInstance
 	}
 
-	if global.GConfig.MockHydra {
+	if global.GConfig.SwitchFields.Mock.MockHydra {
 		hydraInstance = &MockHydra{}
 		return hydraInstance
 	}

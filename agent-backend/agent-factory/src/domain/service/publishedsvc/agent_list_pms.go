@@ -21,7 +21,7 @@ func (svc *publishedSvc) getPmsAgentPos(ctx context.Context, req *pubedreq.Pubed
 		okSize   = 0
 	)
 
-	if !global.GConfig.DisablePmsCheck {
+	if !global.GConfig.SwitchFields.DisablePmsCheck {
 		if req.Size <= 1000 {
 			req.Size = 1000
 		}
@@ -61,7 +61,7 @@ func (svc *publishedSvc) getPmsAgentPos(ctx context.Context, req *pubedreq.Pubed
 		}
 
 		// 2. 如果禁用权限检查，直接返回
-		if global.GConfig.DisablePmsCheck {
+		if global.GConfig.SwitchFields.DisablePmsCheck {
 			filteredPos = append(filteredPos, pos...)
 			return
 		}
