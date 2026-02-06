@@ -80,14 +80,7 @@ const FileArea = () => {
                     });
                   }}
                 />
-                <div
-                  className="dip-flex-align-center dip-flex-item-full-width dip-ml-8 dip-pointer"
-                  onClick={e => {
-                    console.log(file, '预览的文件----FileArea');
-                    e.stopPropagation();
-                    // onPreviewFile(file);
-                  }}
-                >
+                <div className="dip-flex-align-center dip-flex-item-full-width dip-ml-8 dip-pointer">
                   <FileTypeIcon extension={getFileExtension(file.name)} fontSize={16} />
                   <span
                     title={file.name}

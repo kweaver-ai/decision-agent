@@ -8,6 +8,7 @@
 - 修复 Agent 对话界面临时区显示异常的 bug
 - 页面所有 Decision Agent 中文显示为"决策智能体"
 - 修复 Agent API 页面调试接口时缺少 x-business-domain 请求头
+- 移除未使用的 KNSpaceTree、DocTree、ContentDataTree 组件
 
 ## 0.3.0
 
