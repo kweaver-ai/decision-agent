@@ -426,10 +426,17 @@ class TestConvertToValidClassName:
         """测试转换Unicode字符"""
         from app.utils.common import convert_to_valid_class_name
 
-        # Non-alphanumeric chars become underscores
+        # Chinese characters are considered alphanumeric by Python
         result = convert_to_valid_class_name("测试类名")
-        # Chinese characters are not alphanumeric, so they become underscores
-        assert result == "___"
+        assert result == "测试类名"
+
+    def test_convert_with_special_chars(self):
+        """测试转换特殊字符"""
+        from app.utils.common import convert_to_valid_class_name
+
+        # Special characters like hyphens become underscores
+        result = convert_to_valid_class_name("test-class-name")
+        assert result == "test_class_name"
 
 
 class TestConvertToCamelCaseEdgeCases:

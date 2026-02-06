@@ -9,7 +9,6 @@ app:
   enable_system_log: true
   log_level: "info"
   enable_dolphin_agent_verbose: false
-  is_print_last_commit_info: true
   log_conversation_session_init: false
   is_write_exception_log_to_file: false
 

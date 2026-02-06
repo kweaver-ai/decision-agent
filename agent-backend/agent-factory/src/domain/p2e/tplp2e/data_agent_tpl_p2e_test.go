@@ -242,3 +242,23 @@ func TestAgentTplListEos_WithEmptyCreatedBy(t *testing.T) {
 	assert.Empty(t, eos[0].CreatedByName)
 	assert.Equal(t, "user1_name", eos[0].UpdatedByName)
 }
+
+func TestAgentTplListEos_WithPublishedBy(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+
+	// Create a string pointer for PublishedBy
+	publishedBy := "publisher1"
+
+	pos := []*dapo.DataAgentTplPo{
+		{ID: 1, Name: "Template 1", Key: "tpl-1", CreatedBy: "user1", UpdatedBy: "user2", PublishedBy: &publishedBy},
+	}
+
+	eos, err := AgentTplListEos(ctx, pos, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 1)
+	assert.Equal(t, "user1_name", eos[0].CreatedByName)
+	assert.Equal(t, "user2_name", eos[0].UpdatedByName)
+	assert.Equal(t, "publisher1_name", eos[0].PublishedByName)
+}

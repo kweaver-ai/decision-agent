@@ -367,7 +367,7 @@ spec:
             - name: agent-factory-secret-yaml
               mountPath: /sysvol/conf/secret
             # ========== Executor配置文件挂载 ==========
-            - name: executor-yaml-v2
+            - name: executor-yaml
               mountPath: /sysvol/conf/agent-executor.yaml
               subPath: agent-executor.yaml
             # ========== 时间同步 ==========
@@ -400,9 +400,9 @@ spec:
           configMap:
             name: agent-factory-dependant-configmap
         # ========== Executor配置Volume ==========
-        - name: executor-yaml-v2
+        - name: executor-yaml
           configMap:
-            name: agent-executor-yaml-v2
+            name: agent-executor-yaml
         # ========== 时间同步Volume ==========
         - name: host-time
           hostPath:

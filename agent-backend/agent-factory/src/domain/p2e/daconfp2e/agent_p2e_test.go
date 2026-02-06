@@ -267,7 +267,7 @@ func strPtr(s string) *string {
 }
 
 func TestDataAgents_EmptyList(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
