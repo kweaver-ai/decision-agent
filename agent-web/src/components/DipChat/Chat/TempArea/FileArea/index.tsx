@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import ScrollBarContainer from '@/components/ScrollBarContainer';
 import FileUploadBtn, { type FileUploadBtnRef } from '../../../components/FileUploadBtn';
 import NoData from '@/components/NoData';
-import { Button, Checkbox, message, Spin, Tooltip } from 'antd';
+import { Button, Checkbox, message, Spin } from 'antd';
 import DipIcon from '@/components/DipIcon';
 import { FileTypeIcon, getFileExtension } from '@/utils/doc';
 import { LoadingOutlined } from '@ant-design/icons';
@@ -29,7 +29,7 @@ const FileArea = () => {
     };
   }, [activeConversationKey]);
 
-  const deleteFile = async (fileIds: string[]) => {};
+  // const deleteFile = async (fileIds: string[]) => {};
 
   const renderContent = () => {
     if (tempFileList.length === 0) {
