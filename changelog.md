@@ -2,9 +2,11 @@
 
 ## 0.3.1
 
-### Bug Fixes
+### Frontend (agent-web)
 
+- Add hide support for temporary area in Agent conversation interface
 - Fix temporary area display issue in Agent conversation interface
+- Add i18n support for "Decision Agent" text across pages
 
 ## 0.3.0
 

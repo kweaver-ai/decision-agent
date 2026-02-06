@@ -1,5 +1,10 @@
 {
   "dataAgent": {
+    "agentNotExist": {
+      "title": "Decision Agent Unavailable",
+      "description": "Sorry, the Decision Agent you are trying to access seems to have been removed by the administrator or is temporarily unavailable.",
+      "back": "Go Back"
+    },
     "apiDocument": {
       "asAuth": "AnyShare user authentication, reads Agent configuration by default",
       "unExpand": "Hide",
