@@ -95,7 +95,7 @@ class ExecuteCommandTool(BaseSandboxTool):
     async def get_api_schema():
         """获取 API Schema"""
         base_schema = await BaseSandboxTool.get_api_schema()
-        base_schema["post"]["summary"] = "execute_command"
+        base_schema["post"]["summary"] = "execute_command_legacy"
         base_schema["post"]["description"] = "在沙箱环境中执行系统命令，如 ls、cat、grep 等 Linux 命令"
 
         # 更新请求体 schema，添加工具特定参数

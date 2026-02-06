@@ -1,6 +1,21 @@
-# 沙箱工具包 (Sandbox Toolkit)
+# 沙箱工具包 (Sandbox Toolkit) - Legacy
 
-这个目录包含了从 `shared_all_in_one.py` 拆分出来的独立沙箱工具。每个工具都是独立的，可以单独使用，也可以组合使用。
+> **注意**: 这些工具已标记为 Legacy（旧版），API 路径已添加 `_legacy` 后缀。
+> 
+> 推荐使用新版沙箱工具：`sandbox_tools_new`，它使用 RESTful API 实现，功能更完善。
+> 
+> | Legacy 工具 (旧版) | 新版工具 |
+> |-------------------|---------|
+> | `/tools/execute_code_legacy` | `/tools/execute_code` |
+> | `/tools/create_file_legacy` | `/tools/create_file` |
+> | `/tools/read_file_legacy` | `/tools/read_file` |
+> | `/tools/list_files_legacy` | `/tools/list_files` |
+> | `/tools/close_sandbox_legacy` | `/tools/terminate_session` |
+> | `/tools/execute_command_legacy` | (使用 execute_code 替代) |
+> | `/tools/get_status_legacy` | (新版无需此功能) |
+> | `/tools/download_from_efast_legacy` | (新版无需此功能) |
+
+这个目录包含独立的沙箱工具。每个工具都是独立的，可以单独使用，也可以组合使用。
 
 ## 工具列表
 
@@ -283,46 +298,6 @@ except SandboxError as e:
 4. **会话共享**: 使用相同的 `session_id` 可以在多个工具间共享沙箱环境
 5. **资源清理**: 建议在使用完毕后调用 `CloseSandboxTool` 清理资源
 6. **API 调用**: 所有工具都支持 API 调用，可以通过 `as_async_api_cls` 方法进行异步调用
-
-## 与原始工具的区别
-
-相比原始的 `shared_all_in_one.py`：
-
-1. **模块化**: 每个功能都是独立的工具类
-2. **灵活性**: 可以单独使用某个功能，不需要加载整个工具集
-3. **可维护性**: 每个工具都有清晰的职责和接口
-4. **可扩展性**: 可以轻松添加新的工具或修改现有工具
-5. **代码复用**: 共享的基础功能在 `BaseSandboxTool` 中实现
-6. **API 支持**: 每个工具都支持 API 调用和 Schema 生成
-
-## 迁移指南
-
-如果你之前使用的是 `shared_all_in_one.py`，可以按以下方式迁移：
-
-```python
-# 原来的方式
-from data_retrieval.tools.sandbox_tools.shared_all_in_one import SandboxTool
-
-tool = SandboxTool(session_id="my_session")
-result = await tool.ainvoke({
-    "action": "execute_code",
-    "content": "print('Hello')"
-})
-
-# 新的方式
-from data_retrieval.tools.sandbox_tools.toolkit import ExecuteCodeTool
-
-tool = ExecuteCodeTool(session_id="my_session")
-result = await tool.ainvoke({
-    "content": "print('Hello')"
-})
-
-# 或者使用 API 方式
-result = await ExecuteCodeTool.as_async_api_cls(params={
-    "session_id": "my_session",
-    "content": "print('Hello')"
-})
-```
 
 ## 测试
 

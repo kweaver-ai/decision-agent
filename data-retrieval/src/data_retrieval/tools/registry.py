@@ -21,6 +21,7 @@ from data_retrieval.tools.base_tools.get_metadata import GetMetadataTool
 
 # Sandbox + knowledge network tools (dict mappings)
 from data_retrieval.tools.sandbox_tools.toolkit import SANDBOX_TOOLS_MAPPING
+from data_retrieval.tools.sandbox_tools_new import SANDBOX_TOOLS_NEW_MAPPING
 from data_retrieval.tools.knowledge_network_tools import KNOWLEDGE_NETWORK_TOOLS_MAPPING
 
 
@@ -34,6 +35,14 @@ BASE_TOOLS_MAPPING: Dict[str, Type] = {
     "json2plot": Json2Plot,
 }
 
+# 为旧沙箱工具添加 _legacy 后缀
+SANDBOX_LEGACY_TOOLS: Dict[str, Type] = {
+    f"{k}_legacy": v for k, v in SANDBOX_TOOLS_MAPPING.items()
+}
+
 ALL_TOOLS_MAPPING: Dict[str, Type] = (
-    BASE_TOOLS_MAPPING | SANDBOX_TOOLS_MAPPING | KNOWLEDGE_NETWORK_TOOLS_MAPPING
+    BASE_TOOLS_MAPPING
+    | SANDBOX_TOOLS_NEW_MAPPING  # 新沙箱工具直接使用原名
+    | KNOWLEDGE_NETWORK_TOOLS_MAPPING
+    | SANDBOX_LEGACY_TOOLS  # Legacy 工具排在最后
 )
