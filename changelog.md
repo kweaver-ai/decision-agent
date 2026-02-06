@@ -1,4 +1,11 @@
 # Changelog
+
+## 0.3.1
+
+### Bug Fixes
+
+- Fix temporary area display issue in Agent conversation interface
+
 ## 0.3.0
 
 ### Features & Improvements
