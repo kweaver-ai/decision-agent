@@ -1,0 +1,97 @@
+package agentrespvo
+
+import (
+	"testing"
+
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/chat_enum/chatresenum"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
+
+func TestNewMiddleOutputVarRes(t *testing.T) {
+	res := NewMiddleOutputVarRes()
+
+	assert.NotNil(t, res)
+	assert.NotNil(t, res.Vars)
+	assert.Empty(t, res.Vars)
+}
+
+func TestMiddleOutputVarRes_LoadFrom_Simple(t *testing.T) {
+	res := NewMiddleOutputVarRes()
+
+	vars := []string{"var1", "var2"}
+	valuesMap := map[string]interface{}{
+		"var1": "simple string value",
+		"var2": 12345,
+	}
+	interventionMap := map[string][]*Intervention{}
+
+	err := res.LoadFrom(vars, valuesMap, interventionMap)
+	require.NoError(t, err)
+	assert.Len(t, res.Vars, 2)
+
+	// Check var1
+	assert.Equal(t, "var1", res.Vars[0].VarName)
+	assert.Equal(t, chatresenum.OutputVarTypeOther, res.Vars[0].Type)
+	assert.Equal(t, "simple string value", res.Vars[0].Value)
+
+	// Check var2
+	assert.Equal(t, "var2", res.Vars[1].VarName)
+	assert.Equal(t, chatresenum.OutputVarTypeOther, res.Vars[1].Type)
+	assert.Equal(t, 12345, res.Vars[1].Value)
+}
+
+func TestMiddleOutputVarRes_LoadFrom_WithInterventions(t *testing.T) {
+	res := NewMiddleOutputVarRes()
+
+	vars := []string{"var1"}
+	valuesMap := map[string]interface{}{
+		"var1": "test value",
+	}
+	interventions := []*Intervention{
+		{
+			ToolName: "test_tool",
+			ToolCallInfo: &ToolCallInfo{
+				ToolName: "test_tool",
+				Args:    map[string]interface{}{"arg1": "value1"},
+			},
+		},
+	}
+	interventionMap := map[string][]*Intervention{
+		"var1": interventions,
+	}
+
+	err := res.LoadFrom(vars, valuesMap, interventionMap)
+	require.NoError(t, err)
+	assert.Len(t, res.Vars, 1)
+	assert.Len(t, res.Vars[0].Interventions, 1)
+	assert.Equal(t, "test_tool", res.Vars[0].Interventions[0].ToolName)
+}
+
+func TestMiddleOutputVarRes_LoadFrom_EmptyVars(t *testing.T) {
+	res := NewMiddleOutputVarRes()
+
+	vars := []string{}
+	valuesMap := map[string]interface{}{}
+	interventionMap := map[string][]*Intervention{}
+
+	err := res.LoadFrom(vars, valuesMap, interventionMap)
+	require.NoError(t, err)
+	assert.Empty(t, res.Vars)
+}
+
+func TestMiddleOutputVarRes_LoadFrom_SomeVarsMissing(t *testing.T) {
+	res := NewMiddleOutputVarRes()
+
+	vars := []string{"var1", "var2", "var3"}
+	valuesMap := map[string]interface{}{
+		"var1": "value1",
+		// var2 is missing
+		"var3": "value3",
+	}
+	interventionMap := map[string][]*Intervention{}
+
+	err := res.LoadFrom(vars, valuesMap, interventionMap)
+	require.NoError(t, err)
+	assert.Len(t, res.Vars, 2) // Only var1 and var3
+}

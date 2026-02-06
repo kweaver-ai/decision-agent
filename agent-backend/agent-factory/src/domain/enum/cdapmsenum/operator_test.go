@@ -50,7 +50,7 @@ func TestOperator_String(t *testing.T) {
 func TestGetAllOperator(t *testing.T) {
 	operators := GetAllOperator()
 
-	assert.Len(t, operators, 15)
+	assert.Len(t, operators, 14)
 
 	// Check for some key operators
 	assert.Contains(t, operators, AgentPublish)

@@ -3,7 +3,11 @@ package agentconfigvo
 import (
 	"testing"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentfactoryaccess/agentfactorydto"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestNewOutputVariablesS(t *testing.T) {
@@ -118,3 +122,139 @@ func TestExtractOutputsFromText_Errors(t *testing.T) {
 		})
 	}
 }
+
+func TestOutputVariablesS_LoadFromAgent(t *testing.T) {
+	tests := []struct {
+		name    string
+		agent   *agentfactorydto.Agent
+		wantErr bool
+		check   func(t *testing.T, v *OutputVariablesS)
+	}{
+		{
+			name: "load from agent with output variables",
+			agent: &agentfactorydto.Agent{
+				Config: daconfvalobj.Config{
+					Output: &daconfvalobj.Output{
+						Variables: &daconfvalobj.VariablesS{
+							AnswerVar:           "answer",
+							DocRetrievalVar:     "doc_res",
+							GraphRetrievalVar:   "graph_res",
+							RelatedQuestionsVar: "questions",
+							OtherVars:           []string{"var1", "var2"},
+						},
+					},
+				},
+			},
+			wantErr: false,
+			check: func(t *testing.T, v *OutputVariablesS) {
+				assert.Equal(t, "answer", v.AnswerVar)
+				assert.Equal(t, "doc_res", v.DocRetrievalVar)
+				assert.Equal(t, []string{"var1", "var2"}, v.OtherVars)
+			},
+		},
+		{
+			name: "load from agent with dolphin mode",
+			agent: &agentfactorydto.Agent{
+				Config: daconfvalobj.Config{
+					IsDolphinMode: cdaenum.DolphinModeEnabled,
+					Dolphin:       " -> output_test1\n -> output_test2\nsome text\n -> output_test3",
+					Output: &daconfvalobj.Output{
+						Variables: &daconfvalobj.VariablesS{
+							AnswerVar: "answer",
+						},
+					},
+				},
+			},
+			wantErr: false,
+			check: func(t *testing.T, v *OutputVariablesS) {
+				assert.Equal(t, "answer", v.AnswerVar)
+				assert.Len(t, v.MiddleOutputVars, 3)
+				assert.Contains(t, v.MiddleOutputVars, "output_test1")
+				assert.Contains(t, v.MiddleOutputVars, "output_test2")
+				assert.Contains(t, v.MiddleOutputVars, "output_test3")
+			},
+		},
+		{
+			name: "load from agent without dolphin mode",
+			agent: &agentfactorydto.Agent{
+				Config: daconfvalobj.Config{
+					IsDolphinMode: cdaenum.DolphinModeDisabled,
+					Dolphin:       " -> output_test1",
+					Output: &daconfvalobj.Output{
+						Variables: &daconfvalobj.VariablesS{
+							AnswerVar: "answer",
+						},
+					},
+				},
+			},
+			wantErr: false,
+			check: func(t *testing.T, v *OutputVariablesS) {
+				assert.Equal(t, "answer", v.AnswerVar)
+				assert.Empty(t, v.MiddleOutputVars)
+			},
+		},
+		{
+			name: "load from agent with empty middle output vars",
+			agent: &agentfactorydto.Agent{
+				Config: daconfvalobj.Config{
+					Output: &daconfvalobj.Output{
+						Variables: &daconfvalobj.VariablesS{
+							AnswerVar:         "answer",
+							MiddleOutputVars: []string{},
+						},
+					},
+				},
+			},
+			wantErr: false,
+			check: func(t *testing.T, v *OutputVariablesS) {
+				assert.Equal(t, "answer", v.AnswerVar)
+				assert.Empty(t, v.MiddleOutputVars)
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			v := &OutputVariablesS{}
+			err := v.LoadFromAgent(tt.agent)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				require.NoError(t, err)
+				if tt.check != nil {
+					tt.check(t, v)
+				}
+			}
+		})
+	}
+}
+
+func TestOutputVariablesS_ToVariable(t *testing.T) {
+	v := &OutputVariablesS{
+		AnswerVar:           "answer",
+		DocRetrievalVar:     "doc_res",
+		GraphRetrievalVar:   "graph_res",
+		RelatedQuestionsVar: "questions",
+		OtherVars:           []string{"var1", "var2"},
+		MiddleOutputVars:    []string{"mid1", "mid2"},
+	}
+
+	variable, err := v.ToVariable()
+	require.NoError(t, err)
+	assert.NotNil(t, variable)
+	assert.Equal(t, "answer", variable.AnswerVar)
+	assert.Equal(t, "doc_res", variable.DocRetrievalVar)
+	assert.Equal(t, []string{"var1", "var2"}, variable.OtherVars)
+	assert.Equal(t, []string{"mid1", "mid2"}, variable.MiddleOutputVars)
+}
+
+func TestOutputVariablesS_ToVariable_Empty(t *testing.T) {
+	v := &OutputVariablesS{}
+
+	variable, err := v.ToVariable()
+	require.NoError(t, err)
+	assert.NotNil(t, variable)
+	assert.Empty(t, variable.AnswerVar)
+	assert.Nil(t, variable.OtherVars)
+}
+
