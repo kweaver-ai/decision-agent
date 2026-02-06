@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	fmt.Println("=== API性能测试示例 ===\n")
+	fmt.Print("=== API性能测试示例 ===\n\n")
 
 	// 示例1: 并发性能测试
 	fmt.Println("1. 并发性能测试")

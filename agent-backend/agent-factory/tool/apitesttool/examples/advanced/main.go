@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	fmt.Println("=== API测试工具高级功能示例 ===\n")
+	fmt.Print("=== API测试工具高级功能示例 ===\n\n")
 
 	// 示例1: 动态变量使用
 	fmt.Println("1. 动态变量使用演示")

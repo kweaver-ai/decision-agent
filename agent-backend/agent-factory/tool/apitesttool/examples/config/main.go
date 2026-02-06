@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	fmt.Println("=== API测试配置文件示例 ===\n")
+	fmt.Print("=== API测试配置文件示例 ===\n\n")
 
 	// 示例1: JSON配置文件
 	fmt.Println("1. JSON配置文件示例")
@@ -451,7 +451,7 @@ func demonstrateEnvironmentConfig() {
 	environments := []string{"dev", "staging", "prod"}
 
 	for _, env := range environments {
-		fmt.Printf("\n测试环境: %s\n", env)
+		fmt.Printf("测试环境: %s\n", env)
 
 		// 这里简化处理，实际应该解析JSON并替换current_env
 

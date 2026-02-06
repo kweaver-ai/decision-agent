@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	fmt.Println("=== API测试工具基础使用示例 ===\n")
+	fmt.Print("=== API测试工具基础使用示例 ===\n\n")
 
 	// 示例1: 最简单的GET请求测试
 	fmt.Println("1. 简单GET请求测试")

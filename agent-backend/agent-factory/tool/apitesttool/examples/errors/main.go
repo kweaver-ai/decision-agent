@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	fmt.Println("=== API测试错误处理示例 ===\n")
+	fmt.Print("=== API测试错误处理示例 ===\n\n")
 
 	// 示例1: 网络错误处理
 	fmt.Println("1. 网络错误处理")

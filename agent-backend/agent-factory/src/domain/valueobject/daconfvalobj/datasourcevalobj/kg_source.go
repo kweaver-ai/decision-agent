@@ -19,6 +19,10 @@ func (p *KgSource) GetErrMsgMap() map[string]string {
 }
 
 func (p *KgSource) ValObjCheck() (err error) {
+	if p == nil {
+		err = errors.New("[KgSource]: cannot be nil")
+		return
+	}
 	// 检查KgID是否为空
 	if p.KgID == "" {
 		err = errors.New("[KgSource]: kg_id is required")
@@ -26,7 +30,7 @@ func (p *KgSource) ValObjCheck() (err error) {
 	}
 
 	// 检查Fields是否为空
-	if p.Fields == nil {
+	if len(p.Fields) == 0 {
 		err = errors.New("[KgSource]: fields is required")
 		return
 	}
