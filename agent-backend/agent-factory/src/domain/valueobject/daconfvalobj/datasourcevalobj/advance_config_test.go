@@ -56,7 +56,7 @@ func TestRetrieverAdvancedConfig_ValObjCheck_InvalidKG(t *testing.T) {
 	assert.Contains(t, err.Error(), "kg is invalid")
 }
 
-func TestRetrieverAdvancedConfig_ValObjCheck_InvalidDoc(t *testing.T) {
+func TestRetrieverAdvancedConfig_ValObjCheck_ValidDoc(t *testing.T) {
 	retrievalSlicesNum := 150
 	maxSlicePerCite := 16
 	rerankTopK := 15
@@ -105,6 +105,105 @@ func TestKGAdvancedConfig_GetErrMsgMap(t *testing.T) {
 	assert.Len(t, errMap, 6)
 	assert.Contains(t, errMap, "TextMatchEntityNums.required")
 	assert.Contains(t, errMap, "VectorMatchEntityNums.required")
+}
+
+func TestKGAdvancedConfig_ValObjCheck_InvalidTextMatchEntityNums(t *testing.T) {
+	invalidValue := 150 // Out of range (40-100)
+	config := &KGAdvancedConfig{
+		TextMatchEntityNums: &invalidValue,
+	}
+	err := config.ValObjCheck()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "text_match_entity_nums must between 40 and 100")
+}
+
+func TestKGAdvancedConfig_ValObjCheck_InvalidRerankerSimThreshold(t *testing.T) {
+	textMatchEntityNums := 60
+	invalidValue := 15.0 // Out of range (-10 to 10)
+	config := &KGAdvancedConfig{
+		TextMatchEntityNums:  &textMatchEntityNums,
+		RerankerSimThreshold: &invalidValue,
+	}
+	err := config.ValObjCheck()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "reranker_sim_threshold must between -10 and 10")
+}
+
+func TestKGAdvancedConfig_ValObjCheck_InvalidGraphRagTopK(t *testing.T) {
+	textMatchEntityNums := 60
+	rerankerSimThreshold := -5.5
+	invalidValue := 150 // Out of range (10-100)
+	config := &KGAdvancedConfig{
+		TextMatchEntityNums:  &textMatchEntityNums,
+		RerankerSimThreshold: &rerankerSimThreshold,
+		GraphRagTopK:         &invalidValue,
+	}
+	err := config.ValObjCheck()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "graph_rag_topk must between 10 and 100")
+}
+
+func TestKGAdvancedConfig_ValObjCheck_InvalidLongTextLength(t *testing.T) {
+	textMatchEntityNums := 60
+	rerankerSimThreshold := -5.5
+	graphRagTopK := 25
+	invalidValue := 30 // Less than 50
+	config := &KGAdvancedConfig{
+		TextMatchEntityNums:  &textMatchEntityNums,
+		RerankerSimThreshold: &rerankerSimThreshold,
+		GraphRagTopK:         &graphRagTopK,
+		LongTextLength:       &invalidValue,
+	}
+	err := config.ValObjCheck()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "long_text_length must be greater than 50")
+}
+
+func TestKGAdvancedConfig_ValObjCheck_InvalidVectorMatchEntityNums(t *testing.T) {
+	textMatchEntityNums := 60
+	rerankerSimThreshold := -5.5
+	graphRagTopK := 25
+	longTextLength := 256
+	invalidValue := 150 // Out of range (40-100)
+	config := &KGAdvancedConfig{
+		TextMatchEntityNums:  &textMatchEntityNums,
+		RerankerSimThreshold: &rerankerSimThreshold,
+		GraphRagTopK:         &graphRagTopK,
+		LongTextLength:       &longTextLength,
+		VectorMatchEntityNums: &invalidValue,
+	}
+	err := config.ValObjCheck()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "vector_match_entity_nums must between 40 and 100")
+}
+
+func TestRetrieverAdvancedConfig_ValObjCheck_InvalidDoc(t *testing.T) {
+	retrievalSlicesNum := 250 // Out of range
+	config := &RetrieverAdvancedConfig{
+		Doc: &DocAdvancedConfig{
+			RetrievalSlicesNum: &retrievalSlicesNum,
+		},
+	}
+	err := config.ValObjCheck()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "doc is invalid")
+}
+
+func TestRetrieverAdvancedConfig_ValObjCheck_AllInvalid(t *testing.T) {
+	invalidKG := 200
+	invalidDoc := 250
+	config := &RetrieverAdvancedConfig{
+		KG: &KGAdvancedConfig{
+			TextMatchEntityNums: &invalidKG,
+		},
+		Doc: &DocAdvancedConfig{
+			RetrievalSlicesNum: &invalidDoc,
+		},
+	}
+	err := config.ValObjCheck()
+	assert.Error(t, err)
+	// The first error encountered is returned
+	assert.Contains(t, err.Error(), "is invalid")
 }
 
 func TestDocAdvancedConfig_ValObjCheck_InvalidRetrievalSlicesNum(t *testing.T) {

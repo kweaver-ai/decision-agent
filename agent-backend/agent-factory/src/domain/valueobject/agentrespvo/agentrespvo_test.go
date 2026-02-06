@@ -65,6 +65,53 @@ func TestAnswerS_UnmarshalJSON(t *testing.T) {
 	assert.Equal(t, "custom_value", customValue)
 }
 
+func TestAnswerS_UnmarshalJSON_InvalidJSON(t *testing.T) {
+	invalidJSON := `{invalid json`
+
+	answer := &AnswerS{}
+	err := answer.UnmarshalJSON([]byte(invalidJSON))
+	assert.Error(t, err)
+}
+
+func TestAnswerS_UnmarshalJSON_Empty(t *testing.T) {
+	jsonData := `{}`
+
+	answer := &AnswerS{}
+	err := answer.UnmarshalJSON([]byte(jsonData))
+	assert.NoError(t, err)
+	assert.NotNil(t, answer.DynamicFields)
+}
+
+func TestAnswerS_UnmarshalJSON_WithKnownFields(t *testing.T) {
+	jsonData := `{
+		"interventions": [],
+		"_progress": [],
+		"query": "test query",
+		"history": [],
+		"status": "completed"
+	}`
+
+	answer := &AnswerS{}
+	err := answer.UnmarshalJSON([]byte(jsonData))
+	assert.NoError(t, err)
+	assert.NotNil(t, answer.Interventions)
+	assert.NotNil(t, answer.Progress)
+}
+
+func TestAnswerS_UnmarshalJSON_WithProgressArray(t *testing.T) {
+	jsonData := `{
+		"interventions": [],
+		"_progress": [{"stage": "llm"}],
+		"custom_field": "custom_value"
+	}`
+
+	answer := &AnswerS{}
+	err := answer.UnmarshalJSON([]byte(jsonData))
+	assert.NoError(t, err)
+	assert.NotNil(t, answer.Progress)
+	assert.Len(t, answer.Progress, 1)
+}
+
 func TestNewInterventions(t *testing.T) {
 	interventions := NewInterventions()
 	assert.NotNil(t, interventions)

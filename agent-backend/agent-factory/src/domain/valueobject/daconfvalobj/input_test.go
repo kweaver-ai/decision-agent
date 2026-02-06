@@ -105,6 +105,41 @@ func TestInput_ValObjCheck(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		{
+			name: "Fields验证失败",
+			input: &Input{
+				Fields: Fields{
+					&Field{Name: "", Type: cdaenum.InputFieldTypeString}, // Name is empty
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Rewrite验证失败",
+			input: &Input{
+				Fields: Fields{
+					&Field{Name: "field1", Type: cdaenum.InputFieldTypeString},
+				},
+				Rewrite: &Rewrite{
+					Enable: func() *bool { b := true; return &b }(),
+					// Pattern is empty when Enable is true
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Augment验证失败",
+			input: &Input{
+				Fields: Fields{
+					&Field{Name: "field1", Type: cdaenum.InputFieldTypeString},
+				},
+				Augment: &Augment{
+					Enable: func() *bool { b := true; return &b }(),
+					// DataSource is nil when Enable is true
+				},
+			},
+			wantErr: true,
+		},
 	}
 
 	for _, tt := range tests {

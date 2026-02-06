@@ -104,3 +104,15 @@ class DolphinModuleFinder:
 
 # Install the custom finder
 sys.meta_path.insert(0, DolphinModuleFinder())
+
+
+# Setup Config.app mock for tests that need it
+import logging
+mock_app_config = MagicMock()
+mock_app_config.get_stdlib_log_level = MagicMock(return_value=logging.INFO)
+mock_app_config.enable_system_log = "false"
+mock_app_config.debug = False
+
+# Import Config and set up the mock
+from app.common.config import Config
+Config.app = mock_app_config

@@ -119,3 +119,39 @@ func TestDataAgentRes_GetFinalAnswerJSON_Empty(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Nil(t, jsonBytes)
 }
+
+func TestDataAgentRes_GetExploreAnswerList_EmptyAnswer(t *testing.T) {
+	ctx := context.Background()
+	data := []byte(`{
+		"answer": {}
+	}`)
+
+	outputVars := &agentconfigvo.OutputVariablesS{
+		AnswerVar: "answer",
+	}
+
+	res, err := NewDataAgentRes(ctx, data, outputVars)
+	require.NoError(t, err)
+
+	answerList, ok := res.GetExploreAnswerList()
+	assert.False(t, ok)
+	assert.NotNil(t, answerList) // Returns empty slice, not nil
+}
+
+func TestDataAgentRes_IsPromptType_EmptyAnswer(t *testing.T) {
+	ctx := context.Background()
+	data := []byte(`{
+		"answer": {}
+	}`)
+
+	outputVars := &agentconfigvo.OutputVariablesS{
+		AnswerVar: "answer",
+	}
+
+	res, err := NewDataAgentRes(ctx, data, outputVars)
+	require.NoError(t, err)
+
+	answer, ok := res.IsPromptType()
+	assert.False(t, ok)
+	assert.NotNil(t, answer) // IsPromptType always returns a non-nil AnswerPrompt
+}

@@ -416,3 +416,47 @@ func TestRetrieverDataSource_GetFirstDocDatasetId(t *testing.T) {
 		})
 	}
 }
+
+func TestRetrieverDataSource_ValObjCheckWithCtx_InvalidKnowledgeNetwork(t *testing.T) {
+	ctx := context.Background()
+	ds := &RetrieverDataSource{
+		KnowledgeNetwork: []*KnowledgeNetworkSource{
+			{}, // Invalid - missing required fields
+		},
+	}
+
+	err := ds.ValObjCheckWithCtx(ctx)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "knowledge_network is invalid")
+}
+
+func TestRetrieverDataSource_ValObjCheckWithCtx_ValidKnowledgeNetwork(t *testing.T) {
+	ctx := context.Background()
+	ds := &RetrieverDataSource{
+		KnowledgeNetwork: []*KnowledgeNetworkSource{
+			{
+				KnowledgeNetworkID: "test-kn",
+				ObjectTypes: []*ObjectType{
+					{ObjectTypeID: "type1"},
+					{ObjectTypeID: "type2"},
+				},
+			},
+		},
+	}
+
+	err := ds.ValObjCheckWithCtx(ctx)
+	assert.NoError(t, err)
+}
+
+func TestRetrieverDataSource_ValObjCheckWithCtx_InvalidKnEntry(t *testing.T) {
+	ctx := context.Background()
+	ds := &RetrieverDataSource{
+		KnEntry: []*KnEntrySource{
+			{}, // Invalid - missing required fields
+		},
+	}
+
+	err := ds.ValObjCheckWithCtx(ctx)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "kn_entry is invalid")
+}

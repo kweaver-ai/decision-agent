@@ -248,6 +248,34 @@ func TestDocSourceField_ValObjCheck(t *testing.T) {
 				assert.Contains(t, err.Error(), "type is invalid")
 			},
 		},
+		{
+			name: "empty type",
+			field: &DocSourceField{
+				Name:   "field1",
+				Path:   "path1",
+				Source: "gns://abc123/def456",
+				Type:   "",
+			},
+			wantErr: true,
+			checkErr: func(t *testing.T, err error) {
+				assert.Error(t, err)
+				assert.Contains(t, err.Error(), "type is required")
+			},
+		},
+		{
+			name: "invalid source - ends with slash",
+			field: &DocSourceField{
+				Name:   "field1",
+				Path:   "path1",
+				Source: "gns://abc123/",
+				Type:   cdaenum.DocSourceFieldTypeFile,
+			},
+			wantErr: true,
+			checkErr: func(t *testing.T, err error) {
+				assert.Error(t, err)
+				assert.Contains(t, err.Error(), "source is invalid")
+			},
+		},
 	}
 
 	for _, tt := range tests {
