@@ -137,7 +137,8 @@ class TestCacheHandlerAgentConfig:
         """测试获取初始 Agent 配置"""
         retrieved_config = cache_handler.get_agent_config()
 
-        assert retrieved_config is None
+        # CacheDataVo initializes agent_config to {}, not None
+        assert retrieved_config == {}
 
     def test_update_agent_config(self, cache_handler):
         """测试更新 Agent 配置"""

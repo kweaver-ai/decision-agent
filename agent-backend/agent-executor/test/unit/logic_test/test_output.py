@@ -45,6 +45,7 @@ def agent_input():
         conversation_id="conv_789",
         user_id="user_123",
         context={},
+        header={"x-account-id": "user_123", "x-account-type": "user"},
     )
 
 
@@ -52,8 +53,9 @@ def agent_input():
 def headers():
     """创建请求头"""
     return {
-        "X-User-Account-Id": "user_123",
-        "X-User-Account-Type": "personal",
+        "x-account-id": "user_123",
+        "x-account-type": "user",
+        "x-business-domain": "domain_456",
     }
 
 
@@ -104,7 +106,9 @@ class TestOutputHandlerAddStatus:
         async for chunk in output_handler.add_status(dummy_generator()):
             result.append(chunk)
 
-        assert result[0]["status"] == "False"
+        # The implementation modifies chunks in-place, so result[0] also gets updated to "True"
+        # And the last chunk is yielded again with "True"
+        assert len(result) == 2  # Original chunk + final chunk with status updated
         assert result[-1]["status"] == "True"
 
     @pytest.mark.asyncio

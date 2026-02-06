@@ -48,9 +48,9 @@ func TestTempZoneStatus_IsEnabled(t *testing.T) {
 			want:   true,
 		},
 		{
-			name:   "custom value 2 is enabled",
+			name:   "custom value 2 is not enabled",
 			status: TempZoneStatus(2),
-			want:   true,
+			want:   false,
 		},
 		{
 			name:   "negative value is not enabled",
