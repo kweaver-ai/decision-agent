@@ -16,7 +16,7 @@ func (s *httpServer) registerRunRoutes(engine *gin.Engine) {
 	s.runPriRouter(engine, "/api/agent-factory/internal/v1")
 
 	// 根据配置决定是否保留老路径
-	if global.GConfig.KeepLegacyAppPath {
+	if global.GConfig.SwitchFields.KeepLegacyAppPath {
 		s.runPubRouter(engine, "/api/agent-app/v1")
 		s.runPriRouter(engine, "/api/agent-app/internal/v1")
 	}
@@ -41,7 +41,7 @@ func (s *httpServer) runPubRouter(engine *gin.Engine, basePath string) {
 		// 新增 Hydra 接口鉴权，开发环境可以临时屏蔽
 		capimiddleware.VerifyOAuthMiddleWare(),
 		// 注入业务域id
-		capimiddleware.HandleBizDomain(global.GConfig.UseDefaultBizDomain),
+		capimiddleware.HandleBizDomain(global.GConfig.SwitchFields.UseDefaultBizDomain),
 
 		// 注入OpenTelemetry中间件
 		otelgin.Middleware(global.GConfig.OtelConfig.ServiceName),
