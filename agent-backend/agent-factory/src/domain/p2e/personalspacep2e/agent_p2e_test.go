@@ -2,23 +2,41 @@ package personalspacep2e
 
 import (
 	"context"
+	"os"
 	"testing"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/locale"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+func TestMain(m *testing.M) {
+	// Setup environment for local dev mode (only once)
+	os.Setenv("SERVICE_NAME", "AGENT_FACTORY")
+	os.Setenv("AGENT_FACTORY_LOCAL_DEV", "true")
+	os.Setenv("I18N_MODE_UT", "true")
+
+	// Initialize locale (only once)
+	locale.Register()
+
+	// Run tests
+	code := m.Run()
+	os.Exit(code)
+}
 
 func TestAgentsListForPersonalSpace_Simple(t *testing.T) {
 	ctx := context.Background()
 
 	po := &dapo.DataAgentPo{
-		ID:        "agent1",
-		Name:      "Test Agent",
-		Key:       "test-agent",
+		ID:         "agent1",
+		Name:       "Test Agent",
+		Key:        "test-agent",
 		ProductKey: "product1",
-		CreatedBy: "user1",
-		UpdatedBy: "user2",
+		CreatedBy:  "user1",
+		UpdatedBy:  "user2",
 	}
 
 	eo, err := AgentsListForPersonalSpace(ctx, po)
@@ -37,11 +55,11 @@ func TestAgentsListForPersonalSpace_WithProfile(t *testing.T) {
 
 	profile := "test profile"
 	po := &dapo.DataAgentPo{
-		ID:        "agent1",
-		Name:      "Test Agent",
-		Profile:   &profile,
-		CreatedBy: "user1",
-		UpdatedBy: "user1",
+		ID:         "agent1",
+		Name:       "Test Agent",
+		Profile:    &profile,
+		CreatedBy:  "user1",
+		UpdatedBy:  "user1",
 	}
 
 	eo, err := AgentsListForPersonalSpace(ctx, po)
@@ -63,13 +81,89 @@ func TestAgentsListForPersonalSpace_EmptyPo(t *testing.T) {
 }
 
 func TestAgentsListForPersonalSpaces_EmptyList(t *testing.T) {
-	ctx := context.Background()
-
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
 	pos := []*dapo.DataAgentPo{}
 
-	// We can't properly test the full function without UM HTTP mock
-	// Just test that it handles empty list without panic
-	// For full testing, need proper environment setup
-	_ = ctx
-	_ = pos
+	eos, err := AgentsListForPersonalSpaces(ctx, pos, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 0)
+}
+
+func TestAgentsListForPersonalSpaces_SingleAgent(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+
+	pos := []*dapo.DataAgentPo{
+		{ID: "agent1", Name: "Test Agent", Key: "test-agent", ProductKey: "product1", CreatedBy: "user1", UpdatedBy: "user2"},
+	}
+
+	eos, err := AgentsListForPersonalSpaces(ctx, pos, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 1)
+	assert.Equal(t, "agent1", eos[0].ID)
+	assert.Equal(t, "user1_name", eos[0].CreatedByName)
+	assert.Equal(t, "user2_name", eos[0].UpdatedByName)
+}
+
+func TestAgentsListForPersonalSpaces_MultipleAgents(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+
+	pos := []*dapo.DataAgentPo{
+		{ID: "agent1", Name: "Agent 1", Key: "agent-1", ProductKey: "product1", CreatedBy: "user1", UpdatedBy: "user2"},
+		{ID: "agent2", Name: "Agent 2", Key: "agent-2", ProductKey: "product1", CreatedBy: "user3", UpdatedBy: "user4"},
+		{ID: "agent3", Name: "Agent 3", Key: "agent-3", ProductKey: "product1", CreatedBy: "user5", UpdatedBy: "user6"},
+	}
+
+	eos, err := AgentsListForPersonalSpaces(ctx, pos, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 3)
+	assert.Equal(t, "agent1", eos[0].ID)
+	assert.Equal(t, "agent2", eos[1].ID)
+	assert.Equal(t, "agent3", eos[2].ID)
+	assert.Equal(t, "user1_name", eos[0].CreatedByName)
+	assert.Equal(t, "user2_name", eos[0].UpdatedByName)
+	assert.Equal(t, "user3_name", eos[1].CreatedByName)
+	assert.Equal(t, "user4_name", eos[1].UpdatedByName)
+	assert.Equal(t, "user5_name", eos[2].CreatedByName)
+	assert.Equal(t, "user6_name", eos[2].UpdatedByName)
+}
+
+func TestAgentsListForPersonalSpaces_WithEmptyCreatedBy(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+
+	pos := []*dapo.DataAgentPo{
+		{ID: "agent1", Name: "Agent 1", Key: "agent-1", ProductKey: "product1", CreatedBy: "", UpdatedBy: "user1"},
+	}
+
+	eos, err := AgentsListForPersonalSpaces(ctx, pos, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 1)
+	assert.Empty(t, eos[0].CreatedByName)
+	assert.Equal(t, "user1_name", eos[0].UpdatedByName)
+}
+
+func TestAgentsListForPersonalSpaces_WithSameUsers(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+
+	pos := []*dapo.DataAgentPo{
+		{ID: "agent1", Name: "Agent 1", Key: "agent-1", ProductKey: "product1", CreatedBy: "user1", UpdatedBy: "user1"},
+		{ID: "agent2", Name: "Agent 2", Key: "agent-2", ProductKey: "product1", CreatedBy: "user1", UpdatedBy: "user1"},
+	}
+
+	eos, err := AgentsListForPersonalSpaces(ctx, pos, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 2)
+	assert.Equal(t, "user1_name", eos[0].CreatedByName)
+	assert.Equal(t, "user1_name", eos[0].UpdatedByName)
+	assert.Equal(t, "user1_name", eos[1].CreatedByName)
+	assert.Equal(t, "user1_name", eos[1].UpdatedByName)
 }

@@ -5,13 +5,15 @@ import (
 	"testing"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/spaceeo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestSpace(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
 
 	tests := []struct {
 		name    string
@@ -71,8 +73,7 @@ func TestSpace(t *testing.T) {
 }
 
 func TestSpaces_EmptyList(t *testing.T) {
-	t.Skip("TODO: Requires umHttp mock or local dev mode")
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
 	pos := []*dapo.SpacePo{}
 
 	eos, err := Spaces(ctx, pos, nil)
@@ -83,8 +84,7 @@ func TestSpaces_EmptyList(t *testing.T) {
 }
 
 func TestSpaces_SingleItem(t *testing.T) {
-	t.Skip("TODO: Requires umHttp mock or local dev mode")
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
 	pos := []*dapo.SpacePo{
 		{ID: "space-1", Name: "Test Space", CreatedBy: "user-1", UpdatedBy: "user-2"},
 	}
@@ -100,8 +100,7 @@ func TestSpaces_SingleItem(t *testing.T) {
 }
 
 func TestSpaces_MultipleItems(t *testing.T) {
-	t.Skip("TODO: Requires umHttp mock or local dev mode")
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
 	pos := []*dapo.SpacePo{
 		{ID: "space-1", Name: "Space 1", CreatedBy: "user-1", UpdatedBy: "user-2"},
 		{ID: "space-2", Name: "Space 2", CreatedBy: "user-3", UpdatedBy: "user-4"},
@@ -113,4 +112,25 @@ func TestSpaces_MultipleItems(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, eos)
 	assert.Len(t, eos, 3)
+	assert.Equal(t, "user-1_name", eos[0].CreatedByName)
+	assert.Equal(t, "user-2_name", eos[0].UpdatedByName)
+	assert.Equal(t, "user-3_name", eos[1].CreatedByName)
+	assert.Equal(t, "user-4_name", eos[1].UpdatedByName)
+	assert.Equal(t, "user-5_name", eos[2].CreatedByName)
+	assert.Equal(t, "user-6_name", eos[2].UpdatedByName)
+}
+
+func TestSpaces_WithEmptyCreatedBy(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	pos := []*dapo.SpacePo{
+		{ID: "space-1", Name: "Space 1", CreatedBy: "", UpdatedBy: "user-1"},
+	}
+
+	eos, err := Spaces(ctx, pos, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 1)
+	assert.Empty(t, eos[0].CreatedByName)
+	assert.Equal(t, "user-1_name", eos[0].UpdatedByName)
 }

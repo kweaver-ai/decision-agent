@@ -2,14 +2,31 @@ package spacep2e
 
 import (
 	"context"
+	"os"
 	"testing"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/locale"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/spaceeo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+func TestMain(m *testing.M) {
+	// Setup environment for local dev mode (only once)
+	os.Setenv("SERVICE_NAME", "AGENT_FACTORY")
+	os.Setenv("AGENT_FACTORY_LOCAL_DEV", "true")
+	os.Setenv("I18N_MODE_UT", "true")
+
+	// Initialize locale (only once)
+	locale.Register()
+
+	// Run tests
+	code := m.Run()
+	os.Exit(code)
+}
 
 func TestSpaceMember(t *testing.T) {
 	ctx := context.Background()
@@ -81,4 +98,85 @@ func TestSpaceMember(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestSpaceMembers_EmptyList(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	pos := []*dapo.SpaceMemberPo{}
+
+	eos, err := SpaceMembers(ctx, pos, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 0)
+}
+
+func TestSpaceMembers_SingleUser(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	pos := []*dapo.SpaceMemberPo{
+		{ID: 1, SpaceID: "space-1", ObjType: cenum.OrgObjTypeUser, ObjID: "user-1"},
+	}
+
+	eos, err := SpaceMembers(ctx, pos, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 1)
+	assert.Equal(t, "user-1_name", eos[0].ObjName)
+}
+
+func TestSpaceMembers_MultipleUsers(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	pos := []*dapo.SpaceMemberPo{
+		{ID: 1, SpaceID: "space-1", ObjType: cenum.OrgObjTypeUser, ObjID: "user-1"},
+		{ID: 2, SpaceID: "space-1", ObjType: cenum.OrgObjTypeUser, ObjID: "user-2"},
+		{ID: 3, SpaceID: "space-1", ObjType: cenum.OrgObjTypeUser, ObjID: "user-3"},
+	}
+
+	eos, err := SpaceMembers(ctx, pos, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 3)
+	assert.Equal(t, "user-1_name", eos[0].ObjName)
+	assert.Equal(t, "user-2_name", eos[1].ObjName)
+	assert.Equal(t, "user-3_name", eos[2].ObjName)
+}
+
+func TestSpaceMembers_DepartmentAndGroup(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	pos := []*dapo.SpaceMemberPo{
+		{ID: 1, SpaceID: "space-1", ObjType: cenum.OrgObjTypeUser, ObjID: "user-1"},
+		{ID: 2, SpaceID: "space-1", ObjType: cenum.OrgObjTypeDep, ObjID: "dept-1"},
+		{ID: 3, SpaceID: "space-1", ObjType: cenum.OrgObjTypeGroup, ObjID: "group-1"},
+	}
+
+	eos, err := SpaceMembers(ctx, pos, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 3)
+	assert.Equal(t, "user-1_name", eos[0].ObjName)
+	assert.Equal(t, "dept-1_name", eos[1].ObjName)
+	assert.Equal(t, "group-1_name", eos[2].ObjName)
+}
+
+func TestSpaceMembers_MixedTypes(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	pos := []*dapo.SpaceMemberPo{
+		{ID: 1, SpaceID: "space-1", ObjType: cenum.OrgObjTypeUser, ObjID: "user-1"},
+		{ID: 2, SpaceID: "space-1", ObjType: cenum.OrgObjTypeDep, ObjID: "dept-1"},
+		{ID: 3, SpaceID: "space-1", ObjType: cenum.OrgObjTypeUser, ObjID: "user-2"},
+		{ID: 4, SpaceID: "space-1", ObjType: cenum.OrgObjTypeGroup, ObjID: "group-1"},
+	}
+
+	eos, err := SpaceMembers(ctx, pos, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 4)
+	assert.Equal(t, "user-1_name", eos[0].ObjName)
+	assert.Equal(t, "dept-1_name", eos[1].ObjName)
+	assert.Equal(t, "user-2_name", eos[2].ObjName)
+	assert.Equal(t, "group-1_name", eos[3].ObjName)
 }

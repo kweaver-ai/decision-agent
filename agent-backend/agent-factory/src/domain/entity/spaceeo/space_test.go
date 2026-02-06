@@ -118,3 +118,11 @@ func TestSpace_UpdatedByName(t *testing.T) {
 	assert.Equal(t, "Editor User", s.UpdatedByName)
 	assert.Equal(t, "", s.CreatedByName)
 }
+
+func TestNewSpaceResource(t *testing.T) {
+	resource := NewSpaceResource()
+
+	assert.NotNil(t, resource)
+	assert.NotNil(t, resource.PublishedAgentInfo)
+	assert.Empty(t, resource.ResourceName)
+}

@@ -2,6 +2,10 @@ package daconfvalobj
 
 import (
 	"testing"
+
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestTempZoneConfig_GetErrMsgMap(t *testing.T) {
@@ -53,4 +57,36 @@ func TestTempZoneConfig_GetErrMsgMap(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestTempZoneConfig_GenAllowedFileTypes_Valid(t *testing.T) {
+	config := &TempZoneConfig{
+		AllowedFileCategories: cdaenum.AllowedFileCategories{"document"},
+	}
+
+	err := config.GenAllowedFileTypes()
+	require.NoError(t, err)
+	assert.NotNil(t, config.AllowedFileTypes)
+	assert.NotEmpty(t, config.AllowedFileTypes)
+}
+
+func TestTempZoneConfig_GenAllowedFileTypes_NilCategories(t *testing.T) {
+	config := &TempZoneConfig{
+		AllowedFileCategories: nil,
+	}
+
+	err := config.GenAllowedFileTypes()
+	assert.NoError(t, err)
+	assert.Nil(t, config.AllowedFileTypes)
+}
+
+func TestTempZoneConfig_GenAllowedFileTypes_MultipleCategories(t *testing.T) {
+	config := &TempZoneConfig{
+		AllowedFileCategories: cdaenum.AllowedFileCategories{"document", "pdf", "text"},
+	}
+
+	err := config.GenAllowedFileTypes()
+	require.NoError(t, err)
+	assert.NotNil(t, config.AllowedFileTypes)
+	assert.NotEmpty(t, config.AllowedFileTypes)
 }

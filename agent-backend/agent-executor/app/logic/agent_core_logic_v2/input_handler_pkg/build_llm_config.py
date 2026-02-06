@@ -1,7 +1,6 @@
 from typing import Any, Dict, Optional, TYPE_CHECKING
 
 from app.common.config import Config
-from app.driven.dip.model_manager_service import model_manager_service
 from app.utils.observability.trace_wrapper import internal_span
 from opentelemetry.trace import Span
 
@@ -75,18 +74,6 @@ async def build_llm_config(
         set_user_account_id(llm_headers, user_id)
         set_user_account_type(llm_headers, visitor_type)
         llm["llm_config"]["headers"] = llm_headers
-
-        modelInfo = get_llm_config_from_cache(ac, llm["llm_config"]["id"])
-
-        if not modelInfo:
-            modelInfo = await model_manager_service.get_llm_config(
-                llm["llm_config"]["id"]
-            )
-
-            if ac.is_warmup:
-                ac.cache_handler.set_llm_config(llm["llm_config"]["id"], modelInfo)
-
-        llm["llm_config"]["max_model_len"] = modelInfo["max_model_len"]
 
         llm_config["llms"][llm["llm_config"]["name"]] = llm["llm_config"]
 

@@ -6,13 +6,15 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/spaceeo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestSpaceResource(t *testing.T) {
-	ctx := context.Background()
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
 
 	tests := []struct {
 		name    string
@@ -68,4 +70,140 @@ func TestSpaceResource(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestSpaceResources_EmptyList(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	pos := []*dapo.SpaceResourcePo{}
+	releaseAgentPoMap := map[string]*dapo.PublishedJoinPo{}
+
+	eos, err := SpaceResources(ctx, pos, releaseAgentPoMap, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 0)
+}
+
+func TestSpaceResources_WithValidPublishedAgent(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+
+	pos := []*dapo.SpaceResourcePo{
+		{
+			ID:           1,
+			SpaceID:      "space-1",
+			SpaceKey:     "space-key-1",
+			ResourceID:   "agent-1",
+			ResourceType: cdaenum.ResourceTypeDataAgent,
+		},
+	}
+
+	releaseAgentPoMap := map[string]*dapo.PublishedJoinPo{
+		"agent-1": {
+			ReleasePartPo: dapo.ReleasePartPo{
+				PublishedBy: "user-1",
+			},
+			DataAgentPo: dapo.DataAgentPo{
+				ID:   "agent-1",
+				Name: "Test Agent",
+				Key:  "test-agent",
+			},
+		},
+	}
+
+	eos, err := SpaceResources(ctx, pos, releaseAgentPoMap, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 1)
+	assert.Equal(t, "Test Agent", eos[0].ResourceName)
+	assert.Equal(t, "user-1_name", eos[0].PublishedAgentInfo.PublishedByName)
+	assert.NotNil(t, eos[0].PublishedAgentInfo)
+}
+
+func TestSpaceResources_FilterNonDataAgent(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+
+	pos := []*dapo.SpaceResourcePo{
+		{
+			ID:           1,
+			SpaceID:      "space-1",
+			ResourceID:   "agent-1",
+			ResourceType: cdaenum.ResourceTypeDataAgent,
+		},
+	}
+
+	releaseAgentPoMap := map[string]*dapo.PublishedJoinPo{}
+
+	eos, err := SpaceResources(ctx, pos, releaseAgentPoMap, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 0) // Should be filtered out because no published agent exists
+}
+
+func TestSpaceResources_MultipleAgents(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+
+	pos := []*dapo.SpaceResourcePo{
+		{ID: 1, SpaceID: "space-1", ResourceID: "agent-1", ResourceType: cdaenum.ResourceTypeDataAgent},
+		{ID: 2, SpaceID: "space-1", ResourceID: "agent-2", ResourceType: cdaenum.ResourceTypeDataAgent},
+		{ID: 3, SpaceID: "space-1", ResourceID: "agent-3", ResourceType: cdaenum.ResourceTypeDataAgent},
+	}
+
+	releaseAgentPoMap := map[string]*dapo.PublishedJoinPo{
+		"agent-1": {
+			ReleasePartPo: dapo.ReleasePartPo{PublishedBy: "user-1"},
+			DataAgentPo:   dapo.DataAgentPo{ID: "agent-1", Name: "Agent 1"},
+		},
+		"agent-2": {
+			ReleasePartPo: dapo.ReleasePartPo{PublishedBy: "user-2"},
+			DataAgentPo:   dapo.DataAgentPo{ID: "agent-2", Name: "Agent 2"},
+		},
+		"agent-3": {
+			ReleasePartPo: dapo.ReleasePartPo{PublishedBy: "user-3"},
+			DataAgentPo:   dapo.DataAgentPo{ID: "agent-3", Name: "Agent 3"},
+		},
+	}
+
+	eos, err := SpaceResources(ctx, pos, releaseAgentPoMap, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 3)
+	assert.Equal(t, "Agent 1", eos[0].ResourceName)
+	assert.Equal(t, "Agent 2", eos[1].ResourceName)
+	assert.Equal(t, "Agent 3", eos[2].ResourceName)
+}
+
+func TestSpaceResources_WithUnknownPublishedBy(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+
+	pos := []*dapo.SpaceResourcePo{
+		{
+			ID:           1,
+			SpaceID:      "space-1",
+			ResourceID:   "agent-1",
+			ResourceType: cdaenum.ResourceTypeDataAgent,
+		},
+	}
+
+	releaseAgentPoMap := map[string]*dapo.PublishedJoinPo{
+		"agent-1": {
+			ReleasePartPo: dapo.ReleasePartPo{
+				PublishedBy: "unknown-user", // This user won't be in the user name map
+			},
+			DataAgentPo: dapo.DataAgentPo{
+				ID:   "agent-1",
+				Name: "Test Agent",
+			},
+		},
+	}
+
+	eos, err := SpaceResources(ctx, pos, releaseAgentPoMap, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 1)
+	// Should use unknown user name from locale
+	assert.NotEmpty(t, eos[0].PublishedAgentInfo.PublishedByName)
 }

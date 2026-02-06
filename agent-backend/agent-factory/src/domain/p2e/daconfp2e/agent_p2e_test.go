@@ -2,15 +2,35 @@ package daconfp2e
 
 import (
 	"context"
+	"os"
 	"testing"
 
+	"go.uber.org/mock/gomock"
+	"github.com/kweaver-ai/decision-agent/agent-factory/locale"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/daconfeo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/daenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
+
+func TestMain(m *testing.M) {
+	// Setup environment for local dev mode (only once)
+	os.Setenv("SERVICE_NAME", "AGENT_FACTORY")
+	os.Setenv("AGENT_FACTORY_LOCAL_DEV", "true")
+	os.Setenv("I18N_MODE_UT", "true")
+
+	// Initialize locale (only once)
+	locale.Register()
+
+	// Run tests
+	code := m.Run()
+	os.Exit(code)
+}
 
 func TestDataAgent(t *testing.T) {
 	ctx := context.Background()
@@ -244,4 +264,95 @@ func TestDataAgent_Equals_DataAgentSimple(t *testing.T) {
 // Helper function
 func strPtr(s string) *string {
 	return &s
+}
+
+func TestDataAgents_EmptyList(t *testing.T) {
+	ctx := context.Background()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockProductRepo := idbaccessmock.NewMockIProductRepo(ctrl)
+	pos := []*dapo.DataAgentPo{}
+
+	// Expect GetByNameMapByKeys to be called with empty list
+	mockProductRepo.EXPECT().GetByNameMapByKeys(ctx, []string{}).Return(map[string]string{}, nil)
+
+	eos, err := DataAgents(ctx, pos, mockProductRepo, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 0)
+}
+
+func TestDataAgents_SingleAgent(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockProductRepo := idbaccessmock.NewMockIProductRepo(ctrl)
+	pos := []*dapo.DataAgentPo{
+		{ID: "1", Key: "test-agent", Name: "Test Agent", ProductKey: "test-product", CreatedBy: "user1", UpdatedBy: "user2"},
+	}
+
+	// Expect GetByNameMapByKeys to be called
+	productMap := map[string]string{"test-product": "Test Product"}
+	mockProductRepo.EXPECT().GetByNameMapByKeys(ctx, []string{"test-product"}).Return(productMap, nil)
+
+	eos, err := DataAgents(ctx, pos, mockProductRepo, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 1)
+	assert.Equal(t, "user1_name", eos[0].CreatedByName)
+	assert.Equal(t, "user2_name", eos[0].UpdatedByName)
+	assert.Equal(t, "Test Product", eos[0].ProductName)
+}
+
+func TestDataAgents_MultipleAgents(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockProductRepo := idbaccessmock.NewMockIProductRepo(ctrl)
+	pos := []*dapo.DataAgentPo{
+		{ID: "1", Key: "agent-1", Name: "Agent 1", ProductKey: "product-1", CreatedBy: "user1", UpdatedBy: "user2"},
+		{ID: "2", Key: "agent-2", Name: "Agent 2", ProductKey: "product-2", CreatedBy: "user3", UpdatedBy: "user4"},
+		{ID: "3", Key: "agent-3", Name: "Agent 3", ProductKey: "product-1", CreatedBy: "user5", UpdatedBy: "user6"},
+	}
+
+	// Expect GetByNameMapByKeys to be called with unique product keys
+	productMap := map[string]string{"product-1": "Product 1", "product-2": "Product 2"}
+	mockProductRepo.EXPECT().GetByNameMapByKeys(ctx, []string{"product-1", "product-2", "product-1"}).Return(productMap, nil)
+
+	eos, err := DataAgents(ctx, pos, mockProductRepo, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 3)
+	assert.Equal(t, "user1_name", eos[0].CreatedByName)
+	assert.Equal(t, "user2_name", eos[0].UpdatedByName)
+	assert.Equal(t, "Product 1", eos[0].ProductName)
+	assert.Equal(t, "Product 1", eos[2].ProductName)
+}
+
+func TestDataAgents_WithEmptyCreatedBy(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockProductRepo := idbaccessmock.NewMockIProductRepo(ctrl)
+	pos := []*dapo.DataAgentPo{
+		{ID: "1", Key: "test-agent", Name: "Test Agent", ProductKey: "test-product", CreatedBy: "", UpdatedBy: "user1"},
+	}
+
+	productMap := map[string]string{"test-product": "Test Product"}
+	mockProductRepo.EXPECT().GetByNameMapByKeys(ctx, []string{"test-product"}).Return(productMap, nil)
+
+	eos, err := DataAgents(ctx, pos, mockProductRepo, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 1)
+	assert.Empty(t, eos[0].CreatedByName)
+	assert.Equal(t, "user1_name", eos[0].UpdatedByName)
 }
