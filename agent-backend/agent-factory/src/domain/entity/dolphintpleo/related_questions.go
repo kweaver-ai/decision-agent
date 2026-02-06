@@ -18,7 +18,7 @@ func NewRelatedQuestionsContent() *RelatedQuestionsContent {
 }
 
 func (d *RelatedQuestionsContent) LoadFromConfig(config *daconfvalobj.Config) {
-	if config.RelatedQuestion != nil && config.RelatedQuestion.IsEnabled {
+	if config != nil && config.RelatedQuestion != nil && config.RelatedQuestion.IsEnabled {
 		d.IsEnable = true
 		d.Content = `
 /prompt/(flags='{"debug": true}')请根据原始用户问题和上下文信息，更进一步的生成3个问题和答案对。所生成的3个问题与原始用户问题呈递进关系，3个问题之间则相互独立，用户可以使用这些问题深入挖掘上下文中的话题。

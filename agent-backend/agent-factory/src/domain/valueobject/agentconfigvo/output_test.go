@@ -66,7 +66,7 @@ func TestExtractOutputsFromText(t *testing.T) {
 		},
 		{
 			name:      "多个output",
-			text:      " -> output1\n -> output2\n>> output3",
+			text:      " -> output_1\n -> output_2\n>> output_3",
 			wantCount: 3,
 		},
 		{

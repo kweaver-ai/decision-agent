@@ -43,7 +43,9 @@ func TestAugment_DataSource_ValObjCheck(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			err := tt.ads.ValObjCheck()
 			if tt.wantErr {
-				t.Errorf("ValObjCheck() error = %v, want error", err)
+				if err == nil {
+					t.Errorf("ValObjCheck() expected error but got nil")
+				}
 			} else {
 				if err != nil {
 					t.Errorf("ValObjCheck() unexpected error: %v", err)

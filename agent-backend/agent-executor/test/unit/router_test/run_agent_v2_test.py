@@ -1,7 +1,7 @@
 """单元测试 - router/agent_controller_pkg/run_agent_v2/run_agent 模块"""
 
 import pytest
-from unittest.mock import AsyncMock, MagicMock, patch, AsyncIterator
+from unittest.mock import AsyncMock, MagicMock, patch
 from fastapi import Request
 from sse_starlette import EventSourceResponse
 

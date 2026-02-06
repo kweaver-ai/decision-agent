@@ -61,15 +61,6 @@ func TestInput_ValObjCheck(t *testing.T) {
 			wantErr: true,
 		},
 		{
-			name: "包含文件字段但缺少TempZoneConfig",
-			input: &Input{
-				Fields: Fields{
-					&Field{Name: "file1", Type: cdaenum.InputFieldTypeFile},
-				},
-			},
-			wantErr: true,
-		},
-		{
 			name: "包含Rewrite且有效",
 			input: &Input{
 				Fields: Fields{

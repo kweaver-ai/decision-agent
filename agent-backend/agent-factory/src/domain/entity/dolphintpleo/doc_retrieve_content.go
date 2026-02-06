@@ -28,7 +28,7 @@ func (d *DocRetrieveContent) LoadFromConfig(config *daconfvalobj.Config, isBuilt
 	if config.DataSource != nil && len(config.DataSource.Doc) > 0 {
 		d.IsEnable = true
 		d.Content = `
-/judge/(tools=["doc_qa"], history=True)判断【$query】是否需要到文档中召回，如果不需要召回，则直接返回“不需要文档召回”，否则执行工具对【$query】进行召回 -> doc_retrieval_res
+/judge/(tools=["doc_qa"], history=True)判断【$query】是否需要到文档中召回，如果不需要召回，则直接返回\"不需要文档召回\"，否则执行工具对【$query】进行召回 -> doc_retrieval_res
 `
 	}
 }

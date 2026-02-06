@@ -76,6 +76,12 @@ class TestAgentRunOptionsVo(TestCase):
         options = AgentRunOptionsVo(enable_dependency_cache=True)
         self.assertTrue(options.enable_dependency_cache)
 
+    def test_init_with_resume_info(self):
+        """测试带resume_info初始化"""
+        resume_info = {"conversation_id": "conv_123", "agent_run_id": "run_456"}
+        options = AgentRunOptionsVo(resume_info=resume_info)
+        self.assertEqual(options.resume_info, resume_info)
+
     def test_init_with_all_fields(self):
         """测试带所有字段初始化"""
         options = AgentRunOptionsVo(
@@ -136,7 +142,8 @@ class TestAgentRunOptionsVo(TestCase):
             enable_dependency_cache=False,
         )
         data = options.model_dump()
-        self.assertEqual(len(data), 10)
+        # 10 fields + resume_info (None) = 11 total
+        self.assertEqual(len(data), 11)
         self.assertEqual(data["output_vars"], ["var1", "var2"])
         self.assertFalse(data["incremental_output"])
 

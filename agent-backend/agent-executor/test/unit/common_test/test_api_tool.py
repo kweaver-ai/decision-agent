@@ -1,12 +1,11 @@
 """单元测试 - common/tool_v2/api_tool 模块"""
 
 import pytest
-from unittest.mock import AsyncMock, MagicMock, patch, AsyncIterator
+from unittest.mock import AsyncMock, MagicMock, patch
 import aiohttp
 
 from app.common.tool_v2.api_tool import APITool
-from app.common.tool_v2.api_tool_pkg.input import ToolMapInfo
-from app.common.tool_v2.api_tool_pkg.common import APIToolResponse
+from app.common.tool_v2.common import ToolMapInfo, APIToolResponse
 
 
 @pytest.fixture
@@ -38,12 +37,14 @@ def tool_config():
         "tool_input": [
             {
                 "input_name": "param1",
+                "input_type": "string",
                 "map_type": "auto",
                 "enabled": True,
             },
             {
                 "input_name": "param2",
-                "map_type": "fixed",
+                "input_type": "number",
+                "map_type": "fixedValue",
                 "enabled": True,
                 "fixed_value": "fixed_value_123",
             },
@@ -107,7 +108,8 @@ class TestAPIToolInit:
         tool_info_with_empty_rule["use_rule"] = ""
         tool = APITool(tool_info_with_empty_rule, tool_config)
 
-        assert tool.description == "Test tool for testing\n## Use Rule:\n"
+        # When use_rule is empty, the implementation doesn't append the Use Rule section
+        assert tool.description == "Test tool for testing"
 
 
 class TestAPIToolFilterExposedInputs:

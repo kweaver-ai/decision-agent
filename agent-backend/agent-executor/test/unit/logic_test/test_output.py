@@ -2,7 +2,7 @@
 
 import pytest
 import asyncio
-from unittest.mock import AsyncMock, MagicMock, patch, AsyncIterator
+from unittest.mock import AsyncMock, MagicMock, patch
 
 from app.logic.agent_core_logic_v2.output import OutputHandler
 from app.domain.vo.agentvo import AgentConfigVo, AgentInputVo
