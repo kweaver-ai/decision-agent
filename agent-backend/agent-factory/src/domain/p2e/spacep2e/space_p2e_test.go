@@ -69,3 +69,48 @@ func TestSpace(t *testing.T) {
 		})
 	}
 }
+
+func TestSpaces_EmptyList(t *testing.T) {
+	t.Skip("TODO: Requires umHttp mock or local dev mode")
+	ctx := context.Background()
+	pos := []*dapo.SpacePo{}
+
+	eos, err := Spaces(ctx, pos, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 0)
+}
+
+func TestSpaces_SingleItem(t *testing.T) {
+	t.Skip("TODO: Requires umHttp mock or local dev mode")
+	ctx := context.Background()
+	pos := []*dapo.SpacePo{
+		{ID: "space-1", Name: "Test Space", CreatedBy: "user-1", UpdatedBy: "user-2"},
+	}
+
+	eos, err := Spaces(ctx, pos, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 1)
+	assert.Equal(t, "space-1", eos[0].ID)
+	assert.Contains(t, eos[0].CreatedByName, "user-1")
+	assert.Contains(t, eos[0].UpdatedByName, "user-2")
+}
+
+func TestSpaces_MultipleItems(t *testing.T) {
+	t.Skip("TODO: Requires umHttp mock or local dev mode")
+	ctx := context.Background()
+	pos := []*dapo.SpacePo{
+		{ID: "space-1", Name: "Space 1", CreatedBy: "user-1", UpdatedBy: "user-2"},
+		{ID: "space-2", Name: "Space 2", CreatedBy: "user-3", UpdatedBy: "user-4"},
+		{ID: "space-3", Name: "Space 3", CreatedBy: "user-5", UpdatedBy: "user-6"},
+	}
+
+	eos, err := Spaces(ctx, pos, nil)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 3)
+}
