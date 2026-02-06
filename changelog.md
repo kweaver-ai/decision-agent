@@ -7,6 +7,7 @@
 - Add hide support for temporary area in Agent conversation interface
 - Fix temporary area display issue in Agent conversation interface
 - Add i18n support for "Decision Agent" text across pages
+- Fix missing x-business-domain header in Agent API page debug requests
 
 ## 0.3.0
 
