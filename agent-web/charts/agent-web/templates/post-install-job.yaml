@@ -38,8 +38,8 @@ spec:
                 "name": "dataagent",
                 "orderIndex": 1000,
                 "app": {
-                  "textZHCN": "Decision Agent",
-                  "textZHTW": "Decision Agent",
+                  "textZHCN": "决策智能体",
+                  "textZHTW": "決策智能體",
                   "textENUS": "Decision Agent",
                   "type": "group",
                   "pathname": "/agent"
@@ -90,8 +90,8 @@ spec:
                 "name": "agent-list",
                 "orderIndex": 1000,
                 "app": {
-                  "textZHCN": "Decision Agent",
-                  "textZHTW": "Decision Agent",
+                  "textZHCN": "决策智能体",
+                  "textZHTW": "決策智能體",
                   "textENUS": "Decision Agent",
                   "icon": "//ip:port/agent-web/public/icons/decision-agent.svg",
                   "type": "directory",
@@ -144,8 +144,8 @@ spec:
                 "name": "my-agent-list",
                 "orderIndex": 1000,
                 "app": {
-                  "textZHCN": "Decision Agent",
-                  "textZHTW": "Decision Agent",
+                  "textZHCN": "决策智能体",
+                  "textZHTW": "決策智能體",
                   "textENUS": "Decision Agent",
                   "icon": "//ip:port/agent-web/public/icons/decision-agent.svg",
                   "type": "directory",

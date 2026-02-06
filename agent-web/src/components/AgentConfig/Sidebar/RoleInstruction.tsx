@@ -30,18 +30,18 @@ const ROLE_INSTRUCTION_PLACEHOLDER = {
   'zh-cn': `设定AI应答规范请参照以下格式指南：
 
 # 角色任务
-描述Decision Agent的角色人设，期望完成的主要任务或目标。
+描述决策智能体的角色人设，期望完成的主要任务或目标。
 # 使用技能
-描述Decision Agent可用的组件，并说明如何使用这些技能。
+描述决策智能体可用的组件，并说明如何使用这些技能。
 # 要求与限制
 指定回答的输入格式、结果内容、风格要求或字数限制等。`,
 
   'zh-tw': `設定 AI 應答規範請參照以下格式指南：
 
 # 角色任務
-描述Decision Agent的角色人設，期望完成的主要任務或目標。
+描述決策智能體的角色人設，期望完成的主要任務或目標。
 # 使用技能
-描述Decision Agent可用的元件，並說明如何使用這些技能。
+描述決策智能體可用的元件，並說明如何使用這些技能。
 # 要求與限制
 指定回答的輸入格式、結果內容、風格要求或字數限制等。`,
 
@@ -54,6 +54,7 @@ Describe the components available to the Decision Agent and explain how to use t
 # Requirements and Restrictions
 Specify the input format, result content, style requirements, word count limits, etc. for the responses.`,
 };
+
 
 const RoleInstruction: React.FC = () => {
   const microWidgetProps = useMicroWidgetProps();

@@ -48,6 +48,7 @@ const DipChat = () => {
       agentInputParamForm,
       previewFile,
       tempFileList,
+      tempAreaOpen,
     },
     setDipChatStore,
     getDipChatStore,
@@ -172,6 +173,24 @@ const DipChat = () => {
               }
             >
               <DipIcon type="icon-dip-cebianlan" className="dip-font-16" />
+            </DipButton>
+          </Tooltip>
+          <div className={styles.divider} />
+          <Tooltip
+            title={tempAreaOpen ? '收起临时区' : '展开临时区'}
+            getTooltipContainer={node => node.parentElement!}
+            placement="right"
+          >
+            <DipButton
+              variant="link"
+              color="default"
+              onClick={() =>
+                setDipChatStore({
+                  tempAreaOpen: !tempAreaOpen,
+                })
+              }
+            >
+              <DipIcon type="icon-dip-tempArea" className="dip-font-16" />
             </DipButton>
           </Tooltip>
           <div className={styles.divider} />
@@ -460,10 +479,6 @@ const DipChat = () => {
     );
   }
 
-  const hiddenTempArea = () => {
-    return false;
-  };
-
   return (
     <div className={classNames(styles['chat-container'], 'dip-flex dip-full')}>
       <div
@@ -488,8 +503,8 @@ const DipChat = () => {
               setSize(sizes[0]);
             }}
           >
-            <Splitter.Panel min={60} size={previewFile || hiddenTempArea() ? 0 : size}>
-              {!hiddenTempArea() && (
+            <Splitter.Panel min={200} size={previewFile || !tempAreaOpen ? 0 : size}>
+              {tempAreaOpen && (
                 <div
                   className={classNames('dip-full dip-pt-8 dip-pb-8', {
                     'dip-pl-8': !conversationCollapsed,

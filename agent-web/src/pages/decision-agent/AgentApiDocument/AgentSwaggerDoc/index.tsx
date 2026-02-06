@@ -84,6 +84,7 @@ const AdSwaggerDoc = (props: AdSwaggerDocPros) => {
                 const headers = getCommonHttpHeaders();
                 req.headers['Accept-Language'] = headers['Accept-Language'];
                 req.headers['x-Language'] = headers['Accept-Language'];
+                req.headers['x-business-domain'] = headers['x-business-domain'];
                 // 根据选中的filter是 以用户token调试还是以应用账号token调试，决定Authorization的值
                 req.headers['Authorization'] =
                   filterRef.current === FilterEnum.User

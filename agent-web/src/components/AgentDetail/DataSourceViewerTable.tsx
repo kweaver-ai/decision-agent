@@ -159,7 +159,7 @@ const DataSourceViewerTable = memo(({ config }: Props) => {
             kgEntityMapAll[kgId] = entityMap;
           }
         } catch (error) {
-          console.error(`获取知识网络 ${kgId} 名称失败:`, error);
+          console.error(`获取业务知识网络 ${kgId} 名称失败:`, error);
           kgNameMap[kgId] = '---';
           kgEntityMapAll[kgId] = {};
         }
@@ -169,7 +169,7 @@ const DataSourceViewerTable = memo(({ config }: Props) => {
       setKgNames(kgNameMap);
       setKgEntityMaps(kgEntityMapAll);
     } catch (error) {
-      console.error('获取知识网络名称失败:', error);
+      console.error('获取业务知识网络名称失败:', error);
     }
   };
 
