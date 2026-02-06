@@ -149,6 +149,60 @@ func TestSafeRenderTemplate(t *testing.T) {
 	}
 }
 
+func TestSafeRenderTemplate_EdgeCases(t *testing.T) {
+	tests := []struct {
+		name     string
+		template string
+		data     map[string]interface{}
+		expected string
+	}{
+		{
+			name:     "空模板",
+			template: "",
+			data:     map[string]interface{}{},
+			expected: "",
+		},
+		{
+			name:     "纯文本模板",
+			template: "Hello World",
+			data:     map[string]interface{}{},
+			expected: "Hello World",
+		},
+		{
+			name:     "连续的占位符",
+			template: "{{.A}}{{.B}}{{.C}}",
+			data: map[string]interface{}{
+				"A": "1",
+				"B": "2",
+				"C": "3",
+			},
+			expected: "123",
+		},
+		{
+			name:     "没有占位符的模板",
+			template: "Just plain text",
+			data: map[string]interface{}{
+				"User": map[string]interface{}{
+					"Name": "张三",
+				},
+			},
+			expected: "Just plain text",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result, err := SafeRenderTemplate(tt.template, tt.data)
+			if err != nil {
+				t.Errorf("SafeRenderTemplate() unexpected error = %v", err)
+			}
+			if result != tt.expected {
+				t.Errorf("SafeRenderTemplate() = %v, want %v", result, tt.expected)
+			}
+		})
+	}
+}
+
 // 测试 SafeGet 函数
 func TestSafeGet(t *testing.T) {
 	data := map[string]interface{}{

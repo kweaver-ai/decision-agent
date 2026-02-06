@@ -122,3 +122,102 @@ func TestDataAgentRes_DocRetrievalAnswerAndCites_NilDocRetrieval(t *testing.T) {
 	assert.Empty(t, answer)
 	assert.Nil(t, cites)
 }
+
+func TestDataAgentRes_GetDocRetrieval_InvalidJSON(t *testing.T) {
+	res := &DataAgentRes{
+		Answer: agentrespvo.NewAnswerS(),
+	}
+	res.finalAnswerVarHelper = NewResHelper(res.Answer, &agentconfigvo.OutputVariablesS{
+		AnswerVar: "answer",
+	}, VarFieldTypeFinalAnswer)
+	res.docRetrievalVarHelper = NewResHelper(res.Answer, &agentconfigvo.OutputVariablesS{
+		DocRetrievalVar: "doc_res",
+	}, VarFieldTypeDocRetrieval)
+
+	// Set invalid JSON data
+	res.Answer.SetField("doc_res", "{invalid json")
+
+	_, err := res.GetDocRetrieval()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "Unmarshal error")
+}
+
+func TestDataAgentRes_GetDocRetrieval_WithDocRetrievalData(t *testing.T) {
+	res := &DataAgentRes{
+		Answer: agentrespvo.NewAnswerS(),
+	}
+	res.finalAnswerVarHelper = NewResHelper(res.Answer, &agentconfigvo.OutputVariablesS{
+		AnswerVar: "answer",
+	}, VarFieldTypeFinalAnswer)
+	res.docRetrievalVarHelper = NewResHelper(res.Answer, &agentconfigvo.OutputVariablesS{
+		DocRetrievalVar: "doc_res",
+	}, VarFieldTypeDocRetrieval)
+
+	// Set valid doc retrieval data with proper structure
+	docRetrievalData := map[string]interface{}{
+		"answer": map[string]interface{}{
+			"result": "test answer",
+			"full_result": map[string]interface{}{
+				"text":       "full text",
+				"references": []interface{}{},
+			},
+		},
+		"block_answer": map[string]interface{}{},
+	}
+	res.Answer.SetField("doc_res", docRetrievalData)
+
+	docRetrieval, err := res.GetDocRetrieval()
+	assert.NoError(t, err)
+	assert.NotNil(t, docRetrieval)
+}
+
+func TestDataAgentRes_DocRetrievalAnswerAndCites_WithDocRetrievalData(t *testing.T) {
+	res := &DataAgentRes{
+		Answer: agentrespvo.NewAnswerS(),
+	}
+	res.finalAnswerVarHelper = NewResHelper(res.Answer, &agentconfigvo.OutputVariablesS{
+		AnswerVar: "answer",
+	}, VarFieldTypeFinalAnswer)
+	res.docRetrievalVarHelper = NewResHelper(res.Answer, &agentconfigvo.OutputVariablesS{
+		DocRetrievalVar: "doc_res",
+	}, VarFieldTypeDocRetrieval)
+
+	// Set valid doc retrieval data with proper structure
+	docRetrievalData := map[string]interface{}{
+		"answer": map[string]interface{}{
+			"result": "test answer",
+			"full_result": map[string]interface{}{
+				"text":       "full text",
+				"references": []interface{}{},
+			},
+		},
+		"block_answer": map[string]interface{}{},
+	}
+	res.Answer.SetField("doc_res", docRetrievalData)
+
+	answer, cites, err := res.DocRetrievalAnswerAndCites()
+	assert.NoError(t, err)
+	assert.Equal(t, "full text", answer)
+	// cites may be empty if no references, that's ok
+	if cites != nil {
+		assert.Empty(t, cites)
+	}
+}
+
+func TestDataAgentRes_DocRetrievalAnswerAndCites_GetDocRetrievalError(t *testing.T) {
+	res := &DataAgentRes{
+		Answer: agentrespvo.NewAnswerS(),
+	}
+	res.finalAnswerVarHelper = NewResHelper(res.Answer, &agentconfigvo.OutputVariablesS{
+		AnswerVar: "answer",
+	}, VarFieldTypeFinalAnswer)
+	res.docRetrievalVarHelper = NewResHelper(res.Answer, &agentconfigvo.OutputVariablesS{
+		DocRetrievalVar: "doc_res",
+	}, VarFieldTypeDocRetrieval)
+
+	// Set invalid JSON data
+	res.Answer.SetField("doc_res", "{invalid json")
+
+	_, _, err := res.DocRetrievalAnswerAndCites()
+	assert.Error(t, err)
+}

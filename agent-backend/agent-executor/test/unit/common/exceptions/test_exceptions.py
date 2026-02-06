@@ -174,7 +174,7 @@ class TestAgentPermissionException:
         assert "user_456" in exc.error_details
         assert "agent_123" in exc.error_details
 
-    @patch("app.common.exceptions.base_exception.gettext.gettext.gettext", return_value=lambda x: x)
+    @patch("app.common.exceptions.base_exception.gettext.gettext", return_value=lambda x: x)
     @patch("app.common.exceptions.base_exception.Config")
     def test_initialization_without_ids(self, mock_config):
         """测试不带ID初始化"""

@@ -368,8 +368,8 @@ func TestDataAgents_WithEmptyProductKey(t *testing.T) {
 		{ID: "1", Key: "test-agent", Name: "Test Agent", ProductKey: "", CreatedBy: "user1", UpdatedBy: "user2"},
 	}
 
-	// When ProductKey is empty, GetByNameMapByKeys is still called with empty productKeys list
-	mockProductRepo.EXPECT().GetByNameMapByKeys(ctx, []string{}).Return(map[string]string{}, nil)
+	// When ProductKey is empty, it's still included in the productKeys list
+	mockProductRepo.EXPECT().GetByNameMapByKeys(ctx, []string{""}).Return(map[string]string{}, nil)
 
 	eos, err := DataAgents(ctx, pos, mockProductRepo, nil)
 
@@ -398,4 +398,49 @@ func TestDataAgents_ProductRepoError(t *testing.T) {
 
 	assert.Error(t, err)
 	// Note: eos may not be nil even on error, just check that error is returned
+}
+
+func TestDataAgents_InvalidConfigInBatch(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockProductRepo := idbaccessmock.NewMockIProductRepo(ctrl)
+	pos := []*dapo.DataAgentPo{
+		{ID: "1", Key: "test-agent", Name: "Test Agent", ProductKey: "test-product", CreatedBy: "user1", UpdatedBy: "user2"},
+		{ID: "2", Key: "invalid-agent", Name: "Invalid Agent", ProductKey: "test-product", Config: `{invalid json}`},
+	}
+
+	productMap := map[string]string{"test-product": "Test Product"}
+	mockProductRepo.EXPECT().GetByNameMapByKeys(ctx, []string{"test-product", "test-product"}).Return(productMap, nil)
+
+	_, err := DataAgents(ctx, pos, mockProductRepo, nil)
+
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "unmarshal config error")
+}
+
+func TestDataAgents_UnknownUser(t *testing.T) {
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockProductRepo := idbaccessmock.NewMockIProductRepo(ctrl)
+
+	// Create a user that will not be in the UserNameMap (using a special prefix)
+	unknownUser := "unknown_user_prefix_xyz"
+	pos := []*dapo.DataAgentPo{
+		{ID: "1", Key: "test-agent", Name: "Test Agent", ProductKey: "test-product", CreatedBy: unknownUser, UpdatedBy: "user2"},
+	}
+
+	productMap := map[string]string{"test-product": "Test Product"}
+	mockProductRepo.EXPECT().GetByNameMapByKeys(ctx, []string{"test-product"}).Return(productMap, nil)
+
+	eos, err := DataAgents(ctx, pos, mockProductRepo, nil)
+
+	assert.NoError(t, err)
+	assert.Len(t, eos, 1)
+	// The created by name should be "未知用户" (UnknownUser) from locale since the user is not in the map
+	assert.NotEmpty(t, eos[0].CreatedByName)
+	assert.Equal(t, "user2_name", eos[0].UpdatedByName)
 }

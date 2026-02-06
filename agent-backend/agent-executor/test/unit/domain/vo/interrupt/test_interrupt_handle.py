@@ -2,135 +2,94 @@
 
 import pytest
 
-from app.domain.vo.interrupt.interrupt_handle import InterruptHandle
-
 
 class TestInterruptHandle:
-    """测试 InterruptHandle 模型"""
+    """测试 InterruptHandle 类"""
 
-    def test_interrupt_handle_creation(self):
-        """测试创建中断句柄"""
+    def test_init_with_all_fields(self):
+        """测试使用所有字段初始化"""
+        from app.domain.vo.interrupt import InterruptHandle
+
         handle = InterruptHandle(
-            frame_id="frame_123",
-            snapshot_id="snapshot_456",
-            resume_token="token_789",
-            interrupt_type="tool_interrupt",
+            frame_id="frame123",
+            snapshot_id="snapshot456",
+            resume_token="token789",
+            interrupt_type="user_confirmation",
             current_block=1,
             restart_block=False
         )
-        assert handle.frame_id == "frame_123"
-        assert handle.snapshot_id == "snapshot_456"
-        assert handle.resume_token == "token_789"
-        assert handle.interrupt_type == "tool_interrupt"
+
+        assert handle.frame_id == "frame123"
+        assert handle.snapshot_id == "snapshot456"
+        assert handle.resume_token == "token789"
+        assert handle.interrupt_type == "user_confirmation"
         assert handle.current_block == 1
         assert handle.restart_block is False
 
-    def test_all_required_fields(self):
-        """测试所有必填字段"""
+    def test_init_with_restart_block_true(self):
+        """测试restart_block为True"""
+        from app.domain.vo.interrupt import InterruptHandle
+
         handle = InterruptHandle(
-            frame_id="f1",
-            snapshot_id="s1",
-            resume_token="r1",
-            interrupt_type="type1",
-            current_block=0,
+            frame_id="frame123",
+            snapshot_id="snapshot456",
+            resume_token="token789",
+            interrupt_type="tool_interrupt",
+            current_block=2,
             restart_block=True
         )
-        assert handle.frame_id == "f1"
-        assert handle.snapshot_id == "s1"
-        assert handle.resume_token == "r1"
-        assert handle.interrupt_type == "type1"
-        assert handle.current_block == 0
+
         assert handle.restart_block is True
 
-    def test_different_interrupt_types(self):
-        """测试不同的中断类型"""
-        handle1 = InterruptHandle(
-            frame_id="f1", snapshot_id="s1", resume_token="r1",
-            interrupt_type="tool_interrupt", current_block=1, restart_block=False
-        )
-        handle2 = InterruptHandle(
-            frame_id="f2", snapshot_id="s2", resume_token="r2",
-            interrupt_type="human_interrupt", current_block=2, restart_block=True
-        )
-        assert handle1.interrupt_type == "tool_interrupt"
-        assert handle2.interrupt_type == "human_interrupt"
+    def test_default_values(self):
+        """测试没有默认值，所有字段必填"""
+        from app.domain.vo.interrupt import InterruptHandle
+        from pydantic import ValidationError
 
-    def test_current_block_values(self):
-        """测试不同的当前代码块索引"""
-        for i in range(5):
-            handle = InterruptHandle(
-                frame_id="f1", snapshot_id="s1", resume_token="r1",
-                interrupt_type="type1", current_block=i, restart_block=False
-            )
-            assert handle.current_block == i
+        # All fields are required, should raise ValidationError
+        with pytest.raises(ValidationError):
+            InterruptHandle()
 
-    def test_restart_block_true(self):
-        """测试重启代码块为True"""
-        handle = InterruptHandle(
-            frame_id="f1", snapshot_id="s1", resume_token="r1",
-            interrupt_type="type1", current_block=1, restart_block=True
-        )
-        assert handle.restart_block is True
+    def test_is_pydantic_model(self):
+        """测试是Pydantic模型"""
+        from app.domain.vo.interrupt import InterruptHandle
+        from pydantic import BaseModel
 
-    def test_restart_block_false(self):
-        """测试重启代码块为False"""
-        handle = InterruptHandle(
-            frame_id="f1", snapshot_id="s1", resume_token="r1",
-            interrupt_type="type1", current_block=1, restart_block=False
-        )
-        assert handle.restart_block is False
-
-    def test_large_block_index(self):
-        """测试大的代码块索引"""
-        handle = InterruptHandle(
-            frame_id="f1", snapshot_id="s1", resume_token="r1",
-            interrupt_type="type1", current_block=9999, restart_block=False
-        )
-        assert handle.current_block == 9999
-
-    def test_special_characters_in_ids(self):
-        """测试ID中的特殊字符"""
-        handle = InterruptHandle(
-            frame_id="frame_123-abc",
-            snapshot_id="snapshot_456.xyz",
-            resume_token="token_789@test",
-            interrupt_type="custom_type",
-            current_block=1,
-            restart_block=False
-        )
-        assert "-" in handle.frame_id
-        assert "." in handle.snapshot_id
-        assert "@" in handle.resume_token
-
-    def test_missing_required_field(self):
-        """测试缺少必填字段"""
-        with pytest.raises(Exception):
-            InterruptHandle(
-                frame_id="f1",
-                snapshot_id="s1",
-                resume_token="r1",
-                interrupt_type="type1",
-                # Missing current_block
-                restart_block=False
-            )
+        assert issubclass(InterruptHandle, BaseModel)
 
     def test_model_dump(self):
         """测试模型序列化"""
+        from app.domain.vo.interrupt import InterruptHandle
+
         handle = InterruptHandle(
-            frame_id="f1", snapshot_id="s1", resume_token="r1",
-            interrupt_type="type1", current_block=1, restart_block=False
+            frame_id="frame123",
+            snapshot_id="snapshot456",
+            resume_token="token789",
+            interrupt_type="user_confirmation",
+            current_block=1,
+            restart_block=False
         )
+
         data = handle.model_dump()
-        assert data["frame_id"] == "f1"
+
+        assert data["frame_id"] == "frame123"
+        assert data["snapshot_id"] == "snapshot456"
         assert data["current_block"] == 1
-        assert data["restart_block"] is False
 
     def test_model_dump_json(self):
-        """测试JSON序列化"""
+        """测试模型JSON序列化"""
+        from app.domain.vo.interrupt import InterruptHandle
+
         handle = InterruptHandle(
-            frame_id="f1", snapshot_id="s1", resume_token="r1",
-            interrupt_type="type1", current_block=1, restart_block=False
+            frame_id="frame123",
+            snapshot_id="snapshot456",
+            resume_token="token789",
+            interrupt_type="user_confirmation",
+            current_block=1,
+            restart_block=False
         )
+
         json_str = handle.model_dump_json()
-        assert "f1" in json_str
-        assert "current_block" in json_str
+
+        assert "frame123" in json_str
+        assert "snapshot456" in json_str

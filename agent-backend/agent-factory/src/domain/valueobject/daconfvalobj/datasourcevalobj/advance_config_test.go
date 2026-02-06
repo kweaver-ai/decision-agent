@@ -106,3 +106,115 @@ func TestKGAdvancedConfig_GetErrMsgMap(t *testing.T) {
 	assert.Contains(t, errMap, "TextMatchEntityNums.required")
 	assert.Contains(t, errMap, "VectorMatchEntityNums.required")
 }
+
+func TestDocAdvancedConfig_ValObjCheck_InvalidRetrievalSlicesNum(t *testing.T) {
+	invalidValue := 250 // Out of range (50-200)
+	config := &DocAdvancedConfig{
+		RetrievalSlicesNum: &invalidValue,
+	}
+	err := config.ValObjCheck()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "retrieval_slices_num must between 50 and 200")
+}
+
+func TestDocAdvancedConfig_ValObjCheck_InvalidRerankTopK(t *testing.T) {
+	retrievalSlicesNum := 150
+	invalidValue := 50 // Out of range (10-30)
+	config := &DocAdvancedConfig{
+		RetrievalSlicesNum: &retrievalSlicesNum,
+		RerankTopK:         &invalidValue,
+	}
+	err := config.ValObjCheck()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "rerank_topk must between 10 and 30")
+}
+
+func TestDocAdvancedConfig_ValObjCheck_InvalidSliceHeadNum(t *testing.T) {
+	retrievalSlicesNum := 150
+	rerankTopK := 15
+	invalidValue := 5 // Out of range (0-3)
+	config := &DocAdvancedConfig{
+		RetrievalSlicesNum: &retrievalSlicesNum,
+		RerankTopK:         &rerankTopK,
+		SliceHeadNum:       &invalidValue,
+	}
+	err := config.ValObjCheck()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "slice_head_num must between 0 and 3")
+}
+
+func TestDocAdvancedConfig_ValObjCheck_InvalidSliceTailNum(t *testing.T) {
+	retrievalSlicesNum := 150
+	rerankTopK := 15
+	sliceHeadNum := 2
+	invalidValue := 5 // Out of range (0-3)
+	config := &DocAdvancedConfig{
+		RetrievalSlicesNum: &retrievalSlicesNum,
+		RerankTopK:         &rerankTopK,
+		SliceHeadNum:       &sliceHeadNum,
+		SliceTailNum:       &invalidValue,
+	}
+	err := config.ValObjCheck()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "slice_tail_num must between 0 and 3")
+}
+
+func TestDocAdvancedConfig_ValObjCheck_InvalidDocumentsNum(t *testing.T) {
+	retrievalSlicesNum := 150
+	rerankTopK := 15
+	sliceHeadNum := 2
+	sliceTailNum := 0
+	invalidValue := 15 // Out of range (4-10)
+	config := &DocAdvancedConfig{
+		RetrievalSlicesNum: &retrievalSlicesNum,
+		RerankTopK:         &rerankTopK,
+		SliceHeadNum:       &sliceHeadNum,
+		SliceTailNum:       &sliceTailNum,
+		DocumentsNum:       &invalidValue,
+	}
+	err := config.ValObjCheck()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "documents_num must between 4 and 10")
+}
+
+func TestDocAdvancedConfig_ValObjCheck_InvalidMaxSlicePerCite(t *testing.T) {
+	retrievalSlicesNum := 150
+	rerankTopK := 15
+	sliceHeadNum := 2
+	sliceTailNum := 0
+	documentsNum := 8
+	invalidValue := 25 // Out of range (5-20)
+	config := &DocAdvancedConfig{
+		RetrievalSlicesNum: &retrievalSlicesNum,
+		RerankTopK:         &rerankTopK,
+		SliceHeadNum:       &sliceHeadNum,
+		SliceTailNum:       &sliceTailNum,
+		DocumentsNum:       &documentsNum,
+		MaxSlicePerCite:    &invalidValue,
+	}
+	err := config.ValObjCheck()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "max_slice_per_cite must between 5 and 20")
+}
+
+func TestDocAdvancedConfig_ValObjCheck_InvalidDocumentThreshold(t *testing.T) {
+	retrievalSlicesNum := 150
+	rerankTopK := 15
+	sliceHeadNum := 2
+	sliceTailNum := 0
+	documentsNum := 8
+	maxSlicePerCite := 16
+	invalidValue := 15.0 // Out of range (-10 to 10)
+	config := &DocAdvancedConfig{
+		RetrievalSlicesNum: &retrievalSlicesNum,
+		RerankTopK:         &rerankTopK,
+		SliceHeadNum:       &sliceHeadNum,
+		SliceTailNum:       &sliceTailNum,
+		DocumentsNum:       &documentsNum,
+		MaxSlicePerCite:    &maxSlicePerCite,
+		DocumentThreshold:  &invalidValue,
+	}
+	err := config.ValObjCheck()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "document_threshold must between -10 and 10")
+}

@@ -3,6 +3,7 @@ package cutil
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"testing"
 	"time"
 
@@ -15,6 +16,11 @@ type TestStruct struct {
 	Value int
 }
 
+// UnmarshalableStruct is a struct that cannot be marshaled to JSON
+type UnmarshalableStruct struct {
+	Func func()
+}
+
 func TestSetCache(t *testing.T) {
 	db, mock := redismock.NewClientMock()
 	ctx := context.Background()
@@ -22,7 +28,7 @@ func TestSetCache(t *testing.T) {
 	testCases := []struct {
 		name    string
 		key     string
-		value   TestStruct
+		value   any
 		expire  time.Duration
 		wantErr bool
 		setup   func()
@@ -35,6 +41,17 @@ func TestSetCache(t *testing.T) {
 			setup: func() {
 				data, _ := json.Marshal(TestStruct{Name: "test", Value: 123})
 				mock.ExpectSet("test_key", data, time.Hour).SetVal("OK")
+			},
+		},
+		{
+			name:   "Redis设置缓存错误",
+			key:    "error_key",
+			value:  TestStruct{Name: "test", Value: 123},
+			expire: time.Hour,
+			wantErr: true,
+			setup: func() {
+				data, _ := json.Marshal(TestStruct{Name: "test", Value: 123})
+				mock.ExpectSet("error_key", data, time.Hour).SetErr(errors.New("redis error"))
 			},
 		},
 	}
@@ -84,6 +101,22 @@ func TestGetCache(t *testing.T) {
 				mock.ExpectGet("not_exist_key").RedisNil()
 			},
 		},
+		{
+			name:    "Redis获取错误",
+			key:     "error_key",
+			wantErr: true,
+			setup: func() {
+				mock.ExpectGet("error_key").SetErr(errors.New("redis error"))
+			},
+		},
+		{
+			name:    "JSON反序列化错误",
+			key:     "invalid_json_key",
+			wantErr: true,
+			setup: func() {
+				mock.ExpectGet("invalid_json_key").SetVal("invalid json")
+			},
+		},
 	}
 
 	for _, tc := range testCases {
@@ -121,6 +154,14 @@ func TestDelCache(t *testing.T) {
 			key:  "test_key",
 			setup: func() {
 				mock.ExpectDel("test_key").SetVal(1)
+			},
+		},
+		{
+			name:    "Redis删除错误",
+			key:     "error_key",
+			wantErr: true,
+			setup: func() {
+				mock.ExpectDel("error_key").SetErr(errors.New("redis error"))
 			},
 		},
 	}

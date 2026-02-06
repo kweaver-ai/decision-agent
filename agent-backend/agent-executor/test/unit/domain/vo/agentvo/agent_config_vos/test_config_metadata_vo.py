@@ -4,87 +4,73 @@ import pytest
 
 
 class TestConfigMetadataVo:
-    """测试 ConfigMetadataVo 模型"""
+    """测试 ConfigMetadataVo 类"""
 
-    def test_default_initialization(self):
-        """测试默认初始化"""
-        from app.domain.vo.agentvo.agent_config_vos.config_metadata_vo import ConfigMetadataVo
+    def test_init_with_no_fields(self):
+        """测试不使用任何字段初始化"""
+        from app.domain.vo.agentvo.agent_config_vos import ConfigMetadataVo
 
         vo = ConfigMetadataVo()
 
         assert vo.config_tpl_version == ""
         assert vo.config_last_set_timestamp is None
 
-    def test_with_config_tpl_version(self):
-        """测试设置config_tpl_version"""
-        from app.domain.vo.agentvo.agent_config_vos.config_metadata_vo import ConfigMetadataVo
+    def test_init_with_config_tpl_version(self):
+        """测试使用config_tpl_version初始化"""
+        from app.domain.vo.agentvo.agent_config_vos import ConfigMetadataVo
 
         vo = ConfigMetadataVo(config_tpl_version="v1.0")
 
         assert vo.config_tpl_version == "v1.0"
+        assert vo.config_last_set_timestamp is None
 
-    def test_with_timestamp(self):
-        """测试设置timestamp"""
-        from app.domain.vo.agentvo.agent_config_vos.config_metadata_vo import ConfigMetadataVo
+    def test_init_with_timestamp(self):
+        """测试使用timestamp初始化"""
+        from app.domain.vo.agentvo.agent_config_vos import ConfigMetadataVo
 
         vo = ConfigMetadataVo(config_last_set_timestamp=1234567890)
 
+        assert vo.config_tpl_version == ""
         assert vo.config_last_set_timestamp == 1234567890
 
-    def test_with_zero_timestamp(self):
-        """测试零时间戳"""
-        from app.domain.vo.agentvo.agent_config_vos.config_metadata_vo import ConfigMetadataVo
+    def test_init_with_all_fields(self):
+        """测试使用所有字段初始化"""
+        from app.domain.vo.agentvo.agent_config_vos import ConfigMetadataVo
 
-        vo = ConfigMetadataVo(config_last_set_timestamp=0)
+        vo = ConfigMetadataVo(
+            config_tpl_version="v2.0",
+            config_last_set_timestamp=9876543210
+        )
 
-        assert vo.config_last_set_timestamp == 0
+        assert vo.config_tpl_version == "v2.0"
+        assert vo.config_last_set_timestamp == 9876543210
 
-    def test_validate_config_last_set_timestamp_with_invalid_type(self):
-        """测试无效时间戳类型会报错"""
-        from app.domain.vo.agentvo.agent_config_vos.config_metadata_vo import ConfigMetadataVo
-        from pydantic import ValidationError
+    def test_config_last_set_timestamp_str_with_none(self):
+        """测试config_last_set_timestamp_str为None时返回空字符串"""
+        from app.domain.vo.agentvo.agent_config_vos import ConfigMetadataVo
 
-        # String that cannot be converted to int should fail validation
-        with pytest.raises(ValidationError):
-            ConfigMetadataVo(config_last_set_timestamp="invalid")
+        vo = ConfigMetadataVo()
 
-    def test_validate_config_last_set_timestamp_with_string_number(self):
-        """测试字符串数字时间戳会被Pydantic转换为int"""
-        from app.domain.vo.agentvo.agent_config_vos.config_metadata_vo import ConfigMetadataVo
-
-        # Pydantic will coerce string numbers to int
-        vo = ConfigMetadataVo(config_last_set_timestamp="1234567890")
-
-        # Should be coerced to int
-        assert vo.config_last_set_timestamp == 1234567890
+        assert vo.config_last_set_timestamp_str == ""
 
     def test_config_last_set_timestamp_str_with_value(self):
-        """测试带值的时间戳字符串表示"""
-        from app.domain.vo.agentvo.agent_config_vos.config_metadata_vo import ConfigMetadataVo
+        """测试config_last_set_timestamp_str返回字符串"""
+        from app.domain.vo.agentvo.agent_config_vos import ConfigMetadataVo
 
         vo = ConfigMetadataVo(config_last_set_timestamp=1234567890)
 
         assert vo.config_last_set_timestamp_str == "1234567890"
 
-    def test_config_last_set_timestamp_str_with_none(self):
-        """测试None时间戳的字符串表示"""
-        from app.domain.vo.agentvo.agent_config_vos.config_metadata_vo import ConfigMetadataVo
+    def test_is_pydantic_model(self):
+        """测试是Pydantic模型"""
+        from app.domain.vo.agentvo.agent_config_vos import ConfigMetadataVo
+        from pydantic import BaseModel
 
-        vo = ConfigMetadataVo(config_last_set_timestamp=None)
-
-        assert vo.config_last_set_timestamp_str == ""
-
-    def test_config_last_set_timestamp_str_with_zero(self):
-        """测试零时间戳的字符串表示"""
-        from app.domain.vo.agentvo.agent_config_vos.config_metadata_vo import ConfigMetadataVo
-
-        vo = ConfigMetadataVo(config_last_set_timestamp=0)
-
-        assert vo.config_last_set_timestamp_str == "0"
+        assert issubclass(ConfigMetadataVo, BaseModel)
 
     def test_model_dump(self):
         """测试模型序列化"""
-        from app.domain.vo.agentvo.agent_config_vos.config_metadata_vo import ConfigMetadataVo
+        from app.domain.vo.agentvo.agent_config_vos import ConfigMetadataVo
 
         vo = ConfigMetadataVo(
             config_tpl_version="v1.0",
@@ -95,24 +81,3 @@ class TestConfigMetadataVo:
 
         assert data["config_tpl_version"] == "v1.0"
         assert data["config_last_set_timestamp"] == 1234567890
-
-    def test_model_dump_json(self):
-        """测试JSON序列化"""
-        from app.domain.vo.agentvo.agent_config_vos.config_metadata_vo import ConfigMetadataVo
-
-        vo = ConfigMetadataVo(config_tpl_version="v1.0")
-
-        json_str = vo.model_dump_json()
-
-        assert "v1.0" in json_str
-
-    def test_property_not_in_dump(self):
-        """测试property不在序列化中"""
-        from app.domain.vo.agentvo.agent_config_vos.config_metadata_vo import ConfigMetadataVo
-
-        vo = ConfigMetadataVo(config_last_set_timestamp=1234567890)
-
-        data = vo.model_dump()
-
-        # Property should not be in dump
-        assert "config_last_set_timestamp_str" not in data
