@@ -2,7 +2,7 @@
 # 这个文件只有本地调试用，打包是打不进去的，
 db:
   user_name: root
-  user_pwd: "eisoo.com123"
+  user_pwd: ""
   db_host: 192.168.232.11
   db_port: 3330
   db_host_read: 192.168.232.11
@@ -17,7 +17,7 @@ db:
 
 redis:
   connect_type: "standalone"
-  password: "eisoo.com123"
+  password: ""
   username: "root"
 
   db: 3
@@ -31,7 +31,7 @@ redis:
   sentinel_host: "proton-redis-proton-redis-sentinel.resource"
   sentinel_port: "26379"
   sentinel_username: "root"
-  sentinel_password: "eisoo.com123"
+  sentinel_password: ""
 
   # master-slave 主从模式
   master_host: ""
