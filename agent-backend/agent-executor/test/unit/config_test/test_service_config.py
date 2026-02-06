@@ -31,8 +31,6 @@ class TestServicesConfig(TestCase):
     def test_init_default(self):
         """测试默认初始化"""
         config = ServicesConfig()
-        self.assertIsNotNone(config.mf_model_factory)
-        self.assertIsNotNone(config.mf_model_manager)
         self.assertIsNotNone(config.mf_model_api)
         self.assertIsNotNone(config.agent_executor)
         self.assertIsNotNone(config.agent_factory)
@@ -48,42 +46,22 @@ class TestServicesConfig(TestCase):
         self.assertIsNotNone(config.docset_private)
         self.assertIsNotNone(config.datahub)
 
-    def test_init_with_values(self):
-        """测试带值初始化"""
-        config = ServicesConfig(
-            mf_model_factory=ServiceEndpoint("host1", "port1"),
-            mf_model_manager=ServiceEndpoint("host2", "port2"),
-        )
-        self.assertEqual(config.mf_model_factory.host, "host1")
-        self.assertEqual(config.mf_model_manager.host, "host2")
-
     def test_default_values(self):
         """测试默认值"""
         config = ServicesConfig()
-        self.assertEqual(config.mf_model_factory.host, "mf-model-factory")
-        self.assertEqual(config.mf_model_factory.port, "9898")
         self.assertEqual(config.agent_factory.host, "agent-factory")
         self.assertEqual(config.agent_factory.port, "13020")
         self.assertEqual(config.agent_memory.host, "agent-memory")
         self.assertEqual(config.agent_memory.port, "30790")
 
-    def test_from_dict_empty(self):
-        """测试从空字典创建"""
-        config = ServicesConfig.from_dict({})
-        self.assertIsNotNone(config.mf_model_factory)
-        self.assertEqual(config.mf_model_factory.host, "")
-        self.assertEqual(config.mf_model_factory.port, "")
-
+  
     def test_from_dict_with_values(self):
         """测试从字典创建"""
         data = {
-            "mf_model_factory": {"host": "host1", "port": "port1"},
             "agent_executor": {"host": "host2", "port": "port2"},
             "agent_factory": {"host": "host3"},
         }
         config = ServicesConfig.from_dict(data)
-        self.assertEqual(config.mf_model_factory.host, "host1")
-        self.assertEqual(config.mf_model_factory.port, "port1")
         self.assertEqual(config.agent_executor.host, "host2")
         self.assertEqual(config.agent_executor.port, "port2")
         self.assertEqual(config.agent_factory.host, "host3")
@@ -95,8 +73,6 @@ class TestServicesConfig(TestCase):
         config = ServicesConfig.from_dict(data)
         self.assertEqual(config.agent_executor.host, "test-host")
         self.assertEqual(config.agent_executor.port, "1234")
-        self.assertEqual(config.mf_model_factory.host, "")
-        self.assertEqual(config.mf_model_factory.port, "")
 
     def test_from_dict_port_conversion(self):
         """测试端口类型转换"""
@@ -109,8 +85,6 @@ class TestServicesConfig(TestCase):
         """测试所有服务端点初始化"""
         config = ServicesConfig()
         services = [
-            "mf_model_factory",
-            "mf_model_manager",
             "mf_model_api",
             "agent_executor",
             "agent_factory",
@@ -142,8 +116,6 @@ class TestServicesConfig(TestCase):
     def test_default_model_services_ports(self):
         """测试模型服务默认端口"""
         config = ServicesConfig()
-        self.assertEqual(config.mf_model_factory.port, "9898")
-        self.assertEqual(config.mf_model_manager.port, "9898")
         self.assertEqual(config.mf_model_api.port, "9898")
 
     def test_default_knowledge_services_ports(self):

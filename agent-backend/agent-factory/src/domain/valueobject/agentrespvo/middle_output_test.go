@@ -95,3 +95,91 @@ func TestMiddleOutputVarRes_LoadFrom_SomeVarsMissing(t *testing.T) {
 	require.NoError(t, err)
 	assert.Len(t, res.Vars, 2) // Only var1 and var3
 }
+
+func TestMiddleOutputVarRes_LoadFrom_WithPromptType(t *testing.T) {
+	res := NewMiddleOutputVarRes()
+
+	vars := []string{"promptVar"}
+	valuesMap := map[string]interface{}{
+		"promptVar": map[string]interface{}{
+			"answer": "This is the answer",
+			"think":  "This is the thinking",
+		},
+	}
+	interventionMap := map[string][]*Intervention{}
+
+	err := res.LoadFrom(vars, valuesMap, interventionMap)
+	require.NoError(t, err)
+	assert.Len(t, res.Vars, 1)
+
+	// Check that the prompt type is detected
+	assert.Equal(t, "promptVar", res.Vars[0].VarName)
+	assert.Equal(t, chatresenum.OutputVarTypePrompt, res.Vars[0].Type)
+	assert.Equal(t, "This is the answer", res.Vars[0].Value)
+	assert.Equal(t, "This is the thinking", res.Vars[0].Thinking)
+}
+
+func TestMiddleOutputVarRes_LoadFrom_WithExploreType(t *testing.T) {
+	res := NewMiddleOutputVarRes()
+
+	vars := []string{"exploreVar"}
+	valuesMap := map[string]interface{}{
+		"exploreVar": []interface{}{
+			map[string]interface{}{
+				"agent_name":  "agent1",
+				"answer":      "Answer 1",
+				"think":       "Think 1",
+				"status":      "success",
+				"interrupted": false,
+			},
+			map[string]interface{}{
+				"agent_name":  "agent2",
+				"answer":      "Answer 2",
+				"think":       "Think 2",
+				"status":      "success",
+				"interrupted": false,
+			},
+		},
+	}
+	interventionMap := map[string][]*Intervention{}
+
+	err := res.LoadFrom(vars, valuesMap, interventionMap)
+	require.NoError(t, err)
+	assert.Len(t, res.Vars, 1)
+
+	// Check that the explore type is detected
+	assert.Equal(t, "exploreVar", res.Vars[0].VarName)
+	assert.Equal(t, chatresenum.OutputVarTypeExplore, res.Vars[0].Type)
+}
+
+func TestMiddleOutputVarRes_ToExploreList_Success(t *testing.T) {
+	res := NewMiddleOutputVarRes()
+
+	exploreData := []interface{}{
+		map[string]interface{}{
+			"agent_name":  "agent1",
+			"answer":      "Answer 1",
+			"think":       "Think 1",
+			"status":      "success",
+			"interrupted": false,
+		},
+	}
+
+	exploreList, err := res.ToExploreList(exploreData)
+	require.NoError(t, err)
+	assert.Len(t, exploreList, 1)
+	assert.Equal(t, "agent1", exploreList[0].AgentName)
+}
+
+func TestMiddleOutputVarRes_ToExploreList_InvalidData(t *testing.T) {
+	res := NewMiddleOutputVarRes()
+
+	// Invalid data - not an explore list
+	invalidData := "not an explore list"
+
+	// CopyUseJSON might not error for invalid data, just return empty list
+	exploreList, _ := res.ToExploreList(invalidData)
+	// The function might not error, just check the result
+	assert.NotNil(t, exploreList)
+	assert.Empty(t, exploreList)
+}

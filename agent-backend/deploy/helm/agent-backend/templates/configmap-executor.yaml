@@ -88,12 +88,6 @@ data:
     
     # 6. 依赖的服务地址
     services:
-      mf_model_factory:
-        host: "mf-model-factory"
-        port: "9898"
-      mf_model_manager:
-        host: "mf-model-manager"
-        port: "9898"
       mf_model_api:
         host: "mf-model-api"
         port: "9898"
