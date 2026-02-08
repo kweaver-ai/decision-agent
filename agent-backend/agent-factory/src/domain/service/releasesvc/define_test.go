@@ -10,21 +10,41 @@ import (
 )
 
 func TestNewReleaseService(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
+	t.Run("creates service with all dependencies", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
 
-	dto := &NewReleaseSvcDto{
-		SvcBase:                service.NewSvcBase(),
-		ReleaseRepo:            idbaccessmock.NewMockIReleaseRepo(ctrl),
-		ReleaseHistoryRepo:     idbaccessmock.NewMockIReleaseHistoryRepo(ctrl),
-		AgentConfigRepo:        idbaccessmock.NewMockIDataAgentConfigRepo(ctrl),
-		ReleaseCategoryRepo:    idbaccessmock.NewMockIReleaseCategoryRelRepo(ctrl),
-		ReleasePermissionRepo:  idbaccessmock.NewMockIReleasePermissionRepo(ctrl),
-		CategoryRepo:           idbaccessmock.NewMockICategoryRepo(ctrl),
-		SpaceResourceRepo:      idbaccessmock.NewMockISpaceResourceRepo(ctrl),
-	}
+		dto := &NewReleaseSvcDto{
+			SvcBase:                service.NewSvcBase(),
+			ReleaseRepo:            idbaccessmock.NewMockIReleaseRepo(ctrl),
+			ReleaseHistoryRepo:     idbaccessmock.NewMockIReleaseHistoryRepo(ctrl),
+			AgentConfigRepo:        idbaccessmock.NewMockIDataAgentConfigRepo(ctrl),
+			ReleaseCategoryRepo:    idbaccessmock.NewMockIReleaseCategoryRelRepo(ctrl),
+			ReleasePermissionRepo:  idbaccessmock.NewMockIReleasePermissionRepo(ctrl),
+			CategoryRepo:           idbaccessmock.NewMockICategoryRepo(ctrl),
+			SpaceResourceRepo:      idbaccessmock.NewMockISpaceResourceRepo(ctrl),
+		}
 
-	svc := NewReleaseService(dto)
+		svc := NewReleaseService(dto)
 
-	assert.NotNil(t, svc)
+		assert.NotNil(t, svc)
+		assert.IsType(t, &releaseSvc{}, svc)
+	})
+
+	t.Run("creates service with minimal dependencies", func(t *testing.T) {
+		dto := &NewReleaseSvcDto{
+			SvcBase:                service.NewSvcBase(),
+			ReleaseRepo:            nil,
+			ReleaseHistoryRepo:     nil,
+			AgentConfigRepo:        nil,
+			ReleaseCategoryRepo:    nil,
+			ReleasePermissionRepo:  nil,
+			CategoryRepo:           nil,
+			SpaceResourceRepo:      nil,
+		}
+
+		svc := NewReleaseService(dto)
+
+		assert.NotNil(t, svc)
+	})
 }

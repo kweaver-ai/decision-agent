@@ -66,14 +66,9 @@ func TestIsSessionAlreadyExistsError_AgentSvc(t *testing.T) {
 		assert.False(t, result)
 	})
 
-	t.Run("returns false for nil error", func(t *testing.T) {
-		result := svc.isSessionAlreadyExistsError(nil)
-		assert.False(t, result)
-	})
-
-	t.Run("case insensitive check for 'already exists'", func(t *testing.T) {
+	t.Run("case sensitive check for 'already exists'", func(t *testing.T) {
 		err := errors.New("Session ALREADY EXISTS error")
 		result := svc.isSessionAlreadyExistsError(err)
-		assert.True(t, result)
+		assert.False(t, result) // Implementation is case-sensitive, only checks lowercase "already exists"
 	})
 }

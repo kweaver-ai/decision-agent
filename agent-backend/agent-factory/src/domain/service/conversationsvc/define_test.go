@@ -10,24 +10,47 @@ import (
 )
 
 func TestNewConversationService(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
+	t.Run("creates service with all dependencies", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
 
-	dto := &NewConversationSvcDto{
-		SvcBase:             service.NewSvcBase(),
-		ConversationRepo:    idbaccessmock.NewMockIConversationRepo(ctrl),
-		ConversationMsgRepo: idbaccessmock.NewMockIConversationMsgRepo(ctrl),
-		Logger:              nil,
-		OpenAICmp:           nil,
-		UmHttp:              nil,
-		AgentExecutorV1:     nil,
-		AgentExecutorV2:     nil,
-		AgentFactory:        nil,
-		SandboxPlatform:     nil,
-		SandboxPlatformConf: nil,
-	}
+		dto := &NewConversationSvcDto{
+			SvcBase:             service.NewSvcBase(),
+			ConversationRepo:    idbaccessmock.NewMockIConversationRepo(ctrl),
+			ConversationMsgRepo: idbaccessmock.NewMockIConversationMsgRepo(ctrl),
+			Logger:              nil,
+			OpenAICmp:           nil,
+			UmHttp:              nil,
+			AgentExecutorV1:     nil,
+			AgentExecutorV2:     nil,
+			AgentFactory:        nil,
+			SandboxPlatform:     nil,
+			SandboxPlatformConf: nil,
+		}
 
-	svc := NewConversationService(dto)
+		svc := NewConversationService(dto)
 
-	assert.NotNil(t, svc)
+		assert.NotNil(t, svc)
+		assert.IsType(t, &conversationSvc{}, svc)
+	})
+
+	t.Run("creates service with minimal dependencies", func(t *testing.T) {
+		dto := &NewConversationSvcDto{
+			SvcBase:             service.NewSvcBase(),
+			ConversationRepo:    nil,
+			ConversationMsgRepo: nil,
+			Logger:              nil,
+			OpenAICmp:           nil,
+			UmHttp:              nil,
+			AgentExecutorV1:     nil,
+			AgentExecutorV2:     nil,
+			AgentFactory:        nil,
+			SandboxPlatform:     nil,
+			SandboxPlatformConf: nil,
+		}
+
+		svc := NewConversationService(dto)
+
+		assert.NotNil(t, svc)
+	})
 }

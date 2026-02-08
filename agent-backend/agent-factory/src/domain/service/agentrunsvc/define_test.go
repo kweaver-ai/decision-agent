@@ -19,4 +19,28 @@ func TestNewAgentSvc(t *testing.T) {
 		assert.NotNil(t, svc)
 		assert.IsType(t, &agentSvc{}, svc)
 	})
+
+	t.Run("creates service with zero stream diff frequency", func(t *testing.T) {
+		dto := &NewAgentSvcDto{
+			SvcBase:             service.NewSvcBase(),
+			StreamDiffFrequency: 0,
+		}
+
+		svc := NewAgentSvc(dto)
+
+		assert.NotNil(t, svc)
+		assert.IsType(t, &agentSvc{}, svc)
+	})
+
+	t.Run("creates service with negative stream diff frequency", func(t *testing.T) {
+		dto := &NewAgentSvcDto{
+			SvcBase:             service.NewSvcBase(),
+			StreamDiffFrequency: -1,
+		}
+
+		svc := NewAgentSvc(dto)
+
+		assert.NotNil(t, svc)
+		assert.IsType(t, &agentSvc{}, svc)
+	})
 }

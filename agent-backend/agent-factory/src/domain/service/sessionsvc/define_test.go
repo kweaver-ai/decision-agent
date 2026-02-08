@@ -35,3 +35,22 @@ func TestNewSessionService_WithLogger(t *testing.T) {
 	assert.NotNil(t, svc)
 	assert.IsType(t, &sessionSvc{}, svc)
 }
+
+func TestNewSessionService_WithMinimalDependencies(t *testing.T) {
+	dto := &NewSessionSvcDto{
+		SessionRedis: nil,
+		Logger:       nil,
+	}
+
+	svc := NewSessionService(dto)
+
+	assert.NotNil(t, svc)
+}
+
+func TestNewSessionService_WithNilDependencies(t *testing.T) {
+	dto := &NewSessionSvcDto{}
+
+	svc := NewSessionService(dto)
+
+	assert.NotNil(t, svc)
+}

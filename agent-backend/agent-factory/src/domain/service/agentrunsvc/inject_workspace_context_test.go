@@ -35,6 +35,29 @@ func TestBuildUserQuery(t *testing.T) {
 				"Analyze the data",
 			},
 		},
+		{
+			name:          "multiple files",
+			originalQuery: "Compare these files",
+			conversationID: "conv-456",
+			selectedFiles: []agentreq.SelectedFile{
+				{FileName: "/workspace/conv-456/uploads/file1.csv"},
+				{FileName: "/workspace/conv-456/uploads/file2.csv"},
+			},
+			wantContains: []string{
+				"Compare these files",
+				"file1.csv",
+				"file2.csv",
+			},
+		},
+		{
+			name:          "empty original query with files",
+			originalQuery: "",
+			conversationID: "conv-789",
+			selectedFiles: []agentreq.SelectedFile{
+				{FileName: "/workspace/conv-789/uploads/data.csv"},
+			},
+			wantContains: []string{"data.csv"},
+		},
 	}
 
 	for _, tt := range tests {
@@ -74,6 +97,20 @@ func TestBuildWorkspaceContextMessage(t *testing.T) {
 				"/workspace/conv-123/uploads/",
 				"data.csv",
 				"sess-user-456",
+			},
+		},
+		{
+			name:           "multiple files",
+			conversationID: "conv-456",
+			userID:         "user-789",
+			selectedFiles: []agentreq.SelectedFile{
+				{FileName: "/workspace/conv-456/uploads/file1.txt"},
+				{FileName: "/workspace/conv-456/uploads/file2.txt"},
+			},
+			wantContains: []string{
+				"file1.txt",
+				"file2.txt",
+				"sess-user-789",
 			},
 		},
 	}

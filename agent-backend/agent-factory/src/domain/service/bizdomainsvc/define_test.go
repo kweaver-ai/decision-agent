@@ -8,11 +8,26 @@ import (
 )
 
 func TestNewBizDomainService(t *testing.T) {
-	dto := &NewBizDomainSvcDto{
-		SvcBase: service.NewSvcBase(),
-	}
+	t.Run("creates service with all dependencies", func(t *testing.T) {
+		dto := &NewBizDomainSvcDto{
+			SvcBase: service.NewSvcBase(),
+		}
 
-	svc := NewBizDomainService(dto)
+		svc := NewBizDomainService(dto)
 
-	assert.NotNil(t, svc)
+		assert.NotNil(t, svc)
+		assert.IsType(t, &BizDomainSvc{}, svc)
+	})
+
+	t.Run("creates service with minimal dependencies", func(t *testing.T) {
+		dto := &NewBizDomainSvcDto{
+			SvcBase:       service.NewSvcBase(),
+			Logger:        nil,
+			BizDomainHttp: nil,
+		}
+
+		svc := NewBizDomainService(dto)
+
+		assert.NotNil(t, svc)
+	})
 }

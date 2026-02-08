@@ -7,13 +7,28 @@ import (
 )
 
 func TestNewObservabilitySvc(t *testing.T) {
-	dto := &NewObservabilitySvcDto{
-		Logger:       nil,
-		Uniquery:     nil,
-		AgentFactory: nil,
-	}
+	t.Run("creates service with all dependencies", func(t *testing.T) {
+		dto := &NewObservabilitySvcDto{
+			Logger:       nil,
+			Uniquery:     nil,
+			AgentFactory: nil,
+		}
 
-	svc := NewObservabilitySvc(dto)
+		svc := NewObservabilitySvc(dto)
 
-	assert.NotNil(t, svc)
+		assert.NotNil(t, svc)
+		assert.IsType(t, &observabilitySvc{}, svc)
+	})
+
+	t.Run("creates service with minimal dependencies", func(t *testing.T) {
+		dto := &NewObservabilitySvcDto{
+			Logger:       nil,
+			Uniquery:     nil,
+			AgentFactory: nil,
+		}
+
+		svc := NewObservabilitySvc(dto)
+
+		assert.NotNil(t, svc)
+	})
 }
