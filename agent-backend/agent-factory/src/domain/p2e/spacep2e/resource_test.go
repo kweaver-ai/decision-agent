@@ -2,6 +2,7 @@ package spacep2e
 
 import (
 	"context"
+	"errors"
 	"os"
 	"testing"
 
@@ -262,4 +263,53 @@ func TestSpaceResources_NonLocalDevMode(t *testing.T) {
 	assert.Len(t, eos, 1)
 	// In non-local dev mode, real user names should be used
 	assert.Equal(t, "Real User 1", eos[0].PublishedAgentInfo.PublishedByName)
+}
+
+func TestSpaceResources_NonLocalDevModeError(t *testing.T) {
+	// Temporarily unset local dev mode for this test
+	originalValue := os.Getenv("AGENT_FACTORY_LOCAL_DEV")
+	os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
+	defer func() {
+		if originalValue != "" {
+			os.Setenv("AGENT_FACTORY_LOCAL_DEV", originalValue)
+		}
+	}()
+
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+	pos := []*dapo.SpaceResourcePo{
+		{
+			ID:           1,
+			SpaceID:      "space-1",
+			SpaceKey:     "space-key-1",
+			ResourceID:   "agent-1",
+			ResourceType: cdaenum.ResourceTypeDataAgent,
+		},
+	}
+
+	releaseAgentPoMap := map[string]*dapo.PublishedJoinPo{
+		"agent-1": {
+			ReleasePartPo: dapo.ReleasePartPo{
+				PublishedBy: "user-1",
+			},
+			DataAgentPo: dapo.DataAgentPo{
+				ID:   "agent-1",
+				Name: "Test Agent",
+			},
+		},
+	}
+
+	// Expect GetOsnNames to return an error
+	mockUmHttp.EXPECT().GetOsnNames(ctx, gomock.Any()).Return(nil, errors.New("network error"))
+
+	eos, err := SpaceResources(ctx, pos, releaseAgentPoMap, mockUmHttp)
+
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "network error")
+	// eos may be non-nil but empty slice on error
+	assert.Empty(t, eos)
 }

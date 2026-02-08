@@ -2,13 +2,16 @@ package spacep2e
 
 import (
 	"context"
+	"errors"
 	"os"
 	"testing"
 
+	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/locale"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/spaceeo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iumacc/httpaccmock"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -179,4 +182,35 @@ func TestSpaceMembers_MixedTypes(t *testing.T) {
 	assert.Equal(t, "dept-1_name", eos[1].ObjName)
 	assert.Equal(t, "user-2_name", eos[2].ObjName)
 	assert.Equal(t, "group-1_name", eos[3].ObjName)
+}
+
+func TestSpaceMembers_NonLocalDevModeError(t *testing.T) {
+	// Temporarily unset local dev mode for this test
+	originalValue := os.Getenv("AGENT_FACTORY_LOCAL_DEV")
+	os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
+	defer func() {
+		if originalValue != "" {
+			os.Setenv("AGENT_FACTORY_LOCAL_DEV", originalValue)
+		}
+	}()
+
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+	pos := []*dapo.SpaceMemberPo{
+		{ID: 1, SpaceID: "space-1", ObjType: cenum.OrgObjTypeUser, ObjID: "user-1"},
+	}
+
+	// Expect GetOsnNames to return an error
+	mockUmHttp.EXPECT().GetOsnNames(ctx, gomock.Any()).Return(nil, errors.New("network error"))
+
+	eos, err := SpaceMembers(ctx, pos, mockUmHttp)
+
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "network error")
+	// eos may be non-nil but empty slice on error
+	assert.Empty(t, eos)
 }

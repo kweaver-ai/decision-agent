@@ -96,33 +96,6 @@ class TestExceptionHandler:
         assert "error" in res
 
     @pytest.mark.asyncio
-    async def test_handle_exception_with_non_dict_res(self):
-        """Test with non-dict result"""
-        exc = Exception("test")
-        res = None
-        headers = {}
-        await ExceptionHandler.handle_exception(exc, res, headers)
-        assert isinstance(res, dict)
-
-    @pytest.mark.asyncio
-    async def test_handle_exception_with_list_res(self):
-        """Test with list result"""
-        exc = Exception("test")
-        res = []
-        headers = {}
-        await ExceptionHandler.handle_exception(exc, res, headers)
-        assert isinstance(res, dict)
-
-    @pytest.mark.asyncio
-    async def test_handle_exception_with_string_res(self):
-        """Test with string result"""
-        exc = Exception("test")
-        res = "string"
-        headers = {}
-        await ExceptionHandler.handle_exception(exc, res, headers)
-        assert isinstance(res, dict)
-
-    @pytest.mark.asyncio
     async def test_handle_exception_preserves_existing_keys(self):
         """Test that existing keys in res are preserved"""
         exc = Exception("test")

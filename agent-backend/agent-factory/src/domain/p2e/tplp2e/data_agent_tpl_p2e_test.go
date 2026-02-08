@@ -300,3 +300,69 @@ func TestAgentTplListEos_NonLocalDevMode(t *testing.T) {
 	assert.Equal(t, "Real User 1", eos[0].CreatedByName)
 	assert.Equal(t, "Real User 2", eos[0].UpdatedByName)
 }
+
+func TestAgentTplListEos_UnknownUserName(t *testing.T) {
+	// Temporarily unset local dev mode for this test
+	originalValue := os.Getenv("AGENT_FACTORY_LOCAL_DEV")
+	os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
+	defer func() {
+		if originalValue != "" {
+			os.Setenv("AGENT_FACTORY_LOCAL_DEV", originalValue)
+		}
+	}()
+
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+	pos := []*dapo.DataAgentTplPo{
+		{ID: 1, Name: "Template 1", Key: "tpl-1", CreatedBy: "unknown_user", UpdatedBy: "user2"},
+	}
+
+	// Return user info map that doesn't include "unknown_user"
+	osnInfoMap := umtypes.NewOsnInfoMapS()
+	osnInfoMap.UserNameMap["user2"] = "Real User 2"
+	mockUmHttp.EXPECT().GetOsnNames(ctx, gomock.Any()).Return(osnInfoMap, nil)
+
+	eos, err := AgentTplListEos(ctx, pos, mockUmHttp)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 1)
+	// Unknown user should get the "unknown" placeholder
+	assert.NotEmpty(t, eos[0].CreatedByName)
+	assert.Equal(t, "Real User 2", eos[0].UpdatedByName)
+}
+
+func TestAgentTplListEos_NonLocalDevModeError(t *testing.T) {
+	// Temporarily unset local dev mode for this test
+	originalValue := os.Getenv("AGENT_FACTORY_LOCAL_DEV")
+	os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
+	defer func() {
+		if originalValue != "" {
+			os.Setenv("AGENT_FACTORY_LOCAL_DEV", originalValue)
+		}
+	}()
+
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+	pos := []*dapo.DataAgentTplPo{
+		{ID: 1, Name: "Template 1", Key: "tpl-1", CreatedBy: "user1", UpdatedBy: "user2"},
+	}
+
+	// Expect GetOsnNames to return an error
+	mockUmHttp.EXPECT().GetOsnNames(ctx, gomock.Any()).Return(nil, errors.New("network error"))
+
+	eos, err := AgentTplListEos(ctx, pos, mockUmHttp)
+
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "network error")
+	// eos may be non-nil but empty slice on error
+	assert.Empty(t, eos)
+}

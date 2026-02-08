@@ -522,3 +522,153 @@ func TestPublishedTplListEos_NonLocalDevMode(t *testing.T) {
 	// In non-local dev mode, real user names should be used
 	assert.Equal(t, "Real User 1", eos[0].PublishedByName)
 }
+
+func TestPublishedAgents_UnknownUserName(t *testing.T) {
+	// Temporarily unset local dev mode for this test
+	originalValue := os.Getenv("AGENT_FACTORY_LOCAL_DEV")
+	os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
+	defer func() {
+		if originalValue != "" {
+			os.Setenv("AGENT_FACTORY_LOCAL_DEV", originalValue)
+		}
+	}()
+
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+	pos := []*dapo.PublishedJoinPo{
+		{
+			ReleasePartPo: dapo.ReleasePartPo{
+				ReleaseID:   "release-1",
+				PublishedBy: "unknown_user",
+				Version:     "1.0",
+			},
+			DataAgentPo: dapo.DataAgentPo{
+				ID:   "agent1",
+				Name: "Test Agent",
+				Key:  "test-agent",
+			},
+		},
+	}
+
+	// Return user info map that doesn't include "unknown_user"
+	osnInfoMap := umtypes.NewOsnInfoMapS()
+	mockUmHttp.EXPECT().GetOsnNames(ctx, gomock.Any()).Return(osnInfoMap, nil)
+
+	eos, err := PublishedAgents(ctx, pos, mockUmHttp, false)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 1)
+	// Unknown user should get the "unknown" placeholder
+	assert.NotEmpty(t, eos[0].PublishedByName)
+}
+
+func TestPublishedAgents_NonLocalDevModeError(t *testing.T) {
+	// Temporarily unset local dev mode for this test
+	originalValue := os.Getenv("AGENT_FACTORY_LOCAL_DEV")
+	os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
+	defer func() {
+		if originalValue != "" {
+			os.Setenv("AGENT_FACTORY_LOCAL_DEV", originalValue)
+		}
+	}()
+
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+	pos := []*dapo.PublishedJoinPo{
+		{
+			ReleasePartPo: dapo.ReleasePartPo{
+				ReleaseID:   "release-1",
+				PublishedBy: "user1",
+				Version:     "1.0",
+			},
+			DataAgentPo: dapo.DataAgentPo{
+				ID:   "agent1",
+				Name: "Test Agent",
+				Key:  "test-agent",
+			},
+		},
+	}
+
+	// Expect GetOsnNames to return an error
+	mockUmHttp.EXPECT().GetOsnNames(ctx, gomock.Any()).Return(nil, errors.New("network error"))
+
+	eos, err := PublishedAgents(ctx, pos, mockUmHttp, false)
+
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "network error")
+	// eos may be non-nil but empty slice on error
+	assert.Empty(t, eos)
+}
+
+func TestPublishedTplListEos_UnknownUserName(t *testing.T) {
+	// Temporarily unset local dev mode for this test
+	originalValue := os.Getenv("AGENT_FACTORY_LOCAL_DEV")
+	os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
+	defer func() {
+		if originalValue != "" {
+			os.Setenv("AGENT_FACTORY_LOCAL_DEV", originalValue)
+		}
+	}()
+
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+	pos := []*dapo.PublishedTplPo{
+		{ID: 1, Key: "test-tpl", Name: "Test Template", PublishedBy: "unknown_user"},
+	}
+
+	// Return user info map that doesn't include "unknown_user"
+	osnInfoMap := umtypes.NewOsnInfoMapS()
+	mockUmHttp.EXPECT().GetOsnNames(ctx, gomock.Any()).Return(osnInfoMap, nil)
+
+	eos, err := PublishedTplListEos(ctx, pos, mockUmHttp)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 1)
+	// Unknown user should get the "unknown" placeholder
+	assert.NotEmpty(t, eos[0].PublishedByName)
+}
+
+func TestPublishedTplListEos_NonLocalDevModeError(t *testing.T) {
+	// Temporarily unset local dev mode for this test
+	originalValue := os.Getenv("AGENT_FACTORY_LOCAL_DEV")
+	os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
+	defer func() {
+		if originalValue != "" {
+			os.Setenv("AGENT_FACTORY_LOCAL_DEV", originalValue)
+		}
+	}()
+
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+	pos := []*dapo.PublishedTplPo{
+		{ID: 1, Key: "test-tpl", Name: "Test Template", PublishedBy: "user1"},
+	}
+
+	// Expect GetOsnNames to return an error
+	mockUmHttp.EXPECT().GetOsnNames(ctx, gomock.Any()).Return(nil, errors.New("network error"))
+
+	eos, err := PublishedTplListEos(ctx, pos, mockUmHttp)
+
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "network error")
+	// eos may be non-nil but empty slice on error
+	assert.Empty(t, eos)
+}
