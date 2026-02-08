@@ -1,0 +1,120 @@
+services:
+  # MariaDB 数据库
+  mariadb:
+    image: mariadb:10.6
+    container_name: decision-agent-mariadb
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root123456
+      MYSQL_DATABASE: adp
+      MYSQL_USER: aishu
+      MYSQL_PASSWORD: aishu123456
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - decision-agent-network
+
+  # Redis 缓存
+  redis:
+    image: redis:7-alpine
+    container_name: decision-agent-redis
+    restart: unless-stopped
+    command: redis-server --requirepass redis123456 --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - decision-agent-network
+
+  # Agent Backend (包含 agent-factory, agent-executor, agent-memory)
+  agent-backend:
+    build:
+      context: ../..
+      dockerfile: agent-backend/deploy/docker/Dockerfile
+      args:
+        buildImage: python:3.10-slim
+        baseImage: ubuntu:24.04
+        goBuildImage: golang:1.24
+        ARCH_TYPE: amd64
+        UID: 1001
+        GID: 1001
+    container_name: decision-agent-backend
+    restart: unless-stopped
+    depends_on:
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      - "13020:13020"  # agent-factory
+      - "30778:30778"  # agent-executor
+      - "30790:30790"  # agent-memory
+    environment:
+      # 数据库配置
+      DB_HOST: mariadb
+      DB_PORT: 3306
+      DB_USER: aishu
+      DB_PASSWORD: aishu123456
+      DB_DATABASE: adp
+      # Redis 配置
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: redis123456
+      # 其他配置
+      TZ: Asia/Shanghai
+      LOG_LEVEL: info
+    healthcheck:
+      test: |
+        curl -f http://localhost:13020/health/ready &&
+        curl -f http://localhost:30778/health/ready || exit 1
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    networks:
+      - decision-agent-network
+
+  # Agent Web (前端)
+  agent-web:
+    build:
+      context: ../..
+      dockerfile: agent-web/Dockerfile
+    container_name: decision-agent-web
+    restart: unless-stopped
+    depends_on:
+      agent-backend:
+        condition: service_healthy
+    ports:
+      - "1101:1101"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:1101/probe"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - decision-agent-network
+
+networks:
+  decision-agent-network:
+    driver: bridge
+
+volumes:
+  mariadb_data:
+    driver: local
+  redis_data:
+    driver: local

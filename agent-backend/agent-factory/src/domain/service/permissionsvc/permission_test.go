@@ -1,11 +1,14 @@
 package permissionsvc
 
 import (
+	"context"
+	"errors"
 	"testing"
 
 	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdapmsenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iauthzacc/authzaccmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iumacc/httpaccmock"
@@ -20,7 +23,7 @@ func TestNewPermissionService_WithAllDependencies(t *testing.T) {
 		SvcBase:               service.NewSvcBase(),
 		AgentConfigRepo:       idbaccessmock.NewMockIDataAgentConfigRepo(ctrl),
 		ReleaseRepo:           idbaccessmock.NewMockIReleaseRepo(ctrl),
-		ReleasePermissionRepo:  idbaccessmock.NewMockIReleasePermissionRepo(ctrl),
+		ReleasePermissionRepo: idbaccessmock.NewMockIReleasePermissionRepo(ctrl),
 		UmHttp:                httpaccmock.NewMockUmHttpAcc(ctrl),
 		AuthZHttp:             authzaccmock.NewMockAuthZHttpAcc(ctrl),
 		SpaceRepo:             idbaccessmock.NewMockISpaceRepo(ctrl),
@@ -136,3 +139,306 @@ func TestBuildAgentOperationItem(t *testing.T) {
 	}
 }
 
+func TestBuildAgentOperationItem_AllAgentOperations(t *testing.T) {
+	// Test all agent operations have proper mappings
+	allOps := cdapmsenum.GetAllAgentOperator()
+
+	for _, op := range allOps {
+		t.Run(string(op), func(t *testing.T) {
+			result := buildAgentOperationItem(op)
+			assert.NotNil(t, result, "Operation %s should have a valid mapping", op)
+			assert.Equal(t, string(op), result.ID)
+			assert.NotNil(t, result.Name)
+			assert.NotEmpty(t, result.Scope)
+		})
+	}
+}
+
+func TestBuildAgentOperationItem_AllPublishVariants(t *testing.T) {
+	tests := []struct {
+		name      string
+		op        cdapmsenum.Operator
+		scope     []string
+		hasNames  bool
+	}{
+		{
+			name:     "AgentPublishToBeSkillAgent",
+			op:       cdapmsenum.AgentPublishToBeSkillAgent,
+			scope:    []string{"type"},
+			hasNames: true,
+		},
+		{
+			name:     "AgentPublishToBeWebSdkAgent",
+			op:       cdapmsenum.AgentPublishToBeWebSdkAgent,
+			scope:    []string{"type"},
+			hasNames: true,
+		},
+		{
+			name:     "AgentPublishToBeApiAgent",
+			op:       cdapmsenum.AgentPublishToBeApiAgent,
+			scope:    []string{"type"},
+			hasNames: true,
+		},
+		{
+			name:     "AgentPublishToBeDataFlowAgent",
+			op:       cdapmsenum.AgentPublishToBeDataFlowAgent,
+			scope:    []string{"type"},
+			hasNames: true,
+		},
+		{
+			name:     "AgentUnpublishOtherUserAgent",
+			op:       cdapmsenum.AgentUnpublishOtherUserAgent,
+			scope:    []string{"type"},
+			hasNames: true,
+		},
+		{
+			name:     "AgentBuiltInAgentMgmt",
+			op:       cdapmsenum.AgentBuiltInAgentMgmt,
+			scope:    []string{"type"},
+			hasNames: true,
+		},
+		{
+			name:     "AgentSeeTrajectoryAnalysis",
+			op:       cdapmsenum.AgentSeeTrajectoryAnalysis,
+			scope:    []string{"type"},
+			hasNames: true,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := buildAgentOperationItem(tt.op)
+			assert.NotNil(t, result)
+			assert.Equal(t, string(tt.op), result.ID)
+			assert.Equal(t, tt.scope, result.Scope)
+			if tt.hasNames {
+				assert.NotNil(t, result.Name)
+				assert.Len(t, result.Name, 3)
+			}
+		})
+	}
+}
+
+func TestCheckByPmsPlatform_EmptyAccessorIDs(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	agentPo := &dapo.DataAgentPo{
+		ID:        "agent-123",
+		CreatedBy: "owner-user",
+	}
+
+	svc := &permissionSvc{
+		SvcBase: service.NewSvcBase(),
+	}
+
+	hasPms, err := svc.checkByPmsPlatform(context.Background(), agentPo, "", "")
+
+	assert.False(t, hasPms)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "user id or app account id cannot be all empty")
+}
+
+func TestCheckByPmsPlatform_WithUserID(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockAuthZ := authzaccmock.NewMockAuthZHttpAcc(ctrl)
+	agentPo := &dapo.DataAgentPo{
+		ID:        "agent-123",
+		CreatedBy: "owner-user",
+	}
+
+	mockAuthZ.EXPECT().SingleAgentUseCheck(gomock.Any(), "user-123", gomock.Any(), "agent-123").Return(true, nil)
+
+	svc := &permissionSvc{
+		SvcBase:   service.NewSvcBase(),
+		authZHttp: mockAuthZ,
+	}
+
+	hasPms, err := svc.checkByPmsPlatform(context.Background(), agentPo, "user-123", "")
+
+	assert.True(t, hasPms)
+	assert.NoError(t, err)
+}
+
+func TestCheckByPmsPlatform_WithAppAccountID(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockAuthZ := authzaccmock.NewMockAuthZHttpAcc(ctrl)
+	agentPo := &dapo.DataAgentPo{
+		ID:        "agent-123",
+		CreatedBy: "owner-user",
+	}
+
+	mockAuthZ.EXPECT().SingleAgentUseCheck(gomock.Any(), "app-123", gomock.Any(), "agent-123").Return(false, nil)
+
+	svc := &permissionSvc{
+		SvcBase:   service.NewSvcBase(),
+		authZHttp: mockAuthZ,
+	}
+
+	hasPms, err := svc.checkByPmsPlatform(context.Background(), agentPo, "", "app-123")
+
+	assert.False(t, hasPms)
+	assert.NoError(t, err)
+}
+
+func TestCheckByPmsPlatform_AuthZError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockAuthZ := authzaccmock.NewMockAuthZHttpAcc(ctrl)
+	agentPo := &dapo.DataAgentPo{
+		ID:        "agent-123",
+		CreatedBy: "owner-user",
+	}
+
+	expectedErr := errors.New("authZ service error")
+	mockAuthZ.EXPECT().SingleAgentUseCheck(gomock.Any(), "user-123", gomock.Any(), "agent-123").Return(false, expectedErr)
+
+	svc := &permissionSvc{
+		SvcBase:   service.NewSvcBase(),
+		authZHttp: mockAuthZ,
+	}
+
+	hasPms, err := svc.checkByPmsPlatform(context.Background(), agentPo, "user-123", "")
+
+	assert.False(t, hasPms)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "[checkByPmsPlatform][SingleAgentUseCheck]")
+}
+
+func TestCheckUserPms_OwnerHasPermission(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	agentPo := &dapo.DataAgentPo{
+		ID:        "agent-123",
+		CreatedBy: "user-123",
+	}
+
+	svc := &permissionSvc{
+		SvcBase: service.NewSvcBase(),
+	}
+
+	// Owner has permission immediately, no DB call needed
+	hasPms, err := svc.checkUserPms(context.Background(), agentPo, "user-123", "")
+
+	assert.True(t, hasPms)
+	assert.NoError(t, err)
+}
+
+func TestCheckUserPms_EmptyAccessorIDs(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockReleaseRepo := idbaccessmock.NewMockIReleaseRepo(ctrl)
+
+	agentPo := &dapo.DataAgentPo{
+		ID:        "agent-123",
+		CreatedBy: "owner-user",
+	}
+
+	// Since user is not the owner, GetByAgentID will be called
+	mockReleaseRepo.EXPECT().GetByAgentID(gomock.Any(), "agent-123").Return(nil, nil)
+
+	svc := &permissionSvc{
+		SvcBase:     service.NewSvcBase(),
+		releaseRepo: mockReleaseRepo,
+	}
+
+	// Empty IDs will be checked in checkByPmsPlatform
+	hasPms, err := svc.checkUserPms(context.Background(), agentPo, "", "")
+
+	assert.False(t, hasPms)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "user id or app account id cannot be all empty")
+}
+
+func TestCheckUserPms_NonOwnerWithPublishedAgentNoPermissionControl(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockReleaseRepo := idbaccessmock.NewMockIReleaseRepo(ctrl)
+
+	agentPo := &dapo.DataAgentPo{
+		ID:        "agent-123",
+		CreatedBy: "owner-user",
+	}
+
+	isPmsCtrl := 0
+	releasePo := &dapo.ReleasePO{
+		ID:        "release-123",
+		AgentID:   "agent-123",
+		IsPmsCtrl: &isPmsCtrl,
+	}
+
+	mockReleaseRepo.EXPECT().GetByAgentID(gomock.Any(), "agent-123").Return(releasePo, nil)
+
+	svc := &permissionSvc{
+		SvcBase:     service.NewSvcBase(),
+		releaseRepo: mockReleaseRepo,
+	}
+
+	hasPms, err := svc.checkUserPms(context.Background(), agentPo, "other-user", "")
+
+	assert.True(t, hasPms)
+	assert.NoError(t, err)
+}
+
+func TestCheckUserPms_ReleaseRepositoryError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockReleaseRepo := idbaccessmock.NewMockIReleaseRepo(ctrl)
+
+	agentPo := &dapo.DataAgentPo{
+		ID:        "agent-123",
+		CreatedBy: "owner-user",
+	}
+
+	expectedErr := errors.New("release database error")
+	mockReleaseRepo.EXPECT().GetByAgentID(gomock.Any(), "agent-123").Return(nil, expectedErr)
+
+	svc := &permissionSvc{
+		SvcBase:     service.NewSvcBase(),
+		releaseRepo: mockReleaseRepo,
+	}
+
+	hasPms, err := svc.checkUserPms(context.Background(), agentPo, "other-user", "")
+
+	assert.False(t, hasPms)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "[checkUserPms][GetByAgentID]")
+}
+
+func TestCheckUserPms_NoReleaseWithPermissionCheck(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockReleaseRepo := idbaccessmock.NewMockIReleaseRepo(ctrl)
+	mockAuthZ := authzaccmock.NewMockAuthZHttpAcc(ctrl)
+
+	agentPo := &dapo.DataAgentPo{
+		ID:        "agent-123",
+		CreatedBy: "owner-user",
+	}
+
+	// No release found (nil)
+	mockReleaseRepo.EXPECT().GetByAgentID(gomock.Any(), "agent-123").Return(nil, nil)
+	// But user has permission through authZ
+	mockAuthZ.EXPECT().SingleAgentUseCheck(gomock.Any(), "other-user", gomock.Any(), "agent-123").Return(true, nil)
+
+	svc := &permissionSvc{
+		SvcBase:     service.NewSvcBase(),
+		releaseRepo: mockReleaseRepo,
+		authZHttp:   mockAuthZ,
+	}
+
+	hasPms, err := svc.checkUserPms(context.Background(), agentPo, "other-user", "")
+
+	assert.True(t, hasPms)
+	assert.NoError(t, err)
+}

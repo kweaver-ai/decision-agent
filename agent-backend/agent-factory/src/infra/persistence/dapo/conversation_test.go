@@ -25,7 +25,7 @@ func TestConversationPO(t *testing.T) {
 			ID:               "conv-123",
 			AgentAPPKey:       "agent-app-key",
 			Title:             "Test Conversation",
-			Origin:            cdaenum.ConversationOriginWeb,
+			Origin:            cdaenum.ConversationWebChat,
 			MessageIndex:      10,
 			ReadMessageIndex:  5,
 			Ext:               &ext,
@@ -45,8 +45,8 @@ func TestConversationPO(t *testing.T) {
 		if po.Title != "Test Conversation" {
 			t.Errorf("Expected Title to be 'Test Conversation', got '%s'", po.Title)
 		}
-		if po.Origin != cdaenum.ConversationOriginWeb {
-			t.Errorf("Expected Origin to be Web, got %v", po.Origin)
+		if po.Origin != cdaenum.ConversationWebChat {
+			t.Errorf("Expected Origin to be WebChat, got %v", po.Origin)
 		}
 		if po.MessageIndex != 10 {
 			t.Errorf("Expected MessageIndex to be 10, got %d", po.MessageIndex)

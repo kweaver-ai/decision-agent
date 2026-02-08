@@ -322,3 +322,140 @@ func TestFormatTimeToISO8601(t *testing.T) {
 		})
 	}
 }
+
+func TestSafeParseArgs(t *testing.T) {
+	t.Run("nil data returns nil", func(t *testing.T) {
+		result := safeParseArgs(nil)
+		assert.Nil(t, result)
+	})
+
+	t.Run("empty array returns nil", func(t *testing.T) {
+		result := safeParseArgs([]any{})
+		assert.Nil(t, result)
+	})
+
+	t.Run("valid args array", func(t *testing.T) {
+		data := []any{
+			map[string]any{
+				"name":  "arg1",
+				"value": "value1",
+				"type":  "string",
+			},
+			map[string]any{
+				"name":  "arg2",
+				"value": 123,
+				"type":  "int",
+			},
+		}
+		result := safeParseArgs(data)
+
+		assert.NotNil(t, result)
+		assert.Len(t, result, 2)
+		assert.Equal(t, "arg1", result[0].Name)
+		assert.Equal(t, "value1", result[0].Value)
+		assert.Equal(t, "string", result[0].Type)
+		assert.Equal(t, "arg2", result[1].Name)
+	})
+
+	t.Run("args with missing fields", func(t *testing.T) {
+		data := []any{
+			map[string]any{
+				"name": "arg1",
+			},
+		}
+		result := safeParseArgs(data)
+
+		assert.NotNil(t, result)
+		assert.Len(t, result, 1)
+		assert.Equal(t, "arg1", result[0].Name)
+	})
+
+	t.Run("non-array data returns nil", func(t *testing.T) {
+		result := safeParseArgs("string")
+		assert.Nil(t, result)
+	})
+}
+
+func TestSafeParsePromptTokenDetails(t *testing.T) {
+	t.Run("nil data returns empty struct", func(t *testing.T) {
+		result := safeParsePromptTokenDetails(nil)
+		assert.Equal(t, agentrespvo.PromptTokenDetails{}, result)
+	})
+
+	t.Run("valid data", func(t *testing.T) {
+		data := map[string]any{
+			"cached_tokens":   100.0,
+			"uncached_tokens": 200.0,
+		}
+		result := safeParsePromptTokenDetails(data)
+
+		assert.Equal(t, int64(100), result.CachedTokens)
+		assert.Equal(t, int64(200), result.UncachedTokens)
+	})
+
+	t.Run("data with missing fields", func(t *testing.T) {
+		data := map[string]any{
+			"cached_tokens": 50.0,
+		}
+		result := safeParsePromptTokenDetails(data)
+
+		assert.Equal(t, int64(50), result.CachedTokens)
+		assert.Equal(t, int64(0), result.UncachedTokens)
+	})
+
+	t.Run("non-map data returns empty struct", func(t *testing.T) {
+		result := safeParsePromptTokenDetails("string")
+		assert.Equal(t, agentrespvo.PromptTokenDetails{}, result)
+	})
+}
+
+func TestSafeParseSkillInfo_WithComplexArgs(t *testing.T) {
+	t.Run("skill info with multiple args", func(t *testing.T) {
+		data := map[string]any{
+			"type":    "tool",
+			"name":    "multi_tool",
+			"checked": false,
+			"args": []any{
+				map[string]any{
+					"name":  "param1",
+					"value": "value1",
+					"type":  "string",
+				},
+				map[string]any{
+					"name":  "param2",
+					"value": "42",
+					"type":  "number",
+				},
+				map[string]any{
+					"name":  "param3",
+					"value": true,
+					"type":  "boolean",
+				},
+			},
+		}
+		result := safeParseSkillInfo(data)
+
+		assert.NotNil(t, result)
+		assert.Equal(t, "tool", result.Type)
+		assert.Equal(t, "multi_tool", result.Name)
+		assert.False(t, result.Checked)
+		assert.Len(t, result.Args, 3)
+		assert.Equal(t, "param1", result.Args[0].Name)
+		assert.Equal(t, "value1", result.Args[0].Value)
+		assert.Equal(t, "string", result.Args[0].Type)
+	})
+}
+
+func TestSafeGetInt64_LargeValues(t *testing.T) {
+	t.Run("large float value", func(t *testing.T) {
+		m := map[string]any{"key": 9007199254740991.0}
+		result := safeGetInt64(m, "key")
+		assert.Equal(t, int64(9007199254740991), result)
+	})
+
+	t.Run("negative float value", func(t *testing.T) {
+		m := map[string]any{"key": -123.45}
+		result := safeGetInt64(m, "key")
+		assert.Equal(t, int64(-123), result)
+	})
+}

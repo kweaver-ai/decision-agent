@@ -9,17 +9,32 @@ import traceback
 from concurrent.futures import ThreadPoolExecutor
 from enum import Enum
 from gettext import gettext as _l
-from typing import Any, Callable, Dict, Tuple
+from typing import Any, Callable, Dict, Optional, Tuple
 from urllib.parse import urlparse
 
 from fastapi import Request
 from pydantic import BaseModel
 
 from app.domain.enum.common.user_account_header_key import get_user_account_id
-from dolphin.core.context.var_output import VarOutput
+
+# 使用延迟导入替代直接导入 Dolphin SDK
+# from dolphin.core.context.var_output import VarOutput  # ← 移除直接导入
 
 
 cur_pwd = os.getcwd()
+
+
+def _get_var_output_class():
+    """延迟获取 VarOutput 类
+
+    只有在需要时才导入 Dolphin SDK，避免强制依赖。
+    """
+    try:
+        from app.common.dependencies import get_dolphin_var_output_class
+        return get_dolphin_var_output_class()
+    except ImportError:
+        # 如果依赖模块不可用，返回 None
+        return None
 
 
 def get_caller_info() -> Tuple[str, int]:
@@ -250,7 +265,17 @@ async def get_format_error_info(
 
 def is_dolphin_var(var: Any) -> bool:
     """检查是否为 Dolphin 变量"""
-    return VarOutput.is_serialized_dict(var)
+    # 使用延迟导入获取 VarOutput 类，保持原始逻辑
+    VarOutputClass = _get_var_output_class()
+    if VarOutputClass is not None:
+        try:
+            return VarOutputClass.is_serialized_dict(var)
+        except (AttributeError, TypeError):
+            pass
+
+    # 如果 VarOutput 不可用，使用与原始实现相同的逻辑
+    # 原始实现：isinstance(data, dict) and data.get("__type__") == "VarOutput"
+    return isinstance(var, dict) and var.get("__type__") == "VarOutput"
 
 
 def get_dolphin_var_value(var: Any) -> Any:

@@ -26,7 +26,7 @@ class TestCreateResumeGenerator:
             yield {"output": "chunk2"}
 
         with patch("app.logic.agent_core_logic_v2.resume_handler.interrupt_handle_to_resume_handle") as mock_convert, \
-             patch("app.logic.agent_core_logic_v2.resume_handler.process_arun_loop") as mock_process, \
+             patch("app.logic.agent_core_logic_v2.interrupt_utils.process_arun_loop") as mock_process, \
              patch("app.logic.agent_core_logic_v2.resume_handler.json_serialize_async", new_callable=AsyncMock) as mock_serialize:
 
             mock_convert.return_value = MagicMock()
@@ -59,7 +59,7 @@ class TestCreateResumeGenerator:
             yield {"output": "result"}
 
         with patch("app.logic.agent_core_logic_v2.resume_handler.interrupt_handle_to_resume_handle") as mock_convert, \
-             patch("app.logic.agent_core_logic_v2.resume_handler.process_arun_loop") as mock_process, \
+             patch("app.logic.agent_core_logic_v2.interrupt_utils.process_arun_loop") as mock_process, \
              patch("app.logic.agent_core_logic_v2.resume_handler.json_serialize_async", new_callable=AsyncMock) as mock_serialize:
 
             mock_convert.return_value = MagicMock()
@@ -103,7 +103,7 @@ class TestCreateResumeGenerator:
             yield {"output": "test"}
 
         with patch("app.logic.agent_core_logic_v2.resume_handler.interrupt_handle_to_resume_handle") as mock_convert, \
-             patch("app.logic.agent_core_logic_v2.resume_handler.process_arun_loop") as mock_process, \
+             patch("app.logic.agent_core_logic_v2.interrupt_utils.process_arun_loop") as mock_process, \
              patch("app.logic.agent_core_logic_v2.resume_handler.json_serialize_async", new_callable=AsyncMock) as mock_serialize:
 
             mock_convert.return_value = MagicMock()
@@ -164,7 +164,7 @@ class TestCreateResumeGenerator:
             yield  # Make it a generator without yielding
 
         with patch("app.logic.agent_core_logic_v2.resume_handler.interrupt_handle_to_resume_handle") as mock_convert, \
-             patch("app.logic.agent_core_logic_v2.resume_handler.process_arun_loop") as mock_process, \
+             patch("app.logic.agent_core_logic_v2.interrupt_utils.process_arun_loop") as mock_process, \
              patch("app.logic.agent_core_logic_v2.resume_handler.json_serialize_async", new_callable=AsyncMock) as mock_serialize:
 
             mock_convert.return_value = MagicMock()
@@ -197,7 +197,7 @@ class TestCreateResumeGenerator:
             yield {"data": "test_data"}
 
         with patch("app.logic.agent_core_logic_v2.resume_handler.interrupt_handle_to_resume_handle") as mock_convert, \
-             patch("app.logic.agent_core_logic_v2.resume_handler.process_arun_loop") as mock_process, \
+             patch("app.logic.agent_core_logic_v2.interrupt_utils.process_arun_loop") as mock_process, \
              patch("app.logic.agent_core_logic_v2.resume_handler.json_serialize_async") as mock_serialize:
 
             serialization_calls = []

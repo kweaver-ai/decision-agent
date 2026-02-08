@@ -71,11 +71,16 @@ class DolphinModuleFinder:
                 pass
             mock_module.Context = MockContext
 
-        # Special handling for VarOutput.is_serialized_dict to return False
+        # Special handling for VarOutput.is_serialized_dict
         if spec.name == "dolphin.core.context.var_output":
-            mock_var_output = MagicMock()
-            mock_var_output.is_serialized_dict = Mock(return_value=False)
-            mock_module.VarOutput = mock_var_output
+            # 创建一个真正的 VarOutput 类，包含正确的 is_serialized_dict 实现
+            class MockVarOutput:
+                @staticmethod
+                def is_serialized_dict(var):
+                    """检查是否为序列化的字典 - 与原始实现一致"""
+                    return isinstance(var, dict) and var.get("__type__") == "VarOutput"
+
+            mock_module.VarOutput = MockVarOutput
 
         # Special handling for ResumeHandle class
         if spec.name == "dolphin.core.coroutine.resume_handle":

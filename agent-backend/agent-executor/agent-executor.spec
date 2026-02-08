@@ -10,7 +10,7 @@ project_root = os.path.abspath('.')
 # Data files to include
 datas = [
     ("data_migrations", "data_migrations"),
-    
+]
 
 # Analysis configuration
 a = Analysis(
