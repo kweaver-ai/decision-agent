@@ -2,12 +2,16 @@ package spacep2e
 
 import (
 	"context"
+	"os"
 	"testing"
 
+	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/spaceeo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iumacc/httpaccmock"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/umcmp/umtypes"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -206,4 +210,56 @@ func TestSpaceResources_WithUnknownPublishedBy(t *testing.T) {
 	assert.Len(t, eos, 1)
 	// Should use unknown user name from locale
 	assert.NotEmpty(t, eos[0].PublishedAgentInfo.PublishedByName)
+}
+
+func TestSpaceResources_NonLocalDevMode(t *testing.T) {
+	// Temporarily unset local dev mode for this test
+	originalValue := os.Getenv("AGENT_FACTORY_LOCAL_DEV")
+	os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
+	defer func() {
+		if originalValue != "" {
+			os.Setenv("AGENT_FACTORY_LOCAL_DEV", originalValue)
+		}
+	}()
+
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+	pos := []*dapo.SpaceResourcePo{
+		{
+			ID:           1,
+			SpaceID:      "space-1",
+			SpaceKey:     "space-key-1",
+			ResourceID:   "agent-1",
+			ResourceType: cdaenum.ResourceTypeDataAgent,
+		},
+	}
+
+	releaseAgentPoMap := map[string]*dapo.PublishedJoinPo{
+		"agent-1": {
+			ReleasePartPo: dapo.ReleasePartPo{
+				PublishedBy: "user-1",
+			},
+			DataAgentPo: dapo.DataAgentPo{
+				ID:   "agent-1",
+				Name: "Test Agent",
+			},
+		},
+	}
+
+	// Expect GetOsnNames to be called in non-local dev mode
+	osnInfoMap := umtypes.NewOsnInfoMapS()
+	osnInfoMap.UserNameMap["user-1"] = "Real User 1"
+	mockUmHttp.EXPECT().GetOsnNames(ctx, gomock.Any()).Return(osnInfoMap, nil)
+
+	eos, err := SpaceResources(ctx, pos, releaseAgentPoMap, mockUmHttp)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 1)
+	// In non-local dev mode, real user names should be used
+	assert.Equal(t, "Real User 1", eos[0].PublishedAgentInfo.PublishedByName)
 }

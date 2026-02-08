@@ -11,6 +11,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iumacc/httpaccmock"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/umcmp/umtypes"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -261,4 +263,40 @@ func TestAgentTplListEos_WithPublishedBy(t *testing.T) {
 	assert.Equal(t, "user1_name", eos[0].CreatedByName)
 	assert.Equal(t, "user2_name", eos[0].UpdatedByName)
 	assert.Equal(t, "publisher1_name", eos[0].PublishedByName)
+}
+
+func TestAgentTplListEos_NonLocalDevMode(t *testing.T) {
+	// Temporarily unset local dev mode for this test
+	originalValue := os.Getenv("AGENT_FACTORY_LOCAL_DEV")
+	os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
+	defer func() {
+		if originalValue != "" {
+			os.Setenv("AGENT_FACTORY_LOCAL_DEV", originalValue)
+		}
+	}()
+
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+	pos := []*dapo.DataAgentTplPo{
+		{ID: 1, Name: "Template 1", Key: "tpl-1", CreatedBy: "user1", UpdatedBy: "user2"},
+	}
+
+	// Expect GetOsnNames to be called in non-local dev mode
+	osnInfoMap := umtypes.NewOsnInfoMapS()
+	osnInfoMap.UserNameMap["user1"] = "Real User 1"
+	osnInfoMap.UserNameMap["user2"] = "Real User 2"
+	mockUmHttp.EXPECT().GetOsnNames(ctx, gomock.Any()).Return(osnInfoMap, nil)
+
+	eos, err := AgentTplListEos(ctx, pos, mockUmHttp)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 1)
+	// In non-local dev mode, real user names should be used
+	assert.Equal(t, "Real User 1", eos[0].CreatedByName)
+	assert.Equal(t, "Real User 2", eos[0].UpdatedByName)
 }

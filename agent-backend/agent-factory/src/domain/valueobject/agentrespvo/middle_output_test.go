@@ -183,3 +183,63 @@ func TestMiddleOutputVarRes_ToExploreList_InvalidData(t *testing.T) {
 	assert.NotNil(t, exploreList)
 	assert.Empty(t, exploreList)
 }
+
+func TestMiddleOutputVarRes_LoadFrom_PromptWithNonStringAnswer(t *testing.T) {
+	res := NewMiddleOutputVarRes()
+
+	vars := []string{"promptVar"}
+	valuesMap := map[string]interface{}{
+		"promptVar": map[string]interface{}{
+			"answer": 12345, // answer is not a string
+			"think":  "This is the thinking",
+		},
+	}
+	interventionMap := map[string][]*Intervention{}
+
+	err := res.LoadFrom(vars, valuesMap, interventionMap)
+	// Should not error, but should be treated as Other type
+	assert.NoError(t, err)
+	assert.Len(t, res.Vars, 1)
+	// Since getPromptVal fails, it should be treated as Other type
+	assert.Equal(t, chatresenum.OutputVarTypeOther, res.Vars[0].Type)
+}
+
+func TestMiddleOutputVarRes_LoadFrom_PromptWithNonStringThink(t *testing.T) {
+	res := NewMiddleOutputVarRes()
+
+	vars := []string{"promptVar"}
+	valuesMap := map[string]interface{}{
+		"promptVar": map[string]interface{}{
+			"answer": "This is the answer",
+			"think":  12345, // think is not a string
+		},
+	}
+	interventionMap := map[string][]*Intervention{}
+
+	err := res.LoadFrom(vars, valuesMap, interventionMap)
+	// Should not error, but should be treated as Other type
+	assert.NoError(t, err)
+	assert.Len(t, res.Vars, 1)
+	// Since getPromptVal fails, it should be treated as Other type
+	assert.Equal(t, chatresenum.OutputVarTypeOther, res.Vars[0].Type)
+}
+
+func TestMiddleOutputVarRes_LoadFrom_WithUnmarshalableValue(t *testing.T) {
+	res := NewMiddleOutputVarRes()
+
+	vars := []string{"var1"}
+	// Create a value that cannot be marshaled by sonic (a channel)
+	unmarshalableValue := make(chan int)
+	valuesMap := map[string]interface{}{
+		"var1": unmarshalableValue,
+	}
+	interventionMap := map[string][]*Intervention{}
+
+	err := res.LoadFrom(vars, valuesMap, interventionMap)
+	// The value cannot be marshaled, so getVarType returns empty string
+	assert.NoError(t, err)
+	// The var should still be added but with empty type
+	assert.Len(t, res.Vars, 1)
+	// Since getVarType fails, it returns empty string
+	assert.Equal(t, chatresenum.OutputVarType(""), res.Vars[0].Type)
+}

@@ -14,6 +14,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iumacc/httpaccmock"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/umcmp/umtypes"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -443,4 +445,45 @@ func TestDataAgents_UnknownUser(t *testing.T) {
 	// The created by name should be "未知用户" (UnknownUser) from locale since the user is not in the map
 	assert.NotEmpty(t, eos[0].CreatedByName)
 	assert.Equal(t, "user2_name", eos[0].UpdatedByName)
+}
+
+func TestDataAgents_NonLocalDevMode(t *testing.T) {
+	// Temporarily unset local dev mode for this test
+	originalValue := os.Getenv("AGENT_FACTORY_LOCAL_DEV")
+	os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
+	defer func() {
+		if originalValue != "" {
+			os.Setenv("AGENT_FACTORY_LOCAL_DEV", originalValue)
+		}
+	}()
+
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockProductRepo := idbaccessmock.NewMockIProductRepo(ctrl)
+	mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+	pos := []*dapo.DataAgentPo{
+		{ID: "1", Key: "test-agent", Name: "Test Agent", ProductKey: "test-product", CreatedBy: "user1", UpdatedBy: "user2"},
+	}
+
+	// Expect GetOsnNames to be called in non-local dev mode
+	osnInfoMap := umtypes.NewOsnInfoMapS()
+	osnInfoMap.UserNameMap["user1"] = "Real User 1"
+	osnInfoMap.UserNameMap["user2"] = "Real User 2"
+	mockUmHttp.EXPECT().GetOsnNames(ctx, gomock.Any()).Return(osnInfoMap, nil)
+
+	productMap := map[string]string{"test-product": "Test Product"}
+	mockProductRepo.EXPECT().GetByNameMapByKeys(ctx, []string{"test-product"}).Return(productMap, nil)
+
+	eos, err := DataAgents(ctx, pos, mockProductRepo, mockUmHttp)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 1)
+	// In non-local dev mode, real user names should be used
+	assert.Equal(t, "Real User 1", eos[0].CreatedByName)
+	assert.Equal(t, "Real User 2", eos[0].UpdatedByName)
+	assert.Equal(t, "Test Product", eos[0].ProductName)
 }

@@ -81,3 +81,35 @@ class TestConfigMetadataVo:
 
         assert data["config_tpl_version"] == "v1.0"
         assert data["config_last_set_timestamp"] == 1234567890
+
+    def test_validate_config_last_set_timestamp_directly(self):
+        """测试config_last_set_timestamp验证器直接调用"""
+        from app.domain.vo.agentvo.agent_config_vos import ConfigMetadataVo
+
+        # Test the validator method directly
+        # The validator should return 0 for non-int values
+        result = ConfigMetadataVo.validate_config_last_set_timestamp(123.45)
+        assert result == 0
+
+        result = ConfigMetadataVo.validate_config_last_set_timestamp("string")
+        assert result == 0
+
+        result = ConfigMetadataVo.validate_config_last_set_timestamp(None)
+        assert result is None
+
+        result = ConfigMetadataVo.validate_config_last_set_timestamp(1234567890)
+        assert result == 1234567890
+
+    def test_validate_config_tpl_version_directly(self):
+        """测试config_tpl_version验证器直接调用"""
+        from app.domain.vo.agentvo.agent_config_vos import ConfigMetadataVo
+
+        # Test the validator method directly
+        result = ConfigMetadataVo.validate_config_tpl_version("v1.0")
+        assert result == "v1.0"
+
+        result = ConfigMetadataVo.validate_config_tpl_version("")
+        assert result == ""
+
+        result = ConfigMetadataVo.validate_config_tpl_version("any_value")
+        assert result == "any_value"

@@ -304,3 +304,99 @@ func TestArg_Fields(t *testing.T) {
 	assert.Equal(t, "value1", arg.Value)
 	assert.Equal(t, "string", arg.Type)
 }
+
+func TestIsPromptType_Valid(t *testing.T) {
+	validJSON := `{"answer": "test answer", "think": "test think"}`
+	isValid, err := IsPromptType(validJSON)
+	assert.NoError(t, err)
+	assert.True(t, isValid)
+}
+
+func TestIsPromptType_InvalidSchema(t *testing.T) {
+	invalidJSON := `{"answer": "test answer"}` // Missing required "think" field
+	isValid, err := IsPromptType(invalidJSON)
+	assert.NoError(t, err)
+	assert.False(t, isValid)
+}
+
+func TestIsPromptType_InvalidJSON(t *testing.T) {
+	invalidJSON := `{invalid json}`
+	isValid, err := IsPromptType(invalidJSON)
+	assert.Error(t, err)
+	assert.False(t, isValid)
+}
+
+func TestIsPromptTypeInterface_Valid(t *testing.T) {
+	validObj := map[string]interface{}{
+		"answer": "test answer",
+		"think":  "test think",
+	}
+	isValid, err := IsPromptTypeInterface(validObj)
+	assert.NoError(t, err)
+	assert.True(t, isValid)
+}
+
+func TestIsPromptTypeInterface_UnmarshalableObj(t *testing.T) {
+	// Create an object that cannot be marshaled by sonic
+	// Using a channel which cannot be marshaled to JSON
+	unmarshalableObj := make(chan int)
+	isValid, err := IsPromptTypeInterface(unmarshalableObj)
+	assert.Error(t, err)
+	assert.False(t, isValid)
+}
+
+func TestIsExploreType_Valid(t *testing.T) {
+	validJSON := `[{
+		"agent_name": "test agent",
+		"answer": "test answer",
+		"think": "test think",
+		"status": "completed",
+		"interrupted": false
+	}]`
+	isValid, err := IsExploreType(validJSON)
+	assert.NoError(t, err)
+	assert.True(t, isValid)
+}
+
+func TestIsExploreType_InvalidSchema(t *testing.T) {
+	// Missing required "status" field
+	invalidJSON := `[{
+		"agent_name": "test agent",
+		"answer": "test answer",
+		"think": "test think",
+		"interrupted": false
+	}]`
+	isValid, err := IsExploreType(invalidJSON)
+	assert.NoError(t, err)
+	assert.False(t, isValid)
+}
+
+func TestIsExploreType_InvalidJSON(t *testing.T) {
+	invalidJSON := `[invalid json]`
+	isValid, err := IsExploreType(invalidJSON)
+	assert.Error(t, err)
+	assert.False(t, isValid)
+}
+
+func TestIsExploreTypeInterface_Valid(t *testing.T) {
+	validObj := []map[string]interface{}{
+		{
+			"agent_name":  "test agent",
+			"answer":      "test answer",
+			"think":       "test think",
+			"status":      "completed",
+			"interrupted": false,
+		},
+	}
+	isValid, err := IsExploreTypeInterface(validObj)
+	assert.NoError(t, err)
+	assert.True(t, isValid)
+}
+
+func TestIsExploreTypeInterface_UnmarshalableObj(t *testing.T) {
+	// Create an object that cannot be marshaled by sonic
+	unmarshalableObj := make(chan int)
+	isValid, err := IsExploreTypeInterface(unmarshalableObj)
+	assert.Error(t, err)
+	assert.False(t, isValid)
+}

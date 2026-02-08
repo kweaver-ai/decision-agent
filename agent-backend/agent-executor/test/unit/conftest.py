@@ -35,7 +35,7 @@ def create_dolphin_module(fullname):
 class DolphinModuleFinder:
     """A custom module finder that creates mock modules for dolphin.* imports"""
     def find_spec(self, fullname, path, target=None):
-        if fullname.startswith("dolphin.") or fullname == "dolphin" or fullname == "limiter":
+        if fullname.startswith("dolphin.") or fullname == "dolphin" or fullname == "limiter" or fullname.startswith("limiter.") or fullname.startswith("redis.") or fullname == "redis":
             # Ensure parent modules are created first
             if '.' in fullname:
                 parent_name = fullname.rsplit('.', 1)[0]
@@ -96,6 +96,63 @@ class DolphinModuleFinder:
             mock_module.SkillException = type('SkillException', (Exception,), {})
             mock_module.DolphinException = type('DolphinException', (Exception,), {})
 
+        # Special handling for limiter module
+        if spec.name == "limiter":
+            # Create a mock Limiter class
+            class MockLimiter:
+                def __init__(self, app=None, key_func=None, default_limits=None,
+                             rate=None, capacity=None, consume=None):
+                    self.app = app
+                    self.key_func = key_func
+                    self.default_limits = default_limits
+                    self.rate = rate
+                    self.capacity = capacity
+                    self.consume = consume
+
+                def limit(self, limit_string):
+                    def decorator(f):
+                        return f
+                    return decorator
+
+                def init_app(self, app):
+                    pass
+
+            mock_module.Limiter = MockLimiter
+            mock_module.__all__ = ["Limiter"]
+
+        # Special handling for redis module
+        if spec.name == "redis.asyncio":
+            # Create mock redis asyncio classes
+            class MockRedis:
+                async def get(self, key):
+                    return None
+                async def set(self, key, value, ex=None):
+                    return True
+                async def delete(self, *keys):
+                    return 0
+                async def exists(self, *keys):
+                    return 0
+                async def expire(self, key, time):
+                    return True
+                async def close(self):
+                    pass
+                async def ping(self):
+                    return True
+
+            class MockConnectionPool:
+                def __init__(self, **kwargs):
+                    pass
+                async def disconnect(self):
+                    pass
+
+            mock_module.Redis = MockRedis
+            mock_module.ConnectionPool = MockConnectionPool
+            mock_module.from_url = lambda url, **kwargs: MockRedis()
+
+        if spec.name == "redis":
+            # Create base redis module
+            mock_module.asyncio = MagicMock()
+
         return mock_module
 
     def exec_module(self, module):
@@ -112,6 +169,9 @@ mock_app_config = MagicMock()
 mock_app_config.get_stdlib_log_level = MagicMock(return_value=logging.INFO)
 mock_app_config.enable_system_log = "false"
 mock_app_config.debug = False
+mock_app_config.rps_limit = 100  # Default rps_limit for limiter
+mock_app_config.host_prefix = ""  # Default host prefix
+mock_app_config.host_prefix_v2 = ""  # Default host prefix v2 (must not end with /)
 
 # Import Config and set up the mock
 from app.common.config import Config

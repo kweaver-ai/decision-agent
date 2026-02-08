@@ -11,6 +11,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iumacc/httpaccmock"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/umcmp/umtypes"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -440,4 +442,83 @@ func TestPublishedTplListEos_WithEmptyPublishedBy(t *testing.T) {
 	assert.NotNil(t, eos)
 	assert.Len(t, eos, 1)
 	assert.Empty(t, eos[0].PublishedByName)
+}
+
+func TestPublishedAgents_NonLocalDevMode(t *testing.T) {
+	// Temporarily unset local dev mode for this test
+	originalValue := os.Getenv("AGENT_FACTORY_LOCAL_DEV")
+	os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
+	defer func() {
+		if originalValue != "" {
+			os.Setenv("AGENT_FACTORY_LOCAL_DEV", originalValue)
+		}
+	}()
+
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+	pos := []*dapo.PublishedJoinPo{
+		{
+			ReleasePartPo: dapo.ReleasePartPo{
+				ReleaseID:   "release-1",
+				PublishedBy: "user1",
+				Version:     "1.0",
+			},
+			DataAgentPo: dapo.DataAgentPo{
+				ID:   "agent1",
+				Name: "Test Agent",
+				Key:  "test-agent",
+			},
+		},
+	}
+
+	// Expect GetOsnNames to be called in non-local dev mode
+	osnInfoMap := umtypes.NewOsnInfoMapS()
+	osnInfoMap.UserNameMap["user1"] = "Real User 1"
+	mockUmHttp.EXPECT().GetOsnNames(ctx, gomock.Any()).Return(osnInfoMap, nil)
+
+	eos, err := PublishedAgents(ctx, pos, mockUmHttp, false)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 1)
+	// In non-local dev mode, real user names should be used
+	assert.Equal(t, "Real User 1", eos[0].PublishedByName)
+}
+
+func TestPublishedTplListEos_NonLocalDevMode(t *testing.T) {
+	// Temporarily unset local dev mode for this test
+	originalValue := os.Getenv("AGENT_FACTORY_LOCAL_DEV")
+	os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
+	defer func() {
+		if originalValue != "" {
+			os.Setenv("AGENT_FACTORY_LOCAL_DEV", originalValue)
+		}
+	}()
+
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+	pos := []*dapo.PublishedTplPo{
+		{ID: 1, Key: "test-tpl", Name: "Test Template", PublishedBy: "user1"},
+	}
+
+	// Expect GetOsnNames to be called in non-local dev mode
+	osnInfoMap := umtypes.NewOsnInfoMapS()
+	osnInfoMap.UserNameMap["user1"] = "Real User 1"
+	mockUmHttp.EXPECT().GetOsnNames(ctx, gomock.Any()).Return(osnInfoMap, nil)
+
+	eos, err := PublishedTplListEos(ctx, pos, mockUmHttp)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, eos)
+	assert.Len(t, eos, 1)
+	// In non-local dev mode, real user names should be used
+	assert.Equal(t, "Real User 1", eos[0].PublishedByName)
 }
