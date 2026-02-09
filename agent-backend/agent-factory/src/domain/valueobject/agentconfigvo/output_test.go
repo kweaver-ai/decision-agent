@@ -281,3 +281,61 @@ func TestOutputVariablesS_ToVariable_Empty(t *testing.T) {
 	assert.Nil(t, variable.OtherVars)
 }
 
+func TestOutputVariablesS_LoadFromAgent_EmptyDolphinWithMode(t *testing.T) {
+	// Test when dolphin is empty but mode is enabled
+	agent := &agentfactorydto.Agent{
+		Config: daconfvalobj.Config{
+			IsDolphinMode: cdaenum.DolphinModeEnabled,
+			Dolphin:       "", // Empty dolphin
+			Output: &daconfvalobj.Output{
+				Variables: &daconfvalobj.VariablesS{
+					AnswerVar: "answer",
+				},
+			},
+		},
+	}
+
+	v := &OutputVariablesS{}
+	err := v.LoadFromAgent(agent)
+	assert.NoError(t, err)
+	assert.Equal(t, "answer", v.AnswerVar)
+	// MiddleOutputVars should remain empty since dolphin is empty
+	assert.Empty(t, v.MiddleOutputVars)
+}
+
+func TestExtractOutputFromLine_ComplexPatterns(t *testing.T) {
+	tests := []struct {
+		name string
+		line string
+		want string
+	}{
+		{
+			name: "混合->和>>",
+			line: "text -> >> output_test",
+			want: "output_test", // 第一个匹配的->之后的内容
+		},
+		{
+			name: "多个output_",
+			line: " -> output_1 >> output_2",
+			want: "output_1", // 第一个匹配的
+		},
+		{
+			name: "output_带数字",
+			line: ">> output_123",
+			want: "output_123",
+		},
+		{
+			name: "output_带下划线",
+			line: " -> output_test_value",
+			want: "output_test_value",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := extractOutputFromLine(tt.line)
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}
+

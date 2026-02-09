@@ -47,9 +47,9 @@ services:
       context: ../..
       dockerfile: agent-backend/deploy/docker/Dockerfile
       args:
-        buildImage: python:3.10-slim
-        baseImage: ubuntu:24.04
-        goBuildImage: golang:1.24
+        buildImage: python:3.11-slim
+        baseImage: ubuntu:noble
+        goBuildImage: golang:1.24-alpine
         ARCH_TYPE: amd64
         UID: 1001
         GID: 1001

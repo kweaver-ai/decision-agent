@@ -400,3 +400,17 @@ func TestIsExploreTypeInterface_UnmarshalableObj(t *testing.T) {
 	assert.Error(t, err)
 	assert.False(t, isValid)
 }
+
+func TestAnswerS_UnmarshalJSON_WithInvalidFieldValue(t *testing.T) {
+	// Test when a custom field value cannot be unmarshaled
+	// This tests the error case at line 103-105 in answer_data.go
+	jsonData := `{
+		"interventions": [],
+		"_progress": [],
+		"invalid_field": {invalid value}
+	}`
+
+	answer := &AnswerS{}
+	err := answer.UnmarshalJSON([]byte(jsonData))
+	assert.Error(t, err)
+}
