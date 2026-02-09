@@ -1,51 +1,87 @@
 package cdaenum
 
-import "testing"
+import (
+	"testing"
 
-func TestInputFieldType_EnumCheck(t *testing.T) {
+	"github.com/stretchr/testify/assert"
+)
+
+func TestInputFieldType_Constants(t *testing.T) {
+	assert.Equal(t, InputFieldType("string"), InputFieldTypeString)
+	assert.Equal(t, InputFieldType("file"), InputFieldTypeFile)
+	assert.Equal(t, InputFieldType("object"), InputFieldTypeJSONObject)
+}
+
+func TestInputFieldType_EnumCheck_Valid(t *testing.T) {
+	validTypes := []InputFieldType{
+		InputFieldTypeString,
+		InputFieldTypeFile,
+		InputFieldTypeJSONObject,
+	}
+
+	for _, fieldType := range validTypes {
+		t.Run(string(fieldType), func(t *testing.T) {
+			err := fieldType.EnumCheck()
+			assert.NoError(t, err)
+		})
+	}
+}
+
+func TestInputFieldType_EnumCheck_Invalid(t *testing.T) {
+	invalidType := InputFieldType("invalid_type")
+	err := invalidType.EnumCheck()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "invalid input field type")
+}
+
+func TestInputFieldType_EnumCheck_Empty(t *testing.T) {
+	emptyType := InputFieldType("")
+	err := emptyType.EnumCheck()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "invalid input field type")
+}
+
+func TestInputFieldType_AllUnique(t *testing.T) {
+	fieldTypes := []InputFieldType{
+		InputFieldTypeString,
+		InputFieldTypeFile,
+		InputFieldTypeJSONObject,
+	}
+
+	uniqueTypes := make(map[InputFieldType]bool)
+	for _, ft := range fieldTypes {
+		assert.False(t, uniqueTypes[ft], "Duplicate field type found: %s", ft)
+		uniqueTypes[ft] = true
+	}
+}
+
+func TestInputFieldType_StringValues(t *testing.T) {
 	tests := []struct {
-		name    string
-		t       InputFieldType
-		wantErr bool
+		name     string
+		fieldType InputFieldType
+		expected string
 	}{
 		{
-			name:    "字符串类型",
-			t:       InputFieldTypeString,
-			wantErr: false,
+			name:     "string field type",
+			fieldType: InputFieldTypeString,
+			expected: "string",
 		},
 		{
-			name:    "文件类型",
-			t:       InputFieldTypeFile,
-			wantErr: false,
+			name:     "file field type",
+			fieldType: InputFieldTypeFile,
+			expected: "file",
 		},
 		{
-			name:    "JSON对象类型",
-			t:       InputFieldTypeJSONObject,
-			wantErr: false,
-		},
-		{
-			name:    "无效类型",
-			t:       InputFieldType("invalid"),
-			wantErr: true,
-		},
-		{
-			name:    "空字符串",
-			t:       InputFieldType(""),
-			wantErr: true,
-		},
-		{
-			name:    "未知类型",
-			t:       InputFieldType("text"),
-			wantErr: true,
+			name:     "json object field type",
+			fieldType: InputFieldTypeJSONObject,
+			expected: "object",
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := tt.t.EnumCheck()
-			if (err != nil) != tt.wantErr {
-				t.Errorf("EnumCheck() error = %v, wantErr %v", err, tt.wantErr)
-			}
+			result := string(tt.fieldType)
+			assert.Equal(t, tt.expected, result)
 		})
 	}
 }

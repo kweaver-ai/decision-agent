@@ -324,6 +324,16 @@ func TestDocSourceField_GetDirObjID(t *testing.T) {
 			source:     "gns://abc123/def456/",
 			expectedID: "",
 		},
+		{
+			name:       "source with only slashes",
+			source:     "///",
+			expectedID: "",
+		},
+		{
+			name:       "single slash",
+			source:     "/",
+			expectedID: "",
+		},
 	}
 
 	for _, tt := range tests {

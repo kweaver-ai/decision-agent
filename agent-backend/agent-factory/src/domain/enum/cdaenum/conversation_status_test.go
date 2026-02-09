@@ -2,30 +2,71 @@ package cdaenum
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestConversationStatus_Constants(t *testing.T) {
-	t.Run("ConvStatusProcessing constant", func(t *testing.T) {
-		if ConvStatusProcessing != "processing" {
-			t.Errorf("Expected ConvStatusProcessing to be 'processing', got '%s'", ConvStatusProcessing)
-		}
-	})
+	assert.Equal(t, ConversationStatus("processing"), ConvStatusProcessing)
+	assert.Equal(t, ConversationStatus("completed"), ConvStatusCompleted)
+	assert.Equal(t, ConversationStatus("cancelled"), ConvStatusCancelled)
+	assert.Equal(t, ConversationStatus("failed"), ConvStatusFailed)
+}
 
-	t.Run("ConvStatusCompleted constant", func(t *testing.T) {
-		if ConvStatusCompleted != "completed" {
-			t.Errorf("Expected ConvStatusCompleted to be 'completed', got '%s'", ConvStatusCompleted)
-		}
-	})
+func TestConversationStatus_StringValues(t *testing.T) {
+	tests := []struct {
+		name     string
+		status   ConversationStatus
+		expected string
+	}{
+		{
+			name:     "processing status",
+			status:   ConvStatusProcessing,
+			expected: "processing",
+		},
+		{
+			name:     "completed status",
+			status:   ConvStatusCompleted,
+			expected: "completed",
+		},
+		{
+			name:     "cancelled status",
+			status:   ConvStatusCancelled,
+			expected: "cancelled",
+		},
+		{
+			name:     "failed status",
+			status:   ConvStatusFailed,
+			expected: "failed",
+		},
+	}
 
-	t.Run("ConvStatusCancelled constant", func(t *testing.T) {
-		if ConvStatusCancelled != "cancelled" {
-			t.Errorf("Expected ConvStatusCancelled to be 'cancelled', got '%s'", ConvStatusCancelled)
-		}
-	})
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			result := string(tt.status)
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
 
-	t.Run("ConvStatusFailed constant", func(t *testing.T) {
-		if ConvStatusFailed != "failed" {
-			t.Errorf("Expected ConvStatusFailed to be 'failed', got '%s'", ConvStatusFailed)
-		}
-	})
+func TestConversationStatus_AllUnique(t *testing.T) {
+	statuses := []ConversationStatus{
+		ConvStatusProcessing,
+		ConvStatusCompleted,
+		ConvStatusCancelled,
+		ConvStatusFailed,
+	}
+
+	uniqueStatuses := make(map[ConversationStatus]bool)
+	for _, status := range statuses {
+		assert.False(t, uniqueStatuses[status], "Duplicate status found: %s", status)
+		uniqueStatuses[status] = true
+	}
+}
+
+func TestConversationStatus_NotEmpty(t *testing.T) {
+	assert.NotEmpty(t, ConvStatusProcessing)
+	assert.NotEmpty(t, ConvStatusCompleted)
+	assert.NotEmpty(t, ConvStatusCancelled)
+	assert.NotEmpty(t, ConvStatusFailed)
 }

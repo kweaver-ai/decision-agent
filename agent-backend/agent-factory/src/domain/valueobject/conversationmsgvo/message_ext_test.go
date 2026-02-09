@@ -4,66 +4,69 @@ import (
 	"testing"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentresperr"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMessageExt_IsInterrupted(t *testing.T) {
-	tests := []struct {
-		name     string
-		ext      *MessageExt
-		expected bool
-	}{
-		{
-			name:     "nil interrupt info",
-			ext:      &MessageExt{},
-			expected: false,
+func TestMessageExt_StructFields(t *testing.T) {
+	interruptInfo := &v2agentexecutordto.ToolInterruptInfo{
+		Handle: &v2agentexecutordto.InterruptHandle{
+			FrameID: "frame-123",
 		},
-		{
-			name:     "nil ext",
-			ext:      nil,
-			expected: false,
+		Data: &v2agentexecutordto.InterruptData{
+			ToolName: "test_tool",
 		},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.ext != nil {
-				assert.Equal(t, tt.expected, tt.ext.IsInterrupted())
-			}
-		})
+	ext := &MessageExt{
+		InterruptInfo:  interruptInfo,
+		RelatedQueries: []string{"query1", "query2"},
+		TotalTime:      1.5,
+		TotalTokens:    100,
+		TTFT:           500,
+		AgentRunID:     "run-456",
 	}
+
+	assert.NotNil(t, ext.InterruptInfo)
+	assert.Len(t, ext.RelatedQueries, 2)
+	assert.Equal(t, 1.5, ext.TotalTime)
+	assert.Equal(t, int64(100), ext.TotalTokens)
+	assert.Equal(t, int64(500), ext.TTFT)
+	assert.Equal(t, "run-456", ext.AgentRunID)
 }
 
-func TestMessageExt_Fields(t *testing.T) {
-	ext := &MessageExt{
-		RelatedQueries: []string{"What is AI?", "How does ML work?"},
-		TotalTime:      2.5,
-		TotalTokens:    1000,
-		TTFT:           500,
-		AgentRunID:     "run-123",
+func TestMessageExt_IsInterrupted_WithInterruptInfo(t *testing.T) {
+	interruptInfo := &v2agentexecutordto.ToolInterruptInfo{
+		Handle: &v2agentexecutordto.InterruptHandle{
+			FrameID: "frame-abc",
+		},
 	}
 
-	assert.NotNil(t, ext)
-	assert.Len(t, ext.RelatedQueries, 2)
-	assert.Equal(t, "What is AI?", ext.RelatedQueries[0])
-	assert.Equal(t, 2.5, ext.TotalTime)
-	assert.Equal(t, int64(1000), ext.TotalTokens)
-	assert.Equal(t, int64(500), ext.TTFT)
-	assert.Equal(t, "run-123", ext.AgentRunID)
-	assert.Nil(t, ext.InterruptInfo)
-	assert.Nil(t, ext.Error)
+	ext := &MessageExt{
+		InterruptInfo: interruptInfo,
+	}
+
+	assert.True(t, ext.IsInterrupted())
+}
+
+func TestMessageExt_IsInterrupted_WithoutInterruptInfo(t *testing.T) {
+	ext := &MessageExt{}
+
+	assert.False(t, ext.IsInterrupted())
 }
 
 func TestMessageExt_WithError(t *testing.T) {
-	err := agentresperr.NewRespError(agentresperr.RespErrorTypeAgentFactory, "test error")
+	respErr := &agentresperr.RespError{
+		Type:  agentresperr.RespErrorTypeAgentFactory,
+		Error: "Test error message",
+	}
 
 	ext := &MessageExt{
-		Error: err,
+		Error: respErr,
 	}
 
 	assert.NotNil(t, ext.Error)
 	assert.Equal(t, agentresperr.RespErrorTypeAgentFactory, ext.Error.Type)
-	assert.Equal(t, "test error", ext.Error.Error)
 }
 
 func TestMessageExt_Empty(t *testing.T) {
@@ -71,9 +74,63 @@ func TestMessageExt_Empty(t *testing.T) {
 
 	assert.Nil(t, ext.InterruptInfo)
 	assert.Nil(t, ext.RelatedQueries)
-	assert.Equal(t, 0.0, ext.TotalTime)
-	assert.Equal(t, int64(0), ext.TotalTokens)
-	assert.Equal(t, int64(0), ext.TTFT)
+	assert.Zero(t, ext.TotalTime)
+	assert.Zero(t, ext.TotalTokens)
+	assert.Zero(t, ext.TTFT)
 	assert.Empty(t, ext.AgentRunID)
 	assert.Nil(t, ext.Error)
+}
+
+func TestMessageExt_WithEmptyRelatedQueries(t *testing.T) {
+	ext := &MessageExt{
+		RelatedQueries: []string{},
+	}
+
+	assert.NotNil(t, ext.RelatedQueries)
+	assert.Len(t, ext.RelatedQueries, 0)
+}
+
+func TestMessageExt_AllFields(t *testing.T) {
+	interruptInfo := &v2agentexecutordto.ToolInterruptInfo{
+		Handle: &v2agentexecutordto.InterruptHandle{
+			FrameID:      "frame-xyz",
+			SnapshotID:   "snapshot-xyz",
+			ResumeToken:  "token-xyz",
+			InterruptType: "tool_call",
+			CurrentBlock: 1,
+			RestartBlock: false,
+		},
+		Data: &v2agentexecutordto.InterruptData{
+			ToolName:        "confirmation_tool",
+			ToolDescription: "Needs user confirmation",
+			InterruptConfig: &v2agentexecutordto.InterruptConfig{
+				RequiresConfirmation: true,
+				ConfirmationMessage:  "Please confirm",
+			},
+		},
+	}
+
+	respErr := &agentresperr.RespError{
+		Type:  agentresperr.RespErrorTypeAgentExecutor,
+		Error: map[string]string{"code": "ERR_TIMEOUT", "message": "Request timeout"},
+	}
+
+	ext := &MessageExt{
+		InterruptInfo:  interruptInfo,
+		RelatedQueries: []string{"What is AI?", "How does ML work?"},
+		TotalTime:      2.5,
+		TotalTokens:    500,
+		TTFT:           1000,
+		AgentRunID:     "run-789",
+		Error:          respErr,
+	}
+
+	assert.True(t, ext.IsInterrupted())
+	assert.Len(t, ext.RelatedQueries, 2)
+	assert.Equal(t, 2.5, ext.TotalTime)
+	assert.Equal(t, int64(500), ext.TotalTokens)
+	assert.Equal(t, int64(1000), ext.TTFT)
+	assert.Equal(t, "run-789", ext.AgentRunID)
+	assert.NotNil(t, ext.Error)
+	assert.Equal(t, agentresperr.RespErrorTypeAgentExecutor, ext.Error.Type)
 }

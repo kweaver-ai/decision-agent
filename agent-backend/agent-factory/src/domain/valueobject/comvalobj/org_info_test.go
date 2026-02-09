@@ -1,170 +1,166 @@
 package comvalobj
 
 import (
+	"encoding/json"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
-func TestRoleInfo(t *testing.T) {
-	tests := []struct {
-		name     string
-		roleInfo RoleInfo
-	}{
-		{
-			name: "完整角色信息",
-			roleInfo: RoleInfo{
-				RoleID:   "role-123",
-				RoleName: "管理员",
-			},
-		},
-		{
-			name: "空角色信息",
-			roleInfo: RoleInfo{
-				RoleID:   "",
-				RoleName: "",
-			},
-		},
+func TestRoleInfo_New(t *testing.T) {
+	roleInfo := &RoleInfo{
+		RoleID:   "role-123",
+		RoleName: "Administrator",
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.roleInfo.RoleID != tt.roleInfo.RoleID {
-				t.Errorf("RoleID = %s", tt.roleInfo.RoleID)
-			}
-			if tt.roleInfo.RoleName != tt.roleInfo.RoleName {
-				t.Errorf("RoleName = %s", tt.roleInfo.RoleName)
-			}
-		})
-	}
+	assert.NotNil(t, roleInfo)
+	assert.Equal(t, "role-123", roleInfo.RoleID)
+	assert.Equal(t, "Administrator", roleInfo.RoleName)
 }
 
-func TestUserInfo(t *testing.T) {
-	tests := []struct {
-		name     string
-		userInfo UserInfo
-	}{
-		{
-			name: "完整用户信息",
-			userInfo: UserInfo{
-				UserID:   "user-123",
-				Username: "testuser",
-			},
-		},
-		{
-			name: "空用户信息",
-			userInfo: UserInfo{
-				UserID:   "",
-				Username: "",
-			},
-		},
+func TestUserInfo_New(t *testing.T) {
+	userInfo := &UserInfo{
+		UserID:   "user-456",
+		Username: "john_doe",
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.userInfo.UserID != tt.userInfo.UserID {
-				t.Errorf("UserID = %s", tt.userInfo.UserID)
-			}
-			if tt.userInfo.Username != tt.userInfo.Username {
-				t.Errorf("Username = %s", tt.userInfo.Username)
-			}
-		})
-	}
+	assert.NotNil(t, userInfo)
+	assert.Equal(t, "user-456", userInfo.UserID)
+	assert.Equal(t, "john_doe", userInfo.Username)
 }
 
-func TestUserGroupInfo(t *testing.T) {
-	tests := []struct {
-		name          string
-		userGroupInfo UserGroupInfo
-	}{
-		{
-			name: "完整用户组信息",
-			userGroupInfo: UserGroupInfo{
-				UserGroupID:   "group-123",
-				UserGroupName: "测试组",
-			},
-		},
-		{
-			name: "空用户组信息",
-			userGroupInfo: UserGroupInfo{
-				UserGroupID:   "",
-				UserGroupName: "",
-			},
-		},
+func TestUserGroupInfo_New(t *testing.T) {
+	groupInfo := &UserGroupInfo{
+		UserGroupID:   "group-789",
+		UserGroupName: "Developers",
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.userGroupInfo.UserGroupID != tt.userGroupInfo.UserGroupID {
-				t.Errorf("UserGroupID = %s", tt.userGroupInfo.UserGroupID)
-			}
-			if tt.userGroupInfo.UserGroupName != tt.userGroupInfo.UserGroupName {
-				t.Errorf("UserGroupName = %s", tt.userGroupInfo.UserGroupName)
-			}
-		})
-	}
+	assert.NotNil(t, groupInfo)
+	assert.Equal(t, "group-789", groupInfo.UserGroupID)
+	assert.Equal(t, "Developers", groupInfo.UserGroupName)
 }
 
-func TestDepartmentInfo(t *testing.T) {
-	tests := []struct {
-		name           string
-		departmentInfo DepartmentInfo
-	}{
-		{
-			name: "完整部门信息",
-			departmentInfo: DepartmentInfo{
-				DepartmentID:   "dept-123",
-				DepartmentName: "技术部",
-			},
-		},
-		{
-			name: "空部门信息",
-			departmentInfo: DepartmentInfo{
-				DepartmentID:   "",
-				DepartmentName: "",
-			},
-		},
+func TestDepartmentInfo_New(t *testing.T) {
+	deptInfo := &DepartmentInfo{
+		DepartmentID:   "dept-101",
+		DepartmentName: "Engineering",
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.departmentInfo.DepartmentID != tt.departmentInfo.DepartmentID {
-				t.Errorf("DepartmentID = %s", tt.departmentInfo.DepartmentID)
-			}
-			if tt.departmentInfo.DepartmentName != tt.departmentInfo.DepartmentName {
-				t.Errorf("DepartmentName = %s", tt.departmentInfo.DepartmentName)
-			}
-		})
-	}
+	assert.NotNil(t, deptInfo)
+	assert.Equal(t, "dept-101", deptInfo.DepartmentID)
+	assert.Equal(t, "Engineering", deptInfo.DepartmentName)
 }
 
-func TestAppAccountInfo(t *testing.T) {
-	tests := []struct {
-		name           string
-		appAccountInfo AppAccountInfo
-	}{
-		{
-			name: "完整应用账号信息",
-			appAccountInfo: AppAccountInfo{
-				AppAccountID:   "account-123",
-				AppAccountName: "测试应用",
-			},
-		},
-		{
-			name: "空应用账号信息",
-			appAccountInfo: AppAccountInfo{
-				AppAccountID:   "",
-				AppAccountName: "",
-			},
-		},
+func TestAppAccountInfo_New(t *testing.T) {
+	appInfo := &AppAccountInfo{
+		AppAccountID:   "app-202",
+		AppAccountName: "Production App",
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if tt.appAccountInfo.AppAccountID != tt.appAccountInfo.AppAccountID {
-				t.Errorf("AppAccountID = %s", tt.appAccountInfo.AppAccountID)
-			}
-			if tt.appAccountInfo.AppAccountName != tt.appAccountInfo.AppAccountName {
-				t.Errorf("AppAccountName = %s", tt.appAccountInfo.AppAccountName)
-			}
-		})
+	assert.NotNil(t, appInfo)
+	assert.Equal(t, "app-202", appInfo.AppAccountID)
+	assert.Equal(t, "Production App", appInfo.AppAccountName)
+}
+
+func TestRoleInfo_JSONSerialization(t *testing.T) {
+	roleInfo := &RoleInfo{
+		RoleID:   "role-001",
+		RoleName: "Editor",
 	}
+
+	jsonBytes, err := json.Marshal(roleInfo)
+	require.NoError(t, err)
+
+	var deserialized RoleInfo
+	err = json.Unmarshal(jsonBytes, &deserialized)
+	require.NoError(t, err)
+
+	assert.Equal(t, roleInfo.RoleID, deserialized.RoleID)
+	assert.Equal(t, roleInfo.RoleName, deserialized.RoleName)
+}
+
+func TestUserInfo_JSONSerialization(t *testing.T) {
+	userInfo := &UserInfo{
+		UserID:   "user-002",
+		Username: "jane_smith",
+	}
+
+	jsonBytes, err := json.Marshal(userInfo)
+	require.NoError(t, err)
+
+	var deserialized UserInfo
+	err = json.Unmarshal(jsonBytes, &deserialized)
+	require.NoError(t, err)
+
+	assert.Equal(t, userInfo.UserID, deserialized.UserID)
+	assert.Equal(t, userInfo.Username, deserialized.Username)
+}
+
+func TestDepartmentInfo_JSONTags(t *testing.T) {
+	deptInfo := &DepartmentInfo{
+		DepartmentID:   "dept-003",
+		DepartmentName: "Sales",
+	}
+
+	jsonBytes, err := json.Marshal(deptInfo)
+	require.NoError(t, err)
+
+	jsonStr := string(jsonBytes)
+	assert.Contains(t, jsonStr, `"department_id"`)
+	assert.Contains(t, jsonStr, `"department_name"`)
+}
+
+func TestAppAccountInfo_JSONTags(t *testing.T) {
+	appInfo := &AppAccountInfo{
+		AppAccountID:   "app-004",
+		AppAccountName: "Staging App",
+	}
+
+	jsonBytes, err := json.Marshal(appInfo)
+	require.NoError(t, err)
+
+	jsonStr := string(jsonBytes)
+	assert.Contains(t, jsonStr, `"app_account_id"`)
+	assert.Contains(t, jsonStr, `"app_account_name"`)
+}
+
+func TestRoleInfo_EmptyFields(t *testing.T) {
+	roleInfo := &RoleInfo{}
+
+	assert.NotNil(t, roleInfo)
+	assert.Empty(t, roleInfo.RoleID)
+	assert.Empty(t, roleInfo.RoleName)
+}
+
+func TestUserInfo_EmptyFields(t *testing.T) {
+	userInfo := &UserInfo{}
+
+	assert.NotNil(t, userInfo)
+	assert.Empty(t, userInfo.UserID)
+	assert.Empty(t, userInfo.Username)
+}
+
+func TestUserGroupInfo_EmptyFields(t *testing.T) {
+	groupInfo := &UserGroupInfo{}
+
+	assert.NotNil(t, groupInfo)
+	assert.Empty(t, groupInfo.UserGroupID)
+	assert.Empty(t, groupInfo.UserGroupName)
+}
+
+func TestDepartmentInfo_EmptyFields(t *testing.T) {
+	deptInfo := &DepartmentInfo{}
+
+	assert.NotNil(t, deptInfo)
+	assert.Empty(t, deptInfo.DepartmentID)
+	assert.Empty(t, deptInfo.DepartmentName)
+}
+
+func TestAppAccountInfo_EmptyFields(t *testing.T) {
+	appInfo := &AppAccountInfo{}
+
+	assert.NotNil(t, appInfo)
+	assert.Empty(t, appInfo.AppAccountID)
+	assert.Empty(t, appInfo.AppAccountName)
 }

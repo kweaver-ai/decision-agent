@@ -4,66 +4,55 @@ import (
 	"testing"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestVisitorInfo(t *testing.T) {
-	t.Run("create visitor info", func(t *testing.T) {
-		info := &VisitorInfo{
-			XAccountID:        "account-123",
-			XAccountType:      cenum.AccountTypeUser,
-			XBusinessDomainID: "kweaver",
-		}
+func TestVisitorInfo_StructFields(t *testing.T) {
+	info := &VisitorInfo{
+		XAccountID:        "account-123",
+		XAccountType:      cenum.AccountTypeUser,
+		XBusinessDomainID: cenum.BizDomainPublic,
+	}
 
-		if info.XAccountID != "account-123" {
-			t.Errorf("Expected XAccountID to be 'account-123', got '%s'", info.XAccountID)
-		}
-		if info.XAccountType != cenum.AccountTypeUser {
-			t.Errorf("Expected XAccountType to be User, got %v", info.XAccountType)
-		}
-		if info.XBusinessDomainID != "kweaver" {
-			t.Errorf("Expected XBusinessDomainID to be 'kweaver', got %v", info.XBusinessDomainID)
-		}
-	})
-
-	t.Run("zero value visitor info", func(t *testing.T) {
-		var info VisitorInfo
-
-		if info.XAccountID != "" {
-			t.Errorf("Expected XAccountID to be empty, got '%s'", info.XAccountID)
-		}
-		if info.XAccountType != "" {
-			t.Errorf("Expected XAccountType to be empty, got '%s'", info.XAccountType)
-		}
-		if info.XBusinessDomainID != "" {
-			t.Errorf("Expected XBusinessDomainID to be empty, got '%s'", info.XBusinessDomainID)
-		}
-	})
-
-	t.Run("visitor info with anonymous account", func(t *testing.T) {
-		info := &VisitorInfo{
-			XAccountID:        "",
-			XAccountType:      cenum.AccountTypeAnonymous,
-			XBusinessDomainID: "",
-		}
-
-		if info.XAccountType != cenum.AccountTypeAnonymous {
-			t.Errorf("Expected XAccountType to be Anonymous, got %v", info.XAccountType)
-		}
-	})
-
-	t.Run("visitor info with app account", func(t *testing.T) {
-		info := &VisitorInfo{
-			XAccountID:        "app-123",
-			XAccountType:      cenum.AccountTypeApp,
-			XBusinessDomainID: "custom",
-		}
-
-		if info.XAccountType != cenum.AccountTypeApp {
-			t.Errorf("Expected XAccountType to be App, got %v", info.XAccountType)
-		}
-		if info.XBusinessDomainID != "custom" {
-			t.Errorf("Expected XBusinessDomainID to be 'custom', got %v", info.XBusinessDomainID)
-		}
-	})
+	assert.Equal(t, "account-123", info.XAccountID)
+	assert.Equal(t, cenum.AccountTypeUser, info.XAccountType)
+	assert.Equal(t, cenum.BizDomainPublic, info.XBusinessDomainID)
 }
 
+func TestVisitorInfo_EmptyValues(t *testing.T) {
+	info := &VisitorInfo{}
+
+	assert.Empty(t, info.XAccountID)
+	assert.Equal(t, cenum.AccountType(""), info.XAccountType)
+	assert.Equal(t, cenum.BizDomainID(""), info.XBusinessDomainID)
+}
+
+func TestVisitorInfo_WithOnlyAccountID(t *testing.T) {
+	info := &VisitorInfo{
+		XAccountID: "account-456",
+	}
+
+	assert.Equal(t, "account-456", info.XAccountID)
+	assert.Empty(t, string(info.XAccountType))
+	assert.Empty(t, string(info.XBusinessDomainID))
+}
+
+func TestVisitorInfo_WithAppAccountType(t *testing.T) {
+	info := &VisitorInfo{
+		XAccountID:   "app-account",
+		XAccountType: cenum.AccountTypeApp,
+	}
+
+	assert.Equal(t, "app-account", info.XAccountID)
+	assert.Equal(t, cenum.AccountTypeApp, info.XAccountType)
+}
+
+func TestVisitorInfo_WithAnonymousAccountType(t *testing.T) {
+	info := &VisitorInfo{
+		XAccountID:   "anonymous",
+		XAccountType: cenum.AccountTypeAnonymous,
+	}
+
+	assert.Equal(t, "anonymous", info.XAccountID)
+	assert.Equal(t, cenum.AccountTypeAnonymous, info.XAccountType)
+}

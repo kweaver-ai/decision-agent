@@ -243,3 +243,24 @@ func TestMiddleOutputVarRes_LoadFrom_WithUnmarshalableValue(t *testing.T) {
 	// Since getVarType fails, it returns empty string
 	assert.Equal(t, chatresenum.OutputVarType(""), res.Vars[0].Type)
 }
+
+func TestMiddleOutputVarRes_LoadFrom_ValidPrompt(t *testing.T) {
+	// Test with valid prompt structure to fully cover getPromptVal
+	res := NewMiddleOutputVarRes()
+
+	vars := []string{"promptVar"}
+	valuesMap := map[string]interface{}{
+		"promptVar": map[string]interface{}{
+			"answer": "This is the answer",
+			"think":  "This is the thinking",
+		},
+	}
+	interventionMap := map[string][]*Intervention{}
+
+	err := res.LoadFrom(vars, valuesMap, interventionMap)
+	assert.NoError(t, err)
+	assert.Len(t, res.Vars, 1)
+	assert.Equal(t, chatresenum.OutputVarTypePrompt, res.Vars[0].Type)
+	assert.Equal(t, "This is the answer", res.Vars[0].Value)
+	assert.Equal(t, "This is the thinking", res.Vars[0].Thinking)
+}

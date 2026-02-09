@@ -6,62 +6,59 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestConversationMsgStatus_EnumCheck(t *testing.T) {
-	tests := []struct {
-		name    string
-		t       ConversationMsgStatus
-		wantErr bool
-	}{
-		{
-			name:    "Received状态",
-			t:       MsgStatusReceived,
-			wantErr: false,
-		},
-		{
-			name:    "Processed状态",
-			t:       MsgStatusProcessed,
-			wantErr: false,
-		},
-		{
-			name:    "Processing状态",
-			t:       MsgStatusProcessing,
-			wantErr: false,
-		},
-		{
-			name:    "Succeded状态",
-			t:       MsgStatusSucceded,
-			wantErr: false,
-		},
-		{
-			name:    "Failed状态",
-			t:       MsgStatusFailed,
-			wantErr: false,
-		},
-		{
-			name:    "Cancelled状态",
-			t:       MsgStatusCancelled,
-			wantErr: false,
-		},
-		{
-			name:    "无效状态",
-			t:       ConversationMsgStatus("invalid"),
-			wantErr: true,
-		},
-		{
-			name:    "空字符串",
-			t:       ConversationMsgStatus(""),
-			wantErr: true,
-		},
+func TestConversationMsgStatus_Constants(t *testing.T) {
+	assert.Equal(t, ConversationMsgStatus("received"), MsgStatusReceived)
+	assert.Equal(t, ConversationMsgStatus("processed"), MsgStatusProcessed)
+	assert.Equal(t, ConversationMsgStatus("processing"), MsgStatusProcessing)
+	assert.Equal(t, ConversationMsgStatus("succeded"), MsgStatusSucceded)
+	assert.Equal(t, ConversationMsgStatus("failed"), MsgStatusFailed)
+	assert.Equal(t, ConversationMsgStatus("cancelled"), MsgStatusCancelled)
+}
+
+func TestConversationMsgStatus_EnumCheck_Valid(t *testing.T) {
+	validStatuses := []ConversationMsgStatus{
+		MsgStatusReceived,
+		MsgStatusProcessed,
+		MsgStatusProcessing,
+		MsgStatusSucceded,
+		MsgStatusFailed,
+		MsgStatusCancelled,
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := tt.t.EnumCheck()
-			if tt.wantErr {
-				assert.Error(t, err, "expected error")
-			} else {
-				assert.NoError(t, err, "expected no error")
-			}
+	for _, status := range validStatuses {
+		t.Run(string(status), func(t *testing.T) {
+			err := status.EnumCheck()
+			assert.NoError(t, err)
 		})
+	}
+}
+
+func TestConversationMsgStatus_EnumCheck_Invalid(t *testing.T) {
+	invalidStatus := ConversationMsgStatus("invalid_status")
+	err := invalidStatus.EnumCheck()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "消息状态不合法")
+}
+
+func TestConversationMsgStatus_EnumCheck_Empty(t *testing.T) {
+	emptyStatus := ConversationMsgStatus("")
+	err := emptyStatus.EnumCheck()
+	assert.Error(t, err)
+}
+
+func TestConversationMsgStatus_AllUnique(t *testing.T) {
+	statuses := []ConversationMsgStatus{
+		MsgStatusReceived,
+		MsgStatusProcessed,
+		MsgStatusProcessing,
+		MsgStatusSucceded,
+		MsgStatusFailed,
+		MsgStatusCancelled,
+	}
+
+	uniqueStatuses := make(map[ConversationMsgStatus]bool)
+	for _, status := range statuses {
+		assert.False(t, uniqueStatuses[status], "Duplicate status found: %s", status)
+		uniqueStatuses[status] = true
 	}
 }

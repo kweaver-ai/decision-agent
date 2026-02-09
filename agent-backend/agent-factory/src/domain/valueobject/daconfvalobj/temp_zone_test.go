@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestValidate(t *testing.T) {
@@ -512,4 +513,15 @@ func TestTempZoneConfig_GenAllowedFileTypes_MultipleCategories(t *testing.T) {
 	if len(config.AllowedFileTypes) == 0 {
 		t.Fatal("AllowedFileTypes should not be empty")
 	}
+}
+
+func TestTempZoneConfig_GenAllowedFileTypes_InvalidCategory(t *testing.T) {
+	config := &TempZoneConfig{
+		AllowedFileCategories: cdaenum.AllowedFileCategories{"invalid_category"},
+	}
+
+	err := config.GenAllowedFileTypes()
+	// Should return error for invalid category
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "allowed_file_categories is invalid")
 }

@@ -116,3 +116,54 @@ func TestDolphinTplKey_GetName(t *testing.T) {
 		})
 	}
 }
+
+func TestDolphinTplKey_String(t *testing.T) {
+	tests := []struct {
+		name string
+		b    DolphinTplKey
+		want string
+	}{
+		{
+			name: "记忆召回",
+			b:    DolphinTplKeyMemoryRetrieve,
+			want: "memory_retrieve",
+		},
+		{
+			name: "临时文件处理",
+			b:    DolphinTplKeyTempFileProcess,
+			want: "temp_file_process",
+		},
+		{
+			name: "文档召回",
+			b:    DolphinTplKeyDocRetrieve,
+			want: "doc_retrieve",
+		},
+		{
+			name: "图谱召回",
+			b:    DolphinTplKeyGraphRetrieve,
+			want: "graph_retrieve",
+		},
+		{
+			name: "上下文组织",
+			b:    DolphinTplKeyContextOrganize,
+			want: "context_organize",
+		},
+		{
+			name: "相关问题",
+			b:    DolphinTplKeyRelatedQuestions,
+			want: "related_questions",
+		},
+		{
+			name: "自定义key",
+			b:    DolphinTplKey("custom_key"),
+			want: "custom_key",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := tt.b.String()
+			assert.Equal(t, tt.want, got)
+		})
+	}
+}

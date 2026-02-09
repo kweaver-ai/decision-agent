@@ -174,3 +174,62 @@ func TestOverrideWithEnv(t *testing.T) {
 		_ = overrideWithEnv
 	})
 }
+
+func TestConfig_Check(t *testing.T) {
+	t.Run("valid project config", func(t *testing.T) {
+		config := &Config{
+			Project: Project{
+				Host:     "localhost",
+				Port:     8080,
+				Language: rest.SimplifiedChinese,
+			},
+		}
+
+		err := config.Check()
+		if err != nil {
+			t.Errorf("Expected Check to return no error, got %v", err)
+		}
+	})
+}
+
+func TestGetConfigPath_WithEnv(t *testing.T) {
+	// Reset the global variable
+	_configPath = ""
+
+	// Save original env value
+	originalPath := os.Getenv("AGENT_FACTORY_CONFIG_PATH")
+
+	// Clean up after test
+	defer func() {
+		_configPath = ""
+		if originalPath != "" {
+			os.Setenv("AGENT_FACTORY_CONFIG_PATH", originalPath)
+		} else {
+			os.Unsetenv("AGENT_FACTORY_CONFIG_PATH")
+		}
+	}()
+
+	// Set the environment variable
+	os.Setenv("AGENT_FACTORY_CONFIG_PATH", "/custom/config/path")
+
+	path := GetConfigPath()
+
+	if path != "/custom/config/path" {
+		t.Errorf("Expected '/custom/config/path', got '%s'", path)
+	}
+}
+
+func TestGetConfigPath_Cached(t *testing.T) {
+	// Set the global variable directly
+	_configPath = "/cached/path"
+
+	// Even if we set an env var, it should return the cached value
+	os.Setenv("CONFIG_PATH", "/custom/path")
+	defer os.Unsetenv("CONFIG_PATH")
+
+	path := GetConfigPath()
+
+	if path != "/cached/path" {
+		t.Errorf("Expected '/cached/path', got '%s'", path)
+	}
+}

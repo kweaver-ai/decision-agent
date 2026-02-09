@@ -6,78 +6,76 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDolphinMode_EnumCheck(t *testing.T) {
-	tests := []struct {
-		name    string
-		d       DolphinMode
-		wantErr bool
-	}{
-		{
-			name:    "禁用模式",
-			d:       DolphinModeDisabled,
-			wantErr: false,
-		},
-		{
-			name:    "启用模式",
-			d:       DolphinModeEnabled,
-			wantErr: false,
-		},
-		{
-			name:    "负数",
-			d:       DolphinMode(-1),
-			wantErr: true,
-		},
-		{
-			name:    "大于最大值",
-			d:       DolphinMode(2),
-			wantErr: true,
-		},
+func TestDolphinMode_Constants(t *testing.T) {
+	assert.Equal(t, DolphinMode(0), DolphinModeDisabled)
+	assert.Equal(t, DolphinMode(1), DolphinModeEnabled)
+}
+
+func TestDolphinMode_EnumCheck_Valid(t *testing.T) {
+	validModes := []DolphinMode{
+		DolphinModeDisabled,
+		DolphinModeEnabled,
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := tt.d.EnumCheck()
-			if tt.wantErr {
-				assert.Error(t, err, "expected error")
-			} else {
-				assert.NoError(t, err, "expected no error")
-			}
+	for _, mode := range validModes {
+		t.Run("", func(t *testing.T) {
+			err := mode.EnumCheck()
+			assert.NoError(t, err)
+		})
+	}
+}
+
+func TestDolphinMode_EnumCheck_Invalid(t *testing.T) {
+	invalidModes := []DolphinMode{
+		-1,
+		2,
+		100,
+	}
+
+	for _, mode := range invalidModes {
+		t.Run("", func(t *testing.T) {
+			err := mode.EnumCheck()
+			assert.Error(t, err)
+			assert.Contains(t, err.Error(), "dolphin模式不合法")
 		})
 	}
 }
 
 func TestDolphinMode_Bool(t *testing.T) {
 	tests := []struct {
-		name string
-		d    DolphinMode
-		want bool
+		name     string
+		mode     DolphinMode
+		expected bool
 	}{
 		{
-			name: "禁用模式",
-			d:    DolphinModeDisabled,
-			want: false,
+			name:     "disabled mode",
+			mode:     DolphinModeDisabled,
+			expected: false,
 		},
 		{
-			name: "启用模式",
-			d:    DolphinModeEnabled,
-			want: true,
-		},
-		{
-			name: "负数",
-			d:    DolphinMode(-1),
-			want: false,
-		},
-		{
-			name: "大于最大值",
-			d:    DolphinMode(2),
-			want: false,
+			name:     "enabled mode",
+			mode:     DolphinModeEnabled,
+			expected: true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := tt.d.Bool()
-			assert.Equal(t, tt.want, got, "Bool() should match expected")
+			result := tt.mode.Bool()
+			assert.Equal(t, tt.expected, result)
 		})
+	}
+}
+
+func TestDolphinMode_AllUnique(t *testing.T) {
+	modes := []DolphinMode{
+		DolphinModeDisabled,
+		DolphinModeEnabled,
+	}
+
+	uniqueModes := make(map[DolphinMode]bool)
+	for _, mode := range modes {
+		assert.False(t, uniqueModes[mode], "Duplicate mode found: %d", mode)
+		uniqueModes[mode] = true
 	}
 }

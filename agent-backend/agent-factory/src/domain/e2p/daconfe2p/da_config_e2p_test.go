@@ -127,3 +127,59 @@ func TestDataAgents(t *testing.T) {
 		})
 	}
 }
+
+func TestDataAgent_WithNilConfig(t *testing.T) {
+	eo := &daconfeo.DataAgent{
+		DataAgentPo: dapo.DataAgentPo{
+			ID:     "test-id",
+			Name:   "Test Agent",
+			Status: cdaenum.StatusPublished,
+		},
+		Config: nil,
+	}
+
+	po, err := DataAgent(eo)
+	require.NoError(t, err)
+	require.NotNil(t, po)
+	assert.Equal(t, "test-id", po.ID)
+}
+
+func TestDataAgent_WithComplexConfig(t *testing.T) {
+	isDefault := true
+	eo := &daconfeo.DataAgent{
+		DataAgentPo: dapo.DataAgentPo{
+			ID:     "test-id",
+			Name:   "Complex Agent",
+			Status: cdaenum.StatusPublished,
+		},
+		Config: &daconfvalobj.Config{
+			Input: &daconfvalobj.Input{
+				Fields: daconfvalobj.Fields{
+					&daconfvalobj.Field{
+						Name: "field1",
+						Type: cdaenum.InputFieldTypeString,
+					},
+				},
+			},
+			Llms: []*daconfvalobj.LlmItem{
+				{
+					IsDefault: isDefault,
+					LlmConfig: &daconfvalobj.LlmConfig{
+						Name:      "test-model",
+						MaxTokens: 500,
+					},
+				},
+			},
+			IsDataFlowSetEnabled: 0,
+			Output: &daconfvalobj.Output{
+				DefaultFormat: cdaenum.OutputDefaultFormatMarkdown,
+			},
+		},
+	}
+
+	po, err := DataAgent(eo)
+	require.NoError(t, err)
+	require.NotNil(t, po)
+	assert.Equal(t, "test-id", po.ID)
+	assert.NotEmpty(t, po.Config)
+}

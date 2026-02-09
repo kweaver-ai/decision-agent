@@ -155,3 +155,19 @@ func TestDataAgentRes_IsPromptType_EmptyAnswer(t *testing.T) {
 	assert.False(t, ok)
 	assert.NotNil(t, answer) // IsPromptType always returns a non-nil AnswerPrompt
 }
+
+func TestDataAgentRes_GetFinalAnswerJSON_Error(t *testing.T) {
+	res := &DataAgentRes{
+		Answer: agentrespvo.NewAnswerS(),
+	}
+	// Create a helper with invalid config to trigger error
+	res.finalAnswerVarHelper = NewResHelper(res.Answer, &agentconfigvo.OutputVariablesS{
+		AnswerVar: "answer",
+	}, VarFieldTypeFinalAnswer)
+	// Set an invalid value that can't be marshaled to JSON properly
+	res.Answer.SetField("answer", func() {}) // Functions can't be marshaled to JSON
+
+	jsonBytes, err := res.GetFinalAnswerJSON()
+	assert.Error(t, err)
+	assert.Nil(t, jsonBytes)
+}

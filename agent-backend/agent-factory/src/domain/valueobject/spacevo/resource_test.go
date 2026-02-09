@@ -1,79 +1,61 @@
 package spacevo
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestResourceUniq(t *testing.T) {
-	tests := []struct {
-		name     string
-		resource *ResourceUniq
-	}{
-		{
-			name: "数据代理",
-			resource: &ResourceUniq{
-				ResourceType: "data_agent",
-				ResourceID:   "agent-123",
-			},
-		},
-		{
-			name: "其他类型",
-			resource: &ResourceUniq{
-				ResourceType: "other",
-				ResourceID:   "resource-456",
-			},
-		},
-		{
-			name: "空值",
-			resource: &ResourceUniq{
-				ResourceType: "",
-				ResourceID:   "",
-			},
-		},
+func TestResourceUniq_New(t *testing.T) {
+	resource := &ResourceUniq{
+		ResourceType: cdaenum.ResourceTypeDataAgent,
+		ResourceID:   "resource-123",
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.resource.ResourceType, tt.resource.ResourceType)
-			assert.Equal(t, tt.resource.ResourceID, tt.resource.ResourceID)
-		})
-	}
+	assert.NotNil(t, resource)
+	assert.Equal(t, cdaenum.ResourceTypeDataAgent, resource.ResourceType)
+	assert.Equal(t, "resource-123", resource.ResourceID)
 }
 
-func TestResourceAssoc(t *testing.T) {
-	tests := []struct {
-		name   string
-		assoc  ResourceAssoc
-		wantID int64
-	}{
-		{
-			name: "有效关联ID",
-			assoc: ResourceAssoc{
-				ResourceUniq: ResourceUniq{
-					ResourceType: "data_agent",
-					ResourceID:   "agent-123",
-				},
-				AssocID: 67890,
-			},
-			wantID: 67890,
+func TestResourceUniq_EmptyFields(t *testing.T) {
+	resource := &ResourceUniq{}
+
+	assert.NotNil(t, resource)
+	assert.Empty(t, resource.ResourceID)
+}
+
+func TestResourceAssoc_New(t *testing.T) {
+	assoc := &ResourceAssoc{
+		ResourceUniq: ResourceUniq{
+			ResourceType: cdaenum.ResourceTypeDataAgent,
+			ResourceID:   "resource-456",
 		},
-		{
-			name: "零ID",
-			assoc: ResourceAssoc{
-				ResourceUniq: ResourceUniq{
-					ResourceType: "role",
-					ResourceID:   "role-456",
-				},
-				AssocID: 0,
-			},
-			wantID: 0,
-		},
+		AssocID: 2002,
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.wantID, tt.assoc.AssocID)
-		})
+	assert.NotNil(t, assoc)
+	assert.Equal(t, cdaenum.ResourceTypeDataAgent, assoc.ResourceType)
+	assert.Equal(t, "resource-456", assoc.ResourceID)
+	assert.Equal(t, int64(2002), assoc.AssocID)
+}
+
+func TestResourceAssoc_EmptyFields(t *testing.T) {
+	assoc := &ResourceAssoc{}
+
+	assert.NotNil(t, assoc)
+	assert.Empty(t, assoc.ResourceID)
+	assert.Equal(t, int64(0), assoc.AssocID)
+}
+
+func TestResourceAssoc_WithLargeAssocID(t *testing.T) {
+	assoc := &ResourceAssoc{
+		ResourceUniq: ResourceUniq{
+			ResourceType: cdaenum.ResourceTypeDataAgent,
+			ResourceID:   "resource-789",
+		},
+		AssocID: 9223372036854775807,
 	}
+
+	assert.Equal(t, int64(9223372036854775807), assoc.AssocID)
 }

@@ -3,52 +3,79 @@ package cutil
 import (
 	"os"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestGetEnv(t *testing.T) {
-	key := "TEST_KEY"
-	defaultValue := "default"
+func TestGetEnv_WithExistingEnv(t *testing.T) {
+	// Set up test environment variable
+	os.Setenv("TEST_ENV_VAR", "test_value")
+	defer os.Unsetenv("TEST_ENV_VAR")
 
-	// 测试环境变量存在的情况
-	os.Setenv(key, "value")
-
-	if val := GetEnv(key, defaultValue); val != "value" {
-		t.Errorf("Expected 'value', but got %s", val)
-	}
-
-	// 测试环境变量不存在的情况
-	os.Unsetenv(key)
-
-	if val := GetEnv(key, defaultValue); val != defaultValue {
-		t.Errorf("Expected '%s', but got %s", defaultValue, val)
-	}
+	result := GetEnv("TEST_ENV_VAR", "default_value")
+	assert.Equal(t, "test_value", result)
 }
 
-func TestGetEnvMustInt(t *testing.T) {
-	key := "TEST_INT_KEY"
-	defaultValue := 42
+func TestGetEnv_WithNonExistingEnv(t *testing.T) {
+	// Make sure the env var doesn't exist
+	os.Unsetenv("NON_EXISTING_VAR")
 
-	// 测试环境变量存在且为可转换整数的情况
-	os.Setenv(key, "123")
+	result := GetEnv("NON_EXISTING_VAR", "default_value")
+	assert.Equal(t, "default_value", result)
+}
 
-	if val := GetEnvMustInt(key, defaultValue); val != 123 {
-		t.Errorf("Expected 123, but got %d", val)
-	}
+func TestGetEnv_WithEmptyEnv(t *testing.T) {
+	// Set env var to empty string
+	os.Setenv("EMPTY_VAR", "")
+	defer os.Unsetenv("EMPTY_VAR")
 
-	// 测试环境变量存在但不可转换为整数的情况，预期出现panic
-	os.Setenv(key, "abc")
+	result := GetEnv("EMPTY_VAR", "default_value")
+	assert.Equal(t, "default_value", result)
+}
 
-	defer func() {
-		if r := recover(); r == nil {
-			t.Errorf("Expected panic for non-integer value")
-		}
-	}()
-	GetEnvMustInt(key, defaultValue)
+func TestGetEnvMustInt_WithValidInt(t *testing.T) {
+	os.Setenv("TEST_INT_VAR", "42")
+	defer os.Unsetenv("TEST_INT_VAR")
 
-	// 测试环境变量不存在的情况
-	os.Unsetenv(key)
+	result := GetEnvMustInt("TEST_INT_VAR", 10)
+	assert.Equal(t, 42, result)
+}
 
-	if val := GetEnvMustInt(key, defaultValue); val != defaultValue {
-		t.Errorf("Expected %d, but got %d", defaultValue, val)
-	}
+func TestGetEnvMustInt_WithNonExistingEnv(t *testing.T) {
+	os.Unsetenv("NON_EXISTING_INT_VAR")
+
+	result := GetEnvMustInt("NON_EXISTING_INT_VAR", 10)
+	assert.Equal(t, 10, result)
+}
+
+func TestGetEnvMustInt_WithDefaultValue(t *testing.T) {
+	os.Unsetenv("DEFAULT_INT_VAR")
+
+	result := GetEnvMustInt("DEFAULT_INT_VAR", 99)
+	assert.Equal(t, 99, result)
+}
+
+func TestGetEnvMustInt_WithInvalidInt(t *testing.T) {
+	os.Setenv("INVALID_INT_VAR", "not_a_number")
+	defer os.Unsetenv("INVALID_INT_VAR")
+
+	assert.Panics(t, func() {
+		GetEnvMustInt("INVALID_INT_VAR", 10)
+	})
+}
+
+func TestGetEnvMustInt_WithNegativeInt(t *testing.T) {
+	os.Setenv("NEGATIVE_INT_VAR", "-42")
+	defer os.Unsetenv("NEGATIVE_INT_VAR")
+
+	result := GetEnvMustInt("NEGATIVE_INT_VAR", 0)
+	assert.Equal(t, -42, result)
+}
+
+func TestGetEnvMustInt_WithZero(t *testing.T) {
+	os.Setenv("ZERO_INT_VAR", "0")
+	defer os.Unsetenv("ZERO_INT_VAR")
+
+	result := GetEnvMustInt("ZERO_INT_VAR", 10)
+	assert.Equal(t, 0, result)
 }

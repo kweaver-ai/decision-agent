@@ -1,78 +1,86 @@
 package cdaenum
 
-import "testing"
+import (
+	"testing"
 
-func TestBuiltIn_EnumCheck(t *testing.T) {
-	tests := []struct {
-		name    string
-		b       BuiltIn
-		wantErr bool
-	}{
-		{
-			name:    "非内置",
-			b:       BuiltInNo,
-			wantErr: false,
-		},
-		{
-			name:    "内置",
-			b:       BuiltInYes,
-			wantErr: false,
-		},
-		{
-			name:    "无效值",
-			b:       BuiltIn(2),
-			wantErr: true,
-		},
-		{
-			name:    "负数",
-			b:       BuiltIn(-1),
-			wantErr: true,
-		},
-		{
-			name:    "大数值",
-			b:       BuiltIn(100),
-			wantErr: true,
-		},
+	"github.com/stretchr/testify/assert"
+)
+
+func TestBuiltIn_Constants(t *testing.T) {
+	assert.Equal(t, BuiltIn(0), BuiltInNo)
+	assert.Equal(t, BuiltIn(1), BuiltInYes)
+}
+
+func TestBuiltIn_EnumCheck_Valid(t *testing.T) {
+	validValues := []BuiltIn{
+		BuiltInNo,
+		BuiltInYes,
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := tt.b.EnumCheck()
-			if (err != nil) != tt.wantErr {
-				t.Errorf("EnumCheck() error = %v, wantErr %v", err, tt.wantErr)
-			}
+	for _, builtIn := range validValues {
+		t.Run("", func(t *testing.T) {
+			err := builtIn.EnumCheck()
+			assert.NoError(t, err)
+		})
+	}
+}
+
+func TestBuiltIn_EnumCheck_Invalid(t *testing.T) {
+	invalidValues := []BuiltIn{
+		-1,
+		2,
+		100,
+	}
+
+	for _, builtIn := range invalidValues {
+		t.Run("", func(t *testing.T) {
+			err := builtIn.EnumCheck()
+			assert.Error(t, err)
+			assert.Contains(t, err.Error(), "invalid built in")
 		})
 	}
 }
 
 func TestBuiltIn_IsBuiltIn(t *testing.T) {
 	tests := []struct {
-		name string
-		b    *BuiltIn
-		want bool
+		name     string
+		builtIn  *BuiltIn
+		expected bool
 	}{
 		{
-			name: "nil指针",
-			b:    nil,
-			want: false,
+			name:     "built in yes",
+			builtIn:  func() *BuiltIn { b := BuiltInYes; return &b }(),
+			expected: true,
 		},
 		{
-			name: "内置",
-			b:    func() *BuiltIn { v := BuiltInYes; return &v }(),
-			want: true,
+			name:     "built in no",
+			builtIn:  func() *BuiltIn { b := BuiltInNo; return &b }(),
+			expected: false,
 		},
 		{
-			name: "非内置",
-			b:    func() *BuiltIn { v := BuiltInNo; return &v }(),
-			want: false,
+			name:     "nil pointer",
+			builtIn:  nil,
+			expected: false,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := tt.b.IsBuiltIn(); got != tt.want {
-				t.Errorf("IsBuiltIn() = %v, want %v", got, tt.want)
-			}
+			result := tt.builtIn.IsBuiltIn()
+			assert.Equal(t, tt.expected, result)
 		})
+	}
+}
+
+func TestBuiltIn_AllUnique(t *testing.T) {
+	builtIns := []BuiltIn{
+		BuiltInNo,
+		BuiltInYes,
+	}
+
+	uniqueBuiltIns := make(map[BuiltIn]bool)
+	for _, bi := range builtIns {
+		assert.False(t, uniqueBuiltIns[bi], "Duplicate built-in value found: %d", bi)
+		uniqueBuiltIns[bi] = true
 	}
 }

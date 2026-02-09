@@ -221,3 +221,54 @@ func TestDataAgentRes_DocRetrievalAnswerAndCites_GetDocRetrievalError(t *testing
 	_, _, err := res.DocRetrievalAnswerAndCites()
 	assert.Error(t, err)
 }
+
+func TestDataAgentRes_GetDocRetrieval_MissingFullResultInAnswer(t *testing.T) {
+	res := &DataAgentRes{
+		Answer: agentrespvo.NewAnswerS(),
+	}
+	res.finalAnswerVarHelper = NewResHelper(res.Answer, &agentconfigvo.OutputVariablesS{
+		AnswerVar: "answer",
+	}, VarFieldTypeFinalAnswer)
+	res.docRetrievalVarHelper = NewResHelper(res.Answer, &agentconfigvo.OutputVariablesS{
+		DocRetrievalVar: "doc_res",
+	}, VarFieldTypeDocRetrieval)
+
+	// Set doc retrieval data with answer but without full_result in the answer
+	docRetrievalData := map[string]interface{}{
+		"answer": map[string]interface{}{
+			"result": "test answer",
+		},
+		"block_answer": map[string]interface{}{},
+	}
+	res.Answer.SetField("doc_res", docRetrievalData)
+
+	_, err := res.GetDocRetrieval()
+	assert.Error(t, err)
+}
+
+func TestDataAgentRes_GetDocRetrieval_MissingTextInFullResult(t *testing.T) {
+	res := &DataAgentRes{
+		Answer: agentrespvo.NewAnswerS(),
+	}
+	res.finalAnswerVarHelper = NewResHelper(res.Answer, &agentconfigvo.OutputVariablesS{
+		AnswerVar: "answer",
+	}, VarFieldTypeFinalAnswer)
+	res.docRetrievalVarHelper = NewResHelper(res.Answer, &agentconfigvo.OutputVariablesS{
+		DocRetrievalVar: "doc_res",
+	}, VarFieldTypeDocRetrieval)
+
+	// Set doc retrieval data with full_result but without text
+	docRetrievalData := map[string]interface{}{
+		"answer": map[string]interface{}{
+			"result": "test answer",
+			"full_result": map[string]interface{}{
+				"references": []interface{}{},
+			},
+		},
+		"block_answer": map[string]interface{}{},
+	}
+	res.Answer.SetField("doc_res", docRetrievalData)
+
+	_, err := res.GetDocRetrieval()
+	assert.Error(t, err)
+}

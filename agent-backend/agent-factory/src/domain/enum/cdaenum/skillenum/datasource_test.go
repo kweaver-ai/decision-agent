@@ -6,84 +6,68 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestDatasource_Constants(t *testing.T) {
+	assert.Equal(t, Datasource("inherit_main"), DatasourceInheritMain)
+	assert.Equal(t, Datasource("self_configured"), DatasourceSelfConfigured)
+}
+
 func TestDatasource_EnumCheck_Valid(t *testing.T) {
-	tests := []struct {
-		name       string
-		datasource Datasource
-	}{
-		{"inherit main", DatasourceInheritMain},
-		{"self configured", DatasourceSelfConfigured},
+	validTypes := []Datasource{
+		DatasourceInheritMain,
+		DatasourceSelfConfigured,
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := tt.datasource.EnumCheck()
+	for _, ds := range validTypes {
+		t.Run(string(ds), func(t *testing.T) {
+			err := ds.EnumCheck()
 			assert.NoError(t, err)
 		})
 	}
 }
 
 func TestDatasource_EnumCheck_Invalid(t *testing.T) {
-	tests := []struct {
-		name       string
-		datasource Datasource
-	}{
-		{"empty datasource", ""},
-		{"invalid datasource", "invalid_datasource"},
-	}
+	invalidType := Datasource("invalid_datasource")
+	err := invalidType.EnumCheck()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "invalid skill agent datasource")
+}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := tt.datasource.EnumCheck()
-			assert.Error(t, err)
-			assert.Contains(t, err.Error(), "invalid skill agent datasource")
-		})
-	}
+func TestDatasource_EnumCheck_Empty(t *testing.T) {
+	emptyType := Datasource("")
+	err := emptyType.EnumCheck()
+	assert.Error(t, err)
+}
+
+func TestDatasourceSpecificInherit_Constants(t *testing.T) {
+	assert.Equal(t, DatasourceSpecificInherit("docs_only"), DatasourceInheritDocs)
+	assert.Equal(t, DatasourceSpecificInherit("graph_only"), DatasourceInheritGraph)
+	assert.Equal(t, DatasourceSpecificInherit("all"), DatasourceInheritAll)
 }
 
 func TestDatasourceSpecificInherit_EnumCheck_Valid(t *testing.T) {
-	tests := []struct {
-		name    string
-		inherit DatasourceSpecificInherit
-	}{
-		{"inherit docs", DatasourceInheritDocs},
-		{"inherit graph", DatasourceInheritGraph},
-		{"inherit all", DatasourceInheritAll},
+	validTypes := []DatasourceSpecificInherit{
+		DatasourceInheritDocs,
+		DatasourceInheritGraph,
+		DatasourceInheritAll,
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := tt.inherit.EnumCheck()
+	for _, ds := range validTypes {
+		t.Run(string(ds), func(t *testing.T) {
+			err := ds.EnumCheck()
 			assert.NoError(t, err)
 		})
 	}
 }
 
 func TestDatasourceSpecificInherit_EnumCheck_Invalid(t *testing.T) {
-	tests := []struct {
-		name    string
-		inherit DatasourceSpecificInherit
-	}{
-		{"empty inherit", ""},
-		{"invalid inherit", "invalid_inherit"},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			err := tt.inherit.EnumCheck()
-			assert.Error(t, err)
-			assert.Contains(t, err.Error(), "数据源继承类型不合法")
-		})
-	}
+	invalidType := DatasourceSpecificInherit("invalid_inherit")
+	err := invalidType.EnumCheck()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "数据源继承类型不合法")
 }
 
-func TestDatasource_String(t *testing.T) {
-	assert.Equal(t, "inherit_main", string(DatasourceInheritMain))
-	assert.Equal(t, "self_configured", string(DatasourceSelfConfigured))
-}
-
-func TestDatasourceSpecificInherit_String(t *testing.T) {
-	assert.Equal(t, "docs_only", string(DatasourceInheritDocs))
-	assert.Equal(t, "graph_only", string(DatasourceInheritGraph))
-	assert.Equal(t, "all", string(DatasourceInheritAll))
+func TestDatasourceSpecificInherit_EnumCheck_Empty(t *testing.T) {
+	emptyType := DatasourceSpecificInherit("")
+	err := emptyType.EnumCheck()
+	assert.Error(t, err)
 }

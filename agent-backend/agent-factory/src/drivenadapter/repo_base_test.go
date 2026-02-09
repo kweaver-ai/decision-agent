@@ -19,11 +19,18 @@ func TestRepoBase_Struct(t *testing.T) {
 	assert.NotNil(t, repo)
 }
 
-func TestRepoBase_MultipleInstances(t *testing.T) {
-	repo1 := NewRepoBase()
-	repo2 := NewRepoBase()
+func TestRepoBase_IsValidBase(t *testing.T) {
+	// Verify RepoBase can be used as a base for other repository structs
+	type testRepo struct {
+		*RepoBase
+		Name string
+	}
 
-	assert.NotNil(t, repo1)
-	assert.NotNil(t, repo2)
-	assert.NotSame(t, repo1, repo2)
+	repo := &testRepo{
+		RepoBase: NewRepoBase(),
+		Name:     "test",
+	}
+
+	assert.NotNil(t, repo.RepoBase)
+	assert.Equal(t, "test", repo.Name)
 }

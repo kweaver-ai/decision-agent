@@ -1,79 +1,61 @@
 package spacevo
 
 import (
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestMemberUniq(t *testing.T) {
-	tests := []struct {
-		name   string
-		member *MemberUniq
-	}{
-		{
-			name: "用户类型",
-			member: &MemberUniq{
-				ObjType: "user",
-				ObjID:   "user-123",
-			},
-		},
-		{
-			name: "角色类型",
-			member: &MemberUniq{
-				ObjType: "role",
-				ObjID:   "role-456",
-			},
-		},
-		{
-			name: "空值",
-			member: &MemberUniq{
-				ObjType: "",
-				ObjID:   "",
-			},
-		},
+func TestMemberUniq_New(t *testing.T) {
+	member := &MemberUniq{
+		ObjType: cenum.OrgObjTypeUser,
+		ObjID:   "user-123",
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.member.ObjType, tt.member.ObjType)
-			assert.Equal(t, tt.member.ObjID, tt.member.ObjID)
-		})
-	}
+	assert.NotNil(t, member)
+	assert.Equal(t, cenum.OrgObjTypeUser, member.ObjType)
+	assert.Equal(t, "user-123", member.ObjID)
 }
 
-func TestMemberAssoc(t *testing.T) {
-	tests := []struct {
-		name   string
-		assoc  MemberAssoc
-		wantID int64
-	}{
-		{
-			name: "有效关联ID",
-			assoc: MemberAssoc{
-				MemberUniq: MemberUniq{
-					ObjType: "user",
-					ObjID:   "user-123",
-				},
-				AssocID: 12345,
-			},
-			wantID: 12345,
+func TestMemberUn_EmptyFields(t *testing.T) {
+	member := &MemberUniq{}
+
+	assert.NotNil(t, member)
+	assert.Empty(t, member.ObjID)
+}
+
+func TestMemberAssoc_New(t *testing.T) {
+	assoc := &MemberAssoc{
+		MemberUniq: MemberUniq{
+			ObjType: cenum.OrgObjTypeGroup,
+			ObjID:   "group-456",
 		},
-		{
-			name: "零ID",
-			assoc: MemberAssoc{
-				MemberUniq: MemberUniq{
-					ObjType: "role",
-					ObjID:   "role-456",
-				},
-				AssocID: 0,
-			},
-			wantID: 0,
-		},
+		AssocID: 1001,
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.wantID, tt.assoc.AssocID)
-		})
+	assert.NotNil(t, assoc)
+	assert.Equal(t, cenum.OrgObjTypeGroup, assoc.ObjType)
+	assert.Equal(t, "group-456", assoc.ObjID)
+	assert.Equal(t, int64(1001), assoc.AssocID)
+}
+
+func TestMemberAssoc_EmptyFields(t *testing.T) {
+	assoc := &MemberAssoc{}
+
+	assert.NotNil(t, assoc)
+	assert.Empty(t, assoc.ObjID)
+	assert.Equal(t, int64(0), assoc.AssocID)
+}
+
+func TestMemberAssoc_WithLargeAssocID(t *testing.T) {
+	assoc := &MemberAssoc{
+		MemberUniq: MemberUniq{
+			ObjType: cenum.OrgObjTypeUser,
+			ObjID:   "user-789",
+		},
+		AssocID: 9223372036854775807,
 	}
+
+	assert.Equal(t, int64(9223372036854775807), assoc.AssocID)
 }

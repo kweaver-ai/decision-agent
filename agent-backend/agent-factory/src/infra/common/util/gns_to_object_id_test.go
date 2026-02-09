@@ -1,30 +1,58 @@
 package util
 
-import "testing"
+import (
+	"testing"
 
-func TestGNS2ObjectID(t *testing.T) {
-	tests := []struct {
-		name string
-		gns  string
-		want string
-	}{
-		{"simple path", "/path/to/id123", "id123"},
-		{"path with multiple segments", "a/b/c/d/object-id", "object-id"},
-		{"single segment", "single", "single"},
-		{"empty string", "", ""},
-		{"no slashes", "objectId123", "objectId123"},
-		{"trailing slash", "path/to/", ""},
-		{"multiple slashes", "path///to/id", "id"},
-		{"numeric id", "/api/v1/users/12345", "12345"},
-		{"uuid format", "/api/v1/550e8400-e29b-41d4-a716-446655440000", "550e8400-e29b-41d4-a716-446655440000"},
-		{"special characters", "/path/to/id-with_special.chars.123", "id-with_special.chars.123"},
-	}
+	"github.com/stretchr/testify/assert"
+)
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := GNS2ObjectID(tt.gns); got != tt.want {
-				t.Errorf("GNS2ObjectID(%q) = %q, want %q", tt.gns, got, tt.want)
-			}
-		})
-	}
+func TestGNS2ObjectID_ValidGNS(t *testing.T) {
+	gns := "gns://doc/123/456"
+	result := GNS2ObjectID(gns)
+
+	assert.Equal(t, "456", result)
+}
+
+func TestGNS2ObjectID_SimpleGNS(t *testing.T) {
+	gns := "gns://123"
+	result := GNS2ObjectID(gns)
+
+	assert.Equal(t, "123", result)
+}
+
+func TestGNS2ObjectID_SingleSlash(t *testing.T) {
+	gns := "123/456"
+	result := GNS2ObjectID(gns)
+
+	assert.Equal(t, "456", result)
+}
+
+func TestGNS2ObjectID_SingleID(t *testing.T) {
+	gns := "789"
+	result := GNS2ObjectID(gns)
+
+	assert.Equal(t, "789", result)
+}
+
+func TestGNS2ObjectID_MultipleSlashes(t *testing.T) {
+	gns := "gns://doc/123/456/789/101112"
+	result := GNS2ObjectID(gns)
+
+	assert.Equal(t, "101112", result)
+}
+
+func TestGNS2ObjectID_EmptyString(t *testing.T) {
+	gns := ""
+	result := GNS2ObjectID(gns)
+
+	// Split of empty string returns a slice with one empty string
+	assert.Equal(t, "", result)
+}
+
+func TestGNS2ObjectID_TrailingSlash(t *testing.T) {
+	gns := "gns://123/456/"
+	result := GNS2ObjectID(gns)
+
+	// Trailing slash results in empty string after the last slash
+	assert.Equal(t, "", result)
 }

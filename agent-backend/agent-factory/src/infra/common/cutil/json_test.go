@@ -138,25 +138,37 @@ func TestToMapByJSON(t *testing.T) {
 		name    string
 		input   interface{}
 		wantKey string
+		wantErr bool
 	}{
 		{
 			name:    "简单对象",
 			input:   map[string]interface{}{"name": "John", "age": 30},
 			wantKey: "name",
+			wantErr: false,
 		},
 		{
 			name:    "嵌套对象",
 			input:   map[string]interface{}{"person": map[string]interface{}{"name": "John"}},
 			wantKey: "person",
+			wantErr: false,
+		},
+		{
+			name:    "invalid input - channel",
+			input:   make(chan int),
+			wantErr: true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result, err := ToMapByJSON(tt.input)
-			assert.NoError(t, err)
-			assert.NotNil(t, result)
-			assert.Contains(t, result, tt.wantKey)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.NotNil(t, result)
+				assert.Contains(t, result, tt.wantKey)
+			}
 		})
 	}
 }
