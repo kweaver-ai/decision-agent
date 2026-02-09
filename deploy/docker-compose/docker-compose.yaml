@@ -16,7 +16,16 @@ services:
       - mariadb_data:/var/lib/mysql
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-p$$MYSQL_ROOT_PASSWORD"]
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-h",
+          "localhost",
+          "-uroot",
+          "-p$$MYSQL_ROOT_PASSWORD",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -61,9 +70,9 @@ services:
       redis:
         condition: service_healthy
     ports:
-      - "13020:13020"  # agent-factory
-      - "30778:30778"  # agent-executor
-      - "30790:30790"  # agent-memory
+      - "13020:13020" # agent-factory
+      - "30778:30778" # agent-executor
+      - "30790:30790" # agent-memory
     volumes:
       # 挂载配置文件目录，便于运行时修改配置
       - ../../agent-backend/agent-factory/conf:/app/agent-factory/conf:ro
@@ -96,24 +105,27 @@ services:
       - decision-agent-network
 
   # Agent Web (前端)
-  # agent-web:
-  #   build:
-  #     context: ../..
-  #     dockerfile: agent-web/Dockerfile
-  #   container_name: decision-agent-web
-  #   restart: unless-stopped
-  #   depends_on:
-  #     agent-backend:
-  #       condition: service_healthy
-  #   ports:
-  #     - "1101:1101"
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:1101/probe"]
-  #     interval: 30s
-  #     timeout: 5s
-  #     retries: 3
-  #   networks:
-  #     - decision-agent-network
+  agent-web:
+    build:
+      context: ../..
+      dockerfile: agent-web/Dockerfile
+    container_name: decision-agent-web
+    restart: unless-stopped
+    environment:
+    # 前端请求后端的baseUrl地址
+      BACKEND_URL: http://agent-backend:13020
+    depends_on:
+      agent-backend:
+        condition: service_started
+    ports:
+      - "1101:1101"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:1101/probe"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - decision-agent-network
 
 networks:
   decision-agent-network:
