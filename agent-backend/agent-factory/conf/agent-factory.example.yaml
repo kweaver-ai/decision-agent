@@ -94,20 +94,8 @@ project:
   logger_level: info
   log_file: "./agent-factory.log"
 
-  rbac_host: kg-user-rbac
-  rbac_port: 6900
-  intelli_qa_host: intelli-qa
-  intelli_qa_port: 8887
-  builder_host: kg-builder
-  builder_port: 6475
-  auth_host: kg-data-auth
-  auth_port: 7000
-
   model_factory_host: mf-model-factory
   model_factory_port: 9898
-
-  debug: true
-  debug_host: 192.168.232.11
 model_factory:
   llm:
     api_key: xxx

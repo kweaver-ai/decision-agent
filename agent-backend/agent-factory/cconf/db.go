@@ -1,11 +1,11 @@
 package cconf
 
 type DBConf struct {
-	UserName string `yaml:"user_name" env:"RDSUSER"`
-	Password string `yaml:"user_pwd" env:"RDSPASS"`
-	DBHost   string `yaml:"db_host" env:"RDSHOST"`
-	DBPort   int    `yaml:"db_port" env:"RDSPORT"`
-	DBName   string `yaml:"db_name" env:"RDSDBNAME"`
+	UserName string `yaml:"user_name"`
+	Password string `yaml:"user_pwd"`
+	DBHost   string `yaml:"db_host"`
+	DBPort   int    `yaml:"db_port"`
+	DBName   string `yaml:"db_name"`
 
 	Charset          string `yaml:"db_charset"`
 	Timeout          int    `yaml:"timeout"`
@@ -14,3 +14,4 @@ type DBConf struct {
 	MaxOpenConns     int    `yaml:"max_open_conns"`
 	MaxOpenReadConns int    `yaml:"max_open_read_conns"`
 }
+

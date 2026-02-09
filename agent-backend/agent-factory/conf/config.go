@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/cconf"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
 )
 
 type AuthConf struct {
@@ -57,7 +58,7 @@ type Config struct {
 }
 
 func (c Config) IsDebug() bool {
-	return c.Project.Debug
+	return cenvhelper.IsDebugMode()
 }
 
 var (
