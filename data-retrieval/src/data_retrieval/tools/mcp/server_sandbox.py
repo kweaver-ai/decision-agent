@@ -2,21 +2,27 @@
 """
 MCP 沙箱工具服务器
 
-只暴露沙箱工具集：
+暴露沙箱工具集（包含新版和旧版工具）：
+
+新版沙箱工具（sandbox_tools_new）：
 - execute_code: 执行代码
-- execute_command: 执行命令
-- read_file: 读取文件
 - create_file: 创建文件
+- read_file: 读取文件
 - list_files: 列出文件
-- get_status: 获取沙箱状态
-- close_sandbox: 关闭沙箱
-- download_from_efast: 从 Efast 下载
+- terminate_session: 终止会话
+
+旧版沙箱工具（sandbox_tools，带 _legacy 后缀）：
+- execute_code_legacy: 执行代码（旧版）
+- execute_command_legacy: 执行命令
+- read_file_legacy: 读取文件（旧版）
+- create_file_legacy: 创建文件（旧版）
+- list_files_legacy: 列出文件（旧版）
+- get_status_legacy: 获取沙箱状态
+- close_sandbox_legacy: 关闭沙箱
+- download_from_efast_legacy: 从 Efast 下载
 
 启动方式（stdio 模式，用于 IDE 集成）：
     python -m data_retrieval.tools.mcp.server_sandbox
-
-启动方式（SSE 模式，用于 HTTP 服务）：
-    python -m data_retrieval.tools.mcp.server_sandbox --sse --port 9112
 
 Cursor 配置示例：
     {
@@ -31,7 +37,6 @@ Cursor 配置示例：
 
 from __future__ import annotations
 
-import argparse
 from typing import List, Optional
 
 import anyio
@@ -44,16 +49,23 @@ from data_retrieval.tools.mcp.server_common import (
     IdentityParamsProvider,
 )
 
-# 沙箱工具列表
+# 沙箱工具列表（包含新版和旧版工具）
 SANDBOX_TOOLS: List[str] = [
+    # 新版沙箱工具（sandbox_tools_new）
     "execute_code",
-    "execute_command",
-    "read_file",
     "create_file",
+    "read_file",
     "list_files",
-    "get_status",
-    "close_sandbox",
-    "download_from_efast",
+    "terminate_session",
+    # 旧版沙箱工具（sandbox_tools，带 _legacy 后缀）
+    "execute_code_legacy",
+    "execute_command_legacy",
+    "read_file_legacy",
+    "create_file_legacy",
+    "list_files_legacy",
+    "get_status_legacy",
+    "close_sandbox_legacy",
+    "download_from_efast_legacy",
 ]
 
 SERVER_NAME = "data-retrieval-sandbox"
@@ -75,29 +87,9 @@ async def run_stdio(param_provider: Optional[IdentityParamsProvider] = None) -> 
         )
 
 
-def run_sse(host: str = "0.0.0.0", port: int = 9112) -> None:
-    """运行 SSE 模式的沙箱工具 MCP 服务器。"""
-    from data_retrieval.tools.mcp.server_sse import run_server_with_tools
-    run_server_with_tools(
-        host=host,
-        port=port,
-        tool_names=SANDBOX_TOOLS,
-        server_name=SERVER_NAME,
-    )
-
-
 def main() -> None:
     """主入口。"""
-    parser = argparse.ArgumentParser(description="MCP 沙箱工具服务器")
-    parser.add_argument("--sse", action="store_true", help="使用 SSE 模式（HTTP）")
-    parser.add_argument("--host", default="0.0.0.0", help="SSE 模式绑定地址")
-    parser.add_argument("--port", type=int, default=9112, help="SSE 模式端口")
-    args = parser.parse_args()
-
-    if args.sse:
-        run_sse(host=args.host, port=args.port)
-    else:
-        anyio.run(run_stdio)
+    anyio.run(run_stdio)
 
 
 if __name__ == "__main__":

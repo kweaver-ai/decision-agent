@@ -220,7 +220,6 @@ def run_server(
     print("      - /mcp           -> all tools")
     print("      - /base/mcp      -> base tools")
     print("      - /sandbox/mcp   -> sandbox tools")
-    print("      - /knowledge/mcp -> knowledge tools")
     print()
 
     if param_provider:

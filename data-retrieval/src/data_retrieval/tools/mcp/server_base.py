@@ -14,9 +14,6 @@ MCP 基础工具服务器
 启动方式（stdio 模式，用于 IDE 集成）：
     python -m data_retrieval.tools.mcp.server_base
 
-启动方式（SSE 模式，用于 HTTP 服务）：
-    python -m data_retrieval.tools.mcp.server_base --sse --port 9111
-
 Cursor 配置示例：
     {
         "mcpServers": {
@@ -30,7 +27,6 @@ Cursor 配置示例：
 
 from __future__ import annotations
 
-import argparse
 from typing import List, Optional
 
 import anyio
@@ -73,30 +69,9 @@ async def run_stdio(param_provider: Optional[IdentityParamsProvider] = None) -> 
         )
 
 
-def run_sse(host: str = "0.0.0.0", port: int = 9111) -> None:
-    """运行 SSE 模式的基础工具 MCP 服务器。"""
-    # 延迟导入避免循环依赖
-    from data_retrieval.tools.mcp.server_sse import run_server_with_tools
-    run_server_with_tools(
-        host=host,
-        port=port,
-        tool_names=BASE_TOOLS,
-        server_name=SERVER_NAME,
-    )
-
-
 def main() -> None:
     """主入口。"""
-    parser = argparse.ArgumentParser(description="MCP 基础工具服务器")
-    parser.add_argument("--sse", action="store_true", help="使用 SSE 模式（HTTP）")
-    parser.add_argument("--host", default="0.0.0.0", help="SSE 模式绑定地址")
-    parser.add_argument("--port", type=int, default=9111, help="SSE 模式端口")
-    args = parser.parse_args()
-
-    if args.sse:
-        run_sse(host=args.host, port=args.port)
-    else:
-        anyio.run(run_stdio)
+    anyio.run(run_stdio)
 
 
 if __name__ == "__main__":

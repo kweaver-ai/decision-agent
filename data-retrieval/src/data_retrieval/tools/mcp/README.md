@@ -10,7 +10,7 @@
 - **Identity 参数管理**：通过 `identity` 标识符获取预设参数，避免 LLM 生成敏感配置
 - **参数自动合并**：支持全局参数、工具参数、调用参数的多级合并
 - **隐藏敏感参数**：从 `inputSchema` 中隐藏内部参数，LLM 不可见
-- **双模式支持**：支持 stdio 和 SSE 两种通信模式
+- **双传输模式支持**：支持 stdio 和 Streamable HTTP 两种通信模式
 - **多服务分离**：支持按工具集启动独立的 MCP 服务
 
 ### MCP 能力支持
@@ -23,15 +23,24 @@
 
 ---
 
-## 两种工具服务
+## 传输模式
+
+本模块支持两种传输模式：
+
+| 传输模式 | 模块 | 说明 | 适用场景 |
+|---------|------|------|---------|
+| **stdio** | `server_stdio` | 通过 stdin/stdout 管道通信 | IDE 集成（Cursor/Claude Desktop） |
+| **Streamable HTTP** | `server_streamable` | 通过 HTTP 请求/响应通信 | 后台服务、多客户端共享 |
+
+## 工具服务
 
 除了暴露全部工具的默认服务外，还提供两个独立的工具集服务：
 
-| 服务 | 模块 | 默认端口 | 工具数 | 说明 |
-|------|------|---------|--------|------|
-| **全部工具** | `server_stdio` / `server_sse` | 9110 | 15 | 暴露所有工具 |
-| **基础工具** | `server_base` | 9111 | 7 | text2sql, text2ngql, text2metric 等 |
-| **沙箱工具** | `server_sandbox` | 9112 | 8 | execute_code, read_file 等 |
+| 服务 | stdio 模块 | HTTP 端点 | 工具数 | 说明 |
+|------|-----------|----------|--------|------|
+| **全部工具** | `server_stdio` | `/mcp` | 20 | 暴露所有工具 |
+| **基础工具** | `server_base` | `/base/mcp` | 7 | text2sql, text2ngql, text2metric 等 |
+| **沙箱工具** | `server_sandbox` | `/sandbox/mcp` | 13 | execute_code, create_file 等（新版+旧版） |
 
 ### 基础工具服务 (server_base)
 
@@ -51,109 +60,47 @@
 # stdio 模式
 python -m data_retrieval.tools.mcp.server_base
 
-# SSE 模式
-python -m data_retrieval.tools.mcp.server_base --sse --port 9111
 ```
 
 ### 沙箱工具服务 (server_sandbox)
 
-包含代码执行和文件操作相关工具：
+包含代码执行和文件操作相关工具（新版和旧版）：
 
+**新版沙箱工具**（推荐使用）：
 | 工具 | 说明 |
 |------|------|
 | `execute_code` | 执行代码 |
-| `execute_command` | 执行命令 |
-| `read_file` | 读取文件 |
 | `create_file` | 创建文件 |
+| `read_file` | 读取文件 |
 | `list_files` | 列出文件 |
-| `get_status` | 获取沙箱状态 |
-| `close_sandbox` | 关闭沙箱 |
-| `download_from_efast` | 从 Efast 下载 |
+| `terminate_session` | 终止会话 |
+
+**旧版沙箱工具**（带 `_legacy` 后缀）：
+| 工具 | 说明 |
+|------|------|
+| `execute_code_legacy` | 执行代码（旧版） |
+| `execute_command_legacy` | 执行命令 |
+| `read_file_legacy` | 读取文件（旧版） |
+| `create_file_legacy` | 创建文件（旧版） |
+| `list_files_legacy` | 列出文件（旧版） |
+| `get_status_legacy` | 获取沙箱状态 |
+| `close_sandbox_legacy` | 关闭沙箱 |
+| `download_from_efast_legacy` | 从 Efast 下载 |
 
 ```bash
 # stdio 模式
 python -m data_retrieval.tools.mcp.server_sandbox
-
-# SSE 模式
-python -m data_retrieval.tools.mcp.server_sandbox --sse --port 9112
-```
-
-### SSE 多工具集模式（推荐）
-
-启动一个 SSE 服务，通过不同 URL 路径连接不同工具集：
-
-```bash
-# 启动服务（默认多工具集模式）
-python -m data_retrieval.tools.mcp.server_sse --port 9110
-```
-
-启动后可用端点：
-
-| 工具集 | SSE 端点 | 工具列表端点 | 工具数 |
-|--------|----------|-------------|--------|
-| 全部 | `/sse` | `/tools` | 15 |
-| 基础 | `/base/sse` | `/base/tools` | 7 |
-| 沙箱 | `/sandbox/sse` | `/sandbox/tools` | 8 |
-
-**Cursor 配置示例（SSE 模式）**：
-
-```json
-{
-  "mcpServers": {
-    "data-retrieval-base": {
-      "url": "http://localhost:9110/base/sse?identity=12"
-    },
-    "data-retrieval-sandbox": {
-      "url": "http://localhost:9110/sandbox/sse?identity=12"
-    }
-  }
-}
-```
-
-> 💡 **注意**：`identity` 参数通过 URL 传递，服务器会在连接时解析并保存，后续工具调用自动使用该 identity 获取配置参数。
-
-### stdio 模式（独立服务）
-
-如果需要 stdio 模式，可以使用独立的服务器入口：
-
-```json
-{
-  "mcpServers": {
-    "data-retrieval-base": {
-      "command": "python",
-      "args": ["-m", "data_retrieval.tools.mcp.server_base"],
-      "cwd": "D:/work/data-agent-opensource/data-retrieval/src"
-    },
-    "data-retrieval-sandbox": {
-      "command": "python",
-      "args": ["-m", "data_retrieval.tools.mcp.server_sandbox"],
-      "cwd": "D:/work/data-agent-opensource/data-retrieval/src"
-    },
-    "data-retrieval-knowledge": {
-      "command": "python",
-      "args": ["-m", "data_retrieval.tools.mcp.server_knowledge"],
-      "cwd": "D:/work/data-agent-opensource/data-retrieval/src"
-    }
-  }
-}
 ```
 
 ---
 
-## 两种服务模式
+## 传输模式详解
 
-### stdio 模式 vs SSE 模式
+### stdio 模式
 
-| 特性 | stdio 模式 | SSE 模式 |
-|------|-----------|----------|
-| **通信方式** | stdin/stdout 管道 | HTTP/SSE 网络 |
-| **启动方式** | 客户端自动 fork 子进程 | 需手动启动服务 |
-| **后台运行** | ❌ 不支持 | ✅ 支持 |
-| **多客户端** | ❌ 每次新进程 | ✅ 共享服务 |
-| **适用场景** | IDE 集成 (Cursor/Claude) | 开发测试、服务部署 |
-| **端口** | 不需要 | 需要（默认 9110） |
+通过 stdin/stdout 管道与客户端通信。适用于 IDE 集成（Cursor/Claude Desktop）。
 
-### stdio 模式工作原理
+#### stdio 模式工作原理
 
 ```
 ┌─────────────────────┐
@@ -175,22 +122,142 @@ python -m data_retrieval.tools.mcp.server_sse --port 9110
 
 **注意**：直接运行 `python server_stdio.py` 没有意义，因为它在等待 stdin 输入，但手动输入的不是 MCP 协议格式。
 
-### SSE 模式工作原理
+#### stdio 模式配置
+
+如果需要 stdio 模式，可以使用独立的服务器入口：
+
+```json
+{
+  "mcpServers": {
+    "data-retrieval-base": {
+      "command": "python",
+      "args": ["-m", "data_retrieval.tools.mcp.server_base"],
+      "cwd": "D:/work/data-agent-opensource/data-retrieval/src"
+    },
+    "data-retrieval-sandbox": {
+      "command": "python",
+      "args": ["-m", "data_retrieval.tools.mcp.server_sandbox"],
+      "cwd": "D:/work/data-agent-opensource/data-retrieval/src"
+    }
+  }
+}
+```
+
+### Streamable HTTP Transport 模式
+
+通过 HTTP 请求/响应与客户端通信。使用 MCP 官方的 `StreamableHTTPSessionManager` 管理会话。适用于后台服务、多客户端共享等场景。
+
+#### Streamable HTTP 模式工作原理
 
 ```
 ┌──────────────────┐     ┌──────────────────┐
 │   客户端 A        │     │   客户端 B        │
 └────────┬─────────┘     └────────┬─────────┘
          │                        │
-         │ HTTP/SSE               │ HTTP/SSE
+         │ HTTP POST /mcp         │ HTTP POST /base/mcp
          └──────────┬─────────────┘
                     ▼
          ┌─────────────────────┐
-         │   server_sse.py     │
-         │   (长期运行服务)     │
-         │   端口: 9110        │
+         │ server_streamable.py │
+         │ (长期运行服务)       │
+         │ 端口: 9110          │
          └─────────────────────┘
 ```
+
+#### Streamable HTTP 端点
+
+启动服务后可用端点：
+
+| 工具集 | HTTP 端点 | 工具列表端点 | 工具数 |
+|--------|----------|-------------|--------|
+| 全部 | `POST /mcp` | `GET /tools` | 20 |
+| 基础 | `POST /base/mcp` | `GET /base/tools` | 7 |
+| 沙箱 | `POST /sandbox/mcp` | `GET /sandbox/tools` | 13 |
+
+其他端点：
+- `GET /` 或 `GET /health` - 健康检查
+
+#### 启动 Streamable HTTP 服务器
+
+```bash
+# 方式1：使用 uvicorn
+uvicorn data_retrieval.tools.mcp.server_streamable:app --port 9110
+
+# 方式2：直接运行模块
+python -m data_retrieval.tools.mcp.server_streamable
+
+# 方式3：后台启动（Linux/macOS）
+nohup python -m data_retrieval.tools.mcp.server_streamable > mcp.log 2>&1 &
+```
+
+#### Streamable HTTP 客户端示例
+
+```python
+from mcp import ClientSession
+from mcp.client.streamable_http import StreamableHTTPClient
+
+async def main():
+    # 创建客户端
+    client = StreamableHTTPClient(
+        base_url="http://localhost:9110",
+        endpoint="/mcp",  # 或 "/base/mcp", "/sandbox/mcp"
+    )
+    
+    async with client.session() as session:
+        await session.initialize()
+        
+        # 调用工具（identity 通过 URL query 或请求头传递）
+        result = await session.call_tool("text2sql", {
+            "identity": "user-123",
+            "input": "查询数据",
+            "action": "gen_exec"
+        })
+        print(result.content[0].text)
+```
+
+#### Identity 参数传递
+
+Streamable HTTP 模式下，`identity` 可以通过以下方式传递：
+
+1. **URL Query 参数**（推荐）：
+   ```
+   POST /mcp?identity=user-123
+   ```
+
+2. **请求头**：
+   ```
+   X-MCP-Identity: user-123
+   ```
+
+3. **工具调用参数**：
+   ```python
+   await session.call_tool("text2sql", {
+       "identity": "user-123",
+       ...
+   })
+   ```
+
+---
+
+```
+┌─────────────────────┐
+│    客户端进程        │
+│  (Python / Cursor)  │
+└──────────┬──────────┘
+           │ stdio_client() 
+           │ 启动子进程 (fork/spawn)
+           ▼
+┌─────────────────────┐
+│    子进程            │
+│  (server_stdio.py)   │
+└──────────┬──────────┘
+           │
+     stdin/stdout 管道
+           │
+     父子进程通过管道通信
+```
+
+**注意**：直接运行 `python server_stdio.py` 没有意义，因为它在等待 stdin 输入，但手动输入的不是 MCP 协议格式。
 
 ---
 
@@ -202,18 +269,22 @@ python -m data_retrieval.tools.mcp.server_sse --port 9110
 │  (Cursor / Claude Desktop / Python Client)                      │
 └─────────────────────────────────────────────────────────────────┘
                               │
-                              │ stdio (管道) 或 SSE (HTTP)
-                              ▼
-┌─────────────────────────────────────────────────────────────────┐
-│              server_stdio.py / server_sse.py                     │
-│  ┌─────────────────────────────────────────────────────────────┐│
-│  │  build_server()                                              ││
-│  │  ├── list_tools() → 列出所有公开工具                          ││
-│  │  └── call_tool()  → 调用工具                                  ││
-│  └─────────────────────────────────────────────────────────────┘│
-└─────────────────────────────────────────────────────────────────┘
-                              │
-                              ▼
+                    ┌─────────┴─────────┐
+                    │                   │
+         stdio (管道)│                   │ HTTP (请求/响应)
+                    │                   │
+                    ▼                   ▼
+┌─────────────────────────┐  ┌──────────────────────────────┐
+│   server_stdio.py       │  │  server_streamable.py        │
+│  ┌─────────────────────┐│  │  ┌────────────────────────┐ │
+│  │  build_server()     ││  │  │ StreamableHTTPSession  │ │
+│  │  ├── list_tools()   ││  │  │ Manager                 │ │
+│  │  └── call_tool()    ││  │  └────────────────────────┘ │
+│  └─────────────────────┘│  └──────────────────────────────┘
+└─────────────────────────┘              │
+         │                               │
+         └───────────────┬───────────────┘
+                         ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                       registry.py                                │
 │  ┌─────────────────────────────────────────────────────────────┐│
@@ -283,35 +354,42 @@ async def main():
             print(result.content[0].text)
 ```
 
-### 方式二：SSE 模式（先启动服务，再连接）
+### 方式二：Streamable HTTP 模式（后台服务）
 
-适用于开发测试和需要后台服务的场景。
+适用于需要后台运行和多客户端共享的场景。
 
 ```bash
-# 第一步：启动 SSE 服务器（需设置环境变量配置 identity 对应的参数）
-cd data-retrieval/src
+# 启动服务器
+uvicorn data_retrieval.tools.mcp.server_streamable:app --port 9110
 
-# PowerShell
-$env:DEFAULT_IDENTITY = "12"
-$env:IDENTITY_PARAMS = '{"data_source": {...}, "inner_llm": {...}}'
-python -m data_retrieval.tools.mcp.server_sse --port 9110
-
-# 或后台启动（Linux/macOS）
-export DEFAULT_IDENTITY=12
-export IDENTITY_PARAMS='{"data_source": {...}}'
-nohup python -m data_retrieval.tools.mcp.server_sse --port 9110 > mcp.log 2>&1 &
+# 或直接运行
+python -m data_retrieval.tools.mcp.server_streamable
 ```
 
-```bash
-# 第二步：客户端连接（URL 中带 identity 参数）
-cd data-retrieval
+Python 客户端代码：
 
-python -m tests.mcp_test.client_example --sse --list
-python -m tests.mcp_test.client_example --sse --full
-python -m tests.mcp_test.client_example --sse --identity user-123 --call text2sql --input "查询数据"
+```python
+from mcp import ClientSession
+from mcp.client.streamable_http import StreamableHTTPClient
 
-# 指定服务器地址
-python -m tests.mcp_test.client_example --sse --sse-url http://192.168.1.100:9110/base/sse --list
+async def main():
+    client = StreamableHTTPClient(
+        base_url="http://localhost:9110",
+        endpoint="/mcp",  # 全部工具
+        # endpoint="/base/mcp",  # 基础工具
+        # endpoint="/sandbox/mcp",  # 沙箱工具
+    )
+    
+    async with client.session() as session:
+        await session.initialize()
+        
+        # 调用工具
+        result = await session.call_tool("text2sql", {
+            "identity": "user-123",
+            "input": "查询数据",
+            "action": "gen_exec"
+        })
+        print(result.content[0].text)
 ```
 
 验证服务状态：
@@ -319,6 +397,7 @@ python -m tests.mcp_test.client_example --sse --sse-url http://192.168.1.100:911
 ```bash
 curl http://localhost:9110/health   # 健康检查
 curl http://localhost:9110/tools    # 查看工具列表
+curl http://localhost:9110/base/tools  # 查看基础工具列表
 ```
 
 ### 方式三：MCP Inspector（可视化调试）
@@ -513,7 +592,7 @@ data_retrieval/tools/mcp/
 ├── resources/           # Resources 模块
 │   └── __init__.py      # 静态资源定义
 ├── server_stdio.py      # stdio 模式 MCP 服务器（全部工具）
-├── server_sse.py        # SSE 模式 MCP 服务器（全部工具）
+├── server_streamable.py # Streamable HTTP 模式 MCP 服务器（全部工具）
 ├── server_base.py       # 基础工具服务器
 ├── server_sandbox.py    # 沙箱工具服务器
 └── README.md            # 本文档
@@ -529,9 +608,9 @@ data_retrieval/tools/mcp/
 | `prompts/` | 提示模板管理：注册、列表、渲染 |
 | `resources/` | 资源管理：注册、列表、读取 |
 | `server_stdio.py` | stdio 传输层：全部工具，通过管道通信 |
-| `server_sse.py` | SSE 传输层：全部工具，通过 HTTP/SSE 通信 |
+| `server_streamable.py` | Streamable HTTP 传输层：全部工具，通过 HTTP 请求/响应通信 |
 | `server_base.py` | 基础工具服务（text2sql 等 7 个工具） |
-| `server_sandbox.py` | 沙箱工具服务（execute_code 等 8 个工具） |
+| `server_sandbox.py` | 沙箱工具服务（execute_code 等 13 个工具，包含新版和旧版） |
 
 ---
 
@@ -545,13 +624,7 @@ data_retrieval/tools/mcp/
 
 **A**: 
 - 快速测试：`python -m tests.mcp_test.client_example --full`
-- 后台服务测试：先启动 SSE 服务器，再用 `--sse` 连接
 
-### Q: 两种模式如何选择？
-
-**A**:
-- **IDE 集成** (Cursor/Claude) → stdio 模式
-- **开发调试**、**多客户端共享** → SSE 模式
 
 ---
 
@@ -561,8 +634,10 @@ data_retrieval/tools/mcp/
 - **环境变量**：在启动服务器时设置 `DEFAULT_IDENTITY`、`IDENTITY_PARAMS` 等
 - **_set_identity**：客户端调用内部工具动态设置参数
 
-### SSE 模式
-- **URL 参数**：在连接 URL 中带上 `?identity=xxx`（如 `/base/sse?identity=12`）
+### Streamable HTTP 模式
+- **URL Query 参数**：在请求 URL 中带上 `?identity=xxx`（如 `/mcp?identity=user-123`）
+- **请求头**：通过 `X-MCP-Identity` 请求头传递
+- **工具调用参数**：在工具调用的 arguments 中包含 `identity` 字段
 - **环境变量**：服务器启动时设置 `IDENTITY_PARAMS`，配置 identity 对应的参数
 
 ```
@@ -579,17 +654,11 @@ data_retrieval/tools/mcp/
    - **默认**：`memory` - 内存存储，服务器重启后丢失
    - **生产环境**：`redis` - Redis 存储，支持多进程/分布式
 
-3. **SSE 模式 Identity 传递**：
-   - `identity` 通过 **URL 参数** 传递（如 `?identity=12`）
-   - 服务器在 SSE 连接建立时解析 identity 并保存到 Session 存储
-   - MCP session_id 与 identity 自动绑定，后续工具调用自动注入
-   - 配置参数通过服务器端 **环境变量** 预先设置
-   - SSE 连接断开时自动清理 Session
+3. **Session 管理**：
+   - **stdio 模式**：每个连接是独立进程，session 参数天然隔离
+   - **Streamable HTTP 模式**：使用 `StreamableHTTPSessionManager` 管理会话，支持多客户端共享
+   - 连接断开时自动清理 Session
 
-4. **Session 生命周期**（SSE 模式）：
-   ```
-   GET /sse?identity=12     → register_identity("12")
-   POST /sse/messages?...   → bind_session(session_id) → identity
-   工具调用                   → get_current_identity() → "12"
-   SSE 断开                   → cleanup_session(session_id)
-   ```
+4. **传输模式选择**：
+   - **IDE 集成**（Cursor/Claude Desktop）→ stdio 模式
+   - **后台服务**、**多客户端共享** → Streamable HTTP 模式

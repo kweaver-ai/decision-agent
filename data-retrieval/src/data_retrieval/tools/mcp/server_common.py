@@ -2,7 +2,7 @@
 """
 MCP 服务器公共模块
 
-提供 stdio 和 SSE 两种服务模式共享的功能：
+提供 stdio 服务模式共享的功能：
 - 环境配置
 - 内部工具处理 (_set_identity, _clear_identity)
 - 结果转换
@@ -45,16 +45,23 @@ BASE_TOOLS: List[str] = [
     "json2plot",
 ]
 
-# 沙箱工具列表
+# 沙箱工具列表（包含新版和旧版工具）
 SANDBOX_TOOLS: List[str] = [
+    # 新版沙箱工具（sandbox_tools_new）
     "execute_code",
-    "execute_command",
-    "read_file",
     "create_file",
+    "read_file",
     "list_files",
-    "get_status",
-    "close_sandbox",
-    "download_from_efast",
+    "terminate_session",
+    # 旧版沙箱工具（sandbox_tools，带 _legacy 后缀）
+    "execute_code_legacy",
+    "execute_command_legacy",
+    "read_file_legacy",
+    "create_file_legacy",
+    "list_files_legacy",
+    "get_status_legacy",
+    "close_sandbox_legacy",
+    "download_from_efast_legacy",
 ]
 
 # 工具集映射
@@ -68,7 +75,6 @@ TOOL_SETS: Dict[str, List[str]] = {
 
 # 使用进程级别的字典存储 session 参数
 # - stdio 模式：每个连接是独立进程，字典天然隔离
-# - SSE 模式：多客户端共享进程，需要通过 identity 区分
 _session_params: Dict[str, Dict[str, Any]] = {}
 
 
@@ -482,7 +488,7 @@ def get_current_identity() -> Optional[str]:
 
 
 def cleanup_session(session_id: str) -> None:
-    """清理 session 相关数据（SSE 连接断开时调用）。"""
+    """清理 session 相关数据。"""
     get_session_store().cleanup(session_id)
 
 
