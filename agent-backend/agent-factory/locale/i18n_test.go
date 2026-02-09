@@ -140,10 +140,34 @@ func TestGetI18nByCtx(t *testing.T) {
 }
 
 func TestRegister(t *testing.T) {
-	t.Run("test function exists", func(t *testing.T) {
-		// This test verifies that Register function exists
-		// The actual functionality depends on file system and i18n library
-		// which are difficult to test in unit tests
+	t.Run("UT mode", func(t *testing.T) {
+		// Save original env value
+		originalMode := os.Getenv("I18N_MODE_UT")
+
+		// Clean up after test
+		t.Cleanup(func() {
+			if originalMode != "" {
+				os.Setenv("I18N_MODE_UT", originalMode)
+			} else {
+				os.Unsetenv("I18N_MODE_UT")
+			}
+		})
+
+		// Set UT mode
+		os.Setenv("I18N_MODE_UT", "true")
+
+		// This should not panic in UT mode
+		defer func() {
+			if r := recover(); r != nil {
+				t.Errorf("Register panicked: %v", r)
+			}
+		}()
+
+		Register()
+	})
+
+	t.Run("non-UT mode with locale directory", func(t *testing.T) {
+		t.Skip("Skipping - i18n library can only be registered once per process")
 
 		// Save original env value
 		originalMode := os.Getenv("I18N_MODE_UT")
@@ -157,10 +181,11 @@ func TestRegister(t *testing.T) {
 			}
 		}()
 
-		// Set UT mode
-		os.Setenv("I18N_MODE_UT", "true")
+		// Unset UT mode to test non-UT mode path
+		os.Unsetenv("I18N_MODE_UT")
 
-		// This should not panic in UT mode
+		// This should not panic even if locale directory doesn't exist
+		// (it will fall back to UT mode automatically)
 		defer func() {
 			if r := recover(); r != nil {
 				t.Errorf("Register panicked: %v", r)
