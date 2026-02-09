@@ -137,3 +137,229 @@ func TestGenerateAssistantMsg(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, msg)
 }
+
+func TestCalculateTTFTForChat_EmptyProgresses(t *testing.T) {
+	startTime := int64(1000)
+	progresses := []*agentrespvo.Progress{}
+
+	result := calculateTTFTForChat(startTime, progresses)
+
+	assert.Equal(t, int64(0), result)
+}
+
+func TestCalculateTTFTForChat_LLMWithAnswer(t *testing.T) {
+	startTime := int64(1000)
+	progresses := []*agentrespvo.Progress{
+		{
+			Stage:  "llm",
+			Answer: "test answer",
+		},
+	}
+
+	result := calculateTTFTForChat(startTime, progresses)
+
+	assert.Greater(t, result, int64(0))
+}
+
+func TestCalculateTTFTForChat_LLMWithThink(t *testing.T) {
+	startTime := int64(1000)
+	progresses := []*agentrespvo.Progress{
+		{
+			Stage: "llm",
+			Think: "test think",
+		},
+	}
+
+	result := calculateTTFTForChat(startTime, progresses)
+
+	assert.Greater(t, result, int64(0))
+}
+
+func TestCalculateTTFTForChat_LLMNoContent(t *testing.T) {
+	startTime := int64(1000)
+	progresses := []*agentrespvo.Progress{
+		{
+			Stage:  "llm",
+			Answer: "",
+			Think:  "",
+		},
+	}
+
+	result := calculateTTFTForChat(startTime, progresses)
+
+	// Empty string is considered as "having value" in the type check,
+	// so it returns non-zero TTFT
+	assert.Greater(t, result, int64(0))
+}
+
+func TestCalculateTTFTForChat_SkillSearchMemory(t *testing.T) {
+	startTime := int64(1000)
+	progresses := []*agentrespvo.Progress{
+		{
+			Stage: "skill",
+			SkillInfo: &agentrespvo.SkillInfo{
+				Name: "search_memory",
+			},
+		},
+	}
+
+	result := calculateTTFTForChat(startTime, progresses)
+
+	assert.Equal(t, int64(0), result)
+}
+
+func TestCalculateTTFTForChat_SkillDate(t *testing.T) {
+	startTime := int64(1000)
+	progresses := []*agentrespvo.Progress{
+		{
+			Stage: "skill",
+			SkillInfo: &agentrespvo.SkillInfo{
+				Name: "_date",
+			},
+		},
+	}
+
+	result := calculateTTFTForChat(startTime, progresses)
+
+	assert.Equal(t, int64(0), result)
+}
+
+func TestCalculateTTFTForChat_SkillBuildMemory(t *testing.T) {
+	startTime := int64(1000)
+	progresses := []*agentrespvo.Progress{
+		{
+			Stage: "skill",
+			SkillInfo: &agentrespvo.SkillInfo{
+				Name: "build__memory",
+			},
+		},
+	}
+
+	result := calculateTTFTForChat(startTime, progresses)
+
+	assert.Equal(t, int64(0), result)
+}
+
+func TestCalculateTTFTForChat_SkillWithShowDS(t *testing.T) {
+	startTime := int64(1000)
+	progresses := []*agentrespvo.Progress{
+		{
+			Stage: "skill",
+			SkillInfo: &agentrespvo.SkillInfo{
+				Name: "test_tool",
+				Args: []agentrespvo.Arg{
+					{
+						Name:  "action",
+						Type:  "string",
+						Value: "show_ds",
+					},
+				},
+			},
+		},
+	}
+
+	result := calculateTTFTForChat(startTime, progresses)
+
+	assert.Equal(t, int64(0), result)
+}
+
+func TestCalculateTTFTForChat_SkillVisible(t *testing.T) {
+	startTime := int64(1000)
+	progresses := []*agentrespvo.Progress{
+		{
+			Stage: "skill",
+			SkillInfo: &agentrespvo.SkillInfo{
+				Name: "visible_tool",
+				Args: []agentrespvo.Arg{
+					{
+						Name:  "action",
+						Type:  "string",
+						Value: "other_action",
+					},
+				},
+			},
+		},
+	}
+
+	result := calculateTTFTForChat(startTime, progresses)
+
+	assert.Greater(t, result, int64(0))
+}
+
+func TestCalculateTTFTForChat_MultipleProgresses(t *testing.T) {
+	startTime := int64(1000)
+	progresses := []*agentrespvo.Progress{
+		{
+			Stage: "skill",
+			SkillInfo: &agentrespvo.SkillInfo{
+				Name: "search_memory",
+			},
+		},
+		{
+			Stage: "skill",
+			SkillInfo: &agentrespvo.SkillInfo{
+				Name: "visible_tool",
+			},
+		},
+	}
+
+	result := calculateTTFTForChat(startTime, progresses)
+
+	assert.Greater(t, result, int64(0))
+}
+
+func TestAgentConfig2AgentCallConfig_WithPreDolphin(t *testing.T) {
+	ctx := context.Background()
+	req := &agentreq.ChatReq{
+		AgentID:        "agent-123",
+		ConversationID: "conv-456",
+		AgentRunID:     "run-789",
+	}
+
+	agentConfig := &daconfvalobj.Config{
+		SystemPrompt: "You are a helpful assistant",
+		PreDolphin:    nil,
+	}
+
+	result := AgentConfig2AgentCallConfig(ctx, agentConfig, req)
+
+	assert.NotNil(t, result.PreDolphin)
+}
+
+func TestAgentConfig2AgentCallConfig_WithPostDolphin(t *testing.T) {
+	ctx := context.Background()
+	req := &agentreq.ChatReq{
+		AgentID:        "agent-123",
+		ConversationID: "conv-456",
+		AgentRunID:     "run-789",
+	}
+
+	agentConfig := &daconfvalobj.Config{
+		SystemPrompt: "You are a helpful assistant",
+		PostDolphin:   nil,
+	}
+
+	result := AgentConfig2AgentCallConfig(ctx, agentConfig, req)
+
+	assert.NotNil(t, result.PostDolphin)
+}
+
+func TestAgentConfig2AgentCallConfigDebug_WithNilSkill(t *testing.T) {
+	ctx := context.Background()
+	req := &agentreq.DebugReq{
+		AgentID:    "agent-123",
+		AgentRunID: "run-789",
+	}
+
+	agentConfig := &daconfvalobj.Config{
+		SystemPrompt: "You are a helpful assistant",
+		Skill:         nil,
+	}
+
+	result := AgentConfig2AgentCallConfigDebug(ctx, agentConfig, req)
+
+	assert.NotNil(t, result.Skill)
+	assert.Len(t, result.Skill.Tools, 0)
+	assert.Len(t, result.Skill.Agents, 0)
+	assert.Len(t, result.Skill.MCPs, 0)
+}

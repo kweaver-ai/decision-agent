@@ -110,6 +110,75 @@ func TestUpdate(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "handles title with exactly 50 characters",
+			req: &conversationreq.UpdateReq{
+				ID:    "conv-123",
+				Title: "12345678901234567890123456789012345678901234567890",
+			},
+			setup: func(ctrl *gomock.Controller) (*conversationSvc, context.Context) {
+				ctx := context.Background()
+				repo := idbaccessmock.NewMockIConversationRepo(ctrl)
+
+				repo.EXPECT().GetByID(gomock.Any(), "conv-123").Return(&dapo.ConversationPO{ID: "conv-123"}, nil)
+				repo.EXPECT().Update(gomock.Any(), gomock.Any()).Do(func(_ context.Context, po *dapo.ConversationPO) {
+					assert.Equal(t, 50, len([]rune(po.Title)))
+					assert.Equal(t, "12345678901234567890123456789012345678901234567890", po.Title)
+				}).Return(nil)
+
+				svc := &conversationSvc{
+					SvcBase:         service.NewSvcBase(),
+					conversationRepo: repo,
+				}
+
+				return svc, ctx
+			},
+			wantErr: false,
+		},
+		{
+			name: "handles title with unicode characters",
+			req: &conversationreq.UpdateReq{
+				ID:    "conv-123",
+				Title: "标题测试这是一个中文标题",
+			},
+			setup: func(ctrl *gomock.Controller) (*conversationSvc, context.Context) {
+				ctx := context.Background()
+				repo := idbaccessmock.NewMockIConversationRepo(ctrl)
+
+				repo.EXPECT().GetByID(gomock.Any(), "conv-123").Return(&dapo.ConversationPO{ID: "conv-123"}, nil)
+				repo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
+
+				svc := &conversationSvc{
+					SvcBase:         service.NewSvcBase(),
+					conversationRepo: repo,
+				}
+
+				return svc, ctx
+			},
+			wantErr: false,
+		},
+		{
+			name: "returns error when update fails",
+			req: &conversationreq.UpdateReq{
+				ID:    "conv-123",
+				Title: "New Title",
+			},
+			setup: func(ctrl *gomock.Controller) (*conversationSvc, context.Context) {
+				ctx := context.Background()
+				repo := idbaccessmock.NewMockIConversationRepo(ctrl)
+
+				repo.EXPECT().GetByID(gomock.Any(), "conv-123").Return(&dapo.ConversationPO{ID: "conv-123"}, nil)
+				repo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(assert.AnError)
+
+				svc := &conversationSvc{
+					SvcBase:         service.NewSvcBase(),
+					conversationRepo: repo,
+				}
+
+				return svc, ctx
+			},
+			wantErr: true,
+		},
 	}
 
 	for _, tt := range tests {

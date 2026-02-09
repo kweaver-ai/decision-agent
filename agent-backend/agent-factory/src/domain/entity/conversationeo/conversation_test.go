@@ -4,64 +4,65 @@ import (
 	"testing"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestConversation(t *testing.T) {
-	hello := "Hello"
-	world := "World"
-	conversation := &Conversation{
+func TestConversation_NewConversation(t *testing.T) {
+	conv := &Conversation{
 		ConversationPO: &dapo.ConversationPO{
 			ID:    "conv-123",
-			Title: "Test Topic",
+			Title: "Test Conversation",
 		},
-		Messages: []*dapo.ConversationMsgPO{
-			{ID: "msg-1", Content: &hello},
-			{ID: "msg-2", Content: &world},
-		},
-	}
-
-	if conversation.ID != "conv-123" {
-		t.Errorf("ID = %q, want %q", conversation.ID, "conv-123")
-	}
-	if conversation.Title != "Test Topic" {
-		t.Errorf("Title = %q, want %q", conversation.Title, "Test Topic")
-	}
-	if len(conversation.Messages) != 2 {
-		t.Errorf("Messages length = %d, want 2", len(conversation.Messages))
-	}
-}
-
-func TestConversation_Empty(t *testing.T) {
-	conversation := &Conversation{}
-
-	if conversation.ConversationPO != nil {
-		t.Error("ConversationPO should be nil")
-	}
-	if conversation.Messages != nil {
-		t.Error("Messages should be nil")
-	}
-}
-
-func TestConversation_NilPO(t *testing.T) {
-	conversation := &Conversation{
 		Messages: []*dapo.ConversationMsgPO{},
 	}
 
-	if conversation.ConversationPO != nil {
-		t.Error("ConversationPO should be nil")
+	assert.NotNil(t, conv)
+	assert.NotNil(t, conv.ConversationPO)
+	assert.NotNil(t, conv.Messages)
+	assert.Equal(t, "conv-123", conv.ID)
+	assert.Equal(t, "Test Conversation", conv.Title)
+}
+
+func TestConversation_WithMessages(t *testing.T) {
+	content1 := "Hello"
+	content2 := "World"
+	messages := []*dapo.ConversationMsgPO{
+		{ID: "msg-1", Content: &content1},
+		{ID: "msg-2", Content: &content2},
 	}
-	if len(conversation.Messages) != 0 {
-		t.Error("Messages should be empty")
+
+	conv := &Conversation{
+		ConversationPO: &dapo.ConversationPO{
+			ID:    "conv-456",
+			Title: "Test",
+		},
+		Messages: messages,
 	}
+
+	assert.Equal(t, 2, len(conv.Messages))
+	assert.Equal(t, "msg-1", conv.Messages[0].ID)
+	assert.Equal(t, "msg-2", conv.Messages[1].ID)
+}
+
+func TestConversation_NilConversationPO(t *testing.T) {
+	conv := &Conversation{
+		ConversationPO: nil,
+		Messages:        []*dapo.ConversationMsgPO{},
+	}
+
+	assert.Nil(t, conv.ConversationPO)
+	assert.NotNil(t, conv.Messages)
 }
 
 func TestConversation_NilMessages(t *testing.T) {
-	conversation := &Conversation{
-		ConversationPO: &dapo.ConversationPO{},
-		Messages:       nil,
+	conv := &Conversation{
+		ConversationPO: &dapo.ConversationPO{
+			ID:    "conv-789",
+			Title: "Test",
+		},
+		Messages: nil,
 	}
 
-	if conversation.Messages != nil {
-		t.Error("Messages should be nil")
-	}
+	assert.NotNil(t, conv.ConversationPO)
+	assert.Nil(t, conv.Messages)
 }

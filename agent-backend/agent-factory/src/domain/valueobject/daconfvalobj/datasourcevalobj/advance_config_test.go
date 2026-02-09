@@ -1,6 +1,7 @@
 package datasourcevalobj
 
 import (
+	"math"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -316,4 +317,81 @@ func TestDocAdvancedConfig_ValObjCheck_InvalidDocumentThreshold(t *testing.T) {
 	err := config.ValObjCheck()
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "document_threshold must between -10 and 10")
+}
+
+func TestKGAdvancedConfig_ValObjCheck_RoundsRerankerSimThreshold(t *testing.T) {
+	vectorMatchEntityNums := 60
+	graphRagTopK := 25
+	longTextLength := 256
+	retrievalMaxLength := 1000
+
+	// Test that the threshold is rounded to 2 decimal places
+	testCases := []float64{-5.555, -5.554, -5.546, 5.123, 5.127}
+
+	for _, threshold := range testCases {
+		t.Run("threshold_rounding", func(t *testing.T) {
+			textMatchEntityNums := 60
+			config := &KGAdvancedConfig{
+				TextMatchEntityNums:   &textMatchEntityNums,
+				VectorMatchEntityNums: &vectorMatchEntityNums,
+				GraphRagTopK:          &graphRagTopK,
+				LongTextLength:        &longTextLength,
+				RerankerSimThreshold:  &threshold,
+				RetrievalMaxLength:    &retrievalMaxLength,
+			}
+
+			err := config.ValObjCheck()
+
+			assert.NoError(t, err)
+			// Verify rounding occurred
+			assert.Equal(t, math.Round(threshold*100)/100, *config.RerankerSimThreshold)
+		})
+	}
+}
+
+func TestKGAdvancedConfig_ValObjCheck_BoundaryValues(t *testing.T) {
+	retrievalMaxLength := 1000
+
+	tests := []struct {
+		name                  string
+		textMatchEntityNums   int
+		vectorMatchEntityNums int
+		graphRagTopK          int
+		longTextLength        int
+		rerankerSimThreshold  float64
+		shouldPass            bool
+	}{
+		{"min_valid_values", 40, 40, 10, 50, -10.0, true},
+		{"max_valid_values", 100, 100, 100, 1000, 10.0, true},
+		{"below_min_text_match", 39, 60, 25, 256, -5.5, false},
+		{"above_max_text_match", 101, 60, 25, 256, -5.5, false},
+		{"below_min_vector_match", 60, 39, 25, 256, -5.5, false},
+		{"above_max_vector_match", 60, 101, 25, 256, -5.5, false},
+		{"below_min_graph_rag", 60, 60, 9, 256, -5.5, false},
+		{"above_max_graph_rag", 60, 60, 101, 256, -5.5, false},
+		{"below_min_long_text", 60, 60, 25, 49, -5.5, false},
+		{"below_min_threshold", 60, 60, 25, 256, -10.1, false},
+		{"above_max_threshold", 60, 60, 25, 256, 10.1, false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			config := &KGAdvancedConfig{
+				TextMatchEntityNums:   &tt.textMatchEntityNums,
+				VectorMatchEntityNums: &tt.vectorMatchEntityNums,
+				GraphRagTopK:          &tt.graphRagTopK,
+				LongTextLength:        &tt.longTextLength,
+				RerankerSimThreshold:  &tt.rerankerSimThreshold,
+				RetrievalMaxLength:    &retrievalMaxLength,
+			}
+
+			err := config.ValObjCheck()
+
+			if tt.shouldPass {
+				assert.NoError(t, err)
+			} else {
+				assert.Error(t, err)
+			}
+		})
+	}
 }
