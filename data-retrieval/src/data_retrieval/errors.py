@@ -22,11 +22,6 @@ class ErrorCode:
     NGQLQueryError = "NGQLQueryError"
     NGQLExecutionError = "NGQLExecutionError"
     NGQLConnectionError = "NGQLConnectionError"
-    # knowledge_network_tools 相关错误代码
-    KnowledgeNetworkRetrievalError = "KnowledgeNetworkRetrievalError"
-    KnowledgeNetworkRerankError = "KnowledgeNetworkRerankError"
-    KnowledgeNetworkLLMError = "KnowledgeNetworkLLMError"
-    KnowledgeNetworkParamError = "KnowledgeNetworkParamError"
 
 
 class AgentBaseError(Exception):
@@ -296,31 +291,3 @@ class NGQLConnectionError(ErrorResponse):
     _default_code = ErrorCode.NGQLConnectionError
     _default_description = "Nebula 数据库连接失败"
     _default_solution = "请检查数据库连接配置或联系技术支持"
-
-
-class KnowledgeNetworkRetrievalError(ErrorResponse):
-    """知识网络检索错误"""
-    _default_code = ErrorCode.KnowledgeNetworkRetrievalError
-    _default_description = "知识网络检索执行失败"
-    _default_solution = "请稍后重试或联系技术支持"
-
-
-class KnowledgeNetworkRerankError(ErrorResponse):
-    """知识网络重排序错误"""
-    _default_code = ErrorCode.KnowledgeNetworkRerankError
-    _default_description = "重排序执行失败"
-    _default_solution = "请稍后重试或联系技术支持"
-
-
-class KnowledgeNetworkLLMError(ErrorResponse):
-    """知识网络 LLM 调用错误"""
-    _default_code = ErrorCode.KnowledgeNetworkLLMError
-    _default_description = "大模型调用失败"
-    _default_solution = "请稍后重试或联系技术支持"
-
-
-class KnowledgeNetworkParamError(ErrorResponse):
-    """知识网络参数验证错误"""
-    _default_code = ErrorCode.KnowledgeNetworkParamError
-    _default_description = "参数验证失败"
-    _default_solution = "请检查输入参数是否符合API要求"

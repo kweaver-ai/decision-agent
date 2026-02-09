@@ -23,16 +23,15 @@
 
 ---
 
-## 三种工具服务
+## 两种工具服务
 
-除了暴露全部工具的默认服务外，还提供三个独立的工具集服务：
+除了暴露全部工具的默认服务外，还提供两个独立的工具集服务：
 
 | 服务 | 模块 | 默认端口 | 工具数 | 说明 |
 |------|------|---------|--------|------|
-| **全部工具** | `server_stdio` / `server_sse` | 9110 | 17 | 暴露所有工具 |
+| **全部工具** | `server_stdio` / `server_sse` | 9110 | 15 | 暴露所有工具 |
 | **基础工具** | `server_base` | 9111 | 7 | text2sql, text2ngql, text2metric 等 |
 | **沙箱工具** | `server_sandbox` | 9112 | 8 | execute_code, read_file 等 |
-| **知识网络** | `server_knowledge` | 9113 | 2 | knowledge_rerank, knowledge_retrieve |
 
 ### 基础工具服务 (server_base)
 
@@ -79,23 +78,6 @@ python -m data_retrieval.tools.mcp.server_sandbox
 python -m data_retrieval.tools.mcp.server_sandbox --sse --port 9112
 ```
 
-### 知识网络工具服务 (server_knowledge)
-
-包含知识检索和重排序工具：
-
-| 工具 | 说明 |
-|------|------|
-| `knowledge_rerank` | 知识重排序 |
-| `knowledge_retrieve` | 知识检索 |
-
-```bash
-# stdio 模式
-python -m data_retrieval.tools.mcp.server_knowledge
-
-# SSE 模式
-python -m data_retrieval.tools.mcp.server_knowledge --sse --port 9113
-```
-
 ### SSE 多工具集模式（推荐）
 
 启动一个 SSE 服务，通过不同 URL 路径连接不同工具集：
@@ -109,10 +91,9 @@ python -m data_retrieval.tools.mcp.server_sse --port 9110
 
 | 工具集 | SSE 端点 | 工具列表端点 | 工具数 |
 |--------|----------|-------------|--------|
-| 全部 | `/sse` | `/tools` | 17 |
+| 全部 | `/sse` | `/tools` | 15 |
 | 基础 | `/base/sse` | `/base/tools` | 7 |
 | 沙箱 | `/sandbox/sse` | `/sandbox/tools` | 8 |
-| 知识 | `/knowledge/sse` | `/knowledge/tools` | 2 |
 
 **Cursor 配置示例（SSE 模式）**：
 
@@ -124,9 +105,6 @@ python -m data_retrieval.tools.mcp.server_sse --port 9110
     },
     "data-retrieval-sandbox": {
       "url": "http://localhost:9110/sandbox/sse?identity=12"
-    },
-    "data-retrieval-knowledge": {
-      "url": "http://localhost:9110/knowledge/sse?identity=12"
     }
   }
 }
@@ -538,7 +516,6 @@ data_retrieval/tools/mcp/
 ├── server_sse.py        # SSE 模式 MCP 服务器（全部工具）
 ├── server_base.py       # 基础工具服务器
 ├── server_sandbox.py    # 沙箱工具服务器
-├── server_knowledge.py  # 知识网络工具服务器
 └── README.md            # 本文档
 ```
 
@@ -555,7 +532,6 @@ data_retrieval/tools/mcp/
 | `server_sse.py` | SSE 传输层：全部工具，通过 HTTP/SSE 通信 |
 | `server_base.py` | 基础工具服务（text2sql 等 7 个工具） |
 | `server_sandbox.py` | 沙箱工具服务（execute_code 等 8 个工具） |
-| `server_knowledge.py` | 知识网络服务（2 个工具） |
 
 ---
 

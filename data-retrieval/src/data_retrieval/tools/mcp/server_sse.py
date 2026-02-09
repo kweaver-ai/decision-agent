@@ -27,11 +27,6 @@ MCP SSE 服务器
         - POST /sandbox/sse/messages  - 消息处理
         - GET  /sandbox/tools         - 工具列表
 
-    知识网络：
-        - GET  /knowledge/sse           - SSE 连接（2 个工具）
-        - POST /knowledge/sse/messages  - 消息处理
-        - GET  /knowledge/tools         - 工具列表
-
 其他端点：
     - GET  /             - 健康检查
     - GET  /health       - 健康检查
@@ -198,7 +193,6 @@ class MultiToolSetApp:
     - /sse          -> 全部工具
     - /base/sse     -> 基础工具
     - /sandbox/sse  -> 沙箱工具
-    - /knowledge/sse -> 知识网络工具
     """
 
     def __init__(self, param_provider: Optional[IdentityParamsProvider] = None):
@@ -362,7 +356,6 @@ def create_multi_toolset_app(
         - /sse, /tools              -> 全部工具
         - /base/sse, /base/tools    -> 基础工具
         - /sandbox/sse, ...         -> 沙箱工具
-        - /knowledge/sse, ...       -> 知识网络工具
     """
     return MultiToolSetApp(param_provider=param_provider)
 
@@ -448,9 +441,6 @@ def run_server(
         print("   沙箱工具 (8):")
         print(f"       - SSE:   http://{host}:{port}/sandbox/sse")
         print(f"       - 工具:  http://{host}:{port}/sandbox/tools")
-        print("   知识网络 (2):")
-        print(f"       - SSE:   http://{host}:{port}/knowledge/sse")
-        print(f"       - 工具:  http://{host}:{port}/knowledge/tools")
 
         if param_provider is not None and not reload:
             app = create_multi_toolset_app(param_provider)

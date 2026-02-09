@@ -57,17 +57,10 @@ SANDBOX_TOOLS: List[str] = [
     "download_from_efast",
 ]
 
-# 知识网络工具列表
-KNOWLEDGE_TOOLS: List[str] = [
-    "knowledge_rerank",
-    "knowledge_retrieve",
-]
-
 # 工具集映射
 TOOL_SETS: Dict[str, List[str]] = {
     "base": BASE_TOOLS,
     "sandbox": SANDBOX_TOOLS,
-    "knowledge": KNOWLEDGE_TOOLS,
 }
 
 

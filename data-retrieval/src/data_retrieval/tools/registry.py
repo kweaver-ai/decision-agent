@@ -19,10 +19,9 @@ from data_retrieval.tools.base_tools.sql_helper import SQLHelperTool
 from data_retrieval.tools.base_tools.knowledge_item import KnowledgeItemTool
 from data_retrieval.tools.base_tools.get_metadata import GetMetadataTool
 
-# Sandbox + knowledge network tools (dict mappings)
+# Sandbox tools (dict mappings)
 from data_retrieval.tools.sandbox_tools.toolkit import SANDBOX_TOOLS_MAPPING
 from data_retrieval.tools.sandbox_tools_new import SANDBOX_TOOLS_NEW_MAPPING
-from data_retrieval.tools.knowledge_network_tools import KNOWLEDGE_NETWORK_TOOLS_MAPPING
 
 
 # NOTE: keep keys stable; they are part of API contracts (FastAPI, future MCP).
@@ -43,6 +42,5 @@ SANDBOX_LEGACY_TOOLS: Dict[str, Type] = {
 ALL_TOOLS_MAPPING: Dict[str, Type] = (
     BASE_TOOLS_MAPPING
     | SANDBOX_TOOLS_NEW_MAPPING  # 新沙箱工具直接使用原名
-    | KNOWLEDGE_NETWORK_TOOLS_MAPPING
     | SANDBOX_LEGACY_TOOLS  # Legacy 工具排在最后
 )
