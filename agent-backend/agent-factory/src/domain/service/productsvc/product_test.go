@@ -476,3 +476,26 @@ func TestDelete_RepositoryErrorOnExists(t *testing.T) {
 	assert.Error(t, err)
 	assert.Empty(t, auditLog.ID)
 }
+
+func TestList_RepositoryError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockProductRepo := idbaccessmock.NewMockIProductRepo(ctrl)
+	offset := 0
+	limit := 10
+
+	expectedErr := errors.New("database error")
+	mockProductRepo.EXPECT().List(gomock.Any(), offset, limit).Return(nil, 0, expectedErr)
+
+	svc := &productSvc{
+		SvcBase:     service.NewSvcBase(),
+		productRepo: mockProductRepo,
+	}
+
+	ctx := context.Background()
+	res, err := svc.List(ctx, offset, limit)
+
+	assert.Error(t, err)
+	assert.Nil(t, res)
+}
