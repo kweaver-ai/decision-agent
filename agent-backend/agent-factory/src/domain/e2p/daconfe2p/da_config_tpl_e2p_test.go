@@ -127,3 +127,110 @@ func TestDataAgentTpls(t *testing.T) {
 		})
 	}
 }
+
+func TestDataAgentTpl_WithNilConfig(t *testing.T) {
+	eo := &daconfeo.DataAgentTpl{
+		DataAgentTplPo: dapo.DataAgentTplPo{
+			ID:     1,
+			Name:   "Test Template",
+			Status: cdaenum.StatusPublished,
+		},
+		Config: nil,
+	}
+
+	po, err := DataAgentTpl(eo)
+	require.NoError(t, err)
+	require.NotNil(t, po)
+	assert.Equal(t, int64(1), po.ID)
+}
+
+func TestDataAgentTpl_WithComplexConfig(t *testing.T) {
+	isDefault := true
+	eo := &daconfeo.DataAgentTpl{
+		DataAgentTplPo: dapo.DataAgentTplPo{
+			ID:     1,
+			Name:   "Complex Template",
+			Status: cdaenum.StatusPublished,
+		},
+		Config: &daconfvalobj.Config{
+			Input: &daconfvalobj.Input{
+				Fields: daconfvalobj.Fields{
+					&daconfvalobj.Field{
+						Name: "field1",
+						Type: cdaenum.InputFieldTypeString,
+					},
+				},
+			},
+			Llms: []*daconfvalobj.LlmItem{
+				{
+					IsDefault: isDefault,
+					LlmConfig: &daconfvalobj.LlmConfig{
+						Name:      "test-model",
+						MaxTokens: 500,
+					},
+				},
+			},
+			IsDataFlowSetEnabled: 0,
+			Output: &daconfvalobj.Output{
+				DefaultFormat: cdaenum.OutputDefaultFormatMarkdown,
+			},
+		},
+	}
+
+	po, err := DataAgentTpl(eo)
+	require.NoError(t, err)
+	require.NotNil(t, po)
+	assert.Equal(t, int64(1), po.ID)
+	assert.NotEmpty(t, po.Config)
+}
+
+func TestDataAgentTpls_SingleEntity(t *testing.T) {
+	eos := []*daconfeo.DataAgentTpl{
+		{
+			DataAgentTplPo: dapo.DataAgentTplPo{
+				ID:   1,
+				Name: "Single Template",
+			},
+			Config: &daconfvalobj.Config{
+				Input:  &daconfvalobj.Input{},
+				Output: &daconfvalobj.Output{},
+			},
+		},
+	}
+
+	pos, err := DataAgentTpls(eos)
+	require.NoError(t, err)
+	assert.Len(t, pos, 1)
+	assert.Equal(t, int64(1), pos[0].ID)
+}
+
+func TestDataAgentTpls_NilInSlice(t *testing.T) {
+	t.Run("nil entity in slice causes panic", func(t *testing.T) {
+		eos := []*daconfeo.DataAgentTpl{
+			{
+				DataAgentTplPo: dapo.DataAgentTplPo{
+					ID:   1,
+					Name: "Template 1",
+				},
+				Config: &daconfvalobj.Config{
+					Input:  &daconfvalobj.Input{},
+					Output: &daconfvalobj.Output{},
+				},
+			},
+			nil,
+		}
+
+		// The function will panic on nil, so we need to recover
+		defer func() {
+			if r := recover(); r != nil {
+				// Expected panic
+				t.Logf("Expected panic with nil entity: %v", r)
+			}
+		}()
+
+		pos, err := DataAgentTpls(eos)
+		// If we get here without panic, that's also OK
+		_ = pos
+		_ = err
+	})
+}

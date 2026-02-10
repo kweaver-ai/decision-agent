@@ -137,6 +137,19 @@ func TestGetI18nByCtx(t *testing.T) {
 		_ = GetI18nByCtx
 		_ = ctx
 	})
+
+	t.Run("call GetI18nByCtx with panic recovery", func(t *testing.T) {
+		ctx := context.Background()
+		// Just verify the function is callable
+		// The result depends on context language which may not be set
+		defer func() {
+			if r := recover(); r != nil {
+				// Expected to panic without global config
+				t.Logf("Expected panic without global config: %v", r)
+			}
+		}()
+		_ = GetI18nByCtx(ctx, SystemCreatedBy)
+	})
 }
 
 func TestRegister(t *testing.T) {

@@ -227,3 +227,208 @@ func TestGetConfigPath_Cached(t *testing.T) {
 		t.Errorf("Expected '/cached/path', got '%s'", path)
 	}
 }
+
+func TestProject_Check(t *testing.T) {
+	t.Run("valid simplified chinese", func(t *testing.T) {
+		project := Project{
+			Host:     "localhost",
+			Port:     8080,
+			Language: rest.SimplifiedChinese,
+		}
+
+		err := project.Check()
+		if err != nil {
+			t.Errorf("Expected Check to return no error, got %v", err)
+		}
+	})
+
+	t.Run("valid american english", func(t *testing.T) {
+		project := Project{
+			Host:     "localhost",
+			Port:     8080,
+			Language: rest.AmericanEnglish,
+		}
+
+		err := project.Check()
+		if err != nil {
+			t.Errorf("Expected Check to return no error, got %v", err)
+		}
+	})
+
+	t.Run("empty language", func(t *testing.T) {
+		project := Project{
+			Host:     "localhost",
+			Port:     8080,
+			Language: "",
+		}
+
+		err := project.Check()
+		if err == nil {
+			t.Error("Expected Check to return an error for empty language")
+		}
+	})
+
+	t.Run("invalid language", func(t *testing.T) {
+		project := Project{
+			Host:     "localhost",
+			Port:     8080,
+			Language: "invalid",
+		}
+
+		err := project.Check()
+		if err == nil {
+			t.Error("Expected Check to return an error for invalid language")
+		}
+	})
+}
+
+func TestConfig_Check_InvalidProject(t *testing.T) {
+	t.Run("invalid project config", func(t *testing.T) {
+		config := &Config{
+			Project: Project{
+				Host:     "localhost",
+				Port:     8080,
+				Language: "",
+			},
+		}
+
+		err := config.Check()
+		if err == nil {
+			t.Error("Expected Check to return an error for invalid project config")
+		}
+	})
+}
+
+func TestConfig_GetDefaultLanguage_Empty(t *testing.T) {
+	t.Run("empty language", func(t *testing.T) {
+		config := &Config{
+			Project: Project{
+				Language: "",
+			},
+		}
+
+		lang := config.GetDefaultLanguage()
+		if lang != "" {
+			t.Errorf("Expected empty language, got %v", lang)
+		}
+	})
+}
+
+func TestConfig_String_WithFullConfig(t *testing.T) {
+	t.Run("full config string representation", func(t *testing.T) {
+		config := &Config{
+			Project: Project{
+				Host:        "localhost",
+				Port:        8080,
+				Language:    rest.SimplifiedChinese,
+				LoggerLevel: 1,
+				LogFile:     "/var/log/app.log",
+			},
+			DB: DBConf{
+				UserName: "user",
+				Password: "pass",
+				DBHost:   "localhost",
+				DBPort:   3306,
+				DBName:   "testdb",
+			},
+		}
+
+		str := config.String()
+		if str == "" {
+			t.Error("Expected String to return a non-empty string")
+		}
+		// Verify the string contains expected parts
+		if !contains(str, "Config") {
+			t.Error("Expected String to contain 'Config'")
+		}
+	})
+}
+
+func TestConfig_String_WithAllFields(t *testing.T) {
+	t.Run("config with all optional fields", func(t *testing.T) {
+		config := &Config{
+			Project: Project{
+				Host:        "0.0.0.0",
+				Port:        30777,
+				Language:    rest.AmericanEnglish,
+				LoggerLevel: 1,
+			},
+			DB: DBConf{
+				UserName: "testuser",
+				DBName:   "testdb",
+			},
+			Hydra: HydraCfg{
+				UserMgnt: UserMgntCfg{
+					Host: "user-mgmt.local",
+					Port: 8080,
+				},
+			},
+			ModelFactory: &ModelFactoryConf{
+				LLM: LLMConf{
+					DefaultModelName: "gpt-4",
+				},
+			},
+		}
+
+		str := config.String()
+		if str == "" {
+			t.Error("Expected String to return a non-empty string")
+		}
+		if !contains(str, "Config") {
+			t.Error("Expected String to contain 'Config'")
+		}
+	})
+}
+
+func TestBaseDefConfig_DBConfig(t *testing.T) {
+	t.Run("default db config values", func(t *testing.T) {
+		config := BaseDefConfig()
+
+		if config.DB.UserName != "anyshare" {
+			t.Errorf("Expected DB.UserName to be 'anyshare', got '%s'", config.DB.UserName)
+		}
+		if config.DB.DBName != "dip_data_agent" {
+			t.Errorf("Expected DB.DBName to be 'dip_data_agent', got '%s'", config.DB.DBName)
+		}
+		if config.DB.DBPort != 3330 {
+			t.Errorf("Expected DB.DBPort to be 3330, got %d", config.DB.DBPort)
+		}
+		if config.DB.Charset != "utf8mb4" {
+			t.Errorf("Expected DB.Charset to be 'utf8mb4', got '%s'", config.DB.Charset)
+		}
+	})
+}
+
+func TestBaseDefConfig_RedisConfig(t *testing.T) {
+	t.Run("default redis config values", func(t *testing.T) {
+		config := BaseDefConfig()
+
+		if config.Redis.DB != 3 {
+			t.Errorf("Expected Redis.DB to be 3, got %d", config.Redis.DB)
+		}
+	})
+}
+
+func TestConfig_MqCfgPath(t *testing.T) {
+	t.Run("mq config path is set", func(t *testing.T) {
+		config := BaseDefConfig()
+
+		if config.MqCfgPath == "" {
+			t.Error("Expected MqCfgPath to be set")
+		}
+	})
+}
+
+// Helper function
+func contains(s, substr string) bool {
+	return len(s) >= len(substr) && (s == substr || len(s) > len(substr) && containsHelper(s, substr))
+}
+
+func containsHelper(s, substr string) bool {
+	for i := 0; i <= len(s)-len(substr); i++ {
+		if s[i:i+len(substr)] == substr {
+			return true
+		}
+	}
+	return false
+}

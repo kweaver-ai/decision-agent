@@ -2,6 +2,7 @@ package othersvc
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"testing"
 
@@ -105,8 +106,8 @@ func TestOtherSvc_DolphinTplList_AgentNotFound(t *testing.T) {
 		BuiltInAgentKey: "non-existent-agent",
 	}
 
-	// Mock agent not found
-	mockAgentRepo.EXPECT().GetByKey(ctx, "non-existent-agent").Return(nil, errors.New("not found"))
+	// Mock agent not found with SQL ErrNoRows
+	mockAgentRepo.EXPECT().GetByKey(ctx, "non-existent-agent").Return(nil, sql.ErrNoRows)
 
 	resp, err := svc.DolphinTplList(ctx, req)
 
@@ -149,3 +150,31 @@ func TestOtherSvc_DolphinTplList_NotBuiltIn(t *testing.T) {
 	assert.NotNil(t, resp)
 }
 
+func TestOtherSvc_DolphinTplList_DBError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	ctx := context.Background()
+	mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
+
+	svc := &otherSvc{
+		SvcBase:       service.NewSvcBase(),
+		agentConfRepo: mockAgentRepo,
+	}
+
+	config := &daconfvalobj.Config{}
+	req := &otherreq.DolphinTplListReq{
+		Config:         config,
+		BuiltInAgentKey: "error-agent",
+	}
+
+	// Mock database error (not sql.ErrNotFound)
+	dbErr := errors.New("database connection failed")
+	mockAgentRepo.EXPECT().GetByKey(ctx, "error-agent").Return(nil, dbErr)
+
+	resp, err := svc.DolphinTplList(ctx, req)
+
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "[DolphinTplList]")
+	assert.NotNil(t, resp)
+}

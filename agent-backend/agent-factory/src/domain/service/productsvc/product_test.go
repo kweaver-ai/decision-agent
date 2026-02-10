@@ -499,3 +499,191 @@ func TestList_RepositoryError(t *testing.T) {
 	assert.Error(t, err)
 	assert.Nil(t, res)
 }
+
+func TestCreate_ExistsByKeyError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockProductRepo := idbaccessmock.NewMockIProductRepo(ctrl)
+	req := &productreq.CreateReq{
+		Name: "Test Product",
+		Key:  "test-product",
+	}
+
+	expectedErr := errors.New("database connection failed")
+	mockProductRepo.EXPECT().ExistsByName(gomock.Any(), req.Name).Return(false, nil)
+	mockProductRepo.EXPECT().ExistsByKey(gomock.Any(), req.Key).Return(false, expectedErr)
+
+	svc := &productSvc{
+		SvcBase:     service.NewSvcBase(),
+		productRepo: mockProductRepo,
+	}
+
+	ctx := createContextWithUserID("user-123")
+	key, err := svc.Create(ctx, req)
+
+	assert.Error(t, err)
+	assert.Empty(t, key)
+}
+
+func TestDetail_RepositoryError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockProductRepo := idbaccessmock.NewMockIProductRepo(ctrl)
+	productID := int64(123)
+
+	expectedErr := errors.New("database error")
+	mockProductRepo.EXPECT().GetByID(gomock.Any(), productID).Return(nil, expectedErr)
+
+	svc := &productSvc{
+		SvcBase:     service.NewSvcBase(),
+		productRepo: mockProductRepo,
+	}
+
+	ctx := context.Background()
+	res, err := svc.Detail(ctx, productID)
+
+	assert.Error(t, err)
+	assert.Nil(t, res)
+}
+
+func TestGetByKey_RepositoryError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockProductRepo := idbaccessmock.NewMockIProductRepo(ctrl)
+	productKey := "test-product"
+
+	expectedErr := errors.New("database error")
+	mockProductRepo.EXPECT().GetByKey(gomock.Any(), productKey).Return(nil, expectedErr)
+
+	svc := &productSvc{
+		SvcBase:     service.NewSvcBase(),
+		productRepo: mockProductRepo,
+	}
+
+	ctx := context.Background()
+	res, err := svc.GetByKey(ctx, productKey)
+
+	assert.Error(t, err)
+	assert.Nil(t, res)
+}
+
+func TestUpdate_RepositoryErrorOnUpdate(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockProductRepo := idbaccessmock.NewMockIProductRepo(ctrl)
+	productID := int64(123)
+
+	req := &productreq.UpdateReq{
+		Name: "Updated Product",
+	}
+
+	existingPo := &dapo.ProductPo{
+		ID:   productID,
+		Name: "Old Name",
+		Key:  "test-product",
+	}
+
+	expectedErr := errors.New("database update failed")
+	mockProductRepo.EXPECT().GetByID(gomock.Any(), productID).Return(existingPo, nil)
+	mockProductRepo.EXPECT().ExistsByNameExcludeID(gomock.Any(), req.Name, productID).Return(false, nil)
+	mockProductRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(expectedErr)
+
+	svc := &productSvc{
+		SvcBase:     service.NewSvcBase(),
+		productRepo: mockProductRepo,
+	}
+
+	ctx := createContextWithUserID("user-123")
+	auditLog, err := svc.Update(ctx, req, productID)
+
+	assert.Error(t, err)
+	assert.Equal(t, "123", auditLog.ID)
+}
+
+func TestUpdate_RepositoryErrorOnExistsCheck(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockProductRepo := idbaccessmock.NewMockIProductRepo(ctrl)
+	productID := int64(123)
+
+	req := &productreq.UpdateReq{
+		Name: "Updated Product",
+	}
+
+	existingPo := &dapo.ProductPo{
+		ID:   productID,
+		Name: "Old Name",
+		Key:  "test-product",
+	}
+
+	expectedErr := errors.New("database connection failed")
+	mockProductRepo.EXPECT().GetByID(gomock.Any(), productID).Return(existingPo, nil)
+	mockProductRepo.EXPECT().ExistsByNameExcludeID(gomock.Any(), req.Name, productID).Return(false, expectedErr)
+
+	svc := &productSvc{
+		SvcBase:     service.NewSvcBase(),
+		productRepo: mockProductRepo,
+	}
+
+	ctx := createContextWithUserID("user-123")
+	auditLog, err := svc.Update(ctx, req, productID)
+
+	assert.Error(t, err)
+	assert.Equal(t, "123", auditLog.ID)
+}
+
+func TestDelete_RepositoryErrorOnGet(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockProductRepo := idbaccessmock.NewMockIProductRepo(ctrl)
+	productID := int64(123)
+
+	expectedErr := errors.New("database error")
+	mockProductRepo.EXPECT().ExistsByID(gomock.Any(), productID).Return(true, nil)
+	mockProductRepo.EXPECT().GetByID(gomock.Any(), productID).Return(nil, expectedErr)
+
+	svc := &productSvc{
+		SvcBase:     service.NewSvcBase(),
+		productRepo: mockProductRepo,
+	}
+
+	ctx := context.Background()
+	auditLog, err := svc.Delete(ctx, productID)
+
+	assert.Error(t, err)
+	assert.Empty(t, auditLog.ID)
+}
+
+func TestCreate_RepositoryErrorOnCreate(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockProductRepo := idbaccessmock.NewMockIProductRepo(ctrl)
+	req := &productreq.CreateReq{
+		Name:    "Test Product",
+		Profile: "Test Profile",
+		Key:     "test-product",
+	}
+
+	expectedErr := errors.New("database insert failed")
+	mockProductRepo.EXPECT().ExistsByName(gomock.Any(), req.Name).Return(false, nil)
+	mockProductRepo.EXPECT().ExistsByKey(gomock.Any(), req.Key).Return(false, nil)
+	mockProductRepo.EXPECT().Create(gomock.Any(), gomock.Any()).Return("", expectedErr)
+
+	svc := &productSvc{
+		SvcBase:     service.NewSvcBase(),
+		productRepo: mockProductRepo,
+	}
+
+	ctx := createContextWithUserID("user-123")
+	key, err := svc.Create(ctx, req)
+
+	assert.Error(t, err)
+	assert.Empty(t, key)
+}
