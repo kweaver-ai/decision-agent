@@ -74,7 +74,7 @@ class ListFilesTool(BaseSandboxTool):
     async def get_api_schema():
         """获取 API Schema"""
         base_schema = await BaseSandboxTool.get_api_schema()
-        base_schema["post"]["summary"] = "list_files"
+        base_schema["post"]["summary"] = "list_files_legacy"
         base_schema["post"]["description"] = "列出沙箱环境中的所有文件和目录"
 
         # 更新请求体 schema - 不需要额外参数

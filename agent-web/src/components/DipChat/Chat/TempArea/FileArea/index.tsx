@@ -3,15 +3,14 @@ import classNames from 'classnames';
 import ScrollBarContainer from '@/components/ScrollBarContainer';
 import FileUploadBtn, { type FileUploadBtnRef } from '../../../components/FileUploadBtn';
 import NoData from '@/components/NoData';
-import { Button, Checkbox, message, Spin, Tooltip } from 'antd';
+import { Button, Checkbox, message, Spin } from 'antd';
 import DipIcon from '@/components/DipIcon';
-import DipButton from '@/components/DipButton';
 import { FileTypeIcon, getFileExtension } from '@/utils/doc';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useDipChatStore } from '@/components/DipChat/store';
 import intl from 'react-intl-universal';
 import { useEffect, useRef } from 'react';
-const FileArea = ({ onPreviewFile }: any) => {
+const FileArea = () => {
   const fileUploadBtnRef = useRef<FileUploadBtnRef>(null);
   const {
     dipChatStore: { tempFileList, activeConversationKey },
@@ -20,20 +19,17 @@ const FileArea = ({ onPreviewFile }: any) => {
   const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
-    if(activeConversationKey) {
+    if (activeConversationKey) {
       fileUploadBtnRef.current?.getFileList();
     }
     return () => {
-      if(activeConversationKey) {
+      if (activeConversationKey) {
         setDipChatStore({ tempFileList: [] });
       }
     };
   }, [activeConversationKey]);
 
-
-  const deleteFile = async (fileIds: string[]) => {
-
-  };
+  // const deleteFile = async (fileIds: string[]) => {};
 
   const renderContent = () => {
     if (tempFileList.length === 0) {
@@ -67,9 +63,7 @@ const FileArea = ({ onPreviewFile }: any) => {
                     if (e.target.checked) {
                       const checkedFiles = tempFileList.filter(item => item.checked);
                       if (checkedFiles.length >= 1) {
-                        messageApi.warning(
-                          intl.get('dipChat.singleChatMaxFiles', { count: 1 })
-                        );
+                        messageApi.warning(intl.get('dipChat.singleChatMaxFiles', { count: 1 }));
                         return;
                       }
                     }
@@ -86,14 +80,7 @@ const FileArea = ({ onPreviewFile }: any) => {
                     });
                   }}
                 />
-                <div
-                  className="dip-flex-align-center dip-flex-item-full-width dip-ml-8 dip-pointer"
-                  onClick={e => {
-                    console.log(file, '预览的文件----FileArea');
-                    e.stopPropagation();
-                    // onPreviewFile(file);
-                  }}
-                >
+                <div className="dip-flex-align-center dip-flex-item-full-width dip-ml-8 dip-pointer">
                   <FileTypeIcon extension={getFileExtension(file.name)} fontSize={16} />
                   <span
                     title={file.name}

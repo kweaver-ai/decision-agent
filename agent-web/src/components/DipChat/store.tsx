@@ -64,6 +64,7 @@ const initStoreData: DipChatState = {
   singleStreamResult: [],
   toolAutoExpand: true,
   logQueryAgentDetails: {},
+  tempAreaOpen: false,
 };
 
 const DipChatContext = createContext({} as DipChatContextType);

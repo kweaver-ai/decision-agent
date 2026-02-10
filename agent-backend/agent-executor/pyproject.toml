@@ -23,6 +23,7 @@ dependencies = [
     "sse-starlette>=3.0.3",
     "setuptools==76.0.0",
     "structlog==24.1.0",
+    "setuptools==76.0.0",
     "uvicorn==0.38.0",
     #"mq-sdk@git+ssh://devops.aishu.cn:22/AISHUDevOps/One-Architecture/_git/proton-mq-python@1.7.4",
     #    "mq-sdk@git+https://github.com/kweaver-ai/proton-mq-sdk-py@release/1.9.0",

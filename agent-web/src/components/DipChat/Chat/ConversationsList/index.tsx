@@ -35,6 +35,7 @@ const ConversationList = ({ startNewConversation, className }: any) => {
       activeConversationKey,
       agentAppKey,
       conversationListModalOpen,
+      tempAreaOpen,
     },
     setDipChatStore,
     resetDipChatStore,
@@ -243,24 +244,40 @@ const ConversationList = ({ startNewConversation, className }: any) => {
           >
             {intl.get('dipChat.return')}
           </DipButton>
-          <Tooltip
-            fresh
-            getTooltipContainer={node => node.parentElement!}
-            placement="bottom"
-            title={intl.get('dipChat.expandSidebar')}
-          >
-            <DipButton
-              variant="link"
-              color="default"
-              onClick={() =>
-                setDipChatStore({
-                  conversationCollapsed: true,
-                })
-              }
+          <span>
+            <Tooltip
+              fresh
+              getTooltipContainer={node => node.parentElement!}
+              placement="bottom"
+              title={tempAreaOpen ? '收起临时区' : '展开临时区'}
             >
-              <DipIcon type="icon-dip-cebianlan" className="dip-font-16" />
-            </DipButton>
-          </Tooltip>
+              <DipButton
+                variant="link"
+                color="default"
+                onClick={() =>
+                  setDipChatStore({
+                    tempAreaOpen: !tempAreaOpen,
+                  })
+                }
+              >
+                <DipIcon type="icon-dip-tempArea" className="dip-font-16" />
+              </DipButton>
+            </Tooltip>
+            <Tooltip fresh getTooltipContainer={node => node.parentElement!} placement="bottom" title={'收起侧边栏'}>
+              <DipButton
+                className="dip-ml-8"
+                variant="link"
+                color="default"
+                onClick={() =>
+                  setDipChatStore({
+                    conversationCollapsed: true,
+                  })
+                }
+              >
+                <DipIcon type="icon-dip-cebianlan" className="dip-font-16" />
+              </DipButton>
+            </Tooltip>
+          </span>
         </div>
         <div className="dip-mt-8 dip-pl-8 dip-pr-8">
           <div

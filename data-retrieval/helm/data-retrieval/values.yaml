@@ -5,7 +5,7 @@ namespace: dip
 image:
   registry: acr.aishu.cn
   repository: dip/data-retrieval
-  tag: 0.2.0
+  tag: 0.3.2
   pullPolicy: IfNotPresent
 ports:
   apiPort: 9100
@@ -62,6 +62,8 @@ depServices:
     embeddingDimension: 768
     rerank_url: "http://mf-model-api:9898/api/private/mf-model-api/v1/small-model/reranker"
     rerank_model: "reranker"
+  sandbox:
+    url: "http://sandbox-control-plane:8000"
 
 
 appConfig:

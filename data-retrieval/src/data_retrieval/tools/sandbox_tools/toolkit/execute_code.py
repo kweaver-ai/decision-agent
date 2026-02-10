@@ -120,7 +120,7 @@ class ExecuteCodeTool(BaseSandboxTool):
     async def get_api_schema():
         """获取 API Schema"""
         base_schema = await BaseSandboxTool.get_api_schema()
-        base_schema["post"]["summary"] = "execute_code"
+        base_schema["post"]["summary"] = "execute_code_legacy"
         base_schema["post"]["description"] = "在沙箱环境中执行 Python 代码，支持 pandas 等数据分析库，注意沙箱环境是受限环境，没有网络连接，不能使用 pip 安装第三方库。运行代码时，需要通过 print 输出结果，或者设置输出变量 output_params 参数，返回结果"
 
         # 更新请求体 schema，添加工具特定参数

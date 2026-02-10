@@ -1,4 +1,27 @@
 # 版本 changelog 说明
+
+## 0.3.3
+
+### 前端 (agent-web)
+
+- 修复我的Agent模板页面筛选状态异常的bug
+
+## 0.3.2
+
+### Bug 修复
+
+- 修复已知问题
+
+## 0.3.1
+
+### 前端 (agent-web)
+
+- Agent 对话界面临时区支持隐藏
+- 修复 Agent 对话界面临时区显示异常的 bug
+- 页面所有 Decision Agent 中文显示为"决策智能体"
+- 修复 Agent API 页面调试接口时缺少 x-business-domain 请求头
+- 移除未使用的 KNSpaceTree、DocTree、ContentDataTree 组件
+
 ## 0.3.0
 
 ### 功能与改进

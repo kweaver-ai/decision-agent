@@ -2,6 +2,7 @@ import GradientContainer from '@/components/GradientContainer';
 import EmptyIcon from '@/assets/images/empty.svg';
 import { Button } from 'antd';
 import { useNavigate } from 'react-router-dom';
+import intl from 'react-intl-universal';
 
 const AgentNotExist = () => {
   const navigate = useNavigate();
@@ -9,10 +10,10 @@ const AgentNotExist = () => {
     <GradientContainer className="dip-full dip-flex-center">
       <div className="dip-flex-column-center">
         <EmptyIcon />
-        <div>Decision Agent已下架</div>
-        <div className="dip-mt-12 dip-text-color-45">抱歉，您访问的Decision Agent似乎已被管理员移除或暂时不可用。</div>
+        <div>{intl.get('dataAgent.agentNotExist.title')}</div>
+        <div className="dip-mt-12 dip-text-color-45">{intl.get('dataAgent.agentNotExist.description')}</div>
         <Button onClick={() => navigate(-1)} className="dip-mt-16">
-          返回
+          {intl.get('dataAgent.agentNotExist.back')}
         </Button>
       </div>
     </GradientContainer>

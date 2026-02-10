@@ -1,4 +1,27 @@
 # Changelog
+
+## 0.3.3
+
+### Frontend (agent-web)
+
+- Fix filter status abnormal bug on My Agent template page
+
+## 0.3.2
+
+### Bug Fixes
+
+- Fix known issues
+
+## 0.3.1
+
+### Frontend (agent-web)
+
+- Add hide support for temporary area in Agent conversation interface
+- Fix temporary area display issue in Agent conversation interface
+- Add i18n support for "Decision Agent" text across pages
+- Fix missing x-business-domain header in Agent API page debug requests
+- Remove unused KNSpaceTree, DocTree, ContentDataTree components
+
 ## 0.3.0
 
 ### Features & Improvements
