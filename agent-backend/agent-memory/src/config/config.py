@@ -157,17 +157,23 @@ class Config:
     def _get_llm_config(self) -> LlmConfig:
         """获取LLM配置"""
         llm_dict = self.config.get("llm", {})
+        provider = llm_dict.get("provider", "openai")
+        # Remove provider from config dict as LlmConfig doesn't accept it
+        llm_config = {k: v for k, v in llm_dict.items() if k != "provider"}
         return LlmConfig(
-            provider=llm_dict.get("provider", "openai"),
-            config=llm_dict,
+            provider=provider,
+            config=llm_config,
         )
 
     def _get_embedder_config(self) -> EmbedderConfig:
         """获取Embedder配置"""
         embedder_dict = self.config.get("embedder", {})
+        provider = embedder_dict.get("provider", "openai")
+        # Remove provider from config dict as EmbedderConfig doesn't accept it
+        embedder_config = {k: v for k, v in embedder_dict.items() if k != "provider"}
         return EmbedderConfig(
-            provider=embedder_dict.get("provider", "openai"),
-            config=embedder_dict,
+            provider=provider,
+            config=embedder_config,
         )
 
     def _get_vector_config(self) -> VectorStoreConfig:
