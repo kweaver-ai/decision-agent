@@ -5,13 +5,19 @@ import { useDipChatStore } from '@/components/DipChat/store';
 import MetricTree from './MetricTree';
 import _ from 'lodash';
 import KNExperimentalTree from './KNExperimentalTree';
+import { useEffect } from 'react';
 const DataSourceArea = () => {
   const {
     dipChatStore: { agentDetails },
+    setDipChatStore,
   } = useDipChatStore();
   const { data_source } = agentDetails?.config || {};
   const knExperimentalDataSource = data_source?.knowledge_network ?? [];
   const metricTreeDataSource = data_source?.metric ?? [];
+
+  useEffect(() => {
+    setDipChatStore({ tempAreaOpen: true });
+  }, []);
 
   const renderKNExperimentalTree = () => {
     return knExperimentalDataSource.map((item: any) => (

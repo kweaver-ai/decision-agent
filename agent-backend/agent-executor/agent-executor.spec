@@ -3,6 +3,7 @@
 # PyInstaller specification file for Agent-Executor
 # Based on dependency analysis and configuration requirements
 
+from PyInstaller.utils.hooks import copy_metadata
 
 block_cipher = None
 project_root = os.path.abspath('.')
@@ -15,6 +16,8 @@ datas = [
     # Dolphin 包已更新，不再需要单独的 installed 文件
     # (".venv/lib64/python3.10/site-packages/DolphinLanguageSDK/skill/installed", "DolphinLanguageSDK/skill/installed")
 ]
+datas += copy_metadata('setuptools')
+
 
 # Analysis configuration
 a = Analysis(
@@ -22,7 +25,12 @@ a = Analysis(
     pathex=[project_root],
     binaries=[],
     datas=datas,
-    hiddenimports=[],
+    hiddenimports=[
+        'pkg_resources',
+        'setuptools',
+        'setuptools._distutils',
+        'opentelemetry.instrumentation.dependencies',
+    ],
     excludes=[
         'tkinter',
         'matplotlib',

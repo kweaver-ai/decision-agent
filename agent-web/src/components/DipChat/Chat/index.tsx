@@ -504,15 +504,13 @@ const DipChat = () => {
             }}
           >
             <Splitter.Panel min={200} size={previewFile || !tempAreaOpen ? 0 : size}>
-              {tempAreaOpen && (
-                <div
-                  className={classNames('dip-full dip-pt-8 dip-pb-8', {
-                    'dip-pl-8': !conversationCollapsed,
-                  })}
-                >
-                  <TempArea />
-                </div>
-              )}
+              <div
+                className={classNames('dip-full dip-pt-8 dip-pb-8', {
+                  'dip-pl-8': !conversationCollapsed,
+                })}
+              >
+                <TempArea />
+              </div>
             </Splitter.Panel>
             <Splitter.Panel>
               <div className="dip-full dip-flex">

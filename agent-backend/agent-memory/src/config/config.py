@@ -154,6 +154,62 @@ class Config:
             rerank_model=self.config["rerank"]["rerank_model"],
         )
 
-    def get_memory_config(self):
-        """获取mem0配置"""
-        return self.get("memory", {})
+    def _get_llm_config(self) -> LlmConfig:
+        """获取LLM配置"""
+        llm_config = self.get("llm", {})
+        return LlmConfig(
+            provider=llm_config.get("provider", "openai"),
+            config={
+                "model": llm_config.get("model", ""),
+                "openai_base_url": llm_config.get("base_url", ""),
+                "api_key": os.getenv("LLM_API_KEY")
+                or llm_config.get("api_key", ""),
+            },
+        )
+
+    def _get_embedder_config(self) -> EmbedderConfig:
+        """获取Embedder配置"""
+        embedder_config = self.get("embedder", {})
+        return EmbedderConfig(
+            provider=embedder_config.get("provider", "openai"),
+            config={
+                "model": embedder_config.get("model", "text-embedding-3-small"),
+                "api_key": os.getenv("OPENAI_API_KEY")
+                or embedder_config.get("api_key", ""),
+                "openai_base_url": embedder_config.get(
+                    "base_url", ""
+                ),
+                "embedding_dims": embedder_config.get("embedding_dims", 768),
+            },
+        )
+
+    def _get_vector_config(self) -> VectorStoreConfig:
+        """获取VectorStore配置"""
+        vector_config = self.get("vector_store", {})
+        return VectorStoreConfig(
+            provider=vector_config.get("provider", "opensearch"),
+            config={
+                "host": vector_config.get("host", ""),
+                "port": vector_config.get("port", 9200),
+                "collection_name": vector_config.get("collection_name", "mem0"),
+                "user": vector_config.get("user", ""),
+                "password": vector_config.get("password", ""),
+                "embedding_model_dims": vector_config.get("embedding_model_dims", 768),
+            },
+        )
+
+    def get_memory_config(self) -> MemoryConfig:
+        """获取完整的Memory配置"""
+        # 获取各个子配置
+        llm_config = self._get_llm_config()
+        embedder_config = self._get_embedder_config()
+        vector_config = self._get_vector_config()
+        memory_dict = self.config.get("memory", {})
+
+        # 构建完整的Memory配置
+        return MemoryConfig(
+            llm=llm_config,
+            embedder=embedder_config,
+            vector_store=vector_config,
+            history_db_path=memory_dict.get("history_db_path", "data/history.db"),
+        )
