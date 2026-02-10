@@ -154,6 +154,45 @@ class Config:
             rerank_model=self.config["rerank"]["rerank_model"],
         )
 
-    def get_memory_config(self):
-        """获取mem0配置"""
-        return self.get("memory", {})
+    def _get_llm_config(self) -> LlmConfig:
+        """获取LLM配置"""
+        llm_dict = self.config.get("llm", {})
+        return LlmConfig(
+            provider=llm_dict.get("provider", "openai"),
+            config=llm_dict,
+        )
+
+    def _get_embedder_config(self) -> EmbedderConfig:
+        """获取Embedder配置"""
+        embedder_dict = self.config.get("embedder", {})
+        return EmbedderConfig(
+            provider=embedder_dict.get("provider", "openai"),
+            config=embedder_dict,
+        )
+
+    def _get_vector_config(self) -> VectorStoreConfig:
+        """获取VectorStore配置"""
+        vector_dict = self.config.get("vector_store", {})
+        provider = vector_dict.get("provider", "opensearch")
+        # Remove provider from config dict as VectorStoreConfig doesn't accept it
+        vector_config = {k: v for k, v in vector_dict.items() if k != "provider"}
+        return VectorStoreConfig(
+            provider=provider,
+            config=vector_config,
+        )
+
+    def get_memory_config(self) -> MemoryConfig:
+        """获取完整的Memory配置"""
+        # 获取各个子配置
+        llm_config = self._get_llm_config()
+        embedder_config = self._get_embedder_config()
+        vector_config = self._get_vector_config()
+        memory_dict = self.config.get("memory", {})
+
+        # 构建完整的Memory配置
+        return MemoryConfig(
+            llm=llm_config,
+            embedder=embedder_config,
+            vector_store=vector_config,
+            history_db_path=memory_dict.get("history_db_path", "data/history.db"),
+        )
