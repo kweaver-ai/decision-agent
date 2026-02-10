@@ -72,3 +72,72 @@ func TestProduct(t *testing.T) {
 		})
 	}
 }
+
+func TestProduct_EmptyProduct(t *testing.T) {
+	eo := &producteo.Product{}
+	po, err := Product(eo)
+
+	require.NoError(t, err)
+	assert.NotNil(t, po)
+}
+
+func TestProduct_WithAllFields(t *testing.T) {
+	eo := &producteo.Product{
+		ProductPo: dapo.ProductPo{
+			ID:        100,
+			Name:      "Complete Product",
+			Key:       "complete-product",
+			Profile:   "Complete Description",
+			CreatedAt: 1234567890,
+			UpdatedAt: 1234567891,
+			CreatedBy: "user-1",
+			UpdatedBy: "user-2",
+		},
+	}
+
+	po, err := Product(eo)
+	require.NoError(t, err)
+	assert.NotNil(t, po)
+	assert.Equal(t, int64(100), po.ID)
+	assert.Equal(t, "Complete Product", po.Name)
+	assert.Equal(t, "complete-product", po.Key)
+	assert.Equal(t, "Complete Description", po.Profile)
+	assert.Equal(t, int64(1234567890), po.CreatedAt)
+	assert.Equal(t, int64(1234567891), po.UpdatedAt)
+	assert.Equal(t, "user-1", po.CreatedBy)
+	assert.Equal(t, "user-2", po.UpdatedBy)
+}
+
+func TestProduct_WithChineseCharacters(t *testing.T) {
+	eo := &producteo.Product{
+		ProductPo: dapo.ProductPo{
+			ID:      1,
+			Name:    "中文产品",
+			Key:     "zhongwen-chanpin",
+			Profile: "这是中文描述",
+		},
+	}
+
+	po, err := Product(eo)
+	require.NoError(t, err)
+	assert.Equal(t, "中文产品", po.Name)
+	assert.Equal(t, "zhongwen-chanpin", po.Key)
+	assert.Equal(t, "这是中文描述", po.Profile)
+}
+
+func TestProduct_WithZeroValues(t *testing.T) {
+	eo := &producteo.Product{
+		ProductPo: dapo.ProductPo{
+			ID:   0,
+			Name: "",
+			Key:  "",
+		},
+	}
+
+	po, err := Product(eo)
+	require.NoError(t, err)
+	assert.NotNil(t, po)
+	assert.Equal(t, int64(0), po.ID)
+	assert.Equal(t, "", po.Name)
+	assert.Equal(t, "", po.Key)
+}

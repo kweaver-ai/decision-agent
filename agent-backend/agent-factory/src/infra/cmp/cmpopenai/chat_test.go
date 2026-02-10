@@ -1,6 +1,7 @@
 package cmpopenai
 
 import (
+	"context"
 	"testing"
 
 	"github.com/sashabaranov/go-openai"
@@ -102,4 +103,48 @@ func TestGenReq(t *testing.T) {
 			t.Error("Expected request to be zero value on error")
 		}
 	})
+}
+
+func TestStreamChat_EmptyUserMessage(t *testing.T) {
+	cmp := &OpenAICmp{
+		model: "gpt-4",
+	}
+
+	ctx := context.Background()
+
+	stream, err := cmp.StreamChat(ctx, "", "System message")
+
+	if err == nil {
+		t.Error("Expected error for empty user message, got nil")
+	}
+
+	if err.Error() != "[OpenAICmp][StreamChat]: userMsg is empty" {
+		t.Errorf("Expected specific error message, got '%s'", err.Error())
+	}
+
+	if stream != nil {
+		t.Error("Expected stream to be nil on error")
+	}
+}
+
+func TestChat_EmptyUserMessage(t *testing.T) {
+	cmp := &OpenAICmp{
+		model: "gpt-4",
+	}
+
+	ctx := context.Background()
+
+	res, err := cmp.Chat(ctx, "", "System message")
+
+	if err == nil {
+		t.Error("Expected error for empty user message, got nil")
+	}
+
+	if err.Error() != "[OpenAICmp][StreamChat]: userMsg is empty" {
+		t.Errorf("Expected specific error message, got '%s'", err.Error())
+	}
+
+	if res.ID != "" {
+		t.Error("Expected response to be zero value on error")
+	}
 }

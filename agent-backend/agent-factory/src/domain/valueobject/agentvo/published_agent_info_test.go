@@ -144,3 +144,127 @@ func TestPublishUserInfo(t *testing.T) {
 func strPtr(s string) *string {
 	return &s
 }
+
+func TestPublishedAgentInfo_LoadFromReleaseAgentPO_AllFields(t *testing.T) {
+	info := NewPublishedAgentInfo()
+	po := &dapo.PublishedJoinPo{
+		ReleasePartPo: dapo.ReleasePartPo{
+			ReleaseID:  "release-full",
+			PublishDesc: "Full publish description",
+			Version:     "v2.5.0",
+			PublishedAt: 1700000000,
+			PublishedBy: "admin-user",
+			IsPmsCtrl:   1,
+			PublishedToBeStruct: dapo.PublishedToBeStruct{
+				IsAPIAgent:      1,
+				IsWebSDKAgent:   1,
+				IsSkillAgent:    1,
+				IsDataFlowAgent: 1,
+			},
+		},
+		DataAgentPo: dapo.DataAgentPo{
+			ID:         "agent-full",
+			Name:       "Full Agent",
+			Profile:    strPtr("Full profile description"),
+			AvatarType: cdaenum.AvatarTypeAIGenerated,
+			Avatar:     "ai-generated.png",
+		},
+	}
+
+	err := info.LoadFromReleaseAgentPO(po)
+	require.NoError(t, err)
+	assert.Equal(t, "release-full", po.ReleaseID)
+	assert.Equal(t, "v2.5.0", info.Version)
+	assert.Equal(t, "admin-user", info.PublishedBy)
+	assert.Equal(t, int64(1700000000), info.PublishedAt)
+	assert.Equal(t, "Full profile description", info.Profile)
+	assert.Equal(t, "ai-generated.png", info.Avatar)
+	assert.Equal(t, cdaenum.AvatarTypeAIGenerated, info.AvatarType)
+	assert.Equal(t, 1, info.IsAPIAgent)
+	assert.Equal(t, 1, info.IsWebSDKAgent)
+	assert.Equal(t, 1, info.IsSkillAgent)
+	assert.Equal(t, 1, info.IsDataFlowAgent)
+}
+
+func TestPublishedAgentInfo_LoadFromReleaseAgentPO_WithNilPO(t *testing.T) {
+	info := NewPublishedAgentInfo()
+	// LoadFromReleaseAgentPO with nil po will panic on CopyStructUseJSON
+	assert.Panics(t, func() {
+		info.LoadFromReleaseAgentPO(nil)
+	})
+}
+
+func TestPublishedAgentInfo_LoadFromReleaseAgentPO_WithEmptyValues(t *testing.T) {
+	info := NewPublishedAgentInfo()
+	po := &dapo.PublishedJoinPo{
+		ReleasePartPo: dapo.ReleasePartPo{
+			ReleaseID:  "",
+			Version:    "",
+			PublishedBy: "",
+		},
+	}
+
+	err := info.LoadFromReleaseAgentPO(po)
+	require.NoError(t, err)
+	assert.Empty(t, info.Version)
+	assert.Empty(t, info.PublishedBy)
+}
+
+func TestPublishedAgentInfo_EmptyInitStruct(t *testing.T) {
+	info := &PublishedAgentInfo{}
+	assert.Empty(t, info.PublishedBy)
+	assert.Empty(t, info.Version)
+	assert.Empty(t, info.Profile)
+	assert.Empty(t, info.Avatar)
+	assert.Equal(t, int64(0), info.PublishedAt)
+}
+
+func TestPublishUserInfo_Empty(t *testing.T) {
+	info := &PublishUserInfo{}
+	assert.Empty(t, info.UserID)
+	assert.Empty(t, info.Username)
+}
+
+func TestPublishUserInfo_WithChineseCharacters(t *testing.T) {
+	info := &PublishUserInfo{
+		UserID:   "用户-123",
+		Username: "中文用户名",
+	}
+
+	assert.Equal(t, "用户-123", info.UserID)
+	assert.Equal(t, "中文用户名", info.Username)
+}
+
+func TestPublishedAgentInfo_LoadFromReleaseAgentPO_AllAvatarTypes(t *testing.T) {
+	tests := []struct {
+		name      string
+		avatarType cdaenum.AvatarType
+	}{
+		{"built-in avatar", cdaenum.AvatarTypeBuiltIn},
+		{"user uploaded avatar", cdaenum.AvatarTypeUserUploaded},
+		{"AI generated avatar", cdaenum.AvatarTypeAIGenerated},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			info := NewPublishedAgentInfo()
+			po := &dapo.PublishedJoinPo{
+				ReleasePartPo: dapo.ReleasePartPo{
+					ReleaseID:  "release-test",
+					PublishedBy: "user-1",
+				},
+				DataAgentPo: dapo.DataAgentPo{
+					ID:         "agent-test",
+					Name:       "Test Agent",
+					AvatarType: tt.avatarType,
+					Avatar:     "test-avatar.png",
+				},
+			}
+
+			err := info.LoadFromReleaseAgentPO(po)
+			require.NoError(t, err)
+			assert.Equal(t, tt.avatarType, info.AvatarType)
+			assert.Equal(t, "test-avatar.png", info.Avatar)
+		})
+	}
+}

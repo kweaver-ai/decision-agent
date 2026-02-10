@@ -39,9 +39,9 @@ swagger_token: ""
 db:
   user_name: aishu
   user_pwd: "aishu123456"
-  db_host: localhost
+  db_host: mariadb
   db_port: 3306
-  db_host_read: localhost
+  db_host_read: mariadb
   db_port_read: 3306
   db_name: adp
   db_charset: utf8mb4
@@ -53,13 +53,13 @@ db:
 
 redis:
   connect_type: "standalone"
-  password: ""
+  password: "redis123456"
   username: ""
 
   db: 3
 
   # standalone 单机模式
-  host: "localhost"
+  host: "redis"
   port: "6379"
 
   # sentinel 模式配置

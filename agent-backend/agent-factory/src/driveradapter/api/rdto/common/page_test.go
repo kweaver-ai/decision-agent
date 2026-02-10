@@ -242,3 +242,160 @@ func TestPageSize_WithValues(t *testing.T) {
 	assert.Equal(t, 200, p.GetOffset())
 	assert.Equal(t, 50, p.GetLimit())
 }
+
+func TestPageByLastIntID_GetErrMsgMap(t *testing.T) {
+	p := PageByLastIntID{}
+	errMsgMap := p.GetErrMsgMap()
+
+	assert.NotNil(t, errMsgMap)
+	assert.Equal(t, `"size"的值必须是数字`, errMsgMap["Size.numeric"])
+	assert.Equal(t, `"size"的值不能大于1000`, errMsgMap["Size.max"])
+	assert.Equal(t, `"last_id"的值必须是数字`, errMsgMap["LastID.numeric"])
+}
+
+func TestPageByLastIntID_GetSize(t *testing.T) {
+	tests := []struct {
+		name     string
+		size     int
+		expected int
+	}{
+		{
+			name:     "zero size returns default",
+			size:     0,
+			expected: 10,
+		},
+		{
+			name:     "non-zero size returns itself",
+			size:     50,
+			expected: 50,
+		},
+		{
+			name:     "size of 1 returns 1",
+			size:     1,
+			expected: 1,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := PageByLastIntID{Size: tt.size}
+			result := p.GetSize()
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
+func TestPageByLastIntID_GetLimit(t *testing.T) {
+	tests := []struct {
+		name     string
+		size     int
+		expected int
+	}{
+		{
+			name:     "zero size returns default",
+			size:     0,
+			expected: 10,
+		},
+		{
+			name:     "non-zero size returns itself",
+			size:     25,
+			expected: 25,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := PageByLastIntID{Size: tt.size}
+			result := p.GetLimit()
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
+func TestPageByLastIntID_Fields(t *testing.T) {
+	p := PageByLastIntID{
+		Size:   20,
+		LastID: 123,
+	}
+
+	assert.Equal(t, 20, p.Size)
+	assert.Equal(t, 123, p.LastID)
+}
+
+func TestPageByStrID_GetErrMsgMap(t *testing.T) {
+	p := PageByStrID{}
+	errMsgMap := p.GetErrMsgMap()
+
+	assert.NotNil(t, errMsgMap)
+	assert.Equal(t, `"size"的值必须是数字`, errMsgMap["Size.numeric"])
+	assert.Equal(t, `"size"的值不能大于1000`, errMsgMap["Size.max"])
+}
+
+func TestPageByStrID_GetSize(t *testing.T) {
+	tests := []struct {
+		name     string
+		size     int
+		expected int
+	}{
+		{
+			name:     "zero size returns default",
+			size:     0,
+			expected: 10,
+		},
+		{
+			name:     "non-zero size returns itself",
+			size:     50,
+			expected: 50,
+		},
+		{
+			name:     "size of 1 returns 1",
+			size:     1,
+			expected: 1,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := PageByStrID{Size: tt.size}
+			result := p.GetSize()
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
+func TestPageByStrID_GetLimit(t *testing.T) {
+	tests := []struct {
+		name     string
+		size     int
+		expected int
+	}{
+		{
+			name:     "zero size returns default",
+			size:     0,
+			expected: 10,
+		},
+		{
+			name:     "non-zero size returns itself",
+			size:     25,
+			expected: 25,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			p := PageByStrID{Size: tt.size}
+			result := p.GetLimit()
+			assert.Equal(t, tt.expected, result)
+		})
+	}
+}
+
+func TestPageByStrID_Fields(t *testing.T) {
+	p := PageByStrID{
+		Size:   20,
+		LastID: "abc123",
+	}
+
+	assert.Equal(t, 20, p.Size)
+	assert.Equal(t, "abc123", p.LastID)
+}

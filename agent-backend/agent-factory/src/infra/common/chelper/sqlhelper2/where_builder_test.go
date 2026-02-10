@@ -185,3 +185,25 @@ func TestWhereBuilder_hlCondition(t *testing.T) {
 		})
 	}
 }
+
+func TestWhereBuilder_Like(t *testing.T) {
+	wb := NewWhereBuilder()
+	wb.Like("name", "John")
+
+	sqlStr, args, err := wb.ToWhereSQL()
+	assert.NoError(t, err)
+	assert.Equal(t, "name like ?", sqlStr)
+	// Like adds % wildcards around the value
+	assert.Equal(t, []interface{}{"%John%"}, args)
+}
+
+func TestWhereBuilder_OrEqual(t *testing.T) {
+	wb := NewWhereBuilder()
+	wb.Where("id", OperatorEq, 1)
+	wb.OrEqual("status", "active")
+
+	sqlStr, args, err := wb.ToWhereSQL()
+	assert.NoError(t, err)
+	assert.Equal(t, "id = ? or status = ?", sqlStr)
+	assert.Equal(t, []interface{}{1, "active"}, args)
+}

@@ -160,3 +160,50 @@ func TestAgentListResp_StructFields(t *testing.T) {
 	assert.Equal(t, marker, resp.Marker)
 	assert.False(t, resp.IsLastPage)
 }
+
+func TestAgentListResp_LoadFromEos_WithPublishedAgent(t *testing.T) {
+	resp := NewAgentListResp()
+
+	eo := &daconfeo.DataAgent{}
+	eo.ID = "agent-1"
+	eo.UpdatedAt = 200
+
+	releaseAgentPoMap := map[string]*dapo.PublishedJoinPo{
+		"agent-1": {
+			ReleasePartPo: dapo.ReleasePartPo{
+				PublishedAt: 100,
+				Version:     "1.0.0",
+			},
+		},
+	}
+
+	err := resp.LoadFromEos([]*daconfeo.DataAgent{eo}, releaseAgentPoMap)
+
+	assert.NoError(t, err)
+	assert.Len(t, resp.Entries, 1)
+	assert.Equal(t, "1.0.0", resp.Entries[0].Version)
+	assert.Equal(t, int64(100), resp.Entries[0].PublishedAt)
+}
+
+func TestAgentListResp_LoadFromEos_PublishedAgentNoUpdate(t *testing.T) {
+	resp := NewAgentListResp()
+
+	eo := &daconfeo.DataAgent{}
+	eo.ID = "agent-1"
+	eo.UpdatedAt = 100
+
+	releaseAgentPoMap := map[string]*dapo.PublishedJoinPo{
+		"agent-1": {
+			ReleasePartPo: dapo.ReleasePartPo{
+				PublishedAt: 200,
+				Version:     "1.0.0",
+			},
+		},
+	}
+
+	err := resp.LoadFromEos([]*daconfeo.DataAgent{eo}, releaseAgentPoMap)
+
+	assert.NoError(t, err)
+	assert.Len(t, resp.Entries, 1)
+	assert.Equal(t, "1.0.0", resp.Entries[0].Version)
+}

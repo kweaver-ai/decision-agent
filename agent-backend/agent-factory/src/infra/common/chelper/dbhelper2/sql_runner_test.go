@@ -671,3 +671,208 @@ func Test_RawExists(t *testing.T) {
 	assert.Nil(t, err)
 	assert.False(t, exists)
 }
+
+func TestSQLRunner_BuilderMethods(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	t.Run("ResetSelect", func(t *testing.T) {
+		q := NewSQLRunner(db, getMockLogger(ctrl))
+		sb := sqlhelper2.NewSelectBuilder()
+		sb.Select([]string{"id", "name"})
+		q.sb = sb
+
+		result := q.ResetSelect()
+		assert.NotNil(t, result)
+		assert.Equal(t, q, result)
+	})
+
+	t.Run("Page", func(t *testing.T) {
+		q := NewSQLRunner(db, getMockLogger(ctrl))
+
+		result := q.Page(2, 10)
+		assert.NotNil(t, result)
+		assert.Equal(t, q, result)
+	})
+
+	t.Run("SetUpdateFields", func(t *testing.T) {
+		q := NewSQLRunner(db, getMockLogger(ctrl))
+
+		fields := []string{"name", "age"}
+		result := q.SetUpdateFields(fields)
+		assert.NotNil(t, result)
+		assert.Equal(t, q, result)
+	})
+
+	t.Run("Order", func(t *testing.T) {
+		q := NewSQLRunner(db, getMockLogger(ctrl))
+
+		result := q.Order("id DESC")
+		assert.NotNil(t, result)
+		assert.Equal(t, q, result)
+	})
+
+	t.Run("SetSQLBuilder", func(t *testing.T) {
+		q := NewSQLRunner(db, getMockLogger(ctrl))
+		newSb := sqlhelper2.NewSelectBuilder()
+
+		result := q.SetSQLBuilder(newSb)
+		assert.NotNil(t, result)
+		assert.Equal(t, q, result)
+		assert.Equal(t, newSb, q.sb)
+	})
+
+	t.Run("Limit", func(t *testing.T) {
+		q := NewSQLRunner(db, getMockLogger(ctrl))
+
+		result := q.Limit(10)
+		assert.NotNil(t, result)
+		assert.Equal(t, q, result)
+	})
+
+	t.Run("Offset", func(t *testing.T) {
+		q := NewSQLRunner(db, getMockLogger(ctrl))
+
+		result := q.Offset(5)
+		assert.NotNil(t, result)
+		assert.Equal(t, q, result)
+	})
+}
+
+func TestSQLRunner_TxSr(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	tx := &sql.Tx{}
+	result := TxSr(tx, getMockLogger(ctrl))
+	assert.NotNil(t, result)
+}
+
+func TestSQLRunner_SrByISQLRunner(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	result := SrByISQLRunner(db, getMockLogger(ctrl))
+	assert.NotNil(t, result)
+}
+
+func TestSQLRunner_WhereNotEqual(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	q := NewSQLRunner(db, getMockLogger(ctrl))
+
+	result := q.WhereNotEqual("status", "deleted")
+	assert.NotNil(t, result)
+	assert.Equal(t, q, result)
+}
+
+func TestSQLRunner_OrEqual(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	q := NewSQLRunner(db, getMockLogger(ctrl))
+
+	result := q.OrEqual("name", "admin")
+	assert.NotNil(t, result)
+	assert.Equal(t, q, result)
+}
+
+func TestSQLRunner_In(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	q := NewSQLRunner(db, getMockLogger(ctrl))
+
+	result := q.In("id", []int{1, 2, 3})
+	assert.NotNil(t, result)
+	assert.Equal(t, q, result)
+}
+
+func TestSQLRunner_Like(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	q := NewSQLRunner(db, getMockLogger(ctrl))
+
+	result := q.Like("name", "%test%")
+	assert.NotNil(t, result)
+	assert.Equal(t, q, result)
+}
+
+func TestSQLRunner_WhereRaw(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	q := NewSQLRunner(db, getMockLogger(ctrl))
+
+	result := q.WhereRaw("id > ? AND status = ?", 100, "active")
+	assert.NotNil(t, result)
+	assert.Equal(t, q, result)
+}
+
+func TestSQLRunner_WhereByWhereBuilderOr(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	q := NewSQLRunner(db, getMockLogger(ctrl))
+	q.Tag("db")
+
+	sqlMock.ExpectQuery("select id,name from users where").
+		WillReturnRows(sqlmock.NewRows([]string{"id", "name"}).AddRow(1, "name1"))
+
+	users := make([]userT, 0)
+
+	wb := sqlhelper2.NewWhereBuilder().
+		WhereEqual("id", 1)
+	err := q.FromPo(&userT{}).
+		WhereByWhereBuilderOr(wb)
+
+	assert.Nil(t, err)
+
+	err = q.Find(&users)
+	assert.Nil(t, err)
+	assert.Equal(t, 1, len(users))
+}
+
+func TestSQLRunner_RawExec(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	q := NewSQLRunner(db, getMockLogger(ctrl))
+
+	sqlMock.ExpectExec("DELETE FROM users WHERE id = ?").
+		WithArgs(1).
+		WillReturnResult(sqlmock.NewResult(0, 1))
+
+	res, err := q.RawExec("DELETE FROM users WHERE id = ?", 1)
+	assert.Nil(t, err)
+	assert.NotNil(t, res)
+
+	rowsAffected, err := res.RowsAffected()
+	assert.Nil(t, err)
+	assert.Equal(t, int64(1), rowsAffected)
+}
+
+func TestSQLRunner_Scan(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	q := NewSQLRunner(db, getMockLogger(ctrl))
+
+	sqlMock.ExpectQuery("select id,name from users where id = ?").
+		WithArgs(1).
+		WillReturnRows(sqlmock.NewRows([]string{"id", "name"}).AddRow(1, "test"))
+
+	var id int
+	var name string
+
+	err := q.Select([]string{"id", "name"}).
+		From("users").
+		Where("id", sqlhelper2.OperatorEq, 1).
+		Scan(&id, &name)
+
+	assert.Nil(t, err)
+	assert.Equal(t, 1, id)
+	assert.Equal(t, "test", name)
+}

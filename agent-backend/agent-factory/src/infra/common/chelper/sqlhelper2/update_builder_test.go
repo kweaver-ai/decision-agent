@@ -188,3 +188,36 @@ func TestUpdateBuilder_ToUpdateSqlFullFeatures(t *testing.T) {
 	assert.Equal(t, "value11", updateBuilder.updateFieldKVPairs["key1"], "updateBuilder.Update() failed")
 	assert.Equal(t, "value22", updateBuilder.updateFieldKVPairs["key2"], "updateBuilder.Update() failed")
 }
+
+func TestUpdateBuilder_Tag(t *testing.T) {
+	updateBuilder := NewUpdateBuilder()
+	updateBuilder.Tag("custom")
+
+	assert.Equal(t, "custom", updateBuilder.tag)
+}
+
+func TestUpdateBuilder_SetWhereBuilder(t *testing.T) {
+	wb := NewWhereBuilder()
+	wb.Where("id", OperatorEq, 1)
+
+	updateBuilder := NewUpdateBuilder()
+	updateBuilder.SetWhereBuilder(wb)
+
+	assert.Equal(t, wb, updateBuilder.whereBuilder)
+}
+
+func TestUpdateBuilder_TagWithStruct(t *testing.T) {
+	updateBuilder := NewUpdateBuilder()
+	updateBuilder.Tag("json")
+
+	updateBuilder.UpdateByStruct(struct {
+		Key1 string `json:"key1"`
+		Key2 int    `json:"key2"`
+	}{
+		Key1: "value1",
+		Key2: 1,
+	})
+
+	assert.Equal(t, "value1", updateBuilder.updateFieldKVPairs["key1"])
+	assert.Equal(t, 1, updateBuilder.updateFieldKVPairs["key2"])
+}

@@ -257,3 +257,77 @@ func TestSafeGet(t *testing.T) {
 		})
 	}
 }
+
+// Test SafeGet with nil data
+func TestSafeGet_NilData(t *testing.T) {
+	result := SafeGet(nil, "User.Name")
+	if result != nil {
+		t.Errorf("SafeGet() with nil data = %v, want nil", result)
+	}
+}
+
+// Test SafeGet with non-map intermediate value
+func TestSafeGet_NonMapIntermediate(t *testing.T) {
+	data := map[string]interface{}{
+		"User": "string value", // Not a map
+	}
+
+	result := SafeGet(data, "User.Name")
+	if result != nil {
+		t.Errorf("SafeGet() with non-map intermediate = %v, want nil", result)
+	}
+}
+
+// Test SafeGet with empty path
+func TestSafeGet_EmptyPath(t *testing.T) {
+	data := map[string]interface{}{
+		"User": "张三",
+	}
+
+	result := SafeGet(data, "")
+	// Empty path returns nil because strings.Split("", ".") returns [""]
+	// and there's no key "" in the map
+	if result != nil {
+		t.Errorf("SafeGet() with empty path = %v, want nil", result)
+	}
+}
+
+// Test SafeRenderTemplate with nil value in data
+func TestSafeRenderTemplate_NilValue(t *testing.T) {
+	template := "用户: {{.User.Name}}"
+	data := map[string]interface{}{
+		"User": map[string]interface{}{
+			"Name": nil,
+		},
+	}
+
+	result, err := SafeRenderTemplate(template, data)
+	if err != nil {
+		t.Errorf("SafeRenderTemplate() unexpected error = %v", err)
+	}
+	// Should preserve placeholder for nil value
+	if result != "用户: {{.User.Name}}" {
+		t.Errorf("SafeRenderTemplate() with nil value = %v, want '用户: {{.User.Name}}'", result)
+	}
+}
+
+// Test SafeRenderTemplate with template that has no closing brace after dot
+func TestSafeRenderTemplate_MalformedTemplate(t *testing.T) {
+	// SafeRenderTemplate converts {{.xxx}} to {{safe "xxx"}} before parsing
+	// So {{.User.Name gets converted to {{safe "User.Name}} which is valid
+	// The missing brace becomes part of the rest string
+	template := "Hello {{.User.Name"
+	data := map[string]interface{}{
+		"User": map[string]interface{}{
+			"Name": "张三",
+		},
+	}
+
+	result, err := SafeRenderTemplate(template, data)
+	// This should succeed and render what it can
+	if err != nil {
+		t.Errorf("SafeRenderTemplate() unexpected error = %v", err)
+	}
+	// The rest "}}" after processing becomes part of output
+	t.Logf("Result: %s", result)
+}

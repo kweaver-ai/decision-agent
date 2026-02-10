@@ -56,33 +56,74 @@ func TestExportAgentItem_StructFields(t *testing.T) {
 func TestExportResp_AddAgent(t *testing.T) {
 	resp := NewExportResp()
 	po := &dapo.DataAgentPo{
-		Key:  "agent-123",
-		Name: "Test Agent",
+		Key:    "agent-123",
+		Name:   "Test Agent",
+		Config: `{"input":{"fields":[]},"output":{}}`, // Valid JSON config
 	}
 
-	// AddAgent calls RemoveDataSourceFromConfig which may fail
-	// The method adds the agent regardless of error from RemoveDataSourceFromConfig
 	resp.AddAgent(po)
 
-	// Note: AddAgent may not add the agent if RemoveDataSourceFromConfig fails
-	// The actual behavior depends on the DataAgentPo implementation
+	// Agent should be added because RemoveDataSourceFromConfig succeeded
+	if len(resp.Agents) > 0 {
+		assert.Equal(t, "agent-123", resp.Agents[0].Key)
+		assert.Equal(t, "Test Agent", resp.Agents[0].Name)
+	} else {
+		t.Fatal("Agent should have been added")
+	}
+}
+
+func TestExportResp_AddAgent_WithInvalidConfig(t *testing.T) {
+	resp := NewExportResp()
+	// Create an agent with invalid JSON config - use a string with unmatched quotes
+	po := &dapo.DataAgentPo{
+		Key:    "agent-123",
+		Name:   "Test Agent",
+		Config: `"invalid`, // Unmatched quote - invalid JSON
+	}
+
+	resp.AddAgent(po)
+
+	// Agent should NOT be added because RemoveDataSourceFromConfig failed
+	assert.Empty(t, resp.Agents)
+
+	// Verify that the agent list is still empty (early return happened)
+	assert.Len(t, resp.Agents, 0, "Agent should not be added when RemoveDataSourceFromConfig fails")
+}
+
+func TestExportResp_AddAgent_WithEmptyConfig(t *testing.T) {
+	resp := NewExportResp()
+	// Create an agent with empty config - this should fail RemoveDataSourceFromConfig
+	po := &dapo.DataAgentPo{
+		Key:    "agent-123",
+		Name:   "Test Agent",
+		Config: "", // Empty config - will fail RemoveDataSourceFromConfig
+	}
+
+	resp.AddAgent(po)
+
+	// Agent should NOT be added because RemoveDataSourceFromConfig failed with empty config
+	assert.Len(t, resp.Agents, 0, "Agent should not be added when config is empty")
 }
 
 func TestExportResp_AddMultipleAgents(t *testing.T) {
 	resp := NewExportResp()
 
+	validConfig := `{"input":{"fields":[]},"output":{}}`
 	agents := []*dapo.DataAgentPo{
-		{Key: "agent-1", Name: "Agent 1"},
-		{Key: "agent-2", Name: "Agent 2"},
-		{Key: "agent-3", Name: "Agent 3"},
+		{Key: "agent-1", Name: "Agent 1", Config: validConfig},
+		{Key: "agent-2", Name: "Agent 2", Config: validConfig},
+		{Key: "agent-3", Name: "Agent 3", Config: validConfig},
 	}
 
 	for _, agent := range agents {
 		resp.AddAgent(agent)
 	}
 
-	// Note: AddAgent may not add all agents if RemoveDataSourceFromConfig fails
-	// The actual behavior depends on the DataAgentPo implementation
+	// All agents should be added
+	assert.Len(t, resp.Agents, 3)
+	assert.Equal(t, "agent-1", resp.Agents[0].Key)
+	assert.Equal(t, "agent-2", resp.Agents[1].Key)
+	assert.Equal(t, "agent-3", resp.Agents[2].Key)
 }
 
 func TestExportResp_GetSystemAgentFailItems(t *testing.T) {
@@ -90,12 +131,14 @@ func TestExportResp_GetSystemAgentFailItems(t *testing.T) {
 
 	yes := cenum.YesNoInt8Yes
 	no := cenum.YesNoInt8No
+	validConfig := `{"input":{"fields":[]},"output":{}}`
 
 	// Add system agent
 	po1 := &dapo.DataAgentPo{
 		Key:           "system-agent",
 		Name:          "System Agent",
 		IsSystemAgent: &yes,
+		Config:        validConfig,
 	}
 	resp.AddAgent(po1)
 
@@ -104,17 +147,9 @@ func TestExportResp_GetSystemAgentFailItems(t *testing.T) {
 		Key:           "normal-agent",
 		Name:          "Normal Agent",
 		IsSystemAgent: &no,
+		Config:        validConfig,
 	}
 	resp.AddAgent(po2)
-
-	// Note: AddAgent may not add agents if RemoveDataSourceFromConfig fails
-	// Testing GetSystemAgentFailItems method directly with manually added agents
-	resp.Agents = append(resp.Agents, &ExportAgentItem{
-		DataAgentPo: po1,
-	})
-	resp.Agents = append(resp.Agents, &ExportAgentItem{
-		DataAgentPo: po2,
-	})
 
 	failItems := resp.GetSystemAgentFailItems()
 
@@ -127,18 +162,15 @@ func TestExportResp_GetSystemAgentFailItems_NoSystemAgents(t *testing.T) {
 	resp := NewExportResp()
 
 	no := cenum.YesNoInt8No
+	validConfig := `{"input":{"fields":[]},"output":{}}`
 
 	po := &dapo.DataAgentPo{
 		Key:           "normal-agent",
 		Name:          "Normal Agent",
 		IsSystemAgent: &no,
+		Config:        validConfig,
 	}
 	resp.AddAgent(po)
-
-	// Manually add to test the method
-	resp.Agents = append(resp.Agents, &ExportAgentItem{
-		DataAgentPo: po,
-	})
 
 	failItems := resp.GetSystemAgentFailItems()
 
@@ -156,21 +188,15 @@ func TestExportResp_GetSystemAgentFailItems_MultipleSystemAgents(t *testing.T) {
 	resp := NewExportResp()
 
 	yes := cenum.YesNoInt8Yes
+	validConfig := `{"input":{"fields":[]},"output":{}}`
 
 	systemAgents := []*dapo.DataAgentPo{
-		{Key: "sys-agent-1", Name: "System Agent 1", IsSystemAgent: &yes},
-		{Key: "sys-agent-2", Name: "System Agent 2", IsSystemAgent: &yes},
+		{Key: "sys-agent-1", Name: "System Agent 1", IsSystemAgent: &yes, Config: validConfig},
+		{Key: "sys-agent-2", Name: "System Agent 2", IsSystemAgent: &yes, Config: validConfig},
 	}
 
 	for _, agent := range systemAgents {
 		resp.AddAgent(agent)
-	}
-
-	// Manually add to test the method
-	for _, agent := range systemAgents {
-		resp.Agents = append(resp.Agents, &ExportAgentItem{
-			DataAgentPo: agent,
-		})
 	}
 
 	failItems := resp.GetSystemAgentFailItems()
@@ -181,17 +207,15 @@ func TestExportResp_GetSystemAgentFailItems_MultipleSystemAgents(t *testing.T) {
 func TestExportResp_AddAgentWithNilIsSystemAgent(t *testing.T) {
 	resp := NewExportResp()
 
+	validConfig := `{"input":{"fields":[]},"output":{}}`
+
 	po := &dapo.DataAgentPo{
 		Key:           "agent-123",
 		Name:          "Test Agent",
 		IsSystemAgent: nil,
+		Config:        validConfig,
 	}
 	resp.AddAgent(po)
-
-	// Manually add to test the method
-	resp.Agents = append(resp.Agents, &ExportAgentItem{
-		DataAgentPo: po,
-	})
 
 	failItems := resp.GetSystemAgentFailItems()
 
@@ -207,13 +231,18 @@ func TestExportAgentItem_Empty(t *testing.T) {
 func TestExportResp_AddAgentWithChineseCharacters(t *testing.T) {
 	resp := NewExportResp()
 
+	validConfig := `{"input":{"fields":[]},"output":{}}`
+
 	po := &dapo.DataAgentPo{
-		Key:  "中文-agent",
-		Name: "中文代理名称",
+		Key:    "中文-agent",
+		Name:   "中文代理名称",
+		Config: validConfig,
 	}
 	resp.AddAgent(po)
 
-	// Note: AddAgent behavior depends on DataAgentPo implementation
+	// Agent should be added
+	assert.Len(t, resp.Agents, 1)
+	assert.Equal(t, "中文-agent", resp.Agents[0].Key)
 }
 
 func TestExportResp_GetSystemAgentFailItems_WithMixedAgents(t *testing.T) {
@@ -221,23 +250,17 @@ func TestExportResp_GetSystemAgentFailItems_WithMixedAgents(t *testing.T) {
 
 	yes := cenum.YesNoInt8Yes
 	no := cenum.YesNoInt8No
+	validConfig := `{"input":{"fields":[]},"output":{}}`
 
 	agents := []*dapo.DataAgentPo{
-		{Key: "normal-1", Name: "Normal 1", IsSystemAgent: &no},
-		{Key: "system-1", Name: "System 1", IsSystemAgent: &yes},
-		{Key: "normal-2", Name: "Normal 2", IsSystemAgent: &no},
-		{Key: "system-2", Name: "System 2", IsSystemAgent: &yes},
+		{Key: "normal-1", Name: "Normal 1", IsSystemAgent: &no, Config: validConfig},
+		{Key: "system-1", Name: "System 1", IsSystemAgent: &yes, Config: validConfig},
+		{Key: "normal-2", Name: "Normal 2", IsSystemAgent: &no, Config: validConfig},
+		{Key: "system-2", Name: "System 2", IsSystemAgent: &yes, Config: validConfig},
 	}
 
 	for _, agent := range agents {
 		resp.AddAgent(agent)
-	}
-
-	// Manually add to test the method
-	for _, agent := range agents {
-		resp.Agents = append(resp.Agents, &ExportAgentItem{
-			DataAgentPo: agent,
-		})
 	}
 
 	failItems := resp.GetSystemAgentFailItems()
@@ -255,13 +278,17 @@ func TestExportResp_NewExportRespInitialization(t *testing.T) {
 func TestExportResp_AddAgentPreservesDataSourceRemoval(t *testing.T) {
 	resp := NewExportResp()
 
+	validConfig := `{"input":{"fields":[]},"output":{},"data_source":{"type":"test"}}`
+
 	po := &dapo.DataAgentPo{
-		Key:  "agent-123",
-		Name: "Test Agent",
+		Key:    "agent-123",
+		Name:   "Test Agent",
+		Config: validConfig,
 	}
 
 	resp.AddAgent(po)
 
 	// AddAgent calls RemoveDataSourceFromConfig internally
 	// The method attempts to remove data source before adding
+	assert.Len(t, resp.Agents, 1)
 }

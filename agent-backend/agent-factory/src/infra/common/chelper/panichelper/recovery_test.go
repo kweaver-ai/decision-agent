@@ -18,16 +18,45 @@ func ForRecovery(logger icmp.Logger) {
 	panic("test Recovery")
 }
 
-//func TestRecovery(t *testing.T) {
-//	ctl := gomock.NewController(t)
-//	logger := cmpmock.NewMockLogger(ctl)
-//	logger.EXPECT().Errorln(gomock.Any()).DoAndReturn(func(args ...interface{}) interface{} {
-//		t.Log(args...)
-//		return nil
-//	})
-//
-//	ForRecovery(logger)
-//}
+func TestRecovery(t *testing.T) {
+	t.Run("recovery with panic", func(t *testing.T) {
+		ctl := gomock.NewController(t)
+		logger := cmpmock.NewMockLogger(ctl)
+		logger.EXPECT().Errorln(gomock.Any()).DoAndReturn(func(args ...interface{}) interface{} {
+			t.Log(args...)
+			return nil
+		})
+
+		ForRecovery(logger)
+	})
+
+	t.Run("recovery without panic", func(t *testing.T) {
+		ctl := gomock.NewController(t)
+		logger := cmpmock.NewMockLogger(ctl)
+		logger.EXPECT().Errorln(gomock.Any()).Times(0) // No panic should be logged
+
+		// Function that does not panic
+		noPanicFunc := func() {
+			defer Recovery(logger)
+			// No panic here
+		}
+
+		noPanicFunc()
+	})
+}
+
+func TestRecoveryNoPanic(t *testing.T) {
+	ctl := gomock.NewController(t)
+	defer ctl.Finish()
+	logger := cmpmock.NewMockLogger(ctl)
+
+	// Call Recovery directly without a panic
+	// This should do nothing and just return
+	Recovery(logger)
+
+	// No panic occurred, so no error should be logged
+	// The test completes successfully
+}
 
 func ForRecoveryAndSetErr(logger icmp.Logger, err *error) {
 	defer RecoveryAndSetErr(logger, err)

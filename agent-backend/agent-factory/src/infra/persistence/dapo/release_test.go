@@ -411,3 +411,91 @@ func TestRecentVisitAgentPO(t *testing.T) {
 		}
 	})
 }
+
+func TestReleasePartPo_IsPmsCtrlBool(t *testing.T) {
+	t.Run("is pms ctrl is 1", func(t *testing.T) {
+		po := &ReleasePartPo{IsPmsCtrl: 1}
+		result := po.IsPmsCtrlBool()
+
+		if !result {
+			t.Error("Expected IsPmsCtrlBool to return true when IsPmsCtrl is 1")
+		}
+	})
+
+	t.Run("is pms ctrl is 0", func(t *testing.T) {
+		po := &ReleasePartPo{IsPmsCtrl: 0}
+		result := po.IsPmsCtrlBool()
+
+		if result {
+			t.Error("Expected IsPmsCtrlBool to return false when IsPmsCtrl is 0")
+		}
+	})
+}
+
+func TestPublishedJoinPo_LoadFromReleasePartPo(t *testing.T) {
+	t.Run("valid po with empty agent config", func(t *testing.T) {
+		partPo := &ReleasePartPo{
+			ReleaseID:   "release-123",
+			PublishDesc: "test description",
+			Version:     "v1.0.0",
+			PublishedAt: 1234567890,
+			PublishedBy: "user-1",
+			IsPmsCtrl:   1,
+			AgentConfig: `{}`, // Empty but valid JSON
+		}
+
+		joinPo := &PublishedJoinPo{}
+		err := joinPo.LoadFromReleasePartPo(partPo)
+
+		if err != nil {
+			t.Errorf("Expected no error, got %v", err)
+		}
+	})
+
+	t.Run("po with agent config", func(t *testing.T) {
+		partPo := &ReleasePartPo{
+			ReleaseID:   "release-456",
+			AgentConfig: `{"id": "agent-123", "name": "Test Agent"}`,
+		}
+
+		joinPo := &PublishedJoinPo{}
+		err := joinPo.LoadFromReleasePartPo(partPo)
+
+		if err != nil {
+			t.Errorf("Expected no error, got %v", err)
+		}
+
+		if joinPo.ID != "agent-123" {
+			t.Errorf("Expected ID to be 'agent-123', got '%s'", joinPo.ID)
+		}
+		if joinPo.Name != "Test Agent" {
+			t.Errorf("Expected Name to be 'Test Agent', got '%s'", joinPo.Name)
+		}
+	})
+
+	t.Run("po with invalid agent config", func(t *testing.T) {
+		partPo := &ReleasePartPo{
+			ReleaseID:   "release-789",
+			AgentConfig: `{invalid json`, // Invalid JSON
+		}
+
+		joinPo := &PublishedJoinPo{}
+		err := joinPo.LoadFromReleasePartPo(partPo)
+
+		if err == nil {
+			t.Error("Expected error when loading from invalid agent config")
+		}
+	})
+}
+
+func TestReleasePermissionPO_TableName(t *testing.T) {
+	t.Run("table name", func(t *testing.T) {
+		po := &ReleasePermissionPO{}
+		tableName := po.TableName()
+
+		expected := "t_data_agent_release_permission"
+		if tableName != expected {
+			t.Errorf("Expected table name to be '%s', got '%s'", expected, tableName)
+		}
+	})
+}

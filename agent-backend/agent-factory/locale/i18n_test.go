@@ -179,32 +179,6 @@ func TestRegister(t *testing.T) {
 		Register()
 	})
 
-	t.Run("non-UT mode with locale directory", func(t *testing.T) {
-		t.Skip("Skipping - i18n library can only be registered once per process")
-
-		// Save original env value
-		originalMode := os.Getenv("I18N_MODE_UT")
-
-		// Clean up after test
-		defer func() {
-			if originalMode != "" {
-				os.Setenv("I18N_MODE_UT", originalMode)
-			} else {
-				os.Unsetenv("I18N_MODE_UT")
-			}
-		}()
-
-		// Unset UT mode to test non-UT mode path
-		os.Unsetenv("I18N_MODE_UT")
-
-		// This should not panic even if locale directory doesn't exist
-		// (it will fall back to UT mode automatically)
-		defer func() {
-			if r := recover(); r != nil {
-				t.Errorf("Register panicked: %v", r)
-			}
-		}()
-
-		Register()
-	})
+	// Note: We skip the other test cases because i18n.RegisterI18n can only be called once per process
+	// The first test registers successfully, subsequent tests would fail with "messageId already exist"
 }

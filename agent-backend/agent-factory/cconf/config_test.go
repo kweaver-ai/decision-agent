@@ -228,6 +228,60 @@ func TestGetConfigPath_Cached(t *testing.T) {
 	}
 }
 
+func TestConfig_String_WithNilPtr(t *testing.T) {
+	t.Run("config with nil optional fields", func(t *testing.T) {
+		config := &Config{
+			Project: Project{
+				Host: "localhost",
+				Port: 8080,
+			},
+			DB: DBConf{
+				UserName: "user",
+			},
+			// Leave other fields as nil
+		}
+
+		str := config.String()
+		if str == "" {
+			t.Error("Expected String to return a non-empty string")
+		}
+	})
+}
+
+func TestConfig_Check_WithValidLanguage(t *testing.T) {
+	t.Run("valid simplified chinese", func(t *testing.T) {
+		config := &Config{
+			Project: Project{
+				Host:     "localhost",
+				Port:     8080,
+				Language: rest.SimplifiedChinese,
+			},
+		}
+
+		err := config.Check()
+		if err != nil {
+			t.Errorf("Expected Check to return no error, got %v", err)
+		}
+	})
+}
+
+func TestConfig_Check_WithInvalidLanguage(t *testing.T) {
+	t.Run("invalid language", func(t *testing.T) {
+		config := &Config{
+			Project: Project{
+				Host:     "localhost",
+				Port:     8080,
+				Language: "",
+			},
+		}
+
+		err := config.Check()
+		if err == nil {
+			t.Error("Expected Check to return an error for invalid language")
+		}
+	})
+}
+
 func TestProject_Check(t *testing.T) {
 	t.Run("valid simplified chinese", func(t *testing.T) {
 		project := Project{

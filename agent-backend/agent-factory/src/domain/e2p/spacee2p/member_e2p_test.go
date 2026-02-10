@@ -130,3 +130,52 @@ func TestSpaceMembers(t *testing.T) {
 		})
 	}
 }
+
+func TestSpaceMembers_SingleMember(t *testing.T) {
+	eos := []*spaceeo.SpaceMember{
+		{
+			SpaceMemberPo: dapo.SpaceMemberPo{
+				ID:      1,
+				SpaceID: "space-1",
+				ObjType: cenum.OrgObjTypeUser,
+				ObjID:   "user-1",
+			},
+		},
+	}
+
+	pos, err := SpaceMembers(eos)
+	require.NoError(t, err)
+	assert.Len(t, pos, 1)
+	assert.Equal(t, int64(1), pos[0].ID)
+}
+
+func TestSpaceMember_NilEntity(t *testing.T) {
+	eo := &spaceeo.SpaceMember{
+		SpaceMemberPo: dapo.SpaceMemberPo{
+			ID:      1,
+			SpaceID: "space-1",
+		},
+	}
+
+	po, err := SpaceMember(eo)
+	require.NoError(t, err)
+	require.NotNil(t, po)
+	assert.Equal(t, int64(1), po.ID)
+}
+
+func TestSpaceMembers_AllFields(t *testing.T) {
+	eo := &spaceeo.SpaceMember{
+		SpaceMemberPo: dapo.SpaceMemberPo{
+			ID:       1,
+			SpaceID:  "space-1",
+			SpaceKey: "space-key-1",
+			ObjType:  cenum.OrgObjTypeUser,
+			ObjID:    "user-1",
+		},
+	}
+
+	po, err := SpaceMember(eo)
+	require.NoError(t, err)
+	assert.Equal(t, int64(1), po.ID)
+	assert.Equal(t, "space-1", po.SpaceID)
+}

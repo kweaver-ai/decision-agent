@@ -198,3 +198,84 @@ func TestIsDebugMode(t *testing.T) {
 		}
 	})
 }
+
+func TestIsSQLPrint(t *testing.T) {
+	cleanupTestEnv()
+	defer cleanupTestEnv()
+
+	t.Run("sql print is true", func(t *testing.T) {
+		os.Setenv("MOCK_SVC_NAME_SQL_PRINT", "true")
+		defer os.Unsetenv("MOCK_SVC_NAME_SQL_PRINT")
+
+		if !IsSQLPrint() {
+			t.Error("IsSQLPrint() should return true when env var is 'true'")
+		}
+	})
+
+	t.Run("sql print is false", func(t *testing.T) {
+		os.Setenv("MOCK_SVC_NAME_SQL_PRINT", "false")
+		defer os.Unsetenv("MOCK_SVC_NAME_SQL_PRINT")
+
+		if IsSQLPrint() {
+			t.Error("IsSQLPrint() should return false when env var is 'false'")
+		}
+	})
+
+	t.Run("sql print not set", func(t *testing.T) {
+		os.Unsetenv("MOCK_SVC_NAME_SQL_PRINT")
+
+		if IsSQLPrint() {
+			t.Error("IsSQLPrint() should return false when env var is not set")
+		}
+	})
+}
+
+func TestProjectPathByEnv(t *testing.T) {
+	cleanupTestEnv()
+	defer cleanupTestEnv()
+
+	t.Run("project path is set", func(t *testing.T) {
+		expectedPath := "/test/project/path"
+		os.Setenv("MOCK_SVC_NAME_PROJECT_PATH", expectedPath)
+		defer os.Unsetenv("MOCK_SVC_NAME_PROJECT_PATH")
+
+		result := ProjectPathByEnv()
+		if result != expectedPath {
+			t.Errorf("ProjectPathByEnv() should return %s, got %s", expectedPath, result)
+		}
+	})
+
+	t.Run("project path is empty", func(t *testing.T) {
+		os.Unsetenv("MOCK_SVC_NAME_PROJECT_PATH")
+
+		result := ProjectPathByEnv()
+		if result != "" {
+			t.Error("ProjectPathByEnv() should return empty string when env var is not set")
+		}
+	})
+}
+
+func TestConfigPathFromEnv(t *testing.T) {
+	cleanupTestEnv()
+	defer cleanupTestEnv()
+
+	t.Run("config path is set", func(t *testing.T) {
+		expectedPath := "/test/config/path"
+		os.Setenv("MOCK_SVC_NAME_CONFIG_PATH", expectedPath)
+		defer os.Unsetenv("MOCK_SVC_NAME_CONFIG_PATH")
+
+		result := ConfigPathFromEnv()
+		if result != expectedPath {
+			t.Errorf("ConfigPathFromEnv() should return %s, got %s", expectedPath, result)
+		}
+	})
+
+	t.Run("config path is empty", func(t *testing.T) {
+		os.Unsetenv("MOCK_SVC_NAME_CONFIG_PATH")
+
+		result := ConfigPathFromEnv()
+		if result != "" {
+			t.Error("ConfigPathFromEnv() should return empty string when env var is not set")
+		}
+	})
+}

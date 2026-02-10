@@ -2,9 +2,12 @@ package releaseresp
 
 import (
 	"context"
+	"os"
 	"testing"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iumacc/httpaccmock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestPublishUpsertResp_StructFields(t *testing.T) {
@@ -241,4 +244,101 @@ func TestPublishUpsertResp_WithReleaseIdFormats(t *testing.T) {
 		}
 		assert.Equal(t, releaseId, resp.ReleaseId)
 	}
+}
+
+func TestPublishUpsertResp_FillPublishedByName_Actual(t *testing.T) {
+	// Set LOCAL_DEV environment variable for local dev testing
+	os.Setenv("AGENT_FACTORY_LOCAL_DEV", "true")
+	defer func() {
+		os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
+	}()
+
+	t.Run("local dev mode - sets published by name with suffix", func(t *testing.T) {
+		resp := &PublishUpsertResp{
+			PublishedBy: "user123",
+		}
+		ctx := context.Background()
+		ctrl := gomock.NewController(t)
+		mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+		err := resp.FillPublishedByName(ctx, mockUm)
+		assert.NoError(t, err)
+		assert.Equal(t, "user123_name", resp.PublishedByName)
+	})
+
+	t.Run("local dev mode - empty published by", func(t *testing.T) {
+		resp := &PublishUpsertResp{
+			PublishedBy: "",
+		}
+		ctx := context.Background()
+		ctrl := gomock.NewController(t)
+		mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+		err := resp.FillPublishedByName(ctx, mockUm)
+		assert.NoError(t, err)
+		assert.Equal(t, "_name", resp.PublishedByName)
+	})
+}
+
+func TestPublishUpsertResp_FillPublishedByName_NonLocalDev(t *testing.T) {
+	// Ensure LOCAL_DEV is not set
+	os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
+
+	t.Run("non-local dev - successfully gets user name", func(t *testing.T) {
+		resp := &PublishUpsertResp{
+			PublishedBy: "user123",
+		}
+		ctx := context.Background()
+		ctrl := gomock.NewController(t)
+		mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
+		mockUm.EXPECT().GetSingleUserName(ctx, "user123").Return("John Doe", nil)
+
+		err := resp.FillPublishedByName(ctx, mockUm)
+		assert.NoError(t, err)
+		assert.Equal(t, "John Doe", resp.PublishedByName)
+	})
+
+	t.Run("non-local dev - error getting user name", func(t *testing.T) {
+		resp := &PublishUpsertResp{
+			PublishedBy: "user123",
+		}
+		ctx := context.Background()
+		ctrl := gomock.NewController(t)
+		mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
+		mockUm.EXPECT().GetSingleUserName(ctx, "user123").Return("", assert.AnError)
+
+		err := resp.FillPublishedByName(ctx, mockUm)
+		assert.Error(t, err)
+	})
+
+	t.Run("non-local dev - empty user name returned", func(t *testing.T) {
+		resp := &PublishUpsertResp{
+			PublishedBy: "user456",
+		}
+		ctx := context.Background()
+		ctrl := gomock.NewController(t)
+		mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
+		mockUm.EXPECT().GetSingleUserName(ctx, "user456").Return("", nil)
+
+		err := resp.FillPublishedByName(ctx, mockUm)
+		assert.NoError(t, err)
+		assert.Equal(t, "", resp.PublishedByName)
+	})
+}
+
+func TestPublishUpsertResp_FillPublishedByName_PointerReceiver(t *testing.T) {
+	// Test with pointer receiver
+	os.Setenv("AGENT_FACTORY_LOCAL_DEV", "true")
+	defer os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
+
+	resp := &PublishUpsertResp{
+		PublishedBy: "test-user",
+	}
+	ctx := context.Background()
+	ctrl := gomock.NewController(t)
+	mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+	err := resp.FillPublishedByName(ctx, mockUm)
+	assert.NoError(t, err)
+	assert.Equal(t, "test-user_name", resp.PublishedByName)
 }

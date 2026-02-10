@@ -203,3 +203,87 @@ func TestDataAgentTplIDStrPo(t *testing.T) {
 		}
 	})
 }
+
+func TestDataAgentTplPo_GetConfigStruct(t *testing.T) {
+	t.Run("valid config json", func(t *testing.T) {
+		configJSON := `{"input":{"fields":[]},"output":{}}`
+		po := &DataAgentTplPo{Config: configJSON}
+
+		conf, err := po.GetConfigStruct()
+		if err != nil {
+			t.Errorf("Expected no error, got %v", err)
+		}
+		if conf == nil {
+			t.Error("Expected config struct to be returned")
+		}
+	})
+
+	t.Run("invalid config json", func(t *testing.T) {
+		po := &DataAgentTplPo{Config: "{invalid json"}
+
+		_, err := po.GetConfigStruct()
+		if err == nil {
+			t.Error("Expected error for invalid JSON config")
+		}
+	})
+
+	t.Run("empty config", func(t *testing.T) {
+		po := &DataAgentTplPo{Config: ""}
+
+		_, err := po.GetConfigStruct()
+		if err == nil {
+			t.Error("Expected error for empty config string")
+		}
+	})
+}
+
+func TestDataAgentTplPo_SetConfigStruct(t *testing.T) {
+	t.Run("set config and get back", func(t *testing.T) {
+		po := &DataAgentTplPo{}
+		configJSON := `{"input":{"fields":[]},"output":{}}`
+
+		// Set config directly
+		po.Config = configJSON
+
+		// Verify we can get it back
+		conf, err := po.GetConfigStruct()
+		if err != nil {
+			t.Errorf("Expected no error, got %v", err)
+		}
+		if conf == nil {
+			t.Error("Expected config struct to be returned")
+		}
+	})
+}
+
+func TestDataAgentTplPo_RemoveDataSourceFromConfig(t *testing.T) {
+	t.Run("remove data source without dolphin", func(t *testing.T) {
+		configJSON := `{"input":{"fields":[]},"output":{},"data_source":{}}`
+		po := &DataAgentTplPo{Config: configJSON}
+
+		err := po.RemoveDataSourceFromConfig(false)
+		if err != nil {
+			t.Errorf("Expected no error, got %v", err)
+		}
+	})
+
+	t.Run("remove data source with invalid config", func(t *testing.T) {
+		po := &DataAgentTplPo{Config: "{invalid json"}
+
+		err := po.RemoveDataSourceFromConfig(false)
+		if err == nil {
+			t.Error("Expected error for invalid config JSON")
+		}
+	})
+
+	t.Run("remove data source with dolphin flag true", func(t *testing.T) {
+		configJSON := `{"input":{"fields":[]},"output":{},"data_source":{},"pre_dolphin":[]}`
+		po := &DataAgentTplPo{Config: configJSON}
+
+		err := po.RemoveDataSourceFromConfig(true)
+		// This should not error even if dolphin operations don't do much
+		if err != nil {
+			t.Errorf("Expected no error with dolphin flag, got %v", err)
+		}
+	})
+}
