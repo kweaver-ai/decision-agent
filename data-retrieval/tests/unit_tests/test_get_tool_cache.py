@@ -79,7 +79,7 @@ class TestGetToolCacheLogic:
         assert isinstance(result, dict)
         assert "output" in result
         # InMemoryChatSession 对不存在的 key 返回空 dict
-        assert result["output"] == "{}"
+        assert result["output"] == {}
 
     def test_get_existing_cache(self):
         """测试获取已存在的缓存"""
@@ -91,9 +91,8 @@ class TestGetToolCacheLogic:
         result = tool._get_tool_cache("test_key")
         assert isinstance(result, dict)
         assert "output" in result
-        # result["output"] 是 JSON 字符串
-        parsed = json.loads(result["output"])
-        assert parsed == test_data
+        # result["output"] 直接是原始 dict
+        assert result["output"] == test_data
 
     def test_get_cache_with_output_substring(self):
         """测试缓存数据包含 'output' 子串时不会崩溃
@@ -111,8 +110,7 @@ class TestGetToolCacheLogic:
         result = tool._get_tool_cache("key_with_output")
         assert isinstance(result, dict)
         assert "output" in result
-        parsed = json.loads(result["output"])
-        assert parsed == test_data
+        assert result["output"] == test_data
 
     def test_returns_dict_not_string(self):
         """验证 _get_tool_cache 返回 dict 而非 str"""
@@ -132,15 +130,15 @@ class TestGetToolCacheTruncation:
         return tool
 
     def test_small_cache_not_truncated(self):
-        """小缓存不应被截断"""
+        """小缓存不应被截断，直接返回原始 dict"""
         tool = self._make_tool(max_cache_size=10000)
         small_data = {"key": "value"}
         tool.session.add_agent_logs("small", small_data)
 
         result = tool._get_tool_cache("small")
         output = result["output"]
-        assert "省去" not in output
-        assert json.loads(output) == small_data
+        assert isinstance(output, dict)
+        assert output == small_data
 
     def test_large_cache_truncated(self):
         """大缓存应被截断"""

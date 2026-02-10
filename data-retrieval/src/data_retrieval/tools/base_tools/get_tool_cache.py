@@ -40,18 +40,20 @@ class GetToolCacheTool(AFTool):
         """获取工具缓存并处理大小限制
 
         Returns:
-            dict: 包含 "output" key 的字典，兼容 construct_final_answer 装饰器
+            dict: 包含 "output" key 的字典，兼容 construct_final_answer 装饰器。
+                  正常情况返回原始 dict/list；超限时返回截断后的字符串。
         """
         tool_res = self.session.get_agent_logs(cache_key)
         res_str = json.dumps(tool_res, ensure_ascii=False)
         if len(res_str) > self.max_cache_size:
             # 如果超过限制，则需要截取一部分, CACHE_SIZE_LIMIT 的 前 80% 和后 20%
-            res_str = (
+            truncated = (
                 res_str[:int(self.max_cache_size * 0.8)] +
                 f"\n...实际长度为 {len(res_str)}, 中间省去 {len(res_str) - self.max_cache_size}...\n" +
                 res_str[-int(self.max_cache_size * 0.2):]
             )
-        return {"output": res_str}
+            return {"output": truncated}
+        return {"output": tool_res}
 
     @construct_final_answer
     def _run(self, cache_key: str) -> str:
