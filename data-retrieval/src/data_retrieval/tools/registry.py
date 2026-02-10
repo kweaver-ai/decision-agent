@@ -18,6 +18,7 @@ from data_retrieval.tools.base_tools.text2metric import Text2Metric
 from data_retrieval.tools.base_tools.sql_helper import SQLHelperTool
 from data_retrieval.tools.base_tools.knowledge_item import KnowledgeItemTool
 from data_retrieval.tools.base_tools.get_metadata import GetMetadataTool
+from data_retrieval.tools.base_tools.get_tool_cache import GetToolCacheTool
 
 # Sandbox tools (dict mappings)
 from data_retrieval.tools.sandbox_tools.toolkit import SANDBOX_TOOLS_MAPPING
@@ -32,6 +33,7 @@ BASE_TOOLS_MAPPING: Dict[str, Type] = {
     "knowledge_item": KnowledgeItemTool,
     "get_metadata": GetMetadataTool,
     "json2plot": Json2Plot,
+    "get_tool_cache": GetToolCacheTool,
 }
 
 # 为旧沙箱工具添加 _legacy 后缀

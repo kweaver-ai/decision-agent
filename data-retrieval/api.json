@@ -2,7 +2,7 @@
     "openapi": "3.0.3",
     "info": {
         "title": "基础结构化数据分析工具箱2",
-        "description": "支持对结构话数据进行处理的工具箱，工具包含: \n1. text2sql\n2. text2metric\n3. sql_helper\n4. knowledge_item\n5. get_metadata\n6. json2plot\n7. execute_code\n8. create_file\n9. read_file\n10. list_files\n11. terminate_session\n12. execute_code_legacy\n13. execute_command_legacy\n14. read_file_legacy\n15. create_file_legacy\n16. list_files_legacy\n17. get_status_legacy\n18. close_sandbox_legacy\n19. download_from_efast_legacy\n",
+        "description": "支持对结构话数据进行处理的工具箱，工具包含: \n1. text2sql\n2. text2metric\n3. sql_helper\n4. knowledge_item\n5. get_metadata\n6. json2plot\n7. get_tool_cache\n8. execute_code\n9. create_file\n10. read_file\n11. list_files\n12. terminate_session\n13. execute_code_legacy\n14. execute_command_legacy\n15. read_file_legacy\n16. create_file_legacy\n17. list_files_legacy\n18. get_status_legacy\n19. close_sandbox_legacy\n20. download_from_efast_legacy\n",
         "version": "1.0.11"
     },
     "servers": [
@@ -1897,6 +1897,30 @@
                         }
                     }
                 }
+            }
+        },
+        "/tools/get_tool_cache": {
+            "post": {
+                "summary": "get_tool_cache",
+                "description": "根据工具的缓存 key 获取工具缓存，如果获取出错，则需要重新调用其他工具获取数据",
+                "parameters": [
+                    {
+                        "name": "cache_key",
+                        "in": "query",
+                        "description": "工具缓存 key",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "session_type",
+                        "in": "query",
+                        "description": "会话类型",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ]
             }
         },
         "/tools/execute_code": {

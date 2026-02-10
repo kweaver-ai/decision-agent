@@ -37,12 +37,12 @@ from data_retrieval.tools.mcp.registry import (
 # 基础工具列表
 BASE_TOOLS: List[str] = [
     "text2sql",
-    "text2ngql",
     "text2metric",
     "sql_helper",
     "knowledge_item",
     "get_metadata",
     "json2plot",
+    "get_tool_cache",
 ]
 
 # 沙箱工具列表（包含新版和旧版工具）

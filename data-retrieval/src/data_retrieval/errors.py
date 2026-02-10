@@ -16,12 +16,6 @@ class ErrorCode:
     SandboxError = 'SandboxError'
     SQLHelperError = 'SQLHelperError'
     KnowledgeItemError = 'KnowledgeItemError'
-    # nl2ngql 相关错误代码
-    Text2NGQLError = "Text2NGQLError"
-    NGQLSchemaError = "NGQLSchemaError"
-    NGQLQueryError = "NGQLQueryError"
-    NGQLExecutionError = "NGQLExecutionError"
-    NGQLConnectionError = "NGQLConnectionError"
 
 
 class AgentBaseError(Exception):
@@ -256,38 +250,3 @@ class ErrorResponse(Exception):
     def to_error_response(self) -> 'ErrorResponse':
         """转换为 ErrorResponse 对象（返回自身）"""
         return self
-
-
-class Text2NGQLError(ErrorResponse):
-    """nl2ngql 工具通用错误"""
-    _default_code = ErrorCode.Text2NGQLError
-    _default_description = "nl2ngql 工具执行失败"
-    _default_solution = "请稍后重试或联系技术支持"
-
-
-class NGQLSchemaError(ErrorResponse):
-    """Schema 相关错误"""
-    _default_code = ErrorCode.NGQLSchemaError
-    _default_description = "Schema 处理失败"
-    _default_solution = "请检查图谱 schema 配置或稍后重试"
-
-
-class NGQLQueryError(ErrorResponse):
-    """nGQL 查询生成错误"""
-    _default_code = ErrorCode.NGQLQueryError
-    _default_description = "nGQL 查询生成失败"
-    _default_solution = "请检查查询语句或稍后重试"
-
-
-class NGQLExecutionError(ErrorResponse):
-    """nGQL 执行错误"""
-    _default_code = ErrorCode.NGQLExecutionError
-    _default_description = "nGQL 查询执行失败"
-    _default_solution = "请检查查询语句或联系技术支持"
-
-
-class NGQLConnectionError(ErrorResponse):
-    """Nebula 连接错误"""
-    _default_code = ErrorCode.NGQLConnectionError
-    _default_description = "Nebula 数据库连接失败"
-    _default_solution = "请检查数据库连接配置或联系技术支持"

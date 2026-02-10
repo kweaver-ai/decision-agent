@@ -250,13 +250,9 @@ class ToolName(Enum):
     # base tools
     from_sailor = "search"
     from_json2plot = "json2plot"
-    from_human = "询问用户"
     from_text2sql = "text2sql"
     from_text2metric = "text2metric"
     from_get_tool_cache = "get_tool_cache"
-    GetTableDDLAndSampleToolName = "get_ddl_and_sample"
-    VirtualizationEngineToolName = "execute"
-    from_text2ngql = "text2ngql"
     from_sql_helper = "sql_helper"
 
     # special tools
@@ -264,7 +260,6 @@ class ToolName(Enum):
     detect_anomalies = "detect_anomalies"
     decision_maker = "decision_maker"
     from_get_metadata = "get_metadata"
-    from_datasource_filter = "datasource_filter"
 
     # sandbox tools
     sandbox = "sandbox"

@@ -39,7 +39,7 @@
 | 服务 | stdio 模块 | HTTP 端点 | 工具数 | 说明 |
 |------|-----------|----------|--------|------|
 | **全部工具** | `server_stdio` | `/mcp` | 20 | 暴露所有工具 |
-| **基础工具** | `server_base` | `/base/mcp` | 7 | text2sql, text2ngql, text2metric 等 |
+| **基础工具** | `server_base` | `/base/mcp` | 7 | text2sql, text2metric, get_tool_cache 等 |
 | **沙箱工具** | `server_sandbox` | `/sandbox/mcp` | 13 | execute_code, create_file 等（新版+旧版） |
 
 ### 基础工具服务 (server_base)
@@ -49,12 +49,12 @@
 | 工具 | 说明 |
 |------|------|
 | `text2sql` | 自然语言转 SQL |
-| `text2ngql` | 自然语言转 nGQL（图数据库） |
 | `text2metric` | 自然语言转指标 |
 | `sql_helper` | SQL 辅助工具 |
 | `knowledge_item` | 知识条目查询 |
 | `get_metadata` | 获取元数据 |
 | `json2plot` | JSON 转图表 |
+| `get_tool_cache` | 获取工具缓存 |
 
 ```bash
 # stdio 模式
@@ -299,7 +299,7 @@ Streamable HTTP 模式下，`identity` 可以通过以下方式传递：
                               ▼
 ┌─────────────────────────────────────────────────────────────────┐
 │                    ALL_TOOLS_MAPPING                             │
-│  text2sql, text2ngql, text2metric, sql_helper, json2plot, ...   │
+│  text2sql, text2metric, sql_helper, json2plot, ...              │
 └─────────────────────────────────────────────────────────────────┘
 ```
 

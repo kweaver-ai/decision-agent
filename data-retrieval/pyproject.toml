@@ -33,7 +33,6 @@ dependencies = [
   "pydantic-settings==2.12.0",
   "sqlparse==0.5.1",
   "sql_metadata==2.13.0",
-  "pyahocorasick==2.0.0",
   "jieba==0.42.1",
   "faiss-cpu>=1.8",
   "fastapi>=0.115.0,<0.129.0",
