@@ -156,35 +156,46 @@ class Config:
 
     def _get_llm_config(self) -> LlmConfig:
         """获取LLM配置"""
-        llm_dict = self.config.get("llm", {})
-        provider = llm_dict.get("provider", "openai")
-        # Remove provider from config dict as LlmConfig doesn't accept it
-        llm_config = {k: v for k, v in llm_dict.items() if k != "provider"}
+        llm_config = self.get("llm", {})
         return LlmConfig(
-            provider=provider,
-            config=llm_config,
+            provider=llm_config.get("provider", "openai"),
+            config={
+                "model": llm_config.get("model", ""),
+                "openai_base_url": llm_config.get("base_url", ""),
+                "api_key": os.getenv("LLM_API_KEY")
+                or llm_config.get("api_key", ""),
+            },
         )
 
     def _get_embedder_config(self) -> EmbedderConfig:
         """获取Embedder配置"""
-        embedder_dict = self.config.get("embedder", {})
-        provider = embedder_dict.get("provider", "openai")
-        # Remove provider from config dict as EmbedderConfig doesn't accept it
-        embedder_config = {k: v for k, v in embedder_dict.items() if k != "provider"}
+        embedder_config = self.get("embedder", {})
         return EmbedderConfig(
-            provider=provider,
-            config=embedder_config,
+            provider=embedder_config.get("provider", "openai"),
+            config={
+                "model": embedder_config.get("model", "text-embedding-3-small"),
+                "api_key": os.getenv("OPENAI_API_KEY")
+                or embedder_config.get("api_key", ""),
+                "openai_base_url": embedder_config.get(
+                    "base_url", ""
+                ),
+                "embedding_dims": embedder_config.get("embedding_dims", 768),
+            },
         )
 
     def _get_vector_config(self) -> VectorStoreConfig:
         """获取VectorStore配置"""
-        vector_dict = self.config.get("vector_store", {})
-        provider = vector_dict.get("provider", "opensearch")
-        # Remove provider from config dict as VectorStoreConfig doesn't accept it
-        vector_config = {k: v for k, v in vector_dict.items() if k != "provider"}
+        vector_config = self.get("vector_store", {})
         return VectorStoreConfig(
-            provider=provider,
-            config=vector_config,
+            provider=vector_config.get("provider", "opensearch"),
+            config={
+                "host": vector_config.get("host", ""),
+                "port": vector_config.get("port", 9200),
+                "collection_name": vector_config.get("collection_name", "mem0"),
+                "user": vector_config.get("user", ""),
+                "password": vector_config.get("password", ""),
+                "embedding_model_dims": vector_config.get("embedding_model_dims", 768),
+            },
         )
 
     def get_memory_config(self) -> MemoryConfig:
