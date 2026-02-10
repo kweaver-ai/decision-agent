@@ -5,6 +5,7 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -97,8 +98,138 @@ func TestUpdateReq_CustomCheck(t *testing.T) {
 }
 
 func TestUpdateReq_IsChanged(t *testing.T) {
-	// Skip this test because Config JSON comparison is complex and requires proper setup
-	t.Skip("IsChanged requires proper Config JSON setup which is complex in test environment")
+	profile := "Test Profile"
+
+	t.Run("name changed", func(t *testing.T) {
+		oldPo := &dapo.DataAgentPo{
+			Name:       "Old Agent",
+			Profile:    &profile,
+			AvatarType: 1,
+			Avatar:     "default",
+			ProductKey: "test-product",
+			Config:     `{"input":{"fields":[]},"output":{}}`,
+		}
+
+		req := &UpdateReq{
+			Name:       "New Agent",
+			Profile:    "Test Profile",
+			AvatarType: 1,
+			Avatar:     "default",
+			ProductKey: "test-product",
+			Config: &daconfvalobj.Config{
+				Input:  &daconfvalobj.Input{},
+				Output: &daconfvalobj.Output{},
+			},
+		}
+
+		isChanged := req.IsChanged(oldPo)
+		assert.True(t, isChanged)
+	})
+
+	t.Run("name changed", func(t *testing.T) {
+		oldPo := &dapo.DataAgentPo{
+			Name:       "Old Agent",
+			Profile:    &profile,
+			AvatarType: 1,
+			Avatar:     "default",
+			ProductKey: "test-product",
+			Config:     `{"input":{"fields":[]},"output":{}}`,
+		}
+
+		req := &UpdateReq{
+			Name:       "New Agent",
+			Profile:    "Test Profile",
+			AvatarType: 1,
+			Avatar:     "default",
+			ProductKey: "test-product",
+			Config: &daconfvalobj.Config{
+				Input:  &daconfvalobj.Input{},
+				Output: &daconfvalobj.Output{},
+			},
+		}
+
+		isChanged := req.IsChanged(oldPo)
+		assert.True(t, isChanged)
+	})
+
+	t.Run("profile changed", func(t *testing.T) {
+		oldProfile := "Old Profile"
+		oldPo := &dapo.DataAgentPo{
+			Name:       "Test Agent",
+			Profile:    &oldProfile,
+			AvatarType: 1,
+			Avatar:     "default",
+			ProductKey: "test-product",
+			Config:     `{"input":{"fields":[]},"output":{}}`,
+		}
+
+		req := &UpdateReq{
+			Name:       "Test Agent",
+			Profile:    "New Profile",
+			AvatarType: 1,
+			Avatar:     "default",
+			ProductKey: "test-product",
+			Config: &daconfvalobj.Config{
+				Input:  &daconfvalobj.Input{},
+				Output: &daconfvalobj.Output{},
+			},
+		}
+
+		isChanged := req.IsChanged(oldPo)
+		assert.True(t, isChanged)
+	})
+
+	t.Run("avatar changed", func(t *testing.T) {
+		oldPo := &dapo.DataAgentPo{
+			Name:       "Test Agent",
+			Profile:    &profile,
+			AvatarType: 1,
+			Avatar:     "default",
+			ProductKey: "test-product",
+			Config:     `{"input":{"fields":[]},"output":{}}`,
+		}
+
+		req := &UpdateReq{
+			Name:       "Test Agent",
+			Profile:    "Test Profile",
+			AvatarType: 2,
+			Avatar:     "custom.png",
+			ProductKey: "test-product",
+			Config: &daconfvalobj.Config{
+				Input:  &daconfvalobj.Input{},
+				Output: &daconfvalobj.Output{},
+			},
+		}
+
+		isChanged := req.IsChanged(oldPo)
+		assert.True(t, isChanged)
+	})
+
+	t.Run("product key changed", func(t *testing.T) {
+		oldPo := &dapo.DataAgentPo{
+			Name:       "Test Agent",
+			Profile:    &profile,
+			AvatarType: 1,
+			Avatar:     "default",
+			ProductKey: "old-product",
+			Config:     `{"input":{"fields":[]},"output":{}}`,
+		}
+
+		req := &UpdateReq{
+			Name:       "Test Agent",
+			Profile:    "Test Profile",
+			AvatarType: 1,
+			Avatar:     "default",
+			ProductKey: "new-product",
+			Config: &daconfvalobj.Config{
+				Input:  &daconfvalobj.Input{},
+				Output: &daconfvalobj.Output{},
+			},
+		}
+
+		isChanged := req.IsChanged(oldPo)
+		assert.True(t, isChanged)
+	})
 }
 
 func TestUpdateReq_Validate(t *testing.T) {
