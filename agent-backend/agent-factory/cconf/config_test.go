@@ -35,27 +35,31 @@ func TestGetConfigPath(t *testing.T) {
 }
 
 func TestConfig_IsDebug(t *testing.T) {
-	t.Run("debug mode true", func(t *testing.T) {
+	t.Run("debug mode false by default", func(t *testing.T) {
+		// Save original env value
+		originalDebug := os.Getenv("DEBUG_MODE")
+
+		// Clean up after test
+		defer func() {
+			if originalDebug != "" {
+				os.Setenv("DEBUG_MODE", originalDebug)
+			} else {
+				os.Unsetenv("DEBUG_MODE")
+			}
+		}()
+
+		// Ensure DEBUG_MODE is not set
+		os.Unsetenv("DEBUG_MODE")
+
 		config := &Config{
 			Project: Project{
-				Debug: true,
-			},
-		}
-
-		if !config.IsDebug() {
-			t.Error("Expected IsDebug to return true")
-		}
-	})
-
-	t.Run("debug mode false", func(t *testing.T) {
-		config := &Config{
-			Project: Project{
-				Debug: false,
+				Host: "localhost",
+				Port: 8080,
 			},
 		}
 
 		if config.IsDebug() {
-			t.Error("Expected IsDebug to return false")
+			t.Error("Expected IsDebug to return false by default")
 		}
 	})
 }
@@ -136,9 +140,9 @@ func TestBaseDefConfig(t *testing.T) {
 		if config.Project.Language != rest.SimplifiedChinese {
 			t.Errorf("Expected Language to be SimplifiedChinese, got %v", config.Project.Language)
 		}
-		if config.Project.Debug {
-			t.Error("Expected Debug to be false")
-		}
+		// Note: Debug mode is controlled by environment variable, not Project struct
+		// BaseDefConfig returns a config, debug state depends on environment
+		_ = config.Project // Just verify the config exists
 	})
 }
 

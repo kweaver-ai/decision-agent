@@ -19,7 +19,7 @@ from app.utils.observability.observability import (
 from app.utils.observability.observability_log import get_logger as o11y_logger
 
 # 导入中间件
-from .middleware_pkg import before_request, o11y_trace, log_requests
+from .middleware_pkg import o11y_trace, log_requests
 
 app = FastAPI()
 
@@ -32,12 +32,6 @@ token_consume_limit = 2
 # 创建一个令牌桶限流器，设置容量为tokenBucketLimit，每秒产生tokenBucketLimit个令牌
 limiter = Limiter(rate=token_rate, capacity=token_capacity, consume=token_consume_limit)
 
-
-# 注册中间件
-@app.middleware("http")
-async def before_request_middleware(request: Request, call_next) -> Response:
-    """国际化中间件"""
-    return await before_request(request, call_next)
 
 
 @app.middleware("http")
