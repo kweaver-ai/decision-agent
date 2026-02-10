@@ -62,7 +62,6 @@ log/*
 WARP.md
 CLAUDE.md
 .kiro
-conf/agent-executor.yaml
 
 # =============================================================================
 # AI Assistant Files
