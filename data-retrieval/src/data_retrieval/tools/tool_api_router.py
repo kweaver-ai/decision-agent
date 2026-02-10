@@ -14,7 +14,6 @@ sys.path.append(grandparent_dir)
 from fastapi import APIRouter, FastAPI  # noqa: E402
 from langchain.pydantic_v1 import BaseModel  # noqa: E402
 from data_retrieval.tools.registry import BASE_TOOLS_MAPPING, ALL_TOOLS_MAPPING  # noqa: E402
-from data_retrieval.tools.knowledge_network_tools import KNOWLEDGE_NETWORK_TOOLS_MAPPING  # noqa: E402
 
 _BASE_TOOLS_MAPPING = BASE_TOOLS_MAPPING
 
@@ -128,11 +127,10 @@ class BaseToolAPIRouter(APIRouter):
 
 
 def create_app():
-    # 主工具 Router (包含所有工具：基础工具、旧沙箱工具_legacy、新沙箱工具、知识网络工具)
+    # 主工具 Router (包含所有工具：基础工具、旧沙箱工具_legacy、新沙箱工具)
     router = BaseToolAPIRouter(
         prefix="/tools",
         tools_mapping=ALL_TOOLS_MAPPING,
-        tools_without_api_docs=list(KNOWLEDGE_NETWORK_TOOLS_MAPPING.keys())
     )
 
     app = FastAPI(

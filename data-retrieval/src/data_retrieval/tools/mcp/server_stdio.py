@@ -10,7 +10,6 @@ MCP stdio 服务器
 注意：
     - 不要直接运行此脚本，它需要被 MCP 客户端启动
     - 客户端会 fork 此进程并通过管道通信
-    - 如需后台服务，请使用 server_sse.py
 
 内部工具（隐藏但可调用）：
     - _set_identity: 设置 identity 参数

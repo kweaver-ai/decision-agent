@@ -5,7 +5,7 @@ namespace: dip
 image:
   registry: acr.aishu.cn
   repository: dip/data-retrieval
-  tag: 0.3.2
+  tag: 0.3.3
   pullPolicy: IfNotPresent
 ports:
   apiPort: 9100

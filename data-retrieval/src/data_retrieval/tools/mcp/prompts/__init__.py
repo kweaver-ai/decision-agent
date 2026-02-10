@@ -20,7 +20,6 @@ PROMPTS = [
 
 可用的查询工具：
 - text2sql: 将自然语言转换为 SQL 查询
-- text2ngql: 将自然语言转换为图数据库查询（nGQL）
 - text2metric: 查询指标数据
 
 {table_info}
