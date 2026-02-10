@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.3.3
+
+### Frontend (agent-web)
+
+- Fix filter status abnormal bug on My Agent template page
+
+## 0.3.2
+
+### Bug Fixes
+
+- Fix known issues
+
 ## 0.3.1
 
 ### Frontend (agent-web)
