@@ -1,0 +1,132 @@
+package productreq
+
+import (
+	"strings"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
+
+func TestUpdateReq_StructFields(t *testing.T) {
+	req := UpdateReq{
+		Name:    "Updated Product Name",
+		Profile: "Updated product profile",
+	}
+
+	assert.Equal(t, "Updated Product Name", req.Name)
+	assert.Equal(t, "Updated product profile", req.Profile)
+}
+
+func TestUpdateReq_Empty(t *testing.T) {
+	req := UpdateReq{}
+
+	assert.Empty(t, req.Name)
+	assert.Empty(t, req.Profile)
+}
+
+func TestUpdateReq_GetErrMsgMap(t *testing.T) {
+	req := UpdateReq{}
+
+	errMsgMap := req.GetErrMsgMap()
+
+	assert.NotNil(t, errMsgMap)
+	assert.Equal(t, `"name"不能为空`, errMsgMap["Name.required"])
+	assert.Equal(t, `"name"长度不能超过50`, errMsgMap["Name.max"])
+	assert.Equal(t, `"profile"长度不能超过100`, errMsgMap["Profile.max"])
+}
+
+func TestUpdateReq_CustomCheck(t *testing.T) {
+	req := UpdateReq{
+		Name: "Test Product",
+	}
+
+	err := req.CustomCheck()
+
+	assert.NoError(t, err)
+}
+
+func TestUpdateReq_WithName(t *testing.T) {
+	names := []string{
+		"Updated Product Name",
+		"更新的产品名称",
+		"Product with numbers 123",
+	}
+
+	for _, name := range names {
+		req := UpdateReq{
+			Name: name,
+		}
+		assert.Equal(t, name, req.Name)
+	}
+}
+
+func TestUpdateReq_WithProfile(t *testing.T) {
+	profiles := []string{
+		"Updated product profile",
+		"更新的产品简介",
+		"Profile with numbers 123",
+		"",
+	}
+
+	for _, profile := range profiles {
+		req := UpdateReq{
+			Profile: profile,
+		}
+		assert.Equal(t, profile, req.Profile)
+	}
+}
+
+func TestUpdateReq_WithMaxLengths(t *testing.T) {
+	req := UpdateReq{
+		Name:    strings.Repeat("a", 50),
+		Profile: strings.Repeat("b", 100),
+	}
+
+	assert.Len(t, req.Name, 50)
+	assert.Len(t, req.Profile, 100)
+}
+
+func TestUpdateReq_WithAllFields(t *testing.T) {
+	req := UpdateReq{
+		Name:    "Complete Update Name",
+		Profile: "Complete update profile with description",
+	}
+
+	assert.Equal(t, "Complete Update Name", req.Name)
+	assert.Equal(t, "Complete update profile with description", req.Profile)
+
+	err := req.CustomCheck()
+	assert.NoError(t, err)
+}
+
+func TestUpdateReq_WithChineseName(t *testing.T) {
+	req := UpdateReq{
+		Name: "更新的产品名称",
+	}
+
+	assert.Equal(t, "更新的产品名称", req.Name)
+}
+
+func TestUpdateReq_WithMixedName(t *testing.T) {
+	req := UpdateReq{
+		Name: "Updated更新的产品Name",
+	}
+
+	assert.Equal(t, "Updated更新的产品Name", req.Name)
+}
+
+func TestUpdateReq_WithEmptyName(t *testing.T) {
+	req := UpdateReq{
+		Name: "",
+	}
+
+	assert.Empty(t, req.Name)
+}
+
+func TestUpdateReq_WithLongProfile(t *testing.T) {
+	req := UpdateReq{
+		Profile: strings.Repeat("a", 100),
+	}
+
+	assert.Len(t, req.Profile, 100)
+}
