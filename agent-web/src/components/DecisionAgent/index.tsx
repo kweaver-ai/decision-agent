@@ -75,12 +75,8 @@ const DecisionAgent = ({ mode: modeFromProps = ModeEnum.DataAgent }: DataAgentsP
     return {};
   }, []);
 
-  const publishStatusFilterRef = useRef<PublishStatusEnum>(filterParams?.publishStatus ?? PublishStatusEnum.All);
-  const publishCategoryFilterRef = useRef<AgentPublishToBeEnum>(
-    filterParams?.publishCategory ?? AgentPublishToBeEnum.All
-  );
+
   const publishModeRef = useRef<PublishModeEnum | undefined>(undefined);
-  const isMounted = useRef<boolean>(false);
   const nextPaginationMarkerStrRef = useRef<string>(''); // 分页marker，用于获取下一批数据
   // 分类-外部容器
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -1182,22 +1178,6 @@ const DecisionAgent = ({ mode: modeFromProps = ModeEnum.DataAgent }: DataAgentsP
   }, []);
 
   useEffect(() => {
-    // 第一次加载，无需reload；后面每次切换mode，需要reload（清空筛选项、清空搜索值）
-    if (!isMounted.current) {
-      isMounted.current = true;
-      return;
-    }
-
-    setPublishStatusFilter(PublishStatusEnum.All);
-    publishStatusFilterRef.current = PublishStatusEnum.All;
-    setPublishCategoryFilter(AgentPublishToBeEnum.All);
-    publishCategoryFilterRef.current = AgentPublishToBeEnum.All;
-    nextPaginationMarkerStrRef.current = '';
-
-    setSearchName('');
-  }, [mode]);
-
-  useEffect(() => {
     if (containerWidth && contentWidth && scrollableRef.current) {
       const canScroll = contentWidth > containerWidth;
       setShowScrollArrows({ left: false, right: canScroll });
@@ -1218,6 +1198,21 @@ const DecisionAgent = ({ mode: modeFromProps = ModeEnum.DataAgent }: DataAgentsP
     }
     return recentAgents;
   }, [countOfRow, recentAgents]);
+
+  const filterStatusOptions = useMemo(() => {
+    const res = [
+      { label: intl.get('dataAgent.all'), value: PublishStatusEnum.All },
+      { label: intl.get('dataAgent.published'), value: PublishStatusEnum.Published },
+      { label: intl.get('dataAgent.unpublished'), value: PublishStatusEnum.Draft },
+    ];
+    if (mode === ModeEnum.MyAgent) {
+      res.push({
+        label: intl.get('dataAgent.publishedEdited'),
+        value: PublishStatusEnum.PublishedEdited,
+      });
+    }
+    return res;
+  }, [mode]);
 
   return (
     <GradientContainer className={classNames(styles.listPageContainer, 'dip-flex-column')}>
@@ -1322,7 +1317,13 @@ const DecisionAgent = ({ mode: modeFromProps = ModeEnum.DataAgent }: DataAgentsP
                           activeKey={mode}
                           onChange={(mode: any) => {
                             nextPaginationMarkerStrRef.current = '';
-                            // 切换 我的agent、我的模板，设置加载状态 & 清空agent列表，可避免调用index-check接口
+                            // 切换tab时，同步重置筛选条件，避免 reloadDeps 触发时仍携带旧的筛选值
+                            setPublishStatusFilter(PublishStatusEnum.All);
+
+                            setPublishCategoryFilter(AgentPublishToBeEnum.All);
+
+                            setSearchName('');
+                            // 切换 我的agent、我的模板
                             setMode(mode);
                             // 切换tab时，退出导出模式
                             setIsExportMode(false);
@@ -1346,19 +1347,11 @@ const DecisionAgent = ({ mode: modeFromProps = ModeEnum.DataAgent }: DataAgentsP
                           <span className="dip-mr-6">{intl.get('dataAgent.status')}</span>
                           <Select
                             style={{ width: 140 }}
-                            options={[
-                              { label: intl.get('dataAgent.all'), value: PublishStatusEnum.All },
-                              { label: intl.get('dataAgent.published'), value: PublishStatusEnum.Published },
-                              { label: intl.get('dataAgent.unpublished'), value: PublishStatusEnum.Draft },
-                              {
-                                label: intl.get('dataAgent.publishedEdited'),
-                                value: PublishStatusEnum.PublishedEdited,
-                              },
-                            ]}
+                            options={filterStatusOptions}
                             value={publishStatusFilter}
                             onChange={value => {
                               nextPaginationMarkerStrRef.current = '';
-                              publishStatusFilterRef.current = value;
+
                               setPublishStatusFilter(value);
                             }}
                           />
@@ -1377,7 +1370,7 @@ const DecisionAgent = ({ mode: modeFromProps = ModeEnum.DataAgent }: DataAgentsP
                               value={publishCategoryFilter}
                               onChange={value => {
                                 nextPaginationMarkerStrRef.current = '';
-                                publishCategoryFilterRef.current = value;
+
                                 setPublishCategoryFilter(value);
                               }}
                             />
