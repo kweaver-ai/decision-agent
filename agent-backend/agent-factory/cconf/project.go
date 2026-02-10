@@ -12,8 +12,6 @@ type Project struct {
 	Port        int           `yaml:"port"`
 	Language    rest.Language `yaml:"language"`
 	LoggerLevel zapcore.Level `yaml:"logger_level"`
-	Debug       bool          `yaml:"debug" env:"DEBUG"`
-	DebugHost   string        `yaml:"debug_host"`
 	LogFile     string        `yaml:"log_file"`
 }
 

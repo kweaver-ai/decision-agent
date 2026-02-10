@@ -165,16 +165,6 @@ func TestLoadConfig(t *testing.T) {
 	})
 }
 
-func TestOverrideWithEnv(t *testing.T) {
-	t.Run("test function exists", func(t *testing.T) {
-		// This test verifies that overrideWithEnv function exists
-		// The actual functionality uses reflection and env vars
-		// which is difficult to test in unit tests
-
-		_ = overrideWithEnv
-	})
-}
-
 func TestConfig_Check(t *testing.T) {
 	t.Run("valid project config", func(t *testing.T) {
 		config := &Config{
