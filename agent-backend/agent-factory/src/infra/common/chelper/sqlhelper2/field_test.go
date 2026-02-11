@@ -137,3 +137,43 @@ func TestGenSqlSelectFieldsStr(t *testing.T) {
 		})
 	}
 }
+
+func TestAllFieldsByStruct_AnonymousNonStruct(t *testing.T) {
+	// Test anonymous field that is not a struct type
+	type NotAStruct string
+
+	tests := []struct {
+		name string
+		s    interface{}
+		tags []string
+		want []string
+	}{
+		{
+			name: "anonymous non-struct field (NotAStruct alias)",
+			s: struct {
+				ID         int        `db:"id"`
+				NotAStruct // Anonymous field of non-struct type
+			}{},
+			tags: []string{"db"},
+			want: []string{"id"}, // NotAStrut should be skipped
+		},
+		{
+			name: "regular fields without anonymous",
+			s: struct {
+				ID     int    `db:"id"`
+				Name   string `db:"name"`
+				Active bool   `db:"active"`
+			}{},
+			tags: []string{"db"},
+			want: []string{"id", "name", "active"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := AllFieldsByStruct(tt.s, tt.tags...); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("AllFieldsByStruct() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

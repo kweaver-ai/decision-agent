@@ -279,3 +279,93 @@ func TestConfigPathFromEnv(t *testing.T) {
 		}
 	})
 }
+
+func TestConfigPathFromEnv_PanicWhenNotInited(t *testing.T) {
+	// Save and restore isEnvInited
+	oldInited := isEnvInited
+	defer func() {
+		isEnvInited = oldInited
+	}()
+
+	isEnvInited = false
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error("ConfigPathFromEnv() should panic when env not inited")
+		}
+	}()
+
+	ConfigPathFromEnv()
+}
+
+func TestProjectPathByEnv_PanicWhenNotInited(t *testing.T) {
+	// Save and restore isEnvInited
+	oldInited := isEnvInited
+	defer func() {
+		isEnvInited = oldInited
+	}()
+
+	isEnvInited = false
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error("ProjectPathByEnv() should panic when env not inited")
+		}
+	}()
+
+	ProjectPathByEnv()
+}
+
+func TestIsDebugMode_PanicWhenNotInited(t *testing.T) {
+	// Save and restore isEnvInited
+	oldInited := isEnvInited
+	defer func() {
+		isEnvInited = oldInited
+	}()
+
+	isEnvInited = false
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error("IsDebugMode() should panic when env not inited")
+		}
+	}()
+
+	IsDebugMode()
+}
+
+func TestIsSQLPrint_PanicWhenNotInited(t *testing.T) {
+	// Save and restore isEnvInited
+	oldInited := isEnvInited
+	defer func() {
+		isEnvInited = oldInited
+	}()
+
+	isEnvInited = false
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error("IsSQLPrint() should panic when env not inited")
+		}
+	}()
+
+	IsSQLPrint()
+}
+
+func TestIsLocalDev_PanicWhenNotInited(t *testing.T) {
+	// Save and restore isEnvInited
+	oldInited := isEnvInited
+	defer func() {
+		isEnvInited = oldInited
+	}()
+
+	isEnvInited = false
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error("IsLocalDev() should panic when env not inited")
+		}
+	}()
+
+	IsLocalDev()
+}

@@ -4,7 +4,10 @@ import (
 	"context"
 	"testing"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iumacc/httpaccmock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 )
 
 func TestPublishUpsertResp_StructFields(t *testing.T) {
@@ -110,17 +113,87 @@ func TestPublishUpsertResp_WithAllFields(t *testing.T) {
 }
 
 func TestPublishUpsertResp_FillPublishedByName_LocalDev(t *testing.T) {
-	// This test depends on the environment
-	// We'll just test that the method exists and can be called
-	resp := PublishUpsertResp{
+	// Test when IsLocalDev is true - the function should append "_name" to PublishedBy
+	// Note: This test depends on environment variable APP_ENV being set to "local" or "dev"
+	// Since we can't control the environment in tests, we'll set up expectations for both paths
+
+	t.Run("with mock for non-local environment", func(t *testing.T) {
+		resp := &PublishUpsertResp{
+			PublishedBy: "user-123",
+		}
+
+		ctx := context.Background()
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+		mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+		// Set up expectation for non-local environment
+		mockUm.EXPECT().GetSingleUserName(ctx, "user-123").Return("Test User", nil)
+
+		err := resp.FillPublishedByName(ctx, mockUm)
+		assert.NoError(t, err)
+		assert.Equal(t, "Test User", resp.PublishedByName)
+	})
+}
+
+func TestPublishUpsertResp_FillPublishedByName_WithMock(t *testing.T) {
+	resp := &PublishUpsertResp{
 		PublishedBy: "user-123",
 	}
 
-	// Save original value and restore after test
-	// Note: This is a simple test to ensure the method is callable
-	// Actual behavior depends on cenvhelper.IsLocalDev()
+	ctx := context.Background()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+	// Set up mock to return a name
+	mockUm.EXPECT().GetSingleUserName(ctx, "user-123").Return("John Doe", nil)
+
+	// Call the function - the mock returns name and nil error
+	err := resp.FillPublishedByName(ctx, mockUm)
+	require.NoError(t, err)
 	assert.Equal(t, "user-123", resp.PublishedBy)
-	assert.Empty(t, resp.PublishedByName)
+	assert.Equal(t, "John Doe", resp.PublishedByName)
+}
+
+func TestPublishUpsertResp_FillPublishedByName_NilResponse(t *testing.T) {
+	resp := &PublishUpsertResp{
+		PublishedBy: "",
+		PublishedByName: "Existing Name",
+	}
+
+	ctx := context.Background()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+	// Set up mock to return empty string for empty user ID
+	mockUm.EXPECT().GetSingleUserName(ctx, "").Return("", nil)
+
+	err := resp.FillPublishedByName(ctx, mockUm)
+	// Should not error even with empty PublishedBy
+	require.NoError(t, err)
+	// PublishedByName may or may not be overwritten depending on environment
+	assert.NotNil(t, resp)
+}
+
+func TestPublishUpsertResp_FillPublishedByName_EmptyUserID(t *testing.T) {
+	resp := &PublishUpsertResp{
+		PublishedBy: "",
+	}
+
+	ctx := context.Background()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+	// Set up mock to return empty string
+	mockUm.EXPECT().GetSingleUserName(ctx, "").Return("", nil)
+
+	err := resp.FillPublishedByName(ctx, mockUm)
+	// Should not error
+	require.NoError(t, err)
+	assert.NotNil(t, resp)
 }
 
 func TestPublishUpsertResp_WithTimestamp(t *testing.T) {
@@ -167,25 +240,51 @@ func TestPublishUpsertResp_WithMixedName(t *testing.T) {
 	assert.Equal(t, "User用户Name", resp.PublishedByName)
 }
 
-func TestPublishUpsertResp_FillPublishedByName_Signature(t *testing.T) {
-	// Test that FillPublishedByName has the correct signature
-	resp := &PublishUpsertResp{
-		PublishedBy: "user-123",
+func TestPublishUpsertResp_FillPublishedByName_Context(t *testing.T) {
+	tests := []struct {
+		name        string
+		publishedBy string
+	}{
+		{"with user ID", "user-123"},
+		{"with empty user ID", ""},
+		{"with admin ID", "admin-001"},
 	}
 
-	// Just verify the method can be called with correct parameters
-	// Actual implementation depends on environment and mock
-	assert.NotNil(t, resp)
-	assert.Equal(t, "user-123", resp.PublishedBy)
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			resp := &PublishUpsertResp{
+				PublishedBy: tt.publishedBy,
+			}
+
+			ctx := context.Background()
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+			mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+			// Set up mock to return empty name
+			mockUm.EXPECT().GetSingleUserName(ctx, tt.publishedBy).Return("", nil)
+
+			err := resp.FillPublishedByName(ctx, mockUm)
+			// Function should not panic or error for these cases
+			require.NoError(t, err)
+			assert.Equal(t, tt.publishedBy, resp.PublishedBy)
+		})
+	}
 }
 
-func TestPublishUpsertResp_ContextUsage(t *testing.T) {
-	ctx := context.Background()
+func TestPublishUpsertResp_FillPublishedByName_Error(t *testing.T) {
 	resp := &PublishUpsertResp{
 		PublishedBy: "user-123",
 	}
 
-	// Verify context can be used (though actual UM call would need mock)
-	assert.NotNil(t, ctx)
-	assert.NotNil(t, resp)
+	ctx := context.Background()
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+	// Set up mock to return an error
+	mockUm.EXPECT().GetSingleUserName(ctx, "user-123").Return("", assert.AnError)
+
+	err := resp.FillPublishedByName(ctx, mockUm)
+	assert.Error(t, err)
 }

@@ -117,3 +117,32 @@ func TestNewRequestLogger_WithAllOptions(t *testing.T) {
 	err = logger.Close()
 	assert.NoError(t, err)
 }
+
+func TestNewRequestLogger_InvalidLogDir(t *testing.T) {
+	// Test error path when file output mode is used with invalid log directory
+	config := &httprequesthelper.Config{
+		Enabled:    true,
+		OutputMode: httprequesthelper.OutputModeFile,
+		// Use an invalid path that cannot be created
+		// In Unix-like systems, a path containing null bytes is invalid
+		// Use a path that's likely to fail (e.g., path to a location we can't write to)
+		LogDir:     "/dev/null/invalid/subdir", // Can't create subdirectory under /dev/null
+	}
+
+	logger, err := NewRequestLogger(config)
+	assert.Error(t, err)
+	assert.Nil(t, logger)
+}
+
+func TestNewRequestLogger_InvalidLogDirBothMode(t *testing.T) {
+	// Test error path when both output mode is used with invalid log directory
+	config := &httprequesthelper.Config{
+		Enabled:    true,
+		OutputMode: httprequesthelper.OutputModeBoth,
+		LogDir:     "/dev/null/invalid/subdir", // Can't create subdirectory under /dev/null
+	}
+
+	logger, err := NewRequestLogger(config)
+	assert.Error(t, err)
+	assert.Nil(t, logger)
+}

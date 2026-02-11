@@ -114,6 +114,40 @@ func TestValidJsonSchema_InvalidSchema(t *testing.T) {
 	}
 }
 
+func TestValidJsonSchema_InvalidDocument(t *testing.T) {
+	schema := `{
+		"type": "object",
+		"properties": {
+			"name": {"type": "string"}
+		},
+		"required": ["name"]
+	}`
+
+	tests := []struct {
+		name string
+		doc  string
+	}{
+		{
+			name: "invalid JSON document",
+			doc:  `{invalid json}`,
+		},
+		{
+			name: "malformed JSON document",
+			doc:  `{"name": "test",}`,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			_, err := ValidJsonSchema(schema, tt.doc)
+			if err == nil {
+				t.Error("ValidJsonSchema() should return error for invalid document")
+			}
+		})
+	}
+}
+
+
 func TestIsJsonschemaValid(t *testing.T) {
 	schema := `{
 		"type": "object",

@@ -3,16 +3,19 @@ package agentinoutsvc
 import (
 	"context"
 	"errors"
+	"mime/multipart"
 	"testing"
 
 	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdapmsenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_inout/agentinoutreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_inout/agentinoutresp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver/v3portdrivermock"
+	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -214,4 +217,85 @@ func TestCheckAgentConfigValid_EmptyAgents(t *testing.T) {
 
 	assert.False(t, resp.HasFail())
 	assert.Empty(t, resp.ConfigInvalid)
+}
+
+func TestImport_MissingUserID(t *testing.T) {
+	svc := &agentInOutSvc{
+		SvcBase: service.NewSvcBase(),
+	}
+
+	req := agentinoutreq.NewImportReq()
+	req.ImportType = agentinoutreq.ImportTypeCreate
+
+	ctx := context.Background()
+	resp, err := svc.Import(ctx, req)
+
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "无法获取用户ID")
+	assert.NotNil(t, resp)
+	assert.False(t, resp.IsSuccess)
+}
+
+func TestImport_FileTooLarge(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockPmsSvc := v3portdrivermock.NewMockIPermissionSvc(ctrl)
+	mockPmsSvc.EXPECT().GetSingleMgmtPermission(gomock.Any(), gomock.Any(), gomock.Any()).Return(true, nil).AnyTimes()
+
+	svc := &agentInOutSvc{
+		SvcBase: service.NewSvcBase(),
+		pmsSvc:  mockPmsSvc,
+	}
+
+	req := agentinoutreq.NewImportReq()
+	req.ImportType = agentinoutreq.ImportTypeCreate
+	req.File = &multipart.FileHeader{
+		Size: 11 * 1024 * 1024, // 11MB, exceeds MaxFileSize
+		Header: map[string][]string{
+			"Content-Type": {"application/json"},
+		},
+	}
+
+	ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{
+		ID: "user-123",
+	})
+	resp, err := svc.Import(ctx, req)
+
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "文件大小不能超过10MB")
+	assert.NotNil(t, resp)
+	assert.False(t, resp.IsSuccess)
+}
+
+func TestImport_InvalidContentType(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockPmsSvc := v3portdrivermock.NewMockIPermissionSvc(ctrl)
+	mockPmsSvc.EXPECT().GetSingleMgmtPermission(gomock.Any(), gomock.Any(), gomock.Any()).Return(true, nil).AnyTimes()
+
+	svc := &agentInOutSvc{
+		SvcBase: service.NewSvcBase(),
+		pmsSvc:  mockPmsSvc,
+	}
+
+	req := agentinoutreq.NewImportReq()
+	req.ImportType = agentinoutreq.ImportTypeCreate
+	req.File = &multipart.FileHeader{
+		Size: 1024,
+		Header: map[string][]string{
+			"Content-Type": {"text/plain"},
+		},
+	}
+
+	ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{
+		ID: "user-123",
+	})
+	resp, err := svc.Import(ctx, req)
+
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "只支持JSON格式文件")
+	assert.NotNil(t, resp)
+	assert.False(t, resp.IsSuccess)
 }

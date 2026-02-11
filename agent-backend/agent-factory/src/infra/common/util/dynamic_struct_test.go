@@ -52,6 +52,19 @@ func TestDynamicFieldsHolder_SetField(t *testing.T) {
 			}
 		})
 	}
+
+	t.Run("set field on nil DynamicFields", func(t *testing.T) {
+		holder := DynamicFieldsHolder{}
+		holder.SetField("key", "value")
+
+		val, ok := holder.GetField("key")
+		if !ok {
+			t.Error("GetField should return ok=true after SetField on nil map")
+		}
+		if val != "value" {
+			t.Errorf("GetField(key) = %v, want value", val)
+		}
+	})
 }
 
 func TestDynamicFieldsHolder_GetField(t *testing.T) {

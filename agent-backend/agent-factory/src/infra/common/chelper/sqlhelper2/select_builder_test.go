@@ -176,3 +176,16 @@ func TestSelectBuilder_WhereOrRaw(t *testing.T) {
 	assert.Contains(t, sql, "or")
 	assert.Equal(t, []interface{}{1, "active"}, args)
 }
+
+func TestSelectBuilder_ToSelectSQL_WhereBuilderError(t *testing.T) {
+	sb := NewSelectBuilder()
+	sb.Select([]string{"*"}).From("users")
+
+	// Use In with an unsupported type (not a slice) to cause an error
+	sb.In("id", "not a slice")
+
+	_, _, err := sb.ToSelectSQL()
+
+	assert.NotNil(t, err)
+	assert.Contains(t, err.Error(), "OperatorNotIn and OperatorIn only support")
+}

@@ -2,50 +2,32 @@ package cconstant
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestPmsConstants(t *testing.T) {
-	t.Run("PmsAllFlag constant", func(t *testing.T) {
-		if PmsAllFlag != "*" {
-			t.Errorf("Expected PmsAllFlag to be '*', got '%s'", PmsAllFlag)
-		}
+func TestPmsAllFlag(t *testing.T) {
+	t.Run("PmsAllFlag is an asterisk", func(t *testing.T) {
+		assert.Equal(t, "*", PmsAllFlag)
 	})
 }
 
 func TestIsContainsPmsAllFlag(t *testing.T) {
-	t.Run("contains PMS all flag", func(t *testing.T) {
-		s := []string{"read", "write", "*"}
-		result := IsContainsPmsAllFlag(s)
-
-		if !result {
-			t.Error("Expected result to be true when slice contains '*'")
-		}
+	t.Run("returns true when slice contains PmsAllFlag", func(t *testing.T) {
+		slice := []string{"read", "write", "*"}
+		result := IsContainsPmsAllFlag(slice)
+		assert.True(t, result)
 	})
 
-	t.Run("does not contain PMS all flag", func(t *testing.T) {
-		s := []string{"read", "write"}
-		result := IsContainsPmsAllFlag(s)
-
-		if result {
-			t.Error("Expected result to be false when slice does not contain '*'")
-		}
+	t.Run("returns false when slice does not contain PmsAllFlag", func(t *testing.T) {
+		slice := []string{"read", "write"}
+		result := IsContainsPmsAllFlag(slice)
+		assert.False(t, result)
 	})
 
-	t.Run("empty slice", func(t *testing.T) {
-		s := []string{}
-		result := IsContainsPmsAllFlag(s)
-
-		if result {
-			t.Error("Expected result to be false for empty slice")
-		}
-	})
-
-	t.Run("only PMS all flag", func(t *testing.T) {
-		s := []string{"*"}
-		result := IsContainsPmsAllFlag(s)
-
-		if !result {
-			t.Error("Expected result to be true when slice only contains '*'")
-		}
+	t.Run("returns false for empty slice", func(t *testing.T) {
+		slice := []string{}
+		result := IsContainsPmsAllFlag(slice)
+		assert.False(t, result)
 	})
 }

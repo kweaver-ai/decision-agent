@@ -93,15 +93,39 @@ func TestPubedAgentListReq_LoadMarkerStr(t *testing.T) {
 	})
 
 	t.Run("valid marker string", func(t *testing.T) {
+		// Create a valid marker with proper field names: published_at and last_release_id
+		validMarker := "eyJwdWJsaXNoZWRfYXQiOjEyMzQ1Njc4OTAsImxhc3RfcmVsZWFzZV9pZCI6ImFnZW50LTEyMyJ9"
 		req := &PubedAgentListReq{
-			PaginationMarkerStr: "eyJ1cGRhdGVkX2F0IjoxMjM0NTY3ODkwLCJsYXN0X2FnZW50X2lkIjoiYWdlbnQtMTIzIn0=",
+			PaginationMarkerStr: validMarker,
 		}
 
 		err := req.LoadMarkerStr()
-		// This will fail because the marker content is not valid, but we're testing the path
-		// In real usage, the marker would be properly encoded
-		_ = err
-		_ = req.Marker
+		assert.NoError(t, err)
+		assert.NotNil(t, req.Marker)
+		assert.Equal(t, int64(1234567890), req.Marker.PublishedAt)
+		assert.Equal(t, "agent-123", req.Marker.LastReleaseID)
+	})
+
+	t.Run("invalid base64 marker string", func(t *testing.T) {
+		req := &PubedAgentListReq{
+			PaginationMarkerStr: "not-valid-base64!!!",
+		}
+
+		err := req.LoadMarkerStr()
+		// Should return error because the marker is not valid base64
+		assert.Error(t, err)
+	})
+
+	t.Run("invalid JSON in marker string", func(t *testing.T) {
+		// Valid base64 but invalid JSON
+		invalidJSONMarker := "eyJpbnZhbGlkIGpzb24ifQ==" // base64 of "{invalid json}"
+		req := &PubedAgentListReq{
+			PaginationMarkerStr: invalidJSONMarker,
+		}
+
+		err := req.LoadMarkerStr()
+		// Should return error because the marker contains invalid JSON
+		assert.Error(t, err)
 	})
 
 	t.Run("nil marker after load", func(t *testing.T) {

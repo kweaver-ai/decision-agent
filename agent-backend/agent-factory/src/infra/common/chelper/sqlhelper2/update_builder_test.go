@@ -221,3 +221,41 @@ func TestUpdateBuilder_TagWithStruct(t *testing.T) {
 	assert.Equal(t, "value1", updateBuilder.updateFieldKVPairs["key1"])
 	assert.Equal(t, 1, updateBuilder.updateFieldKVPairs["key2"])
 }
+
+func TestUpdateBuilder_ToUpdateSQL_NoFieldsToUpdate(t *testing.T) {
+	updateBuilder := NewUpdateBuilder()
+	updateBuilder.Update(map[string]interface{}{
+		"key1": "value1",
+	})
+	updateBuilder.From("table1")
+	updateBuilder.Where("key1", OperatorEq, "value3")
+
+	// Set update fields to exclude the only field
+	updateBuilder.SetUpdateFields([]string{"key2"})
+
+	sql, args, err := updateBuilder.ToUpdateSQL()
+
+	assert.NotNil(t, err)
+	assert.Contains(t, err.Error(), "no fields to update")
+	assert.Empty(t, sql)
+	assert.Empty(t, args)
+}
+
+func TestUpdateBuilder_ToUpdateSQL_WhereBuilderError(t *testing.T) {
+	updateBuilder := NewUpdateBuilder()
+	updateBuilder.Update(map[string]interface{}{
+		"key1": "value1",
+	})
+	updateBuilder.From("table1")
+
+	// Use In with an unsupported type (not a slice) to cause an error
+	updateBuilder.In("key1", "not a slice")
+
+	sql, args, err := updateBuilder.ToUpdateSQL()
+
+	// Print to see what's happening
+	t.Logf("err: %v, sql: %s, args: %v", err, sql, args)
+
+	assert.NotNil(t, err)
+	assert.Contains(t, err.Error(), "OperatorNotIn and OperatorIn only support")
+}

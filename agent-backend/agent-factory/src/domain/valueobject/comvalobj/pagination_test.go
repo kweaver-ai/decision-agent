@@ -5,87 +5,147 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 )
 
-func TestPagination_New(t *testing.T) {
-	pagination := &Pagination{
-		Offset: 0,
-		Limit:  10,
-	}
+func TestPagination_StructFields(t *testing.T) {
+	t.Run("creates pagination with values", func(t *testing.T) {
+		p := Pagination{
+			Offset: 10,
+			Limit:  20,
+		}
 
-	assert.NotNil(t, pagination)
-	assert.Equal(t, 0, pagination.Offset)
-	assert.Equal(t, 10, pagination.Limit)
+		assert.Equal(t, 10, p.Offset)
+		assert.Equal(t, 20, p.Limit)
+	})
+
+	t.Run("creates pagination with zero values", func(t *testing.T) {
+		p := Pagination{}
+
+		assert.Zero(t, p.Offset)
+		assert.Zero(t, p.Limit)
+	})
+
+	t.Run("serializes to JSON", func(t *testing.T) {
+		p := Pagination{
+			Offset: 5,
+			Limit:  15,
+		}
+
+		data, err := json.Marshal(p)
+		assert.NoError(t, err)
+		assert.Contains(t, string(data), "\"offset\":5")
+		assert.Contains(t, string(data), "\"limit\":15")
+	})
+
+	t.Run("deserializes from JSON", func(t *testing.T) {
+		jsonStr := `{"offset":10,"limit":25}`
+
+		var p Pagination
+		err := json.Unmarshal([]byte(jsonStr), &p)
+
+		assert.NoError(t, err)
+		assert.Equal(t, 10, p.Offset)
+		assert.Equal(t, 25, p.Limit)
+	})
 }
 
-func TestPagination_DefaultValues(t *testing.T) {
-	pagination := &Pagination{}
+func TestPagination_EdgeCases(t *testing.T) {
+	t.Run("negative offset", func(t *testing.T) {
+		p := Pagination{
+			Offset: -5,
+			Limit:  10,
+		}
 
-	assert.NotNil(t, pagination)
-	assert.Equal(t, 0, pagination.Offset)
-	assert.Equal(t, 0, pagination.Limit)
+		assert.Equal(t, -5, p.Offset)
+		assert.Equal(t, 10, p.Limit)
+	})
+
+	t.Run("negative limit", func(t *testing.T) {
+		p := Pagination{
+			Offset: 0,
+			Limit:  -1,
+		}
+
+		assert.Equal(t, 0, p.Offset)
+		assert.Equal(t, -1, p.Limit)
+	})
+
+	t.Run("large values", func(t *testing.T) {
+		p := Pagination{
+			Offset: 1000000,
+			Limit:  100000,
+		}
+
+		assert.Equal(t, 1000000, p.Offset)
+		assert.Equal(t, 100000, p.Limit)
+	})
+
+	t.Run("max int values", func(t *testing.T) {
+		p := Pagination{
+			Offset: 2147483647,
+			Limit:  2147483647,
+		}
+
+		assert.Equal(t, 2147483647, p.Offset)
+		assert.Equal(t, 2147483647, p.Limit)
+	})
 }
 
-func TestPagination_WithLargeValues(t *testing.T) {
-	pagination := &Pagination{
-		Offset: 1000,
-		Limit:  5000,
-	}
+func TestPagination_JSONEdgeCases(t *testing.T) {
+	t.Run("marshal and unmarshal roundtrip", func(t *testing.T) {
+		original := Pagination{
+			Offset: 100,
+			Limit:  50,
+		}
 
-	assert.Equal(t, 1000, pagination.Offset)
-	assert.Equal(t, 5000, pagination.Limit)
+		data, err := json.Marshal(original)
+		assert.NoError(t, err)
+
+		var decoded Pagination
+		err = json.Unmarshal(data, &decoded)
+		assert.NoError(t, err)
+
+		assert.Equal(t, original.Offset, decoded.Offset)
+		assert.Equal(t, original.Limit, decoded.Limit)
+	})
+
+	t.Run("unmarshal empty JSON", func(t *testing.T) {
+		data := []byte(`{}`)
+
+		var p Pagination
+		err := json.Unmarshal(data, &p)
+		assert.NoError(t, err)
+
+		assert.Equal(t, 0, p.Offset)
+		assert.Equal(t, 0, p.Limit)
+	})
+
+	t.Run("marshal zero values to JSON", func(t *testing.T) {
+		p := Pagination{}
+
+		data, err := json.Marshal(p)
+		assert.NoError(t, err)
+
+		expected := `{"offset":0,"limit":0}`
+		assert.JSONEq(t, expected, string(data))
+	})
 }
 
-func TestPagination_JSONSerialization(t *testing.T) {
-	pagination := &Pagination{
-		Offset: 20,
-		Limit:  50,
-	}
+func TestPagination_Pointer(t *testing.T) {
+	t.Run("create pointer to pagination", func(t *testing.T) {
+		p := &Pagination{
+			Offset: 5,
+			Limit:  10,
+		}
 
-	jsonBytes, err := json.Marshal(pagination)
-	require.NoError(t, err)
+		assert.NotNil(t, p)
+		assert.Equal(t, 5, p.Offset)
+		assert.Equal(t, 10, p.Limit)
+	})
 
-	var deserialized Pagination
-	err = json.Unmarshal(jsonBytes, &deserialized)
-	require.NoError(t, err)
+	t.Run("nil pagination pointer", func(t *testing.T) {
+		var p *Pagination
 
-	assert.Equal(t, pagination.Offset, deserialized.Offset)
-	assert.Equal(t, pagination.Limit, deserialized.Limit)
-}
-
-func TestPagination_JSONTags(t *testing.T) {
-	pagination := &Pagination{
-		Offset: 10,
-		Limit:  25,
-	}
-
-	jsonBytes, err := json.Marshal(pagination)
-	require.NoError(t, err)
-
-	jsonStr := string(jsonBytes)
-	assert.Contains(t, jsonStr, `"offset"`)
-	assert.Contains(t, jsonStr, `"limit"`)
-	assert.Contains(t, jsonStr, `10`)
-	assert.Contains(t, jsonStr, `25`)
-}
-
-func TestPagination_WithNegativeValues(t *testing.T) {
-	pagination := &Pagination{
-		Offset: -10,
-		Limit:  -5,
-	}
-
-	assert.Equal(t, -10, pagination.Offset)
-	assert.Equal(t, -5, pagination.Limit)
-}
-
-func TestPagination_WithZeroLimit(t *testing.T) {
-	pagination := &Pagination{
-		Offset: 100,
-		Limit:  0,
-	}
-
-	assert.Equal(t, 100, pagination.Offset)
-	assert.Equal(t, 0, pagination.Limit)
+		assert.Nil(t, p)
+	})
 }

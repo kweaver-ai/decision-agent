@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestCreateReq_StructFields(t *testing.T) {
@@ -162,4 +163,114 @@ func TestCreateReq_WithSpecialCharsInKey(t *testing.T) {
 		}
 		assert.Equal(t, key, req.Key)
 	}
+}
+
+func TestCreateReq_D2e(t *testing.T) {
+	t.Run("with all fields", func(t *testing.T) {
+		req := CreateReq{
+			Name:    "Smart Customer Service",
+			Profile: "This is a smart customer service product",
+			Key:     "smart-customer-service",
+		}
+
+		eo, err := req.D2e()
+
+		require.NoError(t, err)
+		require.NotNil(t, eo)
+		assert.Equal(t, req.Name, eo.Name)
+		assert.Equal(t, req.Profile, eo.Profile)
+		assert.Equal(t, req.Key, eo.Key)
+	})
+
+	t.Run("with empty key generates ulid", func(t *testing.T) {
+		req := CreateReq{
+			Name:    "Test Product",
+			Profile: "Test profile",
+			Key:     "",
+		}
+
+		eo, err := req.D2e()
+
+		require.NoError(t, err)
+		require.NotNil(t, eo)
+		assert.Equal(t, req.Name, eo.Name)
+		assert.Equal(t, req.Profile, eo.Profile)
+		assert.NotEmpty(t, eo.Key, "Key should be generated ULID when empty")
+	})
+
+	t.Run("with only name", func(t *testing.T) {
+		req := CreateReq{
+			Name: "Minimal Product",
+		}
+
+		eo, err := req.D2e()
+
+		require.NoError(t, err)
+		require.NotNil(t, eo)
+		assert.Equal(t, req.Name, eo.Name)
+		assert.NotEmpty(t, eo.Key, "Key should be generated ULID when empty")
+		assert.Empty(t, eo.Profile)
+	})
+
+	t.Run("with empty profile", func(t *testing.T) {
+		req := CreateReq{
+			Name:    "Product No Profile",
+			Key:     "product-no-profile",
+			Profile: "",
+		}
+
+		eo, err := req.D2e()
+
+		require.NoError(t, err)
+		require.NotNil(t, eo)
+		assert.Equal(t, req.Name, eo.Name)
+		assert.Equal(t, req.Key, eo.Key)
+		assert.Empty(t, eo.Profile)
+	})
+
+	t.Run("with chinese characters", func(t *testing.T) {
+		req := CreateReq{
+			Name:    "智能客服产品",
+			Profile: "这是一个智能客服产品",
+			Key:     "zhineng-kefu",
+		}
+
+		eo, err := req.D2e()
+
+		require.NoError(t, err)
+		require.NotNil(t, eo)
+		assert.Equal(t, req.Name, eo.Name)
+		assert.Equal(t, req.Profile, eo.Profile)
+		assert.Equal(t, req.Key, eo.Key)
+	})
+
+	t.Run("with long values", func(t *testing.T) {
+		req := CreateReq{
+			Name:    strings.Repeat("a", 50),
+			Profile: strings.Repeat("b", 100),
+			Key:     strings.Repeat("c", 50),
+		}
+
+		eo, err := req.D2e()
+
+		require.NoError(t, err)
+		require.NotNil(t, eo)
+		assert.Len(t, eo.Name, 50)
+		assert.Len(t, eo.Profile, 100)
+		assert.Len(t, eo.Key, 50)
+	})
+
+	t.Run("with empty name", func(t *testing.T) {
+		req := CreateReq{
+			Name: "",
+			Key:  "test-key",
+		}
+
+		eo, err := req.D2e()
+
+		require.NoError(t, err)
+		require.NotNil(t, eo)
+		assert.Empty(t, eo.Name)
+		assert.Equal(t, req.Key, eo.Key)
+	})
 }

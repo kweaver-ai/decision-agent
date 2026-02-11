@@ -91,3 +91,19 @@ func TestInitDefaultRequestLogger_WithDefaultConfig(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, GetDefaultRequestLogger())
 }
+
+func TestInitDefaultRequestLogger_InvalidLogDir(t *testing.T) {
+	// Reset the singleton before testing
+	defaultRequestLogger = nil
+	defaultRequestLoggerOnce = *(new(sync.Once))
+
+	config := &httprequesthelper.Config{
+		Enabled:    true,
+		OutputMode: httprequesthelper.OutputModeFile,
+		LogDir:     "/dev/null/invalid/subdir", // Can't create subdirectory under /dev/null
+	}
+
+	err := InitDefaultRequestLogger(config)
+	assert.Error(t, err)
+	assert.Nil(t, GetDefaultRequestLogger())
+}

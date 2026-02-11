@@ -259,3 +259,63 @@ func TestInsertBuilder_InsertStructs_ToBatchInsertSql_toBatchInsertSqlCheck(t *t
 
 	assert.NotNil(t, err, "insert rows have different fields")
 }
+
+func TestInsertBuilder_InsertStructs_EmptySlice(t *testing.T) {
+	ib := NewInsertBuilder()
+	ib.From("table1")
+	ib.Tag("json")
+
+	ib.InsertStructs([]interface{}{})
+
+	_, _, err := ib.ToInsertSQL()
+
+	assert.NotNil(t, err)
+	assert.Contains(t, err.Error(), "no rows to insert")
+}
+
+func TestInsertBuilder_InsertStructs_UnsupportedType(t *testing.T) {
+	ib := NewInsertBuilder()
+	ib.From("table1")
+	ib.Tag("json")
+
+	ib.InsertStructs([]interface{}{
+		struct {
+			Key1 string `json:"key1"`
+			Key2 bool   `json:"key2"`
+		}{
+			Key1: "value1",
+			Key2: true,
+		},
+	})
+
+	_, _, err := ib.ToInsertSQL()
+
+	assert.NotNil(t, err)
+	assert.Contains(t, err.Error(), "only support string number *string *number")
+}
+
+func TestInsertBuilder_InsertStructs_PanicWhenNoTag(t *testing.T) {
+	ib := NewInsertBuilder()
+	ib.From("table1")
+	ib.Tag("") // Explicitly set tag to empty to trigger panic
+
+	assert.Panics(t, func() {
+		ib.InsertStructs([]interface{}{
+			struct {
+				Key1 string `json:"key1"`
+			}{
+				Key1: "value1",
+			},
+		})
+	})
+}
+
+func TestInsertBuilder_InsertStructs_PanicWhenNotSlice(t *testing.T) {
+	ib := NewInsertBuilder()
+	ib.From("table1")
+	ib.Tag("json")
+
+	assert.Panics(t, func() {
+		ib.InsertStructs("not a slice")
+	})
+}

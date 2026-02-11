@@ -207,3 +207,60 @@ func TestWhereBuilder_OrEqual(t *testing.T) {
 	assert.Equal(t, "id = ? or status = ?", sqlStr)
 	assert.Equal(t, []interface{}{1, "active"}, args)
 }
+
+func TestWhereBuilder_OrNotEqual(t *testing.T) {
+	wb := NewWhereBuilder()
+	wb.Where("id", OperatorEq, 1)
+	wb.OrNotEqual("status", "deleted")
+
+	sqlStr, args, err := wb.ToWhereSQL()
+	assert.NoError(t, err)
+	assert.Equal(t, "id = ? or status <> ?", sqlStr)
+	assert.Equal(t, []interface{}{1, "deleted"}, args)
+}
+
+func TestWhereBuilder_OrLike(t *testing.T) {
+	wb := NewWhereBuilder()
+	wb.Where("id", OperatorEq, 1)
+	wb.OrLike("name", "John")
+
+	sqlStr, args, err := wb.ToWhereSQL()
+	assert.NoError(t, err)
+	assert.Equal(t, "id = ? or name like ?", sqlStr)
+	// OrLike adds % wildcards around the value
+	assert.Equal(t, []interface{}{1, "%John%"}, args)
+}
+
+func TestWhereBuilder_OrLike_MultipleConditions(t *testing.T) {
+	wb := NewWhereBuilder()
+	wb.WhereEqual("category", "user")
+	wb.OrLike("name", "admin")
+	wb.OrNotEqual("status", "inactive")
+
+	sqlStr, args, err := wb.ToWhereSQL()
+	assert.NoError(t, err)
+	assert.Equal(t, "category = ? or name like ? or status <> ?", sqlStr)
+	assert.Equal(t, []interface{}{"user", "%admin%", "inactive"}, args)
+}
+
+func TestWhereBuilder_OrNotEqual_OnlyOrConditions(t *testing.T) {
+	wb := NewWhereBuilder()
+	wb.OrNotEqual("status", "deleted")
+	wb.OrNotEqual("status", "archived")
+
+	sqlStr, args, err := wb.ToWhereSQL()
+	assert.NoError(t, err)
+	assert.Equal(t, "status <> ? or status <> ?", sqlStr)
+	assert.Equal(t, []interface{}{"deleted", "archived"}, args)
+}
+
+func TestWhereBuilder_OrLike_OnlyOrConditions(t *testing.T) {
+	wb := NewWhereBuilder()
+	wb.OrLike("name", "John")
+	wb.OrLike("description", "test")
+
+	sqlStr, args, err := wb.ToWhereSQL()
+	assert.NoError(t, err)
+	assert.Equal(t, "name like ? or description like ?", sqlStr)
+	assert.Equal(t, []interface{}{"%John%", "%test%"}, args)
+}

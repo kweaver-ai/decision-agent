@@ -118,6 +118,11 @@ func TestFormatJSON(t *testing.T) {
 			input:   nil,
 			wantErr: false,
 		},
+		{
+			name:    "unmarshalable value (function)",
+			input:   func() {},
+			wantErr: true,
+		},
 	}
 
 	for _, tt := range tests {

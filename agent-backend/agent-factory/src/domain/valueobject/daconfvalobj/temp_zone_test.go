@@ -525,3 +525,103 @@ func TestTempZoneConfig_GenAllowedFileTypes_InvalidCategory(t *testing.T) {
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "allowed_file_categories is invalid")
 }
+
+// Test ValObjCheck with SingleChatMaxSelectFileCount range errors
+func TestValObjCheck_SingleChatMaxSelectFileCountRange(t *testing.T) {
+	maxFileCount := 10
+
+	t.Run("SingleChatMaxSelectFileCount too low", func(t *testing.T) {
+		singleChatMaxSelectFileCount := 0 // Below minimum of 1
+		config := &TempZoneConfig{
+			Name:                         "临时区",
+			TmpFileUseType:               cdaenum.TmpFileUseTypeUpload,
+			MaxFileCount:                 &maxFileCount,
+			SingleChatMaxSelectFileCount: &singleChatMaxSelectFileCount,
+			SingleFileSizeLimit:          50,
+			SingleFileSizeLimitUnit:      cdaenum.MB,
+			SupportDataType:              cdaenum.SupportDataTypes{"file"},
+			AllowedFileCategories:        cdaenum.AllowedFileCategories{"document"},
+		}
+
+		err := config.ValObjCheck()
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "single_chat_max_select_file_count must be between 1 and 5")
+	})
+
+	t.Run("SingleChatMaxSelectFileCount too high", func(t *testing.T) {
+		singleChatMaxSelectFileCount := 6 // Above maximum of 5
+		config := &TempZoneConfig{
+			Name:                         "临时区",
+			TmpFileUseType:               cdaenum.TmpFileUseTypeUpload,
+			MaxFileCount:                 &maxFileCount,
+			SingleChatMaxSelectFileCount: &singleChatMaxSelectFileCount,
+			SingleFileSizeLimit:          50,
+			SingleFileSizeLimitUnit:      cdaenum.MB,
+			SupportDataType:              cdaenum.SupportDataTypes{"file"},
+			AllowedFileCategories:        cdaenum.AllowedFileCategories{"document"},
+		}
+
+		err := config.ValObjCheck()
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "single_chat_max_select_file_count must be between 1 and 5")
+	})
+}
+
+// Test ValObjCheck with MaxFileCount range errors
+func TestValObjCheck_MaxFileCountRange(t *testing.T) {
+	singleChatMaxSelectFileCount := 3
+
+	t.Run("MaxFileCount too low", func(t *testing.T) {
+		maxFileCount := 0 // Below minimum of 1
+		config := &TempZoneConfig{
+			Name:                         "临时区",
+			TmpFileUseType:               cdaenum.TmpFileUseTypeUpload,
+			MaxFileCount:                 &maxFileCount,
+			SingleChatMaxSelectFileCount: &singleChatMaxSelectFileCount,
+			SingleFileSizeLimit:          50,
+			SingleFileSizeLimitUnit:      cdaenum.MB,
+			SupportDataType:              cdaenum.SupportDataTypes{"file"},
+			AllowedFileCategories:        cdaenum.AllowedFileCategories{"document"},
+		}
+
+		err := config.ValObjCheck()
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "max_file_count must be between 1 and 50")
+	})
+
+	t.Run("MaxFileCount too high", func(t *testing.T) {
+		maxFileCount := 51 // Above maximum of 50
+		config := &TempZoneConfig{
+			Name:                         "临时区",
+			TmpFileUseType:               cdaenum.TmpFileUseTypeUpload,
+			MaxFileCount:                 &maxFileCount,
+			SingleChatMaxSelectFileCount: &singleChatMaxSelectFileCount,
+			SingleFileSizeLimit:          50,
+			SingleFileSizeLimitUnit:      cdaenum.MB,
+			SupportDataType:              cdaenum.SupportDataTypes{"file"},
+			AllowedFileCategories:        cdaenum.AllowedFileCategories{"document"},
+		}
+
+		err := config.ValObjCheck()
+		assert.Error(t, err)
+		assert.Contains(t, err.Error(), "max_file_count must be between 1 and 50")
+	})
+}
+
+// Test ValObjCheck with nil MaxFileCount and SingleChatMaxSelectFileCount
+func TestValObjCheck_NilOptionalFields(t *testing.T) {
+	config := &TempZoneConfig{
+		Name:                    "临时区",
+		TmpFileUseType:          cdaenum.TmpFileUseTypeUpload,
+		MaxFileCount:            nil, // nil should be allowed
+		SingleChatMaxSelectFileCount: nil, // nil should be allowed
+		SingleFileSizeLimit:     50,
+		SingleFileSizeLimitUnit: cdaenum.MB,
+		SupportDataType:         cdaenum.SupportDataTypes{"file"},
+		AllowedFileCategories:   cdaenum.AllowedFileCategories{"document"},
+	}
+
+	err := config.ValObjCheck()
+	assert.NoError(t, err)
+}
+

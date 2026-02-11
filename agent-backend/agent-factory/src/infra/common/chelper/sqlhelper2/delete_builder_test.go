@@ -62,3 +62,16 @@ func TestDeleteBuilder_NewDeleteBuilder(t *testing.T) {
 	assert.NotNil(t, db)
 	assert.NotNil(t, db.WhereBuilder)
 }
+
+func TestDeleteBuilder_WhereBuilderError(t *testing.T) {
+	db := NewDeleteBuilder()
+	db.From("users")
+
+	// Use In with an unsupported type (not a slice) to cause an error
+	db.In("id", "not a slice")
+
+	_, _, err := db.ToDeleteSQL()
+
+	assert.NotNil(t, err)
+	assert.Contains(t, err.Error(), "OperatorNotIn and OperatorIn only support")
+}

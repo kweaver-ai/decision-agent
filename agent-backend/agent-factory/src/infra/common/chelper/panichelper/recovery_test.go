@@ -115,3 +115,20 @@ func TestRecoveryAndSetErrCustomErr(t *testing.T) {
 	assert.True(t, ok)
 	assert.Equal(t, "test RecoveryAndSetErr2", _customErr.msg)
 }
+
+func TestRecovery_DebugMode(t *testing.T) {
+	// Set debug mode environment variable
+	t.Setenv("AGENT_FACTORY_DEBUG_MODE", "true")
+
+	ctl := gomock.NewController(t)
+	logger := cmpmock.NewMockLogger(ctl)
+	logger.EXPECT().Errorln(gomock.Any()).DoAndReturn(func(args ...interface{}) interface{} {
+		t.Log(args...)
+		return nil
+	})
+
+	func() {
+		defer Recovery(logger)
+		panic("debug mode test")
+	}()
+}

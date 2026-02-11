@@ -876,3 +876,178 @@ func TestSQLRunner_Scan(t *testing.T) {
 	assert.Equal(t, 1, id)
 	assert.Equal(t, "test", name)
 }
+
+func TestSQLRunner_Scan_PanicWithoutSelect(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	q := NewSQLRunner(db, getMockLogger(ctrl))
+
+	var id int
+	var name string
+
+	assert.Panics(t, func() {
+		_ = q.From("users").
+			Where("id", sqlhelper2.OperatorEq, 1).
+			Scan(&id, &name)
+	})
+}
+
+func TestSQLRunner_Scan_QueryError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	q := NewSQLRunner(db, getMockLogger(ctrl))
+
+	sqlMock.ExpectQuery("select id,name from users where id = ?").
+		WithArgs(1).
+		WillReturnError(sql.ErrConnDone)
+
+	var id int
+	var name string
+
+	err := q.Select([]string{"id", "name"}).
+		From("users").
+		Where("id", sqlhelper2.OperatorEq, 1).
+		Scan(&id, &name)
+
+	assert.NotNil(t, err)
+}
+
+func TestSQLRunner_FindOne_QueryError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	sb := sqlhelper2.NewSelectBuilder()
+	q := NewQueryWithSQLBuilder(db, sb, getMockLogger(ctrl))
+	q.Tag("json")
+
+	var obj struct {
+		Key1 string `json:"key1"`
+		Key2 string `json:"key2"`
+	}
+
+	sb.From("users").Select([]string{"key1", "key2"})
+
+	sqlMock.ExpectQuery("select key1,key2 from users").
+		WillReturnError(sql.ErrConnDone)
+
+	err := q.FindOne(&obj)
+	assert.NotNil(t, err)
+}
+
+func TestSQLRunner_Find_QueryError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	sb := sqlhelper2.NewSelectBuilder()
+	q := NewQueryWithSQLBuilder(db, sb, getMockLogger(ctrl))
+	q.Tag("db")
+
+	type user = struct {
+		Key1 string `db:"key1"`
+		Key2 string `db:"key2"`
+	}
+
+	objSlice := make([]user, 0)
+
+	sb.From("users").Select([]string{"key1", "key2"})
+
+	sqlMock.ExpectQuery("select key1,key2 from users").
+		WillReturnError(sql.ErrConnDone)
+
+	err := q.Find(&objSlice)
+	assert.NotNil(t, err)
+}
+
+func TestSQLRunner_Find_ScanError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	sb := sqlhelper2.NewSelectBuilder()
+	q := NewQueryWithSQLBuilder(db, sb, getMockLogger(ctrl))
+	q.Tag("db")
+
+	type user = struct {
+		Key1 string `db:"key1"`
+		Key2 int    `db:"key2"`
+	}
+
+	objSlice := make([]user, 0)
+
+	sb.From("users").Select([]string{"key1", "key2"})
+
+	// Return a string for an int field to cause Scan error
+	sqlMock.ExpectQuery("select key1,key2 from users").
+		WillReturnRows(sqlmock.NewRows([]string{"key1", "key2"}).
+			AddRow("value1", "not-an-int"))
+
+	err := q.Find(&objSlice)
+	assert.NotNil(t, err)
+}
+
+func TestSQLRunner_FindColumn_QueryError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	q := NewSQLRunner(db, getMockLogger(ctrl))
+
+	sqlMock.ExpectQuery("select key1 from users").
+		WillReturnError(sql.ErrConnDone)
+
+	var key1s []string
+
+	err := q.From("users").FindColumn("key1", &key1s)
+	assert.NotNil(t, err)
+}
+
+func TestSQLRunner_FindColumn_ScanError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	q := NewSQLRunner(db, getMockLogger(ctrl))
+
+	// Return string for int field to cause Scan error
+	sqlMock.ExpectQuery("select key1 from users").
+		WillReturnRows(sqlmock.NewRows([]string{"key1"}).
+			AddRow("not-an-int"))
+
+	var key1s []int
+
+	err := q.From("users").FindColumn("key1", &key1s)
+	assert.NotNil(t, err)
+}
+
+func TestSQLRunner_Raw(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	q := NewSQLRunner(db, getMockLogger(ctrl))
+
+	// Test Raw with args
+	t.Run("with args", func(t *testing.T) {
+		q2 := q.Raw("SELECT * FROM users WHERE id = ?", 123)
+		assert.NotNil(t, q2)
+		assert.Equal(t, "SELECT * FROM users WHERE id = ?", q2.rawSQL)
+		assert.Len(t, q2.rawSQLArgs, 1)
+		assert.Equal(t, 123, q2.rawSQLArgs[0])
+	})
+
+	// Test Raw without args
+	t.Run("without args", func(t *testing.T) {
+		q2 := q.Raw("SELECT * FROM users")
+		assert.NotNil(t, q2)
+		assert.Equal(t, "SELECT * FROM users", q2.rawSQL)
+		assert.Empty(t, q2.rawSQLArgs)
+	})
+
+	// Test Raw with multiple args
+	t.Run("with multiple args", func(t *testing.T) {
+		q2 := q.Raw("SELECT * FROM users WHERE id = ? AND status = ?", 123, "active")
+		assert.NotNil(t, q2)
+		assert.Equal(t, "SELECT * FROM users WHERE id = ? AND status = ?", q2.rawSQL)
+		assert.Len(t, q2.rawSQLArgs, 2)
+		assert.Equal(t, 123, q2.rawSQLArgs[0])
+		assert.Equal(t, "active", q2.rawSQLArgs[1])
+	})
+}

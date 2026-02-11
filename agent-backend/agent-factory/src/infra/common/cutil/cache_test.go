@@ -54,6 +54,16 @@ func TestSetCache(t *testing.T) {
 				mock.ExpectSet("error_key", data, time.Hour).SetErr(errors.New("redis error"))
 			},
 		},
+		{
+			name:   "JSON序列化错误",
+			key:    "marshal_error_key",
+			value:  UnmarshalableStruct{Func: func() {}},
+			expire: time.Hour,
+			wantErr: true,
+			setup:   func() {
+				// No Redis expectation needed since marshal fails before Redis call
+			},
+		},
 	}
 
 	for _, tc := range testCases {

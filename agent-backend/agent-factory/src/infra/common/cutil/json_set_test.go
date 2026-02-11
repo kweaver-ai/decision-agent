@@ -36,6 +36,74 @@ func TestAddKeyToJSONArray(t *testing.T) {
 	}
 }
 
+func TestAddToJSON_InvalidJSON(t *testing.T) {
+	jsonStr := `{invalid json}`
+	jsonPath := "key"
+	value := "value"
+
+	_, err := AddToJSON(jsonStr, jsonPath, value)
+	if err == nil {
+		t.Error("Expected error for invalid JSON, but got nil")
+	}
+}
+
+func TestAddToJSON_InvalidPath(t *testing.T) {
+	jsonStr := `{"name":"John"}`
+	jsonPath := "" // Empty path might cause issues
+	value := "value"
+
+	_, err := AddToJSON(jsonStr, jsonPath, value)
+	// sjson.Set might return an error for invalid path
+	if err != nil {
+		t.Logf("Got expected error for invalid path: %v", err)
+	}
+}
+
+func TestAddKeyToJSONArray_InvalidJSON(t *testing.T) {
+	jsonArrayStr := `{invalid json}`
+	key := "b"
+	value := 2
+
+	_, err := AddKeyToJSONArray(jsonArrayStr, key, value)
+	if err == nil {
+		t.Error("Expected error for invalid JSON, but got nil")
+	}
+}
+
+func TestAddKeyToJSONArray_EmptyArray(t *testing.T) {
+	jsonArrayStr := `[]`
+	key := "b"
+	value := 2
+
+	expectedJSON := `[]`
+
+	updatedJSON, err := AddKeyToJSONArray(jsonArrayStr, key, value)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+
+	if updatedJSON != expectedJSON {
+		t.Errorf("Test failed, expected: '%s', got: '%s'", expectedJSON, updatedJSON)
+	}
+}
+
+func TestAddKeyToJSONArray_SingleElement(t *testing.T) {
+	jsonArrayStr := `[{"a":1}]`
+	key := "b"
+	value := 2
+
+	expectedJSON := `[{"a":1,"b":2}]`
+
+	updatedJSON, err := AddKeyToJSONArray(jsonArrayStr, key, value)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+
+	if updatedJSON != expectedJSON {
+		t.Errorf("Test failed, expected: '%s', got: '%s'", expectedJSON, updatedJSON)
+	}
+}
+
 func TestRemoveKeyFromJSON(t *testing.T) {
 	tests := []struct {
 		name        string

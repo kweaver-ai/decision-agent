@@ -131,6 +131,18 @@ func TestUserPromptForOpenRemarks(t *testing.T) {
 				"请根据上面提供的信息生成一个开场白",
 			},
 		},
+		{
+			name:        "Traditional Chinese",
+			language:    "zh-TW",
+			agentName:   "測試助手",
+			agentProfile: "測試簡介",
+			agentSkills: []string{"技能1"},
+			agentSources: []string{"來源1"},
+			wantContains: []string{
+				"名稱：測試助手",
+				"請根據上面提供的信息生成一個開場白",
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -172,6 +184,16 @@ func TestUserPromptForPresetQuestion(t *testing.T) {
 				"每一个问题是一个不超过30字的文本",
 			},
 		},
+		{
+			name:        "Traditional Chinese",
+			language:    "zh-TW",
+			agentName:   "測試助手",
+			agentProfile: "測試簡介",
+			wantContains: []string{
+				"請根據上面提供的信息生成3個預設問題",
+				"每一個問題是一個不超過30個字的文本",
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -211,6 +233,16 @@ func TestUserPromptForSystem(t *testing.T) {
 			wantContains: []string{
 				"请根据上面提供的信息生成一个人设和指令",
 				"使用Markdown语法或普通文本来输出",
+			},
+		},
+		{
+			name:        "Traditional Chinese",
+			language:    "zh-TW",
+			agentName:   "測試助手",
+			agentProfile: "測試簡介",
+			wantContains: []string{
+				"請根據上面提供的信息生成一個人設和指令",
+				"使用Markdown語法或普通文本来輸出",
 			},
 		},
 	}

@@ -192,6 +192,51 @@ func TestCalculateTTFTForChat_LLMNoContent(t *testing.T) {
 	assert.Greater(t, result, int64(0))
 }
 
+func TestCalculateTTFTForChat_LLMWithBothAnswerAndThink(t *testing.T) {
+	startTime := int64(1000)
+	progresses := []*agentrespvo.Progress{
+		{
+			Stage:  "llm",
+			Answer: "test answer",
+			Think:  "test think",
+		},
+	}
+
+	result := calculateTTFTForChat(startTime, progresses)
+
+	// When both answer and think have values, TTFT is 0
+	assert.Equal(t, int64(0), result)
+}
+
+func TestCalculateTTFTForChat_LLMWithBothThenSkill(t *testing.T) {
+	startTime := int64(1000)
+	progresses := []*agentrespvo.Progress{
+		{
+			Stage:  "llm",
+			Answer: "test answer",
+			Think:  "test think",
+		},
+		{
+			Stage: "skill",
+			SkillInfo: &agentrespvo.SkillInfo{
+				Name: "visible_tool",
+				Args: []agentrespvo.Arg{
+					{
+						Name:  "action",
+						Type:  "string",
+						Value: "other_action",
+					},
+				},
+			},
+		},
+	}
+
+	result := calculateTTFTForChat(startTime, progresses)
+
+	// When llm has both answer and think, it returns 0 without processing further progresses
+	assert.Equal(t, int64(0), result)
+}
+
 func TestCalculateTTFTForChat_SkillSearchMemory(t *testing.T) {
 	startTime := int64(1000)
 	progresses := []*agentrespvo.Progress{

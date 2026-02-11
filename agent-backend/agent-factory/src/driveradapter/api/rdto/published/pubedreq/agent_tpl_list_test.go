@@ -54,19 +54,38 @@ func TestPubedTplListReq_LoadMarkerStr_Empty(t *testing.T) {
 }
 
 func TestPubedTplListReq_LoadMarkerStr_WithMarker(t *testing.T) {
+	// Valid marker with proper field names: last_pubed_tpl_id
+	validMarker := "eyJsYXN0X3B1YmVkX3RwbF9pZCI6MTIzNDU2Nzg5MH0="
 	req := PubedTplListReq{
-		PaginationMarkerStr: "eyJhZ2VudF9pZCI6ImFnZW50LTEyMyIsInVwZGF0ZWRfYXQiOjEyMzQ1Njc4OTB9",
+		PaginationMarkerStr: validMarker,
 	}
 
 	err := req.LoadMarkerStr()
+	assert.NoError(t, err)
+	assert.NotNil(t, req.Marker)
+	assert.Equal(t, int64(1234567890), req.Marker.LastPubedTplID)
+}
 
-	// This might fail if the marker is invalid, but we're testing the function is called
-	// The actual parsing logic depends on the Marker implementation
-	if err != nil {
-		assert.Contains(t, err.Error(), "invalid")
-	} else {
-		assert.NotNil(t, req.Marker)
+func TestPubedTplListReq_LoadMarkerStr_InvalidBase64(t *testing.T) {
+	req := PubedTplListReq{
+		PaginationMarkerStr: "not-valid-base64!!!",
 	}
+
+	err := req.LoadMarkerStr()
+	// Should return error because the marker is not valid base64
+	assert.Error(t, err)
+}
+
+func TestPubedTplListReq_LoadMarkerStr_InvalidJSON(t *testing.T) {
+	// Valid base64 but invalid JSON
+	invalidJSONMarker := "eyJpbnZhbGlkIGpzb24ifQ=="
+	req := PubedTplListReq{
+		PaginationMarkerStr: invalidJSONMarker,
+	}
+
+	err := req.LoadMarkerStr()
+	// Should return error because the marker contains invalid JSON
+	assert.Error(t, err)
 }
 
 func TestPubedTplListReq_WithName(t *testing.T) {

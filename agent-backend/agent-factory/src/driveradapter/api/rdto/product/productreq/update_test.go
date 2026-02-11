@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestUpdateReq_StructFields(t *testing.T) {
@@ -129,4 +130,103 @@ func TestUpdateReq_WithLongProfile(t *testing.T) {
 	}
 
 	assert.Len(t, req.Profile, 100)
+}
+
+func TestUpdateReq_D2e(t *testing.T) {
+	t.Run("with all fields", func(t *testing.T) {
+		req := UpdateReq{
+			Name:    "Updated Product",
+			Profile: "Updated profile",
+		}
+
+		eo, err := req.D2e()
+
+		require.NoError(t, err)
+		require.NotNil(t, eo)
+		assert.Equal(t, req.Name, eo.Name)
+		assert.Equal(t, req.Profile, eo.Profile)
+	})
+
+	t.Run("with only name", func(t *testing.T) {
+		req := UpdateReq{
+			Name: "Minimal Update",
+		}
+
+		eo, err := req.D2e()
+
+		require.NoError(t, err)
+		require.NotNil(t, eo)
+		assert.Equal(t, req.Name, eo.Name)
+		assert.Empty(t, eo.Profile)
+	})
+
+	t.Run("with empty profile", func(t *testing.T) {
+		req := UpdateReq{
+			Name:    "Product Empty Profile",
+			Profile: "",
+		}
+
+		eo, err := req.D2e()
+
+		require.NoError(t, err)
+		require.NotNil(t, eo)
+		assert.Equal(t, req.Name, eo.Name)
+		assert.Empty(t, eo.Profile)
+	})
+
+	t.Run("with chinese characters", func(t *testing.T) {
+		req := UpdateReq{
+			Name:    "更新的产品名称",
+			Profile: "更新的产品简介",
+		}
+
+		eo, err := req.D2e()
+
+		require.NoError(t, err)
+		require.NotNil(t, eo)
+		assert.Equal(t, req.Name, eo.Name)
+		assert.Equal(t, req.Profile, eo.Profile)
+	})
+
+	t.Run("with long values", func(t *testing.T) {
+		req := UpdateReq{
+			Name:    strings.Repeat("a", 50),
+			Profile: strings.Repeat("b", 100),
+		}
+
+		eo, err := req.D2e()
+
+		require.NoError(t, err)
+		require.NotNil(t, eo)
+		assert.Len(t, eo.Name, 50)
+		assert.Len(t, eo.Profile, 100)
+	})
+
+	t.Run("with empty name", func(t *testing.T) {
+		req := UpdateReq{
+			Name:    "",
+			Profile: "test profile",
+		}
+
+		eo, err := req.D2e()
+
+		require.NoError(t, err)
+		require.NotNil(t, eo)
+		assert.Empty(t, eo.Name)
+		assert.Equal(t, req.Profile, eo.Profile)
+	})
+
+	t.Run("with mixed content", func(t *testing.T) {
+		req := UpdateReq{
+			Name:    "Updated更新的产品Name",
+			Profile: "Updated profile简介",
+		}
+
+		eo, err := req.D2e()
+
+		require.NoError(t, err)
+		require.NotNil(t, eo)
+		assert.Equal(t, req.Name, eo.Name)
+		assert.Equal(t, req.Profile, eo.Profile)
+	})
 }

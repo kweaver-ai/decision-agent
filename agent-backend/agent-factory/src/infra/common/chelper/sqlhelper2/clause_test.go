@@ -583,3 +583,31 @@ func TestClause_parseInClauseForInterfaceSlice(t *testing.T) {
 	assert.Equal(t, "age in (?,?,?)", sqlStr)
 	assert.Equal(t, []interface{}{interface{}(1), interface{}(2), interface{}(3)}, args)
 }
+
+func TestClause_Build_OperatorIn_UnsupportedType(t *testing.T) {
+	// Test with unsupported type (not a slice)
+	clause := Clause{
+		Key:      "id",
+		Value:    "not a slice",
+		Operator: OperatorIn,
+	}
+	sqlStr, args, err := clause.Build()
+	assert.NotNil(t, err)
+	assert.Contains(t, err.Error(), "OperatorNotIn and OperatorIn only support")
+	assert.Empty(t, sqlStr)
+	assert.Empty(t, args)
+}
+
+func TestClause_Build_OperatorNotIn_UnsupportedType(t *testing.T) {
+	// Test with unsupported type (not a slice)
+	clause := Clause{
+		Key:      "id",
+		Value:    "not a slice",
+		Operator: OperatorNotIn,
+	}
+	sqlStr, args, err := clause.Build()
+	assert.NotNil(t, err)
+	assert.Contains(t, err.Error(), "OperatorNotIn and OperatorIn only support")
+	assert.Empty(t, sqlStr)
+	assert.Empty(t, args)
+}

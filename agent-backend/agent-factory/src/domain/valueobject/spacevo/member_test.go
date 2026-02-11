@@ -1,61 +1,57 @@
 package spacevo
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestMemberUniq_New(t *testing.T) {
-	member := &MemberUniq{
-		ObjType: cenum.OrgObjTypeUser,
-		ObjID:   "user-123",
-	}
-
-	assert.NotNil(t, member)
-	assert.Equal(t, cenum.OrgObjTypeUser, member.ObjType)
-	assert.Equal(t, "user-123", member.ObjID)
-}
-
-func TestMemberUn_EmptyFields(t *testing.T) {
-	member := &MemberUniq{}
-
-	assert.NotNil(t, member)
-	assert.Empty(t, member.ObjID)
-}
-
-func TestMemberAssoc_New(t *testing.T) {
-	assoc := &MemberAssoc{
-		MemberUniq: MemberUniq{
-			ObjType: cenum.OrgObjTypeGroup,
-			ObjID:   "group-456",
-		},
-		AssocID: 1001,
-	}
-
-	assert.NotNil(t, assoc)
-	assert.Equal(t, cenum.OrgObjTypeGroup, assoc.ObjType)
-	assert.Equal(t, "group-456", assoc.ObjID)
-	assert.Equal(t, int64(1001), assoc.AssocID)
-}
-
-func TestMemberAssoc_EmptyFields(t *testing.T) {
-	assoc := &MemberAssoc{}
-
-	assert.NotNil(t, assoc)
-	assert.Empty(t, assoc.ObjID)
-	assert.Equal(t, int64(0), assoc.AssocID)
-}
-
-func TestMemberAssoc_WithLargeAssocID(t *testing.T) {
-	assoc := &MemberAssoc{
-		MemberUniq: MemberUniq{
+func TestMemberUniq_StructFields(t *testing.T) {
+	t.Run("creates MemberUniq with values", func(t *testing.T) {
+		m := MemberUniq{
 			ObjType: cenum.OrgObjTypeUser,
-			ObjID:   "user-789",
-		},
-		AssocID: 9223372036854775807,
-	}
+			ObjID:   "member-123",
+		}
 
-	assert.Equal(t, int64(9223372036854775807), assoc.AssocID)
+		assert.Equal(t, cenum.OrgObjTypeUser, m.ObjType)
+		assert.Equal(t, "member-123", m.ObjID)
+	})
+
+	t.Run("creates empty MemberUniq", func(t *testing.T) {
+		m := MemberUniq{}
+
+		assert.Empty(t, m.ObjID)
+	})
+}
+
+func TestMemberAssoc_StructFields(t *testing.T) {
+	t.Run("creates MemberAssoc with values", func(t *testing.T) {
+		ma := MemberAssoc{
+			MemberUniq: MemberUniq{
+				ObjType: cenum.OrgObjTypeUser,
+				ObjID:   "member-123",
+			},
+			AssocID: 456,
+		}
+
+		assert.Equal(t, cenum.OrgObjTypeUser, ma.ObjType)
+		assert.Equal(t, "member-123", ma.ObjID)
+		assert.Equal(t, int64(456), ma.AssocID)
+	})
+
+	t.Run("serializes to JSON", func(t *testing.T) {
+		ma := MemberAssoc{
+			MemberUniq: MemberUniq{
+				ObjType: cenum.OrgObjTypeUser,
+				ObjID:   "member-123",
+			},
+			AssocID: 789,
+		}
+
+		data, err := json.Marshal(ma)
+		assert.NoError(t, err)
+		assert.Contains(t, string(data), "\"obj_id\":\"member-123\"")
+	})
 }

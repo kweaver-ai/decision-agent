@@ -2,9 +2,14 @@ package sessionsvc
 
 import (
 	"context"
+	"errors"
 	"testing"
 
+	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/session/sessionreq"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/ctype"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/iredisaccess/isessionredis/isessionredismock"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -76,4 +81,135 @@ func TestTriggerAgentCacheUpsert_NoAgentExecutor(t *testing.T) {
 	assert.Panics(t, func() {
 		_ = svc.triggerAgentCacheUpsert(context.Background(), req, nil)
 	})
+}
+
+func TestManage_HandleGetInfoOrCreate_Error(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockLogger := cmpmock.NewMockLogger(ctrl)
+	mockSessionRedis := isessionredismock.NewMockISessionRedisAcc(ctrl)
+
+	svc := &sessionSvc{
+		logger:          mockLogger,
+		sessionRedisAcc: mockSessionRedis,
+	}
+
+	ctx := context.Background()
+	req := sessionreq.ManageReq{
+		Action:         sessionreq.SessionManageActionGetInfoOrCreate,
+		ConversationID: "conv-123",
+	}
+	visitorInfo := &ctype.VisitorInfo{}
+
+	// Mock Redis to return error
+	expectedErr := errors.New("redis connection failed")
+	mockSessionRedis.EXPECT().GetSessionWithTTL(gomock.Any(), "conv-123").Return(false, int64(0), 0, expectedErr)
+	mockLogger.EXPECT().Errorf(gomock.Any(), gomock.Any()).Times(1)
+
+	resp, err := svc.Manage(ctx, req, visitorInfo)
+
+	assert.Error(t, err)
+	assert.Empty(t, resp.ConversationSessionID)
+	assert.Equal(t, int64(0), resp.StartTime)
+	assert.Equal(t, 0, resp.TTL)
+}
+
+func TestManage_HandleRecoverLifetimeOrCreate_Error(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockLogger := cmpmock.NewMockLogger(ctrl)
+	mockSessionRedis := isessionredismock.NewMockISessionRedisAcc(ctrl)
+
+	svc := &sessionSvc{
+		logger:          mockLogger,
+		sessionRedisAcc: mockSessionRedis,
+	}
+
+	ctx := context.Background()
+	req := sessionreq.ManageReq{
+		Action:         sessionreq.SessionManageActionRecoverLifetimeOrCreate,
+		ConversationID: "conv-456",
+	}
+	visitorInfo := &ctype.VisitorInfo{}
+
+	// Mock Redis to return error
+	expectedErr := errors.New("redis connection failed")
+	mockSessionRedis.EXPECT().RefreshSession(gomock.Any(), "conv-456", gomock.Any()).Return(false, int64(0), expectedErr)
+	mockLogger.EXPECT().Errorf(gomock.Any(), gomock.Any()).Times(1)
+
+	resp, err := svc.Manage(ctx, req, visitorInfo)
+
+	assert.Error(t, err)
+	assert.Empty(t, resp.ConversationSessionID)
+	assert.Equal(t, int64(0), resp.StartTime)
+	assert.Equal(t, 0, resp.TTL)
+}
+
+func TestManage_HandleGetInfoOrCreate_Success(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockLogger := cmpmock.NewMockLogger(ctrl)
+	mockSessionRedis := isessionredismock.NewMockISessionRedisAcc(ctrl)
+
+	svc := &sessionSvc{
+		logger:          mockLogger,
+		sessionRedisAcc: mockSessionRedis,
+	}
+
+	ctx := context.Background()
+	req := sessionreq.ManageReq{
+		Action:         sessionreq.SessionManageActionGetInfoOrCreate,
+		ConversationID: "conv-789",
+	}
+	visitorInfo := &ctype.VisitorInfo{}
+
+	existingStartTime := int64(1234567890)
+	existingTTL := 3600
+
+	mockSessionRedis.EXPECT().GetSessionWithTTL(gomock.Any(), "conv-789").Return(true, existingStartTime, existingTTL, nil)
+
+	resp, err := svc.Manage(ctx, req, visitorInfo)
+
+	assert.NoError(t, err)
+	assert.Equal(t, "conv-789-1234567890", resp.ConversationSessionID)
+	assert.Equal(t, existingStartTime, resp.StartTime)
+	assert.Equal(t, existingTTL, resp.TTL)
+}
+
+func TestManage_HandleRecoverLifetimeOrCreate_Success(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockLogger := cmpmock.NewMockLogger(ctrl)
+	mockSessionRedis := isessionredismock.NewMockISessionRedisAcc(ctrl)
+
+	svc := &sessionSvc{
+		logger:          mockLogger,
+		sessionRedisAcc: mockSessionRedis,
+	}
+
+	ctx := context.Background()
+	req := sessionreq.ManageReq{
+		Action:         sessionreq.SessionManageActionRecoverLifetimeOrCreate,
+		ConversationID: "conv-999",
+	}
+	visitorInfo := &ctype.VisitorInfo{}
+
+	existingStartTime := int64(9876543210)
+	existingTTL := 7200
+
+	mockSessionRedis.EXPECT().RefreshSession(gomock.Any(), "conv-999", gomock.Any()).Return(true, existingStartTime, nil)
+	mockSessionRedis.EXPECT().GetSessionTTL(gomock.Any(), "conv-999").Return(existingTTL, nil)
+	// Allow any number of Errorln calls from panic recovery in the goroutine
+	mockLogger.EXPECT().Errorln(gomock.Any()).AnyTimes()
+
+	resp, err := svc.Manage(ctx, req, visitorInfo)
+
+	assert.NoError(t, err)
+	assert.Equal(t, "conv-999-9876543210", resp.ConversationSessionID)
+	assert.Equal(t, existingStartTime, resp.StartTime)
+	assert.Equal(t, existingTTL, resp.TTL)
 }
