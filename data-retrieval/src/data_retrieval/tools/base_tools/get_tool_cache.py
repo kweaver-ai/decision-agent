@@ -101,23 +101,60 @@ class GetToolCacheTool(AFTool):
             "post": {
                 "summary": ToolName.from_get_tool_cache.value,
                 "description": "根据工具的缓存 key 获取工具缓存，如果获取出错，则需要重新调用其他工具获取数据",
-                "parameters": [
-                    {
-                        "name": "cache_key",
-                        "in": "query",
-                        "description": "工具缓存 key",
-                        "schema": {
-                            "type": "string",
-                        },
-                    },
-                    {
-                        "name": "session_type",
-                        "in": "query",
-                        "description": "会话类型",
-                        "schema": {
-                            "type": "string",
-                        },
-                    },
-                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "cache_key": {
+                                        "type": "string",
+                                        "description": "工具缓存 key"
+                                    },
+                                    "session_type": {
+                                        "type": "string",
+                                        "enum": ["in_memory", "redis"],
+                                        "description": "会话类型",
+                                        "default": "redis"
+                                    },
+                                    "max_cache_size": {
+                                        "type": "integer",
+                                        "description": "最大缓存大小（字符数），超过则截断"
+                                    }
+                                },
+                                "required": ["cache_key"],
+                                "example": {
+                                    "cache_key": "session_123_task_001",
+                                    "session_type": "redis"
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "成功返回缓存数据",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "result": {
+                                            "type": "object",
+                                            "description": "缓存的工具结果数据"
+                                        }
+                                    }
+                                },
+                                "example": {
+                                    "result": {
+                                        "output": "查询结果数据",
+                                        "tokens": "0",
+                                        "time": "0.001"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }

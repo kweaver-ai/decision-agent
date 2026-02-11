@@ -33,7 +33,7 @@ BASE_TOOLS_MAPPING: Dict[str, Type] = {
     "knowledge_item": KnowledgeItemTool,
     "get_metadata": GetMetadataTool,
     "json2plot": Json2Plot,
-    "get_tool_cache": GetToolCacheTool,
+    # "get_tool_cache": GetToolCacheTool,
 }
 
 # 为旧沙箱工具添加 _legacy 后缀
