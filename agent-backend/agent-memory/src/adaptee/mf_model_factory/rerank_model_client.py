@@ -113,7 +113,7 @@ class RerankModelClient:
                     results_data = response_data.get("results", [])
                     results = [
                         RerankResponseResult(
-                            relevance_score=result.get("relevance_score", 0.0),
+                            relevance_score=result.get("relevance_score") or 0.0,
                             index=result.get("index", 0),
                             document=result.get("document", ""),
                         )
