@@ -6,6 +6,10 @@
 
 - Fix filter status abnormal bug on My Agent template page
 
+### Bug Fixes
+
+- Fix EnsureSandboxSession to delete failed sessions before recreating
+
 ## 0.3.2
 
 ### Bug Fixes

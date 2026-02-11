@@ -8,30 +8,75 @@ import (
 )
 
 func TestNewUpdateAgentNameMqMsg(t *testing.T) {
-	msg := NewUpdateAgentNameMqMsg("agent-123", "Test Agent")
+	tests := []struct {
+		id         string
+		agentName  string
+	}{
+		{
+			id:        "agent_123",
+			agentName: "Test Agent",
+		},
+		{
+			id:        "",
+			agentName: "Agent Name",
+		},
+		{
+			id:        "agent_456",
+			agentName: "",
+		},
+		{
+			id:        "",
+			agentName: "",
+		},
+		{
+			id:        "agent_@#$%",
+			agentName: "Agent @#$%",
+		},
+		{
+			id:        "agent_中文",
+			agentName: "智能代理",
+		},
+		{
+			id:        "agent_very_long_id_with_many_characters_1234567890",
+			agentName: "This is a very long agent name that contains many words and should still work fine as a test case",
+		},
+	}
 
-	assert.NotNil(t, msg)
-	assert.Equal(t, "agent-123", msg.ID)
-	assert.Equal(t, "Test Agent", msg.Name)
-	assert.Equal(t, cdaenum.ResourceTypeDataAgent, msg.Type)
+	for _, tt := range tests {
+		t.Run(tt.id+"_"+tt.agentName, func(t *testing.T) {
+			msg := NewUpdateAgentNameMqMsg(tt.id, tt.agentName)
+
+			assert.NotNil(t, msg)
+			assert.Equal(t, tt.id, msg.ID)
+			assert.Equal(t, tt.agentName, msg.Name)
+			assert.Equal(t, cdaenum.ResourceTypeDataAgent, msg.Type)
+		})
+	}
 }
 
-func TestUpdateAgentNameMqMsg_Fields(t *testing.T) {
+func TestUpdateAgentNameMqMsg_NewInstance(t *testing.T) {
+	msg := &UpdateAgentNameMqMsg{}
+
+	assert.NotNil(t, msg)
+	assert.Equal(t, "", msg.ID)
+	assert.Equal(t, "", msg.Name)
+	assert.Equal(t, cdaenum.ResourceType(""), msg.Type)
+}
+
+func TestUpdateAgentNameMqMsg_WithTplType(t *testing.T) {
 	msg := &UpdateAgentNameMqMsg{
-		ID:   "test-id",
+		ID:   "test_id",
 		Type: cdaenum.ResourceTypeDataAgentTpl,
 		Name: "Test Name",
 	}
 
-	assert.Equal(t, "test-id", msg.ID)
+	assert.Equal(t, "test_id", msg.ID)
 	assert.Equal(t, cdaenum.ResourceTypeDataAgentTpl, msg.Type)
 	assert.Equal(t, "Test Name", msg.Name)
 }
 
-func TestUpdateAgentNameMqMsg_Empty(t *testing.T) {
-	msg := &UpdateAgentNameMqMsg{}
+func TestUpdateAgentNameMqMsg_TypeConstant(t *testing.T) {
+	msg := NewUpdateAgentNameMqMsg("id", "name")
 
-	assert.Empty(t, msg.ID)
-	assert.Empty(t, msg.Name)
-	assert.Equal(t, cdaenum.ResourceType(""), msg.Type)
+	assert.Equal(t, cdaenum.ResourceTypeDataAgent, msg.Type)
 }

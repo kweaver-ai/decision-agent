@@ -6,6 +6,10 @@
 
 - 修复我的Agent模板页面筛选状态异常的bug
 
+### Bug 修复
+
+- 修复 EnsureSandboxSession 在重建会话前先删除失败状态的会话
+
 ## 0.3.2
 
 ### Bug 修复

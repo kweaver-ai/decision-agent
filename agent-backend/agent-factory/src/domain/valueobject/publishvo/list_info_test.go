@@ -13,20 +13,18 @@ func TestNewListPublishInfo(t *testing.T) {
 	assert.NotNil(t, info.PublishedToBeStruct)
 }
 
-func TestNewListPublishInfo_CreatesNewInstance(t *testing.T) {
+func TestListPublishInfo_MultipleInstances(t *testing.T) {
 	info1 := NewListPublishInfo()
 	info2 := NewListPublishInfo()
 
 	assert.NotNil(t, info1)
 	assert.NotNil(t, info2)
-	// Both instances are valid
-	assert.NotNil(t, info1.PublishedToBeStruct)
-	assert.NotNil(t, info2.PublishedToBeStruct)
+	assert.NotSame(t, info1, info2)
 }
 
-func TestListPublishInfo_Empty(t *testing.T) {
-	info := &ListPublishInfo{}
+func TestListPublishInfo_EmbeddedStruct(t *testing.T) {
+	info := NewListPublishInfo()
 
-	assert.NotNil(t, info)
+	// Verify the embedded struct is accessible
 	assert.NotNil(t, info.PublishedToBeStruct)
 }

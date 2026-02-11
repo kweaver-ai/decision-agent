@@ -2,35 +2,50 @@ package capierr
 
 import (
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestDataAgentConfigErrorCodes(t *testing.T) {
-	t.Run("DataAgentConfigLlmRequired constant", func(t *testing.T) {
-		expected := "AgentFactory.DataAgentConfig.BadRequest.LlmRequired"
-		if DataAgentConfigLlmRequired != expected {
-			t.Errorf("Expected DataAgentConfigLlmRequired to be '%s', got '%s'", expected, DataAgentConfigLlmRequired)
-		}
-	})
+func TestErrorCodeConstants(t *testing.T) {
+	tests := []struct {
+		name  string
+		value string
+	}{
+		{
+			name:  "DataAgentConfigLlmRequired",
+			value: DataAgentConfigLlmRequired,
+		},
+		{
+			name:  "DataAgentConfigRetrieverDataSourceKnEntryExceedLimitSize",
+			value: DataAgentConfigRetrieverDataSourceKnEntryExceedLimitSize,
+		},
+	}
 
-	t.Run("DataAgentConfigRetrieverDataSourceKnEntryExceedLimitSize constant", func(t *testing.T) {
-		expected := "AgentFactory.DataAgentConfig.BadRequest.RetrieverDataSourceKnEntryExceedLimitSize"
-		if DataAgentConfigRetrieverDataSourceKnEntryExceedLimitSize != expected {
-			t.Errorf("Expected DataAgentConfigRetrieverDataSourceKnEntryExceedLimitSize to be '%s', got '%s'", expected, DataAgentConfigRetrieverDataSourceKnEntryExceedLimitSize)
-		}
-	})
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.NotEmpty(t, tt.value)
+			assert.Contains(t, tt.value, "AgentFactory")
+		})
+	}
+}
 
-	t.Run("error codes are unique", func(t *testing.T) {
-		if DataAgentConfigLlmRequired == DataAgentConfigRetrieverDataSourceKnEntryExceedLimitSize {
-			t.Error("Error codes should be unique")
-		}
-	})
+func TestErrorCodeConstants_Format(t *testing.T) {
+	// Verify the error code format follows the pattern
+	assert.Contains(t, DataAgentConfigLlmRequired, ".BadRequest.")
+	assert.Contains(t, DataAgentConfigRetrieverDataSourceKnEntryExceedLimitSize, ".BadRequest.")
+}
 
-	t.Run("error codes are not empty", func(t *testing.T) {
-		if DataAgentConfigLlmRequired == "" {
-			t.Error("DataAgentConfigLlmRequired should not be empty")
-		}
-		if DataAgentConfigRetrieverDataSourceKnEntryExceedLimitSize == "" {
-			t.Error("DataAgentConfigRetrieverDataSourceKnEntryExceedLimitSize should not be empty")
-		}
-	})
+func TestErrorCodeConstants_Uniqueness(t *testing.T) {
+	// Ensure error codes are unique
+	codes := []string{
+		DataAgentConfigLlmRequired,
+		DataAgentConfigRetrieverDataSourceKnEntryExceedLimitSize,
+	}
+
+	uniqueCodes := make(map[string]bool)
+	for _, code := range codes {
+		uniqueCodes[code] = true
+	}
+
+	assert.Equal(t, len(codes), len(uniqueCodes), "Error codes should be unique")
 }

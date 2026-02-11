@@ -46,7 +46,17 @@ func (s *agentSvc) EnsureSandboxSession(ctx context.Context, sessionID string, r
 		return sessionID, nil
 	}
 
-	// 3. Session 状态非 running，自动重新创建
+	// 3. Session 状态为 failed 或 error，先删除再创建
+	if sessionInfo.Status == "failed" || sessionInfo.Status == "error" || sessionInfo.Status == "stopped" {
+		// o11y.SetAttributes(ctx, o11y.String("action", "delete_and_recreate"))
+		s.logger.Warnf("[EnsureSandboxSession] session status is %s, will delete and recreate: %s", sessionInfo.Status, sessionID)
+		if delErr := s.sandboxPlatform.DeleteSession(ctx, sessionID); delErr != nil {
+			s.logger.Errorf("[EnsureSandboxSession] delete session failed: %v", delErr)
+		}
+		return s.createNewSession(ctx, sessionID, req)
+	}
+
+	// 4. Session 状态非 running，自动重新创建
 	// o11y.SetAttributes(ctx, o11y.String("action", "recreate"))
 	s.logger.Warnf("[EnsureSandboxSession] session status is %s, will recreate: %s", sessionInfo.Status, sessionID)
 	return s.createNewSession(ctx, sessionID, req)

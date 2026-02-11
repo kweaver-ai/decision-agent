@@ -5,85 +5,121 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/daenum"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/pmsvo"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestPublishInfo(t *testing.T) {
-	t.Run("create publish info", func(t *testing.T) {
-		info := &PublishInfo{
-			CategoryIDs:      []string{"cat-1", "cat-2"},
-			Description:      "Test publish description",
-			PublishToWhere:   []daenum.PublishToWhere{daenum.PublishToWhereCustomSpace},
-			PmsControl:       &pmsvo.PmsControlObjS{},
-			PublishToBes:     []cdaenum.PublishToBe{cdaenum.PublishToBeAPIAgent},
-		}
+func TestPublishInfo_NewInstance(t *testing.T) {
+	info := &PublishInfo{}
 
-		if len(info.CategoryIDs) != 2 {
-			t.Errorf("Expected 2 category IDs, got %d", len(info.CategoryIDs))
-		}
-		if info.CategoryIDs[0] != "cat-1" {
-			t.Errorf("Expected first category ID to be 'cat-1', got '%s'", info.CategoryIDs[0])
-		}
-		if info.Description != "Test publish description" {
-			t.Errorf("Expected description to be 'Test publish description', got '%s'", info.Description)
-		}
-		if len(info.PublishToWhere) != 1 {
-			t.Errorf("Expected 1 publish to where, got %d", len(info.PublishToWhere))
-		}
-		if info.PmsControl == nil {
-			t.Error("Expected PmsControl to be non-nil")
-		}
-		if len(info.PublishToBes) != 1 {
-			t.Errorf("Expected 1 publish to be, got %d", len(info.PublishToBes))
-		}
-	})
+	assert.NotNil(t, info)
+	assert.Nil(t, info.CategoryIDs)
+	assert.Equal(t, "", info.Description)
+	assert.Nil(t, info.PublishToWhere)
+	assert.Nil(t, info.PmsControl)
+	assert.Nil(t, info.PublishToBes)
+}
 
-	t.Run("with multiple publish targets", func(t *testing.T) {
-		info := &PublishInfo{
-			PublishToWhere: []daenum.PublishToWhere{
-				daenum.PublishToWhereCustomSpace,
-				daenum.PublishToWhereSquare,
-			},
-			PublishToBes: []cdaenum.PublishToBe{
-				cdaenum.PublishToBeAPIAgent,
-				cdaenum.PublishToBeWebSDKAgent,
-				cdaenum.PublishToBeSkillAgent,
-			},
-		}
+func TestPublishInfo_WithCategoryIDs(t *testing.T) {
+	info := &PublishInfo{
+		CategoryIDs: []string{"cat_1", "cat_2", "cat_3"},
+	}
 
-		if len(info.PublishToWhere) != 2 {
-			t.Errorf("Expected 2 publish to where targets, got %d", len(info.PublishToWhere))
-		}
-		if len(info.PublishToBes) != 3 {
-			t.Errorf("Expected 3 publish to be types, got %d", len(info.PublishToBes))
-		}
-	})
+	assert.Len(t, info.CategoryIDs, 3)
+	assert.Equal(t, "cat_1", info.CategoryIDs[0])
+	assert.Equal(t, "cat_2", info.CategoryIDs[1])
+	assert.Equal(t, "cat_3", info.CategoryIDs[2])
+}
 
-	t.Run("with empty slices", func(t *testing.T) {
-		info := &PublishInfo{
-			CategoryIDs:    []string{},
-			PublishToWhere: []daenum.PublishToWhere{},
-			PublishToBes:   []cdaenum.PublishToBe{},
-		}
+func TestPublishInfo_WithEmptyCategoryIDs(t *testing.T) {
+	info := &PublishInfo{
+		CategoryIDs: []string{},
+	}
 
-		if len(info.CategoryIDs) != 0 {
-			t.Errorf("Expected 0 category IDs, got %d", len(info.CategoryIDs))
-		}
-		if len(info.PublishToWhere) != 0 {
-			t.Errorf("Expected 0 publish to where, got %d", len(info.PublishToWhere))
-		}
-		if len(info.PublishToBes) != 0 {
-			t.Errorf("Expected 0 publish to be, got %d", len(info.PublishToBes))
-		}
-	})
+	assert.NotNil(t, info.CategoryIDs)
+	assert.Len(t, info.CategoryIDs, 0)
+}
 
-	t.Run("with nil pms control", func(t *testing.T) {
-		info := &PublishInfo{
-			PmsControl: nil,
-		}
+func TestPublishInfo_WithDescription(t *testing.T) {
+	tests := []struct {
+		name        string
+		description string
+	}{
+		{
+			name:        "normal description",
+			description: "This is a test agent description",
+		},
+		{
+			name:        "empty description",
+			description: "",
+		},
+		{
+			name:        "description with special characters",
+			description: "Description with @#$% special chars",
+		},
+		{
+			name:        "unicode description",
+			description: "这是一个测试描述",
+		},
+	}
 
-		if info.PmsControl != nil {
-			t.Error("Expected PmsControl to be nil")
-		}
-	})
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			info := &PublishInfo{
+				Description: tt.description,
+			}
+
+			assert.Equal(t, tt.description, info.Description)
+		})
+	}
+}
+
+func TestPublishInfo_WithPublishToWhere(t *testing.T) {
+	info := &PublishInfo{
+		PublishToWhere: []daenum.PublishToWhere{
+			daenum.PublishToWhereCustomSpace,
+			daenum.PublishToWhereSquare,
+		},
+	}
+
+	assert.Len(t, info.PublishToWhere, 2)
+	assert.Equal(t, daenum.PublishToWhereCustomSpace, info.PublishToWhere[0])
+	assert.Equal(t, daenum.PublishToWhereSquare, info.PublishToWhere[1])
+}
+
+func TestPublishInfo_WithPublishToBes(t *testing.T) {
+	info := &PublishInfo{
+		PublishToBes: []cdaenum.PublishToBe{
+			cdaenum.PublishToBeSkillAgent,
+		},
+	}
+
+	assert.Len(t, info.PublishToBes, 1)
+	assert.Equal(t, cdaenum.PublishToBeSkillAgent, info.PublishToBes[0])
+}
+
+func TestPublishInfo_WithEmptyPublishToBes(t *testing.T) {
+	info := &PublishInfo{
+		PublishToBes: []cdaenum.PublishToBe{},
+	}
+
+	assert.NotNil(t, info.PublishToBes)
+	assert.Len(t, info.PublishToBes, 0)
+}
+
+func TestPublishInfo_FullStructure(t *testing.T) {
+	info := &PublishInfo{
+		CategoryIDs: []string{"cat_1", "cat_2"},
+		Description: "Test description",
+		PublishToWhere: []daenum.PublishToWhere{
+			daenum.PublishToWhereSquare,
+		},
+		PublishToBes: []cdaenum.PublishToBe{
+			cdaenum.PublishToBeSkillAgent,
+		},
+	}
+
+	assert.Len(t, info.CategoryIDs, 2)
+	assert.Equal(t, "Test description", info.Description)
+	assert.Len(t, info.PublishToWhere, 1)
+	assert.Len(t, info.PublishToBes, 1)
 }
