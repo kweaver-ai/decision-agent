@@ -33,17 +33,17 @@ dependencies = [
   "pydantic-settings==2.12.0",
   "sqlparse==0.5.1",
   "sql_metadata==2.13.0",
-  "pyahocorasick==2.0.0",
   "jieba==0.42.1",
   "faiss-cpu>=1.8",
-  "fastapi>=0.115.0",
+  "fastapi>=0.115.0,<0.129.0",
   "kweaver-sandbox-runtime==0.1.1",
   "uvicorn>=0.27.0",
   "openai>=1.68.2",
   "httpx==0.27.2",
   "sqlglot[rs]==26.21.0",
   "rank-bm25==0.2.2",
-  "circuitbreaker>=2.0.0"
+  "circuitbreaker>=2.0.0",
+  "mcp==1.26.0"
 ]
 
 [project.optional-dependencies]

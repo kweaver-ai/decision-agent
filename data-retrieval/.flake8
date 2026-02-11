@@ -7,12 +7,6 @@ per-file-ignores =
     # Prompt templates with long strings
     */prompts/*.py:E501
     */prompts/**/*.py:E501
-    # Graph tools with NGQL templates and retrieval engines
-    */tools/graph_tools/*.py:E501
-    */tools/graph_tools/**/*.py:E501
     # Sandbox tools with code examples
     */tools/sandbox_tools/*.py:E501
     */tools/sandbox_tools/**/*.py:E501
-    # Knowledge network tools with schema descriptions
-    */tools/knowledge_network_tools/*.py:E501
-    */tools/knowledge_network_tools/**/*.py:E501

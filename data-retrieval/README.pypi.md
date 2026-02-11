@@ -19,19 +19,6 @@ from data_retrieval.tools import TOOLS_MAPPING
 print(TOOLS_MAPPING.keys())
 ```
 
-### Knowledge Network Tools
-
-```python
-from data_retrieval.tools.knowledge_network_tools import KNOWLEDGE_NETWORK_TOOLS_MAPPING
-
-# Available tools:
-# - knowledge_rerank: Rerank search results
-# - knowledge_retrieve: Retrieve from knowledge base
-# - kn_search: Knowledge network search (v2)
-# - kn_path_search: Relation path retrieval
-# - cypher_query: Execute Cypher queries
-```
-
 ### Start API Server
 
 ```python

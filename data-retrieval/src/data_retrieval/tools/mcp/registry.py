@@ -257,8 +257,8 @@ def set_identity_params(identity: str, params: Dict[str, Any], tool_name: Option
 
         # Set tool-specific params
         set_identity_params("user-123", {
-            "inner_kg": {"kg_id": "14"},
-        }, tool_name="text2ngql")
+            "inner_llm": {"name": "deepseek-v3"},
+        }, tool_name="text2sql")
     """
     _default_provider.set_params(identity, params, tool_name)
 
