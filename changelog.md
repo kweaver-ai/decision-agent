@@ -1,4 +1,9 @@
 # Changelog
+## 0.3.5
+
+### Bug Fixes
+
+- Fix EnsureSandboxSession to delete failed sessions before recreating
 
 ## 0.3.4
 
@@ -14,10 +19,6 @@
 ### Frontend (agent-web)
 
 - Fix filter status abnormal bug on My Agent template page
-
-### Bug Fixes
-
-- Fix EnsureSandboxSession to delete failed sessions before recreating
 
 ## 0.3.2
 
