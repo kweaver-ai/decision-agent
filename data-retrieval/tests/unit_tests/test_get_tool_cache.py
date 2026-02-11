@@ -243,12 +243,19 @@ class TestGetToolCacheAPISchema(unittest.IsolatedAsyncioTestCase):
         assert "summary" in post
         assert post["summary"] == "get_tool_cache"
         assert "description" in post
-        assert "parameters" in post
-        assert len(post["parameters"]) >= 2
-
-        param_names = [p["name"] for p in post["parameters"]]
-        assert "cache_key" in param_names
-        assert "session_type" in param_names
+        # 验证 requestBody 结构
+        assert "requestBody" in post
+        rb = post["requestBody"]["content"]["application/json"]["schema"]
+        assert rb["type"] == "object"
+        assert "cache_key" in rb["properties"]
+        assert "session_type" in rb["properties"]
+        assert "cache_key" in rb["required"]
+        # 验证 responses 结构
+        assert "responses" in post
+        assert "200" in post["responses"]
+        resp_200 = post["responses"]["200"]
+        assert "content" in resp_200
+        assert "application/json" in resp_200["content"]
 
 
 class TestGetToolCacheAsyncAPI(unittest.IsolatedAsyncioTestCase):
