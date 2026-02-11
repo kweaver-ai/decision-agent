@@ -75,6 +75,7 @@ RUN set -ex; \
     gcc \
     g++ \
     make \
+    binutils \
     && rm -rf /var/lib/apt/lists/*; \
     pip install  pyinstaller
 
