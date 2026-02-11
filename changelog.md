@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.4
+
+### Bug Fixes
+
+- Fix Agent conversation error when memory function is enabled
+- Add dbutilsx dependency and refactor memory configuration parsing
+- Update numpy minimum version to 1.23.5 for compatibility
+
 ## 0.3.3
 
 ### Frontend (agent-web)
