@@ -62,7 +62,7 @@ func TestBizDomainSvc_InitBizDomainAgentRel_GetByBizDomainIDError(t *testing.T) 
 	dbErr := errors.New("database query failed")
 
 	mockBdAgentRelRepo.EXPECT().BeginTx(gomock.Any()).Return(mockTx, nil)
-	mockBdAgentRelRepo.EXPECT().GetByBizDomainID(ctx, mockTx, "public").Return(nil, dbErr)
+	mockBdAgentRelRepo.EXPECT().GetByBizDomainID(ctx, mockTx, "bd_public").Return(nil, dbErr)
 
 	err := svc.InitBizDomainAgentRel(ctx, mockAgentRepo, mockBdAgentRelRepo)
 
@@ -91,7 +91,7 @@ func TestBizDomainSvc_InitBizDomainAgentRel_GetAllIDsError(t *testing.T) {
 	dbErr := errors.New("get all agent ids failed")
 
 	mockBdAgentRelRepo.EXPECT().BeginTx(gomock.Any()).Return(mockTx, nil)
-	mockBdAgentRelRepo.EXPECT().GetByBizDomainID(ctx, mockTx, "public").Return([]*dapo.BizDomainAgentRelPo{}, nil)
+	mockBdAgentRelRepo.EXPECT().GetByBizDomainID(ctx, mockTx, "bd_public").Return([]*dapo.BizDomainAgentRelPo{}, nil)
 	mockAgentRepo.EXPECT().GetAllIDs(ctx).Return(nil, dbErr)
 
 	err := svc.InitBizDomainAgentRel(ctx, mockAgentRepo, mockBdAgentRelRepo)
@@ -107,12 +107,11 @@ func TestBizDomainSvc_InitBizDomainAgentRel_SkipWhenExistingData(t *testing.T) {
 
 	mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 	mockBdAgentRelRepo := idbaccessmock.NewMockIBizDomainAgentRelRepo(ctrl)
-	mockLogger := cmpmock.NewMockLogger(ctrl)
 	mockHttp := bizdomainaccmock.NewMockBizDomainHttpAcc(ctrl)
 
 	svc := &BizDomainSvc{
 		SvcBase:       service.NewSvcBase(),
-		logger:        mockLogger,
+		logger:        nil, // Set to nil to avoid panic in TxRollback with mock tx
 		bizDomainHttp: mockHttp,
 	}
 
@@ -121,15 +120,12 @@ func TestBizDomainSvc_InitBizDomainAgentRel_SkipWhenExistingData(t *testing.T) {
 
 	// Setup expectations - return existing data
 	existingRel := &dapo.BizDomainAgentRelPo{
-		BizDomainID: "public",
+		BizDomainID: "bd_public",
 		AgentID:     "agent-1",
 	}
 	mockBdAgentRelRepo.EXPECT().BeginTx(gomock.Any()).Return(mockTx, nil)
-	mockBdAgentRelRepo.EXPECT().GetByBizDomainID(ctx, mockTx, "public").Return([]*dapo.BizDomainAgentRelPo{existingRel}, nil)
-	mockLogger.EXPECT().Infof(gomock.Any(), gomock.Any())
+	mockBdAgentRelRepo.EXPECT().GetByBizDomainID(ctx, mockTx, "bd_public").Return([]*dapo.BizDomainAgentRelPo{existingRel}, nil)
 
-	// Note: We can't mock sql.Tx.Rollback(), but the real implementation will call it
-	// The test still validates the code path correctly
 	err := svc.InitBizDomainAgentRel(ctx, mockAgentRepo, mockBdAgentRelRepo)
 
 	// This should still return nil (success) when existing data is found
@@ -143,12 +139,11 @@ func TestBizDomainSvc_InitBizDomainAgentRel_SkipWhenNoAgents(t *testing.T) {
 
 	mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 	mockBdAgentRelRepo := idbaccessmock.NewMockIBizDomainAgentRelRepo(ctrl)
-	mockLogger := cmpmock.NewMockLogger(ctrl)
 	mockHttp := bizdomainaccmock.NewMockBizDomainHttpAcc(ctrl)
 
 	svc := &BizDomainSvc{
 		SvcBase:       service.NewSvcBase(),
-		logger:        mockLogger,
+		logger:        nil, // Set to nil to avoid panic in TxRollback with mock tx
 		bizDomainHttp: mockHttp,
 	}
 
@@ -157,9 +152,8 @@ func TestBizDomainSvc_InitBizDomainAgentRel_SkipWhenNoAgents(t *testing.T) {
 
 	// Setup expectations
 	mockBdAgentRelRepo.EXPECT().BeginTx(gomock.Any()).Return(mockTx, nil)
-	mockBdAgentRelRepo.EXPECT().GetByBizDomainID(ctx, mockTx, "public").Return([]*dapo.BizDomainAgentRelPo{}, nil)
+	mockBdAgentRelRepo.EXPECT().GetByBizDomainID(ctx, mockTx, "bd_public").Return([]*dapo.BizDomainAgentRelPo{}, nil)
 	mockAgentRepo.EXPECT().GetAllIDs(ctx).Return([]string{}, nil)
-	mockLogger.EXPECT().Infoln(gomock.Any())
 
 	err := svc.InitBizDomainAgentRel(ctx, mockAgentRepo, mockBdAgentRelRepo)
 

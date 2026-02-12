@@ -62,7 +62,7 @@ func TestBizDomainSvc_InitBizDomainAgentTplRel_GetByBizDomainIDError(t *testing.
 	dbErr := errors.New("database query failed")
 
 	mockBdAgentTplRelRepo.EXPECT().BeginTx(gomock.Any()).Return(mockTx, nil)
-	mockBdAgentTplRelRepo.EXPECT().GetByBizDomainID(ctx, mockTx, "public").Return(nil, dbErr)
+	mockBdAgentTplRelRepo.EXPECT().GetByBizDomainID(ctx, mockTx, "bd_public").Return(nil, dbErr)
 
 	err := svc.InitBizDomainAgentTplRel(ctx, mockAgentTplRepo, mockBdAgentTplRelRepo)
 
@@ -91,7 +91,7 @@ func TestBizDomainSvc_InitBizDomainAgentTplRel_GetAllIDsError(t *testing.T) {
 	dbErr := errors.New("get all agent tpl ids failed")
 
 	mockBdAgentTplRelRepo.EXPECT().BeginTx(gomock.Any()).Return(mockTx, nil)
-	mockBdAgentTplRelRepo.EXPECT().GetByBizDomainID(ctx, mockTx, "public").Return([]*dapo.BizDomainAgentTplRelPo{}, nil)
+	mockBdAgentTplRelRepo.EXPECT().GetByBizDomainID(ctx, mockTx, "bd_public").Return([]*dapo.BizDomainAgentTplRelPo{}, nil)
 	mockAgentTplRepo.EXPECT().GetAllIDs(ctx).Return(nil, dbErr)
 
 	err := svc.InitBizDomainAgentTplRel(ctx, mockAgentTplRepo, mockBdAgentTplRelRepo)
@@ -107,12 +107,11 @@ func TestBizDomainSvc_InitBizDomainAgentTplRel_SkipWhenExistingData(t *testing.T
 
 	mockAgentTplRepo := idbaccessmock.NewMockIDataAgentTplRepo(ctrl)
 	mockBdAgentTplRelRepo := idbaccessmock.NewMockIBizDomainAgentTplRelRepo(ctrl)
-	mockLogger := cmpmock.NewMockLogger(ctrl)
 	mockHttp := bizdomainaccmock.NewMockBizDomainHttpAcc(ctrl)
 
 	svc := &BizDomainSvc{
 		SvcBase:       service.NewSvcBase(),
-		logger:        mockLogger,
+		logger:        nil, // Set to nil to avoid panic in TxRollback with mock tx
 		bizDomainHttp: mockHttp,
 	}
 
@@ -121,12 +120,11 @@ func TestBizDomainSvc_InitBizDomainAgentTplRel_SkipWhenExistingData(t *testing.T
 
 	// Setup expectations - return existing data
 	existingRel := &dapo.BizDomainAgentTplRelPo{
-		BizDomainID: "public",
+		BizDomainID: "bd_public",
 		AgentTplID:  1,
 	}
 	mockBdAgentTplRelRepo.EXPECT().BeginTx(gomock.Any()).Return(mockTx, nil)
-	mockBdAgentTplRelRepo.EXPECT().GetByBizDomainID(ctx, mockTx, "public").Return([]*dapo.BizDomainAgentTplRelPo{existingRel}, nil)
-	mockLogger.EXPECT().Infof(gomock.Any(), gomock.Any())
+	mockBdAgentTplRelRepo.EXPECT().GetByBizDomainID(ctx, mockTx, "bd_public").Return([]*dapo.BizDomainAgentTplRelPo{existingRel}, nil)
 
 	err := svc.InitBizDomainAgentTplRel(ctx, mockAgentTplRepo, mockBdAgentTplRelRepo)
 
@@ -140,12 +138,11 @@ func TestBizDomainSvc_InitBizDomainAgentTplRel_SkipWhenNoAgentTpls(t *testing.T)
 
 	mockAgentTplRepo := idbaccessmock.NewMockIDataAgentTplRepo(ctrl)
 	mockBdAgentTplRelRepo := idbaccessmock.NewMockIBizDomainAgentTplRelRepo(ctrl)
-	mockLogger := cmpmock.NewMockLogger(ctrl)
 	mockHttp := bizdomainaccmock.NewMockBizDomainHttpAcc(ctrl)
 
 	svc := &BizDomainSvc{
 		SvcBase:       service.NewSvcBase(),
-		logger:        mockLogger,
+		logger:        nil, // Set to nil to avoid panic in TxRollback with mock tx
 		bizDomainHttp: mockHttp,
 	}
 
@@ -154,9 +151,8 @@ func TestBizDomainSvc_InitBizDomainAgentTplRel_SkipWhenNoAgentTpls(t *testing.T)
 
 	// Setup expectations
 	mockBdAgentTplRelRepo.EXPECT().BeginTx(gomock.Any()).Return(mockTx, nil)
-	mockBdAgentTplRelRepo.EXPECT().GetByBizDomainID(ctx, mockTx, "public").Return([]*dapo.BizDomainAgentTplRelPo{}, nil)
+	mockBdAgentTplRelRepo.EXPECT().GetByBizDomainID(ctx, mockTx, "bd_public").Return([]*dapo.BizDomainAgentTplRelPo{}, nil)
 	mockAgentTplRepo.EXPECT().GetAllIDs(ctx).Return([]int64{}, nil)
-	mockLogger.EXPECT().Infoln(gomock.Any())
 
 	err := svc.InitBizDomainAgentTplRel(ctx, mockAgentTplRepo, mockBdAgentTplRelRepo)
 
