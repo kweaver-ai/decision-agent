@@ -62,5 +62,5 @@ index-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 #tlogging = { git = "https://github.com/kweaver-ai/TelemetrySDK-Python", rev = "2.4.2" }
 
 [tool.pytest.ini_options]
-norecursedirs = "test/unit/common/tool_v2"
+norecursedirs = ["test/unit/common/tool_v2", "test/unit/boot"]
 asyncio_mode = "auto"
