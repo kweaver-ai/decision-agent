@@ -12,6 +12,16 @@ import pytest
 class TestSetupFileLogging:
     """Tests for setup_file_logging function"""
 
+    def setup_method(self):
+        """Clear handlers before each test"""
+        stdlib_logger = logging.getLogger("agent-executor-file")
+        stdlib_logger.handlers.clear()
+
+    def teardown_method(self):
+        """Clear handlers after each test to prevent pollution"""
+        stdlib_logger = logging.getLogger("agent-executor-file")
+        stdlib_logger.handlers.clear()
+
     @pytest.mark.asyncio
     async def test_setup_file_logging_returns_logger(self):
         """Test that setup_file_logging returns a logger"""
@@ -37,6 +47,8 @@ class TestSetupFileLogging:
 
             with patch('app.common.struct_logger.file_logging_setup.TimedRotatingFileHandler') as mock_handler:
                 mock_handler_instance = MagicMock()
+                mock_handler_instance.setLevel = MagicMock()
+                mock_handler_instance.setFormatter = MagicMock()
                 mock_handler.return_value = mock_handler_instance
 
                 from app.common.struct_logger.file_logging_setup import setup_file_logging
@@ -101,6 +113,8 @@ class TestSetupFileLogging:
 
             with patch('app.common.struct_logger.file_logging_setup.TimedRotatingFileHandler') as mock_handler:
                 mock_handler_instance = MagicMock()
+                mock_handler_instance.setLevel = MagicMock()
+                mock_handler_instance.setFormatter = MagicMock()
                 mock_handler.return_value = mock_handler_instance
 
                 from app.common.struct_logger.file_logging_setup import setup_file_logging

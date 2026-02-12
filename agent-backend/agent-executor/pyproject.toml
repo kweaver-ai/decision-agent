@@ -60,3 +60,7 @@ index-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 [tool.uv.sources]
 #mq-sdk = { git = "https://github.com/kweaver-ai/proton-mq-sdk-py", rev = "release/1.9.0" }
 #tlogging = { git = "https://github.com/kweaver-ai/TelemetrySDK-Python", rev = "2.4.2" }
+
+[tool.pytest.ini_options]
+norecursedirs = "test/unit/common/tool_v2"
+asyncio_mode = "auto"

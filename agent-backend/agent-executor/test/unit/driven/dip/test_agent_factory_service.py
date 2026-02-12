@@ -103,13 +103,13 @@ class TestGetAgentConfigByKey:
         mock_response.status = 200
         mock_response.json = AsyncMock(return_value=expected_response)
 
-        mock_post_context = AsyncMock()
-        mock_post_context.__aenter__.return_value = mock_response
-        mock_post_context.__aexit__.return_value = None
+        mock_get_context = AsyncMock()
+        mock_get_context.__aenter__.return_value = mock_response
+        mock_get_context.__aexit__.return_value = None
 
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
-            mock_session_instance.post = MagicMock(return_value=mock_post_context)
+            mock_session_instance.get = MagicMock(return_value=mock_get_context)
             mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
@@ -127,13 +127,13 @@ class TestGetAgentConfigByKey:
         mock_response.status = 404
         mock_response.text = AsyncMock(return_value="Agent not found")
 
-        mock_post_context = AsyncMock()
-        mock_post_context.__aenter__.return_value = mock_response
-        mock_post_context.__aexit__.return_value = None
+        mock_get_context = AsyncMock()
+        mock_get_context.__aenter__.return_value = mock_response
+        mock_get_context.__aexit__.return_value = None
 
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
-            mock_session_instance.post = MagicMock(return_value=mock_post_context)
+            mock_session_instance.get = MagicMock(return_value=mock_get_context)
             mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance

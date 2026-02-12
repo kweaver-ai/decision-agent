@@ -88,6 +88,16 @@ class TestCreateStderrHandler:
 class TestSetupConsoleLogging:
     """Tests for setup_console_logging function"""
 
+    def setup_method(self):
+        """Clear handlers before each test"""
+        stdlib_logger = logging.getLogger("agent-executor-console")
+        stdlib_logger.handlers.clear()
+
+    def teardown_method(self):
+        """Clear handlers after each test to prevent pollution"""
+        stdlib_logger = logging.getLogger("agent-executor-console")
+        stdlib_logger.handlers.clear()
+
     @pytest.mark.asyncio
     async def test_setup_console_logging_returns_logger(self):
         """Test that setup_console_logging returns a logger"""
