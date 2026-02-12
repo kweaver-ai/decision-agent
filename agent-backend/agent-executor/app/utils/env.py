@@ -6,7 +6,7 @@ from app.common.struct_logger import struct_logger
 
 def load_env_file(env_file_path):
     """加载 .env 文件中的环境变量"""
-    if not os.path.exists(env_file_path):
+    if not env_file_path or not os.path.exists(env_file_path):
         struct_logger.console_logger.debug(f".env file not found at {env_file_path}")
         return
 

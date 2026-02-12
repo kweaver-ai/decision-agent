@@ -248,23 +248,67 @@ async def restore_full_json(
         content = update["content"]
         action = update["action"]
 
+        # Handle empty key list - return content directly
+        if not keys:
+            full_json = content
+            continue
+
         # 遍历到目标键
         current_level = full_json
-        for key in keys[:-1]:
-            if key not in current_level:
-                current_level[key] = {} if isinstance(key, str) else []
-            current_level = current_level[key]
+        for i, key in enumerate(keys[:-1]):
+            next_key = keys[i + 1]
+
+            if isinstance(key, int):
+                # Current level is a list, key is an index
+                # Ensure the list is large enough
+                while len(current_level) <= key:
+                    current_level.append({})
+                # Check if we need to convert dict to list at this index
+                if isinstance(next_key, int) and not isinstance(current_level[key], list):
+                    current_level[key] = []
+                elif not isinstance(next_key, int) and isinstance(current_level[key], list):
+                    # Convert list to dict if needed
+                    current_level[key] = {i: v for i, v in enumerate(current_level[key])}
+                current_level = current_level[key]
+            else:
+                # Current level is a dict, key is a string key
+                if key not in current_level:
+                    # Determine if the next level should be a list or dict
+                    if isinstance(next_key, int):
+                        # Create a list if the next key is an integer
+                        current_level[key] = []
+                    else:
+                        current_level[key] = {}
+                elif isinstance(next_key, int) and not isinstance(current_level[key], list):
+                    # Convert dict to list if needed
+                    current_level[key] = []
+                elif not isinstance(next_key, int) and isinstance(current_level[key], list):
+                    # Convert list to dict if needed
+                    current_level[key] = {i: v for i, v in enumerate(current_level[key])}
+                current_level = current_level[key]
 
         last_key = keys[-1]
 
         if action == "upsert":
+            if isinstance(last_key, int) and isinstance(current_level, list):
+                # Ensure the list is large enough for the index
+                while len(current_level) <= last_key:
+                    current_level.append(None)
             current_level[last_key] = content
         elif action == "append":
+            if isinstance(last_key, int) and isinstance(current_level, list):
+                # Ensure the list is large enough for the index
+                while len(current_level) <= last_key:
+                    current_level.append(None)
             if isinstance(current_level[last_key], str):
                 current_level[last_key] += content
             else:
                 current_level[last_key].append(content)
         elif action == "remove":
+            if isinstance(last_key, int) and isinstance(current_level, list):
+                # Ensure the list is large enough for the index
+                while len(current_level) <= last_key:
+                    current_level.append(None)
             if last_key in current_level:
                 del current_level[last_key]
 

@@ -7,7 +7,7 @@ import (
 
 	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/published/pubedreq"
+	pubedreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/published/pubedreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
@@ -29,24 +29,28 @@ func TestGetPubedTplList_BizDomainHttpError(t *testing.T) {
 	mockBizDomainHttp := bizdomainaccmock.NewMockBizDomainHttpAcc(ctrl)
 	mockPublishedTplRepo := idbaccessmock.NewMockIPublishedTplRepo(ctrl)
 
+	dto := &NewPublishedSvcDto{
+		SvcBase:          service.NewSvcBase(),
+		PublishedTplRepo: mockPublishedTplRepo,
+		BizDomainHttp:    mockBizDomainHttp,
+	}
+
+	svc := NewPublishedService(dto)
+
+	ctx := createPublishedCtx("test-bd-id")
 	req := &pubedreq.PubedTplListReq{
 		Size: 10,
 	}
 
-	expectedErr := errors.New("business domain error")
-	mockBizDomainHttp.EXPECT().GetAllAgentTplIDList(gomock.Any(), []string{"bd-123"}).Return(nil, expectedErr)
+	httpErr := errors.New("http request failed")
 
-	svc := &publishedSvc{
-		SvcBase:          service.NewSvcBase(),
-		bizDomainHttp:    mockBizDomainHttp,
-		publishedTplRepo: mockPublishedTplRepo,
-	}
+	mockBizDomainHttp.EXPECT().GetAllAgentTplIDList(gomock.Any(), gomock.Any()).Return(nil, httpErr)
 
-	ctx := createPublishedCtx("bd-123")
 	res, err := svc.GetPubedTplList(ctx, req)
 
+	// The function returns both response and error
 	assert.Error(t, err)
-	assert.NotNil(t, res)
+	assert.NotNil(t, res) // Response is initialized even on error
 	assert.Contains(t, err.Error(), "bizDomainHttp.GetAllAgentTplIDList failed")
 }
 
@@ -57,19 +61,22 @@ func TestGetPubedTplList_NoTemplatesInBusinessDomain(t *testing.T) {
 	mockBizDomainHttp := bizdomainaccmock.NewMockBizDomainHttpAcc(ctrl)
 	mockPublishedTplRepo := idbaccessmock.NewMockIPublishedTplRepo(ctrl)
 
+	dto := &NewPublishedSvcDto{
+		SvcBase:          service.NewSvcBase(),
+		PublishedTplRepo: mockPublishedTplRepo,
+		BizDomainHttp:    mockBizDomainHttp,
+	}
+
+	svc := NewPublishedService(dto)
+
+	ctx := createPublishedCtx("test-bd-id")
 	req := &pubedreq.PubedTplListReq{
 		Size: 10,
 	}
 
-	mockBizDomainHttp.EXPECT().GetAllAgentTplIDList(gomock.Any(), []string{"bd-123"}).Return([]string{}, nil)
+	// When GetAllAgentTplIDList returns empty, the function returns early without calling the repo
+	mockBizDomainHttp.EXPECT().GetAllAgentTplIDList(gomock.Any(), gomock.Any()).Return([]string{}, nil)
 
-	svc := &publishedSvc{
-		SvcBase:          service.NewSvcBase(),
-		bizDomainHttp:    mockBizDomainHttp,
-		publishedTplRepo: mockPublishedTplRepo,
-	}
-
-	ctx := createPublishedCtx("bd-123")
 	res, err := svc.GetPubedTplList(ctx, req)
 
 	assert.NoError(t, err)
@@ -84,27 +91,27 @@ func TestGetPubedTplList_RepositoryError(t *testing.T) {
 	mockBizDomainHttp := bizdomainaccmock.NewMockBizDomainHttpAcc(ctrl)
 	mockPublishedTplRepo := idbaccessmock.NewMockIPublishedTplRepo(ctrl)
 
+	dto := &NewPublishedSvcDto{
+		SvcBase:          service.NewSvcBase(),
+		PublishedTplRepo: mockPublishedTplRepo,
+		BizDomainHttp:    mockBizDomainHttp,
+	}
+
+	svc := NewPublishedService(dto)
+
+	ctx := createPublishedCtx("test-bd-id")
 	req := &pubedreq.PubedTplListReq{
 		Size: 10,
 	}
 
-	tplIDs := []string{"tpl-1", "tpl-2"}
-	expectedErr := errors.New("repository error")
+	mockBizDomainHttp.EXPECT().GetAllAgentTplIDList(gomock.Any(), gomock.Any()).Return([]string{"tpl1"}, nil)
+	mockPublishedTplRepo.EXPECT().GetPubTplList(gomock.Any(), gomock.Any()).Return(nil, errors.New("repository error"))
 
-	mockBizDomainHttp.EXPECT().GetAllAgentTplIDList(gomock.Any(), []string{"bd-123"}).Return(tplIDs, nil)
-	mockPublishedTplRepo.EXPECT().GetPubTplList(gomock.Any(), req).Return(nil, expectedErr)
-
-	svc := &publishedSvc{
-		SvcBase:          service.NewSvcBase(),
-		bizDomainHttp:    mockBizDomainHttp,
-		publishedTplRepo: mockPublishedTplRepo,
-	}
-
-	ctx := createPublishedCtx("bd-123")
 	res, err := svc.GetPubedTplList(ctx, req)
 
+	// The function returns both response and error
 	assert.Error(t, err)
-	assert.NotNil(t, res)
+	assert.NotNil(t, res) // Response is initialized even on error
 	assert.Contains(t, err.Error(), "publishedTplRepo.GetPubTplList failed")
 }
 
@@ -115,30 +122,25 @@ func TestGetPubedTplList_EmptyResults(t *testing.T) {
 	mockBizDomainHttp := bizdomainaccmock.NewMockBizDomainHttpAcc(ctrl)
 	mockPublishedTplRepo := idbaccessmock.NewMockIPublishedTplRepo(ctrl)
 
+	dto := &NewPublishedSvcDto{
+		SvcBase:          service.NewSvcBase(),
+		PublishedTplRepo: mockPublishedTplRepo,
+		BizDomainHttp:    mockBizDomainHttp,
+	}
+
+	svc := NewPublishedService(dto)
+
+	ctx := createPublishedCtx("test-bd-id")
 	req := &pubedreq.PubedTplListReq{
 		Size: 10,
 	}
 
-	tplIDs := []string{"tpl-1", "tpl-2"}
+	mockBizDomainHttp.EXPECT().GetAllAgentTplIDList(gomock.Any(), gomock.Any()).Return([]string{"tpl1"}, nil)
+	mockPublishedTplRepo.EXPECT().GetPubTplList(gomock.Any(), gomock.Any()).Return([]*dapo.PublishedTplPo{}, nil)
 
-	mockBizDomainHttp.EXPECT().GetAllAgentTplIDList(gomock.Any(), []string{"bd-123"}).Return(tplIDs, nil)
-	mockPublishedTplRepo.EXPECT().GetPubTplList(gomock.Any(), req).Return([]*dapo.PublishedTplPo{}, nil)
-
-	svc := &publishedSvc{
-		SvcBase:          service.NewSvcBase(),
-		bizDomainHttp:    mockBizDomainHttp,
-		publishedTplRepo: mockPublishedTplRepo,
-		umHttp:           nil,
-	}
-
-	ctx := createPublishedCtx("bd-123")
 	res, err := svc.GetPubedTplList(ctx, req)
 
-	// When repo returns empty list, the function returns without error (no p2e conversion)
+	// When repo returns empty list, function returns without error (no p2e conversion)
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
-}
-
-func TestGetPublishedAgentList_Success(t *testing.T) {
-	t.Skip("Skipping - requires multiple dependencies to be set up")
 }

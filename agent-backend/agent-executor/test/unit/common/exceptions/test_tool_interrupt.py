@@ -4,6 +4,7 @@ import pytest
 from unittest.mock import MagicMock
 import sys
 from pathlib import Path
+from types import ModuleType
 
 # Import the module directly by file path to avoid circular imports through __init__.py
 # Get the project root (go up from test/unit/common/exceptions to project root)
@@ -16,14 +17,28 @@ spec = importlib.util.spec_from_file_location("tool_interrupt_module", str(tool_
 tool_interrupt_module = importlib.util.module_from_spec(spec)
 
 # Mock the dolphin dependency before loading
+# Use proper module structure to avoid breaking other tests
 class MockResumeHandle:
     pass
 
-sys.modules['dolphin'] = MagicMock()
-sys.modules['dolphin.core'] = MagicMock()
-sys.modules['dolphin.core.coroutine'] = MagicMock()
-sys.modules['dolphin.core.coroutine.resume_handle'] = MagicMock()
-sys.modules['dolphin.core.coroutine.resume_handle'].ResumeHandle = MockResumeHandle
+# Create proper mock modules that are packages (with __path__)
+def create_mock_package(name):
+    """Create a mock module that is a package"""
+    module = ModuleType(name)
+    module.__path__ = []  # Mark as package
+    return module
+
+# Only set up mocks if they don't already exist
+if 'dolphin' not in sys.modules:
+    sys.modules['dolphin'] = create_mock_package('dolphin')
+if 'dolphin.core' not in sys.modules:
+    sys.modules['dolphin.core'] = create_mock_package('dolphin.core')
+if 'dolphin.core.coroutine' not in sys.modules:
+    sys.modules['dolphin.core.coroutine'] = create_mock_package('dolphin.core.coroutine')
+if 'dolphin.core.coroutine.resume_handle' not in sys.modules:
+    resume_handle_module = create_mock_package('dolphin.core.coroutine.resume_handle')
+    resume_handle_module.ResumeHandle = MockResumeHandle
+    sys.modules['dolphin.core.coroutine.resume_handle'] = resume_handle_module
 
 # Now load the module
 spec.loader.exec_module(tool_interrupt_module)

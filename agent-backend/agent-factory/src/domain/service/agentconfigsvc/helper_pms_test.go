@@ -10,6 +10,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdapmsenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iauthzacc/authzaccmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver/v3portdrivermock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -353,6 +354,240 @@ func TestIsOwnerOrHasBuiltInAgentMgmtPermission(t *testing.T) {
 				assert.Error(t, err)
 			} else {
 				require.NoError(t, err)
+			}
+		})
+	}
+}
+
+func TestCheckUseAgentPms(t *testing.T) {
+	tests := []struct {
+		name    string
+		setup   func(*gomock.Controller) (*dataAgentConfigSvc, context.Context, map[string]*dapo.PublishedJoinPo, string)
+		want    map[string]struct{}
+		wantErr bool
+	}{
+		{
+			name: "all agents have permission - no pms control",
+			setup: func(ctrl *gomock.Controller) (*dataAgentConfigSvc, context.Context, map[string]*dapo.PublishedJoinPo, string) {
+				ctx := context.Background()
+				authZHttp := authzaccmock.NewMockAuthZHttpAcc(ctrl)
+
+				// No pms ctrl agents, but FilterCanUseAgentIDMap is still called with empty slice (or nil)
+				authZHttp.EXPECT().
+					FilterCanUseAgentIDMap(ctx, "user-123", gomock.Any()).
+					Return(map[string]struct{}{}, nil)
+
+				svc := &dataAgentConfigSvc{
+					SvcBase:  service.NewSvcBase(),
+					authZHttp: authZHttp,
+				}
+
+				noPmsCtrl := 0
+				publishedMap := map[string]*dapo.PublishedJoinPo{
+					"agent-1": {
+						DataAgentPo: dapo.DataAgentPo{
+							Key: "agent-1",
+							ID:  "id-1",
+						},
+						ReleasePartPo: dapo.ReleasePartPo{
+							IsPmsCtrl: noPmsCtrl,
+						},
+					},
+					"agent-2": {
+						DataAgentPo: dapo.DataAgentPo{
+							Key: "agent-2",
+							ID:  "id-2",
+						},
+						ReleasePartPo: dapo.ReleasePartPo{
+							IsPmsCtrl: noPmsCtrl,
+						},
+					},
+				}
+
+				return svc, ctx, publishedMap, "user-123"
+			},
+			want: map[string]struct{}{
+				"agent-1": {},
+				"agent-2": {},
+			},
+			wantErr: false,
+		},
+		{
+			name: "filter agents with pms control",
+			setup: func(ctrl *gomock.Controller) (*dataAgentConfigSvc, context.Context, map[string]*dapo.PublishedJoinPo, string) {
+				ctx := context.Background()
+				authZHttp := authzaccmock.NewMockAuthZHttpAcc(ctrl)
+
+				hasPmsCtrl := 1
+				noPmsCtrl := 0
+				publishedMap := map[string]*dapo.PublishedJoinPo{
+					"agent-1": {
+						DataAgentPo: dapo.DataAgentPo{
+							Key: "agent-1",
+							ID:  "id-1",
+						},
+						ReleasePartPo: dapo.ReleasePartPo{
+							IsPmsCtrl: hasPmsCtrl,
+						},
+					},
+					"agent-2": {
+						DataAgentPo: dapo.DataAgentPo{
+							Key: "agent-2",
+							ID:  "id-2",
+						},
+						ReleasePartPo: dapo.ReleasePartPo{
+							IsPmsCtrl: hasPmsCtrl,
+						},
+					},
+					"agent-3": {
+						DataAgentPo: dapo.DataAgentPo{
+							Key: "agent-3",
+							ID:  "id-3",
+						},
+						ReleasePartPo: dapo.ReleasePartPo{
+							IsPmsCtrl: noPmsCtrl,
+						},
+					},
+				}
+
+				// Only agent-1 has permission, agent-2 doesn't, agent-3 has no pms ctrl
+				// Use gomock.Any() for agentIds since map iteration order is not guaranteed
+				authZHttp.EXPECT().
+					FilterCanUseAgentIDMap(ctx, "user-123", gomock.Any()).
+					DoAndReturn(func(_ context.Context, _ string, ids []string) (map[string]struct{}, error) {
+						// Verify the IDs contain both id-1 and id-2 (order may vary)
+						idMap := make(map[string]struct{})
+						for _, id := range ids {
+							idMap[id] = struct{}{}
+						}
+						if _, ok := idMap["id-1"]; !ok {
+							panic("Expected id-1 to be in agentIds")
+						}
+						if _, ok := idMap["id-2"]; !ok {
+							panic("Expected id-2 to be in agentIds")
+						}
+						return map[string]struct{}{
+							"id-1": {},
+						}, nil
+					})
+
+				svc := &dataAgentConfigSvc{
+					SvcBase:  service.NewSvcBase(),
+					authZHttp: authZHttp,
+				}
+
+				return svc, ctx, publishedMap, "user-123"
+			},
+			want: map[string]struct{}{
+				"agent-1": {},
+				"agent-3": {},
+			},
+			wantErr: false,
+		},
+		{
+			name: "all filtered agents have no permission",
+			setup: func(ctrl *gomock.Controller) (*dataAgentConfigSvc, context.Context, map[string]*dapo.PublishedJoinPo, string) {
+				ctx := context.Background()
+				authZHttp := authzaccmock.NewMockAuthZHttpAcc(ctrl)
+
+				hasPmsCtrl := 1
+				publishedMap := map[string]*dapo.PublishedJoinPo{
+					"agent-1": {
+						DataAgentPo: dapo.DataAgentPo{
+							Key: "agent-1",
+							ID:  "id-1",
+						},
+						ReleasePartPo: dapo.ReleasePartPo{
+							IsPmsCtrl: hasPmsCtrl,
+						},
+					},
+				}
+
+				authZHttp.EXPECT().
+					FilterCanUseAgentIDMap(ctx, "user-123", []string{"id-1"}).
+					Return(map[string]struct{}{}, nil)
+
+				svc := &dataAgentConfigSvc{
+					SvcBase:  service.NewSvcBase(),
+					authZHttp: authZHttp,
+				}
+
+				return svc, ctx, publishedMap, "user-123"
+			},
+			want:    map[string]struct{}{},
+			wantErr: false,
+		},
+		{
+			name: "authorization http error",
+			setup: func(ctrl *gomock.Controller) (*dataAgentConfigSvc, context.Context, map[string]*dapo.PublishedJoinPo, string) {
+				ctx := context.Background()
+				authZHttp := authzaccmock.NewMockAuthZHttpAcc(ctrl)
+
+				hasPmsCtrl := 1
+				publishedMap := map[string]*dapo.PublishedJoinPo{
+					"agent-1": {
+						DataAgentPo: dapo.DataAgentPo{
+							Key: "agent-1",
+							ID:  "id-1",
+						},
+						ReleasePartPo: dapo.ReleasePartPo{
+							IsPmsCtrl: hasPmsCtrl,
+						},
+					},
+				}
+
+				authZHttp.EXPECT().
+					FilterCanUseAgentIDMap(ctx, "user-123", []string{"id-1"}).
+					Return(nil, errors.New("authorization error"))
+
+				svc := &dataAgentConfigSvc{
+					SvcBase:  service.NewSvcBase(),
+					authZHttp: authZHttp,
+				}
+
+				return svc, ctx, publishedMap, "user-123"
+			},
+			want:    nil,
+			wantErr: true,
+		},
+		{
+			name: "empty published map",
+			setup: func(ctrl *gomock.Controller) (*dataAgentConfigSvc, context.Context, map[string]*dapo.PublishedJoinPo, string) {
+				ctx := context.Background()
+				authZHttp := authzaccmock.NewMockAuthZHttpAcc(ctrl)
+
+				publishedMap := map[string]*dapo.PublishedJoinPo{}
+
+				// Expect FilterCanUseAgentIDMap to be called with empty slice (or nil)
+				authZHttp.EXPECT().
+					FilterCanUseAgentIDMap(gomock.Any(), gomock.Any(), gomock.Any()).
+					Return(map[string]struct{}{}, nil)
+
+				svc := &dataAgentConfigSvc{
+					SvcBase:  service.NewSvcBase(),
+					authZHttp: authZHttp,
+				}
+
+				return svc, ctx, publishedMap, "user-123"
+			},
+			want:    map[string]struct{}{},
+			wantErr: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			ctrl := gomock.NewController(t)
+			defer ctrl.Finish()
+
+			svc, ctx, publishedMap, uid := tt.setup(ctrl)
+			result, err := svc.checkUseAgentPms(ctx, publishedMap, uid)
+
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				require.NoError(t, err)
+				assert.Equal(t, tt.want, result)
 			}
 		})
 	}
