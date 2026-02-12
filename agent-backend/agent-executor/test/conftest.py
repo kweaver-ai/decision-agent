@@ -298,6 +298,17 @@ def pytest_configure(config):
         "markers", "unit: marks tests as unit tests"
     )
 
+    # 过滤 Pydantic V2 迁移警告
+    config.addinivalue_line(
+        "filterwarnings",
+        "ignore::pydantic.warnings.PydanticDeprecatedSince20"
+    )
+    # 过滤 AsyncMock 协程未等待的警告（来自未被使用的 mock）
+    config.addinivalue_line(
+        "filterwarnings",
+        "ignore:coroutine 'AsyncMockMixin._execute_mock_call' was never awaited:RuntimeWarning"
+    )
+
 
 # ============================================================
 # 4. 导入钩子 - 确保 dolphin 始终被 mock

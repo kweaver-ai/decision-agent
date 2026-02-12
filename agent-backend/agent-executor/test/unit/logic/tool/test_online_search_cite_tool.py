@@ -262,7 +262,6 @@ class TestOnlineSearchCiteTool:
             assert result["answer"] == "completed answer"
 
 
-@pytest.mark.asyncio
 class TestPrompts:
     """Tests for prompt constants."""
 

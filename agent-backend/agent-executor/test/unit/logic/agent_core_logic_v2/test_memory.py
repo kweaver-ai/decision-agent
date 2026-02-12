@@ -116,6 +116,9 @@ class TestMemoryHandler:
         mock_get_id.return_value = "user_123"
         mock_get_type.return_value = "premium"
 
+        # Mock the async build_memory method
+        mock_memory_service.build_memory = AsyncMock()
+
         mock_loop = Mock()
         mock_new_loop.return_value = mock_loop
         mock_loop.run_until_complete = Mock()
@@ -141,8 +144,12 @@ class TestMemoryHandler:
     @patch('app.logic.agent_core_logic_v2.memory.threading.Thread')
     @patch('app.logic.agent_core_logic_v2.memory.get_user_account_id')
     @patch('app.logic.agent_core_logic_v2.memory.get_user_account_type')
+    @patch('app.logic.agent_core_logic_v2.memory.agent_memory_service')
     @patch('app.logic.agent_core_logic_v2.memory.StandLogger')
-    def test_build_memory_no_fields(self, mock_logger, mock_get_type, mock_get_id, mock_thread_class):
+    @patch('app.logic.agent_core_logic_v2.memory.asyncio')
+    def test_build_memory_no_fields(
+        self, mock_asyncio, mock_logger, mock_memory_service, mock_get_type, mock_get_id, mock_thread_class
+    ):
         """测试没有输入字段时构建记忆"""
         # Create a new config with empty fields for this test
         test_config = Mock()
@@ -155,6 +162,12 @@ class TestMemoryHandler:
 
         mock_get_id.return_value = "user_123"
         mock_get_type.return_value = "premium"
+
+        # Mock the async build_memory method
+        mock_memory_service.build_memory = AsyncMock()
+
+        mock_loop = Mock()
+        mock_asyncio.new_event_loop.return_value = mock_loop
 
         handler = self.MemoryHandler()
 
@@ -169,16 +182,20 @@ class TestMemoryHandler:
     @patch('app.logic.agent_core_logic_v2.memory.threading.Thread')
     @patch('app.logic.agent_core_logic_v2.memory.get_user_account_id')
     @patch('app.logic.agent_core_logic_v2.memory.get_user_account_type')
+    @patch('app.logic.agent_core_logic_v2.memory.agent_memory_service')
     @patch('app.logic.agent_core_logic_v2.memory.get_dolphin_var_final_value')
     @patch('app.logic.agent_core_logic_v2.memory.StandLogger')
     @patch('app.logic.agent_core_logic_v2.memory.asyncio')
     def test_build_memory_final_result_error(
-        self, mock_asyncio, mock_logger, mock_get_final_value, mock_get_type, mock_get_id, mock_thread_class
+        self, mock_asyncio, mock_logger, mock_get_final_value, mock_memory_service, mock_get_type, mock_get_id, mock_thread_class
     ):
         """测试获取最终结果失败时的处理"""
         mock_get_id.return_value = "user_123"
         mock_get_type.return_value = "premium"
         mock_get_final_value.side_effect = Exception("Failed to get value")
+
+        # Mock the async build_memory method
+        mock_memory_service.build_memory = AsyncMock()
 
         mock_loop = Mock()
         mock_asyncio.new_event_loop.return_value = mock_loop
@@ -199,15 +216,20 @@ class TestMemoryHandler:
     @patch('app.logic.agent_core_logic_v2.memory.threading.Thread')
     @patch('app.logic.agent_core_logic_v2.memory.get_user_account_id')
     @patch('app.logic.agent_core_logic_v2.memory.get_user_account_type')
+    @patch('app.logic.agent_core_logic_v2.memory.agent_memory_service')
     @patch('app.logic.agent_core_logic_v2.memory.StandLogger')
     @patch('app.logic.agent_core_logic_v2.memory.asyncio')
     @patch('app.logic.agent_core_logic_v2.memory.o11y_logger')
     def test_build_memory_exception(
-        self, mock_o11y_logger, mock_asyncio, mock_logger, mock_get_type, mock_get_id, mock_thread_class
+        self, mock_o11y_logger, mock_asyncio, mock_logger, mock_memory_service, mock_get_type, mock_get_id, mock_thread_class
     ):
         """测试构建记忆时的异常处理"""
         mock_get_id.return_value = "user_123"
         mock_get_type.return_value = "premium"
+
+        # Mock the async build_memory method
+        mock_memory_service.build_memory = AsyncMock()
+
         # Make loop.run_until_complete raise exception
         mock_loop = Mock()
         mock_asyncio.new_event_loop.return_value = mock_loop
@@ -239,6 +261,9 @@ class TestMemoryHandler:
         mock_get_id.return_value = None
         mock_get_type.return_value = None
 
+        # Mock the async build_memory method
+        mock_memory_service.build_memory = AsyncMock()
+
         mock_loop = Mock()
         mock_asyncio.new_event_loop.return_value = mock_loop
 
@@ -253,8 +278,9 @@ class TestMemoryHandler:
 
         # Verify memory service was called with "unknown" user
         mock_loop.run_until_complete.assert_called_once()
-        call_args = mock_loop.run_until_complete.call_args[0][0]
-        # The coroutine should have been called with user_id="unknown"
+        mock_memory_service.build_memory.assert_called_once()
+        call_kwargs = mock_memory_service.build_memory.call_args[1]
+        assert call_kwargs['user_id'] == "unknown"
 
     @patch('app.logic.agent_core_logic_v2.memory.threading.Thread')
     @patch('app.logic.agent_core_logic_v2.memory.get_user_account_id')
@@ -268,6 +294,9 @@ class TestMemoryHandler:
         """测试空最终结果时构建记忆"""
         mock_get_id.return_value = "user_123"
         mock_get_type.return_value = "premium"
+
+        # Mock the async build_memory method
+        mock_memory_service.build_memory = AsyncMock()
 
         mock_loop = Mock()
         mock_asyncio.new_event_loop.return_value = mock_loop
@@ -296,6 +325,9 @@ class TestMemoryHandler:
         """测试文件类型字段被跳过"""
         mock_get_id.return_value = "user_123"
         mock_get_type.return_value = "premium"
+
+        # Mock the async build_memory method
+        mock_memory_service.build_memory = AsyncMock()
 
         # Create a new config with file field
         test_config = Mock()
@@ -362,6 +394,9 @@ class TestMemoryHandler:
         mock_get_id.return_value = "user_123"
         mock_get_type.return_value = "premium"
 
+        # Mock the async build_memory method
+        mock_memory_service.build_memory = AsyncMock()
+
         mock_loop = Mock()
         mock_asyncio.new_event_loop.return_value = mock_loop
 
@@ -379,17 +414,21 @@ class TestMemoryHandler:
         mock_loop.close.assert_called_once()
 
     @patch('app.logic.agent_core_logic_v2.memory.threading.Thread')
-    @patch('app.logic.agent_core_logic_v2.memory.asyncio')
-    @patch('app.logic.agent_core_logic_v2.memory.o11y_logger')
-    @patch('app.logic.agent_core_logic_v2.memory.StandLogger')
     @patch('app.logic.agent_core_logic_v2.memory.get_user_account_id')
     @patch('app.logic.agent_core_logic_v2.memory.get_user_account_type')
+    @patch('app.logic.agent_core_logic_v2.memory.agent_memory_service')
+    @patch('app.logic.agent_core_logic_v2.memory.StandLogger')
+    @patch('app.logic.agent_core_logic_v2.memory.asyncio')
+    @patch('app.logic.agent_core_logic_v2.memory.o11y_logger')
     def test_build_memory_loop_close_always_called(
-        self, mock_get_type, mock_get_id, mock_logger, mock_o11y_logger, mock_asyncio, mock_thread_class
+        self, mock_o11y_logger, mock_asyncio, mock_logger, mock_memory_service, mock_get_type, mock_get_id, mock_thread_class
     ):
         """测试无论成功失败，event loop都会被关闭"""
         mock_get_id.return_value = "user_123"
         mock_get_type.return_value = "premium"
+
+        # Mock the async build_memory method
+        mock_memory_service.build_memory = AsyncMock()
 
         mock_loop = Mock()
         mock_asyncio.new_event_loop.return_value = mock_loop
@@ -419,6 +458,9 @@ class TestMemoryHandler:
         """测试包含默认输入字段时构建记忆"""
         mock_get_id.return_value = "user_123"
         mock_get_type.return_value = "premium"
+
+        # Mock the async build_memory method
+        mock_memory_service.build_memory = AsyncMock()
 
         # Create a new config with default inputs
         test_config = Mock()

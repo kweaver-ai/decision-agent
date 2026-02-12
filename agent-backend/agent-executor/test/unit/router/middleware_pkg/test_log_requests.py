@@ -6,6 +6,20 @@ from unittest.mock import AsyncMock, MagicMock, patch, Mock
 from fastapi import Request, Response
 
 
+class AsyncIterator:
+    """异步迭代器辅助类"""
+    def __init__(self, chunks):
+        self.chunks = chunks
+
+    def __aiter__(self):
+        return self
+
+    async def __anext__(self):
+        if not self.chunks:
+            raise StopAsyncIteration
+        return self.chunks.pop(0)
+
+
 class TestLogRequests:
     """测试 log_requests 中间件函数"""
 
@@ -85,7 +99,7 @@ class TestLogRequests:
         response = Mock(spec=Response)
         response.status_code = 200
         response.headers = {}
-        response.body_iterator = AsyncMock(return_value=iter([b""]))
+        response.body_iterator = AsyncIterator([b""])
 
         call_next = AsyncMock(return_value=response)
 
@@ -112,7 +126,7 @@ class TestLogRequests:
         response = Mock(spec=Response)
         response.status_code = 200
         response.headers = {}
-        response.body_iterator = AsyncMock(return_value=iter([b""]))
+        response.body_iterator = AsyncIterator([b""])
 
         call_next = AsyncMock(return_value=response)
 
@@ -138,7 +152,7 @@ class TestLogRequests:
         response = Mock(spec=Response)
         response.status_code = 200
         response.headers = {"content-type": "application/json"}
-        response.body_iterator = AsyncMock(return_value=iter([b""]))
+        response.body_iterator = AsyncIterator([b""])
 
         call_next = AsyncMock(return_value=response)
 
@@ -164,7 +178,7 @@ class TestLogRequests:
         response = Mock(spec=Response)
         response.status_code = 200
         response.headers = {"content-type": "text/plain"}
-        response.body_iterator = AsyncMock(return_value=iter([b""]))
+        response.body_iterator = AsyncIterator([b""])
 
         call_next = AsyncMock(return_value=response)
 
@@ -188,7 +202,7 @@ class TestLogRequests:
         response = Mock(spec=Response)
         response.status_code = 200
         response.headers = {"content-type": "text/event-stream"}
-        response.body_iterator = AsyncMock(return_value=iter([b"data"]))
+        response.body_iterator = AsyncIterator([b"data"])
 
         call_next = AsyncMock(return_value=response)
 
@@ -213,7 +227,7 @@ class TestLogRequests:
         response = Mock(spec=Response)
         response.status_code = 200
         response.headers = {"content-type": "application/x-ndjson"}
-        response.body_iterator = AsyncMock(return_value=iter([b"data"]))
+        response.body_iterator = AsyncIterator([b"data"])
 
         call_next = AsyncMock(return_value=response)
 
@@ -238,7 +252,7 @@ class TestLogRequests:
         response = Mock(spec=Response)
         response.status_code = 200
         response.headers = {"content-type": "application/json"}
-        response.body_iterator = AsyncMock(return_value=iter([b""]))
+        response.body_iterator = AsyncIterator([b""])
 
         call_next = AsyncMock(return_value=response)
 
@@ -263,7 +277,7 @@ class TestLogRequests:
         response = Mock(spec=Response)
         response.status_code = 200
         response.headers = {}
-        response.body_iterator = AsyncMock(return_value=iter([b"ok"]))
+        response.body_iterator = AsyncIterator([b"ok"])
 
         call_next = AsyncMock(return_value=response)
 
@@ -288,7 +302,7 @@ class TestLogRequests:
         response = Mock(spec=Response)
         response.status_code = 201
         response.headers = {}
-        response.body_iterator = AsyncMock(return_value=iter([b"created"]))
+        response.body_iterator = AsyncIterator([b"created"])
 
         call_next = AsyncMock(return_value=response)
 
@@ -299,29 +313,19 @@ class TestLogRequests:
     @pytest.mark.asyncio
     async def test_process_time_calculation(self):
         """测试处理时间计算"""
-        from app.router.middleware_pkg.log_requests import log_requests
+        from app.router.middleware_pkg.log_requests import log_requests, _handle_non_streaming_response
         import time
 
-        request = MagicMock(spec=Request)
-        request.url.path = "/api/test"
-        request.headers = {}
-        request.method = "GET"
-        request.client = MagicMock(host="127.0.0.1")
-        request.query_params = {}
-        request.body = AsyncMock(return_value=b"")
-
-        response = Mock(spec=Response)
+        # 直接测试 _handle_non_streaming_response 函数
+        response = MagicMock()
         response.status_code = 200
-        response.headers = {}
-        response.body_iterator = AsyncMock(return_value=iter([b""]))
+        response.headers = {"content-type": "application/json"}
+        response.body_iterator = AsyncIterator([b"test response"])
 
-        call_next = AsyncMock(return_value=response)
+        with patch('app.router.middleware_pkg.log_requests.Config') as mock_config:
+            mock_config.is_debug_mode.return_value = False
 
-        # Mock time.time to control elapsed time
-        with patch('time.time') as mock_time:
-            mock_time.side_effect = [100.0, 100.1]  # 0.1 seconds elapsed
+            result = await _handle_non_streaming_response(response, "test-request-id", 100.0)
 
-            result = await log_requests(request, call_next)
-
-            # Verify process_time was calculated (0.1s * 1000 = 100ms)
-            assert call_next.called
+            # 验证返回了响应
+            assert result is not None

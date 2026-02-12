@@ -92,6 +92,105 @@ class TestToolInterruptInfo:
         assert info.data["interrupt_config"]["requires_confirmation"] is True
 
 
+class TestGetResumeHandleClass:
+    """Tests for _get_resume_handle_class function."""
+
+    def test_get_resume_handle_class_returns_class(self):
+        """Test that _get_resume_handle_class returns a class."""
+        resume_handle_class = tool_interrupt_module._get_resume_handle_class()
+
+        assert resume_handle_class is not None
+        assert callable(resume_handle_class)
+
+    def test_get_resume_handle_class_mock_attributes(self):
+        """Test that mock ResumeHandle has expected attributes."""
+        resume_handle_class = tool_interrupt_module._get_resume_handle_class()
+
+        # Create instance
+        handle = resume_handle_class(
+            frame_id="test_frame",
+            snapshot_id="test_snapshot",
+            resume_token="test_token",
+            interrupt_type="test_type",
+            current_block="test_current",
+            restart_block="test_restart"
+        )
+
+        assert hasattr(handle, 'frame_id')
+        assert hasattr(handle, 'snapshot_id')
+        assert hasattr(handle, 'resume_token')
+        assert hasattr(handle, 'interrupt_type')
+        assert hasattr(handle, 'current_block')
+        assert hasattr(handle, 'restart_block')
+
+    def test_get_resume_handle_class_mock_values(self):
+        """Test that mock ResumeHandle stores values correctly."""
+        resume_handle_class = tool_interrupt_module._get_resume_handle_class()
+
+        handle = resume_handle_class(
+            frame_id="frame123",
+            snapshot_id="snap456",
+            resume_token="token789",
+            interrupt_type="user_input",
+            current_block="block1",
+            restart_block="block2"
+        )
+
+        assert handle.frame_id == "frame123"
+        assert handle.snapshot_id == "snap456"
+        assert handle.resume_token == "token789"
+        assert handle.interrupt_type == "user_input"
+        assert handle.current_block == "block1"
+        assert handle.restart_block == "block2"
+
+    def test_get_resume_handle_class_default_values(self):
+        """Test that mock ResumeHandle can be created with defaults."""
+        resume_handle_class = tool_interrupt_module._get_resume_handle_class()
+
+        handle = resume_handle_class()
+
+        assert handle.frame_id == ""
+        assert handle.snapshot_id == ""
+        assert handle.resume_token == ""
+        assert handle.interrupt_type == ""
+        assert handle.current_block == ""
+        assert handle.restart_block == ""
+
+    def test_get_resume_handle_class_partial_values(self):
+        """Test that mock ResumeHandle can be created with partial values."""
+        resume_handle_class = tool_interrupt_module._get_resume_handle_class()
+
+        handle = resume_handle_class(frame_id="test_frame", interrupt_type="test")
+
+        assert handle.frame_id == "test_frame"
+        assert handle.interrupt_type == "test"
+        assert handle.snapshot_id == ""
+        assert handle.current_block == ""
+
+
+class TestResumeHandleClassModuleLevel:
+    """Tests for module-level ResumeHandleClass variable."""
+
+    def test_resume_handle_class_exists(self):
+        """Test that ResumeHandleClass is defined at module level."""
+        assert hasattr(tool_interrupt_module, 'ResumeHandleClass')
+        assert tool_interrupt_module.ResumeHandleClass is not None
+
+    def test_resume_handle_class_is_callable(self):
+        """Test that ResumeHandleClass is callable (a class)."""
+        assert callable(tool_interrupt_module.ResumeHandleClass)
+
+    def test_resume_handle_class_creates_instance(self):
+        """Test that ResumeHandleClass can create instances."""
+        handle = tool_interrupt_module.ResumeHandleClass(
+            frame_id="test",
+            snapshot_id="test"
+        )
+
+        assert handle is not None
+        assert hasattr(handle, 'frame_id')
+
+
 class TestToolInterruptException:
     """Tests for ToolInterruptException class."""
 

@@ -75,8 +75,8 @@ class TestCustomSerializer:
         result = custom_serializer(dt)
         assert isinstance(result, str)
 
-    def test_serializes_datetime_utcnow(self):
-        dt = datetime.datetime.utcnow()
+    def test_serializes_datetime_now_utc(self):
+        dt = datetime.datetime.now(datetime.UTC)
         result = custom_serializer(dt)
         assert isinstance(result, str)
 

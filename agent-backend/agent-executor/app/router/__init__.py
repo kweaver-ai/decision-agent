@@ -2,6 +2,7 @@
 import asyncio
 import os
 from typing import Any, Callable
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, Response
 from fastapi.openapi.utils import get_openapi
@@ -21,7 +22,19 @@ from app.utils.observability.observability_log import get_logger as o11y_logger
 # 导入中间件
 from .middleware_pkg import o11y_trace, log_requests
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """应用生命周期管理"""
+    # 启动时执行
+    init_observability(server_info, observability_config)
+    AioHttpClientInstrumentor().instrument()
+    yield
+    # 关闭时执行
+    shutdown_observability()
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 token_rate = Config.app.rps_limit
@@ -51,17 +64,6 @@ async def log_requests_middleware(request: Request, call_next) -> Response:
 @app.get(Config.app.host_prefix + "/health/alive", include_in_schema=False)
 async def ready():
     return "OK"
-
-
-@app.on_event("startup")
-async def startup_event():
-    init_observability(server_info, observability_config)
-    AioHttpClientInstrumentor().instrument()
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    shutdown_observability()
 
 
 # 导入路由

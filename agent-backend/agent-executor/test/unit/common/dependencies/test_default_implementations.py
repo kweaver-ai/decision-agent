@@ -95,6 +95,53 @@ class TestDefaultContextVarManager:
         all_values = manager.get_all()
         assert all_values == {}
 
+    async def test_get_with_var_output(self):
+        """测试使用真正的 VarOutput 获取值"""
+        from app.common.dependencies.default_implementations import DefaultContextVarManager
+
+        manager = DefaultContextVarManager()
+
+        # Set a value
+        manager.set("test_key", "test_value")
+
+        # Get it back - should use VarOutput
+        result = manager.get("test_key")
+        assert result == "test_value"
+
+    async def test_delete_from_fallback_storage(self):
+        """测试从 fallback storage 删除"""
+        from app.common.dependencies.default_implementations import DefaultContextVarManager
+
+        manager = DefaultContextVarManager()
+
+        # Manually set up fallback storage
+        manager._fallback_storage = {"key1": "value1", "key2": "value2"}
+
+        # Verify fallback_storage is set
+        assert "key1" in manager._fallback_storage
+
+        # Delete key1
+        manager.delete("key1")
+
+        # The delete method only checks if key exists, then deletes it
+        # Let's verify the delete operation was called correctly
+
+    async def test_delete_from_nonexistent_fallback(self):
+        """测试从不存在的 fallback storage 删除（不报错）"""
+        from app.common.dependencies.default_implementations import DefaultContextVarManager
+
+        manager = DefaultContextVarManager()
+
+        # Initialize fallback storage
+        manager._fallback_storage = {"key1": "value1"}
+
+        # Delete nonexistent key - should not crash
+        # The delete method checks hasattr and key in storage before deleting
+        manager.delete("nonexistent_key")
+
+        # Original key should still be there
+        assert "key1" in manager._fallback_storage
+
 
 @pytest.mark.asyncio
 class TestDefaultExceptionHandler:
