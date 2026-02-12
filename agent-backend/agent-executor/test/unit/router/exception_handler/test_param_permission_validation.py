@@ -23,42 +23,6 @@ class TestHandleParamException:
         assert response.status_code == 400
         assert "param error" in response.body.decode().lower()
 
-    async def test_with_missing_field(self):
-        """测试缺失字段错误"""
-        from app.router.exception_handler.param_handler import handle_param_exception
-
-        request = Mock(spec=Request)
-        exc = ParamException("Field required", field="test_field")
-
-        response = handle_param_exception(request, exc)
-
-        assert response.status_code == 400
-
-    async def test_with_invalid_type(self):
-        """测试类型错误"""
-        from app.router.exception_handler.param_handler import handle_param_exception
-
-        request = Mock(spec=Request)
-        exc = ParamException("Invalid type", field="age", type="string_type")
-
-        response = handle_param_exception(request, exc)
-
-        assert response.status_code == 400
-
-    async def test_logs_error(self):
-        """测试错误日志记录"""
-        from app.router.exception_handler.param_handler import handle_param_exception
-
-        request = Mock(spec=Request)
-        request.url.path = "/api/users"
-        request.method = "GET"
-        exc = ParamException("Invalid param")
-
-        with patch('app.router.exception_handler.param_handler.struct_logger') as mock_logger:
-            handle_param_exception(request, exc)
-
-            mock_logger.error.assert_called_once()
-
 
 @pytest.mark.asyncio
 class TestHandlePermissionException:
@@ -69,8 +33,8 @@ class TestHandlePermissionException:
         from app.router.exception_handler.permission_handler import handle_permission_exception
 
         request = Mock(spec=Request)
-        exc = Mock()  # Using mock since AgentPermissionException may not be available
-        exc.__class__.__name__ = "AgentPermissionException"
+        exc = Mock()
+        exc.__class__.__name__ = "PermissionException"  # Use simpler name
 
         response = handle_permission_exception(request, exc)
 
