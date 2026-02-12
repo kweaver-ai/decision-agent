@@ -2,12 +2,15 @@ package bizdomainsvc
 
 import (
 	"context"
+	"database/sql"
 	"errors"
 	"testing"
 
 	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/ibizdomainacc/bizdomainaccmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/stretchr/testify/assert"
 )
@@ -19,10 +22,12 @@ func TestBizDomainSvc_InitBizDomainAgentRel_BeginTxError(t *testing.T) {
 	mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 	mockBdAgentRelRepo := idbaccessmock.NewMockIBizDomainAgentRelRepo(ctrl)
 	mockLogger := cmpmock.NewMockLogger(ctrl)
+	mockHttp := bizdomainaccmock.NewMockBizDomainHttpAcc(ctrl)
 
 	svc := &BizDomainSvc{
-		SvcBase: service.NewSvcBase(),
-		logger:  mockLogger,
+		SvcBase:       service.NewSvcBase(),
+		logger:        mockLogger,
+		bizDomainHttp: mockHttp,
 	}
 
 	ctx := context.Background()
@@ -36,141 +41,127 @@ func TestBizDomainSvc_InitBizDomainAgentRel_BeginTxError(t *testing.T) {
 	assert.Contains(t, err.Error(), "begin tx failed")
 }
 
-func TestBizDomainSvc_InitBizDomainAgentRel_GetByBizDomainIDError_BeginTxFails(t *testing.T) {
+// TestBizDomainSvc_InitBizDomainAgentRel_GetByBizDomainIDError tests error when getting existing relations fails
+func TestBizDomainSvc_InitBizDomainAgentRel_GetByBizDomainIDError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 	mockBdAgentRelRepo := idbaccessmock.NewMockIBizDomainAgentRelRepo(ctrl)
 	mockLogger := cmpmock.NewMockLogger(ctrl)
+	mockHttp := bizdomainaccmock.NewMockBizDomainHttpAcc(ctrl)
 
 	svc := &BizDomainSvc{
-		SvcBase: service.NewSvcBase(),
-		logger:  mockLogger,
+		SvcBase:       service.NewSvcBase(),
+		logger:        mockLogger,
+		bizDomainHttp: mockHttp,
 	}
 
 	ctx := context.Background()
+	mockTx := &sql.Tx{}
 	dbErr := errors.New("database query failed")
 
-	mockBdAgentRelRepo.EXPECT().BeginTx(gomock.Any()).Return(nil, dbErr)
+	mockBdAgentRelRepo.EXPECT().BeginTx(gomock.Any()).Return(mockTx, nil)
+	mockBdAgentRelRepo.EXPECT().GetByBizDomainID(ctx, mockTx, "public").Return(nil, dbErr)
 
 	err := svc.InitBizDomainAgentRel(ctx, mockAgentRepo, mockBdAgentRelRepo)
 
 	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "get existing agent rels failed")
 }
 
-func TestBizDomainSvc_InitBizDomainAgentRel_GetAllIDsError_BeginTxFails(t *testing.T) {
+// TestBizDomainSvc_InitBizDomainAgentRel_GetAllIDsError tests error when getting all agent IDs fails
+func TestBizDomainSvc_InitBizDomainAgentRel_GetAllIDsError(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 	mockBdAgentRelRepo := idbaccessmock.NewMockIBizDomainAgentRelRepo(ctrl)
 	mockLogger := cmpmock.NewMockLogger(ctrl)
+	mockHttp := bizdomainaccmock.NewMockBizDomainHttpAcc(ctrl)
 
 	svc := &BizDomainSvc{
-		SvcBase: service.NewSvcBase(),
-		logger:  mockLogger,
+		SvcBase:       service.NewSvcBase(),
+		logger:        mockLogger,
+		bizDomainHttp: mockHttp,
 	}
 
 	ctx := context.Background()
-	dbErr := errors.New("database query failed")
+	mockTx := &sql.Tx{}
+	dbErr := errors.New("get all agent ids failed")
 
-	mockBdAgentRelRepo.EXPECT().BeginTx(gomock.Any()).Return(nil, dbErr)
+	mockBdAgentRelRepo.EXPECT().BeginTx(gomock.Any()).Return(mockTx, nil)
+	mockBdAgentRelRepo.EXPECT().GetByBizDomainID(ctx, mockTx, "public").Return([]*dapo.BizDomainAgentRelPo{}, nil)
+	mockAgentRepo.EXPECT().GetAllIDs(ctx).Return(nil, dbErr)
 
 	err := svc.InitBizDomainAgentRel(ctx, mockAgentRepo, mockBdAgentRelRepo)
 
 	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "get all agent ids failed")
 }
 
-func TestBizDomainSvc_InitBizDomainAgentRel_SingleAgent_BeginTxFails(t *testing.T) {
+// TestBizDomainSvc_InitBizDomainAgentRel_SkipWhenExistingData tests skipping when data already exists
+func TestBizDomainSvc_InitBizDomainAgentRel_SkipWhenExistingData(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 	mockBdAgentRelRepo := idbaccessmock.NewMockIBizDomainAgentRelRepo(ctrl)
 	mockLogger := cmpmock.NewMockLogger(ctrl)
+	mockHttp := bizdomainaccmock.NewMockBizDomainHttpAcc(ctrl)
 
 	svc := &BizDomainSvc{
-		SvcBase: service.NewSvcBase(),
-		logger:  mockLogger,
+		SvcBase:       service.NewSvcBase(),
+		logger:        mockLogger,
+		bizDomainHttp: mockHttp,
 	}
 
 	ctx := context.Background()
-	txErr := errors.New("tx error")
+	mockTx := &sql.Tx{}
 
-	mockBdAgentRelRepo.EXPECT().BeginTx(gomock.Any()).Return(nil, txErr)
+	// Setup expectations - return existing data
+	existingRel := &dapo.BizDomainAgentRelPo{
+		BizDomainID: "public",
+		AgentID:     "agent-1",
+	}
+	mockBdAgentRelRepo.EXPECT().BeginTx(gomock.Any()).Return(mockTx, nil)
+	mockBdAgentRelRepo.EXPECT().GetByBizDomainID(ctx, mockTx, "public").Return([]*dapo.BizDomainAgentRelPo{existingRel}, nil)
+	mockLogger.EXPECT().Infof(gomock.Any(), gomock.Any())
 
+	// Note: We can't mock sql.Tx.Rollback(), but the real implementation will call it
+	// The test still validates the code path correctly
 	err := svc.InitBizDomainAgentRel(ctx, mockAgentRepo, mockBdAgentRelRepo)
 
-	assert.Error(t, err)
+	// This should still return nil (success) when existing data is found
+	assert.NoError(t, err)
 }
 
-func TestBizDomainSvc_InitBizDomainAgentRel_LargeNumberOfAgents_BeginTxFails(t *testing.T) {
+// TestBizDomainSvc_InitBizDomainAgentRel_SkipWhenNoAgents tests skipping when no agents exist
+func TestBizDomainSvc_InitBizDomainAgentRel_SkipWhenNoAgents(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 	mockBdAgentRelRepo := idbaccessmock.NewMockIBizDomainAgentRelRepo(ctrl)
 	mockLogger := cmpmock.NewMockLogger(ctrl)
+	mockHttp := bizdomainaccmock.NewMockBizDomainHttpAcc(ctrl)
 
 	svc := &BizDomainSvc{
-		SvcBase: service.NewSvcBase(),
-		logger:  mockLogger,
+		SvcBase:       service.NewSvcBase(),
+		logger:        mockLogger,
+		bizDomainHttp: mockHttp,
 	}
 
 	ctx := context.Background()
-	txErr := errors.New("tx error")
+	mockTx := &sql.Tx{}
 
-	mockBdAgentRelRepo.EXPECT().BeginTx(gomock.Any()).Return(nil, txErr)
-
-	err := svc.InitBizDomainAgentRel(ctx, mockAgentRepo, mockBdAgentRelRepo)
-
-	assert.Error(t, err)
-}
-
-func TestBizDomainSvc_InitBizDomainAgentRel_TwoAgents_BeginTxFails(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
-	mockBdAgentRelRepo := idbaccessmock.NewMockIBizDomainAgentRelRepo(ctrl)
-	mockLogger := cmpmock.NewMockLogger(ctrl)
-
-	svc := &BizDomainSvc{
-		SvcBase: service.NewSvcBase(),
-		logger:  mockLogger,
-	}
-
-	ctx := context.Background()
-	txErr := errors.New("transaction begin failed")
-
-	mockBdAgentRelRepo.EXPECT().BeginTx(gomock.Any()).Return(nil, txErr)
+	// Setup expectations
+	mockBdAgentRelRepo.EXPECT().BeginTx(gomock.Any()).Return(mockTx, nil)
+	mockBdAgentRelRepo.EXPECT().GetByBizDomainID(ctx, mockTx, "public").Return([]*dapo.BizDomainAgentRelPo{}, nil)
+	mockAgentRepo.EXPECT().GetAllIDs(ctx).Return([]string{}, nil)
+	mockLogger.EXPECT().Infoln(gomock.Any())
 
 	err := svc.InitBizDomainAgentRel(ctx, mockAgentRepo, mockBdAgentRelRepo)
 
-	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "begin tx failed")
-}
-
-func TestBizDomainSvc_InitBizDomainAgentRel_MultipleAgents_BeginTxFails(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
-
-	mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
-	mockBdAgentRelRepo := idbaccessmock.NewMockIBizDomainAgentRelRepo(ctrl)
-	mockLogger := cmpmock.NewMockLogger(ctrl)
-
-	svc := &BizDomainSvc{
-		SvcBase: service.NewSvcBase(),
-		logger:  mockLogger,
-	}
-
-	ctx := context.Background()
-	txErr := errors.New("tx error")
-
-	mockBdAgentRelRepo.EXPECT().BeginTx(gomock.Any()).Return(nil, txErr)
-
-	err := svc.InitBizDomainAgentRel(ctx, mockAgentRepo, mockBdAgentRelRepo)
-
-	assert.Error(t, err)
+	assert.NoError(t, err)
 }
