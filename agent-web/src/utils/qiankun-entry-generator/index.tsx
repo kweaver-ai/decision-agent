@@ -186,7 +186,7 @@ export function createEntry(AppComponent: React.ComponentType<any>, options: Qia
       ...mainAppProps,
       history: {
         ...mainAppProps.history,
-        getBasePath: window.location.pathname,
+        getBasePath: window.location.pathname.replace(/(\.html).*$/, '$1'),
       },
     });
   }
