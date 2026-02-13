@@ -144,7 +144,7 @@ func TestHlRef(t *testing.T) {
 	t.Run("handles sentence with no scores", func(t *testing.T) {
 		svc := &agentSvc{}
 		sentenceInfo := &sentenceInfo{
-			MaxScoreMap:  map[string]*maxScoreSlice{},
+			MaxScoreMap: map[string]*maxScoreSlice{},
 			AvgScore:    0.0,
 			Text:        "Test sentence。",
 		}

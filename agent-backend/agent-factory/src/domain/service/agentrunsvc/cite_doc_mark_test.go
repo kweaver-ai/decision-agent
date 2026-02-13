@@ -47,7 +47,7 @@ func TestSplitSentences(t *testing.T) {
 			text:           "First sentence。Second sentence！Third sentence？",
 			minLength:      5,
 			expectedLength: 3,
-			checkContents:  []string{
+			checkContents: []string{
 				"First sentence。",
 				"Second sentence！",
 				"Third sentence？",
@@ -65,7 +65,7 @@ func TestSplitSentences(t *testing.T) {
 			text:           "This is the first sentence that is quite long。And here is the second sentence that is also long。Finally the third sentence completes the text。",
 			minLength:      20,
 			expectedLength: 3,
-			checkContents:  []string{
+			checkContents: []string{
 				"This is the first sentence that is quite long。",
 				"And here is the second sentence that is also long。",
 				"Finally the third sentence completes the text。",
@@ -76,7 +76,7 @@ func TestSplitSentences(t *testing.T) {
 			text:           "How are you? I am fine。Thank you!",
 			minLength:      5,
 			expectedLength: 2, // Combines "How are you? I am fine。" then "Thank you!"
-			checkContents:  []string{
+			checkContents: []string{
 				"How are you? I am fine。",
 				"Thank you!",
 			},
@@ -86,7 +86,7 @@ func TestSplitSentences(t *testing.T) {
 			text:           "Short。Another short。One more short but combined into a longer segment that meets minimum。",
 			minLength:      30,
 			expectedLength: 1,
-			checkContents:  []string{
+			checkContents: []string{
 				"Short。Another short。One more short but combined into a longer segment that meets minimum。",
 			},
 		},

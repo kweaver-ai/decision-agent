@@ -61,7 +61,7 @@ services:
       redis:
         condition: service_healthy
     ports:
-      - "13020:13020" # agent-factory
+      - "30777:30777" # agent-factory
       - "30778:30778" # agent-executor
       - "30790:30790" # agent-memory
     volumes:
@@ -104,7 +104,7 @@ services:
     restart: unless-stopped
     environment:
       # 前端请求后端的baseUrl地址
-      BACKEND_URL: http://localhost:13020
+      BACKEND_URL: http://agent-backend:30777
     depends_on:
       agent-backend:
         condition: service_started

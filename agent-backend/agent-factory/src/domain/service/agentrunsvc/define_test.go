@@ -6,8 +6,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/conf"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
-	"go.uber.org/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestNewAgentSvc_WithMinimalDto(t *testing.T) {

@@ -75,7 +75,7 @@ func (agentSvc *agentSvc) handleProgressOld(ctx context.Context, req *agentreq.C
 	return ans, nil
 }
 
-func (agentSvc *agentSvc) handleProgress(ctx context.Context, req *agentreq.ChatReq, progresses []*agentrespvo.Progress) (newPgs []*agentrespvo.Progress,err error) {
+func (agentSvc *agentSvc) handleProgress(ctx context.Context, req *agentreq.ChatReq, progresses []*agentrespvo.Progress) (newPgs []*agentrespvo.Progress, err error) {
 
 	ctx, _ = o11y.StartInternalSpan(ctx)
 	defer o11y.EndSpan(ctx, nil)
@@ -83,7 +83,7 @@ func (agentSvc *agentSvc) handleProgress(ctx context.Context, req *agentreq.Chat
 	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
 	o11y.SetAttributes(ctx, attribute.String("user_id", req.UserID))
 
-	aMsgID:=req.AssistantMessageID
+	aMsgID := req.AssistantMessageID
 
 	setInterface, _ := progressSet.Load(aMsgID)
 
@@ -98,15 +98,15 @@ func (agentSvc *agentSvc) handleProgress(ctx context.Context, req *agentreq.Chat
 	// 2. NOTE： 如果是中断，还需要将中断前的结果拿到并拼接
 	prePgs, err := agentSvc.forResumeInterrupt(ctx, req)
 	if err != nil {
-		return 
+		return
 	}
 
-	pgs:=append(prePgs, progresses...)
+	pgs := append(prePgs, progresses...)
 
 	var currentProgress *agentrespvo.Progress
 
 	// 3. 遍历 progresses
-	for _, pg := range pgs{
+	for _, pg := range pgs {
 
 		//fmt.Printf("pid: %s,status: %s\n", pg.ID, pg.Status)
 
@@ -130,8 +130,6 @@ func (agentSvc *agentSvc) handleProgress(ctx context.Context, req *agentreq.Chat
 		}
 	}
 
-
-
 	// 4. append
 	if v, ok := progressMap.Load(aMsgID); ok {
 		newPgs = append(newPgs, v.([]*agentrespvo.Progress)...)
@@ -142,7 +140,7 @@ func (agentSvc *agentSvc) handleProgress(ctx context.Context, req *agentreq.Chat
 		newPgs = append(newPgs, currentProgress)
 	}
 
-	return 
+	return
 }
 
 func (agentSvc *agentSvc) forResumeInterrupt(ctx context.Context, req *agentreq.ChatReq) (ans []*agentrespvo.Progress, err error) {

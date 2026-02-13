@@ -34,7 +34,7 @@ goGenerate:
 	go generate ./...
 
 goTest:
-	go test -v ./...
+	go test -v $$(go list ./... | grep -vE '/[^/]*mock[^/]*($$|/)')
 
 # Swagger 文档生成
 gen-swag:

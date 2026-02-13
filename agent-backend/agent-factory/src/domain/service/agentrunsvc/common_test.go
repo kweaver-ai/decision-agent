@@ -48,7 +48,7 @@ func TestAgentConfig2AgentCallConfigWithNilSkill(t *testing.T) {
 
 	agentConfig := &daconfvalobj.Config{
 		SystemPrompt: "You are a helpful assistant",
-		Skill:         nil,
+		Skill:        nil,
 	}
 
 	result := AgentConfig2AgentCallConfig(ctx, agentConfig, req)
@@ -363,7 +363,7 @@ func TestAgentConfig2AgentCallConfig_WithPreDolphin(t *testing.T) {
 
 	agentConfig := &daconfvalobj.Config{
 		SystemPrompt: "You are a helpful assistant",
-		PreDolphin:    nil,
+		PreDolphin:   nil,
 	}
 
 	result := AgentConfig2AgentCallConfig(ctx, agentConfig, req)
@@ -381,7 +381,7 @@ func TestAgentConfig2AgentCallConfig_WithPostDolphin(t *testing.T) {
 
 	agentConfig := &daconfvalobj.Config{
 		SystemPrompt: "You are a helpful assistant",
-		PostDolphin:   nil,
+		PostDolphin:  nil,
 	}
 
 	result := AgentConfig2AgentCallConfig(ctx, agentConfig, req)
@@ -398,7 +398,7 @@ func TestAgentConfig2AgentCallConfigDebug_WithNilSkill(t *testing.T) {
 
 	agentConfig := &daconfvalobj.Config{
 		SystemPrompt: "You are a helpful assistant",
-		Skill:         nil,
+		Skill:        nil,
 	}
 
 	result := AgentConfig2AgentCallConfigDebug(ctx, agentConfig, req)

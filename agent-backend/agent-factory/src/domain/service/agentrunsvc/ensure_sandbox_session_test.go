@@ -9,15 +9,16 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/conf"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/sandboxplatformhttp/sandboxplatformdto"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 // Mock sandbox platform for testing EnsureSandboxSession
 type mockGetSessionSandbox struct {
-	getSessionFunc   func(ctx context.Context, sessionID string) (*sandboxplatformdto.GetSessionResp, error)
+	getSessionFunc    func(ctx context.Context, sessionID string) (*sandboxplatformdto.GetSessionResp, error)
 	createSessionFunc func(ctx context.Context, req sandboxplatformdto.CreateSessionReq) (*sandboxplatformdto.CreateSessionResp, error)
 	deleteSessionFunc func(ctx context.Context, sessionID string) error
 }
@@ -51,6 +52,15 @@ func (m *mockGetSessionSandbox) DeleteSession(ctx context.Context, sessionID str
 
 func (m *mockGetSessionSandbox) ListFiles(ctx context.Context, sessionID string, limit int) ([]string, error) {
 	return []string{}, nil
+}
+
+func allowAnyLoggerCalls(mockLogger *cmpmock.MockLogger) {
+	mockLogger.EXPECT().Infof(gomock.Any(), gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Warnf(gomock.Any(), gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Errorf(gomock.Any(), gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Infoln(gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Warnln(gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Errorln(gomock.Any()).AnyTimes()
 }
 
 func TestIsSessionNotFoundError(t *testing.T) {
@@ -121,6 +131,7 @@ func TestEnsureSandboxSession_SessionRunning(t *testing.T) {
 	defer ctrl.Finish()
 
 	mockLogger := cmpmock.NewMockLogger(ctrl)
+	allowAnyLoggerCalls(mockLogger)
 	mockSandbox := &mockGetSessionSandbox{
 		getSessionFunc: func(ctx context.Context, sessionID string) (*sandboxplatformdto.GetSessionResp, error) {
 			return &sandboxplatformdto.GetSessionResp{
@@ -131,21 +142,23 @@ func TestEnsureSandboxSession_SessionRunning(t *testing.T) {
 	}
 
 	svc := &agentSvc{
-		SvcBase:             service.NewSvcBase(),
-		logger:              mockLogger,
-		sandboxPlatform:      mockSandbox,
+		SvcBase:         service.NewSvcBase(),
+		logger:          mockLogger,
+		sandboxPlatform: mockSandbox,
 		sandboxPlatformConf: &conf.SandboxPlatformConf{
 			MaxRetries:    3,
-			RetryInterval:  "500ms",
+			RetryInterval: "500ms",
 		},
 	}
 
 	ctx := context.Background()
 	sessionID := "test-session-123"
 	req := &agentreq.ChatReq{
-		UserID:    "user-123",
-		AgentID:   "agent-456",
-		XBusinessDomainID: "bd-789",
+		InternalParam: agentreq.InternalParam{
+			UserID:            "user-123",
+			XBusinessDomainID: "bd-789",
+		},
+		AgentID: "agent-456",
 	}
 
 	result, err := svc.EnsureSandboxSession(ctx, sessionID, req)
@@ -159,11 +172,20 @@ func TestEnsureSandboxSession_SessionNotFound_CreatesNew(t *testing.T) {
 	defer ctrl.Finish()
 
 	mockLogger := cmpmock.NewMockLogger(ctrl)
+	allowAnyLoggerCalls(mockLogger)
 	sessionCreated := false
+	getCallCount := 0
 
 	mockSandbox := &mockGetSessionSandbox{
 		getSessionFunc: func(ctx context.Context, sessionID string) (*sandboxplatformdto.GetSessionResp, error) {
-			return nil, rest.NewHTTPError(ctx, http.StatusNotFound, rest.PublicError_NotFound)
+			getCallCount++
+			if getCallCount == 1 {
+				return nil, rest.NewHTTPError(ctx, http.StatusNotFound, rest.PublicError_NotFound)
+			}
+			return &sandboxplatformdto.GetSessionResp{
+				ID:     sessionID,
+				Status: "running",
+			}, nil
 		},
 		createSessionFunc: func(ctx context.Context, req sandboxplatformdto.CreateSessionReq) (*sandboxplatformdto.CreateSessionResp, error) {
 			sessionCreated = true
@@ -175,9 +197,9 @@ func TestEnsureSandboxSession_SessionNotFound_CreatesNew(t *testing.T) {
 	}
 
 	svc := &agentSvc{
-		SvcBase:             service.NewSvcBase(),
-		logger:              mockLogger,
-		sandboxPlatform:      mockSandbox,
+		SvcBase:         service.NewSvcBase(),
+		logger:          mockLogger,
+		sandboxPlatform: mockSandbox,
 		sandboxPlatformConf: &conf.SandboxPlatformConf{
 			DefaultTemplateID: "python3.11",
 			MaxRetries:        3,
@@ -192,9 +214,11 @@ func TestEnsureSandboxSession_SessionNotFound_CreatesNew(t *testing.T) {
 	ctx := context.Background()
 	sessionID := "test-session-new"
 	req := &agentreq.ChatReq{
-		UserID:    "user-123",
-		AgentID:   "agent-456",
-		XBusinessDomainID: "bd-789",
+		InternalParam: agentreq.InternalParam{
+			UserID:            "user-123",
+			XBusinessDomainID: "bd-789",
+		},
+		AgentID: "agent-456",
 	}
 
 	result, err := svc.EnsureSandboxSession(ctx, sessionID, req)
@@ -209,14 +233,23 @@ func TestEnsureSandboxSession_SessionFailed_DeletesAndRecreates(t *testing.T) {
 	defer ctrl.Finish()
 
 	mockLogger := cmpmock.NewMockLogger(ctrl)
+	allowAnyLoggerCalls(mockLogger)
 	sessionDeleted := false
 	sessionCreated := false
+	getCallCount := 0
 
 	mockSandbox := &mockGetSessionSandbox{
 		getSessionFunc: func(ctx context.Context, sessionID string) (*sandboxplatformdto.GetSessionResp, error) {
+			getCallCount++
+			if getCallCount == 1 {
+				return &sandboxplatformdto.GetSessionResp{
+					ID:     sessionID,
+					Status: "failed",
+				}, nil
+			}
 			return &sandboxplatformdto.GetSessionResp{
 				ID:     sessionID,
-				Status: "failed",
+				Status: "running",
 			}, nil
 		},
 		deleteSessionFunc: func(ctx context.Context, sessionID string) error {
@@ -233,9 +266,9 @@ func TestEnsureSandboxSession_SessionFailed_DeletesAndRecreates(t *testing.T) {
 	}
 
 	svc := &agentSvc{
-		SvcBase:             service.NewSvcBase(),
-		logger:              mockLogger,
-		sandboxPlatform:      mockSandbox,
+		SvcBase:         service.NewSvcBase(),
+		logger:          mockLogger,
+		sandboxPlatform: mockSandbox,
 		sandboxPlatformConf: &conf.SandboxPlatformConf{
 			DefaultTemplateID: "python3.11",
 			MaxRetries:        3,
@@ -246,9 +279,11 @@ func TestEnsureSandboxSession_SessionFailed_DeletesAndRecreates(t *testing.T) {
 	ctx := context.Background()
 	sessionID := "test-session-failed"
 	req := &agentreq.ChatReq{
-		UserID:    "user-123",
-		AgentID:   "agent-456",
-		XBusinessDomainID: "bd-789",
+		InternalParam: agentreq.InternalParam{
+			UserID:            "user-123",
+			XBusinessDomainID: "bd-789",
+		},
+		AgentID: "agent-456",
 	}
 
 	result, err := svc.EnsureSandboxSession(ctx, sessionID, req)
@@ -264,14 +299,23 @@ func TestEnsureSandboxSession_SessionErrorStatus_DeletesAndRecreates(t *testing.
 	defer ctrl.Finish()
 
 	mockLogger := cmpmock.NewMockLogger(ctrl)
+	allowAnyLoggerCalls(mockLogger)
 	sessionDeleted := false
 	sessionCreated := false
+	getCallCount := 0
 
 	mockSandbox := &mockGetSessionSandbox{
 		getSessionFunc: func(ctx context.Context, sessionID string) (*sandboxplatformdto.GetSessionResp, error) {
+			getCallCount++
+			if getCallCount == 1 {
+				return &sandboxplatformdto.GetSessionResp{
+					ID:     sessionID,
+					Status: "error",
+				}, nil
+			}
 			return &sandboxplatformdto.GetSessionResp{
 				ID:     sessionID,
-				Status: "error",
+				Status: "running",
 			}, nil
 		},
 		deleteSessionFunc: func(ctx context.Context, sessionID string) error {
@@ -288,9 +332,9 @@ func TestEnsureSandboxSession_SessionErrorStatus_DeletesAndRecreates(t *testing.
 	}
 
 	svc := &agentSvc{
-		SvcBase:             service.NewSvcBase(),
-		logger:              mockLogger,
-		sandboxPlatform:      mockSandbox,
+		SvcBase:         service.NewSvcBase(),
+		logger:          mockLogger,
+		sandboxPlatform: mockSandbox,
 		sandboxPlatformConf: &conf.SandboxPlatformConf{
 			DefaultTemplateID: "python3.11",
 			MaxRetries:        3,
@@ -301,9 +345,11 @@ func TestEnsureSandboxSession_SessionErrorStatus_DeletesAndRecreates(t *testing.
 	ctx := context.Background()
 	sessionID := "test-session-error"
 	req := &agentreq.ChatReq{
-		UserID:    "user-123",
-		AgentID:   "agent-456",
-		XBusinessDomainID: "bd-789",
+		InternalParam: agentreq.InternalParam{
+			UserID:            "user-123",
+			XBusinessDomainID: "bd-789",
+		},
+		AgentID: "agent-456",
 	}
 
 	result, err := svc.EnsureSandboxSession(ctx, sessionID, req)
@@ -319,14 +365,23 @@ func TestEnsureSandboxSession_SessionStopped_DeletesAndRecreates(t *testing.T) {
 	defer ctrl.Finish()
 
 	mockLogger := cmpmock.NewMockLogger(ctrl)
+	allowAnyLoggerCalls(mockLogger)
 	sessionDeleted := false
 	sessionCreated := false
+	getCallCount := 0
 
 	mockSandbox := &mockGetSessionSandbox{
 		getSessionFunc: func(ctx context.Context, sessionID string) (*sandboxplatformdto.GetSessionResp, error) {
+			getCallCount++
+			if getCallCount == 1 {
+				return &sandboxplatformdto.GetSessionResp{
+					ID:     sessionID,
+					Status: "stopped",
+				}, nil
+			}
 			return &sandboxplatformdto.GetSessionResp{
 				ID:     sessionID,
-				Status: "stopped",
+				Status: "running",
 			}, nil
 		},
 		deleteSessionFunc: func(ctx context.Context, sessionID string) error {
@@ -343,9 +398,9 @@ func TestEnsureSandboxSession_SessionStopped_DeletesAndRecreates(t *testing.T) {
 	}
 
 	svc := &agentSvc{
-		SvcBase:             service.NewSvcBase(),
-		logger:              mockLogger,
-		sandboxPlatform:      mockSandbox,
+		SvcBase:         service.NewSvcBase(),
+		logger:          mockLogger,
+		sandboxPlatform: mockSandbox,
 		sandboxPlatformConf: &conf.SandboxPlatformConf{
 			DefaultTemplateID: "python3.11",
 			MaxRetries:        3,
@@ -356,9 +411,11 @@ func TestEnsureSandboxSession_SessionStopped_DeletesAndRecreates(t *testing.T) {
 	ctx := context.Background()
 	sessionID := "test-session-stopped"
 	req := &agentreq.ChatReq{
-		UserID:    "user-123",
-		AgentID:   "agent-456",
-		XBusinessDomainID: "bd-789",
+		InternalParam: agentreq.InternalParam{
+			UserID:            "user-123",
+			XBusinessDomainID: "bd-789",
+		},
+		AgentID: "agent-456",
 	}
 
 	result, err := svc.EnsureSandboxSession(ctx, sessionID, req)
@@ -374,11 +431,20 @@ func TestEnsureSandboxSession_GetSessionError_CreatesNew(t *testing.T) {
 	defer ctrl.Finish()
 
 	mockLogger := cmpmock.NewMockLogger(ctrl)
+	allowAnyLoggerCalls(mockLogger)
 	sessionCreated := false
+	getCallCount := 0
 
 	mockSandbox := &mockGetSessionSandbox{
 		getSessionFunc: func(ctx context.Context, sessionID string) (*sandboxplatformdto.GetSessionResp, error) {
-			return nil, errors.New("network error")
+			getCallCount++
+			if getCallCount == 1 {
+				return nil, errors.New("network error")
+			}
+			return &sandboxplatformdto.GetSessionResp{
+				ID:     sessionID,
+				Status: "running",
+			}, nil
 		},
 		createSessionFunc: func(ctx context.Context, req sandboxplatformdto.CreateSessionReq) (*sandboxplatformdto.CreateSessionResp, error) {
 			sessionCreated = true
@@ -390,9 +456,9 @@ func TestEnsureSandboxSession_GetSessionError_CreatesNew(t *testing.T) {
 	}
 
 	svc := &agentSvc{
-		SvcBase:             service.NewSvcBase(),
-		logger:              mockLogger,
-		sandboxPlatform:      mockSandbox,
+		SvcBase:         service.NewSvcBase(),
+		logger:          mockLogger,
+		sandboxPlatform: mockSandbox,
 		sandboxPlatformConf: &conf.SandboxPlatformConf{
 			DefaultTemplateID: "python3.11",
 			MaxRetries:        3,
@@ -403,9 +469,11 @@ func TestEnsureSandboxSession_GetSessionError_CreatesNew(t *testing.T) {
 	ctx := context.Background()
 	sessionID := "test-session-network-error"
 	req := &agentreq.ChatReq{
-		UserID:    "user-123",
-		AgentID:   "agent-456",
-		XBusinessDomainID: "bd-789",
+		InternalParam: agentreq.InternalParam{
+			UserID:            "user-123",
+			XBusinessDomainID: "bd-789",
+		},
+		AgentID: "agent-456",
 	}
 
 	result, err := svc.EnsureSandboxSession(ctx, sessionID, req)
@@ -420,12 +488,16 @@ func TestEnsureSandboxSession_SessionAlreadyExists_WaitsForReady(t *testing.T) {
 	defer ctrl.Finish()
 
 	mockLogger := cmpmock.NewMockLogger(ctrl)
+	allowAnyLoggerCalls(mockLogger)
 	createCallCount := 0
 	getCallCount := 0
 
 	mockSandbox := &mockGetSessionSandbox{
 		getSessionFunc: func(ctx context.Context, sessionID string) (*sandboxplatformdto.GetSessionResp, error) {
 			getCallCount++
+			if getCallCount == 1 {
+				return nil, rest.NewHTTPError(ctx, http.StatusNotFound, rest.PublicError_NotFound)
+			}
 			return &sandboxplatformdto.GetSessionResp{
 				ID:     sessionID,
 				Status: "running",
@@ -438,9 +510,9 @@ func TestEnsureSandboxSession_SessionAlreadyExists_WaitsForReady(t *testing.T) {
 	}
 
 	svc := &agentSvc{
-		SvcBase:             service.NewSvcBase(),
-		logger:              mockLogger,
-		sandboxPlatform:      mockSandbox,
+		SvcBase:         service.NewSvcBase(),
+		logger:          mockLogger,
+		sandboxPlatform: mockSandbox,
 		sandboxPlatformConf: &conf.SandboxPlatformConf{
 			DefaultTemplateID: "python3.11",
 			MaxRetries:        3,
@@ -451,9 +523,11 @@ func TestEnsureSandboxSession_SessionAlreadyExists_WaitsForReady(t *testing.T) {
 	ctx := context.Background()
 	sessionID := "test-session-exists"
 	req := &agentreq.ChatReq{
-		UserID:    "user-123",
-		AgentID:   "agent-456",
-		XBusinessDomainID: "bd-789",
+		InternalParam: agentreq.InternalParam{
+			UserID:            "user-123",
+			XBusinessDomainID: "bd-789",
+		},
+		AgentID: "agent-456",
 	}
 
 	result, err := svc.EnsureSandboxSession(ctx, sessionID, req)
@@ -461,5 +535,5 @@ func TestEnsureSandboxSession_SessionAlreadyExists_WaitsForReady(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, sessionID, result)
 	assert.Equal(t, 1, createCallCount, "create should have been called once")
-	assert.Equal(t, 1, getCallCount, "get should have been called once to check status")
+	assert.Equal(t, 2, getCallCount, "get should have been called twice (initial check + wait for ready)")
 }

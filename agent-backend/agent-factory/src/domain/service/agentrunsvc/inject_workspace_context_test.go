@@ -9,22 +9,22 @@ import (
 
 func TestBuildUserQuery(t *testing.T) {
 	tests := []struct {
-		name          string
-		originalQuery string
+		name           string
+		originalQuery  string
 		conversationID string
-		selectedFiles []agentreq.SelectedFile
-		wantContains  []string
+		selectedFiles  []agentreq.SelectedFile
+		wantContains   []string
 	}{
 		{
-			name:          "empty files",
-			originalQuery: "What is the weather?",
+			name:           "empty files",
+			originalQuery:  "What is the weather?",
 			conversationID: "conv-123",
-			selectedFiles: []agentreq.SelectedFile{},
+			selectedFiles:  []agentreq.SelectedFile{},
 			wantContains:   []string{"What is the weather?"}, // Just returns original query
 		},
 		{
-			name:          "with files",
-			originalQuery: "Analyze the data",
+			name:           "with files",
+			originalQuery:  "Analyze the data",
 			conversationID: "conv-123",
 			selectedFiles: []agentreq.SelectedFile{
 				{FileName: "/workspace/conv-123/uploads/data.csv"},
@@ -36,8 +36,8 @@ func TestBuildUserQuery(t *testing.T) {
 			},
 		},
 		{
-			name:          "multiple files",
-			originalQuery: "Compare these files",
+			name:           "multiple files",
+			originalQuery:  "Compare these files",
 			conversationID: "conv-456",
 			selectedFiles: []agentreq.SelectedFile{
 				{FileName: "/workspace/conv-456/uploads/file1.csv"},
@@ -50,8 +50,8 @@ func TestBuildUserQuery(t *testing.T) {
 			},
 		},
 		{
-			name:          "empty original query with files",
-			originalQuery: "",
+			name:           "empty original query with files",
+			originalQuery:  "",
 			conversationID: "conv-789",
 			selectedFiles: []agentreq.SelectedFile{
 				{FileName: "/workspace/conv-789/uploads/data.csv"},
@@ -73,11 +73,11 @@ func TestBuildUserQuery(t *testing.T) {
 
 func TestBuildWorkspaceContextMessage(t *testing.T) {
 	tests := []struct {
-		name          string
+		name           string
 		conversationID string
-		userID        string
-		selectedFiles []agentreq.SelectedFile
-		wantContains  []string
+		userID         string
+		selectedFiles  []agentreq.SelectedFile
+		wantContains   []string
 	}{
 		{
 			name:           "empty files",
