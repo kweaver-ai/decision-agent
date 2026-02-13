@@ -18,10 +18,10 @@ redis:
   # 连接类型: standalone, sentinel, master-slave
   cluster_mode: "standalone"
   # sentinel模式配置
-  host: "localhost"
+  host: "decision-agent-redis"
   port: "6379"
   user: ""
-  password: ""
+  password: "redis123456"
   sentinel_master: "mymaster"
   sentinel_user: ""
   sentinel_password: ""
@@ -33,7 +33,7 @@ services:
     port: "9898"
   agent_factory:
     host: "localhost"
-    port: "13020"
+    port: "30777"
   agent_operator_integration:
     host: "agent-operator-integration"
     port: "9000"

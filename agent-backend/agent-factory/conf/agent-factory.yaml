@@ -39,9 +39,9 @@ swagger_token: ""
 db:
   user_name: aishu
   user_pwd: "aishu123456"
-  db_host: mariadb
+  db_host: decision-agent-mariadb
   db_port: 3306
-  db_host_read: mariadb
+  db_host_read: decision-agent-mariadb
   db_port_read: 3306
   db_name: adp
   db_charset: utf8mb4
@@ -59,7 +59,7 @@ redis:
   db: 3
 
   # standalone 单机模式
-  host: "redis"
+  host: "decision-agent-redis"
   port: "6379"
 
   # sentinel 模式配置
