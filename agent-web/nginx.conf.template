@@ -5,6 +5,11 @@ server {
     # 隐藏版本号
     server_tokens off;
 
+    # 处理 MPA 前端路由回退：/agent-web/<page>.html/<sub-route> -> /agent-web/<page>.html
+    location ~ ^/agent-web/([^/]+\.html)/.+ {
+        rewrite ^(/agent-web/[^/]+\.html)/.+ $1 last;
+    }
+
     location /agent-web {
         if ($request_filename ~* ^.*[.](html|htm)$) {
             expires 0;
