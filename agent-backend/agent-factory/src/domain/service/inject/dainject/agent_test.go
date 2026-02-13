@@ -6,11 +6,13 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestNewAgentSvc_PanicsWithoutGlobalConfig(t *testing.T) {
-	// The NewAgentSvc function requires global.GConfig to be initialized
-	// In test environment without global config, it will panic
-	assert.Panics(t, func() {
-		_ = NewAgentSvc()
-	})
-}
+func TestNewAgentSvc_SingletonAndConstruct(t *testing.T) {
+	initInjectGlobalConfig(t)
+	resetInjectSingletons()
 
+	first := NewAgentSvc()
+	second := NewAgentSvc()
+
+	assert.NotNil(t, first)
+	assert.Same(t, first, second)
+}

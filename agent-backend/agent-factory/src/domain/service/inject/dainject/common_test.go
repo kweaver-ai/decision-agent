@@ -1,22 +1,50 @@
 package dainject
 
 import (
+	"sync"
 	"testing"
 
-	"github.com/stretchr/testify/assert"
+	"github.com/kweaver-ai/decision-agent/agent-factory/cconf"
+	"github.com/kweaver-ai/decision-agent/agent-factory/conf"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 )
 
-func TestSingletonInjectorPattern(t *testing.T) {
-	t.Run("NewConversationSvc panics without dependencies", func(t *testing.T) {
-		// Note: These will panic in test environment without proper setup
-		assert.Panics(t, func() {
-			_ = NewConversationSvc()
-		})
-	})
+func initInjectGlobalConfig(t *testing.T) {
+	t.Helper()
 
-	t.Run("NewSessionSvc returns non-nil in test environment", func(t *testing.T) {
-		// SessionSvc might work in test environment
-		svc := NewSessionSvc()
-		assert.NotNil(t, svc)
+	oldCfg := global.GConfig
+	global.GConfig = &conf.Config{
+		Config: cconf.BaseDefConfig(),
+		AgentFactoryConf: &conf.AgentFactoryConf{
+			PrivateSvc: cconf.SvcConf{Protocol: "http", Host: "127.0.0.1", Port: 1},
+		},
+		AgentExecutorConf: &conf.AgentExecutorConf{
+			PrivateSvc: cconf.SvcConf{Protocol: "http", Host: "127.0.0.1", Port: 1},
+		},
+		UniqueryConf: &conf.UniqueryConf{
+			PrivateSvc: cconf.SvcConf{Protocol: "http", Host: "127.0.0.1", Port: 1},
+		},
+		SandboxPlatformConf: &conf.SandboxPlatformConf{
+			PrivateSvc: cconf.SvcConf{Protocol: "http", Host: "127.0.0.1", Port: 1},
+		},
+		SwitchFields: conf.NewSwitchFields(),
+	}
+
+	t.Cleanup(func() {
+		global.GConfig = oldCfg
 	})
+}
+
+func resetInjectSingletons() {
+	agentSvcOnce = sync.Once{}
+	agentSvcImpl = nil
+
+	conversationSvcOnce = sync.Once{}
+	conversationSvcImpl = nil
+
+	observabilitySvcOnce = sync.Once{}
+	observabilitySvcImpl = nil
+
+	sessionSvcOnce = sync.Once{}
+	sessionSvcImpl = nil
 }

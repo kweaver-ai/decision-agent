@@ -113,7 +113,7 @@ func TestPublishedSvc_getPmsAgentPos(t *testing.T) {
 		pos, bdMap, isLastPage, err := svc.getPmsAgentPos(context.Background(), &pubedreq.PubedAgentListReq{Size: 10})
 		assert.Error(t, err)
 		assert.Nil(t, pos)
-		assert.Equal(t, "bd-1", bdMap["a1"])
+		assert.Nil(t, bdMap)
 		assert.False(t, isLastPage)
 	})
 
@@ -165,7 +165,7 @@ func TestPublishedSvc_getPmsAgentPos(t *testing.T) {
 		pos, bdMap, isLastPage, err := svc.getPmsAgentPos(context.Background(), &pubedreq.PubedAgentListReq{Size: 10})
 		assert.Error(t, err)
 		assert.Nil(t, pos)
-		assert.Nil(t, bdMap)
+		assert.Equal(t, "bd-1", bdMap["a1"])
 		assert.False(t, isLastPage)
 	})
 

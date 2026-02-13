@@ -1,9 +1,13 @@
 package dainject
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/cconf"
+	"github.com/kweaver-ai/decision-agent/agent-factory/conf"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cglobal"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -49,4 +53,50 @@ func TestGetModelApiUrlPrefix(t *testing.T) {
 
 		assert.Contains(t, result, "://:0/api/private/mf-model-api/v1")
 	})
+}
+
+func initV3InjectGlobalConfig(t *testing.T) {
+	t.Helper()
+
+	oldCfg := global.GConfig
+	oldCGlobalCfg := cglobal.GConfig
+
+	baseCfg := cconf.BaseDefConfig()
+	cglobal.GConfig = baseCfg
+	global.GConfig = &conf.Config{
+		Config: baseCfg,
+		SwitchFields: &conf.SwitchFields{
+			Mock: &conf.MockSwitchFields{
+				MockAuthZ:     true,
+				MockBizDomain: true,
+			},
+		},
+	}
+	t.Cleanup(func() {
+		global.GConfig = oldCfg
+		cglobal.GConfig = oldCGlobalCfg
+	})
+}
+
+func resetV3InjectSingletons() {
+	agentInOutSvcOnce = sync.Once{}
+	agentInOutSvcImpl = nil
+
+	daTplSvcOnce = sync.Once{}
+	daTplSvcImpl = nil
+
+	bizDomainSvcOnce = sync.Once{}
+	bizDomainSvcImpl = nil
+
+	permissionSvcOnce = sync.Once{}
+	permissionSvcImpl = nil
+
+	personalSpaceSvcOnce = sync.Once{}
+	personalSpaceSvcImpl = nil
+
+	publishedSvcOnce = sync.Once{}
+	publishedSvcImpl = nil
+
+	releaseSvcOnce = sync.Once{}
+	releaseSvcImpl = nil
 }
