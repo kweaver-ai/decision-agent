@@ -64,3 +64,14 @@ index-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 [tool.pytest.ini_options]
 norecursedirs = ["test/unit/common/tool_v2", "test/unit/boot"]
 asyncio_mode = "auto"
+
+
+[tool.coverage.run]
+omit = [
+    "main.py",
+    "*/test/*",           # 不统计测试文件本身
+    "*/test_*",            
+    "test/unit/common/tool_v2",
+    ".venv/*",              # 跳过虚拟环境
+    "*/__pycache__/*",
+]

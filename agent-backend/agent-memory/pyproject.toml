@@ -70,6 +70,7 @@ omit = [
     "*/env/*",
     "*/__pycache__/*",
     "*/mem0/*",
+    "src/main.py"
 ]
 
 [tool.coverage.report]
