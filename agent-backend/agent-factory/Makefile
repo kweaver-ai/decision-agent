@@ -61,23 +61,3 @@ push:
 	git push origin $(shell git rev-parse --abbrev-ref HEAD)
 
 
-localRun:
-	export AD_STRATEGY_CENTER_AR_TRACE_DEBUG=true;\
-	export AD_STRATEGY_CENTER_LOCAL_DEV=true;\
-	export AGENT_FACTORY_AR_TRACE_DEBUG=true;\
-	export AGENT_FACTORY_CONFIG_PATH=./conf/;\
-	export AGENT_FACTORY_LOCAL_DEV=true;\
-	export AGENT_FACTORY_LOCAL_DEV_LOG_ROOT_DIR=./log/;\
-	export AGENT_FACTORY_LOCAL_DEV_AARON=true;\
-	export AGENT_FACTORY_SQL_PRINT=false;\
-	export STRATEGY_CENTER_CONFIG_PATH=./conf/;\
-	export STRATEGY_CENTER_SQL_PRINT=false;\
-	export SERVICE_NAME=agent-factory;\
-	go run ./main.go
-
-killLocal:
-	lsof -i :13020 | awk 'NR!=1 {print $2}' | xargs kill -9
-
-reRunLocal:
-	$(MAKE) killLocal
-	$(MAKE) localRun
