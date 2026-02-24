@@ -7,6 +7,7 @@ import (
 
 	"github.com/getkin/kin-openapi/openapi3"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squarereq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/static"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
@@ -21,7 +22,10 @@ func (agentSvc *agentSvc) GetAPIDoc(ctx context.Context, req *agentreq.GetAPIDoc
 	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
 	o11y.SetAttributes(ctx, attribute.String("agent_version", req.AgentVersion))
 
-	agent, err := agentSvc.agentFactory.GetAgent(ctx, req.AgentID, req.AgentVersion)
+	agentInfo, err := agentSvc.squareSvc.GetAgentInfo(ctx, &squarereq.AgentInfoReq{
+		AgentID:      req.AgentID,
+		AgentVersion: req.AgentVersion,
+	})
 	if err != nil {
 		o11y.Error(ctx, fmt.Sprintf("[GetAPIDoc] get agent failed: %v", err))
 		return nil, errors.Wrapf(err, "[GetAPIDoc] get agent failed: %v", err)
@@ -43,10 +47,11 @@ func (agentSvc *agentSvc) GetAPIDoc(ctx context.Context, req *agentreq.GetAPIDoc
 
 	// 取这个接口的配置
 	pathItem := apiDoc.Paths.Value("/api/agent-app/v1/app/{app_key}/api/chat/completion")
-	pathItem.Post.Summary = agent.Name
+	pathItem.Post.Summary = agentInfo.DataAgent.Name
 
-	if agent.Profile != "" {
-		pathItem.Post.Description = agent.Profile
+	profile := agentInfo.DataAgent.GetProfileStr()
+	if profile != "" {
+		pathItem.Post.Description = profile
 	}
 
 	// 取请求体
@@ -56,7 +61,7 @@ func (agentSvc *agentSvc) GetAPIDoc(ctx context.Context, req *agentreq.GetAPIDoc
 	reqExample["custom_querys"] = make(map[string]interface{})
 	excludeFields := []string{"history", "query", "header", "tool", "self_config"}
 
-	for _, input := range agent.Config.Input.Fields {
+	for _, input := range agentInfo.Config.Input.Fields {
 		if input.Name == "history" {
 			reqExample[input.Name] = []map[string]string{}
 		} else {
@@ -107,8 +112,8 @@ func (agentSvc *agentSvc) GetAPIDoc(ctx context.Context, req *agentreq.GetAPIDoc
 	}
 
 	reqExample["stream"] = false
-	reqExample["agent_version"] = agent.Version
-	reqExample["agent_key"] = agent.Key
+	reqExample["agent_version"] = agentInfo.Version
+	reqExample["agent_key"] = agentInfo.DataAgent.Key
 	pathItem.Post.RequestBody.Value.Content["application/json"].Example = reqExample
 	pathItem.Post.RequestBody.Value.Content["application/json"].Schema = chatRequest
 

@@ -13,14 +13,12 @@ func TestAgentInfoReq_StructFields(t *testing.T) {
 		AgentID:      "agent-456",
 		AgentVersion: "1.0.0",
 		IsVisit:      true,
-		CustomSpaceID: "space-789",
 	}
 
 	assert.Equal(t, "user-123", req.UserID)
 	assert.Equal(t, "agent-456", req.AgentID)
 	assert.Equal(t, "1.0.0", req.AgentVersion)
 	assert.True(t, req.IsVisit)
-	assert.Equal(t, "space-789", req.CustomSpaceID)
 }
 
 func TestAgentInfoReq_EmptyValues(t *testing.T) {
@@ -30,7 +28,6 @@ func TestAgentInfoReq_EmptyValues(t *testing.T) {
 	assert.Empty(t, req.AgentID)
 	assert.Empty(t, req.AgentVersion)
 	assert.False(t, req.IsVisit)
-	assert.Empty(t, req.CustomSpaceID)
 }
 
 func TestAgentInfoReq_WithFalseIsVisit(t *testing.T) {

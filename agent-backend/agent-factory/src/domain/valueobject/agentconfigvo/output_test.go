@@ -5,7 +5,6 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentfactoryaccess/agentfactorydto"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -123,25 +122,23 @@ func TestExtractOutputsFromText_Errors(t *testing.T) {
 	}
 }
 
-func TestOutputVariablesS_LoadFromAgent(t *testing.T) {
+func TestOutputVariablesS_LoadFromConfig(t *testing.T) {
 	tests := []struct {
 		name    string
-		agent   *agentfactorydto.Agent
+		config  *daconfvalobj.Config
 		wantErr bool
 		check   func(t *testing.T, v *OutputVariablesS)
 	}{
 		{
-			name: "load from agent with output variables",
-			agent: &agentfactorydto.Agent{
-				Config: daconfvalobj.Config{
-					Output: &daconfvalobj.Output{
-						Variables: &daconfvalobj.VariablesS{
-							AnswerVar:           "answer",
-							DocRetrievalVar:     "doc_res",
-							GraphRetrievalVar:   "graph_res",
-							RelatedQuestionsVar: "questions",
-							OtherVars:           []string{"var1", "var2"},
-						},
+			name: "load from config with output variables",
+			config: &daconfvalobj.Config{
+				Output: &daconfvalobj.Output{
+					Variables: &daconfvalobj.VariablesS{
+						AnswerVar:           "answer",
+						DocRetrievalVar:     "doc_res",
+						GraphRetrievalVar:   "graph_res",
+						RelatedQuestionsVar: "questions",
+						OtherVars:           []string{"var1", "var2"},
 					},
 				},
 			},
@@ -153,15 +150,13 @@ func TestOutputVariablesS_LoadFromAgent(t *testing.T) {
 			},
 		},
 		{
-			name: "load from agent with dolphin mode",
-			agent: &agentfactorydto.Agent{
-				Config: daconfvalobj.Config{
-					IsDolphinMode: cdaenum.DolphinModeEnabled,
-					Dolphin:       " -> output_test1\n -> output_test2\nsome text\n -> output_test3",
-					Output: &daconfvalobj.Output{
-						Variables: &daconfvalobj.VariablesS{
-							AnswerVar: "answer",
-						},
+			name: "load from config with dolphin mode",
+			config: &daconfvalobj.Config{
+				IsDolphinMode: cdaenum.DolphinModeEnabled,
+				Dolphin:       " -> output_test1\n -> output_test2\nsome text\n -> output_test3",
+				Output: &daconfvalobj.Output{
+					Variables: &daconfvalobj.VariablesS{
+						AnswerVar: "answer",
 					},
 				},
 			},
@@ -175,15 +170,13 @@ func TestOutputVariablesS_LoadFromAgent(t *testing.T) {
 			},
 		},
 		{
-			name: "load from agent without dolphin mode",
-			agent: &agentfactorydto.Agent{
-				Config: daconfvalobj.Config{
-					IsDolphinMode: cdaenum.DolphinModeDisabled,
-					Dolphin:       " -> output_test1",
-					Output: &daconfvalobj.Output{
-						Variables: &daconfvalobj.VariablesS{
-							AnswerVar: "answer",
-						},
+			name: "load from config without dolphin mode",
+			config: &daconfvalobj.Config{
+				IsDolphinMode: cdaenum.DolphinModeDisabled,
+				Dolphin:       " -> output_test1",
+				Output: &daconfvalobj.Output{
+					Variables: &daconfvalobj.VariablesS{
+						AnswerVar: "answer",
 					},
 				},
 			},
@@ -194,14 +187,12 @@ func TestOutputVariablesS_LoadFromAgent(t *testing.T) {
 			},
 		},
 		{
-			name: "load from agent with empty middle output vars",
-			agent: &agentfactorydto.Agent{
-				Config: daconfvalobj.Config{
-					Output: &daconfvalobj.Output{
-						Variables: &daconfvalobj.VariablesS{
-							AnswerVar:         "answer",
-							MiddleOutputVars: []string{},
-						},
+			name: "load from config with empty middle output vars",
+			config: &daconfvalobj.Config{
+				Output: &daconfvalobj.Output{
+					Variables: &daconfvalobj.VariablesS{
+						AnswerVar:        "answer",
+						MiddleOutputVars: []string{},
 					},
 				},
 			},
@@ -212,16 +203,14 @@ func TestOutputVariablesS_LoadFromAgent(t *testing.T) {
 			},
 		},
 		{
-			name: "load from agent with existing middle output vars (should not extract)",
-			agent: &agentfactorydto.Agent{
-				Config: daconfvalobj.Config{
-					IsDolphinMode: cdaenum.DolphinModeEnabled,
-					Dolphin:       " -> output_test1\n -> output_test2",
-					Output: &daconfvalobj.Output{
-						Variables: &daconfvalobj.VariablesS{
-							AnswerVar:         "answer",
-							MiddleOutputVars: []string{"existing_var1", "existing_var2"},
-						},
+			name: "load from config with existing middle output vars (should not extract)",
+			config: &daconfvalobj.Config{
+				IsDolphinMode: cdaenum.DolphinModeEnabled,
+				Dolphin:       " -> output_test1\n -> output_test2",
+				Output: &daconfvalobj.Output{
+					Variables: &daconfvalobj.VariablesS{
+						AnswerVar:        "answer",
+						MiddleOutputVars: []string{"existing_var1", "existing_var2"},
 					},
 				},
 			},
@@ -239,7 +228,7 @@ func TestOutputVariablesS_LoadFromAgent(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			v := &OutputVariablesS{}
-			err := v.LoadFromAgent(tt.agent)
+			err := v.LoadFromConfig(tt.config)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {
@@ -281,22 +270,20 @@ func TestOutputVariablesS_ToVariable_Empty(t *testing.T) {
 	assert.Nil(t, variable.OtherVars)
 }
 
-func TestOutputVariablesS_LoadFromAgent_EmptyDolphinWithMode(t *testing.T) {
+func TestOutputVariablesS_LoadFromConfig_EmptyDolphinWithMode(t *testing.T) {
 	// Test when dolphin is empty but mode is enabled
-	agent := &agentfactorydto.Agent{
-		Config: daconfvalobj.Config{
-			IsDolphinMode: cdaenum.DolphinModeEnabled,
-			Dolphin:       "", // Empty dolphin
-			Output: &daconfvalobj.Output{
-				Variables: &daconfvalobj.VariablesS{
-					AnswerVar: "answer",
-				},
+	config := &daconfvalobj.Config{
+		IsDolphinMode: cdaenum.DolphinModeEnabled,
+		Dolphin:       "", // Empty dolphin
+		Output: &daconfvalobj.Output{
+			Variables: &daconfvalobj.VariablesS{
+				AnswerVar: "answer",
 			},
 		},
 	}
 
 	v := &OutputVariablesS{}
-	err := v.LoadFromAgent(agent)
+	err := v.LoadFromConfig(config)
 	assert.NoError(t, err)
 	assert.Equal(t, "answer", v.AnswerVar)
 	// MiddleOutputVars should remain empty since dolphin is empty
@@ -338,4 +325,3 @@ func TestExtractOutputFromLine_ComplexPatterns(t *testing.T) {
 		})
 	}
 }
-

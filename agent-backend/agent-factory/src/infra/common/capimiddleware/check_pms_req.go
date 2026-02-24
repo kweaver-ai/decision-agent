@@ -1,15 +1,14 @@
-package afhttpdto
+package capimiddleware
 
 import (
 	"errors"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdapmsenum"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/rdto/agent_permission/cpmsreq"
 )
 
+// CheckPmsReq 权限检查请求（从 afhttpdto.CheckPmsReq 迁移而来）
 type CheckPmsReq struct {
-	// AgentID string `json:"agent_id"`
 	ResourceType cdaenum.ResourceType
 	ResourceID   string
 
@@ -49,6 +48,7 @@ func (r *CheckPmsReq) ReqCheck() (err error) {
 	return
 }
 
+// NewCheckAgentUsePmsReq 创建检查 agent 使用权限的请求
 func NewCheckAgentUsePmsReq(agentID string, userID string, appAccountID string) *CheckPmsReq {
 	return &CheckPmsReq{
 		ResourceType: cdaenum.ResourceTypeDataAgent,
@@ -57,13 +57,4 @@ func NewCheckAgentUsePmsReq(agentID string, userID string, appAccountID string) 
 		UserID:       userID,
 		AppAccountID: appAccountID,
 	}
-}
-
-func (r *CheckPmsReq) ToCheckPmsReq() (req *cpmsreq.CheckAgentRunReq) {
-	req = &cpmsreq.CheckAgentRunReq{}
-	req.AgentID = r.ResourceID
-	req.UserID = r.UserID
-	req.AppAccountID = r.AppAccountID
-
-	return
 }

@@ -7,8 +7,7 @@ import (
 
 	"github.com/bytedance/sonic"
 	"github.com/gin-gonic/gin"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentfactoryhttp/afhttpdto"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/httpinject"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/squaresvc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capimiddleware"
@@ -43,23 +42,23 @@ func CheckAgentUsePms() gin.HandlerFunc {
 			agentID = agentValue
 		} else if agentValue, ok := data["agent_key"].(string); ok {
 			// NOTE: 通过AgentKey查询AgentID
-			agent, err := httpinject.NewAgentFactoryHttpAcc().GetAgent(c.Request.Context(), agentValue, "latest")
+			resolvedID, err := squaresvc.NewSquareService().CheckAndGetID(c.Request.Context(), agentValue)
 			if err != nil {
-				httpErr := capierr.New400Err(c, "[CheckAgentUsePmsInternal] get agent id by agent key failed")
+				httpErr := capierr.New400Err(c, "[CheckAgentUsePms] get agent id by agent key failed")
 				rest.ReplyError(c, httpErr)
 				c.Abort()
 
 				return
 			}
 
-			agentID = agent.ID
+			agentID = resolvedID
 		} else {
 			// 如果请求体中获取不到，尝试从URL路径参数中获取
 			if agentValue := c.Param("agent_id"); agentValue != "" {
 				agentID = agentValue
 			} else if agentValue := c.Param("agent_key"); agentValue != "" {
 				// NOTE: 通过AgentKey查询AgentID
-				agent, err := httpinject.NewAgentFactoryHttpAcc().GetAgent(c.Request.Context(), agentValue, "latest")
+				resolvedID, err := squaresvc.NewSquareService().CheckAndGetID(c.Request.Context(), agentValue)
 				if err != nil {
 					httpErr := capierr.New400Err(c, "[CheckAgentUsePms] get agent id by agent key from path param failed")
 					rest.ReplyError(c, httpErr)
@@ -68,7 +67,7 @@ func CheckAgentUsePms() gin.HandlerFunc {
 					return
 				}
 
-				agentID = agent.ID
+				agentID = resolvedID
 			} else {
 				httpErr := capierr.New400Err(c, "[CheckAgentUsePms] one of agent_id and agent_key is required,type must be string, can be in request body or path param")
 				rest.ReplyError(c, httpErr)
@@ -90,11 +89,11 @@ func CheckAgentUsePms() gin.HandlerFunc {
 			return
 		}
 
-		req := &afhttpdto.CheckPmsReq{}
+		var req *capimiddleware.CheckPmsReq
 		if visitor.Type == rest.VisitorType_App {
-			req = afhttpdto.NewCheckAgentUsePmsReq(agentID, "", visitor.ID)
+			req = capimiddleware.NewCheckAgentUsePmsReq(agentID, "", visitor.ID)
 		} else {
-			req = afhttpdto.NewCheckAgentUsePmsReq(agentID, visitor.ID, "")
+			req = capimiddleware.NewCheckAgentUsePmsReq(agentID, visitor.ID, "")
 		}
 
 		handler := capimiddleware.CheckPms(req, func(c *gin.Context, hasPms bool) {
@@ -113,38 +112,6 @@ func CheckAgentUsePms() gin.HandlerFunc {
 	}
 }
 
-// func CheckSpaceMember() gin.HandlerFunc {
-// 	return func(c *gin.Context) {
-// 		customSpaceID := c.Query("custom_space_id")
-// 		visitor := chelper.GetVisitorFromCtx(c)
-// 		if visitor == nil {
-// 			httpErr := capierr.New401Err(c, "[CheckSpaceMember] user not found")
-// 			rest.ReplyError(c, httpErr)
-// 			c.Abort()
-// 			return
-// 		}
-
-// 		req := &cpmsreq.CheckIsCustomSpaceMemberReq{
-// 			CustomSpaceID: customSpaceID,
-// 			UserID:        visitor.ID,
-// 		}
-
-// 		handler := capimiddleware.CheckSpaceMember(req, func(c *gin.Context, hasPms bool) {
-// 			if !hasPms {
-// 				httpErr := capierr.NewCustom403Err(c, apierr.AgentAPP_Forbidden_PermissionDenied, fmt.Sprintf("user %s has no permission to use custom space %s", visitor.ID, customSpaceID))
-
-// 				rest.ReplyError(c, httpErr)
-// 				c.Abort()
-
-// 				return
-// 			}
-// 		})
-
-// 		handler(c)
-
-// 		c.Next()
-// 	}
-// }
 
 func CheckAgentUsePmsInternal() gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -173,7 +140,7 @@ func CheckAgentUsePmsInternal() gin.HandlerFunc {
 			agentID = agentValue
 		} else if agentValue, ok := data["agent_key"].(string); ok {
 			// NOTE: 通过AgentKey查询AgentID,一一对应与agent_version无关
-			agent, err := httpinject.NewAgentFactoryHttpAcc().GetAgent(c.Request.Context(), agentValue, "latest")
+			resolvedID, err := squaresvc.NewSquareService().CheckAndGetID(c.Request.Context(), agentValue)
 			if err != nil {
 				httpErr := capierr.New400Err(c, "[CheckAgentUsePmsInternal] get agent id by agent key failed")
 				rest.ReplyError(c, httpErr)
@@ -182,14 +149,14 @@ func CheckAgentUsePmsInternal() gin.HandlerFunc {
 				return
 			}
 
-			agentID = agent.ID
+			agentID = resolvedID
 		} else {
 			// 如果请求体中获取不到，尝试从URL路径参数中获取
 			if agentValue := c.Param("agent_id"); agentValue != "" {
 				agentID = agentValue
 			} else if agentValue := c.Param("agent_key"); agentValue != "" {
 				// NOTE: 通过AgentKey查询AgentID,一一对应与agent_version无关
-				agent, err := httpinject.NewAgentFactoryHttpAcc().GetAgent(c.Request.Context(), agentValue, "latest")
+				resolvedID, err := squaresvc.NewSquareService().CheckAndGetID(c.Request.Context(), agentValue)
 				if err != nil {
 					httpErr := capierr.New400Err(c, "[CheckAgentUsePmsInternal] get agent id by agent key from path param failed")
 					rest.ReplyError(c, httpErr)
@@ -198,7 +165,7 @@ func CheckAgentUsePmsInternal() gin.HandlerFunc {
 					return
 				}
 
-				agentID = agent.ID
+				agentID = resolvedID
 			} else {
 				httpErr := capierr.New400Err(c, "[CheckAgentUsePmsInternal] one of agent_id and agent_key is required,type must be string, can be in request body or path param")
 				rest.ReplyError(c, httpErr)
@@ -226,11 +193,11 @@ func CheckAgentUsePmsInternal() gin.HandlerFunc {
 			accountType = "user"
 		}
 
-		req := &afhttpdto.CheckPmsReq{}
+		var req *capimiddleware.CheckPmsReq
 		if accountType == "app" {
-			req = afhttpdto.NewCheckAgentUsePmsReq(agentID, "", userID)
+			req = capimiddleware.NewCheckAgentUsePmsReq(agentID, "", userID)
 		} else if accountType == "user" || accountType == "anonymous" {
-			req = afhttpdto.NewCheckAgentUsePmsReq(agentID, userID, "")
+			req = capimiddleware.NewCheckAgentUsePmsReq(agentID, userID, "")
 		} else {
 			httpErr := capierr.New400Err(c, "[CheckAgentUsePmsInternal] account type not found")
 			rest.ReplyError(c, httpErr)
@@ -256,36 +223,3 @@ func CheckAgentUsePmsInternal() gin.HandlerFunc {
 	}
 }
 
-// func CheckSpaceMemberInternal() gin.HandlerFunc {
-// 	return func(c *gin.Context) {
-// 		customSpaceID := c.Query("custom_space_id")
-// 		userID := c.Request.Header.Get("x-account-id")
-// 		if userID == "" {
-// 			httpErr := capierr.New401Err(c, "[CheckSpaceMemberInternal] account id  not found")
-// 			rest.ReplyError(c, httpErr)
-// 			c.Abort()
-// 			return
-// 		}
-
-// 		req := &cpmsreq.CheckIsCustomSpaceMemberReq{
-// 			CustomSpaceID: customSpaceID,
-// 			UserID:        userID,
-// 		}
-
-// 		handler := capimiddleware.CheckSpaceMember(req, func(c *gin.Context, hasPms bool) {
-// 			if !hasPms {
-// 				httpErr := capierr.NewCustom403Err(c, apierr.AgentAPP_Forbidden_PermissionDenied,
-// 					fmt.Sprintf("user %s has no permission to use custom space %s", userID, customSpaceID))
-
-// 				rest.ReplyError(c, httpErr)
-// 				c.Abort()
-
-// 				return
-// 			}
-// 		})
-
-// 		handler(c)
-
-// 		c.Next()
-// 	}
-// }

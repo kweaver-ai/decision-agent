@@ -1,11 +1,11 @@
 package squarehandler
 
 import (
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentfactoryhttp/afhttpdto"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/inject/v3/dainject"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squarereq"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/rdto/agent_permission/cpmsreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capimiddleware"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 
@@ -43,11 +43,10 @@ func (h *squareHandler) agentInfoGetReqMiddleware(c *gin.Context) {
 
 	// 4. 构造请求参数
 	agentInfoReq := squarereq.AgentInfoReq{
-		AgentID:       agentID,
-		AgentVersion:  version,
-		IsVisit:       cutil.StringToBool(c.Query("is_visit")),
-		UserID:        userID,
-		CustomSpaceID: c.Query("custom_space_id"),
+		AgentID:      agentID,
+		AgentVersion: version,
+		IsVisit:      cutil.StringToBool(c.Query("is_visit")),
+		UserID:       userID,
 	}
 
 	// 5. 设置请求参数
@@ -58,63 +57,42 @@ func (h *squareHandler) agentInfoGetReqMiddleware(c *gin.Context) {
 }
 
 func (h *squareHandler) agentInfoAgentUsePmsCheck(c *gin.Context) {
-	var (
-		err                 error
-		req                 *squarereq.AgentInfoReq
-		ok                  bool
-		checkAgentUsePmsReq *afhttpdto.CheckPmsReq
-
-		checkAgentUseHandler gin.HandlerFunc
-
-		// isAgentExists bool
-	)
-
 	iReq, exists := c.Get(agentInfoReqCtxKey)
 	if !exists {
-		err = capierr.New400Err(c, "[agentInfoAgentUsePmsCheck]: agentInfoReqCtxKey不存在")
-		goto ERRHandler
+		_ = c.Error(capierr.New400Err(c, "[agentInfoAgentUsePmsCheck]: agentInfoReqCtxKey不存在"))
+		c.Abort()
+		return
 	}
 
-	req, ok = iReq.(*squarereq.AgentInfoReq)
+	req, ok := iReq.(*squarereq.AgentInfoReq)
 	if !ok {
-		err = capierr.New400Err(c, "[agentInfoAgentUsePmsCheck]: agentInfoReqCtxKey类型错误")
-		goto ERRHandler
+		_ = c.Error(capierr.New400Err(c, "[agentInfoAgentUsePmsCheck]: agentInfoReqCtxKey类型错误"))
+		c.Abort()
+		return
 	}
 
-	// 1. 检查 Agent 是否存在
-	// isAgentExists, err = h.squareSvc.IsAgentExists(c, req.AgentID)
-	//if err != nil {
-	//	goto ERRHandler
-	//}
-	//
-	//if !isAgentExists {
-	//	err = capierr.NewCustom404Err(c, apierr.DataAgentConfigNotFound, "Agent不存在")
-	//	goto ERRHandler
-	//}
+	// 检查 Agent 使用权限
+	pmsReq := &cpmsreq.CheckAgentRunReq{
+		AgentID:      req.AgentID,
+		UserID:       req.UserID,
+		AppAccountID: "",
+	}
 
-	// 2. 检查 Agent 使用权限
-	checkAgentUsePmsReq = afhttpdto.NewCheckAgentUsePmsReq(req.AgentID, req.UserID, "")
+	resp, pmsErr := dainject.NewPermissionSvc().CheckUsePermission(c, pmsReq)
+	if pmsErr != nil {
+		_ = c.Error(pmsErr)
+		c.Abort()
+		return
+	}
 
-	checkAgentUseHandler = capimiddleware.CheckPms(checkAgentUsePmsReq, func(c *gin.Context, hasPms bool) {
-		if !hasPms {
-			_err := capierr.NewCustom403Err(c, apierr.AgentFactoryPermissionForbidden, "[agentInfoAgentUsePmsCheck]: 无当前Agent使用权限")
+	if resp == nil || !resp.IsAllowed {
+		_err := capierr.NewCustom403Err(c, apierr.AgentFactoryPermissionForbidden, "[agentInfoAgentUsePmsCheck]: 无当前Agent使用权限")
+		_ = c.Error(_err)
+		c.Abort()
+		return
+	}
 
-			_ = c.Error(_err)
-
-			c.Abort()
-
-			return
-		}
-	})
-
-	checkAgentUseHandler(c)
-
-	// 3. 继续执行
+	// 继续执行
 	c.Next()
-
-	return
-
-ERRHandler:
-	_ = c.Error(err)
-	c.Abort()
 }
+

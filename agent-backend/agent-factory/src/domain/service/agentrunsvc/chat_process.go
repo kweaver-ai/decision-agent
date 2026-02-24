@@ -10,9 +10,9 @@ import (
 	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/agentrunsvc/chatlogrecord"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentfactoryaccess/agentfactorydto"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squareresp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
@@ -20,7 +20,7 @@ import (
 )
 
 // NOTE: 流式处理, 接受agent-executor的返回结果,进行会话后处理，响应前端
-func (agentSvc *agentSvc) Process(req *agentreq.ChatReq, agent agentfactorydto.Agent, stopChan chan struct{},
+func (agentSvc *agentSvc) Process(req *agentreq.ChatReq, agent *squareresp.AgentMarketAgentInfoResp, stopChan chan struct{},
 	respChan chan []byte, messageChan chan string, errChan chan error, cancelFunc func(),
 ) error {
 	// NOTE: 记录开始时间
@@ -88,7 +88,7 @@ looplabel:
 			}
 			// NOTE: message 是原始数据
 			// currentData, isEnd, err = agentSvc.CallResult2MsgResp(ctx, []byte(message), req)
-			currentData, isEnd, err = agentSvc.AfterProcess(ctx, []byte(message), req, &agent)
+			currentData, isEnd, err = agentSvc.AfterProcess(ctx, []byte(message), req, agent)
 			if err != nil {
 				agentSvc.logger.Errorf("[Process] after process err: %v", err)
 				o11y.Error(ctx, fmt.Sprintf("[Process] after process err: %v", err))

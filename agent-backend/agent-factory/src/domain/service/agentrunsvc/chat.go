@@ -13,6 +13,7 @@ import (
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/session/sessionreq"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squarereq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
@@ -61,7 +62,10 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 
 	// NOTE: 1. 根据agentID 和agentVersion 获取agent配置
 	// NOTE: Chat接口请求时，agentID 实际值为agentID, APIChat接口请求时，agentID 实际值为agentKey
-	agent, err := agentSvc.agentFactory.GetAgent(newCtx, req.AgentID, req.AgentVersion)
+	agentInfo, err := agentSvc.squareSvc.GetAgentInfo(newCtx, &squarereq.AgentInfoReq{
+		AgentID:      req.AgentID,
+		AgentVersion: req.AgentVersion,
+	})
 	if err != nil {
 		o11y.Error(newCtx, fmt.Sprintf("[chat] get agent failed: %v", err))
 
@@ -74,10 +78,10 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	}
 
 	// NOTE：传递给AgentExecutor的agentID 前确保实际值为agentID
-	req.AgentID = agent.ID
+	req.AgentID = agentInfo.DataAgent.ID
 
 	// NOTE: 如果是apichat,但是没有发布成api agent，则返回403
-	if req.CallType == constant.APIChat && agent.PublishInfo.IsAPIAgent == 0 {
+	if req.CallType == constant.APIChat && agentInfo.PublishInfo.IsAPIAgent == 0 {
 		httpErr := capierr.NewCustom403Err(newCtx, apierr.AgentAPP_Forbidden_PermissionDenied, "[Chat] apichat is not published")
 		return nil, httpErr
 	}
@@ -148,7 +152,7 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	req.ConversationSessionID = fmt.Sprintf("%s-%d", req.ConversationID, startTime)
 
 	// NOTE: 6. 生成agent call请求
-	agentCallReq, err := agentSvc.GenerateAgentCallReq(newCtx, req, contexts, agent)
+	agentCallReq, err := agentSvc.GenerateAgentCallReq(newCtx, req, contexts, agentInfo)
 	if err != nil {
 		agentSvc.logger.Errorf("[Chat] generate agent call req err: %v", err)
 		o11y.Error(newCtx, fmt.Sprintf("[chat] generate agent call req err: %v", err))
@@ -192,7 +196,7 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	// NOTE: 8. 流式响应处理
 	channel := make(chan []byte, CHANNEL_SIZE)
 
-	go agentSvc.Process(req, agent, stopChan, channel, messageChan, errChan, agentCall.Cancel)
+	go agentSvc.Process(req, agentInfo, stopChan, channel, messageChan, errChan, agentCall.Cancel)
 
 	// NOTE: 9. 异步恢复会话
 	go func() {
