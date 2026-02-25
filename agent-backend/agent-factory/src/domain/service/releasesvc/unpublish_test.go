@@ -6,7 +6,6 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
@@ -14,6 +13,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver/v3portdrivermock"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 // Helper function to create context with user ID
@@ -140,4 +140,71 @@ func TestUnPublish_RepositoryError(t *testing.T) {
 	assert.Error(t, err)
 	assert.Empty(t, auditLog.ID)
 	assert.Contains(t, err.Error(), "get agent config by id failed")
+}
+
+func TestUnPublish_BeginTxError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockAgentConfigRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
+	mockReleaseRepo := idbaccessmock.NewMockIReleaseRepo(ctrl)
+	mockPermissionSvc := v3portdrivermock.NewMockIPermissionSvc(ctrl)
+
+	agentID := "agent-123"
+	currentUserID := "user-123"
+	agentPo := &dapo.DataAgentPo{ID: agentID, Name: "Test Agent", CreatedBy: currentUserID}
+	releasePo := &dapo.ReleasePO{ID: "release-123", AgentID: agentID}
+
+	mockAgentConfigRepo.EXPECT().GetByID(gomock.Any(), agentID).Return(agentPo, nil)
+	mockPermissionSvc.EXPECT().GetSingleMgmtPermission(gomock.Any(), gomock.Any(), gomock.Any()).Return(true, nil)
+	mockReleaseRepo.EXPECT().GetByAgentID(gomock.Any(), agentID).Return(releasePo, nil)
+	mockReleaseRepo.EXPECT().BeginTx(gomock.Any()).Return(nil, errors.New("begin tx failed"))
+
+	svc := &releaseSvc{
+		SvcBase:         service.NewSvcBase(),
+		agentConfigRepo: mockAgentConfigRepo,
+		releaseRepo:     mockReleaseRepo,
+		pmsSvc:          mockPermissionSvc,
+	}
+
+	ctx := createUnpublishCtx(currentUserID)
+	_, err := svc.UnPublish(ctx, agentID)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "begin transaction failed")
+}
+
+func TestUnPublish_DeleteByAgentIDError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	tx, sqlMock, done := newReleaseTx(t)
+	defer done()
+	sqlMock.ExpectRollback()
+
+	mockAgentConfigRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
+	mockReleaseRepo := idbaccessmock.NewMockIReleaseRepo(ctrl)
+	mockPermissionSvc := v3portdrivermock.NewMockIPermissionSvc(ctrl)
+
+	agentID := "agent-123"
+	currentUserID := "user-123"
+	agentPo := &dapo.DataAgentPo{ID: agentID, Name: "Test Agent", CreatedBy: currentUserID}
+	releasePo := &dapo.ReleasePO{ID: "release-123", AgentID: agentID}
+
+	mockAgentConfigRepo.EXPECT().GetByID(gomock.Any(), agentID).Return(agentPo, nil)
+	mockPermissionSvc.EXPECT().GetSingleMgmtPermission(gomock.Any(), gomock.Any(), gomock.Any()).Return(true, nil)
+	mockReleaseRepo.EXPECT().GetByAgentID(gomock.Any(), agentID).Return(releasePo, nil)
+	mockReleaseRepo.EXPECT().BeginTx(gomock.Any()).Return(tx, nil)
+	mockReleaseRepo.EXPECT().DeleteByAgentID(gomock.Any(), tx, agentID).Return(errors.New("delete failed"))
+
+	svc := &releaseSvc{
+		SvcBase:         service.NewSvcBase(),
+		agentConfigRepo: mockAgentConfigRepo,
+		releaseRepo:     mockReleaseRepo,
+		pmsSvc:          mockPermissionSvc,
+	}
+
+	ctx := createUnpublishCtx(currentUserID)
+	_, err := svc.UnPublish(ctx, agentID)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "delete release by agent id failed")
 }

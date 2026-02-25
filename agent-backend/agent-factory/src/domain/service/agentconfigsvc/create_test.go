@@ -6,14 +6,16 @@ import (
 	"testing"
 
 	"go.uber.org/mock/gomock"
+
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver/v3portdrivermock"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -221,6 +223,62 @@ func TestDataAgentConfigSvc_createPo_InternalAPISetsCreatedBy(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, cdaenum.StatusUnpublished, po.Status)
+}
+
+func TestDataAgentConfigSvc_CreatePo_RepoCreateError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockAgentConfRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
+
+	svc := &dataAgentConfigSvc{
+		SvcBase:       service.NewSvcBase(),
+		agentConfRepo: mockAgentConfRepo,
+	}
+
+	req := &agentconfigreq.CreateReq{
+		UpdateReq: &agentconfigreq.UpdateReq{
+			IsInternalAPI: true,
+			UpdatedBy:     "sys",
+		},
+	}
+	po := &dapo.DataAgentPo{}
+
+	mockAgentConfRepo.EXPECT().Create(gomock.Any(), gomock.Any(), "agent-id", po).
+		Return(errors.New("db create error"))
+
+	err := svc.createPo(context.Background(), nil, req, po, "agent-id")
+	assert.Error(t, err)
+}
+
+func TestDataAgentConfigSvc_Create_BeginTxError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockProductRepo := idbaccessmock.NewMockIProductRepo(ctrl)
+	mockAgentConfRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
+	mockLogger := cmpmock.NewMockLogger(ctrl)
+
+	svc := &dataAgentConfigSvc{
+		SvcBase:       service.NewSvcBase(),
+		productRepo:   mockProductRepo,
+		agentConfRepo: mockAgentConfRepo,
+		logger:        mockLogger,
+	}
+
+	req := &agentconfigreq.CreateReq{
+		UpdateReq: &agentconfigreq.UpdateReq{
+			Name:       "BxAgent",
+			ProductKey: "prod-key",
+			Config:     daconfvalobj.NewConfig(),
+		},
+	}
+	mockProductRepo.EXPECT().ExistsByKey(gomock.Any(), "prod-key").Return(true, nil)
+	mockAgentConfRepo.EXPECT().BeginTx(gomock.Any()).Return(nil, errors.New("tx err"))
+	mockLogger.EXPECT().Errorf(gomock.Any(), gomock.Any()).AnyTimes()
+
+	_, err := svc.Create(context.Background(), req)
+	assert.Error(t, err)
 }
 
 func TestDataAgentConfigSvc_createPo_NonInternalAPISetsCreatedByFromCtx(t *testing.T) {

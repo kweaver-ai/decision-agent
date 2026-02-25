@@ -6,6 +6,8 @@ import (
 	"testing"
 
 	"go.uber.org/mock/gomock"
+
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
@@ -124,4 +126,50 @@ func TestDataAgentConfigSvc_Copy_NameConflict(t *testing.T) {
 	assert.Nil(t, resp)
 	assert.NotEmpty(t, auditLogInfo.ID)
 	assert.NotEmpty(t, auditLogInfo.Name)
+}
+
+func TestDataAgentConfigSvc_Copy_ExistsByNameError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockAgentConfRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
+
+	svc := &dataAgentConfigSvc{
+		SvcBase:       service.NewSvcBase(),
+		agentConfRepo: mockAgentConfRepo,
+	}
+
+	sourcePo := &dapo.DataAgentPo{
+		ID:   "agent-1",
+		Name: "Agent",
+		Key:  "key-1",
+	}
+	mockAgentConfRepo.EXPECT().GetByID(gomock.Any(), "agent-1").Return(sourcePo, nil)
+	mockAgentConfRepo.EXPECT().ExistsByName(gomock.Any(), "NewName").Return(false, errors.New("db err"))
+
+	_, _, err := svc.Copy(context.Background(), "agent-1", &agentconfigreq.CopyReq{Name: "NewName"})
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "检查Agent名称是否存在失败")
+}
+
+
+func TestDataAgentConfigSvc_copyAgentPo_Success(t *testing.T) {
+	svc := &dataAgentConfigSvc{SvcBase: service.NewSvcBase()}
+
+	builtInNo := cdaenum.BuiltInNo
+	sourcePo := &dapo.DataAgentPo{
+		ID:        "agent-1",
+		Name:      "Agent",
+		Key:       "key-1",
+		Config:    "{}",
+		IsBuiltIn: &builtInNo,
+	}
+	newPo := &dapo.DataAgentPo{}
+
+	err := svc.copyAgentPo(context.Background(), newPo, sourcePo, "new-id", "new-key", "New Agent")
+	assert.NoError(t, err)
+	assert.Equal(t, "new-id", newPo.ID)
+	assert.Equal(t, "new-key", newPo.Key)
+	assert.Equal(t, "New Agent", newPo.Name)
+	assert.Equal(t, cdaenum.StatusUnpublished, newPo.Status)
 }

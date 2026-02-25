@@ -136,6 +136,7 @@ func TestBatchFields(t *testing.T) {
 	}
 }
 
+
 func TestBatchFieldsReqField(t *testing.T) {
 	t.Run("String method returns correct value", func(t *testing.T) {
 		field := agentconfigreq.BatchFieldsReqFieldName

@@ -15,6 +15,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver/v3portdrivermock"
 	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
 
@@ -542,3 +543,82 @@ func TestReleaseSvc_genPmsControlRespFromPolicy(t *testing.T) {
 	}
 }
 
+func TestReleaseSvc_GetPublishInfo_ExistsByIDError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockAgentConfigRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
+
+	svc := &releaseSvc{
+		SvcBase:         service.NewSvcBase(),
+		agentConfigRepo: mockAgentConfigRepo,
+	}
+
+	ctx := context.Background()
+	mockAgentConfigRepo.EXPECT().ExistsByID(ctx, "agent-123").Return(false, errors.New("db error"))
+
+	_, err := svc.GetPublishInfo(ctx, "agent-123")
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "get agent by id failed")
+}
+
+func TestReleaseSvc_GetPublishInfo_AgentNotExists(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockAgentConfigRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
+
+	svc := &releaseSvc{
+		SvcBase:         service.NewSvcBase(),
+		agentConfigRepo: mockAgentConfigRepo,
+	}
+
+	ctx := context.Background()
+	mockAgentConfigRepo.EXPECT().ExistsByID(ctx, "agent-404").Return(false, nil)
+
+	_, err := svc.GetPublishInfo(ctx, "agent-404")
+	assert.Error(t, err)
+}
+
+func TestReleaseSvc_GetPublishInfo_GetByAgentIDError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockAgentConfigRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
+	mockReleaseRepo := idbaccessmock.NewMockIReleaseRepo(ctrl)
+
+	svc := &releaseSvc{
+		SvcBase:         service.NewSvcBase(),
+		agentConfigRepo: mockAgentConfigRepo,
+		releaseRepo:     mockReleaseRepo,
+	}
+
+	ctx := context.Background()
+	mockAgentConfigRepo.EXPECT().ExistsByID(ctx, "agent-123").Return(true, nil)
+	mockReleaseRepo.EXPECT().GetByAgentID(ctx, "agent-123").Return(nil, errors.New("db error"))
+
+	_, err := svc.GetPublishInfo(ctx, "agent-123")
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "get release by agent id failed")
+}
+
+func TestReleaseSvc_GetPublishInfo_ReleaseNotFound(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockAgentConfigRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
+	mockReleaseRepo := idbaccessmock.NewMockIReleaseRepo(ctrl)
+
+	svc := &releaseSvc{
+		SvcBase:         service.NewSvcBase(),
+		agentConfigRepo: mockAgentConfigRepo,
+		releaseRepo:     mockReleaseRepo,
+	}
+
+	ctx := context.Background()
+	mockAgentConfigRepo.EXPECT().ExistsByID(ctx, "agent-123").Return(true, nil)
+	mockReleaseRepo.EXPECT().GetByAgentID(ctx, "agent-123").Return(nil, nil)
+
+	_, err := svc.GetPublishInfo(ctx, "agent-123")
+	assert.Error(t, err)
+}

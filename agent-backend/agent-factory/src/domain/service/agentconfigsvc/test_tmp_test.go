@@ -12,6 +12,26 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestUpdateStatusTest_CopyJSONError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	repo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
+	svc := &dataAgentConfigSvc{
+		SvcBase:       service.NewSvcBase(),
+		agentConfRepo: repo,
+	}
+
+	// params 为一个无法正确复制的 chan（会导致 JSON 序列化失败）
+	req := &agentconfigreq.TestTmpReq{
+		TestFlag: "update_status",
+		Params:   make(chan int), // chan type → json.Marshal fails → CopyUseJSON error
+	}
+
+	err := svc.TmpTest(context.Background(), req)
+	assert.Error(t, err)
+}
+
 func TestTmpTest(t *testing.T) {
 	tests := []struct {
 		name     string
