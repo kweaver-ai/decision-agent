@@ -107,10 +107,9 @@ func TestSquareSvc_GetAgentInfo_UnpublishedSuccess(t *testing.T) {
 		Return(&dapo.ReleaseHistoryPO{AgentVersion: "v1"}, nil)
 
 	res, err := svc.GetAgentInfo(context.Background(), &squarereq.AgentInfoReq{
-		AgentID:       "a1",
-		AgentVersion:  daconstant.AgentVersionUnpublished,
-		IsVisit:       false,
-		CustomSpaceID: "",
+		AgentID:      "a1",
+		AgentVersion: daconstant.AgentVersionUnpublished,
+		IsVisit:      false,
 	})
 
 	assert.NoError(t, err)

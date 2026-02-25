@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestNewSvcBase(t *testing.T) {
@@ -31,4 +32,21 @@ func TestSvcBase_StructFields(t *testing.T) {
 	assert.NotNil(t, svcBase)
 	// Logger is nil when using struct literal
 	assert.Nil(t, svcBase.Logger)
+}
+
+func TestGetMockedDlm(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	dlm := getMockedDlm(ctrl)
+	assert.NotNil(t, dlm)
+
+	mu := dlm.NewMutex("test-key")
+	assert.NotNil(t, mu)
+
+	err := mu.Lock(t.Context())
+	assert.NoError(t, err)
+
+	unlockErr := mu.Unlock()
+	assert.NoError(t, unlockErr)
 }

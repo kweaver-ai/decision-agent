@@ -55,6 +55,7 @@ func (m *mockGetSessionSandbox) ListFiles(ctx context.Context, sessionID string,
 }
 
 func allowAnyLoggerCalls(mockLogger *cmpmock.MockLogger) {
+	mockLogger.EXPECT().Debugf(gomock.Any(), gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Infof(gomock.Any(), gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Warnf(gomock.Any(), gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Errorf(gomock.Any(), gomock.Any()).AnyTimes()

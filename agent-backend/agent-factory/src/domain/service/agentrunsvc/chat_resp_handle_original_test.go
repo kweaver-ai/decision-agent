@@ -32,11 +32,10 @@ func TestOriginalChatResp_InvalidJSON(t *testing.T) {
 	agentSvc := &agentSvc{}
 
 	data := []byte(`{invalid json}`)
-	result, _ := agentSvc.originalChatResp(data)
+	_, err := agentSvc.originalChatResp(data)
 
-	// sonic.Unmarshal may return empty map for invalid JSON instead of error
-	// depending on the version, so we just check that it completes
-	assert.NotNil(t, result)
+	// sonic.Unmarshal returns error for invalid JSON
+	assert.Error(t, err)
 }
 
 func TestOriginalChatResp_EmptyData(t *testing.T) {

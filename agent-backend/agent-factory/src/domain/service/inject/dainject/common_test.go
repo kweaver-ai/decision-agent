@@ -47,4 +47,7 @@ func resetInjectSingletons() {
 
 	sessionSvcOnce = sync.Once{}
 	sessionSvcImpl = nil
+
+	squareSvcOnce = sync.Once{}
+	squareSvcImpl = nil
 }

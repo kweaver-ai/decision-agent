@@ -9,9 +9,9 @@ import (
 func TestNewObservabilitySvc(t *testing.T) {
 	t.Run("creates service with all dependencies", func(t *testing.T) {
 		dto := &NewObservabilitySvcDto{
-			Logger:       nil,
-			Uniquery:     nil,
-			AgentFactory: nil,
+			Logger:    nil,
+			Uniquery:  nil,
+			SquareSvc: nil,
 		}
 
 		svc := NewObservabilitySvc(dto)
@@ -22,9 +22,9 @@ func TestNewObservabilitySvc(t *testing.T) {
 
 	t.Run("creates service with minimal dependencies", func(t *testing.T) {
 		dto := &NewObservabilitySvcDto{
-			Logger:       nil,
-			Uniquery:     nil,
-			AgentFactory: nil,
+			Logger:    nil,
+			Uniquery:  nil,
+			SquareSvc: nil,
 		}
 
 		svc := NewObservabilitySvc(dto)

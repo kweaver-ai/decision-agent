@@ -23,7 +23,6 @@ func TestNewConversationService(t *testing.T) {
 			UmHttp:              nil,
 			AgentExecutorV1:     nil,
 			AgentExecutorV2:     nil,
-			AgentFactory:        nil,
 			SandboxPlatform:     nil,
 			SandboxPlatformConf: nil,
 		}
@@ -44,7 +43,6 @@ func TestNewConversationService(t *testing.T) {
 			UmHttp:              nil,
 			AgentExecutorV1:     nil,
 			AgentExecutorV2:     nil,
-			AgentFactory:        nil,
 			SandboxPlatform:     nil,
 			SandboxPlatformConf: nil,
 		}

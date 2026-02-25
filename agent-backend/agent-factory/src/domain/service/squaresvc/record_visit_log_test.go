@@ -54,7 +54,6 @@ func TestRecordVisitLog(t *testing.T) {
 			AgentID:      "agent-123",
 			AgentVersion: "v1.0.0",
 			UserID:       "user-456",
-			CustomSpaceID: "space-789",
 			IsVisit:      true,
 		}
 
@@ -80,7 +79,6 @@ func TestRecordVisitLog(t *testing.T) {
 			AgentID:      "agent-123",
 			AgentVersion: daconstant.AgentVersionUnpublished,
 			UserID:       "user-456",
-			CustomSpaceID: "space-789",
 			IsVisit:      true,
 		}
 
@@ -106,7 +104,6 @@ func TestRecordVisitLog(t *testing.T) {
 			AgentID:      "agent-123",
 			AgentVersion: "v1.0.0",
 			UserID:       "user-456",
-			CustomSpaceID: "space-789",
 			IsVisit:      true,
 		}
 
@@ -133,7 +130,6 @@ func TestRecordVisitLog(t *testing.T) {
 			AgentID:      "agent-123",
 			AgentVersion: "v1.0.0",
 			UserID:       "user-456",
-			CustomSpaceID: "",
 			IsVisit:      true,
 		}
 
@@ -159,7 +155,6 @@ func TestRecordVisitLog(t *testing.T) {
 			AgentID:      "agent-123",
 			AgentVersion: "v1.0.0",
 			UserID:       "",
-			CustomSpaceID: "space-789",
 			IsVisit:      true,
 		}
 
