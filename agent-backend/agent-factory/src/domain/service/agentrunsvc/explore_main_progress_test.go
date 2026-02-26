@@ -279,6 +279,91 @@ func TestForResumeInterrupt_NoInterruptedMsgID(t *testing.T) {
 	assert.Empty(t, result)
 }
 
+func TestForResumeInterrupt_UnmarshalError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockConvMsgRepo := idbaccessmock.NewMockIConversationMsgRepo(ctrl)
+	svc := &agentSvc{
+		SvcBase:             service.NewSvcBase(),
+		conversationMsgRepo: mockConvMsgRepo,
+	}
+
+	isInterruptPreProgressGetMap.Delete("msg-fri-5")
+	invalidJSON := "{invalid-json"
+	msgPO := &dapo.ConversationMsgPO{ID: "interrupted-msg-invalid", Content: &invalidJSON}
+	mockConvMsgRepo.EXPECT().GetByID(gomock.Any(), "interrupted-msg-invalid").Return(msgPO, nil)
+
+	req := &agentreq.ChatReq{
+		InternalParam:             agentreq.InternalParam{AssistantMessageID: "msg-fri-5"},
+		InterruptedAssistantMsgID: "interrupted-msg-invalid",
+	}
+
+	result, err := svc.forResumeInterrupt(context.Background(), req)
+	assert.Error(t, err)
+	assert.Empty(t, result)
+}
+
+func TestForResumeInterrupt_MiddleAnswerNilAndValidProgress(t *testing.T) {
+	t.Run("middle_answer is nil should warn and return empty", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockConvMsgRepo := idbaccessmock.NewMockIConversationMsgRepo(ctrl)
+		mockLogger := cmpmock.NewMockLogger(ctrl)
+		mockLogger.EXPECT().Warnf(gomock.Any(), gomock.Any()).AnyTimes()
+
+		svc := &agentSvc{
+			SvcBase:             service.NewSvcBase(),
+			conversationMsgRepo: mockConvMsgRepo,
+			logger:              mockLogger,
+		}
+
+		isInterruptPreProgressGetMap.Delete("msg-fri-6")
+		content := `{"middle_answer":null}`
+		msgPO := &dapo.ConversationMsgPO{ID: "interrupted-msg-nil", Content: &content}
+		mockConvMsgRepo.EXPECT().GetByID(gomock.Any(), "interrupted-msg-nil").Return(msgPO, nil)
+
+		req := &agentreq.ChatReq{
+			InternalParam:             agentreq.InternalParam{AssistantMessageID: "msg-fri-6"},
+			InterruptedAssistantMsgID: "interrupted-msg-nil",
+		}
+
+		result, err := svc.forResumeInterrupt(context.Background(), req)
+		assert.NoError(t, err)
+		assert.Empty(t, result)
+	})
+
+	t.Run("valid progress should append and mark fetched", func(t *testing.T) {
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockConvMsgRepo := idbaccessmock.NewMockIConversationMsgRepo(ctrl)
+		svc := &agentSvc{
+			SvcBase:             service.NewSvcBase(),
+			conversationMsgRepo: mockConvMsgRepo,
+		}
+
+		isInterruptPreProgressGetMap.Delete("msg-fri-7")
+		content := `{"middle_answer":{"progress":[{"id":"pg-1","status":"completed"}]}}`
+		msgPO := &dapo.ConversationMsgPO{ID: "interrupted-msg-ok", Content: &content}
+		mockConvMsgRepo.EXPECT().GetByID(gomock.Any(), "interrupted-msg-ok").Return(msgPO, nil)
+
+		req := &agentreq.ChatReq{
+			InternalParam:             agentreq.InternalParam{AssistantMessageID: "msg-fri-7"},
+			InterruptedAssistantMsgID: "interrupted-msg-ok",
+		}
+
+		result, err := svc.forResumeInterrupt(context.Background(), req)
+		assert.NoError(t, err)
+		assert.Len(t, result, 1)
+		assert.Equal(t, "pg-1", result[0].ID)
+
+		_, ok := isInterruptPreProgressGetMap.Load("msg-fri-7")
+		assert.True(t, ok)
+	})
+}
+
 func TestForResumeInterrupt_AlreadyFetched(t *testing.T) {
 	svc := &agentSvc{SvcBase: service.NewSvcBase()}
 

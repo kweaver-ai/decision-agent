@@ -8,12 +8,13 @@ import (
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/entity/conversationeo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
+	conversationresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationresp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
-	conversationresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationresp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iportdriver/iportdrivermock"
 )
 
@@ -193,4 +194,107 @@ func TestUpsertMsg_InterruptedAssistantMsgID_Success(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "user-interrupted-1", userID)
 	assert.Equal(t, "asst-interrupted-1", asstID)
+}
+
+func TestUpsertMsg_RegenerateAssistantMsgID_SecondGetByIDFails(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockMsgRepo := idbaccessmock.NewMockIConversationMsgRepo(ctrl)
+	mockConvRepo := idbaccessmock.NewMockIConversationRepo(ctrl)
+	mockLogger := cmpmock.NewMockLogger(ctrl)
+	allowAnyLoggerCalls(mockLogger)
+
+	mockMsgRepo.EXPECT().GetByID(gomock.Any(), "asst-existing-err").Return(&dapo.ConversationMsgPO{ID: "asst-existing-err", ReplyID: "user-1"}, nil)
+	mockMsgRepo.EXPECT().GetByID(gomock.Any(), "asst-existing-err").Return(nil, errors.New("second get failed"))
+
+	svc := &agentSvc{
+		SvcBase:             service.NewSvcBase(),
+		conversationMsgRepo: mockMsgRepo,
+		conversationRepo:    mockConvRepo,
+		logger:              mockLogger,
+	}
+
+	req := &agentreq.ChatReq{
+		AgentID:                  "a1",
+		ConversationID:           "conv-regen-asst-err",
+		RegenerateAssistantMsgID: "asst-existing-err",
+		InternalParam:            agentreq.InternalParam{UserID: "u1"},
+	}
+	_, _, _, err := svc.UpsertUserAndAssistantMsg(context.Background(), req, 0, &dapo.ConversationPO{ID: "conv-regen-asst-err"})
+	assert.Error(t, err)
+}
+
+func TestUpsertMsg_InterruptedAssistantMsgID_UpdateFails(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockMsgRepo := idbaccessmock.NewMockIConversationMsgRepo(ctrl)
+	mockConvRepo := idbaccessmock.NewMockIConversationRepo(ctrl)
+	mockLogger := cmpmock.NewMockLogger(ctrl)
+	allowAnyLoggerCalls(mockLogger)
+
+	mockMsgRepo.EXPECT().GetByID(gomock.Any(), "asst-interrupted-err").Return(&dapo.ConversationMsgPO{ID: "asst-interrupted-err", ReplyID: "user-1", Index: 2}, nil).Times(2)
+	mockMsgRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(errors.New("update failed"))
+
+	svc := &agentSvc{
+		SvcBase:             service.NewSvcBase(),
+		conversationMsgRepo: mockMsgRepo,
+		conversationRepo:    mockConvRepo,
+		logger:              mockLogger,
+	}
+
+	req := &agentreq.ChatReq{
+		AgentID:                   "a1",
+		ConversationID:            "conv-interrupted-err",
+		InterruptedAssistantMsgID: "asst-interrupted-err",
+		InternalParam:             agentreq.InternalParam{UserID: "u1"},
+	}
+
+	_, _, _, err := svc.UpsertUserAndAssistantMsg(context.Background(), req, 0, &dapo.ConversationPO{ID: "conv-interrupted-err"})
+	assert.Error(t, err)
+}
+
+func TestUpsertMsg_RegenerateUserMsgID_Success(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockMsgRepo := idbaccessmock.NewMockIConversationMsgRepo(ctrl)
+	mockConvRepo := idbaccessmock.NewMockIConversationRepo(ctrl)
+	mockConvSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
+	mockLogger := cmpmock.NewMockLogger(ctrl)
+	allowAnyLoggerCalls(mockLogger)
+
+	mockMsgRepo.EXPECT().GetByID(gomock.Any(), "user-regen-ok").Return(&dapo.ConversationMsgPO{ID: "user-regen-ok"}, nil)
+	mockMsgRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
+	mockConvSvc.EXPECT().Detail(gomock.Any(), "conv-regen-ok").Return(conversationresp.ConversationDetail{
+		Conversation: conversationeo.Conversation{Messages: []*dapo.ConversationMsgPO{
+			{ID: "user-regen-ok", Index: 1},
+			{ID: "asst-after-user", Index: 2},
+		}},
+	}, nil)
+	mockMsgRepo.EXPECT().GetByID(gomock.Any(), "asst-after-user").Return(&dapo.ConversationMsgPO{ID: "asst-after-user", Index: 2}, nil)
+	mockMsgRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
+
+	svc := &agentSvc{
+		SvcBase:             service.NewSvcBase(),
+		conversationMsgRepo: mockMsgRepo,
+		conversationRepo:    mockConvRepo,
+		conversationSvc:     mockConvSvc,
+		logger:              mockLogger,
+	}
+
+	req := &agentreq.ChatReq{
+		AgentID:             "a1",
+		ConversationID:      "conv-regen-ok",
+		RegenerateUserMsgID: "user-regen-ok",
+		Query:               "new question",
+		InternalParam:       agentreq.InternalParam{UserID: "u1"},
+	}
+
+	userID, asstID, idx, err := svc.UpsertUserAndAssistantMsg(context.Background(), req, 0, &dapo.ConversationPO{ID: "conv-regen-ok"})
+	assert.NoError(t, err)
+	assert.Equal(t, "user-regen-ok", userID)
+	assert.Equal(t, "asst-after-user", asstID)
+	assert.Equal(t, 2, idx)
 }

@@ -9,12 +9,16 @@ import (
 	"go.uber.org/mock/gomock"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentresperr"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/comvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/conversationmsgvo"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req/chatopt"
 	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iportdriver/iportdrivermock"
 )
 
 func TestAgentSvc_MsgResp2MsgPO_BasicSuccess(t *testing.T) {
@@ -31,6 +35,39 @@ func TestAgentSvc_MsgResp2MsgPO_BasicSuccess(t *testing.T) {
 	po, _, err := svc.MsgResp2MsgPO(ctx, msgResp, req)
 	assert.NoError(t, err)
 	assert.Equal(t, "conv-1", po.ConversationID)
+}
+
+func TestAgentSvc_MsgResp2MsgPO_ContentMarshalError(t *testing.T) {
+	svc := &agentSvc{SvcBase: service.NewSvcBase()}
+	ctx := context.Background()
+	msgResp := agentresp.ChatResp{
+		ConversationID: "conv-err-content",
+		Message: conversationmsgvo.Message{
+			Content: map[string]interface{}{"bad": func() {}},
+		},
+	}
+	req := &agentreq.ChatReq{InternalParam: agentreq.InternalParam{UserID: "user-1"}}
+
+	_, _, err := svc.MsgResp2MsgPO(ctx, msgResp, req)
+	assert.Error(t, err)
+}
+
+func TestAgentSvc_MsgResp2MsgPO_ExtMarshalError(t *testing.T) {
+	svc := &agentSvc{SvcBase: service.NewSvcBase()}
+	ctx := context.Background()
+	msgResp := agentresp.ChatResp{
+		ConversationID: "conv-err-ext",
+		Message: conversationmsgvo.Message{
+			Content: "ok",
+			Ext: &conversationmsgvo.MessageExt{
+				Error: &agentresperr.RespError{Type: agentresperr.RespErrorTypeAgentFactory, Error: func() {}},
+			},
+		},
+	}
+	req := &agentreq.ChatReq{InternalParam: agentreq.InternalParam{UserID: "user-1"}}
+
+	_, _, err := svc.MsgResp2MsgPO(ctx, msgResp, req)
+	assert.Error(t, err)
 }
 
 func TestAgentSvc_GetHistoryAndMsgIndex_NewConversation_Success(t *testing.T) {
@@ -110,6 +147,57 @@ func TestAgentSvc_GetHistoryAndMsgIndex_ExistingConversation_Success(t *testing.
 	assert.NoError(t, err)
 	assert.Equal(t, 5, idx)
 	assert.Equal(t, "conv-1", convPO.ID)
+}
+
+func TestAgentSvc_GetHistoryAndMsgIndex_NeedHistory_GetHistoryError(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockConvRepo := idbaccessmock.NewMockIConversationRepo(ctrl)
+	mockMsgRepo := idbaccessmock.NewMockIConversationMsgRepo(ctrl)
+	mockConvSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
+	svc := &agentSvc{SvcBase: service.NewSvcBase(), conversationRepo: mockConvRepo, conversationMsgRepo: mockMsgRepo, conversationSvc: mockConvSvc}
+
+	mockConvRepo.EXPECT().GetByID(gomock.Any(), "conv-need-history").Return(&dapo.ConversationPO{ID: "conv-need-history"}, nil)
+	mockMsgRepo.EXPECT().GetMaxIndexByID(gomock.Any(), "conv-need-history").Return(2, nil)
+	mockConvSvc.EXPECT().GetHistory(gomock.Any(), "conv-need-history", 5, "regen-user", "regen-asst").Return(nil, errors.New("history error"))
+
+	req := &agentreq.ChatReq{
+		ConversationID:           "conv-need-history",
+		HistoryLimit:             5,
+		RegenerateUserMsgID:      "regen-user",
+		RegenerateAssistantMsgID: "regen-asst",
+		ChatOption:               chatopt.ChatOption{IsNeedHistory: true},
+	}
+
+	_, _, _, err := svc.GetHistoryAndMsgIndex(context.Background(), req)
+	assert.Error(t, err)
+}
+
+func TestAgentSvc_GetHistoryAndMsgIndex_NeedHistory_Success(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockConvRepo := idbaccessmock.NewMockIConversationRepo(ctrl)
+	mockMsgRepo := idbaccessmock.NewMockIConversationMsgRepo(ctrl)
+	mockConvSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
+	svc := &agentSvc{SvcBase: service.NewSvcBase(), conversationRepo: mockConvRepo, conversationMsgRepo: mockMsgRepo, conversationSvc: mockConvSvc}
+
+	mockConvRepo.EXPECT().GetByID(gomock.Any(), "conv-need-history-ok").Return(&dapo.ConversationPO{ID: "conv-need-history-ok"}, nil)
+	mockMsgRepo.EXPECT().GetMaxIndexByID(gomock.Any(), "conv-need-history-ok").Return(7, nil)
+	expectedHistory := []*comvalobj.LLMMessage{{Role: "user", Content: "hi"}}
+	mockConvSvc.EXPECT().GetHistory(gomock.Any(), "conv-need-history-ok", 3, "", "").Return(expectedHistory, nil)
+
+	req := &agentreq.ChatReq{
+		ConversationID: "conv-need-history-ok",
+		HistoryLimit:   3,
+		ChatOption:     chatopt.ChatOption{IsNeedHistory: true},
+	}
+
+	_, history, idx, err := svc.GetHistoryAndMsgIndex(context.Background(), req)
+	assert.NoError(t, err)
+	assert.Equal(t, 7, idx)
+	assert.Equal(t, expectedHistory, history)
 }
 
 func TestAgentSvc_UpsertUserAndAssistantMsg_NormalChat_UserMsgCreateError(t *testing.T) {

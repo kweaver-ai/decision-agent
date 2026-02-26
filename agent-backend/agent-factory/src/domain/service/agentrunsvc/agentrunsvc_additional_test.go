@@ -4,16 +4,20 @@ import (
 	"context"
 	"errors"
 	"os"
+	"strings"
 	"testing"
 	"time"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/conf"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/comvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/sandboxplatformhttp/sandboxplatformdto"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
@@ -33,11 +37,11 @@ func TestAgentSvc_GenerateAgentCallReq_WithSelectedFiles(t *testing.T) {
 	svc := &agentSvc{SvcBase: service.NewSvcBase(), logger: mockLogger}
 	ctx := context.Background()
 	req := &agentreq.ChatReq{
-		AgentID:       "agent-1",
+		AgentID:        "agent-1",
 		ConversationID: "conv-1",
-		Query:         "hello",
-		InternalParam: agentreq.InternalParam{UserID: "u1"},
-		SelectedFiles: []agentreq.SelectedFile{{FileName: "file1.txt"}},
+		Query:          "hello",
+		InternalParam:  agentreq.InternalParam{UserID: "u1"},
+		SelectedFiles:  []agentreq.SelectedFile{{FileName: "file1.txt"}},
 	}
 	agent := newTestAgent()
 	result, err := svc.GenerateAgentCallReq(ctx, req, nil, agent)
@@ -130,6 +134,143 @@ func TestAgentSvc_GenerateAgentCallReq_DeepThinkingWithLLMs(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, constant.DeepThinkingMode, req.ChatMode)
 	assert.NotNil(t, result)
+}
+
+func TestAgentSvc_GenerateAgentCallReq_DeepThinkingSwitchDefaultModel(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockLogger := cmpmock.NewMockLogger(ctrl)
+	mockLogger.EXPECT().Infof(gomock.Any(), gomock.Any()).AnyTimes()
+	svc := &agentSvc{SvcBase: service.NewSvcBase(), logger: mockLogger}
+
+	req := &agentreq.ChatReq{
+		AgentID:       "agent-1",
+		Query:         "deep question",
+		ChatMode:      constant.DeepThinkingMode,
+		InternalParam: agentreq.InternalParam{UserID: "u1"},
+	}
+
+	agent := newTestAgent()
+	agent.Config.Llms = []*daconfvalobj.LlmItem{
+		{
+			IsDefault: true,
+			LlmConfig: &daconfvalobj.LlmConfig{
+				Name:        "default-llm",
+				ModelType:   cdaenum.ModelTypeLlm,
+				Temperature: 0.2,
+				TopK:        1,
+				MaxTokens:   1024,
+			},
+		},
+		{
+			IsDefault: false,
+			LlmConfig: &daconfvalobj.LlmConfig{
+				Name:        "reasoning-llm",
+				ModelType:   cdaenum.ModelTypeRlm,
+				Temperature: 0.2,
+				TopK:        1,
+				MaxTokens:   1024,
+			},
+		},
+	}
+
+	result, err := svc.GenerateAgentCallReq(context.Background(), req, nil, agent)
+	require.NoError(t, err)
+	require.NotNil(t, result)
+
+	var defaultLlm, defaultRlm bool
+	for _, llm := range result.Config.Llms {
+		if llm.LlmConfig != nil && llm.LlmConfig.Name == "default-llm" {
+			defaultLlm = llm.IsDefault
+		}
+		if llm.LlmConfig != nil && llm.LlmConfig.Name == "reasoning-llm" {
+			defaultRlm = llm.IsDefault
+		}
+	}
+
+	assert.False(t, defaultLlm)
+	assert.True(t, defaultRlm)
+}
+
+func TestAgentSvc_GenerateAgentCallReq_RegenerateRaisesTemperatureAndTopK(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockLogger := cmpmock.NewMockLogger(ctrl)
+	mockLogger.EXPECT().Infof(gomock.Any(), gomock.Any()).AnyTimes()
+	svc := &agentSvc{SvcBase: service.NewSvcBase(), logger: mockLogger}
+
+	req := &agentreq.ChatReq{
+		AgentID:                  "agent-1",
+		Query:                    "regen",
+		RegenerateAssistantMsgID: "asst-1",
+		ModelName:                "target-llm",
+		InternalParam:            agentreq.InternalParam{UserID: "u1"},
+	}
+
+	agent := newTestAgent()
+	agent.Config.Llms = []*daconfvalobj.LlmItem{
+		{
+			IsDefault: true,
+			LlmConfig: &daconfvalobj.LlmConfig{
+				Name:        "target-llm",
+				ModelType:   cdaenum.ModelTypeLlm,
+				Temperature: 0.3,
+				TopK:        1,
+				MaxTokens:   1024,
+			},
+		},
+	}
+
+	result, err := svc.GenerateAgentCallReq(context.Background(), req, nil, agent)
+	require.NoError(t, err)
+	require.NotNil(t, result)
+	require.Len(t, result.Config.Llms, 1)
+
+	assert.Equal(t, 0.8, result.Config.Llms[0].LlmConfig.Temperature)
+	assert.Equal(t, 10, result.Config.Llms[0].LlmConfig.TopK)
+}
+
+func TestAgentSvc_GenerateAgentCallReq_InjectWorkspaceContextAndInputMapping(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+	mockLogger := cmpmock.NewMockLogger(ctrl)
+	mockLogger.EXPECT().Infof(gomock.Any(), gomock.Any()).AnyTimes()
+	svc := &agentSvc{SvcBase: service.NewSvcBase(), logger: mockLogger}
+
+	req := &agentreq.ChatReq{
+		AgentID:        "agent-1",
+		ConversationID: "conv-ctx-1",
+		Query:          "query",
+		TempFiles:      []valueobject.TempFile{{ID: "tmp1", Name: "tmp1"}},
+		CustomQuerys: map[string]interface{}{
+			"city": "beijing",
+		},
+		SelectedFiles: []agentreq.SelectedFile{{FileName: "design.md"}},
+		InternalParam: agentreq.InternalParam{UserID: "u1"},
+	}
+
+	contexts := []*comvalobj.LLMMessage{{Role: "user", Content: "old context"}}
+	agent := newTestAgent()
+	agent.Config.Input.Fields = daconfvalobj.Fields{
+		&daconfvalobj.Field{Name: "doc", Type: cdaenum.InputFieldTypeFile},
+		&daconfvalobj.Field{Name: "city", Type: cdaenum.InputFieldTypeString},
+		&daconfvalobj.Field{Name: "header", Type: cdaenum.InputFieldTypeString},
+	}
+
+	result, err := svc.GenerateAgentCallReq(context.Background(), req, contexts, agent)
+	require.NoError(t, err)
+	require.NotNil(t, result)
+
+	history, ok := result.Input["history"].([]*comvalobj.LLMMessage)
+	require.True(t, ok)
+	require.Len(t, history, 2)
+	assert.Equal(t, "old context", history[0].Content)
+	assert.True(t, strings.Contains(history[1].Content, "design.md"))
+
+	assert.Equal(t, req.TempFiles, result.Input["doc"])
+	assert.Equal(t, "beijing", result.Input["city"])
+	_, exists := result.Input["header"]
+	assert.False(t, exists)
 }
 
 // ---------- TerminateChat 测试 ----------
