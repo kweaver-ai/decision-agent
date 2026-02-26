@@ -20,7 +20,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap-factory.yaml") . | sha256sum }}
       labels:
         app: agent-factory
     spec:
@@ -218,9 +218,6 @@ spec:
             - name: agent-factory-yaml
               mountPath: /sysvol/conf/mq_config.yaml
               subPath: mq_config.yaml
-            # ========== 其他挂载 ==========
-            - name: agent-factory-dependant-configmap
-              mountPath: /mdl-shared-configmap
             # ========== Secret使用目录级挂载 ==========
             - name: agent-factory-secret-yaml
               mountPath: /sysvol/conf/secret
@@ -254,9 +251,6 @@ spec:
         - name: agent-factory-secret-yaml
           secret:
             secretName: agent-factory-secret-yaml
-        - name: agent-factory-dependant-configmap
-          configMap:
-            name: agent-factory-dependant-configmap
         # ========== Executor配置Volume ==========
         - name: executor-yaml
           configMap:
