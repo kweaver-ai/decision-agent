@@ -9,6 +9,7 @@ import (
 	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/locale"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iumacc/httpaccmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/umcmp/umtypes"
@@ -22,6 +23,10 @@ func TestMain(m *testing.M) {
 	os.Setenv("SERVICE_NAME", "AGENT_FACTORY")
 	os.Setenv("AGENT_FACTORY_LOCAL_DEV", "true")
 	os.Setenv("I18N_MODE_UT", "true")
+
+	// Re-init cenvhelper so SERVICE_NAME & LOCAL_DEV take effect
+	// (init() runs before TestMain, so env vars set here need a re-init)
+	cenvhelper.InitEnvForTest()
 
 	// Initialize locale (only once)
 	locale.Register()

@@ -25,6 +25,13 @@ func init() {
 	initEnv()
 }
 
+// InitEnvForTest 供测试的 TestMain 调用, 在设置好测试环境变量后重新初始化
+// 因为 init() 在 TestMain 之前执行, 若 SERVICE_NAME 未预先设置到系统级 env 中
+// 则 envPrefix 会是错误的值, 导致 IsLocalDev() 等函数读取到错误的 key
+func InitEnvForTest() {
+	initEnv()
+}
+
 // 测试时，可通过initEnv()重新初始化
 func initEnv() {
 	// 1. 获取服务名

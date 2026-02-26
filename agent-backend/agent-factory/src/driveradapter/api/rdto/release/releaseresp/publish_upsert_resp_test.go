@@ -5,10 +5,20 @@ import (
 	"os"
 	"testing"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iumacc/httpaccmock"
 	"github.com/stretchr/testify/assert"
 	"go.uber.org/mock/gomock"
 )
+
+func TestMain(m *testing.M) {
+	os.Setenv("SERVICE_NAME", "AGENT_FACTORY")
+	os.Setenv("I18N_MODE_UT", "true")
+	// Re-init cenvhelper so SERVICE_NAME takes effect
+	// (init() runs before TestMain, so env vars set here need a re-init)
+	cenvhelper.InitEnvForTest()
+	os.Exit(m.Run())
+}
 
 func TestPublishUpsertResp_StructFields(t *testing.T) {
 	resp := PublishUpsertResp{
@@ -249,8 +259,10 @@ func TestPublishUpsertResp_WithReleaseIdFormats(t *testing.T) {
 func TestPublishUpsertResp_FillPublishedByName_Actual(t *testing.T) {
 	// Set LOCAL_DEV environment variable for local dev testing
 	os.Setenv("AGENT_FACTORY_LOCAL_DEV", "true")
+	cenvhelper.InitEnvForTest() // re-init so IsLocalDev() picks up the new value
 	defer func() {
 		os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
+		cenvhelper.InitEnvForTest()
 	}()
 
 	t.Run("local dev mode - sets published by name with suffix", func(t *testing.T) {
@@ -260,6 +272,7 @@ func TestPublishUpsertResp_FillPublishedByName_Actual(t *testing.T) {
 		ctx := context.Background()
 		ctrl := gomock.NewController(t)
 		mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
+		// In local dev mode, GetSingleUserName is NOT called, no expectation needed
 
 		err := resp.FillPublishedByName(ctx, mockUm)
 		assert.NoError(t, err)
@@ -273,6 +286,7 @@ func TestPublishUpsertResp_FillPublishedByName_Actual(t *testing.T) {
 		ctx := context.Background()
 		ctrl := gomock.NewController(t)
 		mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
+		// In local dev mode, GetSingleUserName is NOT called, no expectation needed
 
 		err := resp.FillPublishedByName(ctx, mockUm)
 		assert.NoError(t, err)
@@ -329,7 +343,11 @@ func TestPublishUpsertResp_FillPublishedByName_NonLocalDev(t *testing.T) {
 func TestPublishUpsertResp_FillPublishedByName_PointerReceiver(t *testing.T) {
 	// Test with pointer receiver
 	os.Setenv("AGENT_FACTORY_LOCAL_DEV", "true")
-	defer os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
+	cenvhelper.InitEnvForTest() // re-init so IsLocalDev() picks up the new value
+	defer func() {
+		os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
+		cenvhelper.InitEnvForTest()
+	}()
 
 	resp := &PublishUpsertResp{
 		PublishedBy: "test-user",
@@ -337,6 +355,7 @@ func TestPublishUpsertResp_FillPublishedByName_PointerReceiver(t *testing.T) {
 	ctx := context.Background()
 	ctrl := gomock.NewController(t)
 	mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
+	// In local dev mode, GetSingleUserName is NOT called, no expectation needed
 
 	err := resp.FillPublishedByName(ctx, mockUm)
 	assert.NoError(t, err)

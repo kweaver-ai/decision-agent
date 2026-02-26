@@ -1,11 +1,16 @@
 package agentconfigreq
 
 import (
+	"context"
 	"testing"
 
+	"github.com/gin-gonic/gin/binding"
+	"github.com/go-playground/validator/v10"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum/agentconfigenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj/datasourcevalobj"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/customvalidator"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/stretchr/testify/assert"
@@ -87,11 +92,11 @@ func TestUpdateReq_D2e_WithAllFields(t *testing.T) {
 
 func TestUpdateReq_D2e_WithConfig(t *testing.T) {
 	req := &UpdateReq{
-		Name:        "Test Agent",
-		Profile:     "Test Profile",
-		AvatarType:   cdaenum.AvatarTypeBuiltIn,
-		Avatar:       "avatar-123",
-		ProductKey:  "product-123",
+		Name:       "Test Agent",
+		Profile:    "Test Profile",
+		AvatarType: cdaenum.AvatarTypeBuiltIn,
+		Avatar:     "avatar-123",
+		ProductKey: "product-123",
 	}
 
 	// Create a valid Config
@@ -109,12 +114,12 @@ func TestUpdateReq_D2e_WithConfig(t *testing.T) {
 
 func TestUpdateReq_D2e_WithIsBuiltIn(t *testing.T) {
 	req := &UpdateReq{
-		Name:        "Test Agent",
-		Profile:     "Test Profile",
-		AvatarType:   cdaenum.AvatarTypeBuiltIn,
-		Avatar:       "avatar-123",
-		ProductKey:  "product-123",
-		Config:       daconfvalobj.NewConfig(),
+		Name:       "Test Agent",
+		Profile:    "Test Profile",
+		AvatarType: cdaenum.AvatarTypeBuiltIn,
+		Avatar:     "avatar-123",
+		ProductKey: "product-123",
+		Config:     daconfvalobj.NewConfig(),
 	}
 
 	builtIn := cdaenum.BuiltInYes
@@ -129,12 +134,12 @@ func TestUpdateReq_D2e_WithIsBuiltIn(t *testing.T) {
 
 func TestUpdateReq_D2e_WithCreatedBy(t *testing.T) {
 	req := &UpdateReq{
-		Name:        "Test Agent",
-		Profile:     "Test Profile",
-		AvatarType:   cdaenum.AvatarTypeBuiltIn,
-		Avatar:       "avatar-123",
-		ProductKey:  "product-123",
-		Config:       daconfvalobj.NewConfig(),
+		Name:       "Test Agent",
+		Profile:    "Test Profile",
+		AvatarType: cdaenum.AvatarTypeBuiltIn,
+		Avatar:     "avatar-123",
+		ProductKey: "product-123",
+		Config:     daconfvalobj.NewConfig(),
 	}
 	req.CreatedBy = "creator-123"
 
@@ -202,12 +207,12 @@ func TestUpdateReq_IsChanged_SameData(t *testing.T) {
 
 func TestUpdateReq_D2e_WithStatus(t *testing.T) {
 	req := &UpdateReq{
-		Name:        "Test Agent",
-		Profile:     "Test Profile",
-		AvatarType:   cdaenum.AvatarTypeBuiltIn,
-		Avatar:       "avatar-123",
-		ProductKey:  "product-123",
-		Config:       daconfvalobj.NewConfig(),
+		Name:       "Test Agent",
+		Profile:    "Test Profile",
+		AvatarType: cdaenum.AvatarTypeBuiltIn,
+		Avatar:     "avatar-123",
+		ProductKey: "product-123",
+		Config:     daconfvalobj.NewConfig(),
 	}
 
 	// Note: Status is not directly settable in UpdateReq
@@ -244,12 +249,12 @@ func TestUpdateReq_D2e_WithDifferentAvatarTypes(t *testing.T) {
 
 	for _, avatarType := range avatarTypes {
 		req := &UpdateReq{
-			Name:        "Test Agent",
-			Profile:     "Test Profile",
-			AvatarType:  avatarType,
-			Avatar:      "avatar-123",
-			ProductKey:   "product-123",
-			Config:       daconfvalobj.NewConfig(),
+			Name:       "Test Agent",
+			Profile:    "Test Profile",
+			AvatarType: avatarType,
+			Avatar:     "avatar-123",
+			ProductKey: "product-123",
+			Config:     daconfvalobj.NewConfig(),
 		}
 
 		eo, err := req.D2e()
@@ -257,5 +262,174 @@ func TestUpdateReq_D2e_WithDifferentAvatarTypes(t *testing.T) {
 		assert.NoError(t, err)
 		require.NotNil(t, eo)
 		assert.Equal(t, avatarType, eo.AvatarType)
+	}
+}
+
+func updateReqTestRegisterCheckAgentAndTplName(t *testing.T) {
+	t.Helper()
+
+	v, ok := binding.Validator.Engine().(*validator.Validate)
+	require.True(t, ok)
+	_ = v.RegisterValidation("checkAgentAndTplName", customvalidator.CheckAgentAndTplName)
+}
+
+func TestUpdateReq_Validate(t *testing.T) {
+	updateReqTestRegisterCheckAgentAndTplName(t)
+
+	t.Run("missing required fields should return wrapped error", func(t *testing.T) {
+		req := &UpdateReq{}
+
+		err := req.Validate()
+
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "[UpdateReq] invalid")
+	})
+
+	t.Run("valid request should pass", func(t *testing.T) {
+		req := updateReqTestNewReq(false)
+
+		err := req.Validate()
+
+		assert.NoError(t, err)
+	})
+}
+
+func TestUpdateReq_ReqCheckWithCtx(t *testing.T) {
+	testCases := []struct {
+		name        string
+		prepareReq  func() *UpdateReq
+		wantErr     bool
+		errContains string
+	}{
+		{
+			name: "invalid avatar type",
+			prepareReq: func() *UpdateReq {
+				req := updateReqTestNewReq(true)
+				req.AvatarType = 0
+				return req
+			},
+			wantErr:     true,
+			errContains: "avatar_type is invalid",
+		},
+		{
+			name: "empty product key",
+			prepareReq: func() *UpdateReq {
+				req := updateReqTestNewReq(true)
+				req.ProductKey = ""
+				return req
+			},
+			wantErr:     true,
+			errContains: "product_key is required",
+		},
+		{
+			name: "doc datasource with ChatBI product should fail",
+			prepareReq: func() *UpdateReq {
+				req := updateReqTestNewReq(true)
+				req.ProductKey = string(cdaenum.ProductChatBI)
+				req.Config.DataSource = updateReqTestNewValidDocDataSource()
+				return req
+			},
+			wantErr:     true,
+			errContains: "data source is invalid",
+		},
+		{
+			name: "valid request should pass",
+			prepareReq: func() *UpdateReq {
+				return updateReqTestNewReq(true)
+			},
+			wantErr: false,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			err := tc.prepareReq().ReqCheckWithCtx(context.Background())
+
+			if tc.wantErr {
+				require.Error(t, err)
+				assert.Contains(t, err.Error(), tc.errContains)
+				return
+			}
+
+			assert.NoError(t, err)
+		})
+	}
+}
+
+func TestUpdateReq_IsConfigChanged(t *testing.T) {
+	req := &UpdateReq{}
+
+	t.Run("metadata difference should be ignored", func(t *testing.T) {
+		oldConfig := `{"input":{"fields":[]},"metadata":{"config_tpl_version":"v1"}}`
+		newConfig := `{"input":{"fields":[]},"metadata":{"config_tpl_version":"v2"}}`
+
+		changed, err := req.IsConfigChanged(oldConfig, newConfig)
+
+		require.NoError(t, err)
+		assert.False(t, changed)
+	})
+
+	t.Run("invalid old json should return error", func(t *testing.T) {
+		changed, err := req.IsConfigChanged("not-json", `{"input":{"fields":[]}}`)
+
+		require.Error(t, err)
+		assert.False(t, changed)
+	})
+}
+
+func updateReqTestNewReq(isInternalAPI bool) *UpdateReq {
+	req := &UpdateReq{
+		Name:          "AgentName",
+		Profile:       "Agent Profile",
+		AvatarType:    cdaenum.AvatarTypeBuiltIn,
+		Avatar:        "avatar-1",
+		ProductKey:    string(cdaenum.ProductDIP),
+		Config:        createReqTestValidConfig(!isInternalAPI),
+		IsInternalAPI: isInternalAPI,
+	}
+
+	if isInternalAPI {
+		req.UpdatedBy = "updater-1"
+	}
+
+	return req
+}
+
+func updateReqTestNewValidDocDataSource() *datasourcevalobj.RetrieverDataSource {
+	retrievalSlicesNum := 100
+	maxSlicePerCite := 5
+	rerankTopK := 10
+	sliceHeadNum := 2
+	sliceTailNum := 0
+	documentsNum := 8
+	docThreshold := -5.5
+	retrievalMaxLength := 1000
+
+	return &datasourcevalobj.RetrieverDataSource{
+		Doc: []*datasourcevalobj.DocSource{
+			{
+				DsID: "doc-1",
+				Fields: []*datasourcevalobj.DocSourceField{
+					{
+						Name:   "test_field",
+						Path:   "test/path",
+						Source: "gns://92EE2D87255142B78A6F1DFB6BBB836B/B08AC060A758422583A851C601C0A89B",
+						Type:   cdaenum.DocSourceFieldTypeFile,
+					},
+				},
+			},
+		},
+		AdvancedConfig: &datasourcevalobj.RetrieverAdvancedConfig{
+			Doc: &datasourcevalobj.DocAdvancedConfig{
+				RetrievalSlicesNum: &retrievalSlicesNum,
+				MaxSlicePerCite:    &maxSlicePerCite,
+				RerankTopK:         &rerankTopK,
+				SliceHeadNum:       &sliceHeadNum,
+				SliceTailNum:       &sliceTailNum,
+				DocumentsNum:       &documentsNum,
+				DocumentThreshold:  &docThreshold,
+				RetrievalMaxLength: &retrievalMaxLength,
+			},
+		},
 	}
 }

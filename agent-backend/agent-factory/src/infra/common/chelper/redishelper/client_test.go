@@ -3,7 +3,10 @@ package redishelper
 import (
 	"testing"
 
+	redis "github.com/go-redis/redis/v8"
+	"github.com/kweaver-ai/decision-agent/agent-factory/cconf"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestRedisConstants(t *testing.T) {
@@ -41,17 +44,6 @@ func TestRedisConstants(t *testing.T) {
 	}
 }
 
-func TestRedisClient_NotConnected(t *testing.T) {
-	// Note: This test is designed to verify the panic behavior when redis client is not connected
-	// In a real test environment, the redis client might already be initialized
-	// So we just verify that RedisClient() returns a non-nil value if initialized
-	// or panics if not initialized
-
-	// Since we can't control the redis client initialization state in a unit test
-	// without causing side effects, we'll skip this test
-	t.Skip("RedisClient() requires redis initialization, skipping to avoid side effects")
-}
-
 func TestRedisConstants_AllUnique(t *testing.T) {
 	// Verify that all Redis type constants are unique
 	constants := map[string]string{
@@ -78,4 +70,83 @@ func TestRedisConstants_NonEmpty(t *testing.T) {
 	assert.NotEmpty(t, StandaloneType, "StandaloneType should not be empty")
 	assert.NotEmpty(t, SentinelType, "SentinelType should not be empty")
 	assert.NotEmpty(t, ClusterType, "ClusterType should not be empty")
+}
+
+func TestStandalone_DefaultsAndOptions(t *testing.T) {
+	conf := &cconf.RedisConf{}
+
+	client := standalone(conf)
+	t.Cleanup(func() {
+		_ = client.Close()
+	})
+
+	redisClient, ok := client.(*redis.Client)
+	require.True(t, ok)
+	require.NotNil(t, redisClient)
+
+	assert.Equal(t, "proton-redis-proton-redis.resource.svc.cluster.local", conf.Host)
+	assert.Equal(t, "6379", conf.Port)
+	assert.Equal(t, conf.Host+":"+conf.Port, redisClient.Options().Addr)
+}
+
+func TestSentinel_Defaults(t *testing.T) {
+	conf := &cconf.RedisConf{}
+
+	client := sentinel(conf)
+	t.Cleanup(func() {
+		_ = client.Close()
+	})
+
+	redisClient, ok := client.(*redis.Client)
+	require.True(t, ok)
+	require.NotNil(t, redisClient)
+
+	assert.Equal(t, "mymaster", conf.MasterGroupName)
+	assert.Equal(t, "eisoo.com123", conf.SentinelPwd)
+	assert.Equal(t, "proton-redis-proton-redis-sentinel.resource.svc.cluster.local", conf.SentinelHost)
+	assert.Equal(t, "26379", conf.SentinelPort)
+}
+
+func TestCluster_DefaultsAndOptions(t *testing.T) {
+	conf := &cconf.RedisConf{
+		ClusterHosts: []string{"127.0.0.1:7001", "127.0.0.1:7002"},
+	}
+
+	client := cluster(conf)
+	t.Cleanup(func() {
+		_ = client.Close()
+	})
+
+	clusterClient, ok := client.(*redis.ClusterClient)
+	require.True(t, ok)
+	require.NotNil(t, clusterClient)
+
+	assert.Equal(t, "eisoo.com123", conf.ClusterPwd)
+	assert.Equal(t, conf.ClusterHosts, clusterClient.Options().Addrs)
+	assert.Equal(t, conf.ClusterPwd, clusterClient.Options().Password)
+}
+
+func TestRedisClient(t *testing.T) {
+	originalClient := redisClient
+	t.Cleanup(func() {
+		redisClient = originalClient
+	})
+
+	t.Run("panic when not connected", func(t *testing.T) {
+		redisClient = nil
+
+		assert.Panics(t, func() {
+			_ = RedisClient()
+		})
+	})
+
+	t.Run("return client when connected", func(t *testing.T) {
+		connectedClient := redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379"})
+		t.Cleanup(func() {
+			_ = connectedClient.Close()
+		})
+		redisClient = connectedClient
+
+		assert.Equal(t, connectedClient, RedisClient())
+	})
 }

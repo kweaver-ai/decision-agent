@@ -56,6 +56,26 @@ func TestExtractOutputFromLine(t *testing.T) {
 	}
 }
 
+func TestOutputVariablesS_LoadFromConfig_PanicsWithNilConfig(t *testing.T) {
+	v := &OutputVariablesS{}
+
+	assert.Panics(t, func() {
+		_ = v.LoadFromConfig(nil)
+	})
+}
+
+func TestOutputVariablesS_LoadFromConfig_PanicsWithNilOutput(t *testing.T) {
+	v := &OutputVariablesS{}
+
+	config := &daconfvalobj.Config{
+		Output: nil,
+	}
+
+	assert.Panics(t, func() {
+		_ = v.LoadFromConfig(config)
+	})
+}
+
 func TestExtractOutputsFromText(t *testing.T) {
 	tests := []struct {
 		name      string
