@@ -9,6 +9,8 @@ import (
 )
 
 func TestDataAgentRes_GetExecutorError_NoError(t *testing.T) {
+	t.Parallel()
+
 	res := &DataAgentRes{
 		Error: nil,
 	}
@@ -18,6 +20,8 @@ func TestDataAgentRes_GetExecutorError_NoError(t *testing.T) {
 }
 
 func TestDataAgentRes_GetExecutorError_WithError(t *testing.T) {
+	t.Parallel()
+
 	testError := errors.New("test error")
 	res := &DataAgentRes{
 		Error: testError,

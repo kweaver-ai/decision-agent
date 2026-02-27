@@ -8,24 +8,34 @@ import (
 )
 
 func TestNewHTTPClient_ReturnsNonNil(t *testing.T) {
+	t.Parallel()
+
 	c := NewHTTPClient()
 	require.NotNil(t, c)
 }
 
 func TestWithToken(t *testing.T) {
+	t.Parallel()
+
 	t.Run("empty token is ignored", func(t *testing.T) {
+		t.Parallel()
+
 		c := newTestHTTPClient()
 		WithToken("")(c)
 		assert.Equal(t, "", c.token)
 	})
 
 	t.Run("sets token without Bearer prefix", func(t *testing.T) {
+		t.Parallel()
+
 		c := newTestHTTPClient()
 		WithToken("mytoken")(c)
 		assert.Equal(t, "mytoken", c.token)
 	})
 
 	t.Run("strips Bearer prefix", func(t *testing.T) {
+		t.Parallel()
+
 		c := newTestHTTPClient()
 		WithToken("Bearer mytoken")(c)
 		assert.Equal(t, "mytoken", c.token)
@@ -33,6 +43,8 @@ func TestWithToken(t *testing.T) {
 }
 
 func TestWithHeader(t *testing.T) {
+	t.Parallel()
+
 	c := newTestHTTPClient()
 	require.NotNil(t, c.client)
 	WithHeader("X-Custom", "value")(c)
@@ -40,6 +52,8 @@ func TestWithHeader(t *testing.T) {
 }
 
 func TestWithHeaders(t *testing.T) {
+	t.Parallel()
+
 	c := newTestHTTPClient()
 	require.NotNil(t, c.client)
 	WithHeaders(map[string]string{
@@ -50,6 +64,8 @@ func TestWithHeaders(t *testing.T) {
 }
 
 func TestGetClientFromOptions(t *testing.T) {
+	t.Parallel()
+
 	c := newTestHTTPClient()
 	gc := c.GetClient()
 	assert.NotNil(t, gc)

@@ -7,6 +7,8 @@ import (
 )
 
 func TestCopyResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := CopyResp{
 		ID:      "agent-123",
 		Name:    "Copied Agent",
@@ -21,6 +23,8 @@ func TestCopyResp_StructFields(t *testing.T) {
 }
 
 func TestCopyResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := CopyResp{}
 
 	assert.Empty(t, resp.ID)
@@ -30,6 +34,8 @@ func TestCopyResp_Empty(t *testing.T) {
 }
 
 func TestCopyResp_WithID(t *testing.T) {
+	t.Parallel()
+
 	ids := []string{
 		"agent-001",
 		"agent-copy-123",
@@ -44,6 +50,8 @@ func TestCopyResp_WithID(t *testing.T) {
 }
 
 func TestCopyResp_WithVersion(t *testing.T) {
+	t.Parallel()
+
 	versions := []string{
 		"v1.0.0",
 		"v2.5.3",
@@ -58,6 +66,8 @@ func TestCopyResp_WithVersion(t *testing.T) {
 }
 
 func TestCopy2TplResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := Copy2TplResp{
 		ID:   12345,
 		Name: "Copied Template",
@@ -70,6 +80,8 @@ func TestCopy2TplResp_StructFields(t *testing.T) {
 }
 
 func TestCopy2TplResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := Copy2TplResp{}
 
 	assert.Zero(t, resp.ID)
@@ -78,6 +90,8 @@ func TestCopy2TplResp_Empty(t *testing.T) {
 }
 
 func TestCopy2TplResp_WithID(t *testing.T) {
+	t.Parallel()
+
 	ids := []int64{
 		0,
 		1,
@@ -93,6 +107,8 @@ func TestCopy2TplResp_WithID(t *testing.T) {
 }
 
 func TestCopy2TplResp_WithChineseName(t *testing.T) {
+	t.Parallel()
+
 	resp := Copy2TplResp{
 		Name: "复制的模板名称",
 	}
@@ -101,6 +117,8 @@ func TestCopy2TplResp_WithChineseName(t *testing.T) {
 }
 
 func TestCopyResp_AllFields(t *testing.T) {
+	t.Parallel()
+
 	resp := CopyResp{
 		ID:      "complete-agent-id",
 		Name:    "Complete Copied Agent",
@@ -115,6 +133,8 @@ func TestCopyResp_AllFields(t *testing.T) {
 }
 
 func TestCopy2TplResp_AllFields(t *testing.T) {
+	t.Parallel()
+
 	resp := Copy2TplResp{
 		ID:   789,
 		Name: "Complete Template",
@@ -127,6 +147,8 @@ func TestCopy2TplResp_AllFields(t *testing.T) {
 }
 
 func TestCopyResp_WithEmptyVersion(t *testing.T) {
+	t.Parallel()
+
 	resp := CopyResp{
 		ID:   "agent-empty-version",
 		Name: "Agent Without Version",
@@ -138,6 +160,8 @@ func TestCopyResp_WithEmptyVersion(t *testing.T) {
 }
 
 func TestCopy2TplResp_WithZeroID(t *testing.T) {
+	t.Parallel()
+
 	resp := Copy2TplResp{
 		ID:   0,
 		Name: "Template With Zero ID",

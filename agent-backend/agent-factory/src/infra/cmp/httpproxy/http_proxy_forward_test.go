@@ -11,11 +11,14 @@ import (
 )
 
 func TestJSONPostProxy_Forward_Happy(t *testing.T) {
+	t.Parallel()
+
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, http.MethodPost, r.Method)
 		assert.Equal(t, "application/json", r.Header.Get("Content-Type"))
 
 		var req TestRequest
+
 		require.NoError(t, json.NewDecoder(r.Body).Decode(&req))
 		assert.Equal(t, "hello", req.Name)
 
@@ -34,6 +37,8 @@ func TestJSONPostProxy_Forward_Happy(t *testing.T) {
 }
 
 func TestJSONPostProxy_Forward_WithToken(t *testing.T) {
+	t.Parallel()
+
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "Bearer mytoken", r.Header.Get("Authorization"))
 		w.Header().Set("Content-Type", "application/json")
@@ -52,6 +57,8 @@ func TestJSONPostProxy_Forward_WithToken(t *testing.T) {
 }
 
 func TestJSONPostProxy_Forward_ServerError(t *testing.T) {
+	t.Parallel()
+
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadGateway)
 		_, _ = w.Write([]byte("bad gateway"))
@@ -67,6 +74,8 @@ func TestJSONPostProxy_Forward_ServerError(t *testing.T) {
 }
 
 func TestJSONPostProxy_Forward_InvalidJSON(t *testing.T) {
+	t.Parallel()
+
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("not-json"))
@@ -81,6 +90,8 @@ func TestJSONPostProxy_Forward_InvalidJSON(t *testing.T) {
 }
 
 func TestJSONPostProxy_Forward_RequestFailed(t *testing.T) {
+	t.Parallel()
+
 	proxy := NewJSONPostProxy[TestRequest, TestResponse]("http://127.0.0.1:1")
 	_, err := proxy.Forward(TestRequest{Name: "x"})
 	assert.Error(t, err)

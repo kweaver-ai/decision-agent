@@ -5,6 +5,8 @@ import (
 )
 
 func TestStatusThreeState_EnumCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name      string
 		status    StatusThreeState
@@ -20,6 +22,8 @@ func TestStatusThreeState_EnumCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.status.EnumCheck()
 			hasError := err != nil
 
@@ -38,6 +42,8 @@ func TestStatusThreeState_EnumCheck(t *testing.T) {
 }
 
 func TestStatusThreeState_IsPublished(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name   string
 		status StatusThreeState
@@ -50,6 +56,8 @@ func TestStatusThreeState_IsPublished(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := tt.status.IsPublished()
 			if got != tt.want {
 				t.Errorf("StatusThreeState.IsPublished() = %v, want %v", got, tt.want)
@@ -59,6 +67,8 @@ func TestStatusThreeState_IsPublished(t *testing.T) {
 }
 
 func TestStatusThreeState_StringValues(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name  string
 		value string
@@ -70,6 +80,8 @@ func TestStatusThreeState_StringValues(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if tt.value != tt.value {
 				t.Errorf("StatusThreeState value = %q, want %q", tt.value, tt.value)
 			}

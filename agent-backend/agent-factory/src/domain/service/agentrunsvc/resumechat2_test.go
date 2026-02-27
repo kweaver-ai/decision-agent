@@ -15,6 +15,8 @@ import (
 
 // ResumeChat: session deleted between outer and goroutine inner load
 func TestAgentSvc_ResumeChat_SessionDeletedBeforeGoroutine(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -41,6 +43,7 @@ func TestAgentSvc_ResumeChat_SessionDeletedBeforeGoroutine(t *testing.T) {
 	go func() {
 		for range ch {
 		}
+
 		close(done)
 	}()
 
@@ -53,6 +56,8 @@ func TestAgentSvc_ResumeChat_SessionDeletedBeforeGoroutine(t *testing.T) {
 
 // ResumeChat: signal loop - oldResp gets updated on each signal
 func TestAgentSvc_ResumeChat_MultipleSignals(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -70,6 +75,7 @@ func TestAgentSvc_ResumeChat_MultipleSignals(t *testing.T) {
 		TempMsgResp:    agentresp.ChatResp{ConversationID: convID},
 	}
 	SessionMap.Store(convID, session)
+
 	defer SessionMap.Delete(convID)
 
 	ch, err := svc.ResumeChat(context.Background(), convID)
@@ -88,10 +94,12 @@ func TestAgentSvc_ResumeChat_MultipleSignals(t *testing.T) {
 
 	received := 0
 	done := make(chan struct{})
+
 	go func() {
 		for range ch {
 			received++
 		}
+
 		close(done)
 	}()
 
@@ -105,6 +113,8 @@ func TestAgentSvc_ResumeChat_MultipleSignals(t *testing.T) {
 
 // ResumeChat: initial StreamDiff with non-empty TempMsgResp
 func TestAgentSvc_ResumeChat_InitialDiff(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -122,6 +132,7 @@ func TestAgentSvc_ResumeChat_InitialDiff(t *testing.T) {
 		TempMsgResp:    agentresp.ChatResp{ConversationID: convID, AgentRunID: "run-init"},
 	}
 	SessionMap.Store(convID, session)
+
 	defer SessionMap.Delete(convID)
 
 	// Close signal immediately after a brief delay
@@ -135,10 +146,12 @@ func TestAgentSvc_ResumeChat_InitialDiff(t *testing.T) {
 
 	done := make(chan struct{})
 	received := 0
+
 	go func() {
 		for range ch {
 			received++
 		}
+
 		close(done)
 	}()
 
@@ -153,6 +166,8 @@ func TestAgentSvc_ResumeChat_InitialDiff(t *testing.T) {
 
 // ResumeChat: signal loop with existing signal, sends multiple updates
 func TestAgentSvc_ResumeChat_ExistingSignalWithUpdates(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -172,6 +187,7 @@ func TestAgentSvc_ResumeChat_ExistingSignalWithUpdates(t *testing.T) {
 		TempMsgResp:    agentresp.ChatResp{ConversationID: convID},
 	}
 	SessionMap.Store(convID, session)
+
 	defer SessionMap.Delete(convID)
 
 	ch, err := svc.ResumeChat(context.Background(), convID)
@@ -181,6 +197,7 @@ func TestAgentSvc_ResumeChat_ExistingSignalWithUpdates(t *testing.T) {
 		time.Sleep(10 * time.Millisecond)
 		session.UpdateTempMsgResp(agentresp.ChatResp{ConversationID: convID, AgentRunID: "upd-1"})
 		existingSignal <- struct{}{}
+
 		time.Sleep(10 * time.Millisecond)
 		close(existingSignal)
 	}()
@@ -189,6 +206,7 @@ func TestAgentSvc_ResumeChat_ExistingSignalWithUpdates(t *testing.T) {
 	go func() {
 		for range ch {
 		}
+
 		close(done)
 	}()
 

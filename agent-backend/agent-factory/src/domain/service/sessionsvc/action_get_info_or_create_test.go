@@ -5,18 +5,23 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/session/sessionreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/ctype"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/iredisaccess/isessionredis/isessionredismock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 )
 
 func TestHandleGetInfoOrCreate(t *testing.T) {
+	t.Parallel()
+
 	t.Run("nil service causes panic", func(t *testing.T) {
+		t.Parallel()
+
 		var svc *sessionSvc
+
 		ctx := context.Background()
 		req := sessionreq.ManageReq{
 			ConversationID: "conv-123",
@@ -30,6 +35,8 @@ func TestHandleGetInfoOrCreate(t *testing.T) {
 	})
 
 	t.Run("nil session redis causes panic", func(t *testing.T) {
+		t.Parallel()
+
 		svc := &sessionSvc{
 			// sessionRedisAcc is nil, will panic
 		}
@@ -46,6 +53,8 @@ func TestHandleGetInfoOrCreate(t *testing.T) {
 	})
 
 	t.Run("session exists returns existing data", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -76,6 +85,8 @@ func TestHandleGetInfoOrCreate(t *testing.T) {
 	})
 
 	t.Run("session does not exist creates new session", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -105,6 +116,8 @@ func TestHandleGetInfoOrCreate(t *testing.T) {
 	})
 
 	t.Run("get session error returns error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -134,6 +147,8 @@ func TestHandleGetInfoOrCreate(t *testing.T) {
 	})
 
 	t.Run("set session error returns error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -152,6 +167,7 @@ func TestHandleGetInfoOrCreate(t *testing.T) {
 		visitorInfo := &ctype.VisitorInfo{}
 
 		expectedErr := errors.New("failed to set session")
+
 		mockSessionRedis.EXPECT().GetSessionWithTTL(gomock.Any(), "conv-123").Return(false, int64(0), 0, nil)
 		mockSessionRedis.EXPECT().SetSession(gomock.Any(), "conv-123", gomock.Any(), gomock.Any()).Return(false, expectedErr)
 		mockLogger.EXPECT().Errorf(gomock.Any(), gomock.Any()).Times(1)
@@ -164,6 +180,8 @@ func TestHandleGetInfoOrCreate(t *testing.T) {
 	})
 
 	t.Run("get TTL error after create returns error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -182,6 +200,7 @@ func TestHandleGetInfoOrCreate(t *testing.T) {
 		visitorInfo := &ctype.VisitorInfo{}
 
 		expectedErr := errors.New("failed to get TTL")
+
 		mockSessionRedis.EXPECT().GetSessionWithTTL(gomock.Any(), "conv-123").Return(false, int64(0), 0, nil)
 		mockSessionRedis.EXPECT().SetSession(gomock.Any(), "conv-123", gomock.Any(), gomock.Any()).Return(true, nil)
 		mockSessionRedis.EXPECT().GetSessionTTL(gomock.Any(), "conv-123").Return(0, expectedErr)
@@ -195,6 +214,8 @@ func TestHandleGetInfoOrCreate(t *testing.T) {
 	})
 
 	t.Run("with cache trigger enabled", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -227,6 +248,8 @@ func TestHandleGetInfoOrCreate(t *testing.T) {
 	})
 
 	t.Run("with cache trigger enabled and new session", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -264,4 +287,3 @@ func TestHandleGetInfoOrCreate(t *testing.T) {
 		assert.Equal(t, 3600, ttl)
 	})
 }
-

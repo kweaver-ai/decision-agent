@@ -7,6 +7,8 @@ import (
 )
 
 func TestNewListPublishInfo(t *testing.T) {
+	t.Parallel()
+
 	info := NewListPublishInfo()
 
 	assert.NotNil(t, info)
@@ -14,6 +16,8 @@ func TestNewListPublishInfo(t *testing.T) {
 }
 
 func TestListPublishInfo_MultipleInstances(t *testing.T) {
+	t.Parallel()
+
 	info1 := NewListPublishInfo()
 	info2 := NewListPublishInfo()
 
@@ -23,6 +27,8 @@ func TestListPublishInfo_MultipleInstances(t *testing.T) {
 }
 
 func TestListPublishInfo_EmbeddedStruct(t *testing.T) {
+	t.Parallel()
+
 	info := NewListPublishInfo()
 
 	// Verify the embedded struct is accessible

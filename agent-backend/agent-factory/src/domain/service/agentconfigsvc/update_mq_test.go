@@ -12,6 +12,8 @@ import (
 )
 
 func TestDataAgentConfigSvc_HandleUpdateNameMq_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -29,6 +31,8 @@ func TestDataAgentConfigSvc_HandleUpdateNameMq_Success(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_HandleUpdateNameMq_PublishError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

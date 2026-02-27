@@ -37,12 +37,15 @@ func (agentTestLogger) Fatalln(...interface{})        {}
 
 func newAgentCtx(method, target, body string) (*gin.Context, *httptest.ResponseRecorder) {
 	gin.SetMode(gin.TestMode)
+
 	recorder := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(recorder)
+
 	req := httptest.NewRequest(method, target, strings.NewReader(body))
 	if body != "" {
 		req.Header.Set("Content-Type", "application/json")
 	}
+
 	c.Request = req
 
 	return c, recorder
@@ -69,10 +72,13 @@ func hasAgentRoute(routes []gin.RouteInfo, method, path string) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
 func TestAgentHandler_RegRouters(t *testing.T) {
+	t.Parallel()
+
 	h := &agentHTTPHandler{}
 
 	pubRouter := gin.New()
@@ -93,7 +99,11 @@ func TestAgentHandler_RegRouters(t *testing.T) {
 }
 
 func TestAgentHandler_GetAPIDoc(t *testing.T) {
+	t.Parallel()
+
 	t.Run("bind json error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -105,6 +115,8 @@ func TestAgentHandler_GetAPIDoc(t *testing.T) {
 	})
 
 	t.Run("app key empty", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -116,6 +128,8 @@ func TestAgentHandler_GetAPIDoc(t *testing.T) {
 	})
 
 	t.Run("service error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -130,6 +144,8 @@ func TestAgentHandler_GetAPIDoc(t *testing.T) {
 	})
 
 	t.Run("success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -148,7 +164,11 @@ func TestAgentHandler_GetAPIDoc(t *testing.T) {
 }
 
 func TestAgentHandler_Chat_EarlyAndNonStreamBranches(t *testing.T) {
+	t.Parallel()
+
 	t.Run("user not found", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -161,6 +181,8 @@ func TestAgentHandler_Chat_EarlyAndNonStreamBranches(t *testing.T) {
 	})
 
 	t.Run("service error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -176,6 +198,8 @@ func TestAgentHandler_Chat_EarlyAndNonStreamBranches(t *testing.T) {
 	})
 
 	t.Run("non stream success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -185,6 +209,7 @@ func TestAgentHandler_Chat_EarlyAndNonStreamBranches(t *testing.T) {
 			assert.Equal(t, constant.Chat, req.CallType)
 			assert.Equal(t, "u1", req.UserID)
 			assert.False(t, req.Stream)
+
 			return jsonChannel(`{"content":"ok"}`), nil
 		})
 
@@ -197,7 +222,11 @@ func TestAgentHandler_Chat_EarlyAndNonStreamBranches(t *testing.T) {
 }
 
 func TestAgentHandler_APIChat_EarlyAndNonStreamBranches(t *testing.T) {
+	t.Parallel()
+
 	t.Run("agent_key required", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -211,6 +240,8 @@ func TestAgentHandler_APIChat_EarlyAndNonStreamBranches(t *testing.T) {
 	})
 
 	t.Run("service error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -226,6 +257,8 @@ func TestAgentHandler_APIChat_EarlyAndNonStreamBranches(t *testing.T) {
 	})
 
 	t.Run("non stream success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -234,6 +267,7 @@ func TestAgentHandler_APIChat_EarlyAndNonStreamBranches(t *testing.T) {
 		mockAgent.EXPECT().Chat(gomock.Any(), gomock.Any()).DoAndReturn(func(ctx context.Context, req *agentreq.ChatReq) (chan []byte, error) {
 			assert.Equal(t, constant.APIChat, req.CallType)
 			assert.Equal(t, "k1", req.AgentID)
+
 			return jsonChannel(`{"message":"ok"}`), nil
 		})
 
@@ -246,7 +280,11 @@ func TestAgentHandler_APIChat_EarlyAndNonStreamBranches(t *testing.T) {
 }
 
 func TestAgentHandler_InternalChatAndInternalAPIChat_NonStream(t *testing.T) {
+	t.Parallel()
+
 	t.Run("internal chat success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -255,6 +293,7 @@ func TestAgentHandler_InternalChatAndInternalAPIChat_NonStream(t *testing.T) {
 		mockAgent.EXPECT().Chat(gomock.Any(), gomock.Any()).DoAndReturn(func(ctx context.Context, req *agentreq.ChatReq) (chan []byte, error) {
 			assert.Equal(t, constant.InternalChat, req.CallType)
 			assert.Equal(t, "inner-user", req.UserID)
+
 			return jsonChannel(`{"ok":true}`), nil
 		})
 
@@ -268,6 +307,8 @@ func TestAgentHandler_InternalChatAndInternalAPIChat_NonStream(t *testing.T) {
 	})
 
 	t.Run("internal api chat agent_key required", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -280,6 +321,8 @@ func TestAgentHandler_InternalChatAndInternalAPIChat_NonStream(t *testing.T) {
 	})
 
 	t.Run("internal api chat success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -288,6 +331,7 @@ func TestAgentHandler_InternalChatAndInternalAPIChat_NonStream(t *testing.T) {
 		mockAgent.EXPECT().Chat(gomock.Any(), gomock.Any()).DoAndReturn(func(ctx context.Context, req *agentreq.ChatReq) (chan []byte, error) {
 			assert.Equal(t, constant.APIChat, req.CallType)
 			assert.Equal(t, "k1", req.AgentID)
+
 			return jsonChannel(`{"ok":true}`), nil
 		})
 
@@ -302,7 +346,11 @@ func TestAgentHandler_InternalChatAndInternalAPIChat_NonStream(t *testing.T) {
 }
 
 func TestAgentHandler_Debug_NonStream(t *testing.T) {
+	t.Parallel()
+
 	t.Run("user not found", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -315,6 +363,8 @@ func TestAgentHandler_Debug_NonStream(t *testing.T) {
 	})
 
 	t.Run("service error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -330,6 +380,8 @@ func TestAgentHandler_Debug_NonStream(t *testing.T) {
 	})
 
 	t.Run("non stream success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -338,6 +390,7 @@ func TestAgentHandler_Debug_NonStream(t *testing.T) {
 		mockAgent.EXPECT().Chat(gomock.Any(), gomock.Any()).DoAndReturn(func(ctx context.Context, req *agentreq.ChatReq) (chan []byte, error) {
 			assert.Equal(t, constant.DebugChat, req.CallType)
 			assert.Equal(t, "q", req.Query)
+
 			return jsonChannel(`{"ok":true}`), nil
 		})
 
@@ -350,7 +403,11 @@ func TestAgentHandler_Debug_NonStream(t *testing.T) {
 }
 
 func TestAgentHandler_TerminateChat(t *testing.T) {
+	t.Parallel()
+
 	t.Run("bind json error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -362,6 +419,8 @@ func TestAgentHandler_TerminateChat(t *testing.T) {
 	})
 
 	t.Run("conversation id empty", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -373,6 +432,8 @@ func TestAgentHandler_TerminateChat(t *testing.T) {
 	})
 
 	t.Run("service error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -386,6 +447,8 @@ func TestAgentHandler_TerminateChat(t *testing.T) {
 	})
 
 	t.Run("success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -400,7 +463,11 @@ func TestAgentHandler_TerminateChat(t *testing.T) {
 }
 
 func TestAgentHandler_ResumeChat(t *testing.T) {
+	t.Parallel()
+
 	t.Run("bind json error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -412,6 +479,8 @@ func TestAgentHandler_ResumeChat(t *testing.T) {
 	})
 
 	t.Run("service error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -425,6 +494,8 @@ func TestAgentHandler_ResumeChat(t *testing.T) {
 	})
 
 	t.Run("success stream and reset session flag", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockAgent := iportdrivermock.NewMockIAgent(ctrl)
@@ -438,6 +509,7 @@ func TestAgentHandler_ResumeChat(t *testing.T) {
 
 		session := &agentrunsvc.Session{ConversationID: "conv-1", IsResuming: true}
 		agentrunsvc.SessionMap.Store("conv-1", session)
+
 		defer agentrunsvc.SessionMap.Delete("conv-1")
 
 		c, recorder := newAgentCtx(http.MethodPost, "/", `{"conversation_id":"conv-1"}`)

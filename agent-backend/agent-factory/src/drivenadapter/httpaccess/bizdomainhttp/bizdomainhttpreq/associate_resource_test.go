@@ -9,6 +9,8 @@ import (
 )
 
 func TestAssociateResourceReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := AssociateResourceReq{
 		BdID: "bd-123",
 		ID:   "resource-456",
@@ -21,6 +23,8 @@ func TestAssociateResourceReq_StructFields(t *testing.T) {
 }
 
 func TestAssociateResourceReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := AssociateResourceReq{}
 
 	assert.Empty(t, req.BdID)
@@ -29,6 +33,8 @@ func TestAssociateResourceReq_Empty(t *testing.T) {
 }
 
 func TestAssociateResourceReq_WithDifferentTypes(t *testing.T) {
+	t.Parallel()
+
 	types := []cdaenum.ResourceType{
 		cdaenum.ResourceTypeDataAgent,
 		cdaenum.ResourceTypeDataAgentTpl,
@@ -45,6 +51,8 @@ func TestAssociateResourceReq_WithDifferentTypes(t *testing.T) {
 }
 
 func TestAssociateResourceReq_WithBdID(t *testing.T) {
+	t.Parallel()
+
 	bdIDs := []string{
 		"bd-001",
 		"business-domain-123",
@@ -62,6 +70,8 @@ func TestAssociateResourceReq_WithBdID(t *testing.T) {
 }
 
 func TestAssociateResourceReq_WithResourceID(t *testing.T) {
+	t.Parallel()
+
 	resourceIDs := []string{
 		"resource-001",
 		"agent-123",
@@ -80,6 +90,8 @@ func TestAssociateResourceReq_WithResourceID(t *testing.T) {
 }
 
 func TestAssociateResourceItem_StructFields(t *testing.T) {
+	t.Parallel()
+
 	item := &AssociateResourceItem{
 		BdID: cenum.BizDomainPublic,
 		ID:   "agent-123",
@@ -92,6 +104,8 @@ func TestAssociateResourceItem_StructFields(t *testing.T) {
 }
 
 func TestNewInitAllAgentToPublicBusinessDomainReq(t *testing.T) {
+	t.Parallel()
+
 	agentIDs := []string{"agent-001", "agent-002", "agent-003"}
 	req := NewInitAllAgentToPublicBusinessDomainReq(agentIDs)
 
@@ -110,6 +124,8 @@ func TestNewInitAllAgentToPublicBusinessDomainReq(t *testing.T) {
 }
 
 func TestNewInitAllAgentToPublicBusinessDomainReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	agentIDs := []string{}
 	req := NewInitAllAgentToPublicBusinessDomainReq(agentIDs)
 
@@ -117,6 +133,8 @@ func TestNewInitAllAgentToPublicBusinessDomainReq_Empty(t *testing.T) {
 }
 
 func TestNewInitAllAgentToPublicBusinessDomainReq_Nil(t *testing.T) {
+	t.Parallel()
+
 	var agentIDs []string
 	req := NewInitAllAgentToPublicBusinessDomainReq(agentIDs)
 
@@ -124,6 +142,8 @@ func TestNewInitAllAgentToPublicBusinessDomainReq_Nil(t *testing.T) {
 }
 
 func TestNewInitAllAgentTplToPublicBusinessDomainReq(t *testing.T) {
+	t.Parallel()
+
 	agentTplIDs := []string{"tpl-001", "tpl-002", "tpl-003"}
 	req := NewInitAllAgentTplToPublicBusinessDomainReq(agentTplIDs)
 
@@ -142,6 +162,8 @@ func TestNewInitAllAgentTplToPublicBusinessDomainReq(t *testing.T) {
 }
 
 func TestNewInitAllAgentTplToPublicBusinessDomainReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	agentTplIDs := []string{}
 	req := NewInitAllAgentTplToPublicBusinessDomainReq(agentTplIDs)
 
@@ -149,6 +171,8 @@ func TestNewInitAllAgentTplToPublicBusinessDomainReq_Empty(t *testing.T) {
 }
 
 func TestNewInitAllAgentTplToPublicBusinessDomainReq_Nil(t *testing.T) {
+	t.Parallel()
+
 	var agentTplIDs []string
 	req := NewInitAllAgentTplToPublicBusinessDomainReq(agentTplIDs)
 
@@ -156,6 +180,8 @@ func TestNewInitAllAgentTplToPublicBusinessDomainReq_Nil(t *testing.T) {
 }
 
 func TestAssociateResourceBatchReq(t *testing.T) {
+	t.Parallel()
+
 	items := AssociateResourceBatchReq{
 		&AssociateResourceItem{
 			BdID: cenum.BizDomainPublic,

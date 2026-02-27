@@ -7,9 +7,11 @@ import (
 )
 
 func TestConversationSessionInitResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := ConversationSessionInitResp{
 		ConversationSessionID: "session-123",
-		TTL: 3600,
+		TTL:                   3600,
 	}
 
 	assert.Equal(t, "session-123", resp.ConversationSessionID)
@@ -17,6 +19,8 @@ func TestConversationSessionInitResp_StructFields(t *testing.T) {
 }
 
 func TestConversationSessionInitResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := ConversationSessionInitResp{}
 
 	assert.Empty(t, resp.ConversationSessionID)
@@ -24,6 +28,8 @@ func TestConversationSessionInitResp_Empty(t *testing.T) {
 }
 
 func TestConversationSessionInitResp_WithSessionID(t *testing.T) {
+	t.Parallel()
+
 	sessionIDs := []string{
 		"session-001",
 		"test-session",
@@ -40,6 +46,8 @@ func TestConversationSessionInitResp_WithSessionID(t *testing.T) {
 }
 
 func TestConversationSessionInitResp_WithTTL(t *testing.T) {
+	t.Parallel()
+
 	ttls := []int{
 		0,
 		60,
@@ -60,6 +68,8 @@ func TestConversationSessionInitResp_WithTTL(t *testing.T) {
 }
 
 func TestConversationSessionInitResp_WithBothFields(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name                  string
 		conversationSessionID string
@@ -89,6 +99,8 @@ func TestConversationSessionInitResp_WithBothFields(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp := ConversationSessionInitResp{
 				ConversationSessionID: tt.conversationSessionID,
 				TTL:                   tt.ttl,

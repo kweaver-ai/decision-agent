@@ -9,6 +9,8 @@ import (
 )
 
 func TestSpace_GetObjName(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		s    *Space
@@ -45,6 +47,8 @@ func TestSpace_GetObjName(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := tt.s.GetObjName()
 			assert.Equal(t, tt.want, got)
 		})
@@ -52,6 +56,8 @@ func TestSpace_GetObjName(t *testing.T) {
 }
 
 func TestSpace_AuditMngLogCreate(t *testing.T) {
+	t.Parallel()
+
 	s := &Space{
 		SpacePo: dapo.SpacePo{
 			ID:   "space-1",
@@ -66,6 +72,8 @@ func TestSpace_AuditMngLogCreate(t *testing.T) {
 }
 
 func TestSpace_AuditMngLogUpdate(t *testing.T) {
+	t.Parallel()
+
 	s := &Space{
 		SpacePo: dapo.SpacePo{
 			ID:   "space-1",
@@ -80,6 +88,8 @@ func TestSpace_AuditMngLogUpdate(t *testing.T) {
 }
 
 func TestSpace_AuditMngLogDelete(t *testing.T) {
+	t.Parallel()
+
 	s := &Space{
 		SpacePo: dapo.SpacePo{
 			ID:   "space-1",
@@ -94,6 +104,8 @@ func TestSpace_AuditMngLogDelete(t *testing.T) {
 }
 
 func TestSpace_CreatedByName(t *testing.T) {
+	t.Parallel()
+
 	s := &Space{
 		SpacePo: dapo.SpacePo{
 			ID:   "space-1",
@@ -107,6 +119,8 @@ func TestSpace_CreatedByName(t *testing.T) {
 }
 
 func TestSpace_UpdatedByName(t *testing.T) {
+	t.Parallel()
+
 	s := &Space{
 		SpacePo: dapo.SpacePo{
 			ID:   "space-1",
@@ -120,6 +134,8 @@ func TestSpace_UpdatedByName(t *testing.T) {
 }
 
 func TestNewSpaceResource(t *testing.T) {
+	t.Parallel()
+
 	resource := NewSpaceResource()
 
 	assert.NotNil(t, resource)

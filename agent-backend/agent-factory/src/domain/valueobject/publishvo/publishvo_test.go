@@ -11,6 +11,8 @@ import (
 )
 
 func TestPublishInfo_Fields(t *testing.T) {
+	t.Parallel()
+
 	pmsControl := &pmsvo.PmsControlObjS{
 		RoleIDs:       []string{"role-1"},
 		UserIDs:       []string{"user-1"},
@@ -20,11 +22,11 @@ func TestPublishInfo_Fields(t *testing.T) {
 	}
 
 	info := &PublishInfo{
-		CategoryIDs:     []string{"cat-1", "cat-2"},
-		Description:     "Test publish",
-		PublishToWhere:  []daenum.PublishToWhere{daenum.PublishToWhereCustomSpace, daenum.PublishToWhereSquare},
+		CategoryIDs:    []string{"cat-1", "cat-2"},
+		Description:    "Test publish",
+		PublishToWhere: []daenum.PublishToWhere{daenum.PublishToWhereCustomSpace, daenum.PublishToWhereSquare},
 		PmsControl:     pmsControl,
-		PublishToBes:    []cdaenum.PublishToBe{cdaenum.PublishToBeSkillAgent, cdaenum.PublishToBeAPIAgent},
+		PublishToBes:   []cdaenum.PublishToBe{cdaenum.PublishToBeSkillAgent, cdaenum.PublishToBeAPIAgent},
 	}
 
 	assert.Equal(t, []string{"cat-1", "cat-2"}, info.CategoryIDs)
@@ -39,6 +41,8 @@ func TestPublishInfo_Fields(t *testing.T) {
 }
 
 func TestPublishInfo_Empty(t *testing.T) {
+	t.Parallel()
+
 	info := &PublishInfo{}
 
 	assert.Nil(t, info.CategoryIDs)
@@ -49,6 +53,8 @@ func TestPublishInfo_Empty(t *testing.T) {
 }
 
 func TestListPublishInfo_New(t *testing.T) {
+	t.Parallel()
+
 	info := NewListPublishInfo()
 	assert.NotNil(t, info)
 	assert.Equal(t, 0, info.IsAPIAgent)
@@ -58,6 +64,8 @@ func TestListPublishInfo_New(t *testing.T) {
 }
 
 func TestListPublishInfo_Fields(t *testing.T) {
+	t.Parallel()
+
 	info := &ListPublishInfo{
 		PublishedToBeStruct: dapo.PublishedToBeStruct{
 			IsAPIAgent:      1,
@@ -72,4 +80,3 @@ func TestListPublishInfo_Fields(t *testing.T) {
 	assert.Equal(t, 1, info.IsSkillAgent)
 	assert.Equal(t, 0, info.IsDataFlowAgent)
 }
-

@@ -8,6 +8,8 @@ import (
 )
 
 func TestAgentAndTplNameRe(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   string
@@ -102,6 +104,8 @@ func TestAgentAndTplNameRe(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := AgentAndTplNameRe.MatchString(tt.input)
 			assert.Equal(t, tt.matches, result, "Input: %s", tt.input)
 		})
@@ -109,6 +113,8 @@ func TestAgentAndTplNameRe(t *testing.T) {
 }
 
 func TestGenAgentAndTplNameErrMsg(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		target   string
@@ -138,6 +144,8 @@ func TestGenAgentAndTplNameErrMsg(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := GenAgentAndTplNameErrMsg(tt.target)
 			assert.Equal(t, tt.expected, result)
 		})
@@ -145,6 +153,8 @@ func TestGenAgentAndTplNameErrMsg(t *testing.T) {
 }
 
 func TestAgentAndTplNameRe_PatternConsistency(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		input    string
 		expected bool
@@ -189,6 +199,8 @@ func TestAgentAndTplNameRe_PatternConsistency(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
+			t.Parallel()
+
 			result := AgentAndTplNameRe.MatchString(tt.input)
 			assert.Equal(t, tt.expected, result, "Input: %q", tt.input)
 		})
@@ -196,6 +208,8 @@ func TestAgentAndTplNameRe_PatternConsistency(t *testing.T) {
 }
 
 func TestAgentAndTplNameRe_EdgeCases(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   string
@@ -265,6 +279,8 @@ func TestAgentAndTplNameRe_EdgeCases(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := AgentAndTplNameRe.MatchString(tt.input)
 			assert.Equal(t, tt.matches, result)
 		})
@@ -273,6 +289,8 @@ func TestAgentAndTplNameRe_EdgeCases(t *testing.T) {
 
 // Test CheckAgentAndTplName using reflection to call it directly
 func TestCheckAgentAndTplName_Direct(t *testing.T) {
+	t.Parallel()
+
 	// Since CheckAgentAndTplName requires a validator.FieldLevel interface,
 	// we test the underlying logic by testing the regex pattern directly
 	tests := []struct {
@@ -354,6 +372,7 @@ func TestCheckAgentAndTplName_Direct(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			// CheckAgentAndTplName returns true for empty strings
 			// Otherwise it checks the regex
 			var result bool
@@ -362,18 +381,23 @@ func TestCheckAgentAndTplName_Direct(t *testing.T) {
 			} else {
 				result = AgentAndTplNameRe.MatchString(tt.input)
 			}
+
 			assert.Equal(t, tt.expected, result, "Input: %s", tt.input)
 		})
 	}
 }
 
 func TestAgentAndTplNameRe_ConstantValue(t *testing.T) {
+	t.Parallel()
+
 	// Test that the constant is properly defined
 	assert.NotNil(t, AgentAndTplNameRe)
 	assert.Equal(t, "仅支持中英文、数字及下划线，且不能以数字开头", AgentAndTplNameErrMsg)
 }
 
 func TestCheckAgentAndTplName_EmptyStringBehavior(t *testing.T) {
+	t.Parallel()
+
 	// Verify that the function allows empty strings
 	// This is tested indirectly by checking the comment in the source code
 	// and verifying the regex behavior
@@ -382,12 +406,16 @@ func TestCheckAgentAndTplName_EmptyStringBehavior(t *testing.T) {
 }
 
 func TestCheckAgentAndTplName_ReflectType(t *testing.T) {
+	t.Parallel()
+
 	// Verify CheckAgentAndTplName is a function
 	fnType := reflect.TypeOf(CheckAgentAndTplName)
 	assert.Equal(t, reflect.Func, fnType.Kind())
 }
 
 func TestGenAgentAndTplNameErrMsg_Constant(t *testing.T) {
+	t.Parallel()
+
 	// Test the error message constant
 	expectedMsg := "仅支持中英文、数字及下划线，且不能以数字开头"
 	assert.Equal(t, expectedMsg, AgentAndTplNameErrMsg)

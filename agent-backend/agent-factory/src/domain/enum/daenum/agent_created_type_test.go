@@ -7,12 +7,16 @@ import (
 )
 
 func TestAgentCreatedType_Constants(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, AgentCreatedType("create"), AgentCreatedTypeCreate)
 	assert.Equal(t, AgentCreatedType("copy"), AgentCreatedTypeCopy)
 	assert.Equal(t, AgentCreatedType("import"), AgentCreatedTypeImport)
 }
 
 func TestAgentCreatedType_EnumCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	validTypes := []AgentCreatedType{
 		AgentCreatedTypeCreate,
 		AgentCreatedTypeCopy,
@@ -21,6 +25,8 @@ func TestAgentCreatedType_EnumCheck_Valid(t *testing.T) {
 
 	for _, act := range validTypes {
 		t.Run(string(act), func(t *testing.T) {
+			t.Parallel()
+
 			err := act.EnumCheck()
 			assert.NoError(t, err)
 		})
@@ -28,6 +34,8 @@ func TestAgentCreatedType_EnumCheck_Valid(t *testing.T) {
 }
 
 func TestAgentCreatedType_EnumCheck_Invalid(t *testing.T) {
+	t.Parallel()
+
 	invalidType := AgentCreatedType("invalid_type")
 	err := invalidType.EnumCheck()
 	assert.Error(t, err)
@@ -35,12 +43,16 @@ func TestAgentCreatedType_EnumCheck_Invalid(t *testing.T) {
 }
 
 func TestAgentCreatedType_EnumCheck_Empty(t *testing.T) {
+	t.Parallel()
+
 	emptyType := AgentCreatedType("")
 	err := emptyType.EnumCheck()
 	assert.Error(t, err)
 }
 
 func TestAgentCreatedType_AllUnique(t *testing.T) {
+	t.Parallel()
+
 	createdTypes := []AgentCreatedType{
 		AgentCreatedTypeCreate,
 		AgentCreatedTypeCopy,
@@ -55,6 +67,8 @@ func TestAgentCreatedType_AllUnique(t *testing.T) {
 }
 
 func TestAgentCreatedType_StringValues(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		act      AgentCreatedType
@@ -79,6 +93,8 @@ func TestAgentCreatedType_StringValues(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := string(tt.act)
 			assert.Equal(t, tt.expected, result)
 		})

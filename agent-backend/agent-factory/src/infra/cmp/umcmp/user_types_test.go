@@ -5,7 +5,11 @@ import (
 )
 
 func TestObjectBaseInfo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("valid object base info", func(t *testing.T) {
+		t.Parallel()
+
 		info := ObjectBaseInfo{
 			ID:   "test-id",
 			Name: "test-name",
@@ -15,23 +19,29 @@ func TestObjectBaseInfo(t *testing.T) {
 		if info.ID != "test-id" {
 			t.Errorf("Expected ID to be 'test-id', got '%s'", info.ID)
 		}
+
 		if info.Name != "test-name" {
 			t.Errorf("Expected Name to be 'test-name', got '%s'", info.Name)
 		}
+
 		if info.Type != "test-type" {
 			t.Errorf("Expected Type to be 'test-type', got '%s'", info.Type)
 		}
 	})
 
 	t.Run("empty object base info", func(t *testing.T) {
+		t.Parallel()
+
 		info := ObjectBaseInfo{}
 
 		if info.ID != "" {
 			t.Errorf("Expected ID to be empty, got '%s'", info.ID)
 		}
+
 		if info.Name != "" {
 			t.Errorf("Expected Name to be empty, got '%s'", info.Name)
 		}
+
 		if info.Type != "" {
 			t.Errorf("Expected Type to be empty, got '%s'", info.Type)
 		}
@@ -39,7 +49,11 @@ func TestObjectBaseInfo(t *testing.T) {
 }
 
 func TestGroupInfo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("valid group info", func(t *testing.T) {
+		t.Parallel()
+
 		group := GroupInfo{
 			ID:    "group-123",
 			Name:  "Test Group",
@@ -49,23 +63,29 @@ func TestGroupInfo(t *testing.T) {
 		if group.ID != "group-123" {
 			t.Errorf("Expected ID to be 'group-123', got '%s'", group.ID)
 		}
+
 		if group.Name != "Test Group" {
 			t.Errorf("Expected Name to be 'Test Group', got '%s'", group.Name)
 		}
+
 		if group.Notes != "Test notes" {
 			t.Errorf("Expected Notes to be 'Test notes', got '%s'", group.Notes)
 		}
 	})
 
 	t.Run("empty group info", func(t *testing.T) {
+		t.Parallel()
+
 		group := GroupInfo{}
 
 		if group.ID != "" {
 			t.Errorf("Expected ID to be empty, got '%s'", group.ID)
 		}
+
 		if group.Name != "" {
 			t.Errorf("Expected Name to be empty, got '%s'", group.Name)
 		}
+
 		if group.Notes != "" {
 			t.Errorf("Expected Notes to be empty, got '%s'", group.Notes)
 		}
@@ -73,7 +93,11 @@ func TestGroupInfo(t *testing.T) {
 }
 
 func TestUserInfo_GroupIDs(t *testing.T) {
+	t.Parallel()
+
 	t.Run("with groups", func(t *testing.T) {
+		t.Parallel()
+
 		userInfo := &UserInfo{
 			Id:   "user-123",
 			Name: "Test User",
@@ -99,6 +123,8 @@ func TestUserInfo_GroupIDs(t *testing.T) {
 	})
 
 	t.Run("with no groups", func(t *testing.T) {
+		t.Parallel()
+
 		userInfo := &UserInfo{
 			Id:     "user-123",
 			Name:   "Test User",
@@ -113,6 +139,8 @@ func TestUserInfo_GroupIDs(t *testing.T) {
 	})
 
 	t.Run("with nil groups", func(t *testing.T) {
+		t.Parallel()
+
 		userInfo := &UserInfo{
 			Id:     "user-123",
 			Name:   "Test User",
@@ -128,7 +156,11 @@ func TestUserInfo_GroupIDs(t *testing.T) {
 }
 
 func TestUserInfo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("full user info", func(t *testing.T) {
+		t.Parallel()
+
 		userInfo := &UserInfo{
 			Id:   "user-123",
 			Name: "Test User",
@@ -148,21 +180,27 @@ func TestUserInfo(t *testing.T) {
 		if userInfo.Id != "user-123" {
 			t.Errorf("Expected Id to be 'user-123', got '%s'", userInfo.Id)
 		}
+
 		if userInfo.Name != "Test User" {
 			t.Errorf("Expected Name to be 'Test User', got '%s'", userInfo.Name)
 		}
+
 		if !userInfo.Enabled {
 			t.Error("Expected Enabled to be true")
 		}
+
 		if len(userInfo.Roles) != 2 {
 			t.Errorf("Expected 2 roles, got %d", len(userInfo.Roles))
 		}
+
 		if userInfo.Account != "testuser" {
 			t.Errorf("Expected Account to be 'testuser', got '%s'", userInfo.Account)
 		}
 	})
 
 	t.Run("minimal user info", func(t *testing.T) {
+		t.Parallel()
+
 		userInfo := &UserInfo{
 			Id:   "user-456",
 			Name: "Minimal User",
@@ -171,9 +209,11 @@ func TestUserInfo(t *testing.T) {
 		if userInfo.Id != "user-456" {
 			t.Errorf("Expected Id to be 'user-456', got '%s'", userInfo.Id)
 		}
+
 		if userInfo.Enabled {
 			t.Error("Expected Enabled to be false for zero value")
 		}
+
 		if userInfo.Roles != nil {
 			t.Error("Expected Roles to be nil for zero value")
 		}
@@ -181,7 +221,11 @@ func TestUserInfo(t *testing.T) {
 }
 
 func TestUserInfos(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create user infos slice", func(t *testing.T) {
+		t.Parallel()
+
 		userInfos := UserInfos{
 			&UserInfo{Id: "user-1", Name: "User 1"},
 			&UserInfo{Id: "user-2", Name: "User 2"},
@@ -193,6 +237,8 @@ func TestUserInfos(t *testing.T) {
 	})
 
 	t.Run("nil user infos", func(t *testing.T) {
+		t.Parallel()
+
 		var userInfos UserInfos
 
 		if len(userInfos) != 0 {
@@ -202,7 +248,11 @@ func TestUserInfos(t *testing.T) {
 }
 
 func TestUserInfoMap(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create user info map", func(t *testing.T) {
+		t.Parallel()
+
 		userMap := UserInfoMap{
 			"user-1": {Id: "user-1", Name: "User 1"},
 			"user-2": {Id: "user-2", Name: "User 2"},
@@ -216,12 +266,15 @@ func TestUserInfoMap(t *testing.T) {
 		if !ok {
 			t.Error("Expected user-1 to exist in map")
 		}
+
 		if user.Name != "User 1" {
 			t.Errorf("Expected name to be 'User 1', got '%s'", user.Name)
 		}
 	})
 
 	t.Run("nil user info map", func(t *testing.T) {
+		t.Parallel()
+
 		var userMap UserInfoMap
 
 		if len(userMap) != 0 {
@@ -231,7 +284,11 @@ func TestUserInfoMap(t *testing.T) {
 }
 
 func TestUmNotFound(t *testing.T) {
+	t.Parallel()
+
 	t.Run("constant value", func(t *testing.T) {
+		t.Parallel()
+
 		if UmNotFound != 404019001 {
 			t.Errorf("Expected UmNotFound to be 404019001, got %d", UmNotFound)
 		}

@@ -5,7 +5,6 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/conf"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/rdto/agent_permission/cpmsreq"
@@ -14,6 +13,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iauthzacc/authzaccmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iumacc/httpaccmock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func init() {
@@ -26,6 +26,8 @@ func init() {
 }
 
 func TestPermissionSvc_CheckUsePermission_PanicsWithoutAgentConfRepo(t *testing.T) {
+	t.Parallel()
+
 	svc := &permissionSvc{
 		SvcBase: service.NewSvcBase(),
 	}
@@ -42,6 +44,8 @@ func TestPermissionSvc_CheckUsePermission_PanicsWithoutAgentConfRepo(t *testing.
 }
 
 func TestPermissionSvc_CheckUsePermission_AgentNotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -74,6 +78,8 @@ func TestPermissionSvc_CheckUsePermission_AgentNotFound(t *testing.T) {
 }
 
 func TestPermissionSvc_CheckUsePermission_GetByIDError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -106,6 +112,8 @@ func TestPermissionSvc_CheckUsePermission_GetByIDError(t *testing.T) {
 }
 
 func TestPermissionSvc_CheckUsePermission_NoUserOrAppAccount(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -137,6 +145,8 @@ func TestPermissionSvc_CheckUsePermission_NoUserOrAppAccount(t *testing.T) {
 }
 
 func TestPermissionSvc_CheckUsePermission_PoNil(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

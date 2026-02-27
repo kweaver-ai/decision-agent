@@ -9,6 +9,8 @@ import (
 )
 
 func TestMessageExt_StructFields(t *testing.T) {
+	t.Parallel()
+
 	interruptInfo := &v2agentexecutordto.ToolInterruptInfo{
 		Handle: &v2agentexecutordto.InterruptHandle{
 			FrameID: "frame-123",
@@ -36,6 +38,8 @@ func TestMessageExt_StructFields(t *testing.T) {
 }
 
 func TestMessageExt_IsInterrupted_WithInterruptInfo(t *testing.T) {
+	t.Parallel()
+
 	interruptInfo := &v2agentexecutordto.ToolInterruptInfo{
 		Handle: &v2agentexecutordto.InterruptHandle{
 			FrameID: "frame-abc",
@@ -50,12 +54,16 @@ func TestMessageExt_IsInterrupted_WithInterruptInfo(t *testing.T) {
 }
 
 func TestMessageExt_IsInterrupted_WithoutInterruptInfo(t *testing.T) {
+	t.Parallel()
+
 	ext := &MessageExt{}
 
 	assert.False(t, ext.IsInterrupted())
 }
 
 func TestMessageExt_WithError(t *testing.T) {
+	t.Parallel()
+
 	respErr := &agentresperr.RespError{
 		Type:  agentresperr.RespErrorTypeAgentFactory,
 		Error: "Test error message",
@@ -70,6 +78,8 @@ func TestMessageExt_WithError(t *testing.T) {
 }
 
 func TestMessageExt_Empty(t *testing.T) {
+	t.Parallel()
+
 	ext := &MessageExt{}
 
 	assert.Nil(t, ext.InterruptInfo)
@@ -82,6 +92,8 @@ func TestMessageExt_Empty(t *testing.T) {
 }
 
 func TestMessageExt_WithEmptyRelatedQueries(t *testing.T) {
+	t.Parallel()
+
 	ext := &MessageExt{
 		RelatedQueries: []string{},
 	}
@@ -91,14 +103,16 @@ func TestMessageExt_WithEmptyRelatedQueries(t *testing.T) {
 }
 
 func TestMessageExt_AllFields(t *testing.T) {
+	t.Parallel()
+
 	interruptInfo := &v2agentexecutordto.ToolInterruptInfo{
 		Handle: &v2agentexecutordto.InterruptHandle{
-			FrameID:      "frame-xyz",
-			SnapshotID:   "snapshot-xyz",
-			ResumeToken:  "token-xyz",
+			FrameID:       "frame-xyz",
+			SnapshotID:    "snapshot-xyz",
+			ResumeToken:   "token-xyz",
 			InterruptType: "tool_call",
-			CurrentBlock: 1,
-			RestartBlock: false,
+			CurrentBlock:  1,
+			RestartBlock:  false,
 		},
 		Data: &v2agentexecutordto.InterruptData{
 			ToolName:        "confirmation_tool",

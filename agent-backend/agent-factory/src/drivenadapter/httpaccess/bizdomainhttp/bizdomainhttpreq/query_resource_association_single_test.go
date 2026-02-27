@@ -8,6 +8,8 @@ import (
 )
 
 func TestQueryResourceAssociationSingleReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := QueryResourceAssociationSingleReq{
 		BdID: "bd-123",
 		ID:   "resource-456",
@@ -20,6 +22,8 @@ func TestQueryResourceAssociationSingleReq_StructFields(t *testing.T) {
 }
 
 func TestQueryResourceAssociationSingleReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := QueryResourceAssociationSingleReq{}
 
 	assert.Empty(t, req.BdID)
@@ -28,6 +32,8 @@ func TestQueryResourceAssociationSingleReq_Empty(t *testing.T) {
 }
 
 func TestQueryResourceAssociationSingleReq_WithDifferentTypes(t *testing.T) {
+	t.Parallel()
+
 	types := []cdaenum.ResourceType{
 		cdaenum.ResourceTypeDataAgent,
 		cdaenum.ResourceTypeDataAgentTpl,
@@ -44,6 +50,8 @@ func TestQueryResourceAssociationSingleReq_WithDifferentTypes(t *testing.T) {
 }
 
 func TestQueryResourceAssociationSingleReq_WithBdID(t *testing.T) {
+	t.Parallel()
+
 	bdIDs := []string{
 		"bd-001",
 		"business-domain-123",
@@ -61,6 +69,8 @@ func TestQueryResourceAssociationSingleReq_WithBdID(t *testing.T) {
 }
 
 func TestQueryResourceAssociationSingleReq_WithResourceID(t *testing.T) {
+	t.Parallel()
+
 	resourceIDs := []string{
 		"resource-001",
 		"agent-123",

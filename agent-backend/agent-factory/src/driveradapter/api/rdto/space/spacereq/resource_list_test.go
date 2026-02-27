@@ -7,6 +7,8 @@ import (
 )
 
 func TestResourceListReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &ResourceListReq{}
 	errMap := req.GetErrMsgMap()
 
@@ -14,6 +16,8 @@ func TestResourceListReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestResourceListReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := &ResourceListReq{
 		Name: "test-resource",
 	}
@@ -23,12 +27,16 @@ func TestResourceListReq_StructFields(t *testing.T) {
 }
 
 func TestResourceListReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := &ResourceListReq{}
 	assert.NotNil(t, req)
 	assert.Empty(t, req.Name)
 }
 
 func TestResourceListReq_WithNameFilter(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		req  *ResourceListReq
@@ -55,6 +63,7 @@ func TestResourceListReq_WithNameFilter(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			assert.NotNil(t, tt.req)
 		})
 	}

@@ -7,14 +7,21 @@ import (
 )
 
 func TestCommonCustomValidator(t *testing.T) {
+	t.Parallel()
+
 	t.Run("register custom validators successfully", func(t *testing.T) {
+		t.Parallel()
+
 		err := CommonCustomValidator()
 		assert.NoError(t, err, "CommonCustomValidator should return nil on success")
 	})
 }
 
 func TestCommonCustomValidator_MultipleCalls(t *testing.T) {
+	t.Parallel()
+
 	t.Run("multiple calls should be safe", func(t *testing.T) {
+		t.Parallel()
 		// First call
 		err1 := CommonCustomValidator()
 		assert.NoError(t, err1)

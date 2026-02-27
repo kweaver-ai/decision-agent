@@ -9,6 +9,8 @@ import (
 )
 
 func TestConfig_GetDolphinTplLength(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name           string
 		config         *Config
@@ -56,6 +58,8 @@ func TestConfig_GetDolphinTplLength(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			length := tt.config.GetDolphinTplLength()
 			assert.Equal(t, tt.expectedLength, length)
 		})
@@ -63,6 +67,8 @@ func TestConfig_GetDolphinTplLength(t *testing.T) {
 }
 
 func TestConfig_IsOneDolphinTplDisabled(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		config   *Config
@@ -135,6 +141,8 @@ func TestConfig_IsOneDolphinTplDisabled(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			disabled := tt.config.IsOneDolphinTplDisabled(tt.key)
 			assert.Equal(t, tt.expected, disabled)
 		})
@@ -142,6 +150,8 @@ func TestConfig_IsOneDolphinTplDisabled(t *testing.T) {
 }
 
 func TestConfig_IsOneDolphinTplEdited(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		config   *Config
@@ -214,6 +224,8 @@ func TestConfig_IsOneDolphinTplEdited(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			edited := tt.config.IsOneDolphinTplEdited(tt.key)
 			assert.Equal(t, tt.expected, edited)
 		})
@@ -221,6 +233,8 @@ func TestConfig_IsOneDolphinTplEdited(t *testing.T) {
 }
 
 func TestConfig_RemoveDataSourceFromPreDolphin(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name                    string
 		config                  *Config
@@ -305,6 +319,7 @@ func TestConfig_RemoveDataSourceFromPreDolphin(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			// First verify no panic happens by checking DataSource is nil or not set
 			if tt.config.DataSource != nil && !tt.config.DataSource.IsNotSet() {
 				assert.Panics(t, func() {
@@ -327,6 +342,8 @@ func TestConfig_RemoveDataSourceFromPreDolphin(t *testing.T) {
 }
 
 func TestConfig_RemoveDataSourceFromPreDolphin_Panics(t *testing.T) {
+	t.Parallel()
+
 	config := &Config{
 		DataSource: &datasourcevalobj.RetrieverDataSource{
 			Doc: []*datasourcevalobj.DocSource{

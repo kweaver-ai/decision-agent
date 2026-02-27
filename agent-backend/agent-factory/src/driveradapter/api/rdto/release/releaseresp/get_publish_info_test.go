@@ -10,6 +10,8 @@ import (
 )
 
 func TestNewPublishInfoResp(t *testing.T) {
+	t.Parallel()
+
 	resp := NewPublishInfoResp()
 	assert.NotNil(t, resp)
 	assert.NotNil(t, resp.Categories)
@@ -21,7 +23,11 @@ func TestNewPublishInfoResp(t *testing.T) {
 }
 
 func TestPublishInfoResp_SetPublishedToBes(t *testing.T) {
+	t.Parallel()
+
 	t.Run("API agent only", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewPublishInfoResp()
 		isAPIAgent := 1
 		po := &dapo.ReleasePO{
@@ -34,6 +40,8 @@ func TestPublishInfoResp_SetPublishedToBes(t *testing.T) {
 	})
 
 	t.Run("WebSDK agent only", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewPublishInfoResp()
 		isWebSDKAgent := 1
 		po := &dapo.ReleasePO{
@@ -46,6 +54,8 @@ func TestPublishInfoResp_SetPublishedToBes(t *testing.T) {
 	})
 
 	t.Run("multiple publish targets", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewPublishInfoResp()
 		isAPIAgent := 1
 		isWebSDKAgent := 1
@@ -63,6 +73,8 @@ func TestPublishInfoResp_SetPublishedToBes(t *testing.T) {
 	})
 
 	t.Run("no publish targets", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewPublishInfoResp()
 		po := &dapo.ReleasePO{}
 
@@ -72,7 +84,11 @@ func TestPublishInfoResp_SetPublishedToBes(t *testing.T) {
 }
 
 func TestPublishInfoResp_SetPublishToWhere(t *testing.T) {
+	t.Parallel()
+
 	t.Run("custom space only", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewPublishInfoResp()
 		isToCustomSpace := 1
 		po := &dapo.ReleasePO{
@@ -85,6 +101,8 @@ func TestPublishInfoResp_SetPublishToWhere(t *testing.T) {
 	})
 
 	t.Run("square only", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewPublishInfoResp()
 		isToSquare := 1
 		po := &dapo.ReleasePO{
@@ -97,12 +115,14 @@ func TestPublishInfoResp_SetPublishToWhere(t *testing.T) {
 	})
 
 	t.Run("both custom space and square", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewPublishInfoResp()
 		isToCustomSpace := 1
 		isToSquare := 1
 		po := &dapo.ReleasePO{
 			IsToCustomSpace: &isToCustomSpace,
-			IsToSquare:       &isToSquare,
+			IsToSquare:      &isToSquare,
 		}
 
 		resp.SetPublishToWhere(po)
@@ -110,6 +130,8 @@ func TestPublishInfoResp_SetPublishToWhere(t *testing.T) {
 	})
 
 	t.Run("no publish targets", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewPublishInfoResp()
 		po := &dapo.ReleasePO{}
 
@@ -119,6 +141,8 @@ func TestPublishInfoResp_SetPublishToWhere(t *testing.T) {
 }
 
 func TestCategoryInfo_Fields(t *testing.T) {
+	t.Parallel()
+
 	info := &CategoryInfo{
 		ID:   "cat-123",
 		Name: "Test Category",
@@ -129,6 +153,8 @@ func TestCategoryInfo_Fields(t *testing.T) {
 }
 
 func TestNewPmsControlResp(t *testing.T) {
+	t.Parallel()
+
 	resp := NewPmsControlResp()
 	assert.NotNil(t, resp)
 	assert.NotNil(t, resp.Roles)
@@ -144,6 +170,8 @@ func TestNewPmsControlResp(t *testing.T) {
 }
 
 func TestPublishInfoResp_Fields(t *testing.T) {
+	t.Parallel()
+
 	resp := &PublishInfoResp{
 		Description: "Test description",
 	}
@@ -155,6 +183,8 @@ func TestPublishInfoResp_Fields(t *testing.T) {
 }
 
 func TestCustomSpaceInfo_Fields(t *testing.T) {
+	t.Parallel()
+
 	info := &CustomSpaceInfo{
 		SpaceID:   "space-123",
 		SpaceName: "Test Space",
@@ -165,6 +195,8 @@ func TestCustomSpaceInfo_Fields(t *testing.T) {
 }
 
 func TestPublishInfoResp_WithAllPublishTargets(t *testing.T) {
+	t.Parallel()
+
 	resp := NewPublishInfoResp()
 	isAPIAgent := 1
 	isWebSDKAgent := 1
@@ -173,12 +205,12 @@ func TestPublishInfoResp_WithAllPublishTargets(t *testing.T) {
 	isToCustomSpace := 1
 	isToSquare := 1
 	po := &dapo.ReleasePO{
-		IsAPIAgent:       &isAPIAgent,
-		IsWebSDKAgent:    &isWebSDKAgent,
-		IsSkillAgent:     &isSkillAgent,
+		IsAPIAgent:      &isAPIAgent,
+		IsWebSDKAgent:   &isWebSDKAgent,
+		IsSkillAgent:    &isSkillAgent,
 		IsDataFlowAgent: &isDataFlowAgent,
 		IsToCustomSpace: &isToCustomSpace,
-		IsToSquare:       &isToSquare,
+		IsToSquare:      &isToSquare,
 	}
 
 	resp.SetPublishedToBes(po)

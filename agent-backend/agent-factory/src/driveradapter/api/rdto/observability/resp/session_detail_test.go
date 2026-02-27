@@ -7,6 +7,8 @@ import (
 )
 
 func TestSessionDetailResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := SessionDetailResp{
 		SessionID:             "session-123",
 		StartTime:             1700000000000,
@@ -31,6 +33,8 @@ func TestSessionDetailResp_StructFields(t *testing.T) {
 }
 
 func TestSessionDetailResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := SessionDetailResp{}
 
 	assert.Empty(t, resp.SessionID)
@@ -45,6 +49,8 @@ func TestSessionDetailResp_Empty(t *testing.T) {
 }
 
 func TestSessionDetailResp_WithDurationMetrics(t *testing.T) {
+	t.Parallel()
+
 	resp := SessionDetailResp{
 		SessionDuration:       10000,
 		AvgRunExecuteDuration: 2000,
@@ -57,6 +63,8 @@ func TestSessionDetailResp_WithDurationMetrics(t *testing.T) {
 }
 
 func TestSessionDetailResp_WithErrorCounts(t *testing.T) {
+	t.Parallel()
+
 	resp := SessionDetailResp{
 		RunErrorCount: 5,
 		ToolFailCount: 3,
@@ -67,6 +75,8 @@ func TestSessionDetailResp_WithErrorCounts(t *testing.T) {
 }
 
 func TestSessionDetailResp_WithZeroValues(t *testing.T) {
+	t.Parallel()
+
 	resp := SessionDetailResp{
 		SessionID:       "session-zero",
 		SessionRunCount: 0,
@@ -81,6 +91,8 @@ func TestSessionDetailResp_WithZeroValues(t *testing.T) {
 }
 
 func TestSessionDetailResp_WithLargeValues(t *testing.T) {
+	t.Parallel()
+
 	resp := SessionDetailResp{
 		SessionRunCount:       1000,
 		SessionDuration:       3600000,
@@ -99,6 +111,8 @@ func TestSessionDetailResp_WithLargeValues(t *testing.T) {
 }
 
 func TestSessionDetailResp_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	resp := SessionDetailResp{
 		SessionID:             "complete-session",
 		StartTime:             1700000000000,
@@ -123,6 +137,8 @@ func TestSessionDetailResp_WithAllFields(t *testing.T) {
 }
 
 func TestSessionDetailResp_WithTimeRange(t *testing.T) {
+	t.Parallel()
+
 	resp := SessionDetailResp{
 		SessionID: "time-range-session",
 		StartTime: 1609459200000, // 2021-01-01

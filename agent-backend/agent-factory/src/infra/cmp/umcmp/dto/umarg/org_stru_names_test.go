@@ -8,6 +8,8 @@ import (
 )
 
 func TestGetOsnArgDto_StructFields(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnArgDto{
 		UserIDs:       []string{"user-1", "user-2"},
 		DepartmentIDs: []string{"dept-1"},
@@ -26,6 +28,8 @@ func TestGetOsnArgDto_StructFields(t *testing.T) {
 }
 
 func TestGetOsnArgDto_Empty(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnArgDto{}
 
 	assert.Nil(t, dto.UserIDs)
@@ -35,6 +39,8 @@ func TestGetOsnArgDto_Empty(t *testing.T) {
 }
 
 func TestGetOsnArgDto_DeDupl(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnArgDto{
 		UserIDs:       []string{"user-1", "user-2", "user-1", "user-3"},
 		DepartmentIDs: []string{"dept-1", "dept-2", "dept-1"},
@@ -52,6 +58,8 @@ func TestGetOsnArgDto_DeDupl(t *testing.T) {
 }
 
 func TestGetOsnArgDto_RemoveEmptyStrFromSlice(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnArgDto{
 		UserIDs:       []string{"user-1", "", "user-2", ""},
 		DepartmentIDs: []string{"dept-1", "", "dept-2"},
@@ -69,6 +77,8 @@ func TestGetOsnArgDto_RemoveEmptyStrFromSlice(t *testing.T) {
 }
 
 func TestGetOsnArgDto_ToSfgKey(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnArgDto{
 		UserIDs:       []string{"user-1", "user-2", "user-1"},
 		DepartmentIDs: []string{"dept-1", ""},
@@ -83,6 +93,8 @@ func TestGetOsnArgDto_ToSfgKey(t *testing.T) {
 }
 
 func TestGetOsnArgDto_DeDuplAndRemoveEmptyCombined(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnArgDto{
 		UserIDs:       []string{"user-1", "", "user-2", "user-1"},
 		DepartmentIDs: []string{"dept-1", "dept-2", "dept-1", ""},
@@ -101,6 +113,8 @@ func TestGetOsnArgDto_DeDuplAndRemoveEmptyCombined(t *testing.T) {
 }
 
 func TestGetOsnArgDto_WithOnlyUserIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnArgDto{
 		UserIDs: []string{"user-1", "user-2"},
 	}
@@ -112,6 +126,8 @@ func TestGetOsnArgDto_WithOnlyUserIDs(t *testing.T) {
 }
 
 func TestGetOsnArgDto_WithOnlyDepartmentIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnArgDto{
 		DepartmentIDs: []string{"dept-1", "dept-2"},
 	}
@@ -123,6 +139,8 @@ func TestGetOsnArgDto_WithOnlyDepartmentIDs(t *testing.T) {
 }
 
 func TestGetOsnArgDto_WithOnlyGroupIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnArgDto{
 		GroupIDs: []string{"group-1", "group-2"},
 	}
@@ -134,6 +152,8 @@ func TestGetOsnArgDto_WithOnlyGroupIDs(t *testing.T) {
 }
 
 func TestGetOsnArgDto_WithOnlyAppIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnArgDto{
 		AppIDs: []string{"app-1", "app-2"},
 	}
@@ -145,6 +165,8 @@ func TestGetOsnArgDto_WithOnlyAppIDs(t *testing.T) {
 }
 
 func TestGetOsnArgDto_WithChineseIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnArgDto{
 		UserIDs:       []string{"用户-1", "用户-2"},
 		DepartmentIDs: []string{"部门-1"},
@@ -159,6 +181,8 @@ func TestGetOsnArgDto_WithChineseIDs(t *testing.T) {
 }
 
 func TestGetOsnArgDto_WithEmptyArrays(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnArgDto{
 		UserIDs:       []string{},
 		DepartmentIDs: []string{},
@@ -178,6 +202,8 @@ func TestGetOsnArgDto_WithEmptyArrays(t *testing.T) {
 }
 
 func TestGetOsnArgDto_AppendUserIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnArgDto{}
 	dto.UserIDs = append(dto.UserIDs, "user-1")
 	dto.UserIDs = append(dto.UserIDs, "user-2")
@@ -188,6 +214,8 @@ func TestGetOsnArgDto_AppendUserIDs(t *testing.T) {
 }
 
 func TestGetOsnArgDto_AppendDepartmentIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnArgDto{}
 	dto.DepartmentIDs = append(dto.DepartmentIDs, "dept-1")
 	dto.DepartmentIDs = append(dto.DepartmentIDs, "dept-2")
@@ -198,6 +226,8 @@ func TestGetOsnArgDto_AppendDepartmentIDs(t *testing.T) {
 }
 
 func TestGetOsnArgDto_AppendGroupIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnArgDto{}
 	dto.GroupIDs = append(dto.GroupIDs, "group-1")
 	dto.GroupIDs = append(dto.GroupIDs, "group-2")
@@ -208,6 +238,8 @@ func TestGetOsnArgDto_AppendGroupIDs(t *testing.T) {
 }
 
 func TestGetOsnArgDto_AppendAppIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnArgDto{}
 	dto.AppIDs = append(dto.AppIDs, "app-1")
 	dto.AppIDs = append(dto.AppIDs, "app-2")
@@ -218,6 +250,8 @@ func TestGetOsnArgDto_AppendAppIDs(t *testing.T) {
 }
 
 func TestGetOsnArgDto_WithMultipleIDs(t *testing.T) {
+	t.Parallel()
+
 	userIDs := make([]string, 50)
 	for i := 0; i < 50; i++ {
 		userIDs[i] = "user-" + string(rune(i))
@@ -252,6 +286,8 @@ func TestGetOsnArgDto_WithMultipleIDs(t *testing.T) {
 }
 
 func TestGetOsnArgDto_Iteration(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnArgDto{
 		UserIDs:       []string{"user-1", "user-2"},
 		DepartmentIDs: []string{"dept-1"},
@@ -260,35 +296,49 @@ func TestGetOsnArgDto_Iteration(t *testing.T) {
 	}
 
 	count := 0
+
 	for _, userID := range dto.UserIDs {
 		assert.NotEmpty(t, userID)
+
 		count++
 	}
+
 	assert.Equal(t, 2, count)
 
 	deptCount := 0
+
 	for _, deptID := range dto.DepartmentIDs {
 		assert.NotEmpty(t, deptID)
+
 		deptCount++
 	}
+
 	assert.Equal(t, 1, deptCount)
 
 	groupCount := 0
+
 	for _, groupID := range dto.GroupIDs {
 		assert.NotEmpty(t, groupID)
+
 		groupCount++
 	}
+
 	assert.Equal(t, 2, groupCount)
 
 	appCount := 0
+
 	for _, appID := range dto.AppIDs {
 		assert.NotEmpty(t, appID)
+
 		appCount++
 	}
+
 	assert.Equal(t, 1, appCount)
 }
 
 func TestGetOsnArgDto_SliceOperations(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnArgDto{
 		UserIDs: []string{"user-1", "user-2", "user-3"},
 	}
@@ -300,6 +350,8 @@ func TestGetOsnArgDto_SliceOperations(t *testing.T) {
 }
 
 func TestNewGetOsnUMArgDto(t *testing.T) {
+	t.Parallel()
+
 	argDto := &GetOsnArgDto{
 		UserIDs: []string{"user-1", "user-2", "user-1"},
 	}
@@ -314,6 +366,8 @@ func TestNewGetOsnUMArgDto(t *testing.T) {
 }
 
 func TestNewGetOsnUMArgDto_WithNilArgDto(t *testing.T) {
+	t.Parallel()
+
 	// NewGetOsnUMArgDto will panic if getOsnArgDto is nil
 	// because it calls DeDupl() on the nil pointer
 	// This test documents the expected behavior
@@ -323,6 +377,8 @@ func TestNewGetOsnUMArgDto_WithNilArgDto(t *testing.T) {
 }
 
 func TestNewGetOsnUMArgDto_WithEmptyStrings(t *testing.T) {
+	t.Parallel()
+
 	argDto := &GetOsnArgDto{
 		UserIDs:       []string{"user-1", "", "user-2"},
 		DepartmentIDs: []string{"dept-1", "", "dept-2"},
@@ -337,6 +393,8 @@ func TestNewGetOsnUMArgDto_WithEmptyStrings(t *testing.T) {
 }
 
 func TestGetOsnUMArgDto_StructFields(t *testing.T) {
+	t.Parallel()
+
 	innerDto := &GetOsnArgDto{
 		UserIDs: []string{"user-1"},
 	}
@@ -351,6 +409,8 @@ func TestGetOsnUMArgDto_StructFields(t *testing.T) {
 }
 
 func TestGetOsnUMArgDto_Empty(t *testing.T) {
+	t.Parallel()
+
 	dto := &GetOsnUMArgDto{}
 
 	assert.Nil(t, dto.GetOsnArgDto)
@@ -358,6 +418,8 @@ func TestGetOsnUMArgDto_Empty(t *testing.T) {
 }
 
 func TestGetOsnUMArgDto_DifferentMethods(t *testing.T) {
+	t.Parallel()
+
 	methods := []string{
 		http.MethodGet,
 		http.MethodPost,
@@ -374,6 +436,8 @@ func TestGetOsnUMArgDto_DifferentMethods(t *testing.T) {
 }
 
 func TestGetOsnArgDto_AllFieldsSet(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnArgDto{
 		UserIDs:       []string{"user-1"},
 		DepartmentIDs: []string{"dept-1"},

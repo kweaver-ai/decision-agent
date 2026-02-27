@@ -8,6 +8,8 @@ import (
 )
 
 func TestNewListRes(t *testing.T) {
+	t.Parallel()
+
 	list := NewListRes()
 
 	assert.NotNil(t, list)
@@ -17,6 +19,8 @@ func TestNewListRes(t *testing.T) {
 }
 
 func TestListRes_StructFields(t *testing.T) {
+	t.Parallel()
+
 	item1 := &ListItem{
 		ID:        1,
 		Name:      "Product 1",
@@ -46,6 +50,8 @@ func TestListRes_StructFields(t *testing.T) {
 }
 
 func TestListRes_Empty(t *testing.T) {
+	t.Parallel()
+
 	list := &ListRes{
 		Entries: []*ListItem{},
 		Total:   0,
@@ -56,6 +62,8 @@ func TestListRes_Empty(t *testing.T) {
 }
 
 func TestListRes_WithEntries(t *testing.T) {
+	t.Parallel()
+
 	list := &ListRes{
 		Entries: make([]*ListItem, 0),
 		Total:   0,
@@ -75,6 +83,8 @@ func TestListRes_WithEntries(t *testing.T) {
 }
 
 func TestListItem_StructFields(t *testing.T) {
+	t.Parallel()
+
 	item := &ListItem{
 		ID:        123,
 		Name:      "Test Product",
@@ -93,6 +103,8 @@ func TestListItem_StructFields(t *testing.T) {
 }
 
 func TestListItem_Empty(t *testing.T) {
+	t.Parallel()
+
 	item := &ListItem{}
 
 	assert.Equal(t, int64(0), item.ID)
@@ -104,6 +116,8 @@ func TestListItem_Empty(t *testing.T) {
 }
 
 func TestListRes_TotalField(t *testing.T) {
+	t.Parallel()
+
 	list := &ListRes{
 		Entries: []*ListItem{},
 		Total:   10,
@@ -114,7 +128,11 @@ func TestListRes_TotalField(t *testing.T) {
 }
 
 func TestListRes_LoadFromEo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("load from product eos", func(t *testing.T) {
+		t.Parallel()
+
 		list := NewListRes()
 
 		eo1 := &producteo.Product{}
@@ -145,6 +163,8 @@ func TestListRes_LoadFromEo(t *testing.T) {
 	})
 
 	t.Run("load from empty slice", func(t *testing.T) {
+		t.Parallel()
+
 		list := NewListRes()
 
 		eos := []*producteo.Product{}
@@ -155,6 +175,8 @@ func TestListRes_LoadFromEo(t *testing.T) {
 	})
 
 	t.Run("load from nil slice", func(t *testing.T) {
+		t.Parallel()
+
 		list := NewListRes()
 
 		err := list.LoadFromEo(nil)

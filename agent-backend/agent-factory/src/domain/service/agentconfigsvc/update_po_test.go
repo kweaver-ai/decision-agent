@@ -20,6 +20,8 @@ import (
 // ---- updatePo ----
 
 func TestDataAgentConfigSvc_UpdatePo_InternalAPI_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -48,6 +50,8 @@ func TestDataAgentConfigSvc_UpdatePo_InternalAPI_Success(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_UpdatePo_IsOwner_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -74,6 +78,8 @@ func TestDataAgentConfigSvc_UpdatePo_IsOwner_Success(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_UpdatePo_NotOwner_NotBuiltIn_Forbidden(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -95,6 +101,8 @@ func TestDataAgentConfigSvc_UpdatePo_NotOwner_NotBuiltIn_Forbidden(t *testing.T)
 }
 
 func TestDataAgentConfigSvc_UpdatePo_NotOwner_BuiltIn_HasPermission_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -124,6 +132,8 @@ func TestDataAgentConfigSvc_UpdatePo_NotOwner_BuiltIn_HasPermission_Success(t *t
 }
 
 func TestDataAgentConfigSvc_UpdatePo_NotOwner_BuiltIn_NoPermission_Forbidden(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -150,6 +160,8 @@ func TestDataAgentConfigSvc_UpdatePo_NotOwner_BuiltIn_NoPermission_Forbidden(t *
 }
 
 func TestDataAgentConfigSvc_UpdatePo_RepoUpdateError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -179,6 +191,8 @@ func TestDataAgentConfigSvc_UpdatePo_RepoUpdateError(t *testing.T) {
 // ---- copyAgentPo ----
 
 func TestDataAgentConfigSvc_UpdatePo_BuiltIn_PmsError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -205,6 +219,8 @@ func TestDataAgentConfigSvc_UpdatePo_BuiltIn_PmsError(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_UpdatePo_NotOwnerNotBuiltIn_403(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -228,6 +244,8 @@ func TestDataAgentConfigSvc_UpdatePo_NotOwnerNotBuiltIn_403(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_CopyAgentPo_Success(t *testing.T) {
+	t.Parallel()
+
 	svc := &dataAgentConfigSvc{
 		SvcBase: service.NewSvcBase(),
 	}
@@ -254,6 +272,8 @@ func TestDataAgentConfigSvc_CopyAgentPo_Success(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_CopyAgentPo_SetsTimestamps(t *testing.T) {
+	t.Parallel()
+
 	svc := &dataAgentConfigSvc{
 		SvcBase: service.NewSvcBase(),
 	}

@@ -20,12 +20,15 @@ func TestProject_Fields(t *testing.T) {
 		if project.Host != "0.0.0.0" {
 			t.Errorf("Expected Host to be '0.0.0.0', got '%s'", project.Host)
 		}
+
 		if project.Port != 30777 {
 			t.Errorf("Expected Port to be 30777, got %d", project.Port)
 		}
+
 		if project.Language != rest.SimplifiedChinese {
 			t.Errorf("Expected Language to be SimplifiedChinese, got %v", project.Language)
 		}
+
 		if project.LogFile != "/var/log/agent-factory.log" {
 			t.Errorf("Expected LogFile to be '/var/log/agent-factory.log', got '%s'", project.LogFile)
 		}

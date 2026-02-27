@@ -7,6 +7,8 @@ import (
 )
 
 func TestIbField_StringRepresentation(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		field    IbField
 		expected string
@@ -18,18 +20,23 @@ func TestIbField_StringRepresentation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(string(tt.field), func(t *testing.T) {
+			t.Parallel()
 			assert.Equal(t, tt.expected, string(tt.field))
 		})
 	}
 }
 
 func TestIbField_Constants(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, IbField("names"), IbFieldName)
 	assert.Equal(t, IbField("doc_lib_types"), IbFieldDocLibTypes)
 	assert.Equal(t, IbField("paths"), IbFieldPaths)
 }
 
 func TestIbFields_ToPathString(t *testing.T) {
+	t.Parallel()
+
 	fields := IbFields{
 		IbFieldName,
 		IbFieldDocLibTypes,
@@ -41,6 +48,8 @@ func TestIbFields_ToPathString(t *testing.T) {
 }
 
 func TestIbFields_ToPathString_Empty(t *testing.T) {
+	t.Parallel()
+
 	fields := IbFields{}
 	result := fields.ToPathString()
 
@@ -48,6 +57,8 @@ func TestIbFields_ToPathString_Empty(t *testing.T) {
 }
 
 func TestIbFields_ToPathString_SingleField(t *testing.T) {
+	t.Parallel()
+
 	fields := IbFields{
 		IbFieldName,
 	}
@@ -57,6 +68,8 @@ func TestIbFields_ToPathString_SingleField(t *testing.T) {
 }
 
 func TestIbFields_ToPathString_DuplicateFields(t *testing.T) {
+	t.Parallel()
+
 	fields := IbFields{
 		IbFieldName,
 		IbFieldName,
@@ -68,6 +81,8 @@ func TestIbFields_ToPathString_DuplicateFields(t *testing.T) {
 }
 
 func TestGetFsMetadataArgDto_StructFields(t *testing.T) {
+	t.Parallel()
+
 	dto := GetFsMetadataArgDto{
 		IDs:    []string{"id-1", "id-2"},
 		ObjIDs: []string{"obj-1"},
@@ -83,6 +98,8 @@ func TestGetFsMetadataArgDto_StructFields(t *testing.T) {
 }
 
 func TestGetFsMetadataArgDto_Empty(t *testing.T) {
+	t.Parallel()
+
 	dto := GetFsMetadataArgDto{}
 
 	assert.Nil(t, dto.IDs)
@@ -91,6 +108,8 @@ func TestGetFsMetadataArgDto_Empty(t *testing.T) {
 }
 
 func TestGetFsMetadataArgDto_WithOnlyIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := GetFsMetadataArgDto{
 		IDs: []string{"id-1", "id-2", "id-3"},
 	}
@@ -101,6 +120,8 @@ func TestGetFsMetadataArgDto_WithOnlyIDs(t *testing.T) {
 }
 
 func TestGetFsMetadataArgDto_WithOnlyObjIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := GetFsMetadataArgDto{
 		ObjIDs: []string{"obj-1", "obj-2"},
 	}
@@ -111,6 +132,8 @@ func TestGetFsMetadataArgDto_WithOnlyObjIDs(t *testing.T) {
 }
 
 func TestGetFsMetadataArgDto_WithOnlyFields(t *testing.T) {
+	t.Parallel()
+
 	dto := GetFsMetadataArgDto{
 		Fields: IbFields{IbFieldName, IbFieldDocLibTypes},
 	}
@@ -121,6 +144,8 @@ func TestGetFsMetadataArgDto_WithOnlyFields(t *testing.T) {
 }
 
 func TestGetFsMetadataArgDto_WithChineseIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := GetFsMetadataArgDto{
 		IDs:    []string{"ID-1", "ID-2"},
 		ObjIDs: []string{"对象-1"},
@@ -131,6 +156,8 @@ func TestGetFsMetadataArgDto_WithChineseIDs(t *testing.T) {
 }
 
 func TestGetFsMetadataArgDto_WithEmptyArrays(t *testing.T) {
+	t.Parallel()
+
 	dto := GetFsMetadataArgDto{
 		IDs:    []string{},
 		ObjIDs: []string{},
@@ -146,6 +173,8 @@ func TestGetFsMetadataArgDto_WithEmptyArrays(t *testing.T) {
 }
 
 func TestGetFsMetadataArgDto_AppendIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := GetFsMetadataArgDto{}
 	dto.IDs = append(dto.IDs, "id-1")
 	dto.IDs = append(dto.IDs, "id-2")
@@ -156,6 +185,8 @@ func TestGetFsMetadataArgDto_AppendIDs(t *testing.T) {
 }
 
 func TestGetFsMetadataArgDto_AppendObjIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := GetFsMetadataArgDto{}
 	dto.ObjIDs = append(dto.ObjIDs, "obj-1")
 	dto.ObjIDs = append(dto.ObjIDs, "obj-2")
@@ -166,6 +197,8 @@ func TestGetFsMetadataArgDto_AppendObjIDs(t *testing.T) {
 }
 
 func TestGetFsMetadataArgDto_AppendFields(t *testing.T) {
+	t.Parallel()
+
 	dto := GetFsMetadataArgDto{}
 	dto.Fields = append(dto.Fields, IbFieldName)
 	dto.Fields = append(dto.Fields, IbFieldPaths)
@@ -176,6 +209,8 @@ func TestGetFsMetadataArgDto_AppendFields(t *testing.T) {
 }
 
 func TestGetFsMetadataArgDto_WithMultipleIDs(t *testing.T) {
+	t.Parallel()
+
 	ids := make([]string, 50)
 	for i := 0; i < 50; i++ {
 		ids[i] = "id-" + string(rune(i))
@@ -189,6 +224,8 @@ func TestGetFsMetadataArgDto_WithMultipleIDs(t *testing.T) {
 }
 
 func TestGetFsMetadataArgDto_Iteration(t *testing.T) {
+	t.Parallel()
+
 	dto := GetFsMetadataArgDto{
 		IDs:    []string{"id-1", "id-2"},
 		ObjIDs: []string{"obj-1"},
@@ -196,28 +233,39 @@ func TestGetFsMetadataArgDto_Iteration(t *testing.T) {
 	}
 
 	count := 0
+
 	for _, id := range dto.IDs {
 		assert.NotEmpty(t, id)
+
 		count++
 	}
+
 	assert.Equal(t, 2, count)
 
 	objCount := 0
+
 	for _, objID := range dto.ObjIDs {
 		assert.NotEmpty(t, objID)
+
 		objCount++
 	}
+
 	assert.Equal(t, 1, objCount)
 
 	fieldCount := 0
+
 	for _, field := range dto.Fields {
 		assert.NotEmpty(t, string(field))
+
 		fieldCount++
 	}
+
 	assert.Equal(t, 2, fieldCount)
 }
 
 func TestNewGetFsMetadataEFArgDto_WithIDs(t *testing.T) {
+	t.Parallel()
+
 	argDto := &GetFsMetadataArgDto{
 		IDs: []string{"id-1", "id-2", "id-1"},
 	}
@@ -233,6 +281,8 @@ func TestNewGetFsMetadataEFArgDto_WithIDs(t *testing.T) {
 }
 
 func TestNewGetFsMetadataEFArgDto_WithObjIDs(t *testing.T) {
+	t.Parallel()
+
 	argDto := &GetFsMetadataArgDto{
 		ObjIDs: []string{"obj-1", "obj-2", "obj-1"},
 	}
@@ -248,6 +298,8 @@ func TestNewGetFsMetadataEFArgDto_WithObjIDs(t *testing.T) {
 }
 
 func TestNewGetFsMetadataEFArgDto_WithBothIDsAndObjIDs(t *testing.T) {
+	t.Parallel()
+
 	argDto := &GetFsMetadataArgDto{
 		IDs:    []string{"id-1", "id-2"},
 		ObjIDs: []string{"obj-1", "obj-2"},
@@ -263,6 +315,8 @@ func TestNewGetFsMetadataEFArgDto_WithBothIDsAndObjIDs(t *testing.T) {
 }
 
 func TestNewGetFsMetadataEFArgDto_WithEmptyArrays(t *testing.T) {
+	t.Parallel()
+
 	argDto := &GetFsMetadataArgDto{
 		IDs:    []string{},
 		ObjIDs: []string{},
@@ -277,6 +331,8 @@ func TestNewGetFsMetadataEFArgDto_WithEmptyArrays(t *testing.T) {
 }
 
 func TestNewGetFsMetadataEFArgDto_WithEmptyDto(t *testing.T) {
+	t.Parallel()
+
 	argDto := &GetFsMetadataArgDto{}
 
 	efDto := NewGetFsMetadataEFArgDto(argDto)
@@ -288,6 +344,8 @@ func TestNewGetFsMetadataEFArgDto_WithEmptyDto(t *testing.T) {
 }
 
 func TestGetFsMetadataEFArgDto_StructFields(t *testing.T) {
+	t.Parallel()
+
 	dto := &GetFsMetadataEFArgDto{
 		IDs:    []string{"id-1"},
 		ObjIDs: []string{"obj-1"},
@@ -300,6 +358,8 @@ func TestGetFsMetadataEFArgDto_StructFields(t *testing.T) {
 }
 
 func TestGetFsMetadataEFArgDto_Empty(t *testing.T) {
+	t.Parallel()
+
 	dto := &GetFsMetadataEFArgDto{}
 
 	assert.Nil(t, dto.IDs)
@@ -308,6 +368,8 @@ func TestGetFsMetadataEFArgDto_Empty(t *testing.T) {
 }
 
 func TestGetFsMetadataEFArgDto_DifferentMethods(t *testing.T) {
+	t.Parallel()
+
 	methods := []string{
 		"GET",
 		"POST",
@@ -324,6 +386,8 @@ func TestGetFsMetadataEFArgDto_DifferentMethods(t *testing.T) {
 }
 
 func TestIbFields_SliceOperations(t *testing.T) {
+	t.Parallel()
+
 	fields := IbFields{
 		IbFieldName,
 		IbFieldDocLibTypes,
@@ -337,6 +401,8 @@ func TestIbFields_SliceOperations(t *testing.T) {
 }
 
 func TestGetFsMetadataArgDto_SliceOperations(t *testing.T) {
+	t.Parallel()
+
 	dto := GetFsMetadataArgDto{
 		IDs: []string{"id-1", "id-2", "id-3"},
 	}
@@ -348,6 +414,8 @@ func TestGetFsMetadataArgDto_SliceOperations(t *testing.T) {
 }
 
 func TestIbFields_AllFieldTypes(t *testing.T) {
+	t.Parallel()
+
 	allFields := []IbField{
 		IbFieldName,
 		IbFieldDocLibTypes,

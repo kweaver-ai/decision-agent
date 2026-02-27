@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/uniqueryaccess/uniquerydto"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	observabilityreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/observability/req"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
@@ -16,6 +16,8 @@ import (
 // ---------- SessionList tests ----------
 
 func TestObservabilitySvc_SessionList_EmptyResult(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -40,6 +42,8 @@ func TestObservabilitySvc_SessionList_EmptyResult(t *testing.T) {
 }
 
 func TestObservabilitySvc_SessionList_SingleSession(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -70,6 +74,8 @@ func TestObservabilitySvc_SessionList_SingleSession(t *testing.T) {
 }
 
 func TestObservabilitySvc_SessionList_MultiSessions(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -101,6 +107,8 @@ func TestObservabilitySvc_SessionList_MultiSessions(t *testing.T) {
 }
 
 func TestObservabilitySvc_SessionList_WithConversationID(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -129,6 +137,8 @@ func TestObservabilitySvc_SessionList_WithConversationID(t *testing.T) {
 }
 
 func TestObservabilitySvc_SessionList_Error(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -151,6 +161,8 @@ func TestObservabilitySvc_SessionList_Error(t *testing.T) {
 }
 
 func TestObservabilitySvc_SessionList_WithAccountInfo(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -175,6 +187,8 @@ func TestObservabilitySvc_SessionList_WithAccountInfo(t *testing.T) {
 }
 
 func TestObservabilitySvc_SessionList_TimeRangeCalculation(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -208,6 +222,8 @@ func TestObservabilitySvc_SessionList_TimeRangeCalculation(t *testing.T) {
 }
 
 func TestObservabilitySvc_SessionList_ErrorRunCounting(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -240,6 +256,8 @@ func TestObservabilitySvc_SessionList_ErrorRunCounting(t *testing.T) {
 // ---------- GetSessionCountsByConversationIDs tests ----------
 
 func TestObservabilitySvc_GetSessionCountsByConversationIDs_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -267,6 +285,8 @@ func TestObservabilitySvc_GetSessionCountsByConversationIDs_Success(t *testing.T
 }
 
 func TestObservabilitySvc_GetSessionCountsByConversationIDs_EmptyConversationIDs(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -282,6 +302,8 @@ func TestObservabilitySvc_GetSessionCountsByConversationIDs_EmptyConversationIDs
 }
 
 func TestObservabilitySvc_GetSessionCountsByConversationIDs_Error(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -297,6 +319,8 @@ func TestObservabilitySvc_GetSessionCountsByConversationIDs_Error(t *testing.T) 
 }
 
 func TestObservabilitySvc_GetSessionCountsByConversationIDs_MultipleConversations(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

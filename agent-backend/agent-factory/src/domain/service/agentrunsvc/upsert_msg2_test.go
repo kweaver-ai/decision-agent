@@ -20,6 +20,8 @@ import (
 
 // UpsertUserAndAssistantMsg: RegenerateUserMsgID set → phase1 GetByID+Update ok, phase2 Detail fails
 func TestUpsertMsg_RegenerateUserMsgID_DetailFails(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -57,6 +59,8 @@ func TestUpsertMsg_RegenerateUserMsgID_DetailFails(t *testing.T) {
 
 // UpsertUserAndAssistantMsg: RegenerateUserMsgID set → GetByID fails
 func TestUpsertMsg_RegenerateUserMsgID_GetByIDFails(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -88,6 +92,8 @@ func TestUpsertMsg_RegenerateUserMsgID_GetByIDFails(t *testing.T) {
 
 // UpsertUserAndAssistantMsg: RegenerateUserMsgID set → Update user msg fails
 func TestUpsertMsg_RegenerateUserMsgID_UpdateFails(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -120,6 +126,8 @@ func TestUpsertMsg_RegenerateUserMsgID_UpdateFails(t *testing.T) {
 
 // UpsertUserAndAssistantMsg: RegenerateAssistantMsgID set → GetByID(×2) + Update
 func TestUpsertMsg_RegenerateAssistantMsgID_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -159,6 +167,8 @@ func TestUpsertMsg_RegenerateAssistantMsgID_Success(t *testing.T) {
 
 // UpsertUserAndAssistantMsg: InterruptedAssistantMsgID set → GetByID(×2) + Update
 func TestUpsertMsg_InterruptedAssistantMsgID_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -197,6 +207,8 @@ func TestUpsertMsg_InterruptedAssistantMsgID_Success(t *testing.T) {
 }
 
 func TestUpsertMsg_RegenerateAssistantMsgID_SecondGetByIDFails(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -226,6 +238,8 @@ func TestUpsertMsg_RegenerateAssistantMsgID_SecondGetByIDFails(t *testing.T) {
 }
 
 func TestUpsertMsg_InterruptedAssistantMsgID_UpdateFails(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -256,6 +270,8 @@ func TestUpsertMsg_InterruptedAssistantMsgID_UpdateFails(t *testing.T) {
 }
 
 func TestUpsertMsg_RegenerateUserMsgID_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

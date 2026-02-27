@@ -7,11 +7,15 @@ import (
 )
 
 func TestBuiltIn_Constants(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, BuiltIn(0), BuiltInNo)
 	assert.Equal(t, BuiltIn(1), BuiltInYes)
 }
 
 func TestBuiltIn_EnumCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	validValues := []BuiltIn{
 		BuiltInNo,
 		BuiltInYes,
@@ -19,6 +23,8 @@ func TestBuiltIn_EnumCheck_Valid(t *testing.T) {
 
 	for _, builtIn := range validValues {
 		t.Run("", func(t *testing.T) {
+			t.Parallel()
+
 			err := builtIn.EnumCheck()
 			assert.NoError(t, err)
 		})
@@ -26,6 +32,8 @@ func TestBuiltIn_EnumCheck_Valid(t *testing.T) {
 }
 
 func TestBuiltIn_EnumCheck_Invalid(t *testing.T) {
+	t.Parallel()
+
 	invalidValues := []BuiltIn{
 		-1,
 		2,
@@ -34,6 +42,8 @@ func TestBuiltIn_EnumCheck_Invalid(t *testing.T) {
 
 	for _, builtIn := range invalidValues {
 		t.Run("", func(t *testing.T) {
+			t.Parallel()
+
 			err := builtIn.EnumCheck()
 			assert.Error(t, err)
 			assert.Contains(t, err.Error(), "invalid built in")
@@ -42,6 +52,8 @@ func TestBuiltIn_EnumCheck_Invalid(t *testing.T) {
 }
 
 func TestBuiltIn_IsBuiltIn(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		builtIn  *BuiltIn
@@ -66,6 +78,8 @@ func TestBuiltIn_IsBuiltIn(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := tt.builtIn.IsBuiltIn()
 			assert.Equal(t, tt.expected, result)
 		})
@@ -73,6 +87,8 @@ func TestBuiltIn_IsBuiltIn(t *testing.T) {
 }
 
 func TestBuiltIn_AllUnique(t *testing.T) {
+	t.Parallel()
+
 	builtIns := []BuiltIn{
 		BuiltInNo,
 		BuiltInYes,

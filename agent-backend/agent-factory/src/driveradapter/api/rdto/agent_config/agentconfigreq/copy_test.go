@@ -8,6 +8,8 @@ import (
 )
 
 func TestCopyReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := CopyReq{
 		Name: "TestAgentCopy",
 	}
@@ -16,12 +18,16 @@ func TestCopyReq_StructFields(t *testing.T) {
 }
 
 func TestCopyReq_EmptyName(t *testing.T) {
+	t.Parallel()
+
 	req := CopyReq{}
 
 	assert.Empty(t, req.Name)
 }
 
 func TestCopyReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := CopyReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -32,6 +38,8 @@ func TestCopyReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestCopyReq_ReqCheck_ValidName(t *testing.T) {
+	t.Parallel()
+
 	req := CopyReq{
 		Name: "ValidAgentName",
 	}
@@ -42,6 +50,8 @@ func TestCopyReq_ReqCheck_ValidName(t *testing.T) {
 }
 
 func TestCopyReq_ReqCheck_EmptyName(t *testing.T) {
+	t.Parallel()
+
 	req := CopyReq{
 		Name: "",
 	}
@@ -52,6 +62,8 @@ func TestCopyReq_ReqCheck_EmptyName(t *testing.T) {
 }
 
 func TestCopyReq_ReqCheck_NameTooLong(t *testing.T) {
+	t.Parallel()
+
 	// Create a name that exceeds the max length
 	longName := strings.Repeat("a", 51) // Max is 50
 	req := CopyReq{
@@ -65,6 +77,8 @@ func TestCopyReq_ReqCheck_NameTooLong(t *testing.T) {
 }
 
 func TestCopyReq_ReqCheck_NameAtMaxLength(t *testing.T) {
+	t.Parallel()
+
 	// Create a name that is exactly at the max length
 	maxName := strings.Repeat("a", 50) // Max is 50
 	req := CopyReq{
@@ -77,6 +91,8 @@ func TestCopyReq_ReqCheck_NameAtMaxLength(t *testing.T) {
 }
 
 func TestCopyReq_ReqCheck_NameWithSpecialCharacters(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   string
@@ -111,6 +127,8 @@ func TestCopyReq_ReqCheck_NameWithSpecialCharacters(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			req := CopyReq{
 				Name: tt.input,
 			}
@@ -127,6 +145,8 @@ func TestCopyReq_ReqCheck_NameWithSpecialCharacters(t *testing.T) {
 }
 
 func TestCopyReq_ReqCheck_UnicodeLength(t *testing.T) {
+	t.Parallel()
+
 	// Test that rune length is calculated correctly for Unicode characters
 	req := CopyReq{
 		Name: "我的智能助手", // 6 Chinese characters
@@ -138,6 +158,8 @@ func TestCopyReq_ReqCheck_UnicodeLength(t *testing.T) {
 }
 
 func TestCopyReq_WithEmptyString(t *testing.T) {
+	t.Parallel()
+
 	req := CopyReq{
 		Name: "",
 	}

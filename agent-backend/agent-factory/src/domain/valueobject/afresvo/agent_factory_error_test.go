@@ -7,11 +7,15 @@ import (
 )
 
 func TestNewAgentFactoryError(t *testing.T) {
+	t.Parallel()
+
 	err := NewAgentFactoryError()
 	assert.NotNil(t, err)
 }
 
 func TestAgentFactoryError_Fields(t *testing.T) {
+	t.Parallel()
+
 	err := &AgentFactoryError{
 		Description:  "Test error description",
 		ErrorCode:    "ERR_001",
@@ -26,6 +30,8 @@ func TestAgentFactoryError_Fields(t *testing.T) {
 }
 
 func TestIsAgentFactoryError_ValidError(t *testing.T) {
+	t.Parallel()
+
 	jsonData := []byte(`{
 		"Description": "Agent execution failed",
 		"ErrorCode": "AGENT_ERR_001",
@@ -43,6 +49,8 @@ func TestIsAgentFactoryError_ValidError(t *testing.T) {
 }
 
 func TestIsAgentFactoryError_NoErrorCode(t *testing.T) {
+	t.Parallel()
+
 	jsonData := []byte(`{
 		"Description": "Normal response",
 		"Data": "some data"
@@ -55,6 +63,8 @@ func TestIsAgentFactoryError_NoErrorCode(t *testing.T) {
 }
 
 func TestIsAgentFactoryError_EmptyErrorCode(t *testing.T) {
+	t.Parallel()
+
 	jsonData := []byte(`{
 		"ErrorCode": "",
 		"Description": "Empty error code"
@@ -67,6 +77,8 @@ func TestIsAgentFactoryError_EmptyErrorCode(t *testing.T) {
 }
 
 func TestIsAgentFactoryError_InvalidJSON(t *testing.T) {
+	t.Parallel()
+
 	jsonData := []byte(`invalid json`)
 
 	afErr, isErr := IsAgentFactoryError(jsonData)
@@ -76,6 +88,8 @@ func TestIsAgentFactoryError_InvalidJSON(t *testing.T) {
 }
 
 func TestIsAgentFactoryError_PartialError(t *testing.T) {
+	t.Parallel()
+
 	jsonData := []byte(`{
 		"ErrorCode": "ERR_001"
 	}`)
@@ -87,6 +101,8 @@ func TestIsAgentFactoryError_PartialError(t *testing.T) {
 }
 
 func TestHandleAFErrorForChatProcess_NotAnError(t *testing.T) {
+	t.Parallel()
+
 	jsonData := []byte(`{"data": "normal response"}`)
 
 	newData, isErr := HandleAFErrorForChatProcess(jsonData)
@@ -96,6 +112,8 @@ func TestHandleAFErrorForChatProcess_NotAnError(t *testing.T) {
 }
 
 func TestHandleAFErrorForChatProcess_IsError(t *testing.T) {
+	t.Parallel()
+
 	jsonData := []byte(`{
 		"ErrorCode": "AGENT_ERR_001",
 		"Description": "Test error"

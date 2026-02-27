@@ -3,6 +3,8 @@ package common
 import "testing"
 
 func TestListCommon_SetEntries(t *testing.T) {
+	t.Parallel()
+
 	listCommon := NewListCommon()
 
 	// 1. 字符串切片
@@ -79,12 +81,17 @@ func TestListCommon_SetEntries(t *testing.T) {
 }
 
 func TestNewListCommonWithTotal(t *testing.T) {
+	t.Parallel()
+
 	t.Run("creates empty list with total", func(t *testing.T) {
+		t.Parallel()
+
 		listCommon := NewListCommonWithTotal()
 
 		if listCommon == nil {
 			t.Error("expected non-nil list")
 		}
+
 		if listCommon.Total != 0 {
 			t.Errorf("expected total 0, got %d", listCommon.Total)
 		}
@@ -92,6 +99,8 @@ func TestNewListCommonWithTotal(t *testing.T) {
 }
 
 func TestListCommonWithTotal_SetEntries(t *testing.T) {
+	t.Parallel()
+
 	listCommon := NewListCommonWithTotal()
 
 	// Test with string slice
@@ -109,6 +118,8 @@ func TestListCommonWithTotal_SetEntries(t *testing.T) {
 }
 
 func TestListCommonWithTotal_SetTotal(t *testing.T) {
+	t.Parallel()
+
 	listCommon := NewListCommonWithTotal()
 
 	listCommon.SetTotal(42)

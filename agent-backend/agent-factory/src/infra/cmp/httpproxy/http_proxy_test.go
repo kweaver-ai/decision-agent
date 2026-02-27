@@ -19,7 +19,11 @@ type TestResponse struct {
 }
 
 func TestNewJSONPostProxy(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create proxy", func(t *testing.T) {
+		t.Parallel()
+
 		targetURL := "http://example.com/api"
 		proxy := NewJSONPostProxy[TestRequest, TestResponse](targetURL)
 
@@ -45,6 +49,8 @@ func TestNewJSONPostProxy(t *testing.T) {
 	})
 
 	t.Run("empty target URL", func(t *testing.T) {
+		t.Parallel()
+
 		proxy := NewJSONPostProxy[TestRequest, TestResponse]("")
 
 		if proxy == nil {
@@ -58,7 +64,11 @@ func TestNewJSONPostProxy(t *testing.T) {
 }
 
 func TestJSONPostProxy_SetToken(t *testing.T) {
+	t.Parallel()
+
 	t.Run("set token", func(t *testing.T) {
+		t.Parallel()
+
 		proxy := NewJSONPostProxy[TestRequest, TestResponse]("http://example.com/api")
 		token := "test-token-123"
 
@@ -70,6 +80,8 @@ func TestJSONPostProxy_SetToken(t *testing.T) {
 	})
 
 	t.Run("set empty token", func(t *testing.T) {
+		t.Parallel()
+
 		proxy := NewJSONPostProxy[TestRequest, TestResponse]("http://example.com/api")
 		proxy.SetToken("initial-token")
 		proxy.SetToken("")
@@ -80,14 +92,18 @@ func TestJSONPostProxy_SetToken(t *testing.T) {
 	})
 
 	t.Run("set token multiple times", func(t *testing.T) {
+		t.Parallel()
+
 		proxy := NewJSONPostProxy[TestRequest, TestResponse]("http://example.com/api")
 
 		proxy.SetToken("token1")
+
 		if proxy.Token != "token1" {
 			t.Error("Expected Token to be 'token1'")
 		}
 
 		proxy.SetToken("token2")
+
 		if proxy.Token != "token2" {
 			t.Error("Expected Token to be 'token2'")
 		}
@@ -95,7 +111,11 @@ func TestJSONPostProxy_SetToken(t *testing.T) {
 }
 
 func TestJSONPostProxy_SetClient(t *testing.T) {
+	t.Parallel()
+
 	t.Run("set custom client", func(t *testing.T) {
+		t.Parallel()
+
 		proxy := NewJSONPostProxy[TestRequest, TestResponse]("http://example.com/api")
 
 		customClient := &http.Client{
@@ -114,6 +134,8 @@ func TestJSONPostProxy_SetClient(t *testing.T) {
 	})
 
 	t.Run("set nil client", func(t *testing.T) {
+		t.Parallel()
+
 		proxy := NewJSONPostProxy[TestRequest, TestResponse]("http://example.com/api")
 
 		proxy.SetClient(nil)
@@ -124,6 +146,8 @@ func TestJSONPostProxy_SetClient(t *testing.T) {
 	})
 
 	t.Run("replace existing client", func(t *testing.T) {
+		t.Parallel()
+
 		proxy := NewJSONPostProxy[TestRequest, TestResponse]("http://example.com/api")
 
 		initialClient := proxy.Client
@@ -148,7 +172,10 @@ func TestJSONPostProxy_SetClient(t *testing.T) {
 }
 
 func TestProxyInterface(t *testing.T) {
+	t.Parallel()
+
 	t.Run("JSONPostProxy implements Proxy interface", func(t *testing.T) {
+		t.Parallel()
 		// This test verifies that JSONPostProxy correctly implements the Proxy interface
 		var proxy Proxy[TestRequest, TestResponse] = NewJSONPostProxy[TestRequest, TestResponse]("http://example.com/api")
 
@@ -165,7 +192,11 @@ func TestProxyInterface(t *testing.T) {
 }
 
 func TestJSONPostProxy_StructFields(t *testing.T) {
+	t.Parallel()
+
 	t.Run("verify struct fields are public", func(t *testing.T) {
+		t.Parallel()
+
 		proxy := NewJSONPostProxy[TestRequest, TestResponse]("http://example.com/api")
 
 		// Verify fields can be accessed (compile-time check)

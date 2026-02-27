@@ -9,6 +9,8 @@ import (
 )
 
 func TestPublishResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishResp{
 		ReleaseId: "release-123",
 		Version:   "1.0.0",
@@ -19,6 +21,8 @@ func TestPublishResp_StructFields(t *testing.T) {
 }
 
 func TestPublishResp_JSONTags(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishResp{
 		ReleaseId: "release-456",
 		Version:   "2.0.0",
@@ -38,6 +42,8 @@ func TestPublishResp_JSONTags(t *testing.T) {
 }
 
 func TestPublishResp_EmptyValues(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishResp{}
 
 	assert.Empty(t, resp.ReleaseId)
@@ -45,6 +51,8 @@ func TestPublishResp_EmptyValues(t *testing.T) {
 }
 
 func TestPublishResp_WithRealVersionFormats(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		version string
@@ -79,12 +87,15 @@ func TestPublishResp_WithRealVersionFormats(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp := PublishResp{
 				ReleaseId: "release-test",
 				Version:   tt.version,
 			}
 
 			assert.Equal(t, tt.version, resp.Version)
+
 			if tt.valid && tt.version != "" {
 				assert.NotEmpty(t, resp.Version)
 			}
@@ -93,6 +104,8 @@ func TestPublishResp_WithRealVersionFormats(t *testing.T) {
 }
 
 func TestHistoryListItemResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	item := HistoryListItemResp{
 		HistoryId:    "history-123",
 		AgentId:      "agent-456",
@@ -109,6 +122,8 @@ func TestHistoryListItemResp_StructFields(t *testing.T) {
 }
 
 func TestHistoryListItemResp_JSONTags(t *testing.T) {
+	t.Parallel()
+
 	item := HistoryListItemResp{
 		HistoryId:    "hist-1",
 		AgentId:      "agent-1",
@@ -134,6 +149,8 @@ func TestHistoryListItemResp_JSONTags(t *testing.T) {
 }
 
 func TestHistoryListItemResp_EmptyValues(t *testing.T) {
+	t.Parallel()
+
 	item := HistoryListItemResp{}
 
 	assert.Empty(t, item.HistoryId)
@@ -144,6 +161,8 @@ func TestHistoryListItemResp_EmptyValues(t *testing.T) {
 }
 
 func TestHistoryListResp_Type(t *testing.T) {
+	t.Parallel()
+
 	// HistoryListResp is a slice type
 	var list HistoryListResp
 
@@ -152,6 +171,8 @@ func TestHistoryListResp_Type(t *testing.T) {
 }
 
 func TestHistoryListResp_WithMultipleItems(t *testing.T) {
+	t.Parallel()
+
 	list := HistoryListResp{
 		{
 			HistoryId:    "hist-1",
@@ -183,6 +204,8 @@ func TestHistoryListResp_WithMultipleItems(t *testing.T) {
 }
 
 func TestHistoryListResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	list := HistoryListResp{}
 
 	assert.Empty(t, list)
@@ -190,6 +213,8 @@ func TestHistoryListResp_Empty(t *testing.T) {
 }
 
 func TestHistoryListResp_JSONMarshaling(t *testing.T) {
+	t.Parallel()
+
 	list := HistoryListResp{
 		{
 			HistoryId:    "hist-1",
@@ -224,6 +249,8 @@ func TestHistoryListResp_JSONMarshaling(t *testing.T) {
 }
 
 func TestHistoryListItemResp_WithSpecialCharacters(t *testing.T) {
+	t.Parallel()
+
 	item := HistoryListItemResp{
 		HistoryId:    "hist-中文-123",
 		AgentId:      "agent-测试",
@@ -239,6 +266,8 @@ func TestHistoryListItemResp_WithSpecialCharacters(t *testing.T) {
 }
 
 func TestHistoryListResp_Append(t *testing.T) {
+	t.Parallel()
+
 	list := HistoryListResp{}
 
 	// Append items
@@ -264,6 +293,8 @@ func TestHistoryListResp_Append(t *testing.T) {
 }
 
 func TestHistoryListItemResp_TimestampComparison(t *testing.T) {
+	t.Parallel()
+
 	olderItem := HistoryListItemResp{
 		HistoryId:  "hist-older",
 		CreateTime: 1640995200000, // Earlier

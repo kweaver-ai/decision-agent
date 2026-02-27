@@ -9,6 +9,8 @@ import (
 )
 
 func TestAiAutogenRes_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := AiAutogenRes{
 		Result: "AI generated content",
 	}
@@ -17,12 +19,16 @@ func TestAiAutogenRes_StructFields(t *testing.T) {
 }
 
 func TestAiAutogenRes_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := AiAutogenRes{}
 
 	assert.Empty(t, resp.Result)
 }
 
 func TestAiAutogenRes_WithLongContent(t *testing.T) {
+	t.Parallel()
+
 	longContent := "This is a very long AI generated content that contains multiple sentences and detailed information."
 	resp := AiAutogenRes{
 		Result: longContent,
@@ -33,6 +39,8 @@ func TestAiAutogenRes_WithLongContent(t *testing.T) {
 }
 
 func TestAiAutogenRes_WithSpecialCharacters(t *testing.T) {
+	t.Parallel()
+
 	resp := AiAutogenRes{
 		Result: "Content with \"quotes\" and 'apostrophes' and 新文字",
 	}
@@ -42,6 +50,8 @@ func TestAiAutogenRes_WithSpecialCharacters(t *testing.T) {
 }
 
 func TestAiAutogenRes_JSONTags(t *testing.T) {
+	t.Parallel()
+
 	resp := AiAutogenRes{
 		Result: "test result",
 	}
@@ -59,6 +69,8 @@ func TestAiAutogenRes_JSONTags(t *testing.T) {
 }
 
 func TestPreSetQuestions_Type(t *testing.T) {
+	t.Parallel()
+
 	// PreSetQuestions is a slice type
 	var questions PreSetQuestions
 
@@ -67,6 +79,8 @@ func TestPreSetQuestions_Type(t *testing.T) {
 }
 
 func TestPreSetQuestions_Empty(t *testing.T) {
+	t.Parallel()
+
 	questions := PreSetQuestions{}
 
 	assert.Empty(t, questions)
@@ -74,6 +88,8 @@ func TestPreSetQuestions_Empty(t *testing.T) {
 }
 
 func TestPreSetQuestions_WithItems(t *testing.T) {
+	t.Parallel()
+
 	questions := PreSetQuestions{
 		"Question 1?",
 		"Question 2?",
@@ -87,6 +103,8 @@ func TestPreSetQuestions_WithItems(t *testing.T) {
 }
 
 func TestPreSetQuestions_Append(t *testing.T) {
+	t.Parallel()
+
 	questions := PreSetQuestions{}
 
 	questions = append(questions, "New Question 1?")
@@ -98,6 +116,8 @@ func TestPreSetQuestions_Append(t *testing.T) {
 }
 
 func TestPreSetQuestions_JSONMarshaling(t *testing.T) {
+	t.Parallel()
+
 	questions := PreSetQuestions{
 		"What is AI?",
 		"How does machine learning work?",
@@ -119,6 +139,8 @@ func TestPreSetQuestions_JSONMarshaling(t *testing.T) {
 }
 
 func TestPreSetQuestions_WithSpecialCharacters(t *testing.T) {
+	t.Parallel()
+
 	questions := PreSetQuestions{
 		"问题一？",
 		"Question with \"quotes\"?",
@@ -131,6 +153,8 @@ func TestPreSetQuestions_WithSpecialCharacters(t *testing.T) {
 }
 
 func TestPreSetQuestions_EmptyStrings(t *testing.T) {
+	t.Parallel()
+
 	questions := PreSetQuestions{
 		"",
 		"Valid question?",
@@ -144,6 +168,8 @@ func TestPreSetQuestions_EmptyStrings(t *testing.T) {
 }
 
 func TestPreSetQuestions_LongQuestions(t *testing.T) {
+	t.Parallel()
+
 	longQuestion := "This is a very long question that contains multiple words and detailed information about a specific topic?"
 	questions := PreSetQuestions{
 		longQuestion,

@@ -10,6 +10,8 @@ import (
 )
 
 func TestNewDolphinTplMapStruct(t *testing.T) {
+	t.Parallel()
+
 	m := NewDolphinTplMapStruct()
 
 	assert.NotNil(t, m)
@@ -21,10 +23,12 @@ func TestNewDolphinTplMapStruct(t *testing.T) {
 }
 
 func TestDolphinTplMapStruct_LoadFromConfig(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name                  string
-		config                *daconfvalobj.Config
-		builtInAgentKey       builtinagentenum.AgentKey
+		name                     string
+		config                   *daconfvalobj.Config
+		builtInAgentKey          builtinagentenum.AgentKey
 		isNeedHandleBuiltinAgent bool
 	}{
 		{
@@ -36,7 +40,7 @@ func TestDolphinTplMapStruct_LoadFromConfig(t *testing.T) {
 					},
 				},
 			},
-			builtInAgentKey:       builtinagentenum.AgentKeyDocQA,
+			builtInAgentKey:          builtinagentenum.AgentKeyDocQA,
 			isNeedHandleBuiltinAgent: true,
 		},
 		{
@@ -48,7 +52,7 @@ func TestDolphinTplMapStruct_LoadFromConfig(t *testing.T) {
 					},
 				},
 			},
-			builtInAgentKey:       builtinagentenum.AgentKeyDocQA,
+			builtInAgentKey:          builtinagentenum.AgentKeyDocQA,
 			isNeedHandleBuiltinAgent: false,
 		},
 		{
@@ -62,13 +66,15 @@ func TestDolphinTplMapStruct_LoadFromConfig(t *testing.T) {
 					},
 				},
 			},
-			builtInAgentKey:         builtinagentenum.AgentKeyGraphQA,
+			builtInAgentKey:          builtinagentenum.AgentKeyGraphQA,
 			isNeedHandleBuiltinAgent: true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			m := NewDolphinTplMapStruct()
 
 			// This should not panic
@@ -87,6 +93,8 @@ func TestDolphinTplMapStruct_LoadFromConfig(t *testing.T) {
 }
 
 func TestDolphinTplMapStruct_LoadFromConfig_NilConfig(t *testing.T) {
+	t.Parallel()
+
 	m := NewDolphinTplMapStruct()
 
 	// LoadFromConfig panics when config is nil, so we test for that
@@ -100,6 +108,8 @@ func TestDolphinTplMapStruct_LoadFromConfig_NilConfig(t *testing.T) {
 }
 
 func TestDolphinTplMapStruct_Fields(t *testing.T) {
+	t.Parallel()
+
 	memoryRetrieve := NewMemoryRetrieveContent()
 	docRetrieve := NewDocRetrieveContent()
 	graphRetrieve := NewGraphRetrieveContent()

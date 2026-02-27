@@ -8,19 +8,25 @@ import (
 )
 
 func TestNewRelatedQuestionsContent(t *testing.T) {
+	t.Parallel()
+
 	content := NewRelatedQuestionsContent()
 	if content == nil {
 		t.Error("NewRelatedQuestionsContent() should return non-nil")
 	}
+
 	if content.Content != "" {
 		t.Errorf("Content should be empty, got %q", content.Content)
 	}
+
 	if content.IsEnable {
 		t.Error("IsEnable should be false")
 	}
 }
 
 func TestRelatedQuestionsContent_LoadFromConfig(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name         string
 		config       *daconfvalobj.Config
@@ -60,8 +66,11 @@ func TestRelatedQuestionsContent_LoadFromConfig(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			content := NewRelatedQuestionsContent()
 			content.LoadFromConfig(tt.config)
+
 			if content.IsEnable != tt.wantIsEnable {
 				t.Errorf("IsEnable = %v, want %v", content.IsEnable, tt.wantIsEnable)
 			}
@@ -70,6 +79,8 @@ func TestRelatedQuestionsContent_LoadFromConfig(t *testing.T) {
 }
 
 func TestRelatedQuestionsContent_ToString(t *testing.T) {
+	t.Parallel()
+
 	content := NewRelatedQuestionsContent()
 	content.Content = "test content"
 
@@ -80,6 +91,8 @@ func TestRelatedQuestionsContent_ToString(t *testing.T) {
 }
 
 func TestRelatedQuestionsContent_ToDolphinTplEo(t *testing.T) {
+	t.Parallel()
+
 	content := NewRelatedQuestionsContent()
 	content.Content = "test"
 
@@ -87,6 +100,7 @@ func TestRelatedQuestionsContent_ToDolphinTplEo(t *testing.T) {
 	if eo.Key != cdaenum.DolphinTplKeyRelatedQuestions {
 		t.Errorf("Key = %v, want %v", eo.Key, cdaenum.DolphinTplKeyRelatedQuestions)
 	}
+
 	if eo.Value != "test" {
 		t.Errorf("Value = %q, want %q", eo.Value, "test")
 	}

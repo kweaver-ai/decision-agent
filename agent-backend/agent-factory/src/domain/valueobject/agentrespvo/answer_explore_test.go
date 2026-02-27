@@ -7,12 +7,14 @@ import (
 )
 
 func TestAnswerExplore_NewAnswerExplore(t *testing.T) {
+	t.Parallel()
+
 	explore := &AnswerExplore{
-		AgentName:   "Test Agent",
-		Answer:      "Test answer",
-		Think:       "Test thinking",
-		Status:      "completed",
-		Interrupted: false,
+		AgentName:    "Test Agent",
+		Answer:       "Test answer",
+		Think:        "Test thinking",
+		Status:       "completed",
+		Interrupted:  false,
 		InputMessage: "Test input",
 	}
 
@@ -25,6 +27,8 @@ func TestAnswerExplore_NewAnswerExplore(t *testing.T) {
 }
 
 func TestAnswerExplore_Empty(t *testing.T) {
+	t.Parallel()
+
 	explore := &AnswerExplore{}
 
 	assert.Empty(t, explore.AgentName)
@@ -36,6 +40,8 @@ func TestAnswerExplore_Empty(t *testing.T) {
 }
 
 func TestAnswerExplore_WithInterrupted(t *testing.T) {
+	t.Parallel()
+
 	explore := &AnswerExplore{
 		AgentName:   "Interrupted Agent",
 		Status:      "interrupted",
@@ -47,6 +53,8 @@ func TestAnswerExplore_WithInterrupted(t *testing.T) {
 }
 
 func TestAnswerExplore_WithNilAnswer(t *testing.T) {
+	t.Parallel()
+
 	explore := &AnswerExplore{
 		AgentName: "Test Agent",
 		Answer:    nil,
@@ -57,6 +65,8 @@ func TestAnswerExplore_WithNilAnswer(t *testing.T) {
 }
 
 func TestAnswerExplore_WithComplexAnswer(t *testing.T) {
+	t.Parallel()
+
 	complexAnswer := map[string]interface{}{
 		"key1": "value1",
 		"key2": 123,

@@ -21,6 +21,8 @@ func minimalCfg() *conf.OtelConfig {
 }
 
 func TestNewProvider_AllDisabled(t *testing.T) {
+	t.Parallel()
+
 	p, err := NewProvider(minimalCfg())
 	require.NoError(t, err)
 	assert.NotNil(t, p)
@@ -30,6 +32,8 @@ func TestNewProvider_AllDisabled(t *testing.T) {
 }
 
 func TestNewProvider_TraceConsole(t *testing.T) {
+	t.Parallel()
+
 	cfg := minimalCfg()
 	cfg.Trace.Enabled = true
 	cfg.Trace.Exporter = "console"
@@ -44,6 +48,8 @@ func TestNewProvider_TraceConsole(t *testing.T) {
 }
 
 func TestNewProvider_LogConsole(t *testing.T) {
+	t.Parallel()
+
 	cfg := minimalCfg()
 	cfg.Log.Enabled = true
 	cfg.Log.Exporter = "console"
@@ -57,6 +63,8 @@ func TestNewProvider_LogConsole(t *testing.T) {
 }
 
 func TestNewProvider_MetricConsole(t *testing.T) {
+	t.Parallel()
+
 	cfg := minimalCfg()
 	cfg.Metric.Enabled = true
 	cfg.Metric.Exporter = "console"
@@ -71,6 +79,8 @@ func TestNewProvider_MetricConsole(t *testing.T) {
 }
 
 func TestNewProvider_UnsupportedTraceExporter(t *testing.T) {
+	t.Parallel()
+
 	cfg := minimalCfg()
 	cfg.Trace.Enabled = true
 	cfg.Trace.Exporter = "unknown-exporter"
@@ -82,6 +92,8 @@ func TestNewProvider_UnsupportedTraceExporter(t *testing.T) {
 }
 
 func TestNewProvider_UnsupportedLogExporter(t *testing.T) {
+	t.Parallel()
+
 	cfg := minimalCfg()
 	cfg.Log.Enabled = true
 	cfg.Log.Exporter = "unknown-exporter"
@@ -92,6 +104,8 @@ func TestNewProvider_UnsupportedLogExporter(t *testing.T) {
 }
 
 func TestNewProvider_UnsupportedMetricExporter(t *testing.T) {
+	t.Parallel()
+
 	cfg := minimalCfg()
 	cfg.Metric.Enabled = true
 	cfg.Metric.Exporter = "unknown-exporter"
@@ -103,6 +117,8 @@ func TestNewProvider_UnsupportedMetricExporter(t *testing.T) {
 }
 
 func TestProvider_Shutdown_NoProviders(t *testing.T) {
+	t.Parallel()
+
 	p, err := NewProvider(minimalCfg())
 	require.NoError(t, err)
 
@@ -111,6 +127,8 @@ func TestProvider_Shutdown_NoProviders(t *testing.T) {
 }
 
 func TestProvider_Shutdown_WithTrace(t *testing.T) {
+	t.Parallel()
+
 	cfg := minimalCfg()
 	cfg.Trace.Enabled = true
 	cfg.Trace.Exporter = "console"
@@ -124,6 +142,8 @@ func TestProvider_Shutdown_WithTrace(t *testing.T) {
 }
 
 func TestCreateResource(t *testing.T) {
+	t.Parallel()
+
 	cfg := minimalCfg()
 	res, err := createResource(cfg)
 	require.NoError(t, err)

@@ -7,6 +7,8 @@ import (
 )
 
 func TestMarkReadReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &MarkReadReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -17,6 +19,8 @@ func TestMarkReadReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestMarkReadReq_ReqCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		req         *MarkReadReq
@@ -47,6 +51,8 @@ func TestMarkReadReq_ReqCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.req.ReqCheck()
 			if tt.expectError {
 				assert.Error(t, err)
@@ -58,6 +64,8 @@ func TestMarkReadReq_ReqCheck(t *testing.T) {
 }
 
 func TestMarkReadReq_New(t *testing.T) {
+	t.Parallel()
+
 	req := &MarkReadReq{}
 
 	assert.NotNil(t, req)
@@ -65,6 +73,8 @@ func TestMarkReadReq_New(t *testing.T) {
 }
 
 func TestMarkReadReq_WithIndex(t *testing.T) {
+	t.Parallel()
+
 	req := &MarkReadReq{
 		LastestReadIdx: 10,
 	}
@@ -73,6 +83,8 @@ func TestMarkReadReq_WithIndex(t *testing.T) {
 }
 
 func TestMarkReadReq_GetErrMsgMapConsistency(t *testing.T) {
+	t.Parallel()
+
 	req1 := &MarkReadReq{}
 	req2 := &MarkReadReq{}
 

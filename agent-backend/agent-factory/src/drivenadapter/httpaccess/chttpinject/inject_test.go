@@ -42,89 +42,115 @@ func baseConfig(mockAuthz, mockBizDomain bool) (*conf.Config, *cconf.Config) {
 }
 
 func TestNewAuthZHttpAcc(t *testing.T) {
+	t.Parallel()
+
 	oldCfg := global.GConfig
 	oldCCfg := cglobal.GConfig
+
 	t.Cleanup(func() {
 		global.GConfig = oldCfg
 		cglobal.GConfig = oldCCfg
+
 		resetCHttpInjectGlobals()
 	})
 
 	t.Run("mock branch", func(t *testing.T) {
+		t.Parallel()
 		resetCHttpInjectGlobals()
+
 		cfg, ccfg := baseConfig(true, false)
 		global.GConfig = cfg
 		cglobal.GConfig = ccfg
 
 		a1 := NewAuthZHttpAcc()
 		require.NotNil(t, a1)
+
 		a2 := NewAuthZHttpAcc()
 		assert.Same(t, a1, a2)
 	})
 
 	t.Run("real branch", func(t *testing.T) {
+		t.Parallel()
 		resetCHttpInjectGlobals()
+
 		cfg, ccfg := baseConfig(false, false)
 		global.GConfig = cfg
 		cglobal.GConfig = ccfg
 
 		a1 := NewAuthZHttpAcc()
 		require.NotNil(t, a1)
+
 		a2 := NewAuthZHttpAcc()
 		assert.Same(t, a1, a2)
 	})
 }
 
 func TestNewBizDomainHttpAcc(t *testing.T) {
+	t.Parallel()
+
 	oldCfg := global.GConfig
 	oldCCfg := cglobal.GConfig
+
 	t.Cleanup(func() {
 		global.GConfig = oldCfg
 		cglobal.GConfig = oldCCfg
+
 		resetCHttpInjectGlobals()
 	})
 
 	t.Run("mock branch", func(t *testing.T) {
+		t.Parallel()
 		resetCHttpInjectGlobals()
+
 		cfg, ccfg := baseConfig(false, true)
 		global.GConfig = cfg
 		cglobal.GConfig = ccfg
 
 		b1 := NewBizDomainHttpAcc()
 		require.NotNil(t, b1)
+
 		b2 := NewBizDomainHttpAcc()
 		assert.Same(t, b1, b2)
 	})
 
 	t.Run("real branch", func(t *testing.T) {
+		t.Parallel()
 		resetCHttpInjectGlobals()
+
 		cfg, ccfg := baseConfig(false, false)
 		global.GConfig = cfg
 		cglobal.GConfig = ccfg
 
 		b1 := NewBizDomainHttpAcc()
 		require.NotNil(t, b1)
+
 		b2 := NewBizDomainHttpAcc()
 		assert.Same(t, b1, b2)
 	})
 }
 
 func TestNewUmHttpAcc(t *testing.T) {
+	t.Parallel()
+
 	oldCfg := global.GConfig
 	oldCCfg := cglobal.GConfig
+
 	t.Cleanup(func() {
 		global.GConfig = oldCfg
 		cglobal.GConfig = oldCCfg
+
 		resetCHttpInjectGlobals()
 	})
 
 	resetCHttpInjectGlobals()
+
 	cfg, ccfg := baseConfig(false, false)
 	global.GConfig = cfg
 	cglobal.GConfig = ccfg
 
 	u1 := NewUmHttpAcc()
 	require.NotNil(t, u1)
+
 	u2 := NewUmHttpAcc()
 	assert.Same(t, u1, u2)
 }

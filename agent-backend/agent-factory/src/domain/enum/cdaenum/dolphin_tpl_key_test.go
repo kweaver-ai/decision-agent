@@ -7,6 +7,8 @@ import (
 )
 
 func TestDolphinTplKey_EnumCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		b       DolphinTplKey
@@ -56,6 +58,8 @@ func TestDolphinTplKey_EnumCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.b.EnumCheck()
 			if tt.wantErr {
 				assert.Error(t, err, "expected error")
@@ -67,6 +71,8 @@ func TestDolphinTplKey_EnumCheck(t *testing.T) {
 }
 
 func TestDolphinTplKey_GetName(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		b    DolphinTplKey
@@ -111,6 +117,8 @@ func TestDolphinTplKey_GetName(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := tt.b.GetName()
 			assert.Equal(t, tt.want, got)
 		})
@@ -118,6 +126,8 @@ func TestDolphinTplKey_GetName(t *testing.T) {
 }
 
 func TestDolphinTplKey_String(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		b    DolphinTplKey
@@ -162,6 +172,8 @@ func TestDolphinTplKey_String(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := tt.b.String()
 			assert.Equal(t, tt.want, got)
 		})

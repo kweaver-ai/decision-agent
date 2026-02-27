@@ -5,7 +5,6 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdapmsenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
@@ -15,14 +14,17 @@ import (
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 )
 
 func TestIsHasUnpublishOtherUserAgentPermission(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		setup   func(*gomock.Controller) (*releaseSvc, context.Context)
 		want    bool
-		wantErr  bool
+		wantErr bool
 	}{
 		{
 			name: "has unpublish other user agent permission",
@@ -41,7 +43,7 @@ func TestIsHasUnpublishOtherUserAgentPermission(t *testing.T) {
 
 				return svc, ctx
 			},
-			want:   true,
+			want:    true,
 			wantErr: false,
 		},
 		{
@@ -61,7 +63,7 @@ func TestIsHasUnpublishOtherUserAgentPermission(t *testing.T) {
 
 				return svc, ctx
 			},
-			want:   false,
+			want:    false,
 			wantErr: false,
 		},
 		{
@@ -81,13 +83,15 @@ func TestIsHasUnpublishOtherUserAgentPermission(t *testing.T) {
 
 				return svc, ctx
 			},
-			want:   false,
+			want:    false,
 			wantErr: true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
@@ -105,11 +109,13 @@ func TestIsHasUnpublishOtherUserAgentPermission(t *testing.T) {
 }
 
 func TestIsHasPublishPermission(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		setup   func(*gomock.Controller) (*releaseSvc, context.Context, *dapo.DataAgentPo)
 		want    bool
-		wantErr  bool
+		wantErr bool
 	}{
 		{
 			name: "owner has publish permission",
@@ -139,7 +145,7 @@ func TestIsHasPublishPermission(t *testing.T) {
 
 				return svc, ctx, po
 			},
-			want:   true,
+			want:    true,
 			wantErr: false,
 		},
 		{
@@ -170,7 +176,7 @@ func TestIsHasPublishPermission(t *testing.T) {
 
 				return svc, ctx, po
 			},
-			want:   false,
+			want:    false,
 			wantErr: false,
 		},
 		{
@@ -201,13 +207,15 @@ func TestIsHasPublishPermission(t *testing.T) {
 
 				return svc, ctx, po
 			},
-			want:   false,
+			want:    false,
 			wantErr: true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
@@ -225,11 +233,13 @@ func TestIsHasPublishPermission(t *testing.T) {
 }
 
 func TestIsHasUnPublishPermission(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		setup   func(*gomock.Controller) (*releaseSvc, context.Context, *dapo.DataAgentPo)
 		want    bool
-		wantErr  bool
+		wantErr bool
 	}{
 		{
 			name: "owner has unpublish permission",
@@ -259,7 +269,7 @@ func TestIsHasUnPublishPermission(t *testing.T) {
 
 				return svc, ctx, po
 			},
-			want:   true,
+			want:    true,
 			wantErr: false,
 		},
 		{
@@ -290,7 +300,7 @@ func TestIsHasUnPublishPermission(t *testing.T) {
 
 				return svc, ctx, po
 			},
-			want:   false,
+			want:    false,
 			wantErr: false,
 		},
 		{
@@ -321,13 +331,15 @@ func TestIsHasUnPublishPermission(t *testing.T) {
 
 				return svc, ctx, po
 			},
-			want:   false,
+			want:    false,
 			wantErr: true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
@@ -345,12 +357,14 @@ func TestIsHasUnPublishPermission(t *testing.T) {
 }
 
 func TestIsHasPubOrUnPubPms(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name       string
 		setup      func(*gomock.Controller) (*releaseSvc, context.Context, *dapo.DataAgentPo)
 		operator   cdapmsenum.Operator
 		want       bool
-		wantErr     bool
+		wantErr    bool
 		errMessage string
 	}{
 		{
@@ -481,6 +495,8 @@ func TestIsHasPubOrUnPubPms(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 

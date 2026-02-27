@@ -10,6 +10,8 @@ import (
 )
 
 func TestProduct(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		eo      *producteo.Product
@@ -60,11 +62,14 @@ func TestProduct(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			po, err := Product(tt.eo)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {
 				require.NoError(t, err)
+
 				if tt.checkPO != nil {
 					tt.checkPO(t, po)
 				}
@@ -74,6 +79,8 @@ func TestProduct(t *testing.T) {
 }
 
 func TestProduct_EmptyProduct(t *testing.T) {
+	t.Parallel()
+
 	eo := &producteo.Product{}
 	po, err := Product(eo)
 
@@ -82,6 +89,8 @@ func TestProduct_EmptyProduct(t *testing.T) {
 }
 
 func TestProduct_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	eo := &producteo.Product{
 		ProductPo: dapo.ProductPo{
 			ID:        100,
@@ -109,6 +118,8 @@ func TestProduct_WithAllFields(t *testing.T) {
 }
 
 func TestProduct_WithChineseCharacters(t *testing.T) {
+	t.Parallel()
+
 	eo := &producteo.Product{
 		ProductPo: dapo.ProductPo{
 			ID:      1,
@@ -126,6 +137,8 @@ func TestProduct_WithChineseCharacters(t *testing.T) {
 }
 
 func TestProduct_WithZeroValues(t *testing.T) {
+	t.Parallel()
+
 	eo := &producteo.Product{
 		ProductPo: dapo.ProductPo{
 			ID:   0,

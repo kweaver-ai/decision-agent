@@ -11,6 +11,8 @@ import (
 )
 
 func TestNewAgentSvc_WithMinimalDto(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -31,12 +33,16 @@ func TestNewAgentSvc_WithMinimalDto(t *testing.T) {
 }
 
 func TestNewAgentSvc_WithNilDto_Panics(t *testing.T) {
+	t.Parallel()
+
 	assert.Panics(t, func() {
 		_ = NewAgentSvc(nil)
 	})
 }
 
 func TestNewAgentSvc_WithFullDto(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -61,6 +67,8 @@ func TestNewAgentSvc_WithFullDto(t *testing.T) {
 }
 
 func TestNewAgentSvc_SyncMapsInitialized(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -88,6 +96,8 @@ func TestNewAgentSvc_SyncMapsInitialized(t *testing.T) {
 }
 
 func TestAgentSvc_ImplementsInterface(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -103,10 +113,13 @@ func TestAgentSvc_ImplementsInterface(t *testing.T) {
 
 	// Verify the type assertion at compile time
 	var _ interface{} = svc
+
 	assert.NotNil(t, svc)
 }
 
 func TestNewAgentSvcDto_DefaultValues(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

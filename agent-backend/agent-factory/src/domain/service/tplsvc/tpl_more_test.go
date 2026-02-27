@@ -38,6 +38,7 @@ func TestDataAgentTplSvc_UpdatePublishInfo_GetByTplIDError(t *testing.T) {
 	}
 
 	po := &dapo.DataAgentTplPo{ID: 1, Name: "tpl1", CreatedBy: "u1"}
+
 	mockPms.EXPECT().GetSingleMgmtPermission(gomock.Any(), gomock.Any(), gomock.Any()).Return(true, nil)
 	mockTplRepo.EXPECT().GetByID(gomock.Any(), int64(1)).Return(po, nil)
 	mockPubedRepo.EXPECT().GetByTplID(gomock.Any(), int64(1)).Return(nil, errors.New("db error"))
@@ -65,6 +66,7 @@ func TestDataAgentTplSvc_UpdatePublishInfo_NotOwner(t *testing.T) {
 	// Creator is u2, current user is u1 → should fail with 403
 	ctx := createTplCtxWithUserID("u1")
 	po := &dapo.DataAgentTplPo{ID: 5, Name: "tpl5", CreatedBy: "u2"}
+
 	mockPms.EXPECT().GetSingleMgmtPermission(gomock.Any(), gomock.Any(), gomock.Any()).Return(true, nil)
 	mockTplRepo.EXPECT().GetByID(gomock.Any(), int64(5)).Return(po, nil)
 	mockPubedRepo.EXPECT().GetByTplID(gomock.Any(), int64(5)).Return(&dapo.PublishedTplPo{ID: 50, TplID: 5}, nil)
@@ -91,6 +93,7 @@ func TestDataAgentTplSvc_UpdatePublishInfo_BeginTxError(t *testing.T) {
 
 	ctx := createTplCtxWithUserID("u1")
 	po := &dapo.DataAgentTplPo{ID: 6, Name: "tpl6", CreatedBy: "u1"}
+
 	mockPms.EXPECT().GetSingleMgmtPermission(gomock.Any(), gomock.Any(), gomock.Any()).Return(true, nil)
 	mockTplRepo.EXPECT().GetByID(gomock.Any(), int64(6)).Return(po, nil)
 	mockPubedRepo.EXPECT().GetByTplID(gomock.Any(), int64(6)).Return(&dapo.PublishedTplPo{ID: 60, TplID: 6}, nil)
@@ -122,6 +125,7 @@ func TestDataAgentTplSvc_Delete_BuiltIn_CannotDelete(t *testing.T) {
 		CreatedBy: "u1",
 		IsBuiltIn: &builtInYes,
 	}
+
 	mockTplRepo.EXPECT().ExistsByID(gomock.Any(), int64(10)).Return(true, nil)
 	mockTplRepo.EXPECT().GetByID(gomock.Any(), int64(10)).Return(po, nil)
 
@@ -149,6 +153,7 @@ func TestDataAgentTplSvc_Delete_BeginTxError(t *testing.T) {
 		CreatedBy: "u1",
 		IsBuiltIn: &builtInNo,
 	}
+
 	mockTplRepo.EXPECT().ExistsByID(gomock.Any(), int64(11)).Return(true, nil)
 	mockTplRepo.EXPECT().GetByID(gomock.Any(), int64(11)).Return(po, nil)
 	mockTplRepo.EXPECT().BeginTx(gomock.Any()).Return(nil, errors.New("tx failed"))
@@ -164,9 +169,11 @@ func TestDataAgentTplSvc_Delete_RepoDeleteError(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectRollback()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -181,6 +188,7 @@ func TestDataAgentTplSvc_Delete_RepoDeleteError(t *testing.T) {
 	}
 
 	po := &dapo.DataAgentTplPo{ID: 12, Name: "Tpl12", Status: cdaenum.StatusUnpublished, CreatedBy: "u1", IsBuiltIn: &builtInNo}
+
 	mockTplRepo.EXPECT().ExistsByID(gomock.Any(), int64(12)).Return(true, nil)
 	mockTplRepo.EXPECT().GetByID(gomock.Any(), int64(12)).Return(po, nil)
 	mockTplRepo.EXPECT().BeginTx(gomock.Any()).Return(tx, nil)
@@ -198,9 +206,11 @@ func TestDataAgentTplSvc_Delete_DeletePublishedError(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectRollback()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -215,6 +225,7 @@ func TestDataAgentTplSvc_Delete_DeletePublishedError(t *testing.T) {
 	}
 
 	po := &dapo.DataAgentTplPo{ID: 13, Name: "Tpl13", Status: cdaenum.StatusUnpublished, CreatedBy: "u1", IsBuiltIn: &builtInNo}
+
 	mockTplRepo.EXPECT().ExistsByID(gomock.Any(), int64(13)).Return(true, nil)
 	mockTplRepo.EXPECT().GetByID(gomock.Any(), int64(13)).Return(po, nil)
 	mockTplRepo.EXPECT().BeginTx(gomock.Any()).Return(tx, nil)
@@ -233,9 +244,11 @@ func TestDataAgentTplSvc_Delete_BdRelDeleteError(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectRollback()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -253,6 +266,7 @@ func TestDataAgentTplSvc_Delete_BdRelDeleteError(t *testing.T) {
 
 	ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-99")
 	po := &dapo.DataAgentTplPo{ID: 14, Name: "Tpl14", Status: cdaenum.StatusUnpublished, CreatedBy: "u1", IsBuiltIn: &builtInNo}
+
 	mockTplRepo.EXPECT().ExistsByID(gomock.Any(), int64(14)).Return(true, nil)
 	mockTplRepo.EXPECT().GetByID(gomock.Any(), int64(14)).Return(po, nil)
 	mockTplRepo.EXPECT().BeginTx(gomock.Any()).Return(tx, nil)
@@ -271,9 +285,11 @@ func TestDataAgentTplSvc_Delete_DisassociateError(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectRollback()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -293,6 +309,7 @@ func TestDataAgentTplSvc_Delete_DisassociateError(t *testing.T) {
 
 	ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-99")
 	po := &dapo.DataAgentTplPo{ID: 15, Name: "Tpl15", Status: cdaenum.StatusUnpublished, CreatedBy: "u1", IsBuiltIn: &builtInNo}
+
 	mockTplRepo.EXPECT().ExistsByID(gomock.Any(), int64(15)).Return(true, nil)
 	mockTplRepo.EXPECT().GetByID(gomock.Any(), int64(15)).Return(po, nil)
 	mockTplRepo.EXPECT().BeginTx(gomock.Any()).Return(tx, nil)
@@ -321,6 +338,7 @@ func TestDataAgentTplSvc_Delete_IsPrivate_SkipsOwnerCheck(t *testing.T) {
 
 	// CreatedBy differs from uid, but isPrivate=true
 	po := &dapo.DataAgentTplPo{ID: 16, Name: "PrivateTpl", Status: cdaenum.StatusUnpublished, CreatedBy: "other-user", IsBuiltIn: &builtInNo}
+
 	mockTplRepo.EXPECT().ExistsByID(gomock.Any(), int64(16)).Return(true, nil)
 	mockTplRepo.EXPECT().GetByID(gomock.Any(), int64(16)).Return(po, nil)
 	mockTplRepo.EXPECT().BeginTx(gomock.Any()).Return(nil, errors.New("tx err"))

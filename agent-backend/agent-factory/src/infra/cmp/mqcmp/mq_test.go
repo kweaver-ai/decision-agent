@@ -5,7 +5,10 @@ import (
 )
 
 func TestMqClientStruct(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create mqClient struct", func(t *testing.T) {
+		t.Parallel()
 		// Test that we can create the struct (without initializing the actual client)
 		client := &mqClient{}
 
@@ -17,6 +20,7 @@ func TestMqClientStruct(t *testing.T) {
 		if client.pollIntervalMilliseconds != 0 {
 			t.Errorf("Expected pollIntervalMilliseconds to be 0, got %d", client.pollIntervalMilliseconds)
 		}
+
 		if client.maxInFlight != 0 {
 			t.Errorf("Expected maxInFlight to be 0, got %d", client.maxInFlight)
 		}
@@ -24,7 +28,10 @@ func TestMqClientStruct(t *testing.T) {
 }
 
 func TestNewMQClientWithPath(t *testing.T) {
+	t.Parallel()
+
 	t.Run("test function exists", func(t *testing.T) {
+		t.Parallel()
 		// This test verifies that NewMQClientWithPath function exists
 		// The actual functionality depends on global state and file system
 		// which are difficult to test in unit tests
@@ -35,6 +42,7 @@ func TestNewMQClientWithPath(t *testing.T) {
 	})
 
 	t.Run("test with custom path", func(t *testing.T) {
+		t.Parallel()
 		// Test that the function accepts a custom path parameter
 		customPath := "/custom/path/to/config.yaml"
 
@@ -54,29 +62,39 @@ func TestNewMQClientWithPath(t *testing.T) {
 }
 
 func TestMqClient_Publish(t *testing.T) {
+	t.Parallel()
+
 	t.Run("test method exists", func(t *testing.T) {
+		t.Parallel()
+
 		client := &mqClient{}
 
 		// Verify the method exists (compile-time check)
 		_ = client.Publish
-
 		// Note: Actually calling this will fail without proper client initialization
 	})
 }
 
 func TestMqClient_Subscribe(t *testing.T) {
+	t.Parallel()
+
 	t.Run("test method exists", func(t *testing.T) {
+		t.Parallel()
+
 		client := &mqClient{}
 
 		// Verify the method exists (compile-time check)
 		_ = client.Subscribe
-
 		// Note: Actually calling this will fail without proper client initialization
 	})
 }
 
 func TestMqClient_Close(t *testing.T) {
+	t.Parallel()
+
 	t.Run("test method exists", func(t *testing.T) {
+		t.Parallel()
+
 		client := &mqClient{}
 
 		// Verify the method exists (compile-time check)
@@ -86,7 +104,10 @@ func TestMqClient_Close(t *testing.T) {
 }
 
 func TestConfigPath(t *testing.T) {
+	t.Parallel()
+
 	t.Run("default config path", func(t *testing.T) {
+		t.Parallel()
 		// Verify the default config path constant
 		expectedPath := "/sysvol/conf/mq/mq_config.yaml"
 		if configPath != expectedPath {

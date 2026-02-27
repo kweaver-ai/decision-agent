@@ -4,15 +4,17 @@ import (
 	"context"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 )
 
 func TestCompareVersion(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		v1       string
@@ -113,6 +115,8 @@ func TestCompareVersion(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := compareVersion(tt.v1, tt.v2)
 			assert.Equal(t, tt.expected, result)
 		})
@@ -120,6 +124,8 @@ func TestCompareVersion(t *testing.T) {
 }
 
 func TestGetPublishHistoryList(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		agentID string
@@ -163,7 +169,7 @@ func TestGetPublishHistoryList(t *testing.T) {
 					Return(poList, int64(3), nil)
 
 				svc := &releaseSvc{
-					SvcBase:           service.NewSvcBase(),
+					SvcBase:            service.NewSvcBase(),
 					releaseHistoryRepo: releaseHistoryRepo,
 				}
 
@@ -184,7 +190,7 @@ func TestGetPublishHistoryList(t *testing.T) {
 					Return([]*dapo.ReleaseHistoryPO{}, int64(0), nil)
 
 				svc := &releaseSvc{
-					SvcBase:           service.NewSvcBase(),
+					SvcBase:            service.NewSvcBase(),
 					releaseHistoryRepo: releaseHistoryRepo,
 				}
 
@@ -205,7 +211,7 @@ func TestGetPublishHistoryList(t *testing.T) {
 					Return(nil, int64(0), assert.AnError)
 
 				svc := &releaseSvc{
-					SvcBase:           service.NewSvcBase(),
+					SvcBase:            service.NewSvcBase(),
 					releaseHistoryRepo: releaseHistoryRepo,
 				}
 
@@ -218,6 +224,8 @@ func TestGetPublishHistoryList(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
@@ -244,6 +252,8 @@ func TestGetPublishHistoryList(t *testing.T) {
 }
 
 func TestGetPublishHistoryInfo(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

@@ -8,6 +8,8 @@ import (
 )
 
 func TestLlmItem_ValObjCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		item *LlmItem
@@ -52,6 +54,8 @@ func TestLlmItem_ValObjCheck_Valid(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.item.ValObjCheck()
 			assert.NoError(t, err)
 		})
@@ -59,6 +63,8 @@ func TestLlmItem_ValObjCheck_Valid(t *testing.T) {
 }
 
 func TestLlmItem_ValObjCheck_Errors(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		item        *LlmItem
@@ -99,6 +105,8 @@ func TestLlmItem_ValObjCheck_Errors(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.item.ValObjCheck()
 			assert.Error(t, err)
 			assert.Contains(t, err.Error(), tt.expectedErr)
@@ -107,6 +115,8 @@ func TestLlmItem_ValObjCheck_Errors(t *testing.T) {
 }
 
 func TestLlmItem_ValObjCheck_Nil(t *testing.T) {
+	t.Parallel()
+
 	var item *LlmItem
 	// Nil pointer will panic, so we test for that
 	assert.Panics(t, func() {
@@ -115,6 +125,8 @@ func TestLlmItem_ValObjCheck_Nil(t *testing.T) {
 }
 
 func TestLlmItem_Fields(t *testing.T) {
+	t.Parallel()
+
 	config := &LlmConfig{
 		ID:               "llm-789",
 		Name:             "Test LLM Config",

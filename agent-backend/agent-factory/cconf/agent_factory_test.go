@@ -17,6 +17,7 @@ func TestAgentFactoryConf_Fields(t *testing.T) {
 		if af.PrivateSvc == nil {
 			t.Fatal("Expected PrivateSvc to be non-nil")
 		}
+
 		if af.PrivateSvc.Protocol != "http" {
 			t.Errorf("Expected Protocol to be 'http', got '%s'", af.PrivateSvc.Protocol)
 		}

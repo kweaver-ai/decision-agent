@@ -8,7 +8,11 @@ import (
 )
 
 func TestBuildVersion(t *testing.T) {
+	t.Parallel()
+
 	t.Run("with all fields", func(t *testing.T) {
+		t.Parallel()
+
 		buildInfo := &BuildInfo{
 			BranchName:      "main",
 			BuildTime:       "2024-01-01 12:00:00",
@@ -23,10 +27,12 @@ func TestBuildVersion(t *testing.T) {
 	})
 
 	t.Run("with empty fields", func(t *testing.T) {
+		t.Parallel()
+
 		buildInfo := &BuildInfo{
 			BranchName: "",
-			BuildTime: "",
-			CommitID:  "",
+			BuildTime:  "",
+			CommitID:   "",
 		}
 
 		version := BuildVersion(buildInfo)
@@ -36,6 +42,8 @@ func TestBuildVersion(t *testing.T) {
 	})
 
 	t.Run("with special characters", func(t *testing.T) {
+		t.Parallel()
+
 		buildInfo := &BuildInfo{
 			BranchName:      "feature/test-branch",
 			BuildTime:       "2024-01-01T12:00:00Z",
@@ -51,6 +59,8 @@ func TestBuildVersion(t *testing.T) {
 	})
 
 	t.Run("with chinese characters", func(t *testing.T) {
+		t.Parallel()
+
 		buildInfo := &BuildInfo{
 			BranchName:      "develop-分支",
 			BuildTime:       "2024年1月1日",
@@ -66,6 +76,8 @@ func TestBuildVersion(t *testing.T) {
 	})
 
 	t.Run("with only branch name", func(t *testing.T) {
+		t.Parallel()
+
 		buildInfo := &BuildInfo{
 			BranchName: "main",
 		}
@@ -78,6 +90,8 @@ func TestBuildVersion(t *testing.T) {
 }
 
 func TestBuildInfo_StructFields(t *testing.T) {
+	t.Parallel()
+
 	other := map[string]string{
 		"key1": "value1",
 		"key2": "value2",
@@ -100,6 +114,8 @@ func TestBuildInfo_StructFields(t *testing.T) {
 }
 
 func TestBuildInfo_Empty(t *testing.T) {
+	t.Parallel()
+
 	buildInfo := &BuildInfo{}
 
 	assert.Empty(t, buildInfo.BranchName)
@@ -110,6 +126,8 @@ func TestBuildInfo_Empty(t *testing.T) {
 }
 
 func TestBuildInfo_WithNilOther(t *testing.T) {
+	t.Parallel()
+
 	buildInfo := &BuildInfo{
 		Other: nil,
 	}
@@ -118,6 +136,8 @@ func TestBuildInfo_WithNilOther(t *testing.T) {
 }
 
 func TestPrintBuildInfo_Structure(t *testing.T) {
+	t.Parallel()
+
 	// Test that PrintBuildInfo can be called with proper structure
 	// (We don't test the actual log output as it's difficult to capture)
 	buildInfo := &BuildInfo{
@@ -152,6 +172,8 @@ func TestPrintBuildInfo_Structure(t *testing.T) {
 }
 
 func TestPrintBuildInfo_WithZeroDelay(t *testing.T) {
+	t.Parallel()
+
 	buildInfo := &BuildInfo{
 		BranchName: "main",
 		BuildTime:  "now",
@@ -173,6 +195,8 @@ func TestPrintBuildInfo_WithZeroDelay(t *testing.T) {
 }
 
 func TestPrintBuildInfo_WithEmptyOther(t *testing.T) {
+	t.Parallel()
+
 	buildInfo := &BuildInfo{
 		BranchName: "test",
 		BuildTime:  "2024-01-01",

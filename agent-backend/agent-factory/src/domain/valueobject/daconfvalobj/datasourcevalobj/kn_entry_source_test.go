@@ -7,6 +7,8 @@ import (
 )
 
 func TestKnEntrySource_ValObjCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	knEntry := &KnEntrySource{
 		KnEntryID: "entry-123",
 	}
@@ -16,6 +18,8 @@ func TestKnEntrySource_ValObjCheck_Valid(t *testing.T) {
 }
 
 func TestKnEntrySource_ValObjCheck_Error(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		kn   *KnEntrySource
@@ -34,6 +38,8 @@ func TestKnEntrySource_ValObjCheck_Error(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.kn.ValObjCheck()
 			assert.Error(t, err)
 			assert.Contains(t, err.Error(), "kn_entry_id is required")
@@ -42,6 +48,8 @@ func TestKnEntrySource_ValObjCheck_Error(t *testing.T) {
 }
 
 func TestKnEntrySource_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	knEntry := &KnEntrySource{}
 	errMap := knEntry.GetErrMsgMap()
 
@@ -51,6 +59,8 @@ func TestKnEntrySource_GetErrMsgMap(t *testing.T) {
 }
 
 func TestKnEntrySource_Fields(t *testing.T) {
+	t.Parallel()
+
 	knEntry := &KnEntrySource{
 		KnEntryID: "entry-456",
 	}

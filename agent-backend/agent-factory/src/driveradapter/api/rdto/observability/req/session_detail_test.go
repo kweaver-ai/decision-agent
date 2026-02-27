@@ -8,6 +8,8 @@ import (
 )
 
 func TestSessionDetailReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	accountType := cenum.AccountTypeApp
 	req := SessionDetailReq{
 		AgentID:        "agent-123",
@@ -31,6 +33,8 @@ func TestSessionDetailReq_StructFields(t *testing.T) {
 }
 
 func TestSessionDetailReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := SessionDetailReq{}
 
 	assert.Empty(t, req.AgentID)
@@ -44,6 +48,8 @@ func TestSessionDetailReq_Empty(t *testing.T) {
 }
 
 func TestSessionDetailReq_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	accountType := cenum.AccountTypeAnonymous
 	req := SessionDetailReq{
 		AgentID:        "complete-agent",

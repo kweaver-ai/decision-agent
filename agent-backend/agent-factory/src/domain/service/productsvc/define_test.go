@@ -7,6 +7,8 @@ import (
 )
 
 func TestNewProductService(t *testing.T) {
+	t.Parallel()
+
 	// First call creates the service
 	svc1 := NewProductService()
 	assert.NotNil(t, svc1)
@@ -17,8 +19,10 @@ func TestNewProductService(t *testing.T) {
 }
 
 func TestProductSvc_StructFields(t *testing.T) {
+	t.Parallel()
+
 	svc := NewProductService()
-	
+
 	// Type assertion to access internal fields
 	impl, ok := svc.(*productSvc)
 	assert.True(t, ok, "Service should be *productSvc type")
@@ -28,6 +32,8 @@ func TestProductSvc_StructFields(t *testing.T) {
 }
 
 func TestProductSvc_ConcurrentCreation(t *testing.T) {
+	t.Parallel()
+
 	done := make(chan bool)
 
 	// Create multiple goroutines that all call NewProductService

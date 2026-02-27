@@ -21,6 +21,7 @@ func createUnpublishCtx(userID string) context.Context {
 	visitor := &rest.Visitor{
 		ID: userID,
 	}
+
 	return context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), visitor)
 }
 

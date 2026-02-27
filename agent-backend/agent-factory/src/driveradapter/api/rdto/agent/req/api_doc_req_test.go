@@ -7,6 +7,8 @@ import (
 )
 
 func TestGetAPIDocReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := GetAPIDocReq{
 		AppKey:       "app-123",
 		AgentID:      "agent-456",
@@ -19,6 +21,8 @@ func TestGetAPIDocReq_StructFields(t *testing.T) {
 }
 
 func TestGetAPIDocReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := GetAPIDocReq{}
 
 	assert.Empty(t, req.AppKey)
@@ -27,6 +31,8 @@ func TestGetAPIDocReq_Empty(t *testing.T) {
 }
 
 func TestGetAPIDocReq_WithAppKey(t *testing.T) {
+	t.Parallel()
+
 	appKeys := []string{
 		"app-001",
 		"test-app",
@@ -41,6 +47,8 @@ func TestGetAPIDocReq_WithAppKey(t *testing.T) {
 }
 
 func TestGetAPIDocReq_WithAgentID(t *testing.T) {
+	t.Parallel()
+
 	agentIDs := []string{
 		"agent-001",
 		"test-agent",
@@ -55,6 +63,8 @@ func TestGetAPIDocReq_WithAgentID(t *testing.T) {
 }
 
 func TestGetAPIDocReq_WithAgentVersion(t *testing.T) {
+	t.Parallel()
+
 	versions := []string{
 		"v1.0.0",
 		"v2.1.3",
@@ -69,6 +79,8 @@ func TestGetAPIDocReq_WithAgentVersion(t *testing.T) {
 }
 
 func TestGetAPIDocReq_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	req := GetAPIDocReq{
 		AppKey:       "my-app",
 		AgentID:      "my-agent",

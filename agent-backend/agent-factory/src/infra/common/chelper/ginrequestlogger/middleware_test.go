@@ -13,6 +13,8 @@ import (
 )
 
 func TestRequestLogger_Middleware_Disabled(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
 
 	config := &httprequesthelper.Config{
@@ -39,17 +41,20 @@ func TestRequestLogger_Middleware_Disabled(t *testing.T) {
 }
 
 func TestRequestLogger_Middleware_Enabled(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
 
 	config := &httprequesthelper.Config{
-		Enabled:    true,
-		OutputMode: httprequesthelper.OutputModeConsole,
+		Enabled:     true,
+		OutputMode:  httprequesthelper.OutputModeConsole,
 		MaxBodySize: 1024,
 	}
 
 	logger, err := NewRequestLogger(config)
 	require.NoError(t, err)
 	require.NotNil(t, logger)
+
 	defer logger.Close()
 
 	router := gin.New()
@@ -67,17 +72,20 @@ func TestRequestLogger_Middleware_Enabled(t *testing.T) {
 }
 
 func TestRequestLogger_Middleware_WithRequestBody(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
 
 	config := &httprequesthelper.Config{
-		Enabled:    true,
-		OutputMode: httprequesthelper.OutputModeConsole,
+		Enabled:     true,
+		OutputMode:  httprequesthelper.OutputModeConsole,
 		MaxBodySize: 1024,
 	}
 
 	logger, err := NewRequestLogger(config)
 	require.NoError(t, err)
 	require.NotNil(t, logger)
+
 	defer logger.Close()
 
 	router := gin.New()
@@ -99,6 +107,8 @@ func TestRequestLogger_Middleware_WithRequestBody(t *testing.T) {
 }
 
 func TestDefaultMiddleware(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
 
 	// Reset and initialize default logger
@@ -128,6 +138,8 @@ func TestDefaultMiddleware(t *testing.T) {
 }
 
 func TestDefaultMiddleware_NotInitialized(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
 
 	// Reset default logger
@@ -150,6 +162,8 @@ func TestDefaultMiddleware_NotInitialized(t *testing.T) {
 }
 
 func TestRequestLogger_Middleware_WithErrorResponse(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
 
 	config := &httprequesthelper.Config{
@@ -160,6 +174,7 @@ func TestRequestLogger_Middleware_WithErrorResponse(t *testing.T) {
 	logger, err := NewRequestLogger(config)
 	require.NoError(t, err)
 	require.NotNil(t, logger)
+
 	defer logger.Close()
 
 	router := gin.New()
@@ -177,6 +192,8 @@ func TestRequestLogger_Middleware_WithErrorResponse(t *testing.T) {
 }
 
 func TestRequestLogger_Middleware_WithHeaders(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
 
 	config := &httprequesthelper.Config{
@@ -188,6 +205,7 @@ func TestRequestLogger_Middleware_WithHeaders(t *testing.T) {
 	logger, err := NewRequestLogger(config)
 	require.NoError(t, err)
 	require.NotNil(t, logger)
+
 	defer logger.Close()
 
 	router := gin.New()
@@ -199,6 +217,7 @@ func TestRequestLogger_Middleware_WithHeaders(t *testing.T) {
 
 	req := httptest.NewRequest("GET", "/test", nil)
 	req.Header.Set("User-Agent", "test-agent")
+
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 

@@ -8,6 +8,8 @@ import (
 )
 
 func TestNewDetailRes(t *testing.T) {
+	t.Parallel()
+
 	detail := NewDetailRes()
 
 	assert.NotNil(t, detail)
@@ -15,7 +17,11 @@ func TestNewDetailRes(t *testing.T) {
 }
 
 func TestDetailRes_LoadFromEo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("load from product eo", func(t *testing.T) {
+		t.Parallel()
+
 		detail := NewDetailRes()
 		eo := &producteo.Product{}
 
@@ -38,6 +44,8 @@ func TestDetailRes_LoadFromEo(t *testing.T) {
 	})
 
 	t.Run("with nil eo", func(t *testing.T) {
+		t.Parallel()
+
 		detail := NewDetailRes()
 
 		assert.Panics(t, func() {
@@ -47,6 +55,8 @@ func TestDetailRes_LoadFromEo(t *testing.T) {
 }
 
 func TestDetailRes_StructFields(t *testing.T) {
+	t.Parallel()
+
 	detail := &DetailRes{
 		ID:        456,
 		Name:      "Another Product",
@@ -65,6 +75,8 @@ func TestDetailRes_StructFields(t *testing.T) {
 }
 
 func TestDetailRes_Empty(t *testing.T) {
+	t.Parallel()
+
 	detail := &DetailRes{}
 
 	assert.Equal(t, int64(0), detail.ID)
@@ -76,6 +88,8 @@ func TestDetailRes_Empty(t *testing.T) {
 }
 
 func TestDetailRes_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	detail := &DetailRes{
 		ID:        789,
 		Name:      "Complete Product",

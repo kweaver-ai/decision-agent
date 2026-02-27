@@ -7,6 +7,8 @@ import (
 )
 
 func TestListReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := ListReq{
 		Name: "Test Space",
 	}
@@ -19,6 +21,8 @@ func TestListReq_StructFields(t *testing.T) {
 }
 
 func TestListReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := ListReq{}
 
 	assert.Empty(t, req.Name)
@@ -27,6 +31,8 @@ func TestListReq_Empty(t *testing.T) {
 }
 
 func TestListReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := ListReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -35,6 +41,8 @@ func TestListReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestListReq_WithPagination(t *testing.T) {
+	t.Parallel()
+
 	req := ListReq{}
 	req.Size = 20
 	req.Page = 2
@@ -44,6 +52,8 @@ func TestListReq_WithPagination(t *testing.T) {
 }
 
 func TestListReq_WithDefaultPagination(t *testing.T) {
+	t.Parallel()
+
 	req := ListReq{}
 	// PageSize has default values when Size is 0
 	req.Size = 0
@@ -54,6 +64,8 @@ func TestListReq_WithDefaultPagination(t *testing.T) {
 }
 
 func TestListReq_WithName(t *testing.T) {
+	t.Parallel()
+
 	names := []string{
 		"Test Space",
 		"中文空间",
@@ -70,6 +82,8 @@ func TestListReq_WithName(t *testing.T) {
 }
 
 func TestListReq_PaginationEdgeCases(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		page     int
@@ -104,6 +118,8 @@ func TestListReq_PaginationEdgeCases(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			req := ListReq{}
 			req.Page = tt.page
 			req.Size = tt.size
@@ -115,6 +131,8 @@ func TestListReq_PaginationEdgeCases(t *testing.T) {
 }
 
 func TestListReq_EmbeddedPageSize(t *testing.T) {
+	t.Parallel()
+
 	req := ListReq{}
 
 	// Verify that PageSize is embedded
@@ -131,6 +149,8 @@ func TestListReq_EmbeddedPageSize(t *testing.T) {
 }
 
 func TestListReq_WithNameFilter(t *testing.T) {
+	t.Parallel()
+
 	req := ListReq{
 		Name: "My Space",
 	}
@@ -144,6 +164,8 @@ func TestListReq_WithNameFilter(t *testing.T) {
 }
 
 func TestListReq_WithEmptyName(t *testing.T) {
+	t.Parallel()
+
 	req := ListReq{
 		Name: "",
 	}

@@ -9,6 +9,8 @@ import (
 )
 
 func TestNewExportResp(t *testing.T) {
+	t.Parallel()
+
 	resp := NewExportResp()
 
 	assert.NotNil(t, resp)
@@ -17,6 +19,8 @@ func TestNewExportResp(t *testing.T) {
 }
 
 func TestExportResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := ExportResp{
 		Agents: []*ExportAgentItem{
 			{
@@ -34,12 +38,16 @@ func TestExportResp_StructFields(t *testing.T) {
 }
 
 func TestExportResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := ExportResp{}
 
 	assert.Nil(t, resp.Agents)
 }
 
 func TestExportAgentItem_StructFields(t *testing.T) {
+	t.Parallel()
+
 	po := &dapo.DataAgentPo{
 		Key:  "agent-key-123",
 		Name: "Test Agent",
@@ -54,6 +62,8 @@ func TestExportAgentItem_StructFields(t *testing.T) {
 }
 
 func TestExportResp_AddAgent(t *testing.T) {
+	t.Parallel()
+
 	resp := NewExportResp()
 	po := &dapo.DataAgentPo{
 		Key:    "agent-123",
@@ -73,6 +83,8 @@ func TestExportResp_AddAgent(t *testing.T) {
 }
 
 func TestExportResp_AddAgent_WithInvalidConfig(t *testing.T) {
+	t.Parallel()
+
 	resp := NewExportResp()
 	// Create an agent with invalid JSON config - use a string with unmatched quotes
 	po := &dapo.DataAgentPo{
@@ -91,6 +103,8 @@ func TestExportResp_AddAgent_WithInvalidConfig(t *testing.T) {
 }
 
 func TestExportResp_AddAgent_WithEmptyConfig(t *testing.T) {
+	t.Parallel()
+
 	resp := NewExportResp()
 	// Create an agent with empty config - this should fail RemoveDataSourceFromConfig
 	po := &dapo.DataAgentPo{
@@ -106,6 +120,8 @@ func TestExportResp_AddAgent_WithEmptyConfig(t *testing.T) {
 }
 
 func TestExportResp_AddMultipleAgents(t *testing.T) {
+	t.Parallel()
+
 	resp := NewExportResp()
 
 	validConfig := `{"input":{"fields":[]},"output":{}}`
@@ -127,6 +143,8 @@ func TestExportResp_AddMultipleAgents(t *testing.T) {
 }
 
 func TestExportResp_GetSystemAgentFailItems(t *testing.T) {
+	t.Parallel()
+
 	resp := NewExportResp()
 
 	yes := cenum.YesNoInt8Yes
@@ -159,6 +177,8 @@ func TestExportResp_GetSystemAgentFailItems(t *testing.T) {
 }
 
 func TestExportResp_GetSystemAgentFailItems_NoSystemAgents(t *testing.T) {
+	t.Parallel()
+
 	resp := NewExportResp()
 
 	no := cenum.YesNoInt8No
@@ -178,6 +198,8 @@ func TestExportResp_GetSystemAgentFailItems_NoSystemAgents(t *testing.T) {
 }
 
 func TestExportResp_GetSystemAgentFailItems_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := NewExportResp()
 	failItems := resp.GetSystemAgentFailItems()
 
@@ -185,6 +207,8 @@ func TestExportResp_GetSystemAgentFailItems_Empty(t *testing.T) {
 }
 
 func TestExportResp_GetSystemAgentFailItems_MultipleSystemAgents(t *testing.T) {
+	t.Parallel()
+
 	resp := NewExportResp()
 
 	yes := cenum.YesNoInt8Yes
@@ -205,6 +229,8 @@ func TestExportResp_GetSystemAgentFailItems_MultipleSystemAgents(t *testing.T) {
 }
 
 func TestExportResp_AddAgentWithNilIsSystemAgent(t *testing.T) {
+	t.Parallel()
+
 	resp := NewExportResp()
 
 	validConfig := `{"input":{"fields":[]},"output":{}}`
@@ -223,12 +249,16 @@ func TestExportResp_AddAgentWithNilIsSystemAgent(t *testing.T) {
 }
 
 func TestExportAgentItem_Empty(t *testing.T) {
+	t.Parallel()
+
 	item := ExportAgentItem{}
 
 	assert.Nil(t, item.DataAgentPo)
 }
 
 func TestExportResp_AddAgentWithChineseCharacters(t *testing.T) {
+	t.Parallel()
+
 	resp := NewExportResp()
 
 	validConfig := `{"input":{"fields":[]},"output":{}}`
@@ -246,6 +276,8 @@ func TestExportResp_AddAgentWithChineseCharacters(t *testing.T) {
 }
 
 func TestExportResp_GetSystemAgentFailItems_WithMixedAgents(t *testing.T) {
+	t.Parallel()
+
 	resp := NewExportResp()
 
 	yes := cenum.YesNoInt8Yes
@@ -269,6 +301,8 @@ func TestExportResp_GetSystemAgentFailItems_WithMixedAgents(t *testing.T) {
 }
 
 func TestExportResp_NewExportRespInitialization(t *testing.T) {
+	t.Parallel()
+
 	resp := NewExportResp()
 
 	assert.NotNil(t, resp.Agents)
@@ -276,6 +310,8 @@ func TestExportResp_NewExportRespInitialization(t *testing.T) {
 }
 
 func TestExportResp_AddAgentPreservesDataSourceRemoval(t *testing.T) {
+	t.Parallel()
+
 	resp := NewExportResp()
 
 	validConfig := `{"input":{"fields":[]},"output":{},"data_source":{"type":"test"}}`

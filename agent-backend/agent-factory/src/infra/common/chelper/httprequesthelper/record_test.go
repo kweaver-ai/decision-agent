@@ -11,6 +11,8 @@ import (
 )
 
 func TestNewRequestRecord_BasicFields(t *testing.T) {
+	t.Parallel()
+
 	req, err := http.NewRequest("GET", "http://example.com/test", nil)
 	if err != nil {
 		t.Fatal(err)
@@ -26,8 +28,12 @@ func TestNewRequestRecord_BasicFields(t *testing.T) {
 }
 
 func TestNewRequestRecord_WithBody(t *testing.T) {
+	t.Parallel()
+
 	req, err := http.NewRequest("POST", "http://example.com/api", nil)
-	if err != nil { t.Fatal(err) }
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	body := `{"key":"value"}`
 	record := NewRequestRecord(req, body, false)
@@ -36,8 +42,13 @@ func TestNewRequestRecord_WithBody(t *testing.T) {
 }
 
 func TestNewRequestRecord_WithHeaders(t *testing.T) {
+	t.Parallel()
+
 	req, err := http.NewRequest("GET", "http://example.com/", nil)
-	if err != nil { t.Fatal(err) }
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Authorization", "Bearer token123")
 	req.Header.Set("Accept", "application/json")
@@ -51,8 +62,13 @@ func TestNewRequestRecord_WithHeaders(t *testing.T) {
 }
 
 func TestNewRequestRecord_WithoutHeaders(t *testing.T) {
+	t.Parallel()
+
 	req, err := http.NewRequest("GET", "http://example.com/", nil)
-	if err != nil { t.Fatal(err) }
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	req.Header.Set("Content-Type", "application/json")
 
 	record := NewRequestRecord(req, "", false)
@@ -61,6 +77,8 @@ func TestNewRequestRecord_WithoutHeaders(t *testing.T) {
 }
 
 func TestNewRequestRecord_HTTPS_URL(t *testing.T) {
+	t.Parallel()
+
 	req := &http.Request{
 		Method: "GET",
 		Host:   "example.com",
@@ -68,7 +86,7 @@ func TestNewRequestRecord_HTTPS_URL(t *testing.T) {
 			Scheme: "https",
 			Path:   "/test",
 		},
-		TLS:  &tls.ConnectionState{},
+		TLS: &tls.ConnectionState{},
 	}
 
 	record := NewRequestRecord(req, "", false)
@@ -77,6 +95,8 @@ func TestNewRequestRecord_HTTPS_URL(t *testing.T) {
 }
 
 func TestNewRequestRecord_HTTP_URL(t *testing.T) {
+	t.Parallel()
+
 	req := &http.Request{
 		Method: "GET",
 		Host:   "example.com",
@@ -91,8 +111,12 @@ func TestNewRequestRecord_HTTP_URL(t *testing.T) {
 }
 
 func TestNewRequestRecord_QueryParams(t *testing.T) {
+	t.Parallel()
+
 	req, err := http.NewRequest("GET", "http://example.com/api?key=value&foo=bar", nil)
-	if err != nil { t.Fatal(err) }
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	record := NewRequestRecord(req, "", false)
 
@@ -101,8 +125,13 @@ func TestNewRequestRecord_QueryParams(t *testing.T) {
 }
 
 func TestNewRequestRecord_MultiValueHeaders(t *testing.T) {
+	t.Parallel()
+
 	req, err := http.NewRequest("GET", "http://example.com/", nil)
-	if err != nil { t.Fatal(err) }
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	req.Header.Add("Set-Cookie", "cookie1=value1")
 	req.Header.Add("Set-Cookie", "cookie2=value2")
 
@@ -113,8 +142,10 @@ func TestNewRequestRecord_MultiValueHeaders(t *testing.T) {
 }
 
 func TestNewResponseRecord_BasicFields(t *testing.T) {
+	t.Parallel()
+
 	headers := http.Header{
-		"Content-Type": []string{"application/json"},
+		"Content-Type":  []string{"application/json"},
 		"Cache-Control": []string{"no-cache"},
 	}
 
@@ -127,9 +158,11 @@ func TestNewResponseRecord_BasicFields(t *testing.T) {
 }
 
 func TestNewResponseRecord_WithHeaders(t *testing.T) {
+	t.Parallel()
+
 	headers := http.Header{
-		"Content-Type":   []string{"application/json"},
-		"Authorization":  []string{"Bearer token"},
+		"Content-Type":  []string{"application/json"},
+		"Authorization": []string{"Bearer token"},
 	}
 
 	record := NewResponseRecord(200, headers, "", 0, true)
@@ -140,6 +173,8 @@ func TestNewResponseRecord_WithHeaders(t *testing.T) {
 }
 
 func TestNewResponseRecord_WithoutHeaders(t *testing.T) {
+	t.Parallel()
+
 	headers := http.Header{
 		"Content-Type": []string{"application/json"},
 	}
@@ -150,12 +185,16 @@ func TestNewResponseRecord_WithoutHeaders(t *testing.T) {
 }
 
 func TestNewResponseRecord_NilHeaders(t *testing.T) {
+	t.Parallel()
+
 	record := NewResponseRecord(200, nil, "", 0, true)
 
 	assert.Nil(t, record.Headers)
 }
 
 func TestNewResponseRecord_DurationMs(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		duration time.Duration
@@ -169,6 +208,8 @@ func TestNewResponseRecord_DurationMs(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			record := NewResponseRecord(200, nil, "", tt.duration, false)
 			assert.Equal(t, tt.expected, record.DurationMs)
 		})
@@ -176,10 +217,14 @@ func TestNewResponseRecord_DurationMs(t *testing.T) {
 }
 
 func TestNewResponseRecord_StatusCodes(t *testing.T) {
+	t.Parallel()
+
 	statusCodes := []int{200, 201, 301, 400, 404, 500, 503}
 
 	for _, code := range statusCodes {
 		t.Run(http.StatusText(code), func(t *testing.T) {
+			t.Parallel()
+
 			record := NewResponseRecord(code, nil, "", 0, false)
 			assert.Equal(t, code, record.StatusCode)
 		})
@@ -187,6 +232,8 @@ func TestNewResponseRecord_StatusCodes(t *testing.T) {
 }
 
 func TestNewResponseRecord_MultiValueHeaders(t *testing.T) {
+	t.Parallel()
+
 	headers := http.Header{
 		"Set-Cookie": []string{"cookie1=value1", "cookie2=value2"},
 	}
@@ -198,6 +245,8 @@ func TestNewResponseRecord_MultiValueHeaders(t *testing.T) {
 }
 
 func TestLogRecord_Structure(t *testing.T) {
+	t.Parallel()
+
 	reqRecord := RequestRecord{
 		Timestamp: time.Now(),
 		Method:    "GET",
@@ -222,6 +271,8 @@ func TestLogRecord_Structure(t *testing.T) {
 }
 
 func TestRequestRecord_AllFields(t *testing.T) {
+	t.Parallel()
+
 	now := time.Now()
 	record := RequestRecord{
 		Timestamp: now,
@@ -241,6 +292,8 @@ func TestRequestRecord_AllFields(t *testing.T) {
 }
 
 func TestResponseRecord_AllFields(t *testing.T) {
+	t.Parallel()
+
 	record := ResponseRecord{
 		StatusCode: 201,
 		Headers: map[string]string{

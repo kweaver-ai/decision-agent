@@ -258,7 +258,6 @@ func (svc *releaseSvc) Publish(ctx context.Context, req *releasereq.PublishReq) 
 		return
 	}
 
-
 	err = tx.Commit()
 	if err != nil {
 		err = errors.Wrapf(err, "commit transaction failed")

@@ -11,8 +11,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/conf"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/published/pubedreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/umcmp/umtypes"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cglobal"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iauthzacc/authzaccmock"
@@ -61,6 +61,8 @@ func newPublishedJoinPo(id string, isPmsCtrl int, publishedAt int64) *dapo.Publi
 }
 
 func TestPublishedSvc_getPos(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -68,6 +70,7 @@ func TestPublishedSvc_getPos(t *testing.T) {
 	svc := &publishedSvc{pubedAgentRepo: mockRepo}
 
 	t.Run("repo error", func(t *testing.T) {
+		t.Parallel()
 		mockRepo.EXPECT().GetPubedList(gomock.Any(), gomock.Any()).
 			Return(nil, errors.New("db failed"))
 
@@ -78,6 +81,7 @@ func TestPublishedSvc_getPos(t *testing.T) {
 	})
 
 	t.Run("filter by business domain ids", func(t *testing.T) {
+		t.Parallel()
 		mockRepo.EXPECT().GetPubedList(gomock.Any(), gomock.Any()).
 			Return([]*dapo.PublishedJoinPo{
 				newPublishedJoinPo("a1", 0, 11),
@@ -92,7 +96,10 @@ func TestPublishedSvc_getPos(t *testing.T) {
 }
 
 func TestPublishedSvc_getPmsAgentPos(t *testing.T) {
+	t.Parallel()
+
 	t.Run("biz domain http error", func(t *testing.T) {
+		t.Parallel()
 		setDisablePmsCheck(t, false)
 
 		ctrl := gomock.NewController(t)
@@ -118,6 +125,7 @@ func TestPublishedSvc_getPmsAgentPos(t *testing.T) {
 	})
 
 	t.Run("no agent id from biz domain", func(t *testing.T) {
+		t.Parallel()
 		setDisablePmsCheck(t, false)
 
 		ctrl := gomock.NewController(t)
@@ -143,6 +151,7 @@ func TestPublishedSvc_getPmsAgentPos(t *testing.T) {
 	})
 
 	t.Run("repo get list error", func(t *testing.T) {
+		t.Parallel()
 		setDisablePmsCheck(t, false)
 
 		ctrl := gomock.NewController(t)
@@ -170,6 +179,7 @@ func TestPublishedSvc_getPmsAgentPos(t *testing.T) {
 	})
 
 	t.Run("disable pms check returns original pos", func(t *testing.T) {
+		t.Parallel()
 		setDisablePmsCheck(t, true)
 
 		ctrl := gomock.NewController(t)
@@ -198,6 +208,7 @@ func TestPublishedSvc_getPmsAgentPos(t *testing.T) {
 	})
 
 	t.Run("authz filter error", func(t *testing.T) {
+		t.Parallel()
 		setDisablePmsCheck(t, false)
 
 		ctrl := gomock.NewController(t)
@@ -227,6 +238,7 @@ func TestPublishedSvc_getPmsAgentPos(t *testing.T) {
 	})
 
 	t.Run("pms filter loops and doubles page size", func(t *testing.T) {
+		t.Parallel()
 		setDisablePmsCheck(t, false)
 
 		ctrl := gomock.NewController(t)
@@ -242,6 +254,7 @@ func TestPublishedSvc_getPmsAgentPos(t *testing.T) {
 		}
 
 		req := &pubedreq.PubedAgentListReq{Size: 1001}
+
 		mockBizDomain.EXPECT().GetAllAgentIDList(gomock.Any(), gomock.Any()).
 			Return([]string{"a1"}, map[string]string{"a1": "bd-1"}, nil)
 
@@ -251,6 +264,7 @@ func TestPublishedSvc_getPmsAgentPos(t *testing.T) {
 		}
 
 		callCount := 0
+
 		mockRepo.EXPECT().GetPubedList(gomock.Any(), gomock.Any()).Times(2).
 			DoAndReturn(func(_ context.Context, r *pubedreq.PubedAgentListReq) ([]*dapo.PublishedJoinPo, error) {
 				callCount++
@@ -261,10 +275,12 @@ func TestPublishedSvc_getPmsAgentPos(t *testing.T) {
 
 				assert.Equal(t, 2002, r.Size)
 				assert.NotNil(t, r.Marker)
+
 				return []*dapo.PublishedJoinPo{newPublishedJoinPo("a1", 1, 2000)}, nil
 			})
 
 		authzCount := 0
+
 		mockAuthz.EXPECT().FilterCanUseAgentIDMap(gomock.Any(), gomock.Any(), gomock.Any()).Times(2).
 			DoAndReturn(func(_ context.Context, _ string, agentIDs []string) (map[string]struct{}, error) {
 				authzCount++
@@ -274,6 +290,7 @@ func TestPublishedSvc_getPmsAgentPos(t *testing.T) {
 				}
 
 				assert.Equal(t, []string{"a1"}, agentIDs)
+
 				return map[string]struct{}{"a1": {}}, nil
 			})
 
@@ -287,7 +304,10 @@ func TestPublishedSvc_getPmsAgentPos(t *testing.T) {
 }
 
 func TestPublishedSvc_GetPublishedAgentList(t *testing.T) {
+	t.Parallel()
+
 	t.Run("get pms agent pos error", func(t *testing.T) {
+		t.Parallel()
 		setDisablePmsCheck(t, false)
 
 		ctrl := gomock.NewController(t)
@@ -313,6 +333,7 @@ func TestPublishedSvc_GetPublishedAgentList(t *testing.T) {
 	})
 
 	t.Run("convert error from p2e", func(t *testing.T) {
+		t.Parallel()
 		setDisablePmsCheck(t, true)
 
 		ctrl := gomock.NewController(t)
@@ -343,6 +364,7 @@ func TestPublishedSvc_GetPublishedAgentList(t *testing.T) {
 	})
 
 	t.Run("success", func(t *testing.T) {
+		t.Parallel()
 		setDisablePmsCheck(t, true)
 
 		ctrl := gomock.NewController(t)
@@ -363,6 +385,7 @@ func TestPublishedSvc_GetPublishedAgentList(t *testing.T) {
 			Return([]string{"a1"}, map[string]string{"a1": "bd-1"}, nil)
 		mockRepo.EXPECT().GetPubedList(gomock.Any(), gomock.Any()).
 			Return([]*dapo.PublishedJoinPo{newPublishedJoinPo("a1", 0, 11)}, nil)
+
 		umRet := umtypes.NewOsnInfoMapS()
 		umRet.UserNameMap["u1"] = "user-1"
 		mockUm.EXPECT().GetOsnNames(gomock.Any(), gomock.Any()).
@@ -379,6 +402,8 @@ func TestPublishedSvc_GetPublishedAgentList(t *testing.T) {
 }
 
 func TestPublishedSvc_getPmsAgentPos_SizeCapAt10000(t *testing.T) {
+	t.Parallel()
+
 	setDisablePmsCheck(t, false)
 
 	ctrl := gomock.NewController(t)
@@ -394,10 +419,12 @@ func TestPublishedSvc_getPmsAgentPos_SizeCapAt10000(t *testing.T) {
 	}
 
 	req := &pubedreq.PubedAgentListReq{Size: 6000}
+
 	mockBizDomain.EXPECT().GetAllAgentIDList(gomock.Any(), gomock.Any()).
 		Return([]string{"a1"}, map[string]string{"a1": "bd-1"}, nil)
 
 	callCount := 0
+
 	firstPagePos := make([]*dapo.PublishedJoinPo, 0, 6000)
 	for i := 0; i < 6000; i++ {
 		firstPagePos = append(firstPagePos, newPublishedJoinPo("a1", 1, int64(i+1)))
@@ -413,6 +440,7 @@ func TestPublishedSvc_getPmsAgentPos_SizeCapAt10000(t *testing.T) {
 
 			assert.Equal(t, 10000, r.Size)
 			assert.NotNil(t, r.Marker)
+
 			return []*dapo.PublishedJoinPo{newPublishedJoinPo("a1", 1, 10001)}, nil
 		})
 	mockAuthz.EXPECT().FilterCanUseAgentIDMap(gomock.Any(), gomock.Any(), gomock.Any()).Times(2).
@@ -425,6 +453,8 @@ func TestPublishedSvc_getPmsAgentPos_SizeCapAt10000(t *testing.T) {
 }
 
 func TestPublishedSvc_GetPublishedAgentList_EmptyPos(t *testing.T) {
+	t.Parallel()
+
 	setDisablePmsCheck(t, true)
 
 	ctrl := gomock.NewController(t)

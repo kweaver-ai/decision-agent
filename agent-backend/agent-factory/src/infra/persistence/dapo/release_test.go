@@ -9,7 +9,11 @@ import (
 )
 
 func TestPublishedToBeStruct_SelectFieldsZero(t *testing.T) {
+	t.Parallel()
+
 	t.Run("select fields zero", func(t *testing.T) {
+		t.Parallel()
+
 		structVal := &PublishedToBeStruct{}
 		result := structVal.SelectFieldsZero()
 
@@ -21,7 +25,11 @@ func TestPublishedToBeStruct_SelectFieldsZero(t *testing.T) {
 }
 
 func TestPublishedToBeStruct_LoadFromReleasePo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("nil po", func(t *testing.T) {
+		t.Parallel()
+
 		structVal := &PublishedToBeStruct{}
 		structVal.LoadFromReleasePo(nil)
 
@@ -32,6 +40,8 @@ func TestPublishedToBeStruct_LoadFromReleasePo(t *testing.T) {
 	})
 
 	t.Run("with all fields set", func(t *testing.T) {
+		t.Parallel()
+
 		isAPI := 1
 		isWebSDK := 0
 		isSkill := 1
@@ -50,12 +60,15 @@ func TestPublishedToBeStruct_LoadFromReleasePo(t *testing.T) {
 		if structVal.IsAPIAgent != 1 {
 			t.Errorf("Expected IsAPIAgent to be 1, got %d", structVal.IsAPIAgent)
 		}
+
 		if structVal.IsWebSDKAgent != 0 {
 			t.Errorf("Expected IsWebSDKAgent to be 0, got %d", structVal.IsWebSDKAgent)
 		}
+
 		if structVal.IsSkillAgent != 1 {
 			t.Errorf("Expected IsSkillAgent to be 1, got %d", structVal.IsSkillAgent)
 		}
+
 		if structVal.IsDataFlowAgent != 0 {
 			t.Errorf("Expected IsDataFlowAgent to be 0, got %d", structVal.IsDataFlowAgent)
 		}
@@ -63,7 +76,11 @@ func TestPublishedToBeStruct_LoadFromReleasePo(t *testing.T) {
 }
 
 func TestReleasePO_TableName(t *testing.T) {
+	t.Parallel()
+
 	t.Run("table name", func(t *testing.T) {
+		t.Parallel()
+
 		po := &ReleasePO{}
 		tableName := po.TableName()
 
@@ -75,7 +92,11 @@ func TestReleasePO_TableName(t *testing.T) {
 }
 
 func TestReleasePO_IsAPIAgentBool(t *testing.T) {
+	t.Parallel()
+
 	t.Run("nil field", func(t *testing.T) {
+		t.Parallel()
+
 		po := &ReleasePO{IsAPIAgent: nil}
 		result := po.IsAPIAgentBool()
 
@@ -85,6 +106,8 @@ func TestReleasePO_IsAPIAgentBool(t *testing.T) {
 	})
 
 	t.Run("true value", func(t *testing.T) {
+		t.Parallel()
+
 		val := 1
 		po := &ReleasePO{IsAPIAgent: &val}
 		result := po.IsAPIAgentBool()
@@ -95,6 +118,8 @@ func TestReleasePO_IsAPIAgentBool(t *testing.T) {
 	})
 
 	t.Run("false value", func(t *testing.T) {
+		t.Parallel()
+
 		val := 0
 		po := &ReleasePO{IsAPIAgent: &val}
 		result := po.IsAPIAgentBool()
@@ -106,7 +131,11 @@ func TestReleasePO_IsAPIAgentBool(t *testing.T) {
 }
 
 func TestReleasePO_IsWebSDKAgentBool(t *testing.T) {
+	t.Parallel()
+
 	t.Run("nil field", func(t *testing.T) {
+		t.Parallel()
+
 		po := &ReleasePO{IsWebSDKAgent: nil}
 		result := po.IsWebSDKAgentBool()
 
@@ -116,6 +145,8 @@ func TestReleasePO_IsWebSDKAgentBool(t *testing.T) {
 	})
 
 	t.Run("true value", func(t *testing.T) {
+		t.Parallel()
+
 		val := 1
 		po := &ReleasePO{IsWebSDKAgent: &val}
 		result := po.IsWebSDKAgentBool()
@@ -127,7 +158,11 @@ func TestReleasePO_IsWebSDKAgentBool(t *testing.T) {
 }
 
 func TestReleasePO_IsSkillAgentBool(t *testing.T) {
+	t.Parallel()
+
 	t.Run("nil field", func(t *testing.T) {
+		t.Parallel()
+
 		po := &ReleasePO{IsSkillAgent: nil}
 		result := po.IsSkillAgentBool()
 
@@ -137,6 +172,8 @@ func TestReleasePO_IsSkillAgentBool(t *testing.T) {
 	})
 
 	t.Run("true value", func(t *testing.T) {
+		t.Parallel()
+
 		val := 1
 		po := &ReleasePO{IsSkillAgent: &val}
 		result := po.IsSkillAgentBool()
@@ -148,7 +185,11 @@ func TestReleasePO_IsSkillAgentBool(t *testing.T) {
 }
 
 func TestReleasePO_IsDataFlowAgentBool(t *testing.T) {
+	t.Parallel()
+
 	t.Run("nil field", func(t *testing.T) {
+		t.Parallel()
+
 		po := &ReleasePO{IsDataFlowAgent: nil}
 		result := po.IsDataFlowAgentBool()
 
@@ -158,6 +199,8 @@ func TestReleasePO_IsDataFlowAgentBool(t *testing.T) {
 	})
 
 	t.Run("true value", func(t *testing.T) {
+		t.Parallel()
+
 		val := 1
 		po := &ReleasePO{IsDataFlowAgent: &val}
 		result := po.IsDataFlowAgentBool()
@@ -169,7 +212,11 @@ func TestReleasePO_IsDataFlowAgentBool(t *testing.T) {
 }
 
 func TestReleasePO_ResetPublishToBes(t *testing.T) {
+	t.Parallel()
+
 	t.Run("reset all to zero", func(t *testing.T) {
+		t.Parallel()
+
 		val := 1
 		po := &ReleasePO{
 			IsAPIAgent:      &val,
@@ -183,12 +230,15 @@ func TestReleasePO_ResetPublishToBes(t *testing.T) {
 		if po.IsAPIAgent == nil || *po.IsAPIAgent != 0 {
 			t.Error("Expected IsAPIAgent to be set to 0")
 		}
+
 		if po.IsWebSDKAgent == nil || *po.IsWebSDKAgent != 0 {
 			t.Error("Expected IsWebSDKAgent to be set to 0")
 		}
+
 		if po.IsSkillAgent == nil || *po.IsSkillAgent != 0 {
 			t.Error("Expected IsSkillAgent to be set to 0")
 		}
+
 		if po.IsDataFlowAgent == nil || *po.IsDataFlowAgent != 0 {
 			t.Error("Expected IsDataFlowAgent to be set to 0")
 		}
@@ -196,7 +246,11 @@ func TestReleasePO_ResetPublishToBes(t *testing.T) {
 }
 
 func TestReleasePO_SetPublishToBes(t *testing.T) {
+	t.Parallel()
+
 	t.Run("set all types", func(t *testing.T) {
+		t.Parallel()
+
 		po := &ReleasePO{}
 		toBes := []cdaenum.PublishToBe{
 			cdaenum.PublishToBeAPIAgent,
@@ -210,12 +264,15 @@ func TestReleasePO_SetPublishToBes(t *testing.T) {
 		if po.IsAPIAgent == nil || *po.IsAPIAgent != 1 {
 			t.Error("Expected IsAPIAgent to be set to 1")
 		}
+
 		if po.IsWebSDKAgent == nil || *po.IsWebSDKAgent != 1 {
 			t.Error("Expected IsWebSDKAgent to be set to 1")
 		}
+
 		if po.IsSkillAgent == nil || *po.IsSkillAgent != 1 {
 			t.Error("Expected IsSkillAgent to be set to 1")
 		}
+
 		if po.IsDataFlowAgent == nil || *po.IsDataFlowAgent != 1 {
 			t.Error("Expected IsDataFlowAgent to be set to 1")
 		}
@@ -223,7 +280,11 @@ func TestReleasePO_SetPublishToBes(t *testing.T) {
 }
 
 func TestReleasePO_IsToCustomSpaceBool(t *testing.T) {
+	t.Parallel()
+
 	t.Run("nil field", func(t *testing.T) {
+		t.Parallel()
+
 		po := &ReleasePO{IsToCustomSpace: nil}
 		result := po.IsToCustomSpaceBool()
 
@@ -233,6 +294,8 @@ func TestReleasePO_IsToCustomSpaceBool(t *testing.T) {
 	})
 
 	t.Run("true value", func(t *testing.T) {
+		t.Parallel()
+
 		val := 1
 		po := &ReleasePO{IsToCustomSpace: &val}
 		result := po.IsToCustomSpaceBool()
@@ -244,7 +307,11 @@ func TestReleasePO_IsToCustomSpaceBool(t *testing.T) {
 }
 
 func TestReleasePO_IsToSquareBool(t *testing.T) {
+	t.Parallel()
+
 	t.Run("nil field", func(t *testing.T) {
+		t.Parallel()
+
 		po := &ReleasePO{IsToSquare: nil}
 		result := po.IsToSquareBool()
 
@@ -254,6 +321,8 @@ func TestReleasePO_IsToSquareBool(t *testing.T) {
 	})
 
 	t.Run("true value", func(t *testing.T) {
+		t.Parallel()
+
 		val := 1
 		po := &ReleasePO{IsToSquare: &val}
 		result := po.IsToSquareBool()
@@ -265,7 +334,11 @@ func TestReleasePO_IsToSquareBool(t *testing.T) {
 }
 
 func TestReleasePO_ResetPublishToWhere(t *testing.T) {
+	t.Parallel()
+
 	t.Run("reset all to zero", func(t *testing.T) {
+		t.Parallel()
+
 		val := 1
 		po := &ReleasePO{
 			IsToCustomSpace: &val,
@@ -277,6 +350,7 @@ func TestReleasePO_ResetPublishToWhere(t *testing.T) {
 		if po.IsToCustomSpace == nil || *po.IsToCustomSpace != 0 {
 			t.Error("Expected IsToCustomSpace to be set to 0")
 		}
+
 		if po.IsToSquare == nil || *po.IsToSquare != 0 {
 			t.Error("Expected IsToSquare to be set to 0")
 		}
@@ -284,7 +358,11 @@ func TestReleasePO_ResetPublishToWhere(t *testing.T) {
 }
 
 func TestReleasePO_SetPublishToWhere(t *testing.T) {
+	t.Parallel()
+
 	t.Run("set both types", func(t *testing.T) {
+		t.Parallel()
+
 		po := &ReleasePO{}
 		tos := []daenum.PublishToWhere{
 			daenum.PublishToWhereCustomSpace,
@@ -296,6 +374,7 @@ func TestReleasePO_SetPublishToWhere(t *testing.T) {
 		if po.IsToCustomSpace == nil || *po.IsToCustomSpace != 1 {
 			t.Error("Expected IsToCustomSpace to be set to 1")
 		}
+
 		if po.IsToSquare == nil || *po.IsToSquare != 1 {
 			t.Error("Expected IsToSquare to be set to 1")
 		}
@@ -303,7 +382,11 @@ func TestReleasePO_SetPublishToWhere(t *testing.T) {
 }
 
 func TestReleasePO_IsPmsCtrlBool(t *testing.T) {
+	t.Parallel()
+
 	t.Run("nil field", func(t *testing.T) {
+		t.Parallel()
+
 		po := &ReleasePO{IsPmsCtrl: nil}
 		result := po.IsPmsCtrlBool()
 
@@ -313,6 +396,8 @@ func TestReleasePO_IsPmsCtrlBool(t *testing.T) {
 	})
 
 	t.Run("true value", func(t *testing.T) {
+		t.Parallel()
+
 		val := 1
 		po := &ReleasePO{IsPmsCtrl: &val}
 		result := po.IsPmsCtrlBool()
@@ -323,6 +408,8 @@ func TestReleasePO_IsPmsCtrlBool(t *testing.T) {
 	})
 
 	t.Run("false value", func(t *testing.T) {
+		t.Parallel()
+
 		val := 0
 		po := &ReleasePO{IsPmsCtrl: &val}
 		result := po.IsPmsCtrlBool()
@@ -334,7 +421,11 @@ func TestReleasePO_IsPmsCtrlBool(t *testing.T) {
 }
 
 func TestReleasePO_ResetIsPmsCtrl(t *testing.T) {
+	t.Parallel()
+
 	t.Run("reset to zero", func(t *testing.T) {
+		t.Parallel()
+
 		val := 1
 		po := &ReleasePO{IsPmsCtrl: &val}
 
@@ -347,7 +438,11 @@ func TestReleasePO_ResetIsPmsCtrl(t *testing.T) {
 }
 
 func TestReleasePO_SetIsPmsCtrl(t *testing.T) {
+	t.Parallel()
+
 	t.Run("set to true", func(t *testing.T) {
+		t.Parallel()
+
 		po := &ReleasePO{}
 		po.SetIsPmsCtrl(true)
 
@@ -357,6 +452,8 @@ func TestReleasePO_SetIsPmsCtrl(t *testing.T) {
 	})
 
 	t.Run("set to false", func(t *testing.T) {
+		t.Parallel()
+
 		val := 1
 		po := &ReleasePO{IsPmsCtrl: &val}
 		po.SetIsPmsCtrl(false)
@@ -368,7 +465,11 @@ func TestReleasePO_SetIsPmsCtrl(t *testing.T) {
 }
 
 func TestReleaseAgentPO(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create ReleaseAgentPO", func(t *testing.T) {
+		t.Parallel()
+
 		config := "test config"
 		desc := "test description"
 		version := "v1.0"
@@ -376,14 +477,15 @@ func TestReleaseAgentPO(t *testing.T) {
 			DataAgentPo: DataAgentPo{
 				ID: "agent-123",
 			},
-			AgentConfig:   sql.NullString{String: config, Valid: true},
-			AgentDesc:     sql.NullString{String: desc, Valid: true},
-			AgentVersion:  sql.NullString{String: version, Valid: true},
+			AgentConfig:  sql.NullString{String: config, Valid: true},
+			AgentDesc:    sql.NullString{String: desc, Valid: true},
+			AgentVersion: sql.NullString{String: version, Valid: true},
 		}
 
 		if po.ID != "agent-123" {
 			t.Errorf("Expected ID to be 'agent-123', got '%s'", po.ID)
 		}
+
 		if po.AgentConfig.String != config {
 			t.Errorf("Expected AgentConfig to be '%s', got '%s'", config, po.AgentConfig.String)
 		}
@@ -391,7 +493,11 @@ func TestReleaseAgentPO(t *testing.T) {
 }
 
 func TestRecentVisitAgentPO(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create RecentVisitAgentPO", func(t *testing.T) {
+		t.Parallel()
+
 		po := &RecentVisitAgentPO{
 			ReleaseAgentPO: ReleaseAgentPO{
 				DataAgentPo: DataAgentPo{
@@ -406,6 +512,7 @@ func TestRecentVisitAgentPO(t *testing.T) {
 		if po.ID != "agent-123" {
 			t.Errorf("Expected ID to be 'agent-123', got '%s'", po.ID)
 		}
+
 		if po.IsAPIAgent != 1 {
 			t.Errorf("Expected IsAPIAgent to be 1, got %d", po.IsAPIAgent)
 		}
@@ -413,7 +520,11 @@ func TestRecentVisitAgentPO(t *testing.T) {
 }
 
 func TestReleasePartPo_IsPmsCtrlBool(t *testing.T) {
+	t.Parallel()
+
 	t.Run("is pms ctrl is 1", func(t *testing.T) {
+		t.Parallel()
+
 		po := &ReleasePartPo{IsPmsCtrl: 1}
 		result := po.IsPmsCtrlBool()
 
@@ -423,6 +534,8 @@ func TestReleasePartPo_IsPmsCtrlBool(t *testing.T) {
 	})
 
 	t.Run("is pms ctrl is 0", func(t *testing.T) {
+		t.Parallel()
+
 		po := &ReleasePartPo{IsPmsCtrl: 0}
 		result := po.IsPmsCtrlBool()
 
@@ -433,7 +546,11 @@ func TestReleasePartPo_IsPmsCtrlBool(t *testing.T) {
 }
 
 func TestPublishedJoinPo_LoadFromReleasePartPo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("valid po with empty agent config", func(t *testing.T) {
+		t.Parallel()
+
 		partPo := &ReleasePartPo{
 			ReleaseID:   "release-123",
 			PublishDesc: "test description",
@@ -445,22 +562,24 @@ func TestPublishedJoinPo_LoadFromReleasePartPo(t *testing.T) {
 		}
 
 		joinPo := &PublishedJoinPo{}
-		err := joinPo.LoadFromReleasePartPo(partPo)
 
+		err := joinPo.LoadFromReleasePartPo(partPo)
 		if err != nil {
 			t.Errorf("Expected no error, got %v", err)
 		}
 	})
 
 	t.Run("po with agent config", func(t *testing.T) {
+		t.Parallel()
+
 		partPo := &ReleasePartPo{
 			ReleaseID:   "release-456",
 			AgentConfig: `{"id": "agent-123", "name": "Test Agent"}`,
 		}
 
 		joinPo := &PublishedJoinPo{}
-		err := joinPo.LoadFromReleasePartPo(partPo)
 
+		err := joinPo.LoadFromReleasePartPo(partPo)
 		if err != nil {
 			t.Errorf("Expected no error, got %v", err)
 		}
@@ -468,12 +587,15 @@ func TestPublishedJoinPo_LoadFromReleasePartPo(t *testing.T) {
 		if joinPo.ID != "agent-123" {
 			t.Errorf("Expected ID to be 'agent-123', got '%s'", joinPo.ID)
 		}
+
 		if joinPo.Name != "Test Agent" {
 			t.Errorf("Expected Name to be 'Test Agent', got '%s'", joinPo.Name)
 		}
 	})
 
 	t.Run("po with invalid agent config", func(t *testing.T) {
+		t.Parallel()
+
 		partPo := &ReleasePartPo{
 			ReleaseID:   "release-789",
 			AgentConfig: `{invalid json`, // Invalid JSON
@@ -489,7 +611,11 @@ func TestPublishedJoinPo_LoadFromReleasePartPo(t *testing.T) {
 }
 
 func TestReleasePermissionPO_TableName(t *testing.T) {
+	t.Parallel()
+
 	t.Run("table name", func(t *testing.T) {
+		t.Parallel()
+
 		po := &ReleasePermissionPO{}
 		tableName := po.TableName()
 

@@ -5,7 +5,11 @@ import (
 )
 
 func TestNewRedisCmp(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create redis cmp", func(t *testing.T) {
+		t.Parallel()
+
 		cmp := NewRedisCmp()
 
 		if cmp == nil {
@@ -24,6 +28,8 @@ func TestNewRedisCmp(t *testing.T) {
 	})
 
 	t.Run("singleton pattern", func(t *testing.T) {
+		t.Parallel()
+
 		cmp1 := NewRedisCmp()
 		cmp2 := NewRedisCmp()
 
@@ -34,7 +40,11 @@ func TestNewRedisCmp(t *testing.T) {
 }
 
 func TestRedisCmp_GetClient(t *testing.T) {
+	t.Parallel()
+
 	t.Run("get client method exists", func(t *testing.T) {
+		t.Parallel()
+
 		cmp := NewRedisCmp()
 
 		// Verify the method exists (compile-time check)
@@ -44,7 +54,11 @@ func TestRedisCmp_GetClient(t *testing.T) {
 }
 
 func TestRedisCmpStruct(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create redisCmp instance", func(t *testing.T) {
+		t.Parallel()
+
 		redisCmp := &redisCmp{}
 
 		if redisCmp == nil {
@@ -53,22 +67,26 @@ func TestRedisCmpStruct(t *testing.T) {
 	})
 
 	t.Run("implements interface", func(t *testing.T) {
+		t.Parallel()
 		// This test verifies that redisCmp implements the RedisCmp interface
 		var _ interface{} = &redisCmp{}
-
 		// The interface implementation is verified at compile time
 		// by the var declaration in the source file
 	})
 }
 
 func TestRedisCmpOnce(t *testing.T) {
+	t.Parallel()
+
 	t.Run("sync.Once variable exists", func(t *testing.T) {
+		t.Parallel()
 		// Verify that the sync.Once variable exists
 		// This is a compile-time check
 		_ = redisCmpOnce
 	})
 
 	t.Run("redisCmpImpl variable exists", func(t *testing.T) {
+		t.Parallel()
 		// Verify that the global redisCmpImpl variable exists
 		// This is a compile-time check
 		_ = redisCmpImpl

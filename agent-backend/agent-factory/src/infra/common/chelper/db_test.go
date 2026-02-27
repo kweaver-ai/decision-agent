@@ -35,7 +35,11 @@ func newMockLogger() *mockLogger {
 
 // TestJoinErrors 测试错误合并函数
 func TestJoinErrors(t *testing.T) {
+	t.Parallel()
+
 	t.Run("newErr is nil", func(t *testing.T) {
+		t.Parallel()
+
 		var err error = errors.New("original error")
 
 		joinErrors(&err, nil)
@@ -43,6 +47,8 @@ func TestJoinErrors(t *testing.T) {
 	})
 
 	t.Run("original is nil", func(t *testing.T) {
+		t.Parallel()
+
 		var err error
 
 		joinErrors(&err, errors.New("new error"))
@@ -50,6 +56,8 @@ func TestJoinErrors(t *testing.T) {
 	})
 
 	t.Run("both not nil - errors should be joined", func(t *testing.T) {
+		t.Parallel()
+
 		originalErr := errors.New("original error")
 		newErr := errors.New("new error")
 
@@ -65,26 +73,35 @@ func TestJoinErrors(t *testing.T) {
 
 // TestIsSqlNotFound 测试SQL未找到判断
 func TestIsSqlNotFound(t *testing.T) {
+	t.Parallel()
+
 	t.Run("nil error", func(t *testing.T) {
+		t.Parallel()
 		assert.False(t, IsSqlNotFound(nil))
 	})
 
 	t.Run("sql.ErrNoRows", func(t *testing.T) {
+		t.Parallel()
 		assert.True(t, IsSqlNotFound(sql.ErrNoRows))
 	})
 
 	t.Run("wrapped sql.ErrNoRows", func(t *testing.T) {
+		t.Parallel()
+
 		wrappedErr := errors.Join(errors.New("some context"), sql.ErrNoRows)
 		assert.True(t, IsSqlNotFound(wrappedErr))
 	})
 
 	t.Run("other error", func(t *testing.T) {
+		t.Parallel()
 		assert.False(t, IsSqlNotFound(errors.New("some other error")))
 	})
 }
 
 // TestTxRollbackOrCommit_Commit 测试正常提交
 func TestTxRollbackOrCommit_Commit(t *testing.T) {
+	t.Parallel()
+
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 	defer db.Close()
@@ -107,6 +124,8 @@ func TestTxRollbackOrCommit_Commit(t *testing.T) {
 
 // TestTxRollbackOrCommit_Rollback 测试有错误时回滚
 func TestTxRollbackOrCommit_Rollback(t *testing.T) {
+	t.Parallel()
+
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 	defer db.Close()
@@ -128,6 +147,8 @@ func TestTxRollbackOrCommit_Rollback(t *testing.T) {
 
 // TestTxRollbackOrCommit_CommitWithCallback 测试提交后回调
 func TestTxRollbackOrCommit_CommitWithCallback(t *testing.T) {
+	t.Parallel()
+
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 	defer db.Close()
@@ -160,6 +181,8 @@ func TestTxRollbackOrCommit_CommitWithCallback(t *testing.T) {
 
 // TestTxRollbackOrCommit_CommitCallbackError 测试提交回调返回错误
 func TestTxRollbackOrCommit_CommitCallbackError(t *testing.T) {
+	t.Parallel()
+
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 	defer db.Close()
@@ -191,6 +214,8 @@ func TestTxRollbackOrCommit_CommitCallbackError(t *testing.T) {
 
 // TestTxRollbackOrCommit_RollbackWithExistingError 测试回滚时合并错误
 func TestTxRollbackOrCommit_RollbackWithExistingError(t *testing.T) {
+	t.Parallel()
+
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 	defer db.Close()
@@ -217,6 +242,8 @@ func TestTxRollbackOrCommit_RollbackWithExistingError(t *testing.T) {
 
 // TestTxRollback 测试只回滚不提交
 func TestTxRollback(t *testing.T) {
+	t.Parallel()
+
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 	defer db.Close()
@@ -238,6 +265,8 @@ func TestTxRollback(t *testing.T) {
 
 // TestTxRollback_NoError 测试无错误时不回滚
 func TestTxRollback_NoError(t *testing.T) {
+	t.Parallel()
+
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 	defer db.Close()
@@ -260,6 +289,8 @@ func TestTxRollback_NoError(t *testing.T) {
 
 // TestTxDeferHandlerCommitClb 测试带回调的defer处理
 func TestTxDeferHandlerCommitClb(t *testing.T) {
+	t.Parallel()
+
 	db, mock, err := sqlmock.New()
 	assert.NoError(t, err)
 	defer db.Close()
@@ -288,15 +319,22 @@ func TestTxDeferHandlerCommitClb(t *testing.T) {
 
 // TestCloseRows 测试关闭rows
 func TestCloseRows(t *testing.T) {
+	t.Parallel()
+
 	t.Run("nil rows", func(t *testing.T) {
+		t.Parallel()
+
 		logger := newMockLogger()
 		CloseRows(nil, logger)
 		assert.Empty(t, logger.errorLogs)
 	})
 
 	t.Run("rows with no error", func(t *testing.T) {
+		t.Parallel()
+
 		db, mock, err := sqlmock.New()
 		assert.NoError(t, err)
+
 		defer db.Close()
 
 		mock.ExpectQuery("SELECT").WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(1))
@@ -310,8 +348,11 @@ func TestCloseRows(t *testing.T) {
 	})
 
 	t.Run("rows with query error", func(t *testing.T) {
+		t.Parallel()
+
 		db, mock, err := sqlmock.New()
 		assert.NoError(t, err)
+
 		defer db.Close()
 
 		mock.ExpectQuery("SELECT").WillReturnError(errors.New("query failed"))
@@ -327,8 +368,11 @@ func TestCloseRows(t *testing.T) {
 	})
 
 	t.Run("rows with close error", func(t *testing.T) {
+		t.Parallel()
+
 		db, _, err := sqlmock.New()
 		assert.NoError(t, err)
+
 		defer db.Close()
 
 		// Create a rows that will fail on close

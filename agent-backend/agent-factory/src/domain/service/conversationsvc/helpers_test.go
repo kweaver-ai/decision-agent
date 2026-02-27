@@ -10,16 +10,18 @@ import (
 )
 
 func TestGetID(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 
 	tests := []struct {
-		name                        string
-		messages                    []*dapo.ConversationMsgPO
-		regenerateUserMsgID         string
-		regenerateAssistantMsgID    string
-		expectUserMsgID            string
-		expectAssistantMsgID       string
-		shouldPanic                 bool
+		name                     string
+		messages                 []*dapo.ConversationMsgPO
+		regenerateUserMsgID      string
+		regenerateAssistantMsgID string
+		expectUserMsgID          string
+		expectAssistantMsgID     string
+		shouldPanic              bool
 	}{
 		{
 			name:                     "both empty - return empty",
@@ -51,7 +53,7 @@ func TestGetID(t *testing.T) {
 			},
 			regenerateUserMsgID:      "",
 			regenerateAssistantMsgID: "msg2",
-			expectUserMsgID:          "",  // ReplyID is empty
+			expectUserMsgID:          "", // ReplyID is empty
 			expectAssistantMsgID:     "msg2",
 			shouldPanic:              false,
 		},
@@ -81,6 +83,8 @@ func TestGetID(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if tt.shouldPanic {
 				assert.Panics(t, func() {
 					GetID(ctx, tt.messages, tt.regenerateUserMsgID, tt.regenerateAssistantMsgID)
@@ -96,12 +100,14 @@ func TestGetID(t *testing.T) {
 }
 
 func TestBuildWorkspaceContextMessage(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name          string
+		name           string
 		conversationID string
-		userID        string
-		selectedFiles []agentreq.SelectedFile
-		wantContains  []string
+		userID         string
+		selectedFiles  []agentreq.SelectedFile
+		wantContains   []string
 	}{
 		{
 			name:           "empty files",
@@ -126,6 +132,8 @@ func TestBuildWorkspaceContextMessage(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := buildWorkspaceContextMessage(tt.conversationID, tt.userID, tt.selectedFiles)
 
 			if len(tt.wantContains) == 0 {

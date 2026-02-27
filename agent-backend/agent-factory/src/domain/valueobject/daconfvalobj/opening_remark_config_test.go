@@ -7,9 +7,11 @@ import (
 )
 
 func TestOpeningRemarkConfig_ValObjCheck_FixedType(t *testing.T) {
+	t.Parallel()
+
 	config := &OpeningRemarkConfig{
 		Type:               "fixed",
-		FixedOpeningRemark:  "Hello! How can I help you today?",
+		FixedOpeningRemark: "Hello! How can I help you today?",
 	}
 
 	err := config.ValObjCheck()
@@ -17,6 +19,8 @@ func TestOpeningRemarkConfig_ValObjCheck_FixedType(t *testing.T) {
 }
 
 func TestOpeningRemarkConfig_ValObjCheck_DynamicType(t *testing.T) {
+	t.Parallel()
+
 	config := &OpeningRemarkConfig{
 		Type:                       "dynamic",
 		DynamicOpeningRemarkPrompt: "Generate a greeting based on context",
@@ -27,6 +31,8 @@ func TestOpeningRemarkConfig_ValObjCheck_DynamicType(t *testing.T) {
 }
 
 func TestOpeningRemarkConfig_ValObjCheck_EmptyType(t *testing.T) {
+	t.Parallel()
+
 	config := &OpeningRemarkConfig{}
 
 	err := config.ValObjCheck()
@@ -35,9 +41,11 @@ func TestOpeningRemarkConfig_ValObjCheck_EmptyType(t *testing.T) {
 }
 
 func TestOpeningRemarkConfig_ValObjCheck_InvalidType(t *testing.T) {
+	t.Parallel()
+
 	config := &OpeningRemarkConfig{
 		Type:               "invalid_type",
-		FixedOpeningRemark:  "Test",
+		FixedOpeningRemark: "Test",
 	}
 
 	err := config.ValObjCheck()
@@ -46,6 +54,8 @@ func TestOpeningRemarkConfig_ValObjCheck_InvalidType(t *testing.T) {
 }
 
 func TestOpeningRemarkConfig_ValObjCheck_FixedTypeWithoutRemark(t *testing.T) {
+	t.Parallel()
+
 	config := &OpeningRemarkConfig{
 		Type: "fixed",
 	}
@@ -56,6 +66,8 @@ func TestOpeningRemarkConfig_ValObjCheck_FixedTypeWithoutRemark(t *testing.T) {
 }
 
 func TestOpeningRemarkConfig_ValObjCheck_DynamicTypeWithoutPrompt(t *testing.T) {
+	t.Parallel()
+
 	config := &OpeningRemarkConfig{
 		Type: "dynamic",
 	}
@@ -66,6 +78,8 @@ func TestOpeningRemarkConfig_ValObjCheck_DynamicTypeWithoutPrompt(t *testing.T) 
 }
 
 func TestOpeningRemarkConfig_Fields(t *testing.T) {
+	t.Parallel()
+
 	config := &OpeningRemarkConfig{
 		Type:                       "fixed",
 		FixedOpeningRemark:         "Fixed greeting",
@@ -78,6 +92,8 @@ func TestOpeningRemarkConfig_Fields(t *testing.T) {
 }
 
 func TestOpeningRemarkConfig_Empty(t *testing.T) {
+	t.Parallel()
+
 	config := &OpeningRemarkConfig{}
 
 	assert.Empty(t, config.Type)

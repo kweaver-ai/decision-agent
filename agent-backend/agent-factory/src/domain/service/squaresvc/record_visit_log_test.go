@@ -14,14 +14,18 @@ import (
 )
 
 func TestRecordVisitLog(t *testing.T) {
+	t.Parallel()
+
 	t.Run("returns_early_when_IsVisit_is_false", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
 		mockVisitHistoryRepo := idbaccessmock.NewMockIVisitHistoryRepo(ctrl)
 
 		svc := &squareSvc{
-			SvcBase:         service.NewSvcBase(),
+			SvcBase:          service.NewSvcBase(),
 			visitHistoryRepo: mockVisitHistoryRepo,
 		}
 
@@ -38,6 +42,8 @@ func TestRecordVisitLog(t *testing.T) {
 	})
 
 	t.Run("records_visit_for_published_version", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -45,7 +51,7 @@ func TestRecordVisitLog(t *testing.T) {
 		mockVisitHistoryRepo.EXPECT().IncVisitCount(gomock.Any(), gomock.Any()).Return(nil)
 
 		svc := &squareSvc{
-			SvcBase:         service.NewSvcBase(),
+			SvcBase:          service.NewSvcBase(),
 			visitHistoryRepo: mockVisitHistoryRepo,
 		}
 
@@ -63,6 +69,8 @@ func TestRecordVisitLog(t *testing.T) {
 	})
 
 	t.Run("records_visit_for_unpublished_version", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -70,7 +78,7 @@ func TestRecordVisitLog(t *testing.T) {
 		mockVisitHistoryRepo.EXPECT().IncVisitCount(gomock.Any(), gomock.Any()).Return(nil)
 
 		svc := &squareSvc{
-			SvcBase:         service.NewSvcBase(),
+			SvcBase:          service.NewSvcBase(),
 			visitHistoryRepo: mockVisitHistoryRepo,
 		}
 
@@ -88,6 +96,8 @@ func TestRecordVisitLog(t *testing.T) {
 	})
 
 	t.Run("returns_error_from_IncVisitCount", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -95,7 +105,7 @@ func TestRecordVisitLog(t *testing.T) {
 		mockVisitHistoryRepo.EXPECT().IncVisitCount(gomock.Any(), gomock.Any()).Return(errors.New("database error"))
 
 		svc := &squareSvc{
-			SvcBase:         service.NewSvcBase(),
+			SvcBase:          service.NewSvcBase(),
 			visitHistoryRepo: mockVisitHistoryRepo,
 		}
 
@@ -114,6 +124,8 @@ func TestRecordVisitLog(t *testing.T) {
 	})
 
 	t.Run("records_visit_with_empty_custom_space_id", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -121,7 +133,7 @@ func TestRecordVisitLog(t *testing.T) {
 		mockVisitHistoryRepo.EXPECT().IncVisitCount(gomock.Any(), gomock.Any()).Return(nil)
 
 		svc := &squareSvc{
-			SvcBase:         service.NewSvcBase(),
+			SvcBase:          service.NewSvcBase(),
 			visitHistoryRepo: mockVisitHistoryRepo,
 		}
 
@@ -139,6 +151,8 @@ func TestRecordVisitLog(t *testing.T) {
 	})
 
 	t.Run("records_visit_with_empty_user_id", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -146,7 +160,7 @@ func TestRecordVisitLog(t *testing.T) {
 		mockVisitHistoryRepo.EXPECT().IncVisitCount(gomock.Any(), gomock.Any()).Return(nil)
 
 		svc := &squareSvc{
-			SvcBase:         service.NewSvcBase(),
+			SvcBase:          service.NewSvcBase(),
 			visitHistoryRepo: mockVisitHistoryRepo,
 		}
 

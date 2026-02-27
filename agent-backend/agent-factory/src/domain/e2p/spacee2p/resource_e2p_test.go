@@ -11,6 +11,8 @@ import (
 )
 
 func TestSpaceResource(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		eo      *spaceeo.SpaceResource
@@ -57,6 +59,8 @@ func TestSpaceResource(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			po, err := SpaceResource(tt.eo)
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -64,6 +68,7 @@ func TestSpaceResource(t *testing.T) {
 			} else {
 				require.NoError(t, err)
 				require.NotNil(t, po)
+
 				if tt.checkPO != nil {
 					tt.checkPO(t, po)
 				}
@@ -73,10 +78,12 @@ func TestSpaceResource(t *testing.T) {
 }
 
 func TestSpaceResources(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name    string
-		eos     []*spaceeo.SpaceResource
-		wantErr bool
+		name     string
+		eos      []*spaceeo.SpaceResource
+		wantErr  bool
 		checkPOs func(t *testing.T, pos []*dapo.SpaceResourcePo)
 	}{
 		{
@@ -118,11 +125,14 @@ func TestSpaceResources(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			pos, err := SpaceResources(tt.eos)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {
 				require.NoError(t, err)
+
 				if tt.checkPOs != nil {
 					tt.checkPOs(t, pos)
 				}

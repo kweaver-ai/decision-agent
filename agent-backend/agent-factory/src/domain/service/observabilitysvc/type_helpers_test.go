@@ -8,6 +8,8 @@ import (
 )
 
 func TestSafeGetString(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		m        map[string]any
@@ -42,6 +44,8 @@ func TestSafeGetString(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := safeGetString(tt.m, tt.key)
 			assert.Equal(t, tt.expected, result)
 		})
@@ -49,6 +53,8 @@ func TestSafeGetString(t *testing.T) {
 }
 
 func TestSafeGetBool(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		m        map[string]any
@@ -89,6 +95,8 @@ func TestSafeGetBool(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := safeGetBool(tt.m, tt.key)
 			assert.Equal(t, tt.expected, result)
 		})
@@ -96,6 +104,8 @@ func TestSafeGetBool(t *testing.T) {
 }
 
 func TestSafeGetFloat64(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		m        map[string]any
@@ -136,6 +146,8 @@ func TestSafeGetFloat64(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := safeGetFloat64(tt.m, tt.key)
 			assert.Equal(t, tt.expected, result)
 		})
@@ -143,6 +155,8 @@ func TestSafeGetFloat64(t *testing.T) {
 }
 
 func TestSafeGetInt64(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		m        map[string]any
@@ -177,6 +191,8 @@ func TestSafeGetInt64(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := safeGetInt64(tt.m, tt.key)
 			assert.Equal(t, tt.expected, result)
 		})
@@ -184,6 +200,8 @@ func TestSafeGetInt64(t *testing.T) {
 }
 
 func TestSafeParseSkillInfo(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		data     any
@@ -235,6 +253,8 @@ func TestSafeParseSkillInfo(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := safeParseSkillInfo(tt.data)
 			if tt.expected == nil {
 				assert.Nil(t, result)
@@ -249,6 +269,8 @@ func TestSafeParseSkillInfo(t *testing.T) {
 }
 
 func TestSafeParseTokenUsage(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		data     any
@@ -281,6 +303,8 @@ func TestSafeParseTokenUsage(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := safeParseTokenUsage(tt.data)
 			assert.Equal(t, tt.expected, result)
 		})
@@ -288,6 +312,8 @@ func TestSafeParseTokenUsage(t *testing.T) {
 }
 
 func TestFormatTimeToISO8601(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name      string
 		timestamp int64
@@ -312,6 +338,8 @@ func TestFormatTimeToISO8601(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := formatTimeToISO8601(tt.timestamp)
 			if tt.wantEmpty {
 				assert.Empty(t, result)
@@ -324,17 +352,25 @@ func TestFormatTimeToISO8601(t *testing.T) {
 }
 
 func TestSafeParseArgs(t *testing.T) {
+	t.Parallel()
+
 	t.Run("nil data returns nil", func(t *testing.T) {
+		t.Parallel()
+
 		result := safeParseArgs(nil)
 		assert.Nil(t, result)
 	})
 
 	t.Run("empty array returns nil", func(t *testing.T) {
+		t.Parallel()
+
 		result := safeParseArgs([]any{})
 		assert.Nil(t, result)
 	})
 
 	t.Run("valid args array", func(t *testing.T) {
+		t.Parallel()
+
 		data := []any{
 			map[string]any{
 				"name":  "arg1",
@@ -358,6 +394,8 @@ func TestSafeParseArgs(t *testing.T) {
 	})
 
 	t.Run("args with missing fields", func(t *testing.T) {
+		t.Parallel()
+
 		data := []any{
 			map[string]any{
 				"name": "arg1",
@@ -371,18 +409,26 @@ func TestSafeParseArgs(t *testing.T) {
 	})
 
 	t.Run("non-array data returns nil", func(t *testing.T) {
+		t.Parallel()
+
 		result := safeParseArgs("string")
 		assert.Nil(t, result)
 	})
 }
 
 func TestSafeParsePromptTokenDetails(t *testing.T) {
+	t.Parallel()
+
 	t.Run("nil data returns empty struct", func(t *testing.T) {
+		t.Parallel()
+
 		result := safeParsePromptTokenDetails(nil)
 		assert.Equal(t, agentrespvo.PromptTokenDetails{}, result)
 	})
 
 	t.Run("valid data", func(t *testing.T) {
+		t.Parallel()
+
 		data := map[string]any{
 			"cached_tokens":   100.0,
 			"uncached_tokens": 200.0,
@@ -394,6 +440,8 @@ func TestSafeParsePromptTokenDetails(t *testing.T) {
 	})
 
 	t.Run("data with missing fields", func(t *testing.T) {
+		t.Parallel()
+
 		data := map[string]any{
 			"cached_tokens": 50.0,
 		}
@@ -404,13 +452,19 @@ func TestSafeParsePromptTokenDetails(t *testing.T) {
 	})
 
 	t.Run("non-map data returns empty struct", func(t *testing.T) {
+		t.Parallel()
+
 		result := safeParsePromptTokenDetails("string")
 		assert.Equal(t, agentrespvo.PromptTokenDetails{}, result)
 	})
 }
 
 func TestSafeParseSkillInfo_WithComplexArgs(t *testing.T) {
+	t.Parallel()
+
 	t.Run("skill info with multiple args", func(t *testing.T) {
+		t.Parallel()
+
 		data := map[string]any{
 			"type":    "tool",
 			"name":    "multi_tool",
@@ -447,13 +501,19 @@ func TestSafeParseSkillInfo_WithComplexArgs(t *testing.T) {
 }
 
 func TestSafeGetInt64_LargeValues(t *testing.T) {
+	t.Parallel()
+
 	t.Run("large float value", func(t *testing.T) {
+		t.Parallel()
+
 		m := map[string]any{"key": 9007199254740991.0}
 		result := safeGetInt64(m, "key")
 		assert.Equal(t, int64(9007199254740991), result)
 	})
 
 	t.Run("negative float value", func(t *testing.T) {
+		t.Parallel()
+
 		m := map[string]any{"key": -123.45}
 		result := safeGetInt64(m, "key")
 		assert.Equal(t, int64(-123), result)

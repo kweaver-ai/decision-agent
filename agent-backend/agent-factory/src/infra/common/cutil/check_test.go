@@ -7,6 +7,8 @@ import (
 )
 
 func TestCheckInRange_Int(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		value    int
@@ -60,6 +62,8 @@ func TestCheckInRange_Int(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := CheckInRange(tt.value, tt.min, tt.max)
 			assert.Equal(t, tt.expected, result)
 		})
@@ -67,6 +71,8 @@ func TestCheckInRange_Int(t *testing.T) {
 }
 
 func TestCheckInRange_Float64(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		value    float64
@@ -120,6 +126,8 @@ func TestCheckInRange_Float64(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := CheckInRange(tt.value, tt.min, tt.max)
 			assert.Equal(t, tt.expected, result)
 		})
@@ -127,6 +135,8 @@ func TestCheckInRange_Float64(t *testing.T) {
 }
 
 func TestCheckInRange_Uint(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		value    uint
@@ -159,6 +169,8 @@ func TestCheckInRange_Uint(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := CheckInRange(tt.value, tt.min, tt.max)
 			assert.Equal(t, tt.expected, result)
 		})
@@ -166,6 +178,8 @@ func TestCheckInRange_Uint(t *testing.T) {
 }
 
 func TestCheckMin_Int(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		value    int
@@ -206,6 +220,8 @@ func TestCheckMin_Int(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := CheckMin(tt.value, tt.min)
 			assert.Equal(t, tt.expected, result)
 		})
@@ -213,6 +229,8 @@ func TestCheckMin_Int(t *testing.T) {
 }
 
 func TestCheckMin_Float64(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		value    float64
@@ -247,6 +265,8 @@ func TestCheckMin_Float64(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := CheckMin(tt.value, tt.min)
 			assert.Equal(t, tt.expected, result)
 		})

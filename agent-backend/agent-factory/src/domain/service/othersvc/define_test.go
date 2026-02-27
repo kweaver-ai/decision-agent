@@ -6,17 +6,19 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
+	otherreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/other/otherreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
-	otherreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/other/otherreq"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestNewOtherService(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -31,6 +33,8 @@ func TestNewOtherService(t *testing.T) {
 }
 
 func TestOtherSvc_DolphinTplList(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -44,7 +48,7 @@ func TestOtherSvc_DolphinTplList(t *testing.T) {
 
 	config := &daconfvalobj.Config{}
 	req := &otherreq.DolphinTplListReq{
-		Config:         config,
+		Config:          config,
 		BuiltInAgentKey: "",
 	}
 
@@ -56,6 +60,8 @@ func TestOtherSvc_DolphinTplList(t *testing.T) {
 }
 
 func TestOtherSvc_DolphinTplList_WithAgent(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -70,15 +76,15 @@ func TestOtherSvc_DolphinTplList_WithAgent(t *testing.T) {
 	builtInYes := cdaenum.BuiltInYes
 	config := &daconfvalobj.Config{}
 	req := &otherreq.DolphinTplListReq{
-		Config:         config,
+		Config:          config,
 		BuiltInAgentKey: "test-agent-key",
 	}
 
 	// Mock successful agent retrieval
 	agentPO := &dapo.DataAgentPo{
-		ID:         "agent-123",
-		Key:        "test-agent-key",
-		IsBuiltIn:  &builtInYes,
+		ID:        "agent-123",
+		Key:       "test-agent-key",
+		IsBuiltIn: &builtInYes,
 	}
 	mockAgentRepo.EXPECT().GetByKey(ctx, "test-agent-key").Return(agentPO, nil)
 
@@ -89,6 +95,8 @@ func TestOtherSvc_DolphinTplList_WithAgent(t *testing.T) {
 }
 
 func TestOtherSvc_DolphinTplList_AgentNotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -102,7 +110,7 @@ func TestOtherSvc_DolphinTplList_AgentNotFound(t *testing.T) {
 
 	config := &daconfvalobj.Config{}
 	req := &otherreq.DolphinTplListReq{
-		Config:         config,
+		Config:          config,
 		BuiltInAgentKey: "non-existent-agent",
 	}
 
@@ -117,6 +125,8 @@ func TestOtherSvc_DolphinTplList_AgentNotFound(t *testing.T) {
 }
 
 func TestOtherSvc_DolphinTplList_NotBuiltIn(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -131,7 +141,7 @@ func TestOtherSvc_DolphinTplList_NotBuiltIn(t *testing.T) {
 	builtInNo := cdaenum.BuiltInNo
 	config := &daconfvalobj.Config{}
 	req := &otherreq.DolphinTplListReq{
-		Config:         config,
+		Config:          config,
 		BuiltInAgentKey: "custom-agent",
 	}
 
@@ -151,6 +161,8 @@ func TestOtherSvc_DolphinTplList_NotBuiltIn(t *testing.T) {
 }
 
 func TestOtherSvc_DolphinTplList_DBError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -164,7 +176,7 @@ func TestOtherSvc_DolphinTplList_DBError(t *testing.T) {
 
 	config := &daconfvalobj.Config{}
 	req := &otherreq.DolphinTplListReq{
-		Config:         config,
+		Config:          config,
 		BuiltInAgentKey: "error-agent",
 	}
 

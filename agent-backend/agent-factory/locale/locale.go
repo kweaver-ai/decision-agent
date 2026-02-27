@@ -19,6 +19,7 @@ func Register() {
 	if !isTestMode {
 		abPath, _ = os.Getwd()
 		abPath += localeDir
+
 		if _, err := os.Stat(abPath); os.IsNotExist(err) {
 			// Locale directory doesn't exist, assume we're in test mode
 			isTestMode = true

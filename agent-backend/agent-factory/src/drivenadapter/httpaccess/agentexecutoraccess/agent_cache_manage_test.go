@@ -36,7 +36,7 @@ func (aeTestLogger) Fatalln(...interface{})        {}
 
 func newTestAgentExecutorAcc(serverURL string) *agentExecutorHttpAcc {
 	return &agentExecutorHttpAcc{
-		logger: aeTestLogger{},
+		logger:            aeTestLogger{},
 		agentExecutorConf: &conf.AgentExecutorConf{},
 		restClient:        rest.NewHTTPClient(),
 		privateAddress:    serverURL,
@@ -44,6 +44,8 @@ func newTestAgentExecutorAcc(serverURL string) *agentExecutorHttpAcc {
 }
 
 func TestAgentCacheManage_Happy(t *testing.T) {
+	t.Parallel()
+
 	respData := agentexecutoraccres.AgentCacheManageResp{
 		CacheID: "cache-1",
 		TTL:     3600,
@@ -77,6 +79,8 @@ func TestAgentCacheManage_Happy(t *testing.T) {
 }
 
 func TestAgentCacheManage_NonOKStatus(t *testing.T) {
+	t.Parallel()
+
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = w.Write([]byte(`{"error":"internal error"}`))
@@ -95,6 +99,8 @@ func TestAgentCacheManage_NonOKStatus(t *testing.T) {
 }
 
 func TestAgentCacheManage_BadJSON(t *testing.T) {
+	t.Parallel()
+
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`not-valid-json`))
@@ -113,6 +119,8 @@ func TestAgentCacheManage_BadJSON(t *testing.T) {
 }
 
 func TestAgentCacheManage_RequestFailed(t *testing.T) {
+	t.Parallel()
+
 	acc := newTestAgentExecutorAcc("http://127.0.0.1:19999")
 	req := &agentexecutoraccreq.AgentCacheManageReq{AgentID: "agent-1"}
 	visitorInfo := &ctype.VisitorInfo{}
@@ -122,6 +130,8 @@ func TestAgentCacheManage_RequestFailed(t *testing.T) {
 }
 
 func TestNewAgentExecutorHttpAcc(t *testing.T) {
+	t.Parallel()
+
 	agentConf := &conf.AgentExecutorConf{
 		PrivateSvc: cconf.SvcConf{
 			Host:     "localhost",

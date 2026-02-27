@@ -396,6 +396,7 @@ func (agentSvc *agentSvc) handleMessageAndTempArea(ctx context.Context, req *age
 
 		return err
 	}
+
 	return nil
 }
 

@@ -17,6 +17,8 @@ func (Implements) Method() {}
 type DoesNotImplement struct{}
 
 func TestIsImplement(t *testing.T) {
+	t.Parallel()
+
 	var i MyInterface = Implements{}
 
 	assert.True(t, IsImplement(Implements{}, &i))
@@ -27,6 +29,8 @@ func TestIsImplement(t *testing.T) {
 }
 
 func TestMustStrSlice(t *testing.T) {
+	t.Parallel()
+
 	input := []interface{}{"a", "b", "c"}
 	expected := []string{"a", "b", "c"}
 	result := MustStrSlice(input)
@@ -38,6 +42,8 @@ func TestMustStrSlice(t *testing.T) {
 }
 
 func TestMustStrSlice2(t *testing.T) {
+	t.Parallel()
+
 	input := []interface{}{"a", "b", "c"}
 	expected := []string{"a", "b", "c"}
 	result := MustStrSlice2(input)

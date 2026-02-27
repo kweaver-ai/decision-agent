@@ -8,9 +8,11 @@ import (
 )
 
 func TestConversation_New(t *testing.T) {
+	t.Parallel()
+
 	conversation := &Conversation{
 		ConversationPO: &dapo.ConversationPO{},
-		Messages:        []*dapo.ConversationMsgPO{},
+		Messages:       []*dapo.ConversationMsgPO{},
 	}
 
 	assert.NotNil(t, conversation)
@@ -19,9 +21,11 @@ func TestConversation_New(t *testing.T) {
 }
 
 func TestConversation_NilPO(t *testing.T) {
+	t.Parallel()
+
 	conversation := &Conversation{
 		ConversationPO: nil,
-		Messages:        nil,
+		Messages:       nil,
 	}
 
 	assert.NotNil(t, conversation)
@@ -30,12 +34,13 @@ func TestConversation_NilPO(t *testing.T) {
 }
 
 func TestConversation_EmptyMessages(t *testing.T) {
+	t.Parallel()
+
 	conversation := &Conversation{
 		ConversationPO: &dapo.ConversationPO{},
-		Messages:        []*dapo.ConversationMsgPO{},
+		Messages:       []*dapo.ConversationMsgPO{},
 	}
 
 	assert.NotNil(t, conversation.Messages)
 	assert.Empty(t, conversation.Messages)
 }
-

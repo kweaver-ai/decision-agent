@@ -46,85 +46,111 @@ func baseHttpInjectConfig(mockSandbox bool) *conf.Config {
 		},
 	}
 	cfg.SwitchFields.Mock.MockSandboxPlatform = mockSandbox
+
 	return cfg
 }
 
 func TestNewAgentExecutorHttpAcc(t *testing.T) {
+	// t.Parallel() - 移除：此测试调用单例初始化函数 initAgentExecutors，在并发环境下会导致 sync.Once 死锁
 	oldCfg := global.GConfig
+
 	t.Cleanup(func() {
 		global.GConfig = oldCfg
+
 		resetHttpInjectGlobals()
 	})
 
 	resetHttpInjectGlobals()
+
 	global.GConfig = baseHttpInjectConfig(false)
 
 	v1a := NewAgentExecutorV1HttpAcc()
 	require.NotNil(t, v1a)
+
 	v2a := NewAgentExecutorV2HttpAcc()
 	require.NotNil(t, v2a)
 
 	v1b := NewAgentExecutorV1HttpAcc()
 	v2b := NewAgentExecutorV2HttpAcc()
+
 	assert.Same(t, v1a, v1b)
 	assert.Same(t, v2a, v2b)
 }
 
 func TestNewModelApiAcc(t *testing.T) {
+	// t.Parallel() - 移除：此测试修改全局配置 global.GConfig，在并发环境下不安全
 	oldCfg := global.GConfig
+
 	t.Cleanup(func() {
 		global.GConfig = oldCfg
+
 		resetHttpInjectGlobals()
 	})
 
 	resetHttpInjectGlobals()
+
 	global.GConfig = baseHttpInjectConfig(false)
 
 	m1 := NewModelApiAcc()
 	require.NotNil(t, m1)
+
 	m2 := NewModelApiAcc()
 	assert.Same(t, m1, m2)
 }
 
 func TestNewUniqueryHttpAcc(t *testing.T) {
+	// t.Parallel() - 移除：此测试修改全局配置 global.GConfig，在并发环境下不安全
 	oldCfg := global.GConfig
+
 	t.Cleanup(func() {
 		global.GConfig = oldCfg
+
 		resetHttpInjectGlobals()
 	})
 
 	resetHttpInjectGlobals()
+
 	global.GConfig = baseHttpInjectConfig(false)
 
 	u1 := NewUniqueryHttpAcc()
 	require.NotNil(t, u1)
+
 	u2 := NewUniqueryHttpAcc()
 	assert.Same(t, u1, u2)
 }
 
 func TestNewSandboxPlatformHttpAcc(t *testing.T) {
+	// t.Parallel() - 移除：此测试修改全局配置 global.GConfig，在并发环境下不安全
 	oldCfg := global.GConfig
+
 	t.Cleanup(func() {
 		global.GConfig = oldCfg
+
 		resetHttpInjectGlobals()
 	})
 
 	t.Run("mock", func(t *testing.T) {
+		// t.Parallel() - 移除：子测试修改全局配置
 		resetHttpInjectGlobals()
+
 		global.GConfig = baseHttpInjectConfig(true)
 
 		s1 := NewSandboxPlatformHttpAcc()
 		require.NotNil(t, s1)
+
 		s2 := NewSandboxPlatformHttpAcc()
 		assert.Same(t, s1, s2)
 	})
 
 	t.Run("real", func(t *testing.T) {
+		// t.Parallel() - 移除：子测试修改全局配置
 		resetHttpInjectGlobals()
+
 		global.GConfig = baseHttpInjectConfig(false)
 
 		s1 := NewSandboxPlatformHttpAcc()
 		require.NotNil(t, s1)
+
 		s2 := NewSandboxPlatformHttpAcc()
 		assert.Same(t, s1, s2)
 	})

@@ -11,6 +11,8 @@ import (
 )
 
 func TestSpaceMember(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		eo      *spaceeo.SpaceMember
@@ -57,6 +59,8 @@ func TestSpaceMember(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			po, err := SpaceMember(tt.eo)
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -64,6 +68,7 @@ func TestSpaceMember(t *testing.T) {
 			} else {
 				require.NoError(t, err)
 				require.NotNil(t, po)
+
 				if tt.checkPO != nil {
 					tt.checkPO(t, po)
 				}
@@ -73,10 +78,12 @@ func TestSpaceMember(t *testing.T) {
 }
 
 func TestSpaceMembers(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name    string
-		eos     []*spaceeo.SpaceMember
-		wantErr bool
+		name     string
+		eos      []*spaceeo.SpaceMember
+		wantErr  bool
 		checkPOs func(t *testing.T, pos []*dapo.SpaceMemberPo)
 	}{
 		{
@@ -118,11 +125,14 @@ func TestSpaceMembers(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			pos, err := SpaceMembers(tt.eos)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {
 				require.NoError(t, err)
+
 				if tt.checkPOs != nil {
 					tt.checkPOs(t, pos)
 				}
@@ -132,6 +142,8 @@ func TestSpaceMembers(t *testing.T) {
 }
 
 func TestSpaceMembers_SingleMember(t *testing.T) {
+	t.Parallel()
+
 	eos := []*spaceeo.SpaceMember{
 		{
 			SpaceMemberPo: dapo.SpaceMemberPo{
@@ -150,6 +162,8 @@ func TestSpaceMembers_SingleMember(t *testing.T) {
 }
 
 func TestSpaceMember_NilEntity(t *testing.T) {
+	t.Parallel()
+
 	eo := &spaceeo.SpaceMember{
 		SpaceMemberPo: dapo.SpaceMemberPo{
 			ID:      1,
@@ -164,6 +178,8 @@ func TestSpaceMember_NilEntity(t *testing.T) {
 }
 
 func TestSpaceMembers_AllFields(t *testing.T) {
+	t.Parallel()
+
 	eo := &spaceeo.SpaceMember{
 		SpaceMemberPo: dapo.SpaceMemberPo{
 			ID:       1,

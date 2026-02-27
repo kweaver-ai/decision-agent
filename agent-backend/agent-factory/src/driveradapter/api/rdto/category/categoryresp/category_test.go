@@ -9,6 +9,8 @@ import (
 )
 
 func TestCategoryResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	category := CategoryResp{
 		ID:          "cat-123",
 		Name:        "TestCategory",
@@ -21,6 +23,8 @@ func TestCategoryResp_StructFields(t *testing.T) {
 }
 
 func TestCategoryResp_JSONTags(t *testing.T) {
+	t.Parallel()
+
 	category := CategoryResp{
 		ID:          "cat-456",
 		Name:        "JSON Category",
@@ -42,6 +46,8 @@ func TestCategoryResp_JSONTags(t *testing.T) {
 }
 
 func TestCategoryResp_EmptyValues(t *testing.T) {
+	t.Parallel()
+
 	category := CategoryResp{}
 
 	assert.Empty(t, category.ID)
@@ -50,6 +56,8 @@ func TestCategoryResp_EmptyValues(t *testing.T) {
 }
 
 func TestListResp_Type(t *testing.T) {
+	t.Parallel()
+
 	// ListResp is a slice type
 	var list ListResp
 
@@ -58,6 +66,8 @@ func TestListResp_Type(t *testing.T) {
 }
 
 func TestListResp_WithMultipleCategories(t *testing.T) {
+	t.Parallel()
+
 	list := ListResp{
 		{
 			ID:          "cat-1",
@@ -83,6 +93,8 @@ func TestListResp_WithMultipleCategories(t *testing.T) {
 }
 
 func TestListResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	list := ListResp{}
 
 	assert.Empty(t, list)
@@ -90,6 +102,8 @@ func TestListResp_Empty(t *testing.T) {
 }
 
 func TestListResp_Append(t *testing.T) {
+	t.Parallel()
+
 	list := ListResp{}
 
 	// Append categories
@@ -102,6 +116,8 @@ func TestListResp_Append(t *testing.T) {
 }
 
 func TestListResp_JSONMarshaling(t *testing.T) {
+	t.Parallel()
+
 	list := ListResp{
 		{
 			ID:          "cat-1",
@@ -130,6 +146,8 @@ func TestListResp_JSONMarshaling(t *testing.T) {
 }
 
 func TestCategoryResp_WithSpecialCharacters(t *testing.T) {
+	t.Parallel()
+
 	category := CategoryResp{
 		ID:          "cat-中文-123",
 		Name:        "分类名称",
@@ -142,6 +160,8 @@ func TestCategoryResp_WithSpecialCharacters(t *testing.T) {
 }
 
 func TestCategoryResp_LongValues(t *testing.T) {
+	t.Parallel()
+
 	longID := string(make([]byte, 1000))
 	longName := "This is a very long category name that exceeds normal length but should still work"
 	longDesc := string(make([]byte, 5000))

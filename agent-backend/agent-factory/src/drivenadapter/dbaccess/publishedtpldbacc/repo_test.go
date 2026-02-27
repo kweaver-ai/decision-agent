@@ -33,6 +33,7 @@ func (pubedTplTestLogger) Fatalln(...interface{})        {}
 
 func newPubedTplRepoWithMock(t *testing.T) (*PubedTplRepo, *sqlx.DB, sqlmock.Sqlmock) {
 	t.Helper()
+
 	db, mock, err := sqlx.New()
 	require.NoError(t, err)
 
@@ -58,9 +59,12 @@ func mockPubedTplRows() *sqlmock.Rows {
 }
 
 func TestNewPublishedTplRepo_Singleton(t *testing.T) {
+	t.Parallel()
+
 	oldOnce := agentTplRepoOnce
 	oldImpl := agentTplRepoImpl
 	oldGDB := global.GDB
+
 	t.Cleanup(func() {
 		agentTplRepoOnce = oldOnce
 		agentTplRepoImpl = oldImpl
@@ -69,17 +73,21 @@ func TestNewPublishedTplRepo_Singleton(t *testing.T) {
 
 	db, _, err := sqlx.New()
 	require.NoError(t, err)
+
 	global.GDB = db
 	agentTplRepoOnce = sync.Once{}
 	agentTplRepoImpl = nil
 
 	r1 := NewPublishedTplRepo()
 	r2 := NewPublishedTplRepo()
+
 	assert.NotNil(t, r1)
 	assert.Same(t, r1, r2)
 }
 
 func TestPubedTplRepo_GetByID_Happy(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newPubedTplRepoWithMock(t)
 	defer db.Close()
 
@@ -94,6 +102,8 @@ func TestPubedTplRepo_GetByID_Happy(t *testing.T) {
 }
 
 func TestPubedTplRepo_GetByID_Error(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newPubedTplRepoWithMock(t)
 	defer db.Close()
 
@@ -107,6 +117,8 @@ func TestPubedTplRepo_GetByID_Error(t *testing.T) {
 }
 
 func TestPubedTplRepo_GetByKey_Happy(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newPubedTplRepoWithMock(t)
 	defer db.Close()
 
@@ -121,6 +133,8 @@ func TestPubedTplRepo_GetByKey_Happy(t *testing.T) {
 }
 
 func TestPubedTplRepo_GetByKey_Error(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newPubedTplRepoWithMock(t)
 	defer db.Close()
 
@@ -134,6 +148,8 @@ func TestPubedTplRepo_GetByKey_Error(t *testing.T) {
 }
 
 func TestPubedTplRepo_GetByTplID_Happy(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newPubedTplRepoWithMock(t)
 	defer db.Close()
 
@@ -148,6 +164,8 @@ func TestPubedTplRepo_GetByTplID_Happy(t *testing.T) {
 }
 
 func TestPubedTplRepo_Delete_Happy(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newPubedTplRepoWithMock(t)
 	defer db.Close()
 
@@ -160,6 +178,8 @@ func TestPubedTplRepo_Delete_Happy(t *testing.T) {
 }
 
 func TestPubedTplRepo_Delete_Error(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newPubedTplRepoWithMock(t)
 	defer db.Close()
 
@@ -172,6 +192,8 @@ func TestPubedTplRepo_Delete_Error(t *testing.T) {
 }
 
 func TestPubedTplRepo_DeleteByTplID_Happy(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newPubedTplRepoWithMock(t)
 	defer db.Close()
 
@@ -184,6 +206,8 @@ func TestPubedTplRepo_DeleteByTplID_Happy(t *testing.T) {
 }
 
 func TestPubedTplRepo_ExistsByKey_True(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newPubedTplRepoWithMock(t)
 	defer db.Close()
 
@@ -198,6 +222,8 @@ func TestPubedTplRepo_ExistsByKey_True(t *testing.T) {
 }
 
 func TestPubedTplRepo_ExistsByKey_False(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newPubedTplRepoWithMock(t)
 	defer db.Close()
 
@@ -212,6 +238,8 @@ func TestPubedTplRepo_ExistsByKey_False(t *testing.T) {
 }
 
 func TestPubedTplRepo_ExistsByKey_Error(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newPubedTplRepoWithMock(t)
 	defer db.Close()
 
@@ -225,6 +253,8 @@ func TestPubedTplRepo_ExistsByKey_Error(t *testing.T) {
 }
 
 func TestPubedTplRepo_ExistsByID_True(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newPubedTplRepoWithMock(t)
 	defer db.Close()
 

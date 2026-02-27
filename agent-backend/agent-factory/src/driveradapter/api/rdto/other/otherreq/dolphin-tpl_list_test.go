@@ -9,6 +9,8 @@ import (
 )
 
 func TestDolphinTplListReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &DolphinTplListReq{}
 	errMap := req.GetErrMsgMap()
 
@@ -17,7 +19,11 @@ func TestDolphinTplListReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestDolphinTplListReq_CustomCheck(t *testing.T) {
+	t.Parallel()
+
 	t.Run("valid request with config", func(t *testing.T) {
+		t.Parallel()
+
 		req := &DolphinTplListReq{
 			Config: &daconfvalobj.Config{
 				Input:  &daconfvalobj.Input{},
@@ -30,9 +36,11 @@ func TestDolphinTplListReq_CustomCheck(t *testing.T) {
 	})
 
 	t.Run("valid request with built-in agent key", func(t *testing.T) {
+		t.Parallel()
+
 		req := &DolphinTplListReq{
 			Config:          &daconfvalobj.Config{},
-			BuiltInAgentKey:  builtinagentenum.AgentKeyDocQA,
+			BuiltInAgentKey: builtinagentenum.AgentKeyDocQA,
 		}
 
 		err := req.CustomCheck()
@@ -40,6 +48,8 @@ func TestDolphinTplListReq_CustomCheck(t *testing.T) {
 	})
 
 	t.Run("request without config", func(t *testing.T) {
+		t.Parallel()
+
 		req := &DolphinTplListReq{
 			Config: nil,
 		}
@@ -51,6 +61,8 @@ func TestDolphinTplListReq_CustomCheck(t *testing.T) {
 }
 
 func TestDolphinTplListReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := &DolphinTplListReq{
 		Config: &daconfvalobj.Config{
 			Input: &daconfvalobj.Input{},
@@ -63,6 +75,8 @@ func TestDolphinTplListReq_StructFields(t *testing.T) {
 }
 
 func TestDolphinTplListReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := &DolphinTplListReq{}
 
 	assert.Nil(t, req.Config)
@@ -70,6 +84,8 @@ func TestDolphinTplListReq_Empty(t *testing.T) {
 }
 
 func TestDolphinTplListReq_WithAllBuiltInAgentKeys(t *testing.T) {
+	t.Parallel()
+
 	agentKeys := []builtinagentenum.AgentKey{
 		builtinagentenum.AgentKeyDocQA,
 		builtinagentenum.AgentKeyGraphQA,
@@ -82,6 +98,8 @@ func TestDolphinTplListReq_WithAllBuiltInAgentKeys(t *testing.T) {
 
 	for _, key := range agentKeys {
 		t.Run(key.String(), func(t *testing.T) {
+			t.Parallel()
+
 			req := &DolphinTplListReq{
 				Config:          &daconfvalobj.Config{},
 				BuiltInAgentKey: key,
@@ -95,6 +113,8 @@ func TestDolphinTplListReq_WithAllBuiltInAgentKeys(t *testing.T) {
 }
 
 func TestNewDolphinTplListReq(t *testing.T) {
+	t.Parallel()
+
 	req := &DolphinTplListReq{
 		Config: &daconfvalobj.Config{},
 	}

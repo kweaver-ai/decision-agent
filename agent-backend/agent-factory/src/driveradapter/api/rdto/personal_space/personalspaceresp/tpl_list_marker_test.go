@@ -7,6 +7,8 @@ import (
 )
 
 func TestNewPTplListPaginationMarker(t *testing.T) {
+	t.Parallel()
+
 	marker := NewPTplListPaginationMarker()
 
 	assert.NotNil(t, marker)
@@ -15,6 +17,8 @@ func TestNewPTplListPaginationMarker(t *testing.T) {
 }
 
 func TestPTplListPaginationMarker_ToString_Empty(t *testing.T) {
+	t.Parallel()
+
 	marker := &PTplListPaginationMarker{}
 
 	str, err := marker.ToString()
@@ -26,6 +30,8 @@ func TestPTplListPaginationMarker_ToString_Empty(t *testing.T) {
 }
 
 func TestPTplListPaginationMarker_ToString_WithValues(t *testing.T) {
+	t.Parallel()
+
 	marker := &PTplListPaginationMarker{
 		UpdatedAt: 1234567890,
 		LastTplID: 999,
@@ -38,6 +44,8 @@ func TestPTplListPaginationMarker_ToString_WithValues(t *testing.T) {
 }
 
 func TestPTplListPaginationMarker_LoadFromStr_Empty(t *testing.T) {
+	t.Parallel()
+
 	marker := &PTplListPaginationMarker{
 		UpdatedAt: 111,
 		LastTplID: 222,
@@ -52,14 +60,16 @@ func TestPTplListPaginationMarker_LoadFromStr_Empty(t *testing.T) {
 }
 
 func TestPTplListPaginationMarker_LoadFromStr_Valid(t *testing.T) {
+	t.Parallel()
+
 	marker := &PTplListPaginationMarker{}
-	
+
 	// Create a marker, serialize it, then load it back
 	original := &PTplListPaginationMarker{
 		UpdatedAt: 9876543210,
 		LastTplID: 888,
 	}
-	
+
 	str, err := original.ToString()
 	assert.NoError(t, err)
 
@@ -70,6 +80,8 @@ func TestPTplListPaginationMarker_LoadFromStr_Valid(t *testing.T) {
 }
 
 func TestPTplListPaginationMarker_LoadFromStr_RoundTrip(t *testing.T) {
+	t.Parallel()
+
 	original := &PTplListPaginationMarker{
 		UpdatedAt: 1617235200,
 		LastTplID: 42,
@@ -87,6 +99,8 @@ func TestPTplListPaginationMarker_LoadFromStr_RoundTrip(t *testing.T) {
 }
 
 func TestPTplListPaginationMarker_LoadFromStr_InvalidBase64(t *testing.T) {
+	t.Parallel()
+
 	marker := &PTplListPaginationMarker{}
 
 	err := marker.LoadFromStr("not-valid-base64!")
@@ -95,6 +109,8 @@ func TestPTplListPaginationMarker_LoadFromStr_InvalidBase64(t *testing.T) {
 }
 
 func TestPTplListPaginationMarker_LoadFromStr_InvalidJSON(t *testing.T) {
+	t.Parallel()
+
 	marker := &PTplListPaginationMarker{}
 
 	// Valid base64 but invalid JSON
@@ -104,6 +120,8 @@ func TestPTplListPaginationMarker_LoadFromStr_InvalidJSON(t *testing.T) {
 }
 
 func TestPTplListPaginationMarker_StructFields(t *testing.T) {
+	t.Parallel()
+
 	marker := &PTplListPaginationMarker{
 		UpdatedAt: 1000000,
 		LastTplID: 12345,
@@ -114,6 +132,8 @@ func TestPTplListPaginationMarker_StructFields(t *testing.T) {
 }
 
 func TestPTplListPaginationMarker_ToString_Base64Encoding(t *testing.T) {
+	t.Parallel()
+
 	marker := &PTplListPaginationMarker{
 		UpdatedAt: 0,
 		LastTplID: 0,

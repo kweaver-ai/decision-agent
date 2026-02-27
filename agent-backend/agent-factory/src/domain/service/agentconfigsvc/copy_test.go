@@ -152,7 +152,6 @@ func TestDataAgentConfigSvc_Copy_ExistsByNameError(t *testing.T) {
 	assert.Contains(t, err.Error(), "检查Agent名称是否存在失败")
 }
 
-
 func TestDataAgentConfigSvc_copyAgentPo_Success(t *testing.T) {
 	svc := &dataAgentConfigSvc{SvcBase: service.NewSvcBase()}
 

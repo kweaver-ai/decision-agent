@@ -9,8 +9,10 @@ import (
 )
 
 // 类型别名，让其他测试文件能引用
-type uniquerymock_iface = iuniqueryhttp.IUniquery
-type cmpmock_iface = icmp.Logger
+type (
+	uniquerymock_iface = iuniqueryhttp.IUniquery
+	cmpmock_iface      = icmp.Logger
+)
 
 // uniquerymock_new creates a new MockIUniquery
 func uniquerymock_new(ctrl *gomock.Controller) *uniquerymock.MockIUniquery {
@@ -30,6 +32,7 @@ func newTestSvc(ctrl *gomock.Controller) (*observabilitySvc, *uniquerymock.MockI
 		logger:   mockLogger,
 		uniquery: mockUniquery,
 	}
+
 	return svc, mockUniquery, mockLogger
 }
 
@@ -42,7 +45,7 @@ func makeEntry(sessionID, runID, conversationID, agentID, status string,
 ) map[string]any {
 	return map[string]any{
 		"Attributes": map[string]any{
-			"session_id":              map[string]any{"Data": sessionID},
+			"session_id":             map[string]any{"Data": sessionID},
 			"run_id":                 map[string]any{"Data": runID},
 			"conversation_id":        map[string]any{"Data": conversationID},
 			"agent_id":               map[string]any{"Data": agentID},

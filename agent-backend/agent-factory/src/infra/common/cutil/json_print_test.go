@@ -7,6 +7,8 @@ import (
 )
 
 func TestPrintFormatJSONString(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		jsonStr string
@@ -47,6 +49,8 @@ func TestPrintFormatJSONString(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := PrintFormatJSONString(tt.jsonStr, tt.prefix)
 
 			if tt.wantErr {
@@ -59,52 +63,56 @@ func TestPrintFormatJSONString(t *testing.T) {
 }
 
 func TestPrintFormatJSON(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name   string
-		input  interface{}
-		prefix string
+		name    string
+		input   interface{}
+		prefix  string
 		wantErr bool
 	}{
 		{
-			name:   "simple map",
-			input:  map[string]interface{}{"name": "John", "age": 30},
-			prefix: "Data",
+			name:    "simple map",
+			input:   map[string]interface{}{"name": "John", "age": 30},
+			prefix:  "Data",
 			wantErr: false,
 		},
 		{
-			name:   "nested map",
-			input:  map[string]interface{}{"person": map[string]interface{}{"name": "John"}},
-			prefix: "Nested",
+			name:    "nested map",
+			input:   map[string]interface{}{"person": map[string]interface{}{"name": "John"}},
+			prefix:  "Nested",
 			wantErr: false,
 		},
 		{
-			name:   "slice",
-			input:  []interface{}{"a", "b", "c"},
-			prefix: "Slice",
+			name:    "slice",
+			input:   []interface{}{"a", "b", "c"},
+			prefix:  "Slice",
 			wantErr: false,
 		},
 		{
-			name:   "string",
-			input:  "test",
-			prefix: "String",
+			name:    "string",
+			input:   "test",
+			prefix:  "String",
 			wantErr: false,
 		},
 		{
-			name:   "nil",
-			input:  nil,
-			prefix: "Nil",
+			name:    "nil",
+			input:   nil,
+			prefix:  "Nil",
 			wantErr: false,
 		},
 		{
-			name:   "unmarshalable value (function)",
-			input:  func() {},
-			prefix: "Func",
+			name:    "unmarshalable value (function)",
+			input:   func() {},
+			prefix:  "Func",
 			wantErr: true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := PrintFormatJSON(tt.input, tt.prefix)
 			if tt.wantErr {
 				assert.Error(t, err, "PrintFormatJSON should return error for unmarshalable value")

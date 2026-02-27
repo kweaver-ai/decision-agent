@@ -7,6 +7,8 @@ import (
 )
 
 func TestNewCreateResp(t *testing.T) {
+	t.Parallel()
+
 	resp := NewCreateResp()
 
 	assert.NotNil(t, resp)
@@ -14,6 +16,8 @@ func TestNewCreateResp(t *testing.T) {
 }
 
 func TestCreateResp_WithID(t *testing.T) {
+	t.Parallel()
+
 	resp := &CreateResp{
 		ID: "space123",
 	}
@@ -22,6 +26,8 @@ func TestCreateResp_WithID(t *testing.T) {
 }
 
 func TestCreateResp_NewAndSetID(t *testing.T) {
+	t.Parallel()
+
 	resp := NewCreateResp()
 	resp.ID = "space456"
 
@@ -29,6 +35,8 @@ func TestCreateResp_NewAndSetID(t *testing.T) {
 }
 
 func TestCreateResp_EmptyID(t *testing.T) {
+	t.Parallel()
+
 	resp := &CreateResp{
 		ID: "",
 	}
@@ -37,6 +45,8 @@ func TestCreateResp_EmptyID(t *testing.T) {
 }
 
 func TestCreateResp_MultipleInstances(t *testing.T) {
+	t.Parallel()
+
 	resp1 := NewCreateResp()
 	resp2 := NewCreateResp()
 

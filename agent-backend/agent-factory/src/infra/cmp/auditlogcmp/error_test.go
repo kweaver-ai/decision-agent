@@ -6,7 +6,11 @@ import (
 )
 
 func TestErrAuditLogIsNil(t *testing.T) {
+	t.Parallel()
+
 	t.Run("error value", func(t *testing.T) {
+		t.Parallel()
+
 		if ErrAuditLogIsNil == nil {
 			t.Error("Expected ErrAuditLogIsNil to be defined")
 		}
@@ -18,6 +22,7 @@ func TestErrAuditLogIsNil(t *testing.T) {
 	})
 
 	t.Run("error is errors.New type", func(t *testing.T) {
+		t.Parallel()
 		// Verify it's a proper error
 		var err error = ErrAuditLogIsNil
 		if err == nil {
@@ -26,6 +31,8 @@ func TestErrAuditLogIsNil(t *testing.T) {
 	})
 
 	t.Run("can be compared with errors.Is", func(t *testing.T) {
+		t.Parallel()
+
 		customErr := errors.New("audit log is nil")
 		if !errors.Is(customErr, ErrAuditLogIsNil) {
 			// This should actually be false since they're different instances

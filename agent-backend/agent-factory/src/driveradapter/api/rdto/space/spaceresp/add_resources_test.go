@@ -10,6 +10,8 @@ import (
 )
 
 func TestNewAddResourcesResp(t *testing.T) {
+	t.Parallel()
+
 	resp := NewAddResourcesResp()
 
 	assert.NotNil(t, resp)
@@ -19,6 +21,8 @@ func TestNewAddResourcesResp(t *testing.T) {
 }
 
 func TestAddResourcesResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	success := []*spacevo.ResourceAssoc{
 		{
 			ResourceUniq: spacevo.ResourceUniq{
@@ -47,6 +51,8 @@ func TestAddResourcesResp_StructFields(t *testing.T) {
 }
 
 func TestAddResourcesResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := AddResourcesResp{}
 
 	assert.Nil(t, resp.Success)
@@ -54,6 +60,8 @@ func TestAddResourcesResp_Empty(t *testing.T) {
 }
 
 func TestNewAddResourcesFailed(t *testing.T) {
+	t.Parallel()
+
 	failed := NewAddResourcesFailed()
 
 	assert.NotNil(t, failed)
@@ -62,6 +70,8 @@ func TestNewAddResourcesFailed(t *testing.T) {
 }
 
 func TestAddResourcesFailed_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resources := []*spacereq.SpaceResourceReq{
 		{
 			ResourceType: cdaenum.ResourceTypeDataAgent,
@@ -83,12 +93,16 @@ func TestAddResourcesFailed_StructFields(t *testing.T) {
 }
 
 func TestAddResourcesFailed_Empty(t *testing.T) {
+	t.Parallel()
+
 	failed := AddResourcesFailed{}
 
 	assert.Nil(t, failed.ResourceAlreadyExists)
 }
 
 func TestAddResourcesResp_WithAllSuccess(t *testing.T) {
+	t.Parallel()
+
 	success := []*spacevo.ResourceAssoc{
 		{
 			ResourceUniq: spacevo.ResourceUniq{
@@ -117,6 +131,8 @@ func TestAddResourcesResp_WithAllSuccess(t *testing.T) {
 }
 
 func TestAddResourcesResp_WithAllFailed(t *testing.T) {
+	t.Parallel()
+
 	failed := NewAddResourcesFailed()
 	failed.ResourceAlreadyExists = []*spacereq.SpaceResourceReq{
 		{
@@ -135,6 +151,8 @@ func TestAddResourcesResp_WithAllFailed(t *testing.T) {
 }
 
 func TestAddResourcesFailed_WithDifferentResourceTypes(t *testing.T) {
+	t.Parallel()
+
 	resources := []*spacereq.SpaceResourceReq{
 		{
 			ResourceType: cdaenum.ResourceTypeDataAgent,
@@ -156,6 +174,8 @@ func TestAddResourcesFailed_WithDifferentResourceTypes(t *testing.T) {
 }
 
 func TestAddResourcesResp_WithMixedResults(t *testing.T) {
+	t.Parallel()
+
 	success := []*spacevo.ResourceAssoc{
 		{
 			ResourceUniq: spacevo.ResourceUniq{
@@ -184,6 +204,8 @@ func TestAddResourcesResp_WithMixedResults(t *testing.T) {
 }
 
 func TestAddResourcesResp_WithMultipleResources(t *testing.T) {
+	t.Parallel()
+
 	success := []*spacevo.ResourceAssoc{
 		{
 			ResourceUniq: spacevo.ResourceUniq{

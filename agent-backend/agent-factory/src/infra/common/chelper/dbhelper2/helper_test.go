@@ -16,6 +16,8 @@ type (
 )
 
 func TestFillSQL(t *testing.T) {
+	t.Parallel()
+
 	// 1. 正常情况 - 混合类型参数
 	sql := "select * from user where id = ? and name = ?"
 	args := []interface{}{1, "test"}
@@ -24,6 +26,8 @@ func TestFillSQL(t *testing.T) {
 
 	// 2. 字符串类型参数
 	t.Run("字符串参数", func(t *testing.T) {
+		t.Parallel()
+
 		sql := "select * from user where name = ? and email = ?"
 		args := []interface{}{"张三", "test@example.com"}
 		filledSql := FillSQL(sql, args...)
@@ -32,6 +36,8 @@ func TestFillSQL(t *testing.T) {
 
 	// 3. 数字类型参数
 	t.Run("数字参数", func(t *testing.T) {
+		t.Parallel()
+
 		sql := "select * from user where id = ? and age = ? and salary = ? and score = ?"
 		args := []interface{}{123, int64(25), 5000.50, float32(98.5)}
 		filledSql := FillSQL(sql, args...)
@@ -40,6 +46,8 @@ func TestFillSQL(t *testing.T) {
 
 	// 4. 布尔类型参数
 	t.Run("布尔参数", func(t *testing.T) {
+		t.Parallel()
+
 		sql := "select * from user where is_active = ? and is_deleted = ?"
 		args := []interface{}{true, false}
 		filledSql := FillSQL(sql, args...)
@@ -48,6 +56,8 @@ func TestFillSQL(t *testing.T) {
 
 	// 5. 时间类型参数
 	t.Run("时间参数", func(t *testing.T) {
+		t.Parallel()
+
 		testTime := time.Date(2023, 12, 25, 15, 30, 45, 0, time.UTC)
 		sql := "select * from user where created_at = ?"
 		args := []interface{}{testTime}
@@ -58,6 +68,8 @@ func TestFillSQL(t *testing.T) {
 
 	// 6. nil 参数 - 应该panic
 	t.Run("nil参数", func(t *testing.T) {
+		t.Parallel()
+
 		sql := "select * from user where deleted_at = ?"
 		args := []interface{}{nil}
 
@@ -68,6 +80,8 @@ func TestFillSQL(t *testing.T) {
 
 	// 7. 空字符串参数
 	t.Run("空字符串参数", func(t *testing.T) {
+		t.Parallel()
+
 		sql := "select * from user where name = ? and description = ?"
 		args := []interface{}{"", "non-empty"}
 		filledSql := FillSQL(sql, args...)
@@ -76,6 +90,8 @@ func TestFillSQL(t *testing.T) {
 
 	// 8. 没有参数的情况
 	t.Run("无参数", func(t *testing.T) {
+		t.Parallel()
+
 		sql := "select * from user"
 		filledSql := FillSQL(sql)
 		assert.Equal(t, "select * from user", filledSql)
@@ -83,6 +99,8 @@ func TestFillSQL(t *testing.T) {
 
 	// 9. 没有占位符但有参数的情况
 	t.Run("无占位符但有参数", func(t *testing.T) {
+		t.Parallel()
+
 		sql := "select * from user"
 		args := []interface{}{1, "test"}
 		filledSql := FillSQL(sql, args...)
@@ -91,6 +109,8 @@ func TestFillSQL(t *testing.T) {
 
 	// 10. 占位符多于参数的情况
 	t.Run("占位符多于参数", func(t *testing.T) {
+		t.Parallel()
+
 		sql := "select * from user where id = ? and name = ? and age = ?"
 		args := []interface{}{1, "test"}
 		filledSql := FillSQL(sql, args...)
@@ -99,6 +119,8 @@ func TestFillSQL(t *testing.T) {
 
 	// 11. 参数多于占位符的情况
 	t.Run("参数多于占位符", func(t *testing.T) {
+		t.Parallel()
+
 		sql := "select * from user where id = ?"
 		args := []interface{}{1, "test", 25}
 		filledSql := FillSQL(sql, args...)
@@ -107,6 +129,8 @@ func TestFillSQL(t *testing.T) {
 
 	// 12. 包含特殊字符的字符串
 	t.Run("特殊字符字符串", func(t *testing.T) {
+		t.Parallel()
+
 		sql := "select * from user where name = ? and comment = ?"
 		args := []interface{}{"O'Connor", "It's a \"test\" string"}
 		filledSql := FillSQL(sql, args...)
@@ -115,6 +139,8 @@ func TestFillSQL(t *testing.T) {
 
 	// 13. 零值参数
 	t.Run("零值参数", func(t *testing.T) {
+		t.Parallel()
+
 		sql := "select * from user where id = ? and count = ? and rate = ?"
 		args := []interface{}{0, int64(0), 0.0}
 		filledSql := FillSQL(sql, args...)
@@ -123,6 +149,8 @@ func TestFillSQL(t *testing.T) {
 
 	// 14. 结构体参数
 	t.Run("结构体参数", func(t *testing.T) {
+		t.Parallel()
+
 		type User struct {
 			ID   int
 			Name string
@@ -137,6 +165,8 @@ func TestFillSQL(t *testing.T) {
 
 	// 15. 切片参数
 	t.Run("切片参数", func(t *testing.T) {
+		t.Parallel()
+
 		sql := "select * from user where ids = ?"
 		args := []interface{}{[]int{1, 2, 3}}
 		filledSql := FillSQL(sql, args...)
@@ -145,6 +175,8 @@ func TestFillSQL(t *testing.T) {
 
 	// 16. 空 SQL 语句
 	t.Run("空SQL语句", func(t *testing.T) {
+		t.Parallel()
+
 		sql := ""
 		args := []interface{}{1, "test"}
 		filledSql := FillSQL(sql, args...)
@@ -153,6 +185,8 @@ func TestFillSQL(t *testing.T) {
 
 	// 17. 复杂 SQL 语句
 	t.Run("复杂SQL语句", func(t *testing.T) {
+		t.Parallel()
+
 		sql := `INSERT INTO user (id, name, email, age, is_active, created_at) 
 				VALUES (?, ?, ?, ?, ?, ?) 
 				ON DUPLICATE KEY UPDATE name = ?, email = ?`
@@ -167,6 +201,8 @@ func TestFillSQL(t *testing.T) {
 
 	// 18. 负数参数
 	t.Run("负数参数", func(t *testing.T) {
+		t.Parallel()
+
 		sql := "select * from user where balance = ? and score = ?"
 		args := []interface{}{-100, -99.5}
 		filledSql := FillSQL(sql, args...)
@@ -175,6 +211,7 @@ func TestFillSQL(t *testing.T) {
 
 	// 19. 自定义字符串类型测试
 	t.Run("自定义字符串类型", func(t *testing.T) {
+		t.Parallel()
 		// UserID 类型
 		sql1 := "select * from users where id = ?"
 		args1 := []interface{}{UserID("user123")}
@@ -202,8 +239,12 @@ func TestFillSQL(t *testing.T) {
 }
 
 func TestGenInClauseGeneric(t *testing.T) {
+	t.Parallel()
+
 	// 1. 字符串类型测试
 	t.Run("字符串类型", func(t *testing.T) {
+		t.Parallel()
+
 		args := []string{"apple", "banana", "orange"}
 		inClause := GenInClauseGeneric(args)
 		assert.Equal(t, "'apple','banana','orange'", inClause)
@@ -211,6 +252,8 @@ func TestGenInClauseGeneric(t *testing.T) {
 
 	// 2. 整数类型测试
 	t.Run("整数类型", func(t *testing.T) {
+		t.Parallel()
+
 		args := []int{1, 2, 3, 4, 5}
 		inClause := GenInClauseGeneric(args)
 		assert.Equal(t, "1,2,3,4,5", inClause)
@@ -218,6 +261,8 @@ func TestGenInClauseGeneric(t *testing.T) {
 
 	// 3. 浮点数类型测试
 	t.Run("浮点数类型", func(t *testing.T) {
+		t.Parallel()
+
 		args := []float64{1.1, 2.2, 3.3}
 		inClause := GenInClauseGeneric(args)
 		assert.Equal(t, "1.1,2.2,3.3", inClause)
@@ -225,6 +270,8 @@ func TestGenInClauseGeneric(t *testing.T) {
 
 	// 4. 布尔类型测试
 	t.Run("布尔类型", func(t *testing.T) {
+		t.Parallel()
+
 		args := []bool{true, false, true}
 		inClause := GenInClauseGeneric(args)
 		assert.Equal(t, "true,false,true", inClause)
@@ -232,6 +279,8 @@ func TestGenInClauseGeneric(t *testing.T) {
 
 	// 5. 混合类型结构体测试
 	t.Run("结构体类型", func(t *testing.T) {
+		t.Parallel()
+
 		type TestStruct struct {
 			ID   int
 			Name string
@@ -244,6 +293,8 @@ func TestGenInClauseGeneric(t *testing.T) {
 
 	// 6. 空切片测试
 	t.Run("空切片", func(t *testing.T) {
+		t.Parallel()
+
 		var args []string
 		inClause := GenInClauseGeneric(args)
 		assert.Equal(t, "", inClause)
@@ -251,6 +302,8 @@ func TestGenInClauseGeneric(t *testing.T) {
 
 	// 7. 单元素测试
 	t.Run("单元素", func(t *testing.T) {
+		t.Parallel()
+
 		args := []int{42}
 		inClause := GenInClauseGeneric(args)
 		assert.Equal(t, "42", inClause)
@@ -258,6 +311,7 @@ func TestGenInClauseGeneric(t *testing.T) {
 
 	// 8. 自定义字符串类型测试
 	t.Run("自定义字符串类型", func(t *testing.T) {
+		t.Parallel()
 		// UserID 类型
 		userIds := []UserID{UserID("user1"), UserID("user2"), UserID("user3")}
 		inClause1 := GenInClauseGeneric(userIds)

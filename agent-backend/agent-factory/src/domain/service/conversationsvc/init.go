@@ -40,9 +40,12 @@ func (sv *conversationSvc) Init(ctx context.Context, req conversationreq.InitReq
 
 	// 确保 Sandbox Session 存在并就绪（仅在启用沙箱时执行）
 	var sandboxSessionID string
+
 	if sv.sandboxPlatformConf.Enable {
 		sessionID := fmt.Sprintf("sess-%s", req.UserID)
+
 		var sandboxErr error
+
 		sandboxSessionID, sandboxErr = sv.ensureSandboxSession(ctx, sessionID, &req)
 		if sandboxErr != nil {
 			o11y.Warn(ctx, fmt.Sprintf("[Init] ensure sandbox session failed: %v", sandboxErr))
@@ -69,6 +72,7 @@ func (sv *conversationSvc) ensureSandboxSession(ctx context.Context, sessionID s
 
 		// 其他错误：尝试创建新 Session
 		sv.logger.Warnf("[ensureSandboxSession] get session failed: %v, will create new session", err)
+
 		return sv.createNewSession(ctx, sessionID, req)
 	}
 
@@ -80,6 +84,7 @@ func (sv *conversationSvc) ensureSandboxSession(ctx context.Context, sessionID s
 
 	// 3. Session 状态非 running，自动重新创建
 	sv.logger.Warnf("[ensureSandboxSession] session status is %s, will recreate: %s", sessionInfo.Status, sessionID)
+
 	return sv.createNewSession(ctx, sessionID, req)
 }
 
@@ -89,14 +94,17 @@ func (sv *conversationSvc) createNewSession(ctx context.Context, sessionID strin
 	if cpu == "" {
 		cpu = "1"
 	}
+
 	memory := sv.sandboxPlatformConf.DefaultMemory
 	if memory == "" {
 		memory = "512Mi"
 	}
+
 	disk := sv.sandboxPlatformConf.DefaultDisk
 	if disk == "" {
 		disk = "1Gi"
 	}
+
 	timeout := sv.sandboxPlatformConf.DefaultTimeout
 	if timeout == 0 {
 		timeout = 300
@@ -131,6 +139,7 @@ func (sv *conversationSvc) createNewSession(ctx context.Context, sessionID strin
 		}
 
 		sv.logger.Errorf("[createNewSession] create failed: %v", err)
+
 		return "", errors.Wrap(err, "create sandbox session failed")
 	}
 
@@ -150,6 +159,7 @@ func (sv *conversationSvc) waitForSessionReady(ctx context.Context, sessionID st
 	retryIntervalDuration, err := time.ParseDuration(retryInterval)
 	if err != nil {
 		sv.logger.Warnf("[waitForSessionReady] failed to parse retry interval, using default 500ms")
+
 		retryIntervalDuration = 500 * time.Millisecond
 	}
 
@@ -158,6 +168,7 @@ func (sv *conversationSvc) waitForSessionReady(ctx context.Context, sessionID st
 		if err != nil {
 			sv.logger.Errorf("[waitForSessionReady] get session status failed (attempt %d): %v", i+1, err)
 			time.Sleep(retryIntervalDuration)
+
 			continue
 		}
 
@@ -184,6 +195,7 @@ func (sv *conversationSvc) isSessionNotFoundError(err error) bool {
 	if errors.As(err, &httpErr) {
 		return httpErr.HTTPCode == http.StatusNotFound
 	}
+
 	return false
 }
 
@@ -193,5 +205,6 @@ func (sv *conversationSvc) isSessionAlreadyExistsError(err error) bool {
 	if errors.As(err, &httpErr) {
 		return httpErr.HTTPCode == http.StatusConflict
 	}
+
 	return strings.Contains(err.Error(), "already exists")
 }

@@ -10,6 +10,8 @@ import (
 )
 
 func TestNewListForBenchmarkResp(t *testing.T) {
+	t.Parallel()
+
 	resp := NewListForBenchmarkResp()
 
 	assert.NotNil(t, resp)
@@ -19,7 +21,11 @@ func TestNewListForBenchmarkResp(t *testing.T) {
 }
 
 func TestListForBenchmarkResp_LoadFromListForBenchmark(t *testing.T) {
+	t.Parallel()
+
 	t.Run("load from valid PO list", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewListForBenchmarkResp()
 
 		pos := []*dapo.ListForBenchmarkPo{
@@ -54,6 +60,8 @@ func TestListForBenchmarkResp_LoadFromListForBenchmark(t *testing.T) {
 	})
 
 	t.Run("load from empty PO list", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewListForBenchmarkResp()
 
 		pos := []*dapo.ListForBenchmarkPo{}
@@ -65,6 +73,8 @@ func TestListForBenchmarkResp_LoadFromListForBenchmark(t *testing.T) {
 	})
 
 	t.Run("load from PO with minimal fields", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewListForBenchmarkResp()
 
 		pos := []*dapo.ListForBenchmarkPo{
@@ -86,6 +96,8 @@ func TestListForBenchmarkResp_LoadFromListForBenchmark(t *testing.T) {
 	})
 
 	t.Run("load from PO with all fields", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewListForBenchmarkResp()
 
 		pos := []*dapo.ListForBenchmarkPo{
@@ -113,6 +125,8 @@ func TestListForBenchmarkResp_LoadFromListForBenchmark(t *testing.T) {
 }
 
 func TestListForBenchmarkResp_Fields(t *testing.T) {
+	t.Parallel()
+
 	resp := &ListForBenchmarkResp{
 		Entries: []*ListForBenchmarkItem{
 			{
@@ -135,6 +149,8 @@ func TestListForBenchmarkResp_Fields(t *testing.T) {
 }
 
 func TestListForBenchmarkResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := &ListForBenchmarkResp{}
 
 	assert.Nil(t, resp.Entries)
@@ -142,6 +158,8 @@ func TestListForBenchmarkResp_Empty(t *testing.T) {
 }
 
 func TestListForBenchmarkItem_StructFields(t *testing.T) {
+	t.Parallel()
+
 	item := &ListForBenchmarkItem{
 		ListForBenchmarkPo: dapo.ListForBenchmarkPo{
 			ID:        "item-agent",
@@ -159,4 +177,3 @@ func TestListForBenchmarkItem_StructFields(t *testing.T) {
 	assert.Equal(t, "v1.0", item.Version)
 	assert.Equal(t, cdaenum.StatusPublished, item.Status)
 }
-

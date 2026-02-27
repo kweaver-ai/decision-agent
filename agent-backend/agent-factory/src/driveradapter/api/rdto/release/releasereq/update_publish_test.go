@@ -9,6 +9,8 @@ import (
 )
 
 func TestUpdatePublishInfoReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdatePublishInfoReq{}
 	req.CategoryIDs = []string{"cat-1", "cat-2"}
 	req.Description = "Test description"
@@ -26,6 +28,8 @@ func TestUpdatePublishInfoReq_StructFields(t *testing.T) {
 }
 
 func TestUpdatePublishInfoReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdatePublishInfoReq{}
 
 	assert.Nil(t, req.CategoryIDs)
@@ -35,6 +39,8 @@ func TestUpdatePublishInfoReq_Empty(t *testing.T) {
 }
 
 func TestUpdatePublishInfoReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdatePublishInfoReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -44,6 +50,8 @@ func TestUpdatePublishInfoReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestUpdatePublishInfoReq_CustomCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdatePublishInfoReq{}
 	req.PublishToWhere = []daenum.PublishToWhere{
 		daenum.PublishToWhereSquare,
@@ -60,6 +68,8 @@ func TestUpdatePublishInfoReq_CustomCheck_Valid(t *testing.T) {
 }
 
 func TestUpdatePublishInfoReq_CustomCheck_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdatePublishInfoReq{}
 
 	err := req.CustomCheck()
@@ -68,6 +78,8 @@ func TestUpdatePublishInfoReq_CustomCheck_Empty(t *testing.T) {
 }
 
 func TestUpdatePublishInfoReq_CustomCheck_InvalidPublishToWhere(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdatePublishInfoReq{}
 	req.PublishToWhere = []daenum.PublishToWhere{
 		daenum.PublishToWhereSquare,
@@ -81,6 +93,8 @@ func TestUpdatePublishInfoReq_CustomCheck_InvalidPublishToWhere(t *testing.T) {
 }
 
 func TestUpdatePublishInfoReq_CustomCheck_InvalidPublishToBes(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdatePublishInfoReq{}
 	req.PublishToBes = []cdaenum.PublishToBe{
 		cdaenum.PublishToBeAPIAgent,
@@ -94,6 +108,8 @@ func TestUpdatePublishInfoReq_CustomCheck_InvalidPublishToBes(t *testing.T) {
 }
 
 func TestUpdatePublishInfoReq_CustomCheck_AllValidPublishToWhere(t *testing.T) {
+	t.Parallel()
+
 	validTargets := []daenum.PublishToWhere{
 		daenum.PublishToWhereSquare,
 		daenum.PublishToWhereCustomSpace,
@@ -109,6 +125,8 @@ func TestUpdatePublishInfoReq_CustomCheck_AllValidPublishToWhere(t *testing.T) {
 }
 
 func TestUpdatePublishInfoReq_CustomCheck_AllValidPublishToBes(t *testing.T) {
+	t.Parallel()
+
 	validTargets := []cdaenum.PublishToBe{
 		cdaenum.PublishToBeAPIAgent,
 		cdaenum.PublishToBeWebSDKAgent,
@@ -126,6 +144,8 @@ func TestUpdatePublishInfoReq_CustomCheck_AllValidPublishToBes(t *testing.T) {
 }
 
 func TestUpdatePublishInfoReq_WithCategoryIDs(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdatePublishInfoReq{}
 	req.CategoryIDs = []string{"cat-1", "cat-2", "cat-3"}
 
@@ -136,6 +156,8 @@ func TestUpdatePublishInfoReq_WithCategoryIDs(t *testing.T) {
 }
 
 func TestUpdatePublishInfoReq_WithDescription(t *testing.T) {
+	t.Parallel()
+
 	descriptions := []string{
 		"Short description",
 		"This is a longer description with more details",
@@ -152,6 +174,8 @@ func TestUpdatePublishInfoReq_WithDescription(t *testing.T) {
 }
 
 func TestUpdatePublishInfoReq_WithMultiplePublishTargets(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdatePublishInfoReq{}
 	req.PublishToWhere = []daenum.PublishToWhere{
 		daenum.PublishToWhereSquare,
@@ -170,6 +194,8 @@ func TestUpdatePublishInfoReq_WithMultiplePublishTargets(t *testing.T) {
 }
 
 func TestUpdatePublishInfoReq_WithDuplicatePublishTargets(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdatePublishInfoReq{}
 	req.PublishToWhere = []daenum.PublishToWhere{
 		daenum.PublishToWhereSquare,
@@ -187,6 +213,8 @@ func TestUpdatePublishInfoReq_WithDuplicatePublishTargets(t *testing.T) {
 }
 
 func TestUpdatePublishInfoReq_WithNilPmsControl(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdatePublishInfoReq{}
 	req.PmsControl = nil
 

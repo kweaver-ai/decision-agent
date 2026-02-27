@@ -18,6 +18,8 @@ import (
 )
 
 func TestPublishedSvc_GetPubedTplList_LenGreaterThanNeedSize(t *testing.T) {
+	t.Parallel()
+
 	initCGlobalConfig(t)
 
 	ctrl := gomock.NewController(t)
@@ -42,6 +44,7 @@ func TestPublishedSvc_GetPubedTplList_LenGreaterThanNeedSize(t *testing.T) {
 			{ID: 1, TplID: 101, Name: "tpl-1", PublishedBy: "u1"},
 			{ID: 2, TplID: 102, Name: "tpl-2", PublishedBy: "u2"},
 		}, nil)
+
 	umRet := umtypes.NewOsnInfoMapS()
 	umRet.UserNameMap["u1"] = "user-1"
 	mockUm.EXPECT().GetOsnNames(gomock.Any(), gomock.Any()).
@@ -56,6 +59,8 @@ func TestPublishedSvc_GetPubedTplList_LenGreaterThanNeedSize(t *testing.T) {
 }
 
 func TestPublishedSvc_GetPubedTplList_ConvertError(t *testing.T) {
+	t.Parallel()
+
 	initCGlobalConfig(t)
 
 	ctrl := gomock.NewController(t)
@@ -89,6 +94,8 @@ func TestPublishedSvc_GetPubedTplList_ConvertError(t *testing.T) {
 }
 
 func TestPublishedSvc_GetPubedTplList_SuccessLastPage(t *testing.T) {
+	t.Parallel()
+
 	initCGlobalConfig(t)
 
 	ctrl := gomock.NewController(t)
@@ -112,6 +119,7 @@ func TestPublishedSvc_GetPubedTplList_SuccessLastPage(t *testing.T) {
 		Return([]*dapo.PublishedTplPo{
 			{ID: 1, TplID: 101, Name: "tpl-1", PublishedBy: "u1"},
 		}, nil)
+
 	umRet := umtypes.NewOsnInfoMapS()
 	umRet.UserNameMap["u1"] = "user-1"
 	mockUm.EXPECT().GetOsnNames(gomock.Any(), gomock.Any()).

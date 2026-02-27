@@ -12,6 +12,8 @@ import (
 )
 
 func TestDataAgentTpl(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		eo      *daconfeo.DataAgentTpl
@@ -50,6 +52,8 @@ func TestDataAgentTpl(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			po, err := DataAgentTpl(tt.eo)
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -57,6 +61,7 @@ func TestDataAgentTpl(t *testing.T) {
 			} else {
 				require.NoError(t, err)
 				require.NotNil(t, po)
+
 				if tt.checkPO != nil {
 					tt.checkPO(t, po)
 				}
@@ -66,10 +71,12 @@ func TestDataAgentTpl(t *testing.T) {
 }
 
 func TestDataAgentTpls(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name    string
-		eos     []*daconfeo.DataAgentTpl
-		wantErr bool
+		name     string
+		eos      []*daconfeo.DataAgentTpl
+		wantErr  bool
 		checkPOs func(t *testing.T, pos []*dapo.DataAgentTplPo)
 	}{
 		{
@@ -115,11 +122,14 @@ func TestDataAgentTpls(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			pos, err := DataAgentTpls(tt.eos)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {
 				require.NoError(t, err)
+
 				if tt.checkPOs != nil {
 					tt.checkPOs(t, pos)
 				}
@@ -129,6 +139,8 @@ func TestDataAgentTpls(t *testing.T) {
 }
 
 func TestDataAgentTpl_WithNilConfig(t *testing.T) {
+	t.Parallel()
+
 	eo := &daconfeo.DataAgentTpl{
 		DataAgentTplPo: dapo.DataAgentTplPo{
 			ID:     1,
@@ -145,6 +157,8 @@ func TestDataAgentTpl_WithNilConfig(t *testing.T) {
 }
 
 func TestDataAgentTpl_WithComplexConfig(t *testing.T) {
+	t.Parallel()
+
 	isDefault := true
 	eo := &daconfeo.DataAgentTpl{
 		DataAgentTplPo: dapo.DataAgentTplPo{
@@ -185,6 +199,8 @@ func TestDataAgentTpl_WithComplexConfig(t *testing.T) {
 }
 
 func TestDataAgentTpls_SingleEntity(t *testing.T) {
+	t.Parallel()
+
 	eos := []*daconfeo.DataAgentTpl{
 		{
 			DataAgentTplPo: dapo.DataAgentTplPo{
@@ -205,7 +221,11 @@ func TestDataAgentTpls_SingleEntity(t *testing.T) {
 }
 
 func TestDataAgentTpls_NilInSlice(t *testing.T) {
+	t.Parallel()
+
 	t.Run("nil entity in slice causes panic", func(t *testing.T) {
+		t.Parallel()
+
 		eos := []*daconfeo.DataAgentTpl{
 			{
 				DataAgentTplPo: dapo.DataAgentTplPo{

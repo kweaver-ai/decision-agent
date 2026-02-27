@@ -7,6 +7,8 @@ import (
 )
 
 func TestCopyResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := CopyResp{
 		ID:   12345,
 		Name: "Test Template",
@@ -19,6 +21,8 @@ func TestCopyResp_StructFields(t *testing.T) {
 }
 
 func TestCopyResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := CopyResp{}
 
 	assert.Equal(t, int64(0), resp.ID)
@@ -27,6 +31,8 @@ func TestCopyResp_Empty(t *testing.T) {
 }
 
 func TestCopyResp_WithID(t *testing.T) {
+	t.Parallel()
+
 	ids := []int64{
 		0,
 		1,
@@ -44,6 +50,8 @@ func TestCopyResp_WithID(t *testing.T) {
 }
 
 func TestCopyResp_WithName(t *testing.T) {
+	t.Parallel()
+
 	names := []string{
 		"Test Template",
 		"测试模板",
@@ -61,6 +69,8 @@ func TestCopyResp_WithName(t *testing.T) {
 }
 
 func TestCopyResp_WithKey(t *testing.T) {
+	t.Parallel()
+
 	keys := []string{
 		"test-template-key",
 		"template-key-123",
@@ -77,6 +87,8 @@ func TestCopyResp_WithKey(t *testing.T) {
 }
 
 func TestCopyResp_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	resp := CopyResp{
 		ID:   98765,
 		Name: "Complete Template Name",
@@ -89,6 +101,8 @@ func TestCopyResp_WithAllFields(t *testing.T) {
 }
 
 func TestCopyResp_WithLargeID(t *testing.T) {
+	t.Parallel()
+
 	largeID := int64(9223372036854775807) // Max int64
 	resp := CopyResp{
 		ID: largeID,
@@ -98,6 +112,8 @@ func TestCopyResp_WithLargeID(t *testing.T) {
 }
 
 func TestCopyResp_WithNegativeID(t *testing.T) {
+	t.Parallel()
+
 	resp := CopyResp{
 		ID: -12345,
 	}
@@ -106,6 +122,8 @@ func TestCopyResp_WithNegativeID(t *testing.T) {
 }
 
 func TestCopyResp_WithChineseName(t *testing.T) {
+	t.Parallel()
+
 	resp := CopyResp{
 		Name: "智能客服模板",
 	}
@@ -114,6 +132,8 @@ func TestCopyResp_WithChineseName(t *testing.T) {
 }
 
 func TestCopyResp_WithMixedName(t *testing.T) {
+	t.Parallel()
+
 	resp := CopyResp{
 		Name: "Template模板Name",
 	}
@@ -122,6 +142,8 @@ func TestCopyResp_WithMixedName(t *testing.T) {
 }
 
 func TestCopyResp_WithSpecialCharsInName(t *testing.T) {
+	t.Parallel()
+
 	resp := CopyResp{
 		Name: "Template @#$%^&*()",
 	}

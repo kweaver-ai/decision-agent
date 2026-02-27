@@ -8,6 +8,8 @@ import (
 )
 
 func TestFields_ValObjCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		fields  Fields
@@ -46,6 +48,8 @@ func TestFields_ValObjCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.fields.ValObjCheck()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ValObjCheck() error = %v, wantErr %v", err, tt.wantErr)
@@ -55,6 +59,8 @@ func TestFields_ValObjCheck(t *testing.T) {
 }
 
 func TestFields_IsEnabledTempZone(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name   string
 		fields Fields
@@ -85,6 +91,8 @@ func TestFields_IsEnabledTempZone(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if got := tt.fields.IsEnabledTempZone(); got != tt.want {
 				t.Errorf("IsEnabledTempZone() = %v, want %v", got, tt.want)
 			}
@@ -93,6 +101,8 @@ func TestFields_IsEnabledTempZone(t *testing.T) {
 }
 
 func TestFields_IsFieldNameRepeat(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name   string
 		fields Fields
@@ -125,6 +135,8 @@ func TestFields_IsFieldNameRepeat(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if got := tt.fields.IsFieldNameRepeat(); got != tt.want {
 				t.Errorf("IsFieldNameRepeat() = %v, want %v", got, tt.want)
 			}
@@ -133,6 +145,8 @@ func TestFields_IsFieldNameRepeat(t *testing.T) {
 }
 
 func TestFields_GenNotFileDolphinStr(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name           string
 		fields         Fields
@@ -183,12 +197,15 @@ func TestFields_GenNotFileDolphinStr(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := tt.fields.GenNotFileDolphinStr()
 			for _, s := range tt.wantContains {
 				if !strings.Contains(got, s) {
 					t.Errorf("GenNotFileDolphinStr() 应包含: %s, 实际: %s", s, got)
 				}
 			}
+
 			for _, s := range tt.wantNotContain {
 				if strings.Contains(got, s) {
 					t.Errorf("GenNotFileDolphinStr() 不应包含: %s, 实际: %s", s, got)
@@ -199,6 +216,8 @@ func TestFields_GenNotFileDolphinStr(t *testing.T) {
 }
 
 func TestFields_GenFileDolphinStr(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name           string
 		fields         Fields
@@ -230,17 +249,21 @@ func TestFields_GenFileDolphinStr(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got, filedName := tt.fields.GenFileDolphinStr()
 			for _, s := range tt.wantContains {
 				if !strings.Contains(got, s) {
 					t.Errorf("GenFileDolphinStr() 应包含: %s, 实际: %s", s, got)
 				}
 			}
+
 			for _, s := range tt.wantNotContain {
 				if strings.Contains(got, s) {
 					t.Errorf("GenFileDolphinStr() 不应包含: %s, 实际: %s", s, got)
 				}
 			}
+
 			if tt.fields.IsEnabledTempZone() && filedName == "" {
 				t.Errorf("GenFileDolphinStr() 应返回字段名")
 			}

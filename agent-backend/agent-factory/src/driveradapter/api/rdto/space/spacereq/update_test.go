@@ -7,6 +7,8 @@ import (
 )
 
 func TestNewUpdateReq(t *testing.T) {
+	t.Parallel()
+
 	req := NewUpdateReq()
 
 	assert.NotNil(t, req)
@@ -15,6 +17,8 @@ func TestNewUpdateReq(t *testing.T) {
 }
 
 func TestUpdateReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -27,6 +31,8 @@ func TestUpdateReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestUpdateReq_CustomCheck(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{}
 
 	err := req.CustomCheck()
@@ -34,6 +40,8 @@ func TestUpdateReq_CustomCheck(t *testing.T) {
 }
 
 func TestUpdateReq_WithValues(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{
 		Name:    "Test Space",
 		Profile: "Test profile",
@@ -44,6 +52,8 @@ func TestUpdateReq_WithValues(t *testing.T) {
 }
 
 func TestUpdateReq_WithEmptyValues(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{
 		Name:    "",
 		Profile: "",
@@ -54,6 +64,8 @@ func TestUpdateReq_WithEmptyValues(t *testing.T) {
 }
 
 func TestUpdateReq_WithNameOnly(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{
 		Name: "Space Name",
 	}
@@ -63,6 +75,8 @@ func TestUpdateReq_WithNameOnly(t *testing.T) {
 }
 
 func TestUpdateReq_WithProfileOnly(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{
 		Profile: "Space profile description",
 	}
@@ -72,6 +86,8 @@ func TestUpdateReq_WithProfileOnly(t *testing.T) {
 }
 
 func TestUpdateReq_NameMaxLength(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{
 		Name: generateString(50),
 	}
@@ -80,6 +96,8 @@ func TestUpdateReq_NameMaxLength(t *testing.T) {
 }
 
 func TestUpdateReq_ProfileMaxLength(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{
 		Profile: generateString(100),
 	}
@@ -88,6 +106,8 @@ func TestUpdateReq_ProfileMaxLength(t *testing.T) {
 }
 
 func TestUpdateReq_GetErrMsgMapConsistency(t *testing.T) {
+	t.Parallel()
+
 	req1 := &UpdateReq{}
 	req2 := &UpdateReq{Name: "test"}
 
@@ -105,5 +125,6 @@ func generateString(length int) string {
 	for i := range result {
 		result[i] = 'a'
 	}
+
 	return string(result)
 }

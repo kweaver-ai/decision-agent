@@ -12,6 +12,8 @@ import (
 )
 
 func TestDataAgent(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		eo      *daconfeo.DataAgent
@@ -50,6 +52,8 @@ func TestDataAgent(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			po, err := DataAgent(tt.eo)
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -57,6 +61,7 @@ func TestDataAgent(t *testing.T) {
 			} else {
 				require.NoError(t, err)
 				require.NotNil(t, po)
+
 				if tt.checkPO != nil {
 					tt.checkPO(t, po)
 				}
@@ -66,10 +71,12 @@ func TestDataAgent(t *testing.T) {
 }
 
 func TestDataAgents(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name    string
-		eos     []*daconfeo.DataAgent
-		wantErr bool
+		name     string
+		eos      []*daconfeo.DataAgent
+		wantErr  bool
 		checkPOs func(t *testing.T, pos []*dapo.DataAgentPo)
 	}{
 		{
@@ -115,11 +122,14 @@ func TestDataAgents(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			pos, err := DataAgents(tt.eos)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {
 				require.NoError(t, err)
+
 				if tt.checkPOs != nil {
 					tt.checkPOs(t, pos)
 				}
@@ -129,6 +139,8 @@ func TestDataAgents(t *testing.T) {
 }
 
 func TestDataAgent_WithNilConfig(t *testing.T) {
+	t.Parallel()
+
 	eo := &daconfeo.DataAgent{
 		DataAgentPo: dapo.DataAgentPo{
 			ID:     "test-id",
@@ -145,6 +157,8 @@ func TestDataAgent_WithNilConfig(t *testing.T) {
 }
 
 func TestDataAgent_WithComplexConfig(t *testing.T) {
+	t.Parallel()
+
 	isDefault := true
 	eo := &daconfeo.DataAgent{
 		DataAgentPo: dapo.DataAgentPo{
@@ -185,7 +199,10 @@ func TestDataAgent_WithComplexConfig(t *testing.T) {
 }
 
 func TestDataAgent_ErrorPath(t *testing.T) {
+	t.Parallel()
+
 	t.Run("test error path coverage", func(t *testing.T) {
+		t.Parallel()
 		// Test with invalid config that might cause JSON marshaling to fail
 		// This is difficult to test without making the actual config invalid
 		// So we just verify the function handles nil config
@@ -205,6 +222,8 @@ func TestDataAgent_ErrorPath(t *testing.T) {
 }
 
 func TestDataAgents_SingleEntity(t *testing.T) {
+	t.Parallel()
+
 	eos := []*daconfeo.DataAgent{
 		{
 			DataAgentPo: dapo.DataAgentPo{
@@ -225,7 +244,11 @@ func TestDataAgents_SingleEntity(t *testing.T) {
 }
 
 func TestDataAgents_NilInSlice(t *testing.T) {
+	t.Parallel()
+
 	t.Run("nil entity in slice causes panic", func(t *testing.T) {
+		t.Parallel()
+
 		eos := []*daconfeo.DataAgent{
 			{
 				DataAgentPo: dapo.DataAgentPo{

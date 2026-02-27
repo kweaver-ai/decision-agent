@@ -9,16 +9,18 @@ import (
 )
 
 func TestDocSource_ValObjCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name    string
-		ds      *DocSource
-		wantErr bool
+		name     string
+		ds       *DocSource
+		wantErr  bool
 		checkErr func(t *testing.T, err error)
 	}{
 		{
 			name: "valid doc source with fields",
 			ds: &DocSource{
-				DsID:   "ds-1",
+				DsID: "ds-1",
 				Fields: []*DocSourceField{
 					{
 						Name:   "field1",
@@ -28,7 +30,7 @@ func TestDocSource_ValObjCheck(t *testing.T) {
 					},
 				},
 			},
-			wantErr: false,
+			wantErr:  false,
 			checkErr: nil,
 		},
 		{
@@ -98,9 +100,12 @@ func TestDocSource_ValObjCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.ds.ValObjCheck()
 			if tt.wantErr {
 				require.Error(t, err)
+
 				if tt.checkErr != nil {
 					tt.checkErr(t, err)
 				}
@@ -112,6 +117,8 @@ func TestDocSource_ValObjCheck(t *testing.T) {
 }
 
 func TestDocSource_SetDatasetId(t *testing.T) {
+	t.Parallel()
+
 	ds := &DocSource{
 		Datasets: []string{},
 	}
@@ -132,35 +139,39 @@ func TestDocSource_SetDatasetId(t *testing.T) {
 }
 
 func TestDocSource_GetFirstDatasetId(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name         string
-		datasets    []string
-		expectedId   string
+		name       string
+		datasets   []string
+		expectedId string
 	}{
 		{
 			name:       "single dataset",
-			datasets:  []string{"dataset-1"},
+			datasets:   []string{"dataset-1"},
 			expectedId: "dataset-1",
 		},
 		{
 			name:       "multiple datasets",
-			datasets:  []string{"dataset-1", "dataset-2"},
+			datasets:   []string{"dataset-1", "dataset-2"},
 			expectedId: "dataset-1",
 		},
 		{
 			name:       "empty datasets",
-			datasets:  []string{},
+			datasets:   []string{},
 			expectedId: "",
 		},
 		{
 			name:       "nil datasets",
-			datasets:  nil,
+			datasets:   nil,
 			expectedId: "",
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ds := &DocSource{
 				Datasets: tt.datasets,
 			}
@@ -171,10 +182,12 @@ func TestDocSource_GetFirstDatasetId(t *testing.T) {
 }
 
 func TestDocSourceField_ValObjCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name    string
-		field   *DocSourceField
-		wantErr bool
+		name     string
+		field    *DocSourceField
+		wantErr  bool
 		checkErr func(t *testing.T, err error)
 	}{
 		{
@@ -280,9 +293,12 @@ func TestDocSourceField_ValObjCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.field.ValObjCheck()
 			if tt.wantErr {
 				require.Error(t, err)
+
 				if tt.checkErr != nil {
 					tt.checkErr(t, err)
 				}
@@ -294,6 +310,8 @@ func TestDocSourceField_ValObjCheck(t *testing.T) {
 }
 
 func TestDocSourceField_GetDirObjID(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name       string
 		source     string
@@ -338,6 +356,8 @@ func TestDocSourceField_GetDirObjID(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			field := &DocSourceField{
 				Source: tt.source,
 			}

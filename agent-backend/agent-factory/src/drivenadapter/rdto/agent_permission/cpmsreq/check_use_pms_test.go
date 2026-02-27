@@ -7,6 +7,8 @@ import (
 )
 
 func TestCheckAgentRunReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := &CheckAgentRunReq{
 		AgentID:       "agent-123",
 		CustomSpaceID: "space-456",
@@ -21,6 +23,8 @@ func TestCheckAgentRunReq_StructFields(t *testing.T) {
 }
 
 func TestCheckAgentRunReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &CheckAgentRunReq{}
 	errMap := req.GetErrMsgMap()
 
@@ -31,6 +35,8 @@ func TestCheckAgentRunReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestCheckAgentRunReq_EmptyValues(t *testing.T) {
+	t.Parallel()
+
 	req := &CheckAgentRunReq{}
 
 	assert.Empty(t, req.AgentID)
@@ -40,6 +46,8 @@ func TestCheckAgentRunReq_EmptyValues(t *testing.T) {
 }
 
 func TestCheckAgentRunReq_WithOnlyRequiredFields(t *testing.T) {
+	t.Parallel()
+
 	req := &CheckAgentRunReq{
 		AgentID: "agent-123",
 	}

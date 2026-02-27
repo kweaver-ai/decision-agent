@@ -40,13 +40,17 @@ func (acTestLogger) Fatalln(...interface{})        {}
 
 func newACTestCtx(method, target, body string) (*gin.Context, *httptest.ResponseRecorder) {
 	gin.SetMode(gin.TestMode)
+
 	recorder := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(recorder)
+
 	req := httptest.NewRequest(method, target, strings.NewReader(body))
 	if body != "" {
 		req.Header.Set("Content-Type", "application/json")
 	}
+
 	c.Request = req
+
 	return c, recorder
 }
 
@@ -63,8 +67,10 @@ func setACVisitor(c *gin.Context, userID string) {
 
 func registerACValidators(t *testing.T) {
 	t.Helper()
+
 	v, ok := binding.Validator.Engine().(*validator.Validate)
 	require.True(t, ok)
+
 	_ = v.RegisterValidation("checkAgentAndTplName", customvalidator.CheckAgentAndTplName)
 }
 
@@ -74,12 +80,15 @@ func hasRoute(routes gin.RoutesInfo, method, path string) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
 // --- Route Registration Tests ---
 
 func TestDAConfHTTPHandler_RegPubRouter(t *testing.T) {
+	t.Parallel()
+
 	h := &daConfHTTPHandler{}
 	r := gin.New()
 	h.RegPubRouter(r.Group("/v3"))
@@ -95,6 +104,8 @@ func TestDAConfHTTPHandler_RegPubRouter(t *testing.T) {
 }
 
 func TestDAConfHTTPHandler_RegPriRouter(t *testing.T) {
+	t.Parallel()
+
 	h := &daConfHTTPHandler{}
 	r := gin.New()
 	h.RegPriRouter(r.Group("/internal"))
@@ -106,6 +117,8 @@ func TestDAConfHTTPHandler_RegPriRouter(t *testing.T) {
 // --- Detail handler tests ---
 
 func TestDAConfHTTPHandler_Detail_EmptyID(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -121,6 +134,8 @@ func TestDAConfHTTPHandler_Detail_EmptyID(t *testing.T) {
 }
 
 func TestDAConfHTTPHandler_Detail_ServiceError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -138,6 +153,8 @@ func TestDAConfHTTPHandler_Detail_ServiceError(t *testing.T) {
 }
 
 func TestDAConfHTTPHandler_Detail_Happy(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -157,6 +174,8 @@ func TestDAConfHTTPHandler_Detail_Happy(t *testing.T) {
 // --- DetailByKey handler tests ---
 
 func TestDAConfHTTPHandler_DetailByKey_EmptyKey(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -172,6 +191,8 @@ func TestDAConfHTTPHandler_DetailByKey_EmptyKey(t *testing.T) {
 }
 
 func TestDAConfHTTPHandler_DetailByKey_Happy(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -191,6 +212,8 @@ func TestDAConfHTTPHandler_DetailByKey_Happy(t *testing.T) {
 // --- Create handler tests ---
 
 func TestDAConfHTTPHandler_Create_BadJSON(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -205,6 +228,8 @@ func TestDAConfHTTPHandler_Create_BadJSON(t *testing.T) {
 }
 
 func TestDAConfHTTPHandler_Create_BadJSONMissingRequired(t *testing.T) {
+	t.Parallel()
+
 	registerACValidators(t)
 
 	ctrl := gomock.NewController(t)
@@ -224,6 +249,8 @@ func TestDAConfHTTPHandler_Create_BadJSONMissingRequired(t *testing.T) {
 // --- Delete handler tests ---
 
 func TestDAConfHTTPHandler_Delete_Happy(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

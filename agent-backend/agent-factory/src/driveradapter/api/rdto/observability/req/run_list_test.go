@@ -8,6 +8,8 @@ import (
 )
 
 func TestRunListReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	accountType := cenum.AccountTypeUser
 	req := RunListReq{
 		AgentID:        "agent-123",
@@ -35,6 +37,8 @@ func TestRunListReq_StructFields(t *testing.T) {
 }
 
 func TestRunListReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := RunListReq{}
 
 	assert.Empty(t, req.AgentID)
@@ -50,10 +54,12 @@ func TestRunListReq_Empty(t *testing.T) {
 }
 
 func TestRunListReq_WithPagination(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name     string
-		page     int
-		size     int
+		name string
+		page int
+		size int
 	}{
 		{"page 1 size 10", 1, 10},
 		{"page 2 size 20", 2, 20},
@@ -63,6 +69,8 @@ func TestRunListReq_WithPagination(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			req := RunListReq{
 				Page: tt.page,
 				Size: tt.size,
@@ -74,6 +82,8 @@ func TestRunListReq_WithPagination(t *testing.T) {
 }
 
 func TestRunListReq_WithZeroPagination(t *testing.T) {
+	t.Parallel()
+
 	req := RunListReq{
 		Page: 0,
 		Size: 0,
@@ -84,6 +94,8 @@ func TestRunListReq_WithZeroPagination(t *testing.T) {
 }
 
 func TestRunListReq_WithLargePageNumber(t *testing.T) {
+	t.Parallel()
+
 	req := RunListReq{
 		Page: 1000,
 		Size: 100,
@@ -94,6 +106,8 @@ func TestRunListReq_WithLargePageNumber(t *testing.T) {
 }
 
 func TestRunListReq_WithNegativePage(t *testing.T) {
+	t.Parallel()
+
 	req := RunListReq{
 		Page: -1,
 		Size: 10,
@@ -104,6 +118,8 @@ func TestRunListReq_WithNegativePage(t *testing.T) {
 }
 
 func TestRunListReq_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	accountType := cenum.AccountTypeAnonymous
 	req := RunListReq{
 		AgentID:        "complete-agent",
@@ -125,6 +141,8 @@ func TestRunListReq_WithAllFields(t *testing.T) {
 }
 
 func TestRunListReq_DefaultPageAndSize(t *testing.T) {
+	t.Parallel()
+
 	req := RunListReq{
 		AgentID: "test-agent",
 	}
@@ -135,11 +153,13 @@ func TestRunListReq_DefaultPageAndSize(t *testing.T) {
 }
 
 func TestRunListReq_WithTimeRange(t *testing.T) {
+	t.Parallel()
+
 	req := RunListReq{
 		StartTime: 1609459200000, // 2021-01-01
 		EndTime:   1609545600000, // 2021-01-02
-		Page:     1,
-		Size:     10,
+		Page:      1,
+		Size:      10,
 	}
 
 	assert.Equal(t, int64(1609459200000), req.StartTime)

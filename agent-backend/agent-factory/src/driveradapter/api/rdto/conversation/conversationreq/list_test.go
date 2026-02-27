@@ -7,6 +7,8 @@ import (
 )
 
 func TestListReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := ListReq{
 		AgentAPPKey: "app-key-123",
 		UserId:      "user-456",
@@ -23,6 +25,8 @@ func TestListReq_StructFields(t *testing.T) {
 }
 
 func TestListReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := ListReq{}
 
 	assert.Empty(t, req.AgentAPPKey)
@@ -33,6 +37,8 @@ func TestListReq_Empty(t *testing.T) {
 }
 
 func TestListReq_WithPagination(t *testing.T) {
+	t.Parallel()
+
 	req := ListReq{}
 	req.Size = 20
 	req.Page = 2
@@ -42,6 +48,8 @@ func TestListReq_WithPagination(t *testing.T) {
 }
 
 func TestListReq_WithDefaultPagination(t *testing.T) {
+	t.Parallel()
+
 	req := ListReq{}
 	// PageSize has default values when Size is 0
 	req.Size = 0
@@ -52,6 +60,8 @@ func TestListReq_WithDefaultPagination(t *testing.T) {
 }
 
 func TestListReq_WithTitle(t *testing.T) {
+	t.Parallel()
+
 	titles := []string{
 		"Test Conversation",
 		"中文会话",
@@ -68,6 +78,8 @@ func TestListReq_WithTitle(t *testing.T) {
 }
 
 func TestListReq_WithAgentAPPKey(t *testing.T) {
+	t.Parallel()
+
 	keys := []string{
 		"app-key-001",
 		"agent-app-xyz",
@@ -83,6 +95,8 @@ func TestListReq_WithAgentAPPKey(t *testing.T) {
 }
 
 func TestListReq_WithUserId(t *testing.T) {
+	t.Parallel()
+
 	userIDs := []string{
 		"user-001",
 		"user-xyz",
@@ -98,6 +112,8 @@ func TestListReq_WithUserId(t *testing.T) {
 }
 
 func TestListReq_PaginationEdgeCases(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		page     int
@@ -132,6 +148,8 @@ func TestListReq_PaginationEdgeCases(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			req := ListReq{}
 			req.Page = tt.page
 			req.Size = tt.size
@@ -143,6 +161,8 @@ func TestListReq_PaginationEdgeCases(t *testing.T) {
 }
 
 func TestListReq_EmbeddedPageSize(t *testing.T) {
+	t.Parallel()
+
 	req := ListReq{}
 
 	// Verify that PageSize is embedded

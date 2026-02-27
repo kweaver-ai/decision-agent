@@ -7,6 +7,8 @@ import (
 )
 
 func TestUserInfoField_Constants(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, UserInfoField("name"), FieldName)
 	assert.Equal(t, UserInfoField("parent_deps"), FieldParentDeps)
 	assert.Equal(t, UserInfoField("enabled"), FieldEnabled)
@@ -16,6 +18,8 @@ func TestUserInfoField_Constants(t *testing.T) {
 }
 
 func TestFields_ToStrings(t *testing.T) {
+	t.Parallel()
+
 	fields := Fields{
 		FieldName,
 		FieldRoles,
@@ -31,6 +35,8 @@ func TestFields_ToStrings(t *testing.T) {
 }
 
 func TestFields_ToStrings_Empty(t *testing.T) {
+	t.Parallel()
+
 	fields := Fields{}
 
 	result := fields.ToStrings()
@@ -40,6 +46,8 @@ func TestFields_ToStrings_Empty(t *testing.T) {
 }
 
 func TestGetUserInfoArgDto_StructFields(t *testing.T) {
+	t.Parallel()
+
 	dto := GetUserInfoArgDto{
 		UserIds: []string{"user-1", "user-2"},
 		Fields:  Fields{FieldName, FieldRoles},
@@ -50,6 +58,8 @@ func TestGetUserInfoArgDto_StructFields(t *testing.T) {
 }
 
 func TestGetUserInfoArgDto_Empty(t *testing.T) {
+	t.Parallel()
+
 	dto := GetUserInfoArgDto{}
 
 	assert.Nil(t, dto.UserIds)
@@ -57,6 +67,8 @@ func TestGetUserInfoArgDto_Empty(t *testing.T) {
 }
 
 func TestGetUserEnableStatusArgDto_StructFields(t *testing.T) {
+	t.Parallel()
+
 	dto := GetUserEnableStatusArgDto{
 		UserIds: []string{"user-1", "user-2", "user-3"},
 	}
@@ -66,12 +78,16 @@ func TestGetUserEnableStatusArgDto_StructFields(t *testing.T) {
 }
 
 func TestGetUserEnableStatusArgDto_Empty(t *testing.T) {
+	t.Parallel()
+
 	dto := GetUserEnableStatusArgDto{}
 
 	assert.Nil(t, dto.UserIds)
 }
 
 func TestGetUserInfoSingleArgDto_StructFields(t *testing.T) {
+	t.Parallel()
+
 	dto := GetUserInfoSingleArgDto{
 		UserID: "user-123",
 		Fields: Fields{FieldName, FieldAccount},
@@ -82,6 +98,8 @@ func TestGetUserInfoSingleArgDto_StructFields(t *testing.T) {
 }
 
 func TestGetUserInfoSingleArgDto_Empty(t *testing.T) {
+	t.Parallel()
+
 	dto := GetUserInfoSingleArgDto{}
 
 	assert.Empty(t, dto.UserID)
@@ -89,6 +107,8 @@ func TestGetUserInfoSingleArgDto_Empty(t *testing.T) {
 }
 
 func TestFields_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	fields := Fields{
 		FieldName,
 		FieldParentDeps,
@@ -102,6 +122,8 @@ func TestFields_WithAllFields(t *testing.T) {
 }
 
 func TestFields_Append(t *testing.T) {
+	t.Parallel()
+
 	fields := Fields{}
 	fields = append(fields, FieldName)
 	fields = append(fields, FieldRoles)
@@ -110,17 +132,24 @@ func TestFields_Append(t *testing.T) {
 }
 
 func TestFields_Iteration(t *testing.T) {
+	t.Parallel()
+
 	fields := Fields{FieldName, FieldEnabled, FieldRoles}
 
 	count := 0
+
 	for _, field := range fields {
 		assert.NotEmpty(t, string(field))
+
 		count++
 	}
+
 	assert.Equal(t, 3, count)
 }
 
 func TestUserInfoField_StringValues(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		field    UserInfoField
@@ -136,6 +165,8 @@ func TestUserInfoField_StringValues(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := string(tt.field)
 			assert.Equal(t, tt.expected, result)
 		})
@@ -143,6 +174,8 @@ func TestUserInfoField_StringValues(t *testing.T) {
 }
 
 func TestGetUserInfoArgDto_WithChineseIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := GetUserInfoArgDto{
 		UserIds: []string{"用户-1", "用户-2"},
 		Fields:  Fields{FieldName},
@@ -153,6 +186,8 @@ func TestGetUserInfoArgDto_WithChineseIDs(t *testing.T) {
 }
 
 func TestGetUserEnableStatusArgDto_WithMultipleUsers(t *testing.T) {
+	t.Parallel()
+
 	userIDs := make([]string, 100)
 	for i := 0; i < 100; i++ {
 		userIDs[i] = "user-" + string(rune(i))
@@ -166,9 +201,11 @@ func TestGetUserEnableStatusArgDto_WithMultipleUsers(t *testing.T) {
 }
 
 func TestGetUserInfoSingleArgDto_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	dto := GetUserInfoSingleArgDto{
 		UserID: "user-123",
-		Fields:  Fields{
+		Fields: Fields{
 			FieldName,
 			FieldParentDeps,
 			FieldEnabled,

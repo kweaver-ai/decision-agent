@@ -7,6 +7,8 @@ import (
 )
 
 func TestV2AgentCallResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	interruptHandle := &InterruptHandle{
 		FrameID:       "frame-123",
 		SnapshotID:    "snapshot-456",
@@ -43,6 +45,8 @@ func TestV2AgentCallResp_StructFields(t *testing.T) {
 }
 
 func TestV2AgentCallResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := &V2AgentCallResp{}
 
 	assert.Nil(t, resp.Answer)
@@ -52,6 +56,8 @@ func TestV2AgentCallResp_Empty(t *testing.T) {
 }
 
 func TestV2AgentCallResp_WithMapAnswer(t *testing.T) {
+	t.Parallel()
+
 	answer := map[string]interface{}{
 		"response": "test response",
 		"tokens":   100,
@@ -67,6 +73,8 @@ func TestV2AgentCallResp_WithMapAnswer(t *testing.T) {
 }
 
 func TestV2AgentDebugResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := &V2AgentDebugResp{
 		Answer:     "debug answer",
 		Status:     "debugging",
@@ -79,8 +87,10 @@ func TestV2AgentDebugResp_StructFields(t *testing.T) {
 }
 
 func TestV2AgentDebugResp_WithInterruptInfo(t *testing.T) {
+	t.Parallel()
+
 	interruptHandle := &InterruptHandle{
-		FrameID: "frame-abc",
+		FrameID:    "frame-abc",
 		SnapshotID: "snapshot-def",
 	}
 
@@ -112,6 +122,8 @@ func TestV2AgentDebugResp_WithInterruptInfo(t *testing.T) {
 }
 
 func TestV2AgentCallResp_WithNilInterruptInfo(t *testing.T) {
+	t.Parallel()
+
 	resp := &V2AgentCallResp{
 		Answer:        "answer without interrupt",
 		Status:        "completed",
@@ -124,6 +136,8 @@ func TestV2AgentCallResp_WithNilInterruptInfo(t *testing.T) {
 }
 
 func TestToolInterruptInfo_WithOnlyHandle(t *testing.T) {
+	t.Parallel()
+
 	interruptHandle := &InterruptHandle{
 		FrameID:     "frame-only",
 		SnapshotID:  "snapshot-only",
@@ -141,6 +155,8 @@ func TestToolInterruptInfo_WithOnlyHandle(t *testing.T) {
 }
 
 func TestToolInterruptInfo_WithOnlyData(t *testing.T) {
+	t.Parallel()
+
 	interruptData := &InterruptData{
 		ToolName:        "data_only_tool",
 		ToolDescription: "Description",

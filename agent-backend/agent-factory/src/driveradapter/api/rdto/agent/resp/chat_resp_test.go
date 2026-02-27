@@ -9,6 +9,8 @@ import (
 )
 
 func TestChatResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := &ChatResp{
 		ConversationID:     "conv-123",
 		AgentRunID:         "run-456",
@@ -24,6 +26,8 @@ func TestChatResp_StructFields(t *testing.T) {
 }
 
 func TestChatResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := &ChatResp{}
 
 	assert.Empty(t, resp.ConversationID)
@@ -33,6 +37,8 @@ func TestChatResp_Empty(t *testing.T) {
 }
 
 func TestChatResp_WithError(t *testing.T) {
+	t.Parallel()
+
 	err := &rest.HTTPError{}
 	resp := &ChatResp{
 		ConversationID: "conv-123",
@@ -44,6 +50,8 @@ func TestChatResp_WithError(t *testing.T) {
 }
 
 func TestChatResp_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	err := &rest.HTTPError{}
 	resp := &ChatResp{
 		ConversationID:     "conv-999",
@@ -62,6 +70,8 @@ func TestChatResp_WithAllFields(t *testing.T) {
 }
 
 func TestChatResp_WithMessage(t *testing.T) {
+	t.Parallel()
+
 	msg := conversationmsgvo.Message{}
 	resp := &ChatResp{
 		ConversationID: "conv-456",
@@ -73,6 +83,8 @@ func TestChatResp_WithMessage(t *testing.T) {
 }
 
 func TestChatResp_WithMessageIDs(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		name               string
 		userMessageID      string
@@ -102,6 +114,8 @@ func TestChatResp_WithMessageIDs(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp := &ChatResp{
 				UserMessageID:      tc.userMessageID,
 				AssistantMessageID: tc.assistantMessageID,
@@ -112,4 +126,3 @@ func TestChatResp_WithMessageIDs(t *testing.T) {
 		})
 	}
 }
-

@@ -36,6 +36,7 @@ func (dbTestLogger) Fatalln(...interface{})        {}
 
 func newRepoWithMock(t *testing.T) (*ConversationRepo, *sqlx.DB, sqlmock.Sqlmock) {
 	t.Helper()
+
 	db, mock, err := sqlx.New()
 	require.NoError(t, err)
 
@@ -79,9 +80,12 @@ func mockConversationRows() *sqlmock.Rows {
 }
 
 func TestNewConversationRepo_Singleton(t *testing.T) {
+	t.Parallel()
+
 	oldOnce := conversationRepoOnce
 	oldImpl := conversationRepoImpl
 	oldGDB := global.GDB
+
 	t.Cleanup(func() {
 		conversationRepoOnce = oldOnce
 		conversationRepoImpl = oldImpl
@@ -90,17 +94,21 @@ func TestNewConversationRepo_Singleton(t *testing.T) {
 
 	db, _, err := sqlx.New()
 	require.NoError(t, err)
+
 	global.GDB = db
 	conversationRepoOnce = sync.Once{}
 	conversationRepoImpl = nil
 
 	r1 := NewConversationRepo()
 	r2 := NewConversationRepo()
+
 	assert.NotNil(t, r1)
 	assert.Same(t, r1, r2)
 }
 
 func TestConversationRepo_Create(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -118,6 +126,8 @@ func TestConversationRepo_Create(t *testing.T) {
 }
 
 func TestConversationRepo_Create_InsertError(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -131,6 +141,8 @@ func TestConversationRepo_Create_InsertError(t *testing.T) {
 }
 
 func TestConversationRepo_GetByID(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -145,6 +157,8 @@ func TestConversationRepo_GetByID(t *testing.T) {
 }
 
 func TestConversationRepo_GetByID_QueryError(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -158,6 +172,8 @@ func TestConversationRepo_GetByID_QueryError(t *testing.T) {
 }
 
 func TestConversationRepo_Update(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -170,6 +186,8 @@ func TestConversationRepo_Update(t *testing.T) {
 }
 
 func TestConversationRepo_Delete_And_DeleteByAPPKey(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -186,10 +204,13 @@ func TestConversationRepo_Delete_And_DeleteByAPPKey(t *testing.T) {
 }
 
 func TestConversationRepo_Delete_WithTx(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
 	mock.ExpectBegin()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -208,6 +229,8 @@ func TestConversationRepo_Delete_WithTx(t *testing.T) {
 }
 
 func TestConversationRepo_List(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -226,7 +249,11 @@ func TestConversationRepo_List(t *testing.T) {
 }
 
 func TestConversationRepo_List_FindOrCountError(t *testing.T) {
+	t.Parallel()
+
 	t.Run("find error", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newRepoWithMock(t)
 		defer db.Close()
 
@@ -240,6 +267,8 @@ func TestConversationRepo_List_FindOrCountError(t *testing.T) {
 	})
 
 	t.Run("count error", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newRepoWithMock(t)
 		defer db.Close()
 
@@ -257,6 +286,8 @@ func TestConversationRepo_List_FindOrCountError(t *testing.T) {
 }
 
 func TestConversationRepo_ListByAgentID(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -275,7 +306,11 @@ func TestConversationRepo_ListByAgentID(t *testing.T) {
 }
 
 func TestConversationRepo_ListByAgentID_Errors(t *testing.T) {
+	t.Parallel()
+
 	t.Run("find error", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newRepoWithMock(t)
 		defer db.Close()
 
@@ -289,6 +324,8 @@ func TestConversationRepo_ListByAgentID_Errors(t *testing.T) {
 	})
 
 	t.Run("count error", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newRepoWithMock(t)
 		defer db.Close()
 

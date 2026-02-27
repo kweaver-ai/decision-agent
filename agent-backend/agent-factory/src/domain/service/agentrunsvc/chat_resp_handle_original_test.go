@@ -7,6 +7,8 @@ import (
 )
 
 func TestOriginalChatResp_ValidJSON(t *testing.T) {
+	t.Parallel()
+
 	agentSvc := &agentSvc{}
 
 	data := []byte(`{"answer":"Hello","think":"Testing"}`)
@@ -19,6 +21,8 @@ func TestOriginalChatResp_ValidJSON(t *testing.T) {
 }
 
 func TestOriginalChatResp_EmptyJSON(t *testing.T) {
+	t.Parallel()
+
 	agentSvc := &agentSvc{}
 
 	data := []byte(`{}`)
@@ -29,6 +33,8 @@ func TestOriginalChatResp_EmptyJSON(t *testing.T) {
 }
 
 func TestOriginalChatResp_InvalidJSON(t *testing.T) {
+	t.Parallel()
+
 	agentSvc := &agentSvc{}
 
 	data := []byte(`{invalid json}`)
@@ -39,6 +45,8 @@ func TestOriginalChatResp_InvalidJSON(t *testing.T) {
 }
 
 func TestOriginalChatResp_EmptyData(t *testing.T) {
+	t.Parallel()
+
 	agentSvc := &agentSvc{}
 
 	data := []byte(``)
@@ -49,6 +57,8 @@ func TestOriginalChatResp_EmptyData(t *testing.T) {
 }
 
 func TestOriginalChatResp_NestedJSON(t *testing.T) {
+	t.Parallel()
+
 	agentSvc := &agentSvc{}
 
 	data := []byte(`{"outer":{"inner":"value"},"array":[1,2,3]}`)
@@ -61,6 +71,8 @@ func TestOriginalChatResp_NestedJSON(t *testing.T) {
 }
 
 func TestOriginalChatResp_NullData(t *testing.T) {
+	t.Parallel()
+
 	agentSvc := &agentSvc{}
 
 	data := []byte(`null`)
@@ -71,6 +83,8 @@ func TestOriginalChatResp_NullData(t *testing.T) {
 }
 
 func TestOriginalChatResp_ArrayData(t *testing.T) {
+	t.Parallel()
+
 	agentSvc := &agentSvc{}
 
 	data := []byte(`[1,2,3]`)
@@ -82,6 +96,8 @@ func TestOriginalChatResp_ArrayData(t *testing.T) {
 }
 
 func TestOriginalChatResp_StringData(t *testing.T) {
+	t.Parallel()
+
 	agentSvc := &agentSvc{}
 
 	data := []byte(`"just a string"`)

@@ -13,6 +13,8 @@ import (
 )
 
 func TestMessage_IsInterrupted(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		message  *Message
@@ -41,12 +43,15 @@ func TestMessage_IsInterrupted(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			assert.Equal(t, tt.expected, tt.message.IsInterrupted())
 		})
 	}
 }
 
 func TestMessage_Fields(t *testing.T) {
+	t.Parallel()
+
 	msg := &Message{
 		ID:             "msg-1",
 		ConversationID: "conv-1",
@@ -71,6 +76,8 @@ func TestMessage_Fields(t *testing.T) {
 }
 
 func TestUserContent_Fields(t *testing.T) {
+	t.Parallel()
+
 	content := UserContent{
 		Text: "Hello, AI!",
 		SelectedFiles: []agentreq.SelectedFile{
@@ -84,6 +91,8 @@ func TestUserContent_Fields(t *testing.T) {
 }
 
 func TestAssistantContent_Fields(t *testing.T) {
+	t.Parallel()
+
 	content := AssistantContent{
 		FinalAnswer: FinalAnswer{
 			Query:  "What is AI?",
@@ -98,6 +107,8 @@ func TestAssistantContent_Fields(t *testing.T) {
 }
 
 func TestFinalAnswer_Fields(t *testing.T) {
+	t.Parallel()
+
 	answer := FinalAnswer{
 		Query: "Test query",
 		Answer: Answer{
@@ -131,6 +142,8 @@ func TestFinalAnswer_Fields(t *testing.T) {
 }
 
 func TestSkillsProcessItem_Fields(t *testing.T) {
+	t.Parallel()
+
 	item := &SkillsProcessItem{
 		AgentName:    "TestAgent",
 		Text:         "Agent response",
@@ -157,11 +170,15 @@ func TestSkillsProcessItem_Fields(t *testing.T) {
 }
 
 func TestRelatedQuestion_Fields(t *testing.T) {
+	t.Parallel()
+
 	q := RelatedQuestion{Query: "What is machine learning?"}
 	assert.Equal(t, "What is machine learning?", q.Query)
 }
 
 func TestMiddleAnswer_Fields(t *testing.T) {
+	t.Parallel()
+
 	answer := MiddleAnswer{
 		Progress: []*agentrespvo.Progress{
 			{Stage: "llm"},
@@ -181,6 +198,8 @@ func TestMiddleAnswer_Fields(t *testing.T) {
 }
 
 func TestAnswer_Fields(t *testing.T) {
+	t.Parallel()
+
 	answer := Answer{
 		Text:  "This is the answer",
 		Cites: []string{"cite1", "cite2"},

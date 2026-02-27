@@ -13,6 +13,8 @@ import (
 )
 
 func TestDataAgentTplSvc_Detail_PanicsWithoutAgentTplRepo(t *testing.T) {
+	t.Parallel()
+
 	svc := &dataAgentTplSvc{
 		SvcBase: service.NewSvcBase(),
 	}
@@ -26,13 +28,15 @@ func TestDataAgentTplSvc_Detail_PanicsWithoutAgentTplRepo(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_Detail_NotFoundError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	mockAgentTplRepo := idbaccessmock.NewMockIDataAgentTplRepo(ctrl)
 
 	svc := &dataAgentTplSvc{
-		SvcBase:       service.NewSvcBase(),
+		SvcBase:      service.NewSvcBase(),
 		agentTplRepo: mockAgentTplRepo,
 	}
 
@@ -49,13 +53,15 @@ func TestDataAgentTplSvc_Detail_NotFoundError(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_Detail_GetByIDError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	mockAgentTplRepo := idbaccessmock.NewMockIDataAgentTplRepo(ctrl)
 
 	svc := &dataAgentTplSvc{
-		SvcBase:       service.NewSvcBase(),
+		SvcBase:      service.NewSvcBase(),
 		agentTplRepo: mockAgentTplRepo,
 	}
 
@@ -72,6 +78,8 @@ func TestDataAgentTplSvc_Detail_GetByIDError(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_DetailByKey_PanicsWithoutAgentTplRepo(t *testing.T) {
+	t.Parallel()
+
 	svc := &dataAgentTplSvc{
 		SvcBase: service.NewSvcBase(),
 	}
@@ -85,13 +93,15 @@ func TestDataAgentTplSvc_DetailByKey_PanicsWithoutAgentTplRepo(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_DetailByKey_NotFoundError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	mockAgentTplRepo := idbaccessmock.NewMockIDataAgentTplRepo(ctrl)
 
 	svc := &dataAgentTplSvc{
-		SvcBase:       service.NewSvcBase(),
+		SvcBase:      service.NewSvcBase(),
 		agentTplRepo: mockAgentTplRepo,
 	}
 
@@ -109,13 +119,15 @@ func TestDataAgentTplSvc_DetailByKey_NotFoundError(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_DetailByKey_GetByKeyError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	mockAgentTplRepo := idbaccessmock.NewMockIDataAgentTplRepo(ctrl)
 
 	svc := &dataAgentTplSvc{
-		SvcBase:       service.NewSvcBase(),
+		SvcBase:      service.NewSvcBase(),
 		agentTplRepo: mockAgentTplRepo,
 	}
 

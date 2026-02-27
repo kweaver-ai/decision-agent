@@ -22,6 +22,8 @@ import (
 )
 
 func TestAgentSvc_MsgResp2MsgPO_BasicSuccess(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{SvcBase: service.NewSvcBase()}
 	ctx := context.Background()
 	msgResp := agentresp.ChatResp{
@@ -38,6 +40,8 @@ func TestAgentSvc_MsgResp2MsgPO_BasicSuccess(t *testing.T) {
 }
 
 func TestAgentSvc_MsgResp2MsgPO_ContentMarshalError(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{SvcBase: service.NewSvcBase()}
 	ctx := context.Background()
 	msgResp := agentresp.ChatResp{
@@ -53,6 +57,8 @@ func TestAgentSvc_MsgResp2MsgPO_ContentMarshalError(t *testing.T) {
 }
 
 func TestAgentSvc_MsgResp2MsgPO_ExtMarshalError(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{SvcBase: service.NewSvcBase()}
 	ctx := context.Background()
 	msgResp := agentresp.ChatResp{
@@ -71,11 +77,14 @@ func TestAgentSvc_MsgResp2MsgPO_ExtMarshalError(t *testing.T) {
 }
 
 func TestAgentSvc_GetHistoryAndMsgIndex_NewConversation_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockConvRepo := idbaccessmock.NewMockIConversationRepo(ctrl)
 	svc := &agentSvc{SvcBase: service.NewSvcBase(), conversationRepo: mockConvRepo}
 	mockConvRepo.EXPECT().Create(gomock.Any(), gomock.Any()).Return(&dapo.ConversationPO{ID: "new-conv"}, nil)
+
 	ctx := context.Background()
 	req := &agentreq.ChatReq{AgentID: "a1", ConversationID: "", Query: "hello"}
 	convPO, _, _, err := svc.GetHistoryAndMsgIndex(ctx, req)
@@ -84,11 +93,14 @@ func TestAgentSvc_GetHistoryAndMsgIndex_NewConversation_Success(t *testing.T) {
 }
 
 func TestAgentSvc_GetHistoryAndMsgIndex_NewConversation_LongQuery(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockConvRepo := idbaccessmock.NewMockIConversationRepo(ctrl)
 	svc := &agentSvc{SvcBase: service.NewSvcBase(), conversationRepo: mockConvRepo}
 	mockConvRepo.EXPECT().Create(gomock.Any(), gomock.Any()).Return(&dapo.ConversationPO{ID: "c1"}, nil)
+
 	ctx := context.Background()
 	req := &agentreq.ChatReq{ConversationID: "", Query: "这是一个超过五十个字符的非常长的查询字符串用于测试标题截取逻辑是否正确处理了多字节Unicode字符集的情况测试测试测试"}
 	_, _, _, err := svc.GetHistoryAndMsgIndex(ctx, req)
@@ -96,11 +108,14 @@ func TestAgentSvc_GetHistoryAndMsgIndex_NewConversation_LongQuery(t *testing.T) 
 }
 
 func TestAgentSvc_GetHistoryAndMsgIndex_NewConversation_CreateError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockConvRepo := idbaccessmock.NewMockIConversationRepo(ctrl)
 	svc := &agentSvc{SvcBase: service.NewSvcBase(), conversationRepo: mockConvRepo}
 	mockConvRepo.EXPECT().Create(gomock.Any(), gomock.Any()).Return(nil, errors.New("db error"))
+
 	ctx := context.Background()
 	req := &agentreq.ChatReq{ConversationID: ""}
 	_, _, _, err := svc.GetHistoryAndMsgIndex(ctx, req)
@@ -108,11 +123,14 @@ func TestAgentSvc_GetHistoryAndMsgIndex_NewConversation_CreateError(t *testing.T
 }
 
 func TestAgentSvc_GetHistoryAndMsgIndex_ExistingConversation_GetError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockConvRepo := idbaccessmock.NewMockIConversationRepo(ctrl)
 	svc := &agentSvc{SvcBase: service.NewSvcBase(), conversationRepo: mockConvRepo}
 	mockConvRepo.EXPECT().GetByID(gomock.Any(), "conv-1").Return(nil, errors.New("not found"))
+
 	ctx := context.Background()
 	req := &agentreq.ChatReq{ConversationID: "conv-1"}
 	_, _, _, err := svc.GetHistoryAndMsgIndex(ctx, req)
@@ -120,6 +138,8 @@ func TestAgentSvc_GetHistoryAndMsgIndex_ExistingConversation_GetError(t *testing
 }
 
 func TestAgentSvc_GetHistoryAndMsgIndex_ExistingConversation_GetMaxIndexError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockConvRepo := idbaccessmock.NewMockIConversationRepo(ctrl)
@@ -127,6 +147,7 @@ func TestAgentSvc_GetHistoryAndMsgIndex_ExistingConversation_GetMaxIndexError(t 
 	svc := &agentSvc{SvcBase: service.NewSvcBase(), conversationRepo: mockConvRepo, conversationMsgRepo: mockMsgRepo}
 	mockConvRepo.EXPECT().GetByID(gomock.Any(), "conv-1").Return(&dapo.ConversationPO{ID: "conv-1"}, nil)
 	mockMsgRepo.EXPECT().GetMaxIndexByID(gomock.Any(), "conv-1").Return(0, errors.New("db error"))
+
 	ctx := context.Background()
 	req := &agentreq.ChatReq{ConversationID: "conv-1"}
 	_, _, _, err := svc.GetHistoryAndMsgIndex(ctx, req)
@@ -134,6 +155,8 @@ func TestAgentSvc_GetHistoryAndMsgIndex_ExistingConversation_GetMaxIndexError(t 
 }
 
 func TestAgentSvc_GetHistoryAndMsgIndex_ExistingConversation_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockConvRepo := idbaccessmock.NewMockIConversationRepo(ctrl)
@@ -141,6 +164,7 @@ func TestAgentSvc_GetHistoryAndMsgIndex_ExistingConversation_Success(t *testing.
 	svc := &agentSvc{SvcBase: service.NewSvcBase(), conversationRepo: mockConvRepo, conversationMsgRepo: mockMsgRepo}
 	mockConvRepo.EXPECT().GetByID(gomock.Any(), "conv-1").Return(&dapo.ConversationPO{ID: "conv-1"}, nil)
 	mockMsgRepo.EXPECT().GetMaxIndexByID(gomock.Any(), "conv-1").Return(5, nil)
+
 	ctx := context.Background()
 	req := &agentreq.ChatReq{ConversationID: "conv-1"}
 	convPO, _, idx, err := svc.GetHistoryAndMsgIndex(ctx, req)
@@ -150,6 +174,8 @@ func TestAgentSvc_GetHistoryAndMsgIndex_ExistingConversation_Success(t *testing.
 }
 
 func TestAgentSvc_GetHistoryAndMsgIndex_NeedHistory_GetHistoryError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -175,6 +201,8 @@ func TestAgentSvc_GetHistoryAndMsgIndex_NeedHistory_GetHistoryError(t *testing.T
 }
 
 func TestAgentSvc_GetHistoryAndMsgIndex_NeedHistory_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -185,6 +213,7 @@ func TestAgentSvc_GetHistoryAndMsgIndex_NeedHistory_Success(t *testing.T) {
 
 	mockConvRepo.EXPECT().GetByID(gomock.Any(), "conv-need-history-ok").Return(&dapo.ConversationPO{ID: "conv-need-history-ok"}, nil)
 	mockMsgRepo.EXPECT().GetMaxIndexByID(gomock.Any(), "conv-need-history-ok").Return(7, nil)
+
 	expectedHistory := []*comvalobj.LLMMessage{{Role: "user", Content: "hi"}}
 	mockConvSvc.EXPECT().GetHistory(gomock.Any(), "conv-need-history-ok", 3, "", "").Return(expectedHistory, nil)
 
@@ -201,12 +230,15 @@ func TestAgentSvc_GetHistoryAndMsgIndex_NeedHistory_Success(t *testing.T) {
 }
 
 func TestAgentSvc_UpsertUserAndAssistantMsg_NormalChat_UserMsgCreateError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockConvRepo := idbaccessmock.NewMockIConversationRepo(ctrl)
 	mockMsgRepo := idbaccessmock.NewMockIConversationMsgRepo(ctrl)
 	svc := &agentSvc{SvcBase: service.NewSvcBase(), conversationRepo: mockConvRepo, conversationMsgRepo: mockMsgRepo}
 	mockMsgRepo.EXPECT().Create(gomock.Any(), gomock.Any()).Return("", errors.New("create error"))
+
 	ctx := context.Background()
 	req := &agentreq.ChatReq{AgentID: "a1", ConversationID: "conv-1", Query: "hello", InternalParam: agentreq.InternalParam{UserID: "u1"}}
 	_, _, _, err := svc.UpsertUserAndAssistantMsg(ctx, req, 0, &dapo.ConversationPO{ID: "conv-1"})
@@ -214,6 +246,8 @@ func TestAgentSvc_UpsertUserAndAssistantMsg_NormalChat_UserMsgCreateError(t *tes
 }
 
 func TestAgentSvc_UpsertUserAndAssistantMsg_NormalChat_UpdateConvError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockConvRepo := idbaccessmock.NewMockIConversationRepo(ctrl)
@@ -221,6 +255,7 @@ func TestAgentSvc_UpsertUserAndAssistantMsg_NormalChat_UpdateConvError(t *testin
 	svc := &agentSvc{SvcBase: service.NewSvcBase(), conversationRepo: mockConvRepo, conversationMsgRepo: mockMsgRepo}
 	mockMsgRepo.EXPECT().Create(gomock.Any(), gomock.Any()).Return("user-msg-id", nil)
 	mockConvRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(errors.New("update error"))
+
 	ctx := context.Background()
 	req := &agentreq.ChatReq{ConversationID: "conv-1", Query: "hello", InternalParam: agentreq.InternalParam{UserID: "u1"}}
 	_, _, _, err := svc.UpsertUserAndAssistantMsg(ctx, req, 0, &dapo.ConversationPO{ID: "conv-1"})
@@ -228,6 +263,8 @@ func TestAgentSvc_UpsertUserAndAssistantMsg_NormalChat_UpdateConvError(t *testin
 }
 
 func TestAgentSvc_UpsertUserAndAssistantMsg_NormalChat_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockConvRepo := idbaccessmock.NewMockIConversationRepo(ctrl)
@@ -238,6 +275,7 @@ func TestAgentSvc_UpsertUserAndAssistantMsg_NormalChat_Success(t *testing.T) {
 		mockConvRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil),
 		mockMsgRepo.EXPECT().Create(gomock.Any(), gomock.Any()).Return("asst-msg-id", nil),
 	)
+
 	ctx := context.Background()
 	req := &agentreq.ChatReq{ConversationID: "conv-1", Query: "hello", InternalParam: agentreq.InternalParam{UserID: "u1"}}
 	userMsgID, asstMsgID, _, err := svc.UpsertUserAndAssistantMsg(ctx, req, 0, &dapo.ConversationPO{ID: "conv-1"})
@@ -247,11 +285,14 @@ func TestAgentSvc_UpsertUserAndAssistantMsg_NormalChat_Success(t *testing.T) {
 }
 
 func TestAgentSvc_UpsertUserAndAssistantMsg_RegenerateUserMsg_GetError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockMsgRepo := idbaccessmock.NewMockIConversationMsgRepo(ctrl)
 	svc := &agentSvc{SvcBase: service.NewSvcBase(), conversationMsgRepo: mockMsgRepo}
 	mockMsgRepo.EXPECT().GetByID(gomock.Any(), "user-msg-123").Return(nil, errors.New("not found"))
+
 	ctx := context.Background()
 	req := &agentreq.ChatReq{ConversationID: "conv-1", RegenerateUserMsgID: "user-msg-123", InternalParam: agentreq.InternalParam{UserID: "u1"}}
 	_, _, _, err := svc.UpsertUserAndAssistantMsg(ctx, req, 0, &dapo.ConversationPO{ID: "conv-1"})
@@ -259,6 +300,8 @@ func TestAgentSvc_UpsertUserAndAssistantMsg_RegenerateUserMsg_GetError(t *testin
 }
 
 func TestAgentSvc_UpsertUserAndAssistantMsg_InterruptedMsg_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockMsgRepo := idbaccessmock.NewMockIConversationMsgRepo(ctrl)
@@ -269,6 +312,7 @@ func TestAgentSvc_UpsertUserAndAssistantMsg_InterruptedMsg_Success(t *testing.T)
 		mockMsgRepo.EXPECT().GetByID(gomock.Any(), "interrupted-asst-msg").Return(interruptedMsg, nil),
 		mockMsgRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil),
 	)
+
 	ctx := context.Background()
 	req := &agentreq.ChatReq{ConversationID: "conv-1", InterruptedAssistantMsgID: "interrupted-asst-msg", InternalParam: agentreq.InternalParam{UserID: "u1"}}
 	userID, asstID, idx, err := svc.UpsertUserAndAssistantMsg(ctx, req, 0, &dapo.ConversationPO{ID: "conv-1"})
@@ -279,6 +323,8 @@ func TestAgentSvc_UpsertUserAndAssistantMsg_InterruptedMsg_Success(t *testing.T)
 }
 
 func TestAgentSvc_HandleStopChan_MsgRepoUpdateError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockMsgRepo := idbaccessmock.NewMockIConversationMsgRepo(ctrl)
@@ -286,6 +332,7 @@ func TestAgentSvc_HandleStopChan_MsgRepoUpdateError(t *testing.T) {
 	mockLogger.EXPECT().Errorf(gomock.Any(), gomock.Any()).AnyTimes()
 	svc := &agentSvc{SvcBase: service.NewSvcBase(), conversationMsgRepo: mockMsgRepo, logger: mockLogger}
 	mockMsgRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(errors.New("update error"))
+
 	session := &Session{ConversationID: "conv-1", TempMsgResp: agentresp.ChatResp{ConversationID: "conv-1"}}
 	ctx := context.Background()
 	req := &agentreq.ChatReq{AgentID: "a1", ConversationID: "conv-1", AgentRunID: "run-1", InternalParam: agentreq.InternalParam{UserID: "u1"}}
@@ -294,6 +341,8 @@ func TestAgentSvc_HandleStopChan_MsgRepoUpdateError(t *testing.T) {
 }
 
 func TestAgentSvc_HandleStopChan_GetConversationError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockConvRepo := idbaccessmock.NewMockIConversationRepo(ctrl)
@@ -303,6 +352,7 @@ func TestAgentSvc_HandleStopChan_GetConversationError(t *testing.T) {
 	svc := &agentSvc{SvcBase: service.NewSvcBase(), conversationRepo: mockConvRepo, conversationMsgRepo: mockMsgRepo, logger: mockLogger}
 	mockMsgRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
 	mockConvRepo.EXPECT().GetByID(gomock.Any(), "conv-1").Return(nil, errors.New("conv not found"))
+
 	session := &Session{ConversationID: "conv-1", TempMsgResp: agentresp.ChatResp{ConversationID: "conv-1"}}
 	ctx := context.Background()
 	req := &agentreq.ChatReq{AgentID: "a1", ConversationID: "conv-1", AgentRunID: "run-1", InternalParam: agentreq.InternalParam{UserID: "u1"}}
@@ -311,6 +361,8 @@ func TestAgentSvc_HandleStopChan_GetConversationError(t *testing.T) {
 }
 
 func TestAgentSvc_HandleStopChan_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockConvRepo := idbaccessmock.NewMockIConversationRepo(ctrl)
@@ -322,6 +374,7 @@ func TestAgentSvc_HandleStopChan_Success(t *testing.T) {
 	mockMsgRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
 	mockConvRepo.EXPECT().GetByID(gomock.Any(), "conv-1").Return(&dapo.ConversationPO{ID: "conv-1"}, nil)
 	mockConvRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
+
 	session := &Session{ConversationID: "conv-1", TempMsgResp: agentresp.ChatResp{ConversationID: "conv-1"}}
 	ctx := context.Background()
 	req := &agentreq.ChatReq{AgentID: "a1", ConversationID: "conv-1", AgentRunID: "run-1", InternalParam: agentreq.InternalParam{UserID: "u1"}}

@@ -7,6 +7,8 @@ import (
 )
 
 func TestCreateSessionReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	id := "session-123"
 	version := "1.0.0"
 	failOnError := true
@@ -41,6 +43,8 @@ func TestCreateSessionReq_StructFields(t *testing.T) {
 }
 
 func TestCreateSessionReq_Minimal(t *testing.T) {
+	t.Parallel()
+
 	req := &CreateSessionReq{
 		TemplateID: "template-789",
 	}
@@ -52,6 +56,8 @@ func TestCreateSessionReq_Minimal(t *testing.T) {
 }
 
 func TestDependencySpec_StructFields(t *testing.T) {
+	t.Parallel()
+
 	version := "2.1.0"
 
 	dep := &DependencySpec{
@@ -65,6 +71,8 @@ func TestDependencySpec_StructFields(t *testing.T) {
 }
 
 func TestDependencySpec_WithoutVersion(t *testing.T) {
+	t.Parallel()
+
 	dep := &DependencySpec{
 		Name: "requests",
 	}
@@ -74,6 +82,8 @@ func TestDependencySpec_WithoutVersion(t *testing.T) {
 }
 
 func TestCreateSessionReq_BooleanPointerFields(t *testing.T) {
+	t.Parallel()
+
 	failOnError := true
 	allowConflicts := false
 
@@ -90,6 +100,8 @@ func TestCreateSessionReq_BooleanPointerFields(t *testing.T) {
 }
 
 func TestCreateSessionReq_EmptyDependencies(t *testing.T) {
+	t.Parallel()
+
 	req := &CreateSessionReq{
 		TemplateID:   "template-002",
 		Dependencies: []DependencySpec{},
@@ -100,6 +112,8 @@ func TestCreateSessionReq_EmptyDependencies(t *testing.T) {
 }
 
 func TestCreateSessionReq_MultipleDependencies(t *testing.T) {
+	t.Parallel()
+
 	v1 := "1.0.0"
 	v2 := "2.0.0"
 

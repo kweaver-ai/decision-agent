@@ -7,6 +7,8 @@ import (
 )
 
 func TestCopyReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &CopyReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -17,12 +19,16 @@ func TestCopyReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestCopyReq_New(t *testing.T) {
+	t.Parallel()
+
 	req := &CopyReq{}
 
 	assert.NotNil(t, req)
 }
 
 func TestCopyReq_GetErrMsgMapConsistency(t *testing.T) {
+	t.Parallel()
+
 	req1 := &CopyReq{}
 	req2 := &CopyReq{}
 
@@ -36,6 +42,8 @@ func TestCopyReq_GetErrMsgMapConsistency(t *testing.T) {
 }
 
 func TestCopyReq_MultipleInstances(t *testing.T) {
+	t.Parallel()
+
 	req1 := &CopyReq{}
 	req2 := &CopyReq{}
 

@@ -7,6 +7,8 @@ import (
 )
 
 func TestSessionListItem_StructFields(t *testing.T) {
+	t.Parallel()
+
 	item := SessionListItem{
 		SessionID:       "session-123",
 		StartTime:       1234567890,
@@ -21,6 +23,8 @@ func TestSessionListItem_StructFields(t *testing.T) {
 }
 
 func TestSessionListItem_Empty(t *testing.T) {
+	t.Parallel()
+
 	item := SessionListItem{}
 
 	assert.Empty(t, item.SessionID)
@@ -30,6 +34,8 @@ func TestSessionListItem_Empty(t *testing.T) {
 }
 
 func TestSessionListItem_WithSessionID(t *testing.T) {
+	t.Parallel()
+
 	sessionIDs := []string{
 		"session-001",
 		"test-session",
@@ -44,6 +50,8 @@ func TestSessionListItem_WithSessionID(t *testing.T) {
 }
 
 func TestSessionListItem_WithTimeRange(t *testing.T) {
+	t.Parallel()
+
 	item := SessionListItem{
 		StartTime: 1000000000,
 		EndTime:   2000000000,
@@ -54,6 +62,8 @@ func TestSessionListItem_WithTimeRange(t *testing.T) {
 }
 
 func TestSessionListItem_WithDuration(t *testing.T) {
+	t.Parallel()
+
 	durations := []int{0, 100, 1000, 5000, 10000}
 
 	for _, duration := range durations {
@@ -65,6 +75,8 @@ func TestSessionListItem_WithDuration(t *testing.T) {
 }
 
 func TestSessionListResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	entries := []SessionListItem{
 		{SessionID: "session-1"},
 		{SessionID: "session-2"},
@@ -82,6 +94,8 @@ func TestSessionListResp_StructFields(t *testing.T) {
 }
 
 func TestSessionListResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := SessionListResp{}
 
 	assert.Nil(t, resp.Entries)
@@ -89,6 +103,8 @@ func TestSessionListResp_Empty(t *testing.T) {
 }
 
 func TestSessionListResp_WithEmptyEntries(t *testing.T) {
+	t.Parallel()
+
 	resp := SessionListResp{
 		Entries:    []SessionListItem{},
 		TotalCount: 0,
@@ -100,6 +116,8 @@ func TestSessionListResp_WithEmptyEntries(t *testing.T) {
 }
 
 func TestSessionListResp_WithSingleEntry(t *testing.T) {
+	t.Parallel()
+
 	entries := []SessionListItem{
 		{
 			SessionID: "session-123",
@@ -119,6 +137,8 @@ func TestSessionListResp_WithSingleEntry(t *testing.T) {
 }
 
 func TestSessionListResp_WithTotalCount(t *testing.T) {
+	t.Parallel()
+
 	totalCounts := []int{0, 1, 10, 100, 1000}
 
 	for _, totalCount := range totalCounts {
@@ -130,6 +150,8 @@ func TestSessionListResp_WithTotalCount(t *testing.T) {
 }
 
 func TestSessionListResp_WithMultipleEntries(t *testing.T) {
+	t.Parallel()
+
 	entries := []SessionListItem{
 		{SessionID: "session-1", StartTime: 1000, EndTime: 2000},
 		{SessionID: "session-2", StartTime: 3000, EndTime: 4000},

@@ -36,12 +36,15 @@ func (convTestLogger) Fatalln(...interface{})        {}
 
 func newConversationCtx(method, target, body string) (*gin.Context, *httptest.ResponseRecorder) {
 	gin.SetMode(gin.TestMode)
+
 	recorder := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(recorder)
+
 	req := httptest.NewRequest(method, target, strings.NewReader(body))
 	if body != "" {
 		req.Header.Set("Content-Type", "application/json")
 	}
+
 	c.Request = req
 
 	return c, recorder
@@ -50,6 +53,7 @@ func newConversationCtx(method, target, body string) (*gin.Context, *httptest.Re
 func setConversationVisitor(c *gin.Context, userID string, userType rest.VisitorType, withReqCtx bool) {
 	visitor := &rest.Visitor{ID: userID, Type: userType}
 	c.Set(cenum.VisitUserInfoCtxKey.String(), visitor)
+
 	if withReqCtx {
 		ctx := context.WithValue(c.Request.Context(), cenum.VisitUserInfoCtxKey.String(), visitor)
 		c.Request = c.Request.WithContext(ctx)
@@ -62,10 +66,13 @@ func hasRoute(routes []gin.RouteInfo, method, path string) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
 func TestConversationHandler_RegPubRouter(t *testing.T) {
+	t.Parallel()
+
 	h := &conversationHTTPHandler{}
 	r := gin.New()
 	h.RegPubRouter(r.Group("/v1"))
@@ -81,7 +88,11 @@ func TestConversationHandler_RegPubRouter(t *testing.T) {
 }
 
 func TestConversationHandler_List(t *testing.T) {
+	t.Parallel()
+
 	t.Run("invalid page", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -96,6 +107,8 @@ func TestConversationHandler_List(t *testing.T) {
 	})
 
 	t.Run("invalid size", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -110,6 +123,8 @@ func TestConversationHandler_List(t *testing.T) {
 	})
 
 	t.Run("service error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -127,6 +142,8 @@ func TestConversationHandler_List(t *testing.T) {
 	})
 
 	t.Run("success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -137,6 +154,7 @@ func TestConversationHandler_List(t *testing.T) {
 			assert.Equal(t, "u1", req.UserId)
 			assert.Equal(t, 1, req.Page)
 			assert.Equal(t, 10, req.Size)
+
 			return conversationresp.ListConversationResp{}, int64(0), nil
 		})
 
@@ -151,7 +169,11 @@ func TestConversationHandler_List(t *testing.T) {
 }
 
 func TestConversationHandler_Detail(t *testing.T) {
+	t.Parallel()
+
 	t.Run("id empty", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -163,6 +185,8 @@ func TestConversationHandler_Detail(t *testing.T) {
 	})
 
 	t.Run("service error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -177,6 +201,8 @@ func TestConversationHandler_Detail(t *testing.T) {
 	})
 
 	t.Run("success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -192,7 +218,11 @@ func TestConversationHandler_Detail(t *testing.T) {
 }
 
 func TestConversationHandler_Update(t *testing.T) {
+	t.Parallel()
+
 	t.Run("bind error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -205,6 +235,8 @@ func TestConversationHandler_Update(t *testing.T) {
 	})
 
 	t.Run("service error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -219,6 +251,8 @@ func TestConversationHandler_Update(t *testing.T) {
 	})
 
 	t.Run("success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -234,7 +268,11 @@ func TestConversationHandler_Update(t *testing.T) {
 }
 
 func TestConversationHandler_Delete(t *testing.T) {
+	t.Parallel()
+
 	t.Run("id empty", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -246,6 +284,8 @@ func TestConversationHandler_Delete(t *testing.T) {
 	})
 
 	t.Run("service error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -260,6 +300,8 @@ func TestConversationHandler_Delete(t *testing.T) {
 	})
 
 	t.Run("success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -275,7 +317,11 @@ func TestConversationHandler_Delete(t *testing.T) {
 }
 
 func TestConversationHandler_DeleteByAPPKey(t *testing.T) {
+	t.Parallel()
+
 	t.Run("app key empty", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -287,6 +333,8 @@ func TestConversationHandler_DeleteByAPPKey(t *testing.T) {
 	})
 
 	t.Run("service error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -301,6 +349,8 @@ func TestConversationHandler_DeleteByAPPKey(t *testing.T) {
 	})
 
 	t.Run("success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -316,7 +366,11 @@ func TestConversationHandler_DeleteByAPPKey(t *testing.T) {
 }
 
 func TestConversationHandler_Init(t *testing.T) {
+	t.Parallel()
+
 	t.Run("app key empty", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -330,6 +384,8 @@ func TestConversationHandler_Init(t *testing.T) {
 	})
 
 	t.Run("bind json error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -344,6 +400,8 @@ func TestConversationHandler_Init(t *testing.T) {
 	})
 
 	t.Run("service error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -360,6 +418,8 @@ func TestConversationHandler_Init(t *testing.T) {
 	})
 
 	t.Run("success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -369,6 +429,7 @@ func TestConversationHandler_Init(t *testing.T) {
 			assert.Equal(t, "app-1", req.AgentAPPKey)
 			assert.Equal(t, "u1", req.UserID)
 			assert.Equal(t, "v2", req.ExecutorVersion)
+
 			return conversationresp.InitConversationResp{ID: "conv-1"}, nil
 		})
 
@@ -382,7 +443,11 @@ func TestConversationHandler_Init(t *testing.T) {
 }
 
 func TestConversationHandler_MarkRead(t *testing.T) {
+	t.Parallel()
+
 	t.Run("id empty", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -394,6 +459,8 @@ func TestConversationHandler_MarkRead(t *testing.T) {
 	})
 
 	t.Run("bind error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -406,6 +473,8 @@ func TestConversationHandler_MarkRead(t *testing.T) {
 	})
 
 	t.Run("service error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)
@@ -420,6 +489,8 @@ func TestConversationHandler_MarkRead(t *testing.T) {
 	})
 
 	t.Run("success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := iportdrivermock.NewMockIConversationSvc(ctrl)

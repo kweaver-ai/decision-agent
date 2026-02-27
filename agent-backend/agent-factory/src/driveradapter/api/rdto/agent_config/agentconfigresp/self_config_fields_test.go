@@ -7,6 +7,8 @@ import (
 )
 
 func TestNewSelfConfigField(t *testing.T) {
+	t.Parallel()
+
 	field := NewSelfConfigField()
 
 	assert.NotNil(t, field)
@@ -14,6 +16,8 @@ func TestNewSelfConfigField(t *testing.T) {
 }
 
 func TestFieldInfo_StructFields(t *testing.T) {
+	t.Parallel()
+
 	field := &FieldInfo{
 		Name:        "fieldName",
 		Type:        "string",
@@ -26,6 +30,8 @@ func TestFieldInfo_StructFields(t *testing.T) {
 }
 
 func TestFieldInfo_Empty(t *testing.T) {
+	t.Parallel()
+
 	field := &FieldInfo{}
 
 	assert.Empty(t, field.Name)
@@ -35,6 +41,8 @@ func TestFieldInfo_Empty(t *testing.T) {
 }
 
 func TestFieldInfo_WithChildren(t *testing.T) {
+	t.Parallel()
+
 	children := []*FieldInfo{
 		{
 			Name:        "child1",
@@ -61,6 +69,8 @@ func TestFieldInfo_WithChildren(t *testing.T) {
 }
 
 func TestFieldInfo_NestedChildren(t *testing.T) {
+	t.Parallel()
+
 	grandchild := &FieldInfo{
 		Name:        "grandchild",
 		Type:        "boolean",
@@ -85,6 +95,8 @@ func TestFieldInfo_NestedChildren(t *testing.T) {
 }
 
 func TestSelfConfigField_StructFields(t *testing.T) {
+	t.Parallel()
+
 	field := &SelfConfigField{
 		Name:        "configField",
 		Type:        "string",
@@ -97,6 +109,8 @@ func TestSelfConfigField_StructFields(t *testing.T) {
 }
 
 func TestSelfConfigField_Empty(t *testing.T) {
+	t.Parallel()
+
 	field := &SelfConfigField{}
 
 	assert.Empty(t, field.Name)
@@ -106,6 +120,8 @@ func TestSelfConfigField_Empty(t *testing.T) {
 }
 
 func TestSelfConfigField_WithChildren(t *testing.T) {
+	t.Parallel()
+
 	field := &SelfConfigField{
 		Name: "parent",
 		Type: "object",
@@ -127,6 +143,8 @@ func TestSelfConfigField_WithChildren(t *testing.T) {
 }
 
 func TestSelfConfigField_LoadFromJSONStr(t *testing.T) {
+	t.Parallel()
+
 	field := NewSelfConfigField()
 
 	err := field.LoadFromJSONStr()
@@ -144,6 +162,8 @@ func TestSelfConfigField_LoadFromJSONStr(t *testing.T) {
 }
 
 func TestFieldInfo_DifferentTypes(t *testing.T) {
+	t.Parallel()
+
 	types := []string{
 		"string",
 		"int",
@@ -164,6 +184,8 @@ func TestFieldInfo_DifferentTypes(t *testing.T) {
 }
 
 func TestFieldInfo_LongDescriptions(t *testing.T) {
+	t.Parallel()
+
 	longDesc := "This is a very long description that contains detailed information about the field and its usage"
 	field := &FieldInfo{
 		Name:        "detailedField",
@@ -176,6 +198,8 @@ func TestFieldInfo_LongDescriptions(t *testing.T) {
 }
 
 func TestFieldInfo_EmptyChildren(t *testing.T) {
+	t.Parallel()
+
 	field := &FieldInfo{
 		Name:     "fieldWithEmptyChildren",
 		Type:     "object",

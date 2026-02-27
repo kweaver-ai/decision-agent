@@ -7,6 +7,8 @@ import (
 )
 
 func TestTerminateReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := TerminateReq{
 		ConversationID:                "conv-123",
 		AgentRunID:                    "run-456",
@@ -19,6 +21,8 @@ func TestTerminateReq_StructFields(t *testing.T) {
 }
 
 func TestTerminateReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := TerminateReq{}
 
 	assert.Empty(t, req.ConversationID)
@@ -27,6 +31,8 @@ func TestTerminateReq_Empty(t *testing.T) {
 }
 
 func TestTerminateReq_WithConversationID(t *testing.T) {
+	t.Parallel()
+
 	ids := []string{
 		"conv-001",
 		"conv-xyz",
@@ -43,6 +49,8 @@ func TestTerminateReq_WithConversationID(t *testing.T) {
 }
 
 func TestTerminateReq_WithAgentRunID(t *testing.T) {
+	t.Parallel()
+
 	ids := []string{
 		"run-001",
 		"run-xyz",
@@ -59,6 +67,8 @@ func TestTerminateReq_WithAgentRunID(t *testing.T) {
 }
 
 func TestTerminateReq_WithInterruptedAssistantMsgID(t *testing.T) {
+	t.Parallel()
+
 	ids := []string{
 		"msg-001",
 		"msg-xyz",
@@ -75,6 +85,8 @@ func TestTerminateReq_WithInterruptedAssistantMsgID(t *testing.T) {
 }
 
 func TestTerminateReq_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	req := TerminateReq{
 		ConversationID:                "conv-complete",
 		AgentRunID:                    "run-complete",
@@ -87,6 +99,8 @@ func TestTerminateReq_WithAllFields(t *testing.T) {
 }
 
 func TestTerminateReq_WithOnlyConversationID(t *testing.T) {
+	t.Parallel()
+
 	req := TerminateReq{
 		ConversationID: "conv-123",
 	}
@@ -97,6 +111,8 @@ func TestTerminateReq_WithOnlyConversationID(t *testing.T) {
 }
 
 func TestTerminateReq_WithAllFieldsEmpty(t *testing.T) {
+	t.Parallel()
+
 	req := TerminateReq{
 		ConversationID:                "",
 		AgentRunID:                    "",

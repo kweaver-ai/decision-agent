@@ -7,11 +7,15 @@ import (
 )
 
 func TestSessionManageActionType_Constants(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, SessionManageActionType("get_info_or_create"), SessionManageActionGetInfoOrCreate)
 	assert.Equal(t, SessionManageActionType("recover_lifetime_or_create"), SessionManageActionRecoverLifetimeOrCreate)
 }
 
 func TestSessionManageActionType_String(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		action   SessionManageActionType
@@ -31,6 +35,8 @@ func TestSessionManageActionType_String(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := string(tt.action)
 			assert.Equal(t, tt.expected, result)
 		})
@@ -38,6 +44,8 @@ func TestSessionManageActionType_String(t *testing.T) {
 }
 
 func TestManageReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := ManageReq{
 		ConversationID: "conv-123",
 		Action:         SessionManageActionGetInfoOrCreate,
@@ -52,6 +60,8 @@ func TestManageReq_StructFields(t *testing.T) {
 }
 
 func TestManageReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := ManageReq{}
 
 	assert.Empty(t, req.ConversationID)
@@ -61,6 +71,8 @@ func TestManageReq_Empty(t *testing.T) {
 }
 
 func TestManageReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := ManageReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -72,6 +84,8 @@ func TestManageReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestManageReq_ReqCheck(t *testing.T) {
+	t.Parallel()
+
 	req := ManageReq{
 		Action:       SessionManageActionGetInfoOrCreate,
 		AgentID:      "agent-123",
@@ -84,6 +98,8 @@ func TestManageReq_ReqCheck(t *testing.T) {
 }
 
 func TestManageReq_ReqCheck_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := ManageReq{}
 
 	err := req.ReqCheck()
@@ -92,6 +108,8 @@ func TestManageReq_ReqCheck_Empty(t *testing.T) {
 }
 
 func TestManageReq_WithGetInfoOrCreateAction(t *testing.T) {
+	t.Parallel()
+
 	req := ManageReq{
 		Action:       SessionManageActionGetInfoOrCreate,
 		AgentID:      "agent-123",
@@ -104,6 +122,8 @@ func TestManageReq_WithGetInfoOrCreateAction(t *testing.T) {
 }
 
 func TestManageReq_WithRecoverLifetimeOrCreateAction(t *testing.T) {
+	t.Parallel()
+
 	req := ManageReq{
 		Action:       SessionManageActionRecoverLifetimeOrCreate,
 		AgentID:      "agent-456",
@@ -116,6 +136,8 @@ func TestManageReq_WithRecoverLifetimeOrCreateAction(t *testing.T) {
 }
 
 func TestManageReq_WithDifferentAgentVersions(t *testing.T) {
+	t.Parallel()
+
 	versions := []string{
 		"1.0.0",
 		"2.1.3",
@@ -134,6 +156,8 @@ func TestManageReq_WithDifferentAgentVersions(t *testing.T) {
 }
 
 func TestManageReq_WithConversationID(t *testing.T) {
+	t.Parallel()
+
 	convIDs := []string{
 		"conv-001",
 		"conv-xyz",
@@ -153,6 +177,8 @@ func TestManageReq_WithConversationID(t *testing.T) {
 }
 
 func TestManageReq_WithAgentID(t *testing.T) {
+	t.Parallel()
+
 	agentIDs := []string{
 		"agent-001",
 		"agent-xyz",
@@ -170,6 +196,8 @@ func TestManageReq_WithAgentID(t *testing.T) {
 }
 
 func TestManageReq_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	req := ManageReq{
 		ConversationID: "conv-complete",
 		Action:         SessionManageActionRecoverLifetimeOrCreate,
@@ -184,6 +212,8 @@ func TestManageReq_WithAllFields(t *testing.T) {
 }
 
 func TestManageReq_WithCustomAction(t *testing.T) {
+	t.Parallel()
+
 	customAction := SessionManageActionType("custom_action")
 	req := ManageReq{
 		Action:       customAction,

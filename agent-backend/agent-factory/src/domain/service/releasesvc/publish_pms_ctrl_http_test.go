@@ -5,15 +5,17 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iauthzacc/authzaccmock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestReleaseSvc_RemoveUsePmsByHTTPAcc_DeleteAgentPolicyError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -23,11 +25,11 @@ func TestReleaseSvc_RemoveUsePmsByHTTPAcc_DeleteAgentPolicyError(t *testing.T) {
 	mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 
 	svc := &releaseSvc{
-		SvcBase:             service.NewSvcBase(),
-		authZHttp:           mockAuthZHttp,
-		releaseRepo:         mockReleaseRepo,
-		releaseHistoryRepo:  mockReleaseHistoryRepo,
-		agentConfigRepo:     mockAgentRepo,
+		SvcBase:            service.NewSvcBase(),
+		authZHttp:          mockAuthZHttp,
+		releaseRepo:        mockReleaseRepo,
+		releaseHistoryRepo: mockReleaseHistoryRepo,
+		agentConfigRepo:    mockAgentRepo,
 	}
 
 	ctx := context.Background()
@@ -43,6 +45,8 @@ func TestReleaseSvc_RemoveUsePmsByHTTPAcc_DeleteAgentPolicyError(t *testing.T) {
 }
 
 func TestReleaseSvc_RemoveUsePmsByHTTPAcc_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -52,11 +56,11 @@ func TestReleaseSvc_RemoveUsePmsByHTTPAcc_Success(t *testing.T) {
 	mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 
 	svc := &releaseSvc{
-		SvcBase:             service.NewSvcBase(),
-		authZHttp:           mockAuthZHttp,
-		releaseRepo:         mockReleaseRepo,
-		releaseHistoryRepo:  mockReleaseHistoryRepo,
-		agentConfigRepo:     mockAgentRepo,
+		SvcBase:            service.NewSvcBase(),
+		authZHttp:          mockAuthZHttp,
+		releaseRepo:        mockReleaseRepo,
+		releaseHistoryRepo: mockReleaseHistoryRepo,
+		agentConfigRepo:    mockAgentRepo,
 	}
 
 	ctx := context.Background()
@@ -70,6 +74,8 @@ func TestReleaseSvc_RemoveUsePmsByHTTPAcc_Success(t *testing.T) {
 }
 
 func TestReleaseSvc_GrantUsePms_EmptyAccessors(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -79,11 +85,11 @@ func TestReleaseSvc_GrantUsePms_EmptyAccessors(t *testing.T) {
 	mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 
 	svc := &releaseSvc{
-		SvcBase:             service.NewSvcBase(),
-		authZHttp:           mockAuthZHttp,
-		releaseRepo:         mockReleaseRepo,
-		releaseHistoryRepo:  mockReleaseHistoryRepo,
-		agentConfigRepo:     mockAgentRepo,
+		SvcBase:            service.NewSvcBase(),
+		authZHttp:          mockAuthZHttp,
+		releaseRepo:        mockReleaseRepo,
+		releaseHistoryRepo: mockReleaseHistoryRepo,
+		agentConfigRepo:    mockAgentRepo,
 	}
 
 	ctx := context.Background()
@@ -97,6 +103,8 @@ func TestReleaseSvc_GrantUsePms_EmptyAccessors(t *testing.T) {
 }
 
 func TestReleaseSvc_GrantUsePms_GrantAgentUsePmsForAccessorsError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -106,11 +114,11 @@ func TestReleaseSvc_GrantUsePms_GrantAgentUsePmsForAccessorsError(t *testing.T) 
 	mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 
 	svc := &releaseSvc{
-		SvcBase:             service.NewSvcBase(),
-		authZHttp:           mockAuthZHttp,
-		releaseRepo:         mockReleaseRepo,
-		releaseHistoryRepo:  mockReleaseHistoryRepo,
-		agentConfigRepo:     mockAgentRepo,
+		SvcBase:            service.NewSvcBase(),
+		authZHttp:          mockAuthZHttp,
+		releaseRepo:        mockReleaseRepo,
+		releaseHistoryRepo: mockReleaseHistoryRepo,
+		agentConfigRepo:    mockAgentRepo,
 	}
 
 	ctx := context.Background()
@@ -130,6 +138,8 @@ func TestReleaseSvc_GrantUsePms_GrantAgentUsePmsForAccessorsError(t *testing.T) 
 }
 
 func TestReleaseSvc_GrantUsePms_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -139,11 +149,11 @@ func TestReleaseSvc_GrantUsePms_Success(t *testing.T) {
 	mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 
 	svc := &releaseSvc{
-		SvcBase:             service.NewSvcBase(),
-		authZHttp:           mockAuthZHttp,
-		releaseRepo:         mockReleaseRepo,
-		releaseHistoryRepo:  mockReleaseHistoryRepo,
-		agentConfigRepo:     mockAgentRepo,
+		SvcBase:            service.NewSvcBase(),
+		authZHttp:          mockAuthZHttp,
+		releaseRepo:        mockReleaseRepo,
+		releaseHistoryRepo: mockReleaseHistoryRepo,
+		agentConfigRepo:    mockAgentRepo,
 	}
 
 	ctx := context.Background()

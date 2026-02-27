@@ -9,6 +9,8 @@ import (
 )
 
 func TestNewAgentMarketAgentInfoResp(t *testing.T) {
+	t.Parallel()
+
 	resp := NewAgentMarketAgentInfoResp()
 
 	assert.NotNil(t, resp)
@@ -17,16 +19,18 @@ func TestNewAgentMarketAgentInfoResp(t *testing.T) {
 }
 
 func TestAgentMarketAgentInfoResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := AgentMarketAgentInfoResp{
-		CategoryId:     "cat-123",
-		CategoryName:   "TestCategory",
-		Version:        "1.0.0",
-		LatestVersion:  "1.1.0",
-		Description:    "Test description",
-		PublishedAt:    1640995200000,
-		PublishedBy:    "user-456",
+		CategoryId:      "cat-123",
+		CategoryName:    "TestCategory",
+		Version:         "1.0.0",
+		LatestVersion:   "1.1.0",
+		Description:     "Test description",
+		PublishedAt:     1640995200000,
+		PublishedBy:     "user-456",
 		PublishedByName: "Test User",
-		PublishInfo:    &pubedeo.AgentPublishedInfoEo{},
+		PublishInfo:     &pubedeo.AgentPublishedInfoEo{},
 	}
 
 	assert.Equal(t, "cat-123", resp.CategoryId)
@@ -41,6 +45,8 @@ func TestAgentMarketAgentInfoResp_StructFields(t *testing.T) {
 }
 
 func TestAgentMarketAgentInfoResp_EmptyValues(t *testing.T) {
+	t.Parallel()
+
 	resp := AgentMarketAgentInfoResp{}
 
 	assert.Empty(t, resp.CategoryId)
@@ -55,6 +61,8 @@ func TestAgentMarketAgentInfoResp_EmptyValues(t *testing.T) {
 }
 
 func TestAgentMarketAgentInfoResp_WithConfig(t *testing.T) {
+	t.Parallel()
+
 	config := daconfvalobj.Config{}
 	resp := AgentMarketAgentInfoResp{
 		CategoryId:   "cat-config",
@@ -69,6 +77,8 @@ func TestAgentMarketAgentInfoResp_WithConfig(t *testing.T) {
 }
 
 func TestAgentMarketAgentInfoResp_NilPublishInfo(t *testing.T) {
+	t.Parallel()
+
 	resp := AgentMarketAgentInfoResp{
 		CategoryId:   "cat-nil",
 		CategoryName: "NilCategory",
@@ -79,6 +89,8 @@ func TestAgentMarketAgentInfoResp_NilPublishInfo(t *testing.T) {
 }
 
 func TestAgentMarketAgentInfoResp_FullyPopulated(t *testing.T) {
+	t.Parallel()
+
 	publishInfo := &pubedeo.AgentPublishedInfoEo{}
 
 	resp := AgentMarketAgentInfoResp{
@@ -105,6 +117,8 @@ func TestAgentMarketAgentInfoResp_FullyPopulated(t *testing.T) {
 }
 
 func TestAgentMarketAgentInfoResp_WithTimestamps(t *testing.T) {
+	t.Parallel()
+
 	timestamps := []int64{
 		1640995200000, // 2022-01-01
 		1643673600000, // 2022-02-01
@@ -123,10 +137,12 @@ func TestAgentMarketAgentInfoResp_WithTimestamps(t *testing.T) {
 }
 
 func TestAgentMarketAgentInfoResp_VersionComparison(t *testing.T) {
+	t.Parallel()
+
 	resp := AgentMarketAgentInfoResp{
-		Version:        "1.0.0",
-		LatestVersion:  "2.0.0",
-		PublishInfo:    &pubedeo.AgentPublishedInfoEo{},
+		Version:       "1.0.0",
+		LatestVersion: "2.0.0",
+		PublishInfo:   &pubedeo.AgentPublishedInfoEo{},
 	}
 
 	assert.NotEqual(t, resp.Version, resp.LatestVersion)
@@ -135,10 +151,12 @@ func TestAgentMarketAgentInfoResp_VersionComparison(t *testing.T) {
 }
 
 func TestAgentMarketAgentInfoResp_SameVersion(t *testing.T) {
+	t.Parallel()
+
 	resp := AgentMarketAgentInfoResp{
-		Version:        "1.5.0",
-		LatestVersion:  "1.5.0",
-		PublishInfo:    &pubedeo.AgentPublishedInfoEo{},
+		Version:       "1.5.0",
+		LatestVersion: "1.5.0",
+		PublishInfo:   &pubedeo.AgentPublishedInfoEo{},
 	}
 
 	assert.Equal(t, resp.Version, resp.LatestVersion)

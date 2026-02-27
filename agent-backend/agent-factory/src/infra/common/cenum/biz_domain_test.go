@@ -5,7 +5,11 @@ import (
 )
 
 func TestBizDomainID_ToString(t *testing.T) {
+	t.Parallel()
+
 	t.Run("valid business domain", func(t *testing.T) {
+		t.Parallel()
+
 		domain := BizDomainID("test-domain")
 		result := domain.ToString()
 
@@ -15,6 +19,8 @@ func TestBizDomainID_ToString(t *testing.T) {
 	})
 
 	t.Run("empty business domain", func(t *testing.T) {
+		t.Parallel()
+
 		domain := BizDomainID("")
 		result := domain.ToString()
 
@@ -25,7 +31,11 @@ func TestBizDomainID_ToString(t *testing.T) {
 }
 
 func TestBizDomainID_EnumCheck(t *testing.T) {
+	t.Parallel()
+
 	t.Run("valid public domain", func(t *testing.T) {
+		t.Parallel()
+
 		err := BizDomainPublic.EnumCheck()
 		if err != nil {
 			t.Errorf("Expected no error for BizDomainPublic, got %v", err)
@@ -33,6 +43,8 @@ func TestBizDomainID_EnumCheck(t *testing.T) {
 	})
 
 	t.Run("invalid domain", func(t *testing.T) {
+		t.Parallel()
+
 		domain := BizDomainID("invalid-domain")
 		err := domain.EnumCheck()
 
@@ -42,6 +54,8 @@ func TestBizDomainID_EnumCheck(t *testing.T) {
 	})
 
 	t.Run("empty domain", func(t *testing.T) {
+		t.Parallel()
+
 		domain := BizDomainID("")
 		err := domain.EnumCheck()
 
@@ -52,7 +66,11 @@ func TestBizDomainID_EnumCheck(t *testing.T) {
 }
 
 func TestBizDomainID_Constant(t *testing.T) {
+	t.Parallel()
+
 	t.Run("BizDomainPublic constant", func(t *testing.T) {
+		t.Parallel()
+
 		if BizDomainPublic != "bd_public" {
 			t.Errorf("Expected BizDomainPublic to be 'bd_public', got '%s'", BizDomainPublic)
 		}

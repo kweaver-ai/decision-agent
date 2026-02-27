@@ -8,6 +8,8 @@ import (
 )
 
 func TestInitReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := InitReq{
 		AgentAPPKey:       "app-key-123",
 		Title:             "Test Conversation",
@@ -36,6 +38,8 @@ func TestInitReq_StructFields(t *testing.T) {
 }
 
 func TestInitReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := InitReq{}
 
 	assert.Empty(t, req.AgentAPPKey)
@@ -51,6 +55,8 @@ func TestInitReq_Empty(t *testing.T) {
 }
 
 func TestInitReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := InitReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -60,6 +66,8 @@ func TestInitReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestInitReq_ReqCheck(t *testing.T) {
+	t.Parallel()
+
 	req := InitReq{
 		Title: "Test Conversation",
 	}
@@ -70,6 +78,8 @@ func TestInitReq_ReqCheck(t *testing.T) {
 }
 
 func TestInitReq_ReqCheck_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := InitReq{}
 
 	err := req.ReqCheck()
@@ -78,6 +88,8 @@ func TestInitReq_ReqCheck_Empty(t *testing.T) {
 }
 
 func TestInitReq_WithAgentAPPKey(t *testing.T) {
+	t.Parallel()
+
 	keys := []string{
 		"app-key-001",
 		"agent-app-xyz",
@@ -93,6 +105,8 @@ func TestInitReq_WithAgentAPPKey(t *testing.T) {
 }
 
 func TestInitReq_WithUserID(t *testing.T) {
+	t.Parallel()
+
 	userIDs := []string{
 		"user-001",
 		"user-xyz",
@@ -108,6 +122,8 @@ func TestInitReq_WithUserID(t *testing.T) {
 }
 
 func TestInitReq_WithTitle(t *testing.T) {
+	t.Parallel()
+
 	titles := []string{
 		"Test Conversation",
 		"中文会话标题",
@@ -124,6 +140,8 @@ func TestInitReq_WithTitle(t *testing.T) {
 }
 
 func TestInitReq_WithTempareaId(t *testing.T) {
+	t.Parallel()
+
 	tempareaIds := []string{
 		"temp-001",
 		"temp-xyz",
@@ -140,6 +158,8 @@ func TestInitReq_WithTempareaId(t *testing.T) {
 }
 
 func TestInitReq_WithVisitorType(t *testing.T) {
+	t.Parallel()
+
 	visitorTypes := []string{
 		"user",
 		"app",
@@ -155,6 +175,8 @@ func TestInitReq_WithVisitorType(t *testing.T) {
 }
 
 func TestInitReq_WithAgentID(t *testing.T) {
+	t.Parallel()
+
 	agentIDs := []string{
 		"agent-001",
 		"agent-xyz",
@@ -170,6 +192,8 @@ func TestInitReq_WithAgentID(t *testing.T) {
 }
 
 func TestInitReq_WithAgentVersion(t *testing.T) {
+	t.Parallel()
+
 	versions := []string{
 		"1.0.0",
 		"2.1.3",
@@ -186,6 +210,8 @@ func TestInitReq_WithAgentVersion(t *testing.T) {
 }
 
 func TestInitReq_WithExecutorVersion(t *testing.T) {
+	t.Parallel()
+
 	versions := []string{
 		"v1",
 		"v2",
@@ -201,6 +227,8 @@ func TestInitReq_WithExecutorVersion(t *testing.T) {
 }
 
 func TestInitReq_WithXAccountID(t *testing.T) {
+	t.Parallel()
+
 	accountIDs := []string{
 		"acc-001",
 		"acc-xyz",
@@ -217,6 +245,8 @@ func TestInitReq_WithXAccountID(t *testing.T) {
 }
 
 func TestInitReq_WithXAccountType(t *testing.T) {
+	t.Parallel()
+
 	accountTypes := []cenum.AccountType{
 		cenum.AccountTypeUser,
 		cenum.AccountTypeApp,
@@ -232,6 +262,8 @@ func TestInitReq_WithXAccountType(t *testing.T) {
 }
 
 func TestInitReq_WithXBusinessDomainID(t *testing.T) {
+	t.Parallel()
+
 	domainIDs := []string{
 		"domain-001",
 		"domain-xyz",
@@ -248,6 +280,8 @@ func TestInitReq_WithXBusinessDomainID(t *testing.T) {
 }
 
 func TestInitReq_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	req := InitReq{
 		AgentAPPKey:       "app-key-abc",
 		Title:             "Complete Conversation",

@@ -8,6 +8,8 @@ import (
 )
 
 func TestAgentReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentReq{
 		AgentID:       "agent-123",
 		AgentVersion:  "v1.0.0",
@@ -28,6 +30,8 @@ func TestAgentReq_StructFields(t *testing.T) {
 }
 
 func TestAgentReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentReq{}
 
 	assert.Empty(t, req.AgentID)
@@ -39,6 +43,8 @@ func TestAgentReq_Empty(t *testing.T) {
 }
 
 func TestAgentReq_WithIncludeConfig(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentReq{
 		IncludeConfig: true,
 	}
@@ -47,6 +53,8 @@ func TestAgentReq_WithIncludeConfig(t *testing.T) {
 }
 
 func TestAgentReq_WithTimeRange(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentReq{
 		StartTime: 1000000000,
 		EndTime:   2000000000,
@@ -57,6 +65,8 @@ func TestAgentReq_WithTimeRange(t *testing.T) {
 }
 
 func TestAgentReq_WithAccountInfo(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentReq{
 		XAccountID:   "user-123",
 		XAccountType: cenum.AccountTypeUser,
@@ -67,6 +77,8 @@ func TestAgentReq_WithAccountInfo(t *testing.T) {
 }
 
 func TestAgentReq_WithoutIncludeConfig(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentReq{
 		IncludeConfig: false,
 	}

@@ -22,6 +22,8 @@ type UnmarshalableStruct struct {
 }
 
 func TestSetCache(t *testing.T) {
+	t.Parallel()
+
 	db, mock := redismock.NewClientMock()
 	ctx := context.Background()
 
@@ -44,10 +46,10 @@ func TestSetCache(t *testing.T) {
 			},
 		},
 		{
-			name:   "Redis设置缓存错误",
-			key:    "error_key",
-			value:  TestStruct{Name: "test", Value: 123},
-			expire: time.Hour,
+			name:    "Redis设置缓存错误",
+			key:     "error_key",
+			value:   TestStruct{Name: "test", Value: 123},
+			expire:  time.Hour,
 			wantErr: true,
 			setup: func() {
 				data, _ := json.Marshal(TestStruct{Name: "test", Value: 123})
@@ -55,12 +57,12 @@ func TestSetCache(t *testing.T) {
 			},
 		},
 		{
-			name:   "JSON序列化错误",
-			key:    "marshal_error_key",
-			value:  UnmarshalableStruct{Func: func() {}},
-			expire: time.Hour,
+			name:    "JSON序列化错误",
+			key:     "marshal_error_key",
+			value:   UnmarshalableStruct{Func: func() {}},
+			expire:  time.Hour,
 			wantErr: true,
-			setup:   func() {
+			setup: func() {
 				// No Redis expectation needed since marshal fails before Redis call
 			},
 		},
@@ -68,6 +70,7 @@ func TestSetCache(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
 			tc.setup()
 
 			err := SetCache(ctx, db, tc.key, tc.value, tc.expire)
@@ -81,6 +84,8 @@ func TestSetCache(t *testing.T) {
 }
 
 func TestGetCache(t *testing.T) {
+	t.Parallel()
+
 	db, mock := redismock.NewClientMock()
 	ctx := context.Background()
 
@@ -131,6 +136,7 @@ func TestGetCache(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
 			tc.setup()
 
 			result, err := GetCache[TestStruct](ctx, db, tc.key)
@@ -150,6 +156,8 @@ func TestGetCache(t *testing.T) {
 }
 
 func TestDelCache(t *testing.T) {
+	t.Parallel()
+
 	db, mock := redismock.NewClientMock()
 	ctx := context.Background()
 
@@ -178,6 +186,7 @@ func TestDelCache(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
 			tc.setup()
 
 			err := DelCache(ctx, db, tc.key)

@@ -9,6 +9,8 @@ import (
 )
 
 func TestLLMMessage_New(t *testing.T) {
+	t.Parallel()
+
 	message := &LLMMessage{
 		Role:    "user",
 		Content: "Hello, how are you?",
@@ -20,6 +22,8 @@ func TestLLMMessage_New(t *testing.T) {
 }
 
 func TestLLMMessage_AssistantRole(t *testing.T) {
+	t.Parallel()
+
 	message := &LLMMessage{
 		Role:    "assistant",
 		Content: "I'm doing well, thank you!",
@@ -30,6 +34,8 @@ func TestLLMMessage_AssistantRole(t *testing.T) {
 }
 
 func TestLLMMessage_SystemRole(t *testing.T) {
+	t.Parallel()
+
 	message := &LLMMessage{
 		Role:    "system",
 		Content: "You are a helpful assistant.",
@@ -40,6 +46,8 @@ func TestLLMMessage_SystemRole(t *testing.T) {
 }
 
 func TestLLMMessage_EmptyFields(t *testing.T) {
+	t.Parallel()
+
 	message := &LLMMessage{}
 
 	assert.NotNil(t, message)
@@ -48,6 +56,8 @@ func TestLLMMessage_EmptyFields(t *testing.T) {
 }
 
 func TestLLMMessage_JSONSerialization(t *testing.T) {
+	t.Parallel()
+
 	message := &LLMMessage{
 		Role:    "user",
 		Content: "Test message",
@@ -65,6 +75,8 @@ func TestLLMMessage_JSONSerialization(t *testing.T) {
 }
 
 func TestLLMMessage_JSONTags(t *testing.T) {
+	t.Parallel()
+
 	message := &LLMMessage{
 		Role:    "user",
 		Content: "Hello",
@@ -81,6 +93,8 @@ func TestLLMMessage_JSONTags(t *testing.T) {
 }
 
 func TestLLMMessage_WithLongContent(t *testing.T) {
+	t.Parallel()
+
 	longContent := "This is a very long message that contains multiple sentences. " +
 		"It continues with more text to test that the Content field can handle " +
 		"substantial amounts of text without any issues."
@@ -95,6 +109,8 @@ func TestLLMMessage_WithLongContent(t *testing.T) {
 }
 
 func TestLLMMessage_WithSpecialCharacters(t *testing.T) {
+	t.Parallel()
+
 	specialContent := "Message with special chars: @#$%^&*()_+-={}[]|\\:;\"'<>?,./~`"
 
 	message := &LLMMessage{
@@ -106,6 +122,8 @@ func TestLLMMessage_WithSpecialCharacters(t *testing.T) {
 }
 
 func TestLLMMessage_WithUnicode(t *testing.T) {
+	t.Parallel()
+
 	unicodeContent := "Unicode test: 你好世界 🌍 مرحبا بالعالم"
 
 	message := &LLMMessage{
@@ -117,6 +135,8 @@ func TestLLMMessage_WithUnicode(t *testing.T) {
 }
 
 func TestLLMMessage_WithNewlines(t *testing.T) {
+	t.Parallel()
+
 	multilineContent := "Line 1\nLine 2\nLine 3"
 
 	message := &LLMMessage{

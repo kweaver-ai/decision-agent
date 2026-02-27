@@ -7,6 +7,8 @@ import (
 )
 
 func TestHistoryListResp_Type(t *testing.T) {
+	t.Parallel()
+
 	// HistoryListResp is a slice type
 	var list HistoryListResp
 
@@ -15,6 +17,8 @@ func TestHistoryListResp_Type(t *testing.T) {
 }
 
 func TestHistoryListResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	list := HistoryListResp{}
 
 	assert.Empty(t, list)
@@ -22,6 +26,8 @@ func TestHistoryListResp_Empty(t *testing.T) {
 }
 
 func TestHistoryListResp_WithItems(t *testing.T) {
+	t.Parallel()
+
 	list := HistoryListResp{
 		{
 			HistoryId:    "hist-1",
@@ -48,6 +54,8 @@ func TestHistoryListResp_WithItems(t *testing.T) {
 }
 
 func TestHistoryListItemResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	item := HistoryListItemResp{
 		HistoryId:    "hist-123",
 		AgentId:      "agent-456",
@@ -64,6 +72,8 @@ func TestHistoryListItemResp_StructFields(t *testing.T) {
 }
 
 func TestHistoryListItemResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	item := HistoryListItemResp{}
 
 	assert.Empty(t, item.HistoryId)
@@ -74,6 +84,8 @@ func TestHistoryListItemResp_Empty(t *testing.T) {
 }
 
 func TestHistoryListResp_Append(t *testing.T) {
+	t.Parallel()
+
 	list := HistoryListResp{}
 
 	item1 := HistoryListItemResp{
@@ -94,6 +106,8 @@ func TestHistoryListResp_Append(t *testing.T) {
 }
 
 func TestHistoryListResp_SliceOperations(t *testing.T) {
+	t.Parallel()
+
 	list := HistoryListResp{
 		{HistoryId: "hist-1", AgentId: "agent-1"},
 		{HistoryId: "hist-2", AgentId: "agent-2"},
@@ -111,14 +125,19 @@ func TestHistoryListResp_SliceOperations(t *testing.T) {
 
 	// Test iteration
 	count := 0
+
 	for _, item := range list {
 		assert.NotEmpty(t, item.HistoryId)
+
 		count++
 	}
+
 	assert.Equal(t, 3, count)
 }
 
 func TestHistoryListItemResp_WithTimestamps(t *testing.T) {
+	t.Parallel()
+
 	timestamps := []int64{
 		1640995200000, // 2022-01-01
 		1643673600000, // 2022-02-01
@@ -137,6 +156,8 @@ func TestHistoryListItemResp_WithTimestamps(t *testing.T) {
 }
 
 func TestHistoryListResp_Capacity(t *testing.T) {
+	t.Parallel()
+
 	list := make(HistoryListResp, 0, 100)
 
 	assert.Len(t, list, 0)
@@ -153,6 +174,8 @@ func TestHistoryListResp_Capacity(t *testing.T) {
 }
 
 func TestHistoryListItemResp_WithLongDescription(t *testing.T) {
+	t.Parallel()
+
 	longDesc := "This is a very long description that contains multiple words and should be stored properly in the AgentDesc field. It might contain special characters like 中文 and numbers like 12345."
 	item := HistoryListItemResp{
 		HistoryId: "hist-long",
@@ -165,6 +188,8 @@ func TestHistoryListItemResp_WithLongDescription(t *testing.T) {
 }
 
 func TestHistoryListItemResp_WithDifferentVersions(t *testing.T) {
+	t.Parallel()
+
 	versions := []string{
 		"1.0.0",
 		"2.1.3",
@@ -183,6 +208,8 @@ func TestHistoryListItemResp_WithDifferentVersions(t *testing.T) {
 }
 
 func TestHistoryListItemResp_WithChineseCharacters(t *testing.T) {
+	t.Parallel()
+
 	item := HistoryListItemResp{
 		HistoryId:    "hist-中文",
 		AgentId:      "agent-中文",
@@ -197,13 +224,15 @@ func TestHistoryListItemResp_WithChineseCharacters(t *testing.T) {
 }
 
 func TestHistoryListResp_WithDuplicateItems(t *testing.T) {
+	t.Parallel()
+
 	list := HistoryListResp{
 		{
 			HistoryId: "hist-1",
 			AgentId:   "agent-1",
 		},
 		{
-			HistoryId: "hist-1", // Same ID
+			HistoryId: "hist-1",  // Same ID
 			AgentId:   "agent-1", // Same agent
 		},
 	}
@@ -212,6 +241,8 @@ func TestHistoryListResp_WithDuplicateItems(t *testing.T) {
 }
 
 func TestHistoryListItemResp_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	item := HistoryListItemResp{
 		HistoryId:    "hist-complete",
 		AgentId:      "agent-complete",

@@ -7,6 +7,8 @@ import (
 )
 
 func TestUpdateBuilder_Update(t *testing.T) {
+	t.Parallel()
+
 	updateBuilder := NewUpdateBuilder()
 	updateBuilder.Update(map[string]interface{}{
 		"key1": "value1",
@@ -17,6 +19,8 @@ func TestUpdateBuilder_Update(t *testing.T) {
 }
 
 func TestUpdateBuilder_From(t *testing.T) {
+	t.Parallel()
+
 	updateBuilder := NewUpdateBuilder()
 	updateBuilder.From("table1")
 
@@ -24,6 +28,8 @@ func TestUpdateBuilder_From(t *testing.T) {
 }
 
 func TestUpdateBuilder_Where(t *testing.T) {
+	t.Parallel()
+
 	updateBuilder := NewUpdateBuilder()
 	updateBuilder.Where("key1", OperatorEq, "value1")
 
@@ -31,6 +37,8 @@ func TestUpdateBuilder_Where(t *testing.T) {
 }
 
 func TestUpdateBuilder_Or(t *testing.T) {
+	t.Parallel()
+
 	updateBuilder := NewUpdateBuilder()
 	updateBuilder.Or("key1", OperatorEq, "value1")
 
@@ -38,6 +46,8 @@ func TestUpdateBuilder_Or(t *testing.T) {
 }
 
 func TestUpdateBuilder_ToUpdateSql(t *testing.T) {
+	t.Parallel()
+
 	updateBuilder := NewUpdateBuilder()
 	updateBuilder.Update(map[string]interface{}{
 		"key1": "value1",
@@ -56,6 +66,8 @@ func TestUpdateBuilder_ToUpdateSql(t *testing.T) {
 }
 
 func TestUpdateBuilder_UpdateByStruct_ToUpdateSql(t *testing.T) {
+	t.Parallel()
+
 	updateBuilder := NewUpdateBuilder()
 
 	// 1.当struct中的字段是string或者number时
@@ -93,6 +105,8 @@ func TestUpdateBuilder_UpdateByStruct_ToUpdateSql(t *testing.T) {
 }
 
 func TestUpdateBuilder_ToUpdateSqlFullFeatures(t *testing.T) {
+	t.Parallel()
+
 	// 1、updateBuilder.Update
 	updateBuilder := NewUpdateBuilder()
 	updateBuilder.Update(map[string]interface{}{
@@ -190,6 +204,8 @@ func TestUpdateBuilder_ToUpdateSqlFullFeatures(t *testing.T) {
 }
 
 func TestUpdateBuilder_Tag(t *testing.T) {
+	t.Parallel()
+
 	updateBuilder := NewUpdateBuilder()
 	updateBuilder.Tag("custom")
 
@@ -197,6 +213,8 @@ func TestUpdateBuilder_Tag(t *testing.T) {
 }
 
 func TestUpdateBuilder_SetWhereBuilder(t *testing.T) {
+	t.Parallel()
+
 	wb := NewWhereBuilder()
 	wb.Where("id", OperatorEq, 1)
 
@@ -207,6 +225,8 @@ func TestUpdateBuilder_SetWhereBuilder(t *testing.T) {
 }
 
 func TestUpdateBuilder_TagWithStruct(t *testing.T) {
+	t.Parallel()
+
 	updateBuilder := NewUpdateBuilder()
 	updateBuilder.Tag("json")
 
@@ -223,6 +243,8 @@ func TestUpdateBuilder_TagWithStruct(t *testing.T) {
 }
 
 func TestUpdateBuilder_ToUpdateSQL_NoFieldsToUpdate(t *testing.T) {
+	t.Parallel()
+
 	updateBuilder := NewUpdateBuilder()
 	updateBuilder.Update(map[string]interface{}{
 		"key1": "value1",
@@ -242,6 +264,8 @@ func TestUpdateBuilder_ToUpdateSQL_NoFieldsToUpdate(t *testing.T) {
 }
 
 func TestUpdateBuilder_ToUpdateSQL_WhereBuilderError(t *testing.T) {
+	t.Parallel()
+
 	updateBuilder := NewUpdateBuilder()
 	updateBuilder.Update(map[string]interface{}{
 		"key1": "value1",

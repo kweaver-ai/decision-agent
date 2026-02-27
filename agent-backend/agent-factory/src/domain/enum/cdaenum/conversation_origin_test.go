@@ -7,11 +7,15 @@ import (
 )
 
 func TestConversationOrigin_Constants(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, ConversationOrigin("web_chat"), ConversationWebChat)
 	assert.Equal(t, ConversationOrigin("api_call"), ConversationAPICall)
 }
 
 func TestConversationOrigin_EnumCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	validOrigins := []ConversationOrigin{
 		ConversationWebChat,
 		ConversationAPICall,
@@ -19,6 +23,8 @@ func TestConversationOrigin_EnumCheck_Valid(t *testing.T) {
 
 	for _, origin := range validOrigins {
 		t.Run(string(origin), func(t *testing.T) {
+			t.Parallel()
+
 			err := origin.EnumCheck()
 			assert.NoError(t, err)
 		})
@@ -26,6 +32,8 @@ func TestConversationOrigin_EnumCheck_Valid(t *testing.T) {
 }
 
 func TestConversationOrigin_EnumCheck_Invalid(t *testing.T) {
+	t.Parallel()
+
 	invalidOrigin := ConversationOrigin("invalid_origin")
 	err := invalidOrigin.EnumCheck()
 	assert.Error(t, err)
@@ -33,6 +41,8 @@ func TestConversationOrigin_EnumCheck_Invalid(t *testing.T) {
 }
 
 func TestConversationOrigin_EnumCheck_Empty(t *testing.T) {
+	t.Parallel()
+
 	emptyOrigin := ConversationOrigin("")
 	err := emptyOrigin.EnumCheck()
 	assert.Error(t, err)
@@ -40,6 +50,8 @@ func TestConversationOrigin_EnumCheck_Empty(t *testing.T) {
 }
 
 func TestConversationOrigin_AllUnique(t *testing.T) {
+	t.Parallel()
+
 	origins := []ConversationOrigin{
 		ConversationWebChat,
 		ConversationAPICall,
@@ -53,6 +65,8 @@ func TestConversationOrigin_AllUnique(t *testing.T) {
 }
 
 func TestConversationOrigin_StringValues(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		origin   ConversationOrigin
@@ -72,6 +86,8 @@ func TestConversationOrigin_StringValues(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := string(tt.origin)
 			assert.Equal(t, tt.expected, result)
 		})

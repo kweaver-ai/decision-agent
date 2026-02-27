@@ -5,15 +5,19 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdapmsenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iauthzacc/authzaccmock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestBuildAgentOperationItem_AgentPublish(t *testing.T) {
+	t.Parallel()
+
 	t.Run("builds operation item for AgentPublish", func(t *testing.T) {
+		t.Parallel()
+
 		op := cdapmsenum.AgentPublish
 		item := buildAgentOperationItem(op)
 
@@ -26,7 +30,11 @@ func TestBuildAgentOperationItem_AgentPublish(t *testing.T) {
 }
 
 func TestBuildAgentOperationItem_AgentUnpublish(t *testing.T) {
+	t.Parallel()
+
 	t.Run("builds operation item for AgentUnpublish", func(t *testing.T) {
+		t.Parallel()
+
 		op := cdapmsenum.AgentUnpublish
 		item := buildAgentOperationItem(op)
 
@@ -38,7 +46,11 @@ func TestBuildAgentOperationItem_AgentUnpublish(t *testing.T) {
 }
 
 func TestBuildAgentOperationItem_AgentUse(t *testing.T) {
+	t.Parallel()
+
 	t.Run("builds operation item for AgentUse", func(t *testing.T) {
+		t.Parallel()
+
 		op := cdapmsenum.AgentUse
 		item := buildAgentOperationItem(op)
 
@@ -52,7 +64,11 @@ func TestBuildAgentOperationItem_AgentUse(t *testing.T) {
 }
 
 func TestBuildAgentOperationItem_AllAgentOperators(t *testing.T) {
+	t.Parallel()
+
 	t.Run("builds operation items for all agent operators", func(t *testing.T) {
+		t.Parallel()
+
 		allOps := cdapmsenum.GetAllAgentOperator()
 
 		for _, op := range allOps {
@@ -68,7 +84,11 @@ func TestBuildAgentOperationItem_AllAgentOperators(t *testing.T) {
 }
 
 func TestBuildAgentOperationItem_UnknownOperator(t *testing.T) {
+	t.Parallel()
+
 	t.Run("returns nil for unknown operator", func(t *testing.T) {
+		t.Parallel()
+
 		op := cdapmsenum.Operator("unknown_operator")
 		item := buildAgentOperationItem(op)
 
@@ -77,13 +97,15 @@ func TestBuildAgentOperationItem_UnknownOperator(t *testing.T) {
 }
 
 func TestPermissionSvc_UpdateAgentResourceType_SetResourceTypeError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	mockAuthZHttp := authzaccmock.NewMockAuthZHttpAcc(ctrl)
 
 	svc := &permissionSvc{
-		SvcBase:  service.NewSvcBase(),
+		SvcBase:   service.NewSvcBase(),
 		authZHttp: mockAuthZHttp,
 	}
 
@@ -99,13 +121,15 @@ func TestPermissionSvc_UpdateAgentResourceType_SetResourceTypeError(t *testing.T
 }
 
 func TestPermissionSvc_UpdateAgentResourceType_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	mockAuthZHttp := authzaccmock.NewMockAuthZHttpAcc(ctrl)
 
 	svc := &permissionSvc{
-		SvcBase:  service.NewSvcBase(),
+		SvcBase:   service.NewSvcBase(),
 		authZHttp: mockAuthZHttp,
 	}
 

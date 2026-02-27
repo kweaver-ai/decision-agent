@@ -2,7 +2,6 @@ package conf
 
 // SwitchFields 定义了系统中的各种开关配置
 type SwitchFields struct {
-
 	// 是否保留老的APP路径，默认false
 	KeepLegacyAppPath bool `yaml:"keep_legacy_app_path"`
 
@@ -30,7 +29,6 @@ func NewSwitchFields() *SwitchFields {
 
 // MockSwitchFields 定义了各种Mock服务的开关配置
 type MockSwitchFields struct {
-
 	// 是否使用Mock MQ客户端（本地开发时建议设置为true）
 	MockMQClient bool `yaml:"mock_mq_client"`
 

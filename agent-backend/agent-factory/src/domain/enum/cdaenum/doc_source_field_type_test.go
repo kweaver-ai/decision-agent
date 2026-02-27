@@ -7,6 +7,8 @@ import (
 )
 
 func TestDocSourceFieldType_EnumCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		ft      DocSourceFieldType
@@ -36,6 +38,8 @@ func TestDocSourceFieldType_EnumCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.ft.EnumCheck()
 			if tt.wantErr {
 				assert.Error(t, err)

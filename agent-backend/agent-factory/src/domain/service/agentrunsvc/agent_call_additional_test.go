@@ -6,10 +6,10 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutordto"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
 	agentexecutoraccreq "github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutoraccreq"
 	agentexecutoraccres "github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutoraccres"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutordto"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/ctype"
 )
 
@@ -23,8 +23,10 @@ func (m *mockV1Executor) Call(ctx context.Context, req *agentexecutordto.AgentCa
 	if m.callFn != nil {
 		return m.callFn(ctx, req)
 	}
+
 	ch := make(chan string)
 	close(ch)
+
 	return ch, make(chan error), nil
 }
 
@@ -40,14 +42,17 @@ func (m *mockV2Executor) Call(ctx context.Context, req *v2agentexecutordto.V2Age
 	if m.callFn != nil {
 		return m.callFn(ctx, req)
 	}
+
 	ch := make(chan string)
 	close(ch)
+
 	return ch, make(chan error), nil
 }
 
 func (m *mockV2Executor) Resume(ctx context.Context, req *v2agentexecutordto.AgentResumeReq) (chan string, chan error, error) {
 	ch := make(chan string)
 	close(ch)
+
 	return ch, make(chan error), nil
 }
 
@@ -58,6 +63,8 @@ func (m *mockV2Executor) Terminate(ctx context.Context, req *v2agentexecutordto.
 // ---------- AgentCall.Call tests ----------
 
 func TestAgentCall_Call_V1Executor(t *testing.T) {
+	t.Parallel()
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -82,6 +89,8 @@ func TestAgentCall_Call_V1Executor(t *testing.T) {
 }
 
 func TestAgentCall_Call_V2Executor(t *testing.T) {
+	t.Parallel()
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -106,6 +115,8 @@ func TestAgentCall_Call_V2Executor(t *testing.T) {
 }
 
 func TestAgentCall_Call_V2WithResumeInfo(t *testing.T) {
+	t.Parallel()
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -123,6 +134,8 @@ func TestAgentCall_Call_V2WithResumeInfo(t *testing.T) {
 }
 
 func TestAgentCall_Call_V1NilExecutor(t *testing.T) {
+	t.Parallel()
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -135,6 +148,8 @@ func TestAgentCall_Call_V1NilExecutor(t *testing.T) {
 }
 
 func TestAgentCall_Call_V2NilExecutor(t *testing.T) {
+	t.Parallel()
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -147,6 +162,8 @@ func TestAgentCall_Call_V2NilExecutor(t *testing.T) {
 }
 
 func TestAgentCall_Resume_WithV2Executor(t *testing.T) {
+	t.Parallel()
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 

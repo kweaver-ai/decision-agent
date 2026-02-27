@@ -5,15 +5,15 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
+	"github.com/kweaver-ai/decision-agent/agent-factory/conf"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdapmsenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iauthzacc/authzaccmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iumacc/httpaccmock"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
-	"github.com/kweaver-ai/decision-agent/agent-factory/conf"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func init() {
@@ -26,6 +26,8 @@ func init() {
 }
 
 func TestPermissionSvc_GetSingleMgmtPermission_EmptyUserID(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -33,9 +35,9 @@ func TestPermissionSvc_GetSingleMgmtPermission_EmptyUserID(t *testing.T) {
 	mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
 
 	svc := &permissionSvc{
-		SvcBase:  service.NewSvcBase(),
+		SvcBase:   service.NewSvcBase(),
 		authZHttp: mockAuthZHttp,
-		umHttp:   mockUmHttp,
+		umHttp:    mockUmHttp,
 	}
 
 	ctx := context.Background()
@@ -48,6 +50,8 @@ func TestPermissionSvc_GetSingleMgmtPermission_EmptyUserID(t *testing.T) {
 }
 
 func TestPermissionSvc_GetSingleMgmtPermission_InvalidResourceType(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -55,9 +59,9 @@ func TestPermissionSvc_GetSingleMgmtPermission_InvalidResourceType(t *testing.T)
 	mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
 
 	svc := &permissionSvc{
-		SvcBase:  service.NewSvcBase(),
+		SvcBase:   service.NewSvcBase(),
 		authZHttp: mockAuthZHttp,
-		umHttp:   mockUmHttp,
+		umHttp:    mockUmHttp,
 	}
 
 	ctx := createContextWithUserID("user-123")
@@ -70,6 +74,8 @@ func TestPermissionSvc_GetSingleMgmtPermission_InvalidResourceType(t *testing.T)
 }
 
 func TestPermissionSvc_GetSingleMgmtPermission_AgentResourceOpsError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -77,9 +83,9 @@ func TestPermissionSvc_GetSingleMgmtPermission_AgentResourceOpsError(t *testing.
 	mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
 
 	svc := &permissionSvc{
-		SvcBase:  service.NewSvcBase(),
+		SvcBase:   service.NewSvcBase(),
 		authZHttp: mockAuthZHttp,
-		umHttp:   mockUmHttp,
+		umHttp:    mockUmHttp,
 	}
 
 	ctx := createContextWithUserID("user-123")
@@ -94,6 +100,8 @@ func TestPermissionSvc_GetSingleMgmtPermission_AgentResourceOpsError(t *testing.
 }
 
 func TestPermissionSvc_GetSingleMgmtPermission_AgentTplResourceOpsError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -101,9 +109,9 @@ func TestPermissionSvc_GetSingleMgmtPermission_AgentTplResourceOpsError(t *testi
 	mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
 
 	svc := &permissionSvc{
-		SvcBase:  service.NewSvcBase(),
+		SvcBase:   service.NewSvcBase(),
 		authZHttp: mockAuthZHttp,
-		umHttp:   mockUmHttp,
+		umHttp:    mockUmHttp,
 	}
 
 	ctx := createContextWithUserID("user-123")
@@ -118,6 +126,8 @@ func TestPermissionSvc_GetSingleMgmtPermission_AgentTplResourceOpsError(t *testi
 }
 
 func TestPermissionSvc_GetSingleMgmtPermission_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -125,9 +135,9 @@ func TestPermissionSvc_GetSingleMgmtPermission_Success(t *testing.T) {
 	mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
 
 	svc := &permissionSvc{
-		SvcBase:  service.NewSvcBase(),
+		SvcBase:   service.NewSvcBase(),
 		authZHttp: mockAuthZHttp,
-		umHttp:   mockUmHttp,
+		umHttp:    mockUmHttp,
 	}
 
 	ctx := createContextWithUserID("user-123")
@@ -145,6 +155,8 @@ func TestPermissionSvc_GetSingleMgmtPermission_Success(t *testing.T) {
 }
 
 func TestPermissionSvc_GetSingleMgmtPermission_NotAllowed(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -152,9 +164,9 @@ func TestPermissionSvc_GetSingleMgmtPermission_NotAllowed(t *testing.T) {
 	mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
 
 	svc := &permissionSvc{
-		SvcBase:  service.NewSvcBase(),
+		SvcBase:   service.NewSvcBase(),
 		authZHttp: mockAuthZHttp,
-		umHttp:   mockUmHttp,
+		umHttp:    mockUmHttp,
 	}
 
 	ctx := createContextWithUserID("user-123")

@@ -11,6 +11,8 @@ import (
 )
 
 func TestDataAgentRes_Effective(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		setup    func() *DataAgentRes
@@ -47,6 +49,8 @@ func TestDataAgentRes_Effective(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			res := tt.setup()
 			assert.Equal(t, tt.expected, res.Effective())
 		})
@@ -54,6 +58,8 @@ func TestDataAgentRes_Effective(t *testing.T) {
 }
 
 func TestDataAgentRes_GetFinalAnswer(t *testing.T) {
+	t.Parallel()
+
 	res := &DataAgentRes{
 		Answer: agentrespvo.NewAnswerS(),
 	}
@@ -68,6 +74,8 @@ func TestDataAgentRes_GetFinalAnswer(t *testing.T) {
 }
 
 func TestDataAgentRes_GetFinalAnswer_Nil(t *testing.T) {
+	t.Parallel()
+
 	res := &DataAgentRes{
 		Answer: agentrespvo.NewAnswerS(),
 	}
@@ -81,6 +89,8 @@ func TestDataAgentRes_GetFinalAnswer_Nil(t *testing.T) {
 }
 
 func TestDataAgentRes_GetFinalAnswerJSON_Valid(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	data := []byte(`{
 		"answer": {
@@ -101,6 +111,8 @@ func TestDataAgentRes_GetFinalAnswerJSON_Valid(t *testing.T) {
 }
 
 func TestDataAgentRes_GetFinalAnswerJSON_Empty(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	data := []byte(`{
 		"answer": {
@@ -121,6 +133,8 @@ func TestDataAgentRes_GetFinalAnswerJSON_Empty(t *testing.T) {
 }
 
 func TestDataAgentRes_GetExploreAnswerList_EmptyAnswer(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	data := []byte(`{
 		"answer": {}
@@ -139,6 +153,8 @@ func TestDataAgentRes_GetExploreAnswerList_EmptyAnswer(t *testing.T) {
 }
 
 func TestDataAgentRes_IsPromptType_EmptyAnswer(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	data := []byte(`{
 		"answer": {}
@@ -157,6 +173,8 @@ func TestDataAgentRes_IsPromptType_EmptyAnswer(t *testing.T) {
 }
 
 func TestDataAgentRes_GetFinalAnswerJSON_Error(t *testing.T) {
+	t.Parallel()
+
 	res := &DataAgentRes{
 		Answer: agentrespvo.NewAnswerS(),
 	}

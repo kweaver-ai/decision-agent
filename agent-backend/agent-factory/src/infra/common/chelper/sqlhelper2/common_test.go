@@ -7,6 +7,8 @@ import (
 )
 
 func Test_struct2SqlValPairsMapByTag(t *testing.T) {
+	t.Parallel()
+
 	// 1. 基本类型
 	type User struct {
 		Name string `json:"name"`

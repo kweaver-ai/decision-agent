@@ -7,6 +7,8 @@ import (
 )
 
 func TestResumeReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := ResumeReq{
 		ConversationID: "conv-123",
 	}
@@ -15,12 +17,16 @@ func TestResumeReq_StructFields(t *testing.T) {
 }
 
 func TestResumeReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := ResumeReq{}
 
 	assert.Empty(t, req.ConversationID)
 }
 
 func TestResumeReq_WithDifferentIDs(t *testing.T) {
+	t.Parallel()
+
 	ids := []string{
 		"conv-001",
 		"conv-xyz",

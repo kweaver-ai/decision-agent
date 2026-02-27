@@ -10,7 +10,10 @@ import (
 )
 
 func TestGetParmID(t *testing.T) {
+	t.Parallel()
+
 	t.Run("returns id from context", func(t *testing.T) {
+		t.Parallel()
 		gin.SetMode(gin.TestMode)
 		router := gin.New()
 
@@ -29,6 +32,7 @@ func TestGetParmID(t *testing.T) {
 	})
 
 	t.Run("returns error when id is empty", func(t *testing.T) {
+		t.Parallel()
 		gin.SetMode(gin.TestMode)
 		router := gin.New()
 
@@ -45,7 +49,10 @@ func TestGetParmID(t *testing.T) {
 }
 
 func TestGetParmIDInt64(t *testing.T) {
+	t.Parallel()
+
 	t.Run("returns int64 id from context", func(t *testing.T) {
+		t.Parallel()
 		gin.SetMode(gin.TestMode)
 		router := gin.New()
 
@@ -64,6 +71,7 @@ func TestGetParmIDInt64(t *testing.T) {
 	})
 
 	t.Run("returns error when int64 id is empty", func(t *testing.T) {
+		t.Parallel()
 		gin.SetMode(gin.TestMode)
 		router := gin.New()
 
@@ -80,7 +88,10 @@ func TestGetParmIDInt64(t *testing.T) {
 }
 
 func TestGetParmKey(t *testing.T) {
+	t.Parallel()
+
 	t.Run("returns key from context", func(t *testing.T) {
+		t.Parallel()
 		gin.SetMode(gin.TestMode)
 		router := gin.New()
 
@@ -99,6 +110,7 @@ func TestGetParmKey(t *testing.T) {
 	})
 
 	t.Run("returns error when key is empty", func(t *testing.T) {
+		t.Parallel()
 		gin.SetMode(gin.TestMode)
 		router := gin.New()
 
@@ -115,7 +127,10 @@ func TestGetParmKey(t *testing.T) {
 }
 
 func TestGetParmInt64(t *testing.T) {
+	t.Parallel()
+
 	t.Run("returns int64 value from context", func(t *testing.T) {
+		t.Parallel()
 		gin.SetMode(gin.TestMode)
 		router := gin.New()
 
@@ -134,6 +149,7 @@ func TestGetParmInt64(t *testing.T) {
 	})
 
 	t.Run("returns error when value is empty", func(t *testing.T) {
+		t.Parallel()
 		gin.SetMode(gin.TestMode)
 		router := gin.New()
 
@@ -149,6 +165,7 @@ func TestGetParmInt64(t *testing.T) {
 	})
 
 	t.Run("returns error when value is not integer", func(t *testing.T) {
+		t.Parallel()
 		gin.SetMode(gin.TestMode)
 		router := gin.New()
 
@@ -164,6 +181,7 @@ func TestGetParmInt64(t *testing.T) {
 	})
 
 	t.Run("returns zero value when value is 0", func(t *testing.T) {
+		t.Parallel()
 		gin.SetMode(gin.TestMode)
 		router := gin.New()
 
@@ -182,6 +200,7 @@ func TestGetParmInt64(t *testing.T) {
 	})
 
 	t.Run("returns negative value", func(t *testing.T) {
+		t.Parallel()
 		gin.SetMode(gin.TestMode)
 		router := gin.New()
 

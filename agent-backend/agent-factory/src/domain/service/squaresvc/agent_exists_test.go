@@ -5,13 +5,15 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestSquareSvc_IsAgentExists_Exists(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -34,6 +36,8 @@ func TestSquareSvc_IsAgentExists_Exists(t *testing.T) {
 }
 
 func TestSquareSvc_IsAgentExists_NotExists(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -56,6 +60,8 @@ func TestSquareSvc_IsAgentExists_NotExists(t *testing.T) {
 }
 
 func TestSquareSvc_IsAgentExists_RepoError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

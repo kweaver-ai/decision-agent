@@ -7,6 +7,8 @@ import (
 )
 
 func TestChatScenarioType_EnumCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		scenario ChatScenarioType
@@ -20,6 +22,8 @@ func TestChatScenarioType_EnumCheck_Valid(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.scenario.EnumCheck()
 			assert.NoError(t, err)
 		})
@@ -27,6 +31,8 @@ func TestChatScenarioType_EnumCheck_Valid(t *testing.T) {
 }
 
 func TestChatScenarioType_EnumCheck_Invalid(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		scenario ChatScenarioType
@@ -37,6 +43,8 @@ func TestChatScenarioType_EnumCheck_Invalid(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.scenario.EnumCheck()
 			assert.Error(t, err)
 			assert.Contains(t, err.Error(), "对话场景类型不合法")
@@ -45,6 +53,8 @@ func TestChatScenarioType_EnumCheck_Invalid(t *testing.T) {
 }
 
 func TestChatScenarioType_ToString(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		scenario ChatScenarioType
@@ -59,6 +69,8 @@ func TestChatScenarioType_ToString(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := tt.scenario.ToString()
 			assert.Equal(t, tt.expected, result)
 		})

@@ -113,7 +113,6 @@ func (svc *releaseSvc) UnPublish(ctx context.Context, agentID string) (auditlogi
 		return
 	}
 
-
 	// 9. 从“权限平台”删除Agent使用权限
 	err = svc.removeUsePmsByHTTPAcc(ctx, agentID)
 	if err != nil {

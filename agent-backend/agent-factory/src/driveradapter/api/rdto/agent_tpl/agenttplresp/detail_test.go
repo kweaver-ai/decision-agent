@@ -12,6 +12,8 @@ import (
 )
 
 func TestNewDetailRes(t *testing.T) {
+	t.Parallel()
+
 	detail := NewDetailRes()
 
 	assert.NotNil(t, detail)
@@ -21,7 +23,11 @@ func TestNewDetailRes(t *testing.T) {
 }
 
 func TestDetailRes_LoadFromEo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("load from template entity", func(t *testing.T) {
+		t.Parallel()
+
 		profile := "Test profile"
 		builtIn := cdaenum.BuiltInYes
 		detail := NewDetailRes()
@@ -64,10 +70,13 @@ func TestDetailRes_LoadFromEo(t *testing.T) {
 		if detail.IsBuiltIn != nil {
 			assert.Equal(t, int(cdaenum.BuiltInYes), *detail.IsBuiltIn)
 		}
+
 		assert.NotNil(t, detail.Config)
 	})
 
 	t.Run("with nil entity", func(t *testing.T) {
+		t.Parallel()
+
 		detail := NewDetailRes()
 
 		assert.Panics(t, func() {
@@ -76,16 +85,18 @@ func TestDetailRes_LoadFromEo(t *testing.T) {
 	})
 
 	t.Run("with nil profile", func(t *testing.T) {
+		t.Parallel()
+
 		detail := NewDetailRes()
 		builtIn := cdaenum.BuiltInNo
 		eo := &daconfeo.DataAgentTpl{
 			DataAgentTplPo: dapo.DataAgentTplPo{
-				ID:         2,
-				Name:       "Template No Profile",
-				Key:        "tpl-no-profile",
-				Profile:    nil,
-				Status:     cdaenum.StatusUnpublished,
-				IsBuiltIn:  &builtIn,
+				ID:        2,
+				Name:      "Template No Profile",
+				Key:       "tpl-no-profile",
+				Profile:   nil,
+				Status:    cdaenum.StatusUnpublished,
+				IsBuiltIn: &builtIn,
 			},
 		}
 
@@ -97,6 +108,8 @@ func TestDetailRes_LoadFromEo(t *testing.T) {
 	})
 
 	t.Run("with all fields", func(t *testing.T) {
+		t.Parallel()
+
 		detail := NewDetailRes()
 		profile := "Complete profile"
 		builtIn := cdaenum.BuiltInYes
@@ -104,21 +117,21 @@ func TestDetailRes_LoadFromEo(t *testing.T) {
 		publishedBy := "publisher-1"
 		eo := &daconfeo.DataAgentTpl{
 			DataAgentTplPo: dapo.DataAgentTplPo{
-				ID:           999,
-				Name:         "Complete Template",
-				Key:          "complete-tpl",
-				Profile:      &profile,
-				Avatar:       "complete.png",
-				AvatarType:   2,
-				Status:       cdaenum.StatusPublished,
-				ProductKey:   "product-complete",
-				IsBuiltIn:    &builtIn,
-				CreatedAt:    1000000000,
-				UpdatedAt:    2000000000,
-				CreatedBy:    "admin-1",
-				UpdatedBy:    "admin-2",
-				PublishedAt:  &publishedAt,
-				PublishedBy:  &publishedBy,
+				ID:          999,
+				Name:        "Complete Template",
+				Key:         "complete-tpl",
+				Profile:     &profile,
+				Avatar:      "complete.png",
+				AvatarType:  2,
+				Status:      cdaenum.StatusPublished,
+				ProductKey:  "product-complete",
+				IsBuiltIn:   &builtIn,
+				CreatedAt:   1000000000,
+				UpdatedAt:   2000000000,
+				CreatedBy:   "admin-1",
+				UpdatedBy:   "admin-2",
+				PublishedAt: &publishedAt,
+				PublishedBy: &publishedBy,
 			},
 			ProductName: "Complete Product",
 			Config: &daconfvalobj.Config{
@@ -148,6 +161,8 @@ func TestDetailRes_LoadFromEo(t *testing.T) {
 }
 
 func TestDetailRes_StructFields(t *testing.T) {
+	t.Parallel()
+
 	profile := "Test profile"
 	isBuiltIn := int(cdaenum.BuiltInYes)
 	detail := &DetailRes{
@@ -192,6 +207,8 @@ func TestDetailRes_StructFields(t *testing.T) {
 }
 
 func TestDetailRes_Empty(t *testing.T) {
+	t.Parallel()
+
 	detail := &DetailRes{}
 
 	assert.Equal(t, int64(0), detail.ID)
@@ -213,6 +230,8 @@ func TestDetailRes_Empty(t *testing.T) {
 }
 
 func TestDetailRes_WithDifferentStatus(t *testing.T) {
+	t.Parallel()
+
 	statuses := []cdaenum.Status{
 		cdaenum.StatusUnpublished,
 		cdaenum.StatusPublished,
@@ -227,6 +246,8 @@ func TestDetailRes_WithDifferentStatus(t *testing.T) {
 }
 
 func TestDetailRes_WithDifferentAvatarType(t *testing.T) {
+	t.Parallel()
+
 	avatarTypes := []int{0, 1, 2, 3}
 
 	for _, avatarType := range avatarTypes {
@@ -238,6 +259,8 @@ func TestDetailRes_WithDifferentAvatarType(t *testing.T) {
 }
 
 func TestDetailRes_WithNilIsBuiltIn(t *testing.T) {
+	t.Parallel()
+
 	detail := &DetailRes{
 		IsBuiltIn: nil,
 	}
@@ -246,6 +269,8 @@ func TestDetailRes_WithNilIsBuiltIn(t *testing.T) {
 }
 
 func TestDetailRes_WithNilConfig(t *testing.T) {
+	t.Parallel()
+
 	detail := &DetailRes{
 		Config: nil,
 	}
@@ -254,6 +279,8 @@ func TestDetailRes_WithNilConfig(t *testing.T) {
 }
 
 func TestDetailRes_WithEmptyProfile(t *testing.T) {
+	t.Parallel()
+
 	profile := ""
 	detail := &DetailRes{
 		Profile: &profile,
@@ -263,6 +290,8 @@ func TestDetailRes_WithEmptyProfile(t *testing.T) {
 }
 
 func TestDetailRes_FullStructure(t *testing.T) {
+	t.Parallel()
+
 	// Test the complete structure can be created
 	detail := &DetailRes{
 		ID:          456,

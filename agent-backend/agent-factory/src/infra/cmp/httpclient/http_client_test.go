@@ -6,7 +6,11 @@ import (
 )
 
 func TestNewRawHTTPClient(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create raw HTTP client", func(t *testing.T) {
+		t.Parallel()
+
 		client := NewRawHTTPClient()
 
 		if client == nil {
@@ -19,6 +23,8 @@ func TestNewRawHTTPClient(t *testing.T) {
 	})
 
 	t.Run("singleton pattern", func(t *testing.T) {
+		t.Parallel()
+
 		client1 := NewRawHTTPClient()
 		client2 := NewRawHTTPClient()
 
@@ -29,7 +35,11 @@ func TestNewRawHTTPClient(t *testing.T) {
 }
 
 func TestNewHTTPClient(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create HTTP client", func(t *testing.T) {
+		t.Parallel()
+
 		client := NewHTTPClient()
 
 		if client == nil {
@@ -38,6 +48,8 @@ func TestNewHTTPClient(t *testing.T) {
 	})
 
 	t.Run("singleton pattern", func(t *testing.T) {
+		t.Parallel()
+
 		client1 := NewHTTPClient()
 		client2 := NewHTTPClient()
 
@@ -48,7 +60,11 @@ func TestNewHTTPClient(t *testing.T) {
 }
 
 func TestNewHTTPClientEx(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create HTTP client with custom timeout", func(t *testing.T) {
+		t.Parallel()
+
 		timeout := 30 * time.Second
 		client := NewHTTPClientEx(30)
 
@@ -68,6 +84,8 @@ func TestNewHTTPClientEx(t *testing.T) {
 	})
 
 	t.Run("different instances", func(t *testing.T) {
+		t.Parallel()
+
 		client1 := NewHTTPClientEx(10)
 		client2 := NewHTTPClientEx(20)
 
@@ -78,7 +96,10 @@ func TestNewHTTPClientEx(t *testing.T) {
 }
 
 func TestAddHeaders(t *testing.T) {
+	t.Parallel()
+
 	t.Run("nil headers", func(t *testing.T) {
+		t.Parallel()
 		// Test with nil headers - this would need a real http.Request
 		// For now, we just verify the method doesn't panic
 		defer func() {
@@ -90,14 +111,17 @@ func TestAddHeaders(t *testing.T) {
 	})
 
 	t.Run("empty headers", func(t *testing.T) {
+		t.Parallel()
 		// Test with empty headers map
 	})
 
 	t.Run("with headers", func(t *testing.T) {
+		t.Parallel()
 		// Test with valid headers
 	})
 
 	t.Run("skip empty header values", func(t *testing.T) {
+		t.Parallel()
 		// Test that empty header values are skipped
 	})
 }

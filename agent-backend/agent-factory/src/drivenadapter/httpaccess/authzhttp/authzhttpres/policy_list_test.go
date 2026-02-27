@@ -11,6 +11,8 @@ import (
 )
 
 func TestListPolicyRes_FilterByExpiresAt(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		name               string
 		listPolicyRes      *ListPolicyRes
@@ -232,6 +234,8 @@ func TestListPolicyRes_FilterByExpiresAt(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			var err error
 			if tc.listPolicyRes != nil {
 				err = tc.listPolicyRes.FilterByExpiresAt()
@@ -273,6 +277,8 @@ func TestListPolicyRes_FilterByExpiresAt(t *testing.T) {
 }
 
 func TestListPolicyRes_Filter_EdgeCases(t *testing.T) {
+	t.Parallel()
+
 	// 测试边界情况：刚好到过期时间的策略
 	now := time.Now()
 
@@ -304,6 +310,8 @@ func TestListPolicyRes_Filter_EdgeCases(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			res := &ListPolicyRes{
 				TotalCount: 1,
 				Entries: []*PolicyEntry{
@@ -334,6 +342,8 @@ func TestListPolicyRes_Filter_EdgeCases(t *testing.T) {
 }
 
 func TestListPolicyRes_Filter_TimeZones(t *testing.T) {
+	t.Parallel()
+
 	// 测试不同时区的时间格式
 	now := time.Now()
 
@@ -384,6 +394,8 @@ func TestListPolicyRes_Filter_TimeZones(t *testing.T) {
 }
 
 func TestListPolicyRes_FilterByOperation(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		name               string
 		listPolicyRes      *ListPolicyRes
@@ -670,6 +682,8 @@ func TestListPolicyRes_FilterByOperation(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			var err error
 			if tc.listPolicyRes != nil {
 				err = tc.listPolicyRes.FilterByOperation(tc.operation)
@@ -730,6 +744,8 @@ func TestListPolicyRes_FilterByOperation(t *testing.T) {
 }
 
 func TestListPolicyRes_FilterByOperation_EdgeCases(t *testing.T) {
+	t.Parallel()
+
 	// 测试边界情况
 	testCases := []struct {
 		name      string
@@ -766,6 +782,8 @@ func TestListPolicyRes_FilterByOperation_EdgeCases(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			res := &ListPolicyRes{
 				TotalCount: len(tc.entries),
 				Entries:    tc.entries,

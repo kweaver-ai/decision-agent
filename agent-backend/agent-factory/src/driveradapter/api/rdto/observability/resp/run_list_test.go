@@ -7,6 +7,8 @@ import (
 )
 
 func TestRunDetail_StructFields(t *testing.T) {
+	t.Parallel()
+
 	detail := RunDetail{
 		RunID:               "run-123",
 		AgentID:             "agent-456",
@@ -45,6 +47,8 @@ func TestRunDetail_StructFields(t *testing.T) {
 }
 
 func TestRunDetail_Empty(t *testing.T) {
+	t.Parallel()
+
 	detail := RunDetail{}
 
 	assert.Empty(t, detail.RunID)
@@ -66,6 +70,8 @@ func TestRunDetail_Empty(t *testing.T) {
 }
 
 func TestRunListItem_StructFields(t *testing.T) {
+	t.Parallel()
+
 	item := RunListItem{
 		AgentID:      "agent-123",
 		RunID:        "run-456",
@@ -82,6 +88,8 @@ func TestRunListItem_StructFields(t *testing.T) {
 }
 
 func TestRunListItem_Empty(t *testing.T) {
+	t.Parallel()
+
 	item := RunListItem{}
 
 	assert.Empty(t, item.AgentID)
@@ -92,6 +100,8 @@ func TestRunListItem_Empty(t *testing.T) {
 }
 
 func TestRunListResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := RunListResp{
 		Entries: []RunListItem{
 			{
@@ -123,6 +133,8 @@ func TestRunListResp_StructFields(t *testing.T) {
 }
 
 func TestRunListResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := RunListResp{}
 
 	assert.Nil(t, resp.Entries)
@@ -130,6 +142,8 @@ func TestRunListResp_Empty(t *testing.T) {
 }
 
 func TestRunListResp_WithEmptyEntries(t *testing.T) {
+	t.Parallel()
+
 	resp := RunListResp{
 		Entries:    []RunListItem{},
 		TotalCount: 0,
@@ -141,6 +155,8 @@ func TestRunListResp_WithEmptyEntries(t *testing.T) {
 }
 
 func TestRunListItem_WithDifferentStatuses(t *testing.T) {
+	t.Parallel()
+
 	statuses := []string{
 		"Success",
 		"Failed",
@@ -155,6 +171,8 @@ func TestRunListItem_WithDifferentStatuses(t *testing.T) {
 }
 
 func TestRunListItem_WithTotalTimes(t *testing.T) {
+	t.Parallel()
+
 	times := []int{
 		0,
 		100,
@@ -170,10 +188,12 @@ func TestRunListItem_WithTotalTimes(t *testing.T) {
 }
 
 func TestRunDetail_WithFailedStatus(t *testing.T) {
+	t.Parallel()
+
 	detail := RunDetail{
-		RunID:        "failed-run",
-		Status:       "Failed",
-		TotalTime:    10000,
+		RunID:         "failed-run",
+		Status:        "Failed",
+		TotalTime:     10000,
 		ToolCallCount: 5,
 	}
 
@@ -184,6 +204,8 @@ func TestRunDetail_WithFailedStatus(t *testing.T) {
 }
 
 func TestRunListResp_WithSingleEntry(t *testing.T) {
+	t.Parallel()
+
 	resp := RunListResp{
 		Entries: []RunListItem{
 			{
@@ -204,6 +226,8 @@ func TestRunListResp_WithSingleEntry(t *testing.T) {
 }
 
 func TestRunListResp_WithLargeTotalCount(t *testing.T) {
+	t.Parallel()
+
 	resp := RunListResp{
 		Entries:    []RunListItem{},
 		TotalCount: 1000000,

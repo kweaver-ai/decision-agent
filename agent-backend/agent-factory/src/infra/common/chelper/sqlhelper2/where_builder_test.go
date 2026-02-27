@@ -7,6 +7,8 @@ import (
 )
 
 func TestWhereBuilder_ToWhereSql(t *testing.T) {
+	t.Parallel()
+
 	wb := NewWhereBuilder()
 	wb.Where("name", OperatorEq, "John")
 	wb.Where("city", OperatorIn, []string{"New York", "Los Angeles"})
@@ -24,6 +26,8 @@ func TestWhereBuilder_ToWhereSql(t *testing.T) {
 }
 
 func TestWhereBuilder_WhereEqual_WhereNotEqual(t *testing.T) {
+	t.Parallel()
+
 	wb := NewWhereBuilder()
 	wb.WhereEqual("name", "John")
 	wb.WhereNotEqual("country", "USA")
@@ -35,6 +39,8 @@ func TestWhereBuilder_WhereEqual_WhereNotEqual(t *testing.T) {
 }
 
 func TestWhereBuilder_WhereRaw(t *testing.T) {
+	t.Parallel()
+
 	wb := NewWhereBuilder()
 	wb.WhereRaw("name = ? and country <> ?", "John", "USA")
 
@@ -45,6 +51,8 @@ func TestWhereBuilder_WhereRaw(t *testing.T) {
 }
 
 func TestWhereBuilder_WhereRaw2(t *testing.T) {
+	t.Parallel()
+
 	wb := NewWhereBuilder()
 	wb.Where("age", OperatorEq, 30)
 	wb.WhereRaw("name = ? and country <> ?", "John", "USA")
@@ -56,6 +64,8 @@ func TestWhereBuilder_WhereRaw2(t *testing.T) {
 }
 
 func TestWhereBuilder_hasOuterParentheses(t *testing.T) {
+	t.Parallel()
+
 	wb := NewWhereBuilder()
 
 	tests := []struct {
@@ -127,6 +137,8 @@ func TestWhereBuilder_hasOuterParentheses(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := wb.hasOuterParentheses(tt.input)
 			assert.Equal(t, tt.expected, result, "测试用例: %s", tt.name)
 		})
@@ -134,6 +146,8 @@ func TestWhereBuilder_hasOuterParentheses(t *testing.T) {
 }
 
 func TestWhereBuilder_hlCondition(t *testing.T) {
+	t.Parallel()
+
 	wb := NewWhereBuilder()
 
 	tests := []struct {
@@ -180,6 +194,8 @@ func TestWhereBuilder_hlCondition(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := wb.hlCondition(tt.input)
 			assert.Equal(t, tt.expected, result, "测试用例: %s", tt.name)
 		})
@@ -187,6 +203,8 @@ func TestWhereBuilder_hlCondition(t *testing.T) {
 }
 
 func TestWhereBuilder_Like(t *testing.T) {
+	t.Parallel()
+
 	wb := NewWhereBuilder()
 	wb.Like("name", "John")
 
@@ -198,6 +216,8 @@ func TestWhereBuilder_Like(t *testing.T) {
 }
 
 func TestWhereBuilder_OrEqual(t *testing.T) {
+	t.Parallel()
+
 	wb := NewWhereBuilder()
 	wb.Where("id", OperatorEq, 1)
 	wb.OrEqual("status", "active")
@@ -209,6 +229,8 @@ func TestWhereBuilder_OrEqual(t *testing.T) {
 }
 
 func TestWhereBuilder_OrNotEqual(t *testing.T) {
+	t.Parallel()
+
 	wb := NewWhereBuilder()
 	wb.Where("id", OperatorEq, 1)
 	wb.OrNotEqual("status", "deleted")
@@ -220,6 +242,8 @@ func TestWhereBuilder_OrNotEqual(t *testing.T) {
 }
 
 func TestWhereBuilder_OrLike(t *testing.T) {
+	t.Parallel()
+
 	wb := NewWhereBuilder()
 	wb.Where("id", OperatorEq, 1)
 	wb.OrLike("name", "John")
@@ -232,6 +256,8 @@ func TestWhereBuilder_OrLike(t *testing.T) {
 }
 
 func TestWhereBuilder_OrLike_MultipleConditions(t *testing.T) {
+	t.Parallel()
+
 	wb := NewWhereBuilder()
 	wb.WhereEqual("category", "user")
 	wb.OrLike("name", "admin")
@@ -244,6 +270,8 @@ func TestWhereBuilder_OrLike_MultipleConditions(t *testing.T) {
 }
 
 func TestWhereBuilder_OrNotEqual_OnlyOrConditions(t *testing.T) {
+	t.Parallel()
+
 	wb := NewWhereBuilder()
 	wb.OrNotEqual("status", "deleted")
 	wb.OrNotEqual("status", "archived")
@@ -255,6 +283,8 @@ func TestWhereBuilder_OrNotEqual_OnlyOrConditions(t *testing.T) {
 }
 
 func TestWhereBuilder_OrLike_OnlyOrConditions(t *testing.T) {
+	t.Parallel()
+
 	wb := NewWhereBuilder()
 	wb.OrLike("name", "John")
 	wb.OrLike("description", "test")

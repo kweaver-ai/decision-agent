@@ -11,8 +11,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver/v3portdrivermock"
@@ -117,7 +117,6 @@ func TestDataAgentConfigSvc_Create_D2ePanicOnNilConfig(t *testing.T) {
 		_, _ = svc.Create(ctx, req)
 	})
 }
-
 
 func TestDataAgentConfigSvc_Create_SystemAgentPermissionCheckError(t *testing.T) {
 	ctrl := gomock.NewController(t)
@@ -273,6 +272,7 @@ func TestDataAgentConfigSvc_Create_BeginTxError(t *testing.T) {
 			Config:     daconfvalobj.NewConfig(),
 		},
 	}
+
 	mockProductRepo.EXPECT().ExistsByKey(gomock.Any(), "prod-key").Return(true, nil)
 	mockAgentConfRepo.EXPECT().BeginTx(gomock.Any()).Return(nil, errors.New("tx err"))
 	mockLogger.EXPECT().Errorf(gomock.Any(), gomock.Any()).AnyTimes()

@@ -7,6 +7,8 @@ import (
 )
 
 func TestCopyStructUseJSON_Advanced(t *testing.T) {
+	t.Parallel()
+
 	type Person struct {
 		Name string
 		Age  int
@@ -53,6 +55,8 @@ func TestCopyStructUseJSON_Advanced(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := CopyStructUseJSON(tt.dst, tt.src)
 			if tt.wantErr {
 				assert.Error(t, err, "CopyStructUseJSON should return error")

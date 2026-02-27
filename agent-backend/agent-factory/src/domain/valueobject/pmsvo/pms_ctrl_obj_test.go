@@ -5,6 +5,8 @@ import (
 )
 
 func TestPmsControlObjS(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name   string
 		pmsObj PmsControlObjS
@@ -43,18 +45,24 @@ func TestPmsControlObjS(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if len(tt.pmsObj.RoleIDs) != len(tt.pmsObj.RoleIDs) {
 				t.Errorf("RoleIDs length mismatch")
 			}
+
 			if len(tt.pmsObj.UserIDs) != len(tt.pmsObj.UserIDs) {
 				t.Errorf("UserIDs length mismatch")
 			}
+
 			if len(tt.pmsObj.UserGroupIDs) != len(tt.pmsObj.UserGroupIDs) {
 				t.Errorf("UserGroupIDs length mismatch")
 			}
+
 			if len(tt.pmsObj.DepartmentIDs) != len(tt.pmsObj.DepartmentIDs) {
 				t.Errorf("DepartmentIDs length mismatch")
 			}
+
 			if len(tt.pmsObj.AppAccountIDs) != len(tt.pmsObj.AppAccountIDs) {
 				t.Errorf("AppAccountIDs length mismatch")
 			}

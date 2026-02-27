@@ -7,6 +7,8 @@ import (
 )
 
 func TestToCamelCase(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name  string
 		input string
@@ -51,6 +53,8 @@ func TestToCamelCase(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := toCamelCase(tt.input)
 			assert.Equal(t, tt.want, result, "toCamelCase should return expected result")
 		})
@@ -58,6 +62,8 @@ func TestToCamelCase(t *testing.T) {
 }
 
 func TestGenerateTypeCacheKey(t *testing.T) {
+	t.Parallel()
+
 	prop1 := &JSONSchemaProperty{
 		Type: "string",
 	}
@@ -82,6 +88,8 @@ func TestGenerateTypeCacheKey(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := generateTypeCacheKey(tt.prop)
 			assert.NotEmpty(t, result, "generateTypeCacheKey should return non-empty result")
 		})

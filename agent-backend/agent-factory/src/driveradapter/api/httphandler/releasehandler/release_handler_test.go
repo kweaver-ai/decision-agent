@@ -37,12 +37,15 @@ func (testLogger) Fatalln(...interface{})        {}
 
 func newTestContext(method, target, body string) (*gin.Context, *httptest.ResponseRecorder) {
 	gin.SetMode(gin.TestMode)
+
 	recorder := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(recorder)
+
 	req := httptest.NewRequest(method, target, strings.NewReader(body))
 	if body != "" {
 		req.Header.Set("Content-Type", "application/json")
 	}
+
 	c.Request = req
 
 	return c, recorder
@@ -57,6 +60,7 @@ func setInternalAPI(c *gin.Context, isInternal bool) {
 func setVisitor(c *gin.Context, userID string, withRequestContext bool) {
 	visitor := &rest.Visitor{ID: userID}
 	c.Set(cenum.VisitUserInfoCtxKey.String(), visitor)
+
 	if withRequestContext {
 		ctx := context.WithValue(c.Request.Context(), cenum.VisitUserInfoCtxKey.String(), visitor)
 		c.Request = c.Request.WithContext(ctx)
@@ -69,10 +73,13 @@ func routeExists(routes []gin.RouteInfo, method, path string) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
 func TestSetIsPrivate2Req(t *testing.T) {
+	t.Parallel()
+
 	c, _ := newTestContext(http.MethodPost, "/", "")
 	req := releasereq.NewPublishReq()
 
@@ -86,6 +93,8 @@ func TestSetIsPrivate2Req(t *testing.T) {
 }
 
 func TestReleaseHandler_RegRouters(t *testing.T) {
+	t.Parallel()
+
 	h := &releaseHandler{}
 
 	pubRouter := gin.New()
@@ -105,7 +114,11 @@ func TestReleaseHandler_RegRouters(t *testing.T) {
 }
 
 func TestReleaseHandler_Publish(t *testing.T) {
+	t.Parallel()
+
 	t.Run("success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := v3portdrivermock.NewMockIReleaseSvc(ctrl)
@@ -115,6 +128,7 @@ func TestReleaseHandler_Publish(t *testing.T) {
 			assert.Equal(t, "agent-1", req.AgentID)
 			assert.Equal(t, "user-1", req.UserID)
 			assert.True(t, req.IsInternalAPI)
+
 			return &releaseresp.PublishUpsertResp{ReleaseId: "r-1"}, auditlogdto.AgentPublishAuditLogInfo{ID: "agent-1", Name: "name"}, nil
 		})
 
@@ -128,6 +142,8 @@ func TestReleaseHandler_Publish(t *testing.T) {
 	})
 
 	t.Run("user id empty", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := v3portdrivermock.NewMockIReleaseSvc(ctrl)
@@ -143,6 +159,8 @@ func TestReleaseHandler_Publish(t *testing.T) {
 	})
 
 	t.Run("bind error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := v3portdrivermock.NewMockIReleaseSvc(ctrl)
@@ -158,6 +176,8 @@ func TestReleaseHandler_Publish(t *testing.T) {
 	})
 
 	t.Run("custom check error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := v3portdrivermock.NewMockIReleaseSvc(ctrl)
@@ -173,6 +193,8 @@ func TestReleaseHandler_Publish(t *testing.T) {
 	})
 
 	t.Run("service error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := v3portdrivermock.NewMockIReleaseSvc(ctrl)
@@ -191,7 +213,11 @@ func TestReleaseHandler_Publish(t *testing.T) {
 }
 
 func TestReleaseHandler_UnPublish(t *testing.T) {
+	t.Parallel()
+
 	t.Run("agent id empty", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := v3portdrivermock.NewMockIReleaseSvc(ctrl)
@@ -205,6 +231,8 @@ func TestReleaseHandler_UnPublish(t *testing.T) {
 	})
 
 	t.Run("service error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := v3portdrivermock.NewMockIReleaseSvc(ctrl)
@@ -221,6 +249,8 @@ func TestReleaseHandler_UnPublish(t *testing.T) {
 	})
 
 	t.Run("success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := v3portdrivermock.NewMockIReleaseSvc(ctrl)
@@ -238,7 +268,11 @@ func TestReleaseHandler_UnPublish(t *testing.T) {
 }
 
 func TestReleaseHandler_GetPublishInfo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("agent id empty", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := v3portdrivermock.NewMockIReleaseSvc(ctrl)
@@ -250,6 +284,8 @@ func TestReleaseHandler_GetPublishInfo(t *testing.T) {
 	})
 
 	t.Run("service error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := v3portdrivermock.NewMockIReleaseSvc(ctrl)
@@ -264,6 +300,8 @@ func TestReleaseHandler_GetPublishInfo(t *testing.T) {
 	})
 
 	t.Run("success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := v3portdrivermock.NewMockIReleaseSvc(ctrl)
@@ -279,7 +317,11 @@ func TestReleaseHandler_GetPublishInfo(t *testing.T) {
 }
 
 func TestReleaseHandler_UpdatePublishInfo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("agent id empty", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := v3portdrivermock.NewMockIReleaseSvc(ctrl)
@@ -292,6 +334,8 @@ func TestReleaseHandler_UpdatePublishInfo(t *testing.T) {
 	})
 
 	t.Run("bind json error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := v3portdrivermock.NewMockIReleaseSvc(ctrl)
@@ -305,6 +349,8 @@ func TestReleaseHandler_UpdatePublishInfo(t *testing.T) {
 	})
 
 	t.Run("custom check error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := v3portdrivermock.NewMockIReleaseSvc(ctrl)
@@ -318,6 +364,8 @@ func TestReleaseHandler_UpdatePublishInfo(t *testing.T) {
 	})
 
 	t.Run("service error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := v3portdrivermock.NewMockIReleaseSvc(ctrl)
@@ -333,6 +381,8 @@ func TestReleaseHandler_UpdatePublishInfo(t *testing.T) {
 	})
 
 	t.Run("success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := v3portdrivermock.NewMockIReleaseSvc(ctrl)
@@ -349,7 +399,11 @@ func TestReleaseHandler_UpdatePublishInfo(t *testing.T) {
 }
 
 func TestReleaseHandler_HistoryListAndInfo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("history list agent id empty", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := v3portdrivermock.NewMockIReleaseSvc(ctrl)
@@ -361,6 +415,8 @@ func TestReleaseHandler_HistoryListAndInfo(t *testing.T) {
 	})
 
 	t.Run("history list service error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := v3portdrivermock.NewMockIReleaseSvc(ctrl)
@@ -375,6 +431,8 @@ func TestReleaseHandler_HistoryListAndInfo(t *testing.T) {
 	})
 
 	t.Run("history list success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := v3portdrivermock.NewMockIReleaseSvc(ctrl)
@@ -389,6 +447,8 @@ func TestReleaseHandler_HistoryListAndInfo(t *testing.T) {
 	})
 
 	t.Run("history info success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockSvc := v3portdrivermock.NewMockIReleaseSvc(ctrl)

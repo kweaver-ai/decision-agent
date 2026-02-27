@@ -9,4 +9,3 @@ type BizDomainSvcConf struct {
 	Port     int    `yaml:"port"`
 	Protocol string `yaml:"protocol"`
 }
-

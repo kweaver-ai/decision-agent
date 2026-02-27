@@ -6,7 +6,6 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_tpl/agenttplreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
@@ -15,9 +14,12 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestDataAgentTplSvc_Update_PanicsWithoutAgentTplRepo(t *testing.T) {
+	t.Parallel()
+
 	svc := &dataAgentTplSvc{
 		SvcBase: service.NewSvcBase(),
 	}
@@ -32,6 +34,8 @@ func TestDataAgentTplSvc_Update_PanicsWithoutAgentTplRepo(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_Update_TemplateNotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -39,9 +43,9 @@ func TestDataAgentTplSvc_Update_TemplateNotFound(t *testing.T) {
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 
 	svc := &dataAgentTplSvc{
-		SvcBase:       service.NewSvcBase(),
-		agentTplRepo:  mockAgentTplRepo,
-		logger:        mockLogger,
+		SvcBase:      service.NewSvcBase(),
+		agentTplRepo: mockAgentTplRepo,
+		logger:       mockLogger,
 	}
 
 	ctx := context.Background()
@@ -58,6 +62,8 @@ func TestDataAgentTplSvc_Update_TemplateNotFound(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_Update_GetByIDError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -65,9 +71,9 @@ func TestDataAgentTplSvc_Update_GetByIDError(t *testing.T) {
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 
 	svc := &dataAgentTplSvc{
-		SvcBase:       service.NewSvcBase(),
-		agentTplRepo:  mockAgentTplRepo,
-		logger:        mockLogger,
+		SvcBase:      service.NewSvcBase(),
+		agentTplRepo: mockAgentTplRepo,
+		logger:       mockLogger,
 	}
 
 	ctx := context.Background()
@@ -84,6 +90,8 @@ func TestDataAgentTplSvc_Update_GetByIDError(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_Update_NameConflict(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -91,9 +99,9 @@ func TestDataAgentTplSvc_Update_NameConflict(t *testing.T) {
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 
 	svc := &dataAgentTplSvc{
-		SvcBase:       service.NewSvcBase(),
-		agentTplRepo:  mockAgentTplRepo,
-		logger:        mockLogger,
+		SvcBase:      service.NewSvcBase(),
+		agentTplRepo: mockAgentTplRepo,
+		logger:       mockLogger,
 	}
 
 	ctx := context.Background()

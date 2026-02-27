@@ -11,26 +11,28 @@ import (
 )
 
 func TestGetAccountTypeFromHeaderMap(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name         string
-		headerMap    map[string]string
-		wantType     cenum.AccountType
-		wantIsExist  bool
-		wantErr      bool
-		errContains  string
+		name        string
+		headerMap   map[string]string
+		wantType    cenum.AccountType
+		wantIsExist bool
+		wantErr     bool
+		errContains string
 	}{
 		{
-			name:      "nil header map",
-			headerMap: nil,
-			wantErr:   true,
+			name:        "nil header map",
+			headerMap:   nil,
+			wantErr:     true,
 			errContains: "headerMap is nil",
 		},
 		{
-			name:      "empty header map",
-			headerMap: map[string]string{},
-			wantType:  "",
+			name:        "empty header map",
+			headerMap:   map[string]string{},
+			wantType:    "",
 			wantIsExist: false,
-			wantErr:   false,
+			wantErr:     false,
 		},
 		{
 			name: "account type in new header",
@@ -72,10 +74,13 @@ func TestGetAccountTypeFromHeaderMap(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			accountType, isExist, err := GetAccountTypeFromHeaderMap(tt.headerMap)
 
 			if tt.wantErr {
 				require.Error(t, err)
+
 				if tt.errContains != "" {
 					assert.Contains(t, err.Error(), tt.errContains)
 				}
@@ -89,6 +94,8 @@ func TestGetAccountTypeFromHeaderMap(t *testing.T) {
 }
 
 func TestGetAccountTypeFromContext(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
 
 	tests := []struct {
@@ -158,6 +165,8 @@ func TestGetAccountTypeFromContext(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			var c *gin.Context
 			if tt.setupContext != nil {
 				c, _ = gin.CreateTestContext(httptest.NewRecorder())
@@ -168,6 +177,7 @@ func TestGetAccountTypeFromContext(t *testing.T) {
 
 			if tt.wantErr {
 				require.Error(t, err)
+
 				if tt.errContains != "" {
 					assert.Contains(t, err.Error(), tt.errContains)
 				}
@@ -181,26 +191,28 @@ func TestGetAccountTypeFromContext(t *testing.T) {
 }
 
 func TestGetAccountIDFromHeaderMap(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name         string
-		headerMap    map[string]string
-		wantID       string
-		wantIsExist  bool
-		wantErr      bool
-		errContains  string
+		name        string
+		headerMap   map[string]string
+		wantID      string
+		wantIsExist bool
+		wantErr     bool
+		errContains string
 	}{
 		{
-			name:      "nil header map",
-			headerMap: nil,
-			wantErr:   true,
+			name:        "nil header map",
+			headerMap:   nil,
+			wantErr:     true,
 			errContains: "headerMap is nil",
 		},
 		{
-			name:      "empty header map",
-			headerMap: map[string]string{},
-			wantID:    "",
+			name:        "empty header map",
+			headerMap:   map[string]string{},
+			wantID:      "",
 			wantIsExist: false,
-			wantErr:   false,
+			wantErr:     false,
 		},
 		{
 			name: "account ID in new header",
@@ -234,10 +246,13 @@ func TestGetAccountIDFromHeaderMap(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			accountID, isExist, err := GetAccountIDFromHeaderMap(tt.headerMap)
 
 			if tt.wantErr {
 				require.Error(t, err)
+
 				if tt.errContains != "" {
 					assert.Contains(t, err.Error(), tt.errContains)
 				}
@@ -251,6 +266,8 @@ func TestGetAccountIDFromHeaderMap(t *testing.T) {
 }
 
 func TestGetAccountIDFromContext(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
 
 	tests := []struct {
@@ -311,6 +328,8 @@ func TestGetAccountIDFromContext(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			var c *gin.Context
 			if tt.setupContext != nil {
 				c, _ = gin.CreateTestContext(httptest.NewRecorder())
@@ -321,6 +340,7 @@ func TestGetAccountIDFromContext(t *testing.T) {
 
 			if tt.wantErr {
 				require.Error(t, err)
+
 				if tt.errContains != "" {
 					assert.Contains(t, err.Error(), tt.errContains)
 				}

@@ -112,7 +112,6 @@ func CheckAgentUsePms() gin.HandlerFunc {
 	}
 }
 
-
 func CheckAgentUsePmsInternal() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// 方法3：使用 gin 的 GetRawData
@@ -222,4 +221,3 @@ func CheckAgentUsePmsInternal() gin.HandlerFunc {
 		c.Next()
 	}
 }
-

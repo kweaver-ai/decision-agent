@@ -7,6 +7,8 @@ import (
 )
 
 func TestUserGroupInfo_StructFields(t *testing.T) {
+	t.Parallel()
+
 	info := UserGroupInfo{
 		ID:   "group-123",
 		Name: "Test Group",
@@ -17,6 +19,8 @@ func TestUserGroupInfo_StructFields(t *testing.T) {
 }
 
 func TestUserGroupInfo_Empty(t *testing.T) {
+	t.Parallel()
+
 	info := UserGroupInfo{}
 
 	assert.Empty(t, info.ID)
@@ -24,6 +28,8 @@ func TestUserGroupInfo_Empty(t *testing.T) {
 }
 
 func TestNewUserGroupListResDto(t *testing.T) {
+	t.Parallel()
+
 	dto := NewUserGroupListResDto()
 
 	assert.NotNil(t, dto)
@@ -32,6 +38,8 @@ func TestNewUserGroupListResDto(t *testing.T) {
 }
 
 func TestUserGroupListResDto_StructFields(t *testing.T) {
+	t.Parallel()
+
 	dto := UserGroupListResDto{
 		Entries: []*UserGroupInfo{
 			{ID: "group-1", Name: "Group 1"},
@@ -46,6 +54,8 @@ func TestUserGroupListResDto_StructFields(t *testing.T) {
 }
 
 func TestUserGroupListResDto_Empty(t *testing.T) {
+	t.Parallel()
+
 	dto := UserGroupListResDto{}
 
 	assert.Nil(t, dto.Entries)
@@ -53,6 +63,8 @@ func TestUserGroupListResDto_Empty(t *testing.T) {
 }
 
 func TestUserGroupListResDto_AddEntries(t *testing.T) {
+	t.Parallel()
+
 	dto := NewUserGroupListResDto()
 
 	dto.Entries = append(dto.Entries, &UserGroupInfo{
@@ -68,6 +80,8 @@ func TestUserGroupListResDto_AddEntries(t *testing.T) {
 }
 
 func TestUserGroupInfo_WithChineseCharacters(t *testing.T) {
+	t.Parallel()
+
 	info := UserGroupInfo{
 		ID:   "组-123",
 		Name: "测试组名",
@@ -78,6 +92,8 @@ func TestUserGroupInfo_WithChineseCharacters(t *testing.T) {
 }
 
 func TestUserGroupListResDto_WithTotalCount(t *testing.T) {
+	t.Parallel()
+
 	totalCounts := []int64{0, 1, 100, 1000, 999999}
 
 	for _, tc := range totalCounts {
@@ -89,6 +105,8 @@ func TestUserGroupListResDto_WithTotalCount(t *testing.T) {
 }
 
 func TestUserGroupListResDto_WithMultipleEntries(t *testing.T) {
+	t.Parallel()
+
 	entries := make([]*UserGroupInfo, 50)
 	for i := 0; i < 50; i++ {
 		entries[i] = &UserGroupInfo{
@@ -107,6 +125,8 @@ func TestUserGroupListResDto_WithMultipleEntries(t *testing.T) {
 }
 
 func TestUserGroupListResDto_Iteration(t *testing.T) {
+	t.Parallel()
+
 	dto := NewUserGroupListResDto()
 
 	for i := 0; i < 5; i++ {
@@ -117,10 +137,13 @@ func TestUserGroupListResDto_Iteration(t *testing.T) {
 	}
 
 	count := 0
+
 	for _, entry := range dto.Entries {
 		assert.NotEmpty(t, entry.ID)
 		assert.NotEmpty(t, entry.Name)
+
 		count++
 	}
+
 	assert.Equal(t, 5, count)
 }

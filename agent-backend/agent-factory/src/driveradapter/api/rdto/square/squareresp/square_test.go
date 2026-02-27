@@ -7,6 +7,8 @@ import (
 )
 
 func TestUserInfo_StructFields(t *testing.T) {
+	t.Parallel()
+
 	userInfo := UserInfo{
 		UserID:   "user-123",
 		Username: "testuser",
@@ -17,6 +19,8 @@ func TestUserInfo_StructFields(t *testing.T) {
 }
 
 func TestUserInfo_Empty(t *testing.T) {
+	t.Parallel()
+
 	userInfo := UserInfo{}
 
 	assert.Empty(t, userInfo.UserID)
@@ -24,6 +28,8 @@ func TestUserInfo_Empty(t *testing.T) {
 }
 
 func TestUserInfo_JSONTags(t *testing.T) {
+	t.Parallel()
+
 	userInfo := UserInfo{
 		UserID:   "user-456",
 		Username: "username456",
@@ -34,6 +40,8 @@ func TestUserInfo_JSONTags(t *testing.T) {
 }
 
 func TestListAgentResp_Type(t *testing.T) {
+	t.Parallel()
+
 	// ListAgentResp is a slice type
 	var list ListAgentResp
 
@@ -42,6 +50,8 @@ func TestListAgentResp_Type(t *testing.T) {
 }
 
 func TestListAgentResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	list := ListAgentResp{}
 
 	assert.Empty(t, list)
@@ -49,13 +59,15 @@ func TestListAgentResp_Empty(t *testing.T) {
 }
 
 func TestListAgentResp_WithMultipleItems(t *testing.T) {
+	t.Parallel()
+
 	list := ListAgentResp{
 		{
 			CategoryId:   "cat-1",
 			CategoryName: "Category 1",
 			Version:      "1.0.0",
 			Description:  "Description 1",
-			PublishTime:   1640995200000,
+			PublishTime:  1640995200000,
 			PublishUserInfo: UserInfo{
 				UserID:   "user-1",
 				Username: "UserOne",
@@ -70,7 +82,7 @@ func TestListAgentResp_WithMultipleItems(t *testing.T) {
 			CategoryName: "Category 2",
 			Version:      "2.0.0",
 			Description:  "Description 2",
-			PublishTime:   1641081600000,
+			PublishTime:  1641081600000,
 		},
 	}
 
@@ -82,12 +94,14 @@ func TestListAgentResp_WithMultipleItems(t *testing.T) {
 }
 
 func TestAgentListItemResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	item := AgentListItemResp{
 		CategoryId:   "cat-123",
 		CategoryName: "TestCategory",
 		Version:      "1.5.0",
 		Description:  "Test description",
-		PublishTime:   1640995200000,
+		PublishTime:  1640995200000,
 		PublishUserInfo: UserInfo{
 			UserID:   "publisher-123",
 			Username: "PublisherUser",
@@ -108,6 +122,8 @@ func TestAgentListItemResp_StructFields(t *testing.T) {
 }
 
 func TestAgentListItemResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	item := AgentListItemResp{}
 
 	assert.Empty(t, item.CategoryId)
@@ -120,8 +136,10 @@ func TestAgentListItemResp_Empty(t *testing.T) {
 }
 
 func TestAgentListItemResp_WithoutUserInfo(t *testing.T) {
+	t.Parallel()
+
 	item := AgentListItemResp{
-		CategoryId:  "cat-empty",
+		CategoryId:   "cat-empty",
 		CategoryName: "Empty Category",
 	}
 
@@ -130,6 +148,8 @@ func TestAgentListItemResp_WithoutUserInfo(t *testing.T) {
 }
 
 func TestListAgentResp_Append(t *testing.T) {
+	t.Parallel()
+
 	list := ListAgentResp{}
 
 	item1 := AgentListItemResp{
@@ -150,6 +170,8 @@ func TestListAgentResp_Append(t *testing.T) {
 }
 
 func TestListAgentResp_SliceOperations(t *testing.T) {
+	t.Parallel()
+
 	list := ListAgentResp{
 		{CategoryId: "cat-1", Version: "1.0"},
 		{CategoryId: "cat-2", Version: "2.0"},
@@ -167,14 +189,19 @@ func TestListAgentResp_SliceOperations(t *testing.T) {
 
 	// Test iteration
 	count := 0
+
 	for _, item := range list {
 		assert.NotEmpty(t, item.CategoryId)
+
 		count++
 	}
+
 	assert.Equal(t, 3, count)
 }
 
 func TestAgentListItemResp_WithTimestamps(t *testing.T) {
+	t.Parallel()
+
 	timestamps := []int64{
 		1640995200000, // 2022-01-01
 		1643673600000, // 2022-02-01
@@ -193,6 +220,8 @@ func TestAgentListItemResp_WithTimestamps(t *testing.T) {
 }
 
 func TestUserInfo_WithSpecialCharacters(t *testing.T) {
+	t.Parallel()
+
 	userInfo := UserInfo{
 		UserID:   "user-中文-123",
 		Username: "用户名",
@@ -203,6 +232,8 @@ func TestUserInfo_WithSpecialCharacters(t *testing.T) {
 }
 
 func TestAgentListItemResp_WithSpecialCharacters(t *testing.T) {
+	t.Parallel()
+
 	item := AgentListItemResp{
 		CategoryId:   "cat-特殊",
 		CategoryName: "特殊分类",
@@ -214,6 +245,8 @@ func TestAgentListItemResp_WithSpecialCharacters(t *testing.T) {
 }
 
 func TestListAgentResp_Capacity(t *testing.T) {
+	t.Parallel()
+
 	list := make(ListAgentResp, 0, 100)
 
 	assert.Len(t, list, 0)

@@ -2,8 +2,8 @@ package squarehandler
 
 import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/inject/v3/dainject"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squarereq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/rdto/agent_permission/cpmsreq"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squarereq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
@@ -61,6 +61,7 @@ func (h *squareHandler) agentInfoAgentUsePmsCheck(c *gin.Context) {
 	if !exists {
 		_ = c.Error(capierr.New400Err(c, "[agentInfoAgentUsePmsCheck]: agentInfoReqCtxKey不存在"))
 		c.Abort()
+
 		return
 	}
 
@@ -68,6 +69,7 @@ func (h *squareHandler) agentInfoAgentUsePmsCheck(c *gin.Context) {
 	if !ok {
 		_ = c.Error(capierr.New400Err(c, "[agentInfoAgentUsePmsCheck]: agentInfoReqCtxKey类型错误"))
 		c.Abort()
+
 		return
 	}
 
@@ -82,6 +84,7 @@ func (h *squareHandler) agentInfoAgentUsePmsCheck(c *gin.Context) {
 	if pmsErr != nil {
 		_ = c.Error(pmsErr)
 		c.Abort()
+
 		return
 	}
 
@@ -89,10 +92,10 @@ func (h *squareHandler) agentInfoAgentUsePmsCheck(c *gin.Context) {
 		_err := capierr.NewCustom403Err(c, apierr.AgentFactoryPermissionForbidden, "[agentInfoAgentUsePmsCheck]: 无当前Agent使用权限")
 		_ = c.Error(_err)
 		c.Abort()
+
 		return
 	}
 
 	// 继续执行
 	c.Next()
 }
-

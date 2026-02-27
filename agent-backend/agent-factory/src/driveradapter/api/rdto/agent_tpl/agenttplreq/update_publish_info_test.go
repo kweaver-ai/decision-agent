@@ -7,6 +7,8 @@ import (
 )
 
 func TestUpdatePublishInfoReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdatePublishInfoReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -16,6 +18,8 @@ func TestUpdatePublishInfoReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestUpdatePublishInfoReq_New(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdatePublishInfoReq{}
 
 	assert.NotNil(t, req)
@@ -23,6 +27,8 @@ func TestUpdatePublishInfoReq_New(t *testing.T) {
 }
 
 func TestUpdatePublishInfoReq_WithCategoryIDs(t *testing.T) {
+	t.Parallel()
+
 	categoryIDs := []string{"cat1", "cat2", "cat3"}
 	req := &UpdatePublishInfoReq{
 		CategoryIDs: categoryIDs,
@@ -33,6 +39,8 @@ func TestUpdatePublishInfoReq_WithCategoryIDs(t *testing.T) {
 }
 
 func TestUpdatePublishInfoReq_WithEmptyCategoryIDs(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdatePublishInfoReq{
 		CategoryIDs: []string{},
 	}
@@ -42,6 +50,8 @@ func TestUpdatePublishInfoReq_WithEmptyCategoryIDs(t *testing.T) {
 }
 
 func TestUpdatePublishInfoReq_GetErrMsgMapConsistency(t *testing.T) {
+	t.Parallel()
+
 	req1 := &UpdatePublishInfoReq{}
 	req2 := &UpdatePublishInfoReq{
 		CategoryIDs: []string{"cat1"},

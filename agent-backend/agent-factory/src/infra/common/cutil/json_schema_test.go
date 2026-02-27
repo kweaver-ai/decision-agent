@@ -7,6 +7,8 @@ import (
 )
 
 func TestValidJsonSchema(t *testing.T) {
+	t.Parallel()
+
 	// 测试有效的 JSON Schema
 	schemaStr := `{"type": "object", "properties": {"name": {"type": "string"}}}`
 	doc := `{"name": "John"}`

@@ -3,6 +3,8 @@ package cdaenum
 import "testing"
 
 func TestOutputDefaultFormat_EnumCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		o       OutputDefaultFormat
@@ -37,6 +39,8 @@ func TestOutputDefaultFormat_EnumCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.o.EnumCheck()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("EnumCheck() error = %v, wantErr %v", err, tt.wantErr)

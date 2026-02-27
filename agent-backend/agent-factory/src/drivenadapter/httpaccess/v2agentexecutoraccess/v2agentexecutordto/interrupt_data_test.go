@@ -7,6 +7,8 @@ import (
 )
 
 func TestInterruptData_StructFields(t *testing.T) {
+	t.Parallel()
+
 	interruptConfig := &InterruptConfig{
 		RequiresConfirmation: true,
 		ConfirmationMessage:  "Please confirm",
@@ -33,6 +35,8 @@ func TestInterruptData_StructFields(t *testing.T) {
 }
 
 func TestInterruptData_Empty(t *testing.T) {
+	t.Parallel()
+
 	data := &InterruptData{}
 
 	assert.Empty(t, data.ToolName)
@@ -42,6 +46,8 @@ func TestInterruptData_Empty(t *testing.T) {
 }
 
 func TestToolArg_StructFields(t *testing.T) {
+	t.Parallel()
+
 	arg := ToolArg{
 		Key:   "test_key",
 		Value: "test_value",
@@ -54,6 +60,8 @@ func TestToolArg_StructFields(t *testing.T) {
 }
 
 func TestToolArg_WithNumberValue(t *testing.T) {
+	t.Parallel()
+
 	arg := ToolArg{
 		Key:   "count",
 		Value: 42,
@@ -66,6 +74,8 @@ func TestToolArg_WithNumberValue(t *testing.T) {
 }
 
 func TestToolArg_WithObjectValue(t *testing.T) {
+	t.Parallel()
+
 	objValue := map[string]interface{}{
 		"nested": "value",
 		"number": 123,
@@ -83,6 +93,8 @@ func TestToolArg_WithObjectValue(t *testing.T) {
 }
 
 func TestInterruptConfig_StructFields(t *testing.T) {
+	t.Parallel()
+
 	config := &InterruptConfig{
 		RequiresConfirmation: false,
 		ConfirmationMessage:  "",
@@ -93,6 +105,8 @@ func TestInterruptConfig_StructFields(t *testing.T) {
 }
 
 func TestInterruptConfig_WithConfirmation(t *testing.T) {
+	t.Parallel()
+
 	config := &InterruptConfig{
 		RequiresConfirmation: true,
 		ConfirmationMessage:  "Do you want to continue?",
@@ -103,6 +117,8 @@ func TestInterruptConfig_WithConfirmation(t *testing.T) {
 }
 
 func TestInterruptData_WithMultipleToolArgs(t *testing.T) {
+	t.Parallel()
+
 	toolArgs := []ToolArg{
 		{Key: "arg1", Value: "val1", Type: "string"},
 		{Key: "arg2", Value: "val2", Type: "string"},
@@ -122,6 +138,8 @@ func TestInterruptData_WithMultipleToolArgs(t *testing.T) {
 }
 
 func TestInterruptData_WithNilInterruptConfig(t *testing.T) {
+	t.Parallel()
+
 	data := &InterruptData{
 		ToolName: "tool_no_config",
 		ToolArgs: []ToolArg{},

@@ -5,7 +5,11 @@ import (
 )
 
 func TestNewOpenAICmp(t *testing.T) {
+	t.Parallel()
+
 	t.Run("valid config", func(t *testing.T) {
+		t.Parallel()
+
 		apiKey := "test-api-key"
 		baseURL := "https://api.openai.com/v1"
 		model := "gpt-4"
@@ -24,18 +28,23 @@ func TestNewOpenAICmp(t *testing.T) {
 		if openaiCmp.apiKey != apiKey {
 			t.Errorf("Expected apiKey to be '%s', got '%s'", apiKey, openaiCmp.apiKey)
 		}
+
 		if openaiCmp.baseURL != baseURL {
 			t.Errorf("Expected baseURL to be '%s', got '%s'", baseURL, openaiCmp.baseURL)
 		}
+
 		if openaiCmp.model != model {
 			t.Errorf("Expected model to be '%s', got '%s'", model, openaiCmp.model)
 		}
+
 		if openaiCmp.client == nil {
 			t.Error("Expected client to be initialized")
 		}
 	})
 
 	t.Run("with TLS insecure skip verify", func(t *testing.T) {
+		t.Parallel()
+
 		apiKey := "test-api-key"
 		baseURL := "https://api.openai.com/v1"
 		model := "gpt-4"
@@ -57,6 +66,8 @@ func TestNewOpenAICmp(t *testing.T) {
 	})
 
 	t.Run("empty strings", func(t *testing.T) {
+		t.Parallel()
+
 		cmp := NewOpenAICmp("", "", "", false)
 
 		if cmp == nil {

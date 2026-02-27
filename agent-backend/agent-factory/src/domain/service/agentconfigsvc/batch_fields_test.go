@@ -5,23 +5,27 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
-	agentconfigreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
+	agentconfigreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 )
 
 func TestDataAgentConfigRepo_GetByIDS(t *testing.T) {
+	t.Parallel()
+
 	t.Run("delegates to repo successfully", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
 		mockRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 		svc := &dataAgentConfigSvc{
-			SvcBase:      service.NewSvcBase(),
+			SvcBase:       service.NewSvcBase(),
 			agentConfRepo: mockRepo,
 		}
 
@@ -43,6 +47,8 @@ func TestDataAgentConfigRepo_GetByIDS(t *testing.T) {
 }
 
 func TestBatchFields(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		setup   func(*gomock.Controller) (*dataAgentConfigSvc, context.Context)
@@ -108,6 +114,8 @@ func TestBatchFields(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
@@ -136,20 +144,27 @@ func TestBatchFields(t *testing.T) {
 	}
 }
 
-
 func TestBatchFieldsReqField(t *testing.T) {
+	t.Parallel()
+
 	t.Run("String method returns correct value", func(t *testing.T) {
+		t.Parallel()
+
 		field := agentconfigreq.BatchFieldsReqFieldName
 		assert.Equal(t, "name", field.String())
 	})
 
 	t.Run("ValObjCheck passes for valid field", func(t *testing.T) {
+		t.Parallel()
+
 		field := agentconfigreq.BatchFieldsReqFieldName
 		err := field.ValObjCheck()
 		assert.NoError(t, err)
 	})
 
 	t.Run("ValObjCheck fails for invalid field", func(t *testing.T) {
+		t.Parallel()
+
 		field := agentconfigreq.BatchFieldsReqField("invalid")
 		err := field.ValObjCheck()
 		assert.Error(t, err)

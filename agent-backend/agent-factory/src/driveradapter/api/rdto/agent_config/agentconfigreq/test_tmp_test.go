@@ -7,6 +7,8 @@ import (
 )
 
 func TestTestTmpReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := TestTmpReq{
 		TestFlag: "test-flag-123",
 		Params:   map[string]interface{}{"key": "value"},
@@ -17,6 +19,8 @@ func TestTestTmpReq_StructFields(t *testing.T) {
 }
 
 func TestTestTmpReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := TestTmpReq{}
 
 	assert.Empty(t, req.TestFlag)
@@ -24,6 +28,8 @@ func TestTestTmpReq_Empty(t *testing.T) {
 }
 
 func TestTestTmpReq_WithOnlyTestFlag(t *testing.T) {
+	t.Parallel()
+
 	req := TestTmpReq{
 		TestFlag: "test-flag",
 	}
@@ -33,6 +39,8 @@ func TestTestTmpReq_WithOnlyTestFlag(t *testing.T) {
 }
 
 func TestTestTmpReq_WithOnlyParams(t *testing.T) {
+	t.Parallel()
+
 	params := map[string]interface{}{"key": "value"}
 	req := TestTmpReq{
 		Params: params,
@@ -43,6 +51,8 @@ func TestTestTmpReq_WithOnlyParams(t *testing.T) {
 }
 
 func TestTestTmpReq_WithChineseTestFlag(t *testing.T) {
+	t.Parallel()
+
 	req := TestTmpReq{
 		TestFlag: "测试标志",
 		Params:   map[string]interface{}{"键": "值"},
@@ -52,6 +62,8 @@ func TestTestTmpReq_WithChineseTestFlag(t *testing.T) {
 }
 
 func TestTestTmpReq_WithNilParams(t *testing.T) {
+	t.Parallel()
+
 	req := TestTmpReq{
 		TestFlag: "test-flag",
 		Params:   nil,
@@ -62,6 +74,8 @@ func TestTestTmpReq_WithNilParams(t *testing.T) {
 }
 
 func TestTestTmpReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := TestTmpReq{}
 	errMap := req.GetErrMsgMap()
 
@@ -74,6 +88,8 @@ func TestTestTmpReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestTestTmpReq_WithDifferentParamsTypes(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name   string
 		params interface{}
@@ -102,6 +118,8 @@ func TestTestTmpReq_WithDifferentParamsTypes(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			req := TestTmpReq{
 				TestFlag: "test-flag",
 				Params:   tt.params,
@@ -112,6 +130,8 @@ func TestTestTmpReq_WithDifferentParamsTypes(t *testing.T) {
 }
 
 func TestTestTmpReq_WithComplexParams(t *testing.T) {
+	t.Parallel()
+
 	params := map[string]interface{}{
 		"string": "value",
 		"number": 123,
@@ -132,6 +152,8 @@ func TestTestTmpReq_WithComplexParams(t *testing.T) {
 }
 
 func TestTestTmpReq_WithEmptyTestFlag(t *testing.T) {
+	t.Parallel()
+
 	req := TestTmpReq{
 		TestFlag: "",
 		Params:   map[string]interface{}{},
@@ -142,6 +164,8 @@ func TestTestTmpReq_WithEmptyTestFlag(t *testing.T) {
 }
 
 func TestTestTmpReq_WithEmptyMapParams(t *testing.T) {
+	t.Parallel()
+
 	req := TestTmpReq{
 		TestFlag: "test-flag",
 		Params:   map[string]interface{}{},
@@ -153,6 +177,8 @@ func TestTestTmpReq_WithEmptyMapParams(t *testing.T) {
 }
 
 func TestTestTmpReq_GetErrMsgMap_Keys(t *testing.T) {
+	t.Parallel()
+
 	req := TestTmpReq{}
 	errMap := req.GetErrMsgMap()
 
@@ -161,6 +187,8 @@ func TestTestTmpReq_GetErrMsgMap_Keys(t *testing.T) {
 }
 
 func TestTestTmpReq_AllFieldsSet(t *testing.T) {
+	t.Parallel()
+
 	req := TestTmpReq{
 		TestFlag: "test-flag-123",
 		Params:   map[string]interface{}{"key": "value"},

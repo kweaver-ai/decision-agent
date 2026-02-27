@@ -9,6 +9,8 @@ import (
 )
 
 func TestNewMiddleOutputVarRes(t *testing.T) {
+	t.Parallel()
+
 	res := NewMiddleOutputVarRes()
 
 	assert.NotNil(t, res)
@@ -17,6 +19,8 @@ func TestNewMiddleOutputVarRes(t *testing.T) {
 }
 
 func TestMiddleOutputVarRes_LoadFrom_Simple(t *testing.T) {
+	t.Parallel()
+
 	res := NewMiddleOutputVarRes()
 
 	vars := []string{"var1", "var2"}
@@ -42,6 +46,8 @@ func TestMiddleOutputVarRes_LoadFrom_Simple(t *testing.T) {
 }
 
 func TestMiddleOutputVarRes_LoadFrom_WithInterventions(t *testing.T) {
+	t.Parallel()
+
 	res := NewMiddleOutputVarRes()
 
 	vars := []string{"var1"}
@@ -69,6 +75,8 @@ func TestMiddleOutputVarRes_LoadFrom_WithInterventions(t *testing.T) {
 }
 
 func TestMiddleOutputVarRes_LoadFrom_EmptyVars(t *testing.T) {
+	t.Parallel()
+
 	res := NewMiddleOutputVarRes()
 
 	vars := []string{}
@@ -81,6 +89,8 @@ func TestMiddleOutputVarRes_LoadFrom_EmptyVars(t *testing.T) {
 }
 
 func TestMiddleOutputVarRes_LoadFrom_SomeVarsMissing(t *testing.T) {
+	t.Parallel()
+
 	res := NewMiddleOutputVarRes()
 
 	vars := []string{"var1", "var2", "var3"}
@@ -97,6 +107,8 @@ func TestMiddleOutputVarRes_LoadFrom_SomeVarsMissing(t *testing.T) {
 }
 
 func TestMiddleOutputVarRes_LoadFrom_WithPromptType(t *testing.T) {
+	t.Parallel()
+
 	res := NewMiddleOutputVarRes()
 
 	vars := []string{"promptVar"}
@@ -120,6 +132,8 @@ func TestMiddleOutputVarRes_LoadFrom_WithPromptType(t *testing.T) {
 }
 
 func TestMiddleOutputVarRes_LoadFrom_MixedVarTypes(t *testing.T) {
+	t.Parallel()
+
 	res := NewMiddleOutputVarRes()
 
 	vars := []string{"promptVar", "exploreVar", "otherVar", "missingVar"}
@@ -159,12 +173,18 @@ func TestMiddleOutputVarRes_LoadFrom_MixedVarTypes(t *testing.T) {
 }
 
 func TestGetPromptVal_ErrorCases(t *testing.T) {
+	t.Parallel()
+
 	t.Run("marshal error", func(t *testing.T) {
+		t.Parallel()
+
 		_, _, err := getPromptVal(make(chan int))
 		require.Error(t, err)
 	})
 
 	t.Run("answer is not string", func(t *testing.T) {
+		t.Parallel()
+
 		_, _, err := getPromptVal(map[string]interface{}{
 			"answer": 123,
 			"think":  "ok",
@@ -174,6 +194,8 @@ func TestGetPromptVal_ErrorCases(t *testing.T) {
 	})
 
 	t.Run("think is not string", func(t *testing.T) {
+		t.Parallel()
+
 		_, _, err := getPromptVal(map[string]interface{}{
 			"answer": "ok",
 			"think":  123,
@@ -184,6 +206,8 @@ func TestGetPromptVal_ErrorCases(t *testing.T) {
 }
 
 func TestMiddleOutputVarRes_LoadFrom_WithExploreType(t *testing.T) {
+	t.Parallel()
+
 	res := NewMiddleOutputVarRes()
 
 	vars := []string{"exploreVar"}
@@ -217,6 +241,8 @@ func TestMiddleOutputVarRes_LoadFrom_WithExploreType(t *testing.T) {
 }
 
 func TestMiddleOutputVarRes_ToExploreList_Success(t *testing.T) {
+	t.Parallel()
+
 	res := NewMiddleOutputVarRes()
 
 	exploreData := []interface{}{
@@ -236,6 +262,8 @@ func TestMiddleOutputVarRes_ToExploreList_Success(t *testing.T) {
 }
 
 func TestMiddleOutputVarRes_ToExploreList_InvalidData(t *testing.T) {
+	t.Parallel()
+
 	res := NewMiddleOutputVarRes()
 
 	// Invalid data - not an explore list
@@ -249,6 +277,8 @@ func TestMiddleOutputVarRes_ToExploreList_InvalidData(t *testing.T) {
 }
 
 func TestMiddleOutputVarRes_LoadFrom_PromptWithNonStringAnswer(t *testing.T) {
+	t.Parallel()
+
 	res := NewMiddleOutputVarRes()
 
 	vars := []string{"promptVar"}
@@ -269,6 +299,8 @@ func TestMiddleOutputVarRes_LoadFrom_PromptWithNonStringAnswer(t *testing.T) {
 }
 
 func TestMiddleOutputVarRes_LoadFrom_PromptWithNonStringThink(t *testing.T) {
+	t.Parallel()
+
 	res := NewMiddleOutputVarRes()
 
 	vars := []string{"promptVar"}
@@ -289,6 +321,8 @@ func TestMiddleOutputVarRes_LoadFrom_PromptWithNonStringThink(t *testing.T) {
 }
 
 func TestMiddleOutputVarRes_LoadFrom_WithUnmarshalableValue(t *testing.T) {
+	t.Parallel()
+
 	res := NewMiddleOutputVarRes()
 
 	vars := []string{"var1"}
@@ -309,6 +343,8 @@ func TestMiddleOutputVarRes_LoadFrom_WithUnmarshalableValue(t *testing.T) {
 }
 
 func TestMiddleOutputVarRes_LoadFrom_ValidPrompt(t *testing.T) {
+	t.Parallel()
+
 	// Test with valid prompt structure to fully cover getPromptVal
 	res := NewMiddleOutputVarRes()
 

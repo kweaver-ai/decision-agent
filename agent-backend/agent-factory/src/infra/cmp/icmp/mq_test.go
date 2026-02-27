@@ -21,6 +21,7 @@ func (m *MockMQClient) Publish(topic string, data []byte) error {
 	m.PublishCalled = true
 	m.PublishTopic = topic
 	m.PublishData = data
+
 	return nil
 }
 
@@ -28,6 +29,7 @@ func (m *MockMQClient) Subscribe(topic, channel string, cmd func([]byte) error) 
 	m.SubscribeCalled = true
 	m.SubscribeTopic = topic
 	m.SubscribeChannel = channel
+
 	return nil
 }
 
@@ -36,12 +38,17 @@ func (m *MockMQClient) Close() {
 }
 
 func TestIMQClient_Interface(t *testing.T) {
+	t.Parallel()
+
 	// Test that MockMQClient implements IMQClient
 	var _ IMQClient = &MockMQClient{}
+
 	assert.True(t, true)
 }
 
 func TestMockMQClient_Publish(t *testing.T) {
+	t.Parallel()
+
 	mock := &MockMQClient{}
 	data := []byte("test data")
 
@@ -54,6 +61,8 @@ func TestMockMQClient_Publish(t *testing.T) {
 }
 
 func TestMockMQClient_Subscribe(t *testing.T) {
+	t.Parallel()
+
 	mock := &MockMQClient{}
 	cmd := func(data []byte) error { return nil }
 
@@ -66,6 +75,8 @@ func TestMockMQClient_Subscribe(t *testing.T) {
 }
 
 func TestMockMQClient_Close(t *testing.T) {
+	t.Parallel()
+
 	mock := &MockMQClient{}
 
 	mock.Close()

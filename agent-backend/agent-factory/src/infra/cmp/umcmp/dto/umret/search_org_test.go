@@ -7,6 +7,8 @@ import (
 )
 
 func TestSearchOrgRetDto_StructFields(t *testing.T) {
+	t.Parallel()
+
 	dto := SearchOrgRetDto{
 		UserIDs:       []string{"user-1", "user-2"},
 		DepartmentIDs: []string{"dept-1", "dept-2", "dept-3"},
@@ -19,6 +21,8 @@ func TestSearchOrgRetDto_StructFields(t *testing.T) {
 }
 
 func TestSearchOrgRetDto_Empty(t *testing.T) {
+	t.Parallel()
+
 	dto := SearchOrgRetDto{}
 
 	assert.Nil(t, dto.UserIDs)
@@ -26,6 +30,8 @@ func TestSearchOrgRetDto_Empty(t *testing.T) {
 }
 
 func TestSearchOrgRetDto_WithOnlyUserIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := SearchOrgRetDto{
 		UserIDs: []string{"user-1", "user-2", "user-3"},
 	}
@@ -35,6 +41,8 @@ func TestSearchOrgRetDto_WithOnlyUserIDs(t *testing.T) {
 }
 
 func TestSearchOrgRetDto_WithOnlyDepartmentIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := SearchOrgRetDto{
 		DepartmentIDs: []string{"dept-1", "dept-2"},
 	}
@@ -44,6 +52,8 @@ func TestSearchOrgRetDto_WithOnlyDepartmentIDs(t *testing.T) {
 }
 
 func TestSearchOrgRetDto_WithChineseIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := SearchOrgRetDto{
 		UserIDs:       []string{"用户-1", "用户-2"},
 		DepartmentIDs: []string{"部门-1"},
@@ -54,6 +64,8 @@ func TestSearchOrgRetDto_WithChineseIDs(t *testing.T) {
 }
 
 func TestSearchOrgRetDto_WithEmptyArrays(t *testing.T) {
+	t.Parallel()
+
 	dto := SearchOrgRetDto{
 		UserIDs:       []string{},
 		DepartmentIDs: []string{},
@@ -66,6 +78,8 @@ func TestSearchOrgRetDto_WithEmptyArrays(t *testing.T) {
 }
 
 func TestSearchOrgRetDto_AppendUserIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := &SearchOrgRetDto{}
 	dto.UserIDs = append(dto.UserIDs, "user-1")
 	dto.UserIDs = append(dto.UserIDs, "user-2")
@@ -74,6 +88,8 @@ func TestSearchOrgRetDto_AppendUserIDs(t *testing.T) {
 }
 
 func TestSearchOrgRetDto_AppendDepartmentIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := &SearchOrgRetDto{}
 	dto.DepartmentIDs = append(dto.DepartmentIDs, "dept-1")
 	dto.DepartmentIDs = append(dto.DepartmentIDs, "dept-2")
@@ -82,10 +98,13 @@ func TestSearchOrgRetDto_AppendDepartmentIDs(t *testing.T) {
 }
 
 func TestSearchOrgRetDto_WithMultipleIDs(t *testing.T) {
+	t.Parallel()
+
 	userIDs := make([]string, 100)
 	for i := 0; i < 100; i++ {
 		userIDs[i] = "user-" + string(rune(i))
 	}
+
 	deptIDs := make([]string, 50)
 	for i := 0; i < 50; i++ {
 		deptIDs[i] = "dept-" + string(rune(i))
@@ -101,6 +120,8 @@ func TestSearchOrgRetDto_WithMultipleIDs(t *testing.T) {
 }
 
 func TestSearchOrgRetDto_SliceOperations(t *testing.T) {
+	t.Parallel()
+
 	dto := SearchOrgRetDto{
 		UserIDs:       []string{"user-1", "user-2", "user-3"},
 		DepartmentIDs: []string{"dept-1", "dept-2"},
@@ -113,14 +134,19 @@ func TestSearchOrgRetDto_SliceOperations(t *testing.T) {
 
 	// Test iteration
 	count := 0
+
 	for _, userID := range dto.UserIDs {
 		assert.NotEmpty(t, userID)
+
 		count++
 	}
+
 	assert.Equal(t, 3, count)
 }
 
 func TestSearchOrgRetDto_WithBothTypes(t *testing.T) {
+	t.Parallel()
+
 	dto := &SearchOrgRetDto{
 		UserIDs:       []string{"user-1"},
 		DepartmentIDs: []string{"dept-1"},

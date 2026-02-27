@@ -15,7 +15,7 @@ func CheckPms(req *CheckPmsReq, clb func(c *gin.Context, hasPms bool)) gin.Handl
 	return func(c *gin.Context) {
 		if err := req.ReqCheck(); err != nil {
 			err = errors.Wrap(err, "capimiddleware: [CheckPms]: req check error")
-			httpErr := capierr.New400Err(c,err.Error())
+			httpErr := capierr.New400Err(c, err.Error())
 			rest.ReplyError(c, httpErr)
 			c.Abort()
 

@@ -7,10 +7,12 @@ import (
 )
 
 func TestAgentResumeReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resumeHandle := &InterruptHandle{
-		FrameID:      "frame-123",
-		SnapshotID:   "snapshot-456",
-		ResumeToken:  "token-789",
+		FrameID:       "frame-123",
+		SnapshotID:    "snapshot-456",
+		ResumeToken:   "token-789",
 		InterruptType: "tool_call",
 		CurrentBlock:  1,
 		RestartBlock:  false,
@@ -19,7 +21,7 @@ func TestAgentResumeReq_StructFields(t *testing.T) {
 	resumeInfo := &AgentResumeInfo{
 		ResumeHandle: resumeHandle,
 		Action:       "confirm",
-		ModifiedArgs:  []ModifiedArg{{Key: "arg1", Value: "val1"}},
+		ModifiedArgs: []ModifiedArg{{Key: "arg1", Value: "val1"}},
 		Data:         &InterruptData{},
 	}
 
@@ -34,6 +36,8 @@ func TestAgentResumeReq_StructFields(t *testing.T) {
 }
 
 func TestAgentResumeReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentResumeReq{}
 
 	assert.Empty(t, req.AgentRunID)
@@ -41,6 +45,8 @@ func TestAgentResumeReq_Empty(t *testing.T) {
 }
 
 func TestAgentResumeInfo_StructFields(t *testing.T) {
+	t.Parallel()
+
 	interruptHandle := &InterruptHandle{
 		FrameID: "frame-abc",
 	}
@@ -48,7 +54,7 @@ func TestAgentResumeInfo_StructFields(t *testing.T) {
 	info := &AgentResumeInfo{
 		ResumeHandle: interruptHandle,
 		Action:       "skip",
-		ModifiedArgs:  []ModifiedArg{
+		ModifiedArgs: []ModifiedArg{
 			{Key: "param1", Value: "value1"},
 			{Key: "param2", Value: 123},
 		},
@@ -62,6 +68,8 @@ func TestAgentResumeInfo_StructFields(t *testing.T) {
 }
 
 func TestAgentResumeInfo_WithActionConfirm(t *testing.T) {
+	t.Parallel()
+
 	info := &AgentResumeInfo{
 		Action: "confirm",
 	}
@@ -70,6 +78,8 @@ func TestAgentResumeInfo_WithActionConfirm(t *testing.T) {
 }
 
 func TestAgentResumeInfo_WithActionSkip(t *testing.T) {
+	t.Parallel()
+
 	info := &AgentResumeInfo{
 		Action: "skip",
 	}
@@ -78,6 +88,8 @@ func TestAgentResumeInfo_WithActionSkip(t *testing.T) {
 }
 
 func TestModifiedArg_StructFields(t *testing.T) {
+	t.Parallel()
+
 	arg := ModifiedArg{
 		Key:   "test_key",
 		Value: "test_value",
@@ -88,6 +100,8 @@ func TestModifiedArg_StructFields(t *testing.T) {
 }
 
 func TestModifiedArg_WithNumberValue(t *testing.T) {
+	t.Parallel()
+
 	arg := ModifiedArg{
 		Key:   "count",
 		Value: 42,
@@ -98,6 +112,8 @@ func TestModifiedArg_WithNumberValue(t *testing.T) {
 }
 
 func TestModifiedArg_WithObjectValue(t *testing.T) {
+	t.Parallel()
+
 	obj := map[string]interface{}{
 		"nested": "value",
 		"number": 123,
@@ -113,8 +129,10 @@ func TestModifiedArg_WithObjectValue(t *testing.T) {
 }
 
 func TestAgentResumeReq_WithNilResumeInfo(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentResumeReq{
-		AgentRunID:  "run-456",
+		AgentRunID: "run-456",
 		ResumeInfo: nil,
 	}
 
@@ -123,6 +141,8 @@ func TestAgentResumeReq_WithNilResumeInfo(t *testing.T) {
 }
 
 func TestAgentResumeInfo_EmptyModifiedArgs(t *testing.T) {
+	t.Parallel()
+
 	info := &AgentResumeInfo{
 		Action:       "confirm",
 		ModifiedArgs: []ModifiedArg{},
@@ -134,6 +154,8 @@ func TestAgentResumeInfo_EmptyModifiedArgs(t *testing.T) {
 }
 
 func TestAgentResumeInfo_WithNilData(t *testing.T) {
+	t.Parallel()
+
 	info := &AgentResumeInfo{
 		Action: "skip",
 		Data:   nil,

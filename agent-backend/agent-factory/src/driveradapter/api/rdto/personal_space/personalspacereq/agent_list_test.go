@@ -10,12 +10,14 @@ import (
 )
 
 func TestAgentListReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentListReq{
-		Name:        "test agent",
-		PublishStatus: cdaenum.StatusThreeStatePublished,
-		PublishToBe:   cdaenum.PublishToBeAPIAgent,
-		AgentCreatedType: daenum.AgentCreatedTypeCreate,
-		Size:         25,
+		Name:                "test agent",
+		PublishStatus:       cdaenum.StatusThreeStatePublished,
+		PublishToBe:         cdaenum.PublishToBeAPIAgent,
+		AgentCreatedType:    daenum.AgentCreatedTypeCreate,
+		Size:                25,
 		PaginationMarkerStr: "marker-string",
 	}
 
@@ -27,6 +29,8 @@ func TestAgentListReq_StructFields(t *testing.T) {
 }
 
 func TestAgentListReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentListReq{}
 
 	errMap := req.GetErrMsgMap()
@@ -36,6 +40,8 @@ func TestAgentListReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestAgentListReq_CustomCheck_EmptyEnums(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentListReq{}
 
 	err := req.CustomCheck()
@@ -44,6 +50,8 @@ func TestAgentListReq_CustomCheck_EmptyEnums(t *testing.T) {
 }
 
 func TestAgentListReq_CustomCheck_ValidPublishStatus(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentListReq{
 		PublishStatus: cdaenum.StatusThreeStateUnpublished,
 	}
@@ -54,6 +62,8 @@ func TestAgentListReq_CustomCheck_ValidPublishStatus(t *testing.T) {
 }
 
 func TestAgentListReq_CustomCheck_ValidPublishToBe(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentListReq{
 		PublishToBe: cdaenum.PublishToBeWebSDKAgent,
 	}
@@ -64,6 +74,8 @@ func TestAgentListReq_CustomCheck_ValidPublishToBe(t *testing.T) {
 }
 
 func TestAgentListReq_CustomCheck_ValidAgentCreatedType(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentListReq{
 		AgentCreatedType: daenum.AgentCreatedTypeCopy,
 	}
@@ -74,6 +86,8 @@ func TestAgentListReq_CustomCheck_ValidAgentCreatedType(t *testing.T) {
 }
 
 func TestAgentListReq_CustomCheck_InvalidPublishStatus(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentListReq{
 		PublishStatus: cdaenum.StatusThreeState("invalid"),
 	}
@@ -85,6 +99,8 @@ func TestAgentListReq_CustomCheck_InvalidPublishStatus(t *testing.T) {
 }
 
 func TestAgentListReq_CustomCheck_InvalidPublishToBe(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentListReq{
 		PublishToBe: cdaenum.PublishToBe("invalid"),
 	}
@@ -96,6 +112,8 @@ func TestAgentListReq_CustomCheck_InvalidPublishToBe(t *testing.T) {
 }
 
 func TestAgentListReq_CustomCheck_InvalidAgentCreatedType(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentListReq{
 		AgentCreatedType: daenum.AgentCreatedType("invalid_type"),
 	}
@@ -107,6 +125,8 @@ func TestAgentListReq_CustomCheck_InvalidAgentCreatedType(t *testing.T) {
 }
 
 func TestAgentListReq_LoadMarkerStr_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentListReq{
 		PaginationMarkerStr: "",
 	}
@@ -118,10 +138,12 @@ func TestAgentListReq_LoadMarkerStr_Empty(t *testing.T) {
 }
 
 func TestAgentListReq_LoadMarkerStr_Valid(t *testing.T) {
+	t.Parallel()
+
 	marker := &personalspaceresp.PAListPaginationMarker{}
 	marker.UpdatedAt = 987654
 	marker.LastAgentID = "456"
-	
+
 	markerStr, _ := marker.ToString()
 
 	req := &AgentListReq{
@@ -135,6 +157,8 @@ func TestAgentListReq_LoadMarkerStr_Valid(t *testing.T) {
 }
 
 func TestAgentListReq_LoadMarkerStr_Invalid(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentListReq{
 		PaginationMarkerStr: "not-valid-base64!",
 	}
@@ -145,6 +169,8 @@ func TestAgentListReq_LoadMarkerStr_Invalid(t *testing.T) {
 }
 
 func TestAgentListReq_DefaultValues(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentListReq{}
 
 	assert.Empty(t, req.Name)
@@ -156,12 +182,14 @@ func TestAgentListReq_DefaultValues(t *testing.T) {
 }
 
 func TestAgentListReq_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentListReq{
-		Name:        "My Agent",
-		PublishStatus: cdaenum.StatusThreeStatePublishedEdited,
-		PublishToBe:   cdaenum.PublishToBeSkillAgent,
+		Name:             "My Agent",
+		PublishStatus:    cdaenum.StatusThreeStatePublishedEdited,
+		PublishToBe:      cdaenum.PublishToBeSkillAgent,
 		AgentCreatedType: daenum.AgentCreatedTypeCopy,
-		Size:         100,
+		Size:             100,
 	}
 
 	assert.Equal(t, "My Agent", req.Name)

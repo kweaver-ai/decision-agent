@@ -7,7 +7,11 @@ import (
 )
 
 func TestNewSwitchFields(t *testing.T) {
+	t.Parallel()
+
 	t.Run("creates SwitchFields with defaults", func(t *testing.T) {
+		t.Parallel()
+
 		sf := NewSwitchFields()
 
 		assert.NotNil(t, sf)
@@ -22,6 +26,8 @@ func TestNewSwitchFields(t *testing.T) {
 	})
 
 	t.Run("MockSwitchFields defaults to false", func(t *testing.T) {
+		t.Parallel()
+
 		sf := NewSwitchFields()
 
 		assert.False(t, sf.Mock.MockMQClient)
@@ -33,13 +39,17 @@ func TestNewSwitchFields(t *testing.T) {
 }
 
 func TestSwitchFields_Struct(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create SwitchFields struct directly", func(t *testing.T) {
+		t.Parallel()
+
 		sf := &SwitchFields{
-			KeepLegacyAppPath:  true,
-			DisablePmsCheck:    true,
+			KeepLegacyAppPath:    true,
+			DisablePmsCheck:      true,
 			DisableBizDomainInit: true,
-			UseDefaultBizDomain: true,
-			DisableAuditInit:    true,
+			UseDefaultBizDomain:  true,
+			DisableAuditInit:     true,
 			Mock: &MockSwitchFields{
 				MockMQClient:        true,
 				MockSandboxPlatform: true,
@@ -53,6 +63,8 @@ func TestSwitchFields_Struct(t *testing.T) {
 	})
 
 	t.Run("create SwitchFields with nil Mock", func(t *testing.T) {
+		t.Parallel()
+
 		sf := &SwitchFields{
 			Mock: nil,
 		}
@@ -63,7 +75,11 @@ func TestSwitchFields_Struct(t *testing.T) {
 }
 
 func TestMockSwitchFields_Struct(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create MockSwitchFields struct", func(t *testing.T) {
+		t.Parallel()
+
 		msf := &MockSwitchFields{
 			MockMQClient:        true,
 			MockSandboxPlatform: true,
@@ -81,6 +97,8 @@ func TestMockSwitchFields_Struct(t *testing.T) {
 	})
 
 	t.Run("create empty MockSwitchFields", func(t *testing.T) {
+		t.Parallel()
+
 		msf := &MockSwitchFields{}
 
 		assert.NotNil(t, msf)
@@ -90,7 +108,10 @@ func TestMockSwitchFields_Struct(t *testing.T) {
 }
 
 func TestSwitchFields_YAMLTAGs(t *testing.T) {
+	t.Parallel()
+
 	t.Run("yaml tags are correct", func(t *testing.T) {
+		t.Parallel()
 		// This is a compile-time check to ensure yaml tags are correct
 		sf := &SwitchFields{}
 

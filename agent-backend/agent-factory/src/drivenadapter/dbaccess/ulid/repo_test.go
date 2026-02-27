@@ -8,12 +8,16 @@ import (
 )
 
 func TestNewUlidRepo(t *testing.T) {
+	t.Parallel()
+
 	repo := NewUlidRepo()
 
 	assert.NotNil(t, repo, "NewUlidRepo should return non-nil repo")
 }
 
 func TestUniqueID_TableName(t *testing.T) {
+	t.Parallel()
+
 	uid := &UniqueID{}
 
 	tableName := uid.TableName()
@@ -22,6 +26,8 @@ func TestUniqueID_TableName(t *testing.T) {
 }
 
 func TestUniqueID_Fields(t *testing.T) {
+	t.Parallel()
+
 	uid := &UniqueID{
 		ID:   "test123",
 		Flag: cconstant.UniqueIDFlag(1),

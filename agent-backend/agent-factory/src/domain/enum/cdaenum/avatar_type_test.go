@@ -7,6 +7,8 @@ import (
 )
 
 func TestAvatarType_EnumCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		t       AvatarType
@@ -41,6 +43,8 @@ func TestAvatarType_EnumCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.t.EnumCheck()
 			if tt.wantErr {
 				assert.Error(t, err, "expected error")

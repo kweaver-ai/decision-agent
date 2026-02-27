@@ -10,6 +10,8 @@ import (
 )
 
 func TestSpace(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		eo      *spaceeo.Space
@@ -50,6 +52,8 @@ func TestSpace(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			po, err := Space(tt.eo)
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -57,6 +61,7 @@ func TestSpace(t *testing.T) {
 			} else {
 				require.NoError(t, err)
 				require.NotNil(t, po)
+
 				if tt.checkPO != nil {
 					tt.checkPO(t, po)
 				}
@@ -66,10 +71,12 @@ func TestSpace(t *testing.T) {
 }
 
 func TestSpaces(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name    string
-		eos     []*spaceeo.Space
-		wantErr bool
+		name     string
+		eos      []*spaceeo.Space
+		wantErr  bool
 		checkPOs func(t *testing.T, pos []*dapo.SpacePo)
 	}{
 		{
@@ -107,11 +114,14 @@ func TestSpaces(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			pos, err := Spaces(tt.eos)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {
 				require.NoError(t, err)
+
 				if tt.checkPOs != nil {
 					tt.checkPOs(t, pos)
 				}
@@ -119,4 +129,3 @@ func TestSpaces(t *testing.T) {
 		})
 	}
 }
-

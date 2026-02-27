@@ -7,6 +7,8 @@ import (
 )
 
 func TestNewGetGroupMembersRetDto(t *testing.T) {
+	t.Parallel()
+
 	dto := NewGetGroupMembersRetDto()
 
 	assert.NotNil(t, dto)
@@ -16,6 +18,8 @@ func TestNewGetGroupMembersRetDto(t *testing.T) {
 }
 
 func TestGetGroupMembersRetDto_StructFields(t *testing.T) {
+	t.Parallel()
+
 	dto := GetGroupMembersRetDto{
 		UserIDs:       []string{"user-1", "user-2"},
 		DepartmentIDs: []string{"dept-1", "dept-2", "dept-3"},
@@ -29,6 +33,8 @@ func TestGetGroupMembersRetDto_StructFields(t *testing.T) {
 }
 
 func TestGetGroupMembersRetDto_Empty(t *testing.T) {
+	t.Parallel()
+
 	dto := GetGroupMembersRetDto{}
 
 	assert.Nil(t, dto.UserIDs)
@@ -36,6 +42,8 @@ func TestGetGroupMembersRetDto_Empty(t *testing.T) {
 }
 
 func TestGetGroupMembersRetDto_WithNew(t *testing.T) {
+	t.Parallel()
+
 	dto := NewGetGroupMembersRetDto()
 
 	assert.NotNil(t, dto.UserIDs)
@@ -45,6 +53,8 @@ func TestGetGroupMembersRetDto_WithNew(t *testing.T) {
 }
 
 func TestGetGroupMembersRetDto_AddUserIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := NewGetGroupMembersRetDto()
 
 	dto.UserIDs = append(dto.UserIDs, "user-1")
@@ -56,6 +66,8 @@ func TestGetGroupMembersRetDto_AddUserIDs(t *testing.T) {
 }
 
 func TestGetGroupMembersRetDto_AddDepartmentIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := NewGetGroupMembersRetDto()
 
 	dto.DepartmentIDs = append(dto.DepartmentIDs, "dept-1")
@@ -66,6 +78,8 @@ func TestGetGroupMembersRetDto_AddDepartmentIDs(t *testing.T) {
 }
 
 func TestGetGroupMembersRetDto_WithBothTypes(t *testing.T) {
+	t.Parallel()
+
 	dto := &GetGroupMembersRetDto{
 		UserIDs:       []string{"user-1", "user-2"},
 		DepartmentIDs: []string{"dept-1"},
@@ -76,6 +90,8 @@ func TestGetGroupMembersRetDto_WithBothTypes(t *testing.T) {
 }
 
 func TestGetGroupMembersRetDto_WithChineseIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := &GetGroupMembersRetDto{
 		UserIDs:       []string{"用户-1", "用户-2"},
 		DepartmentIDs: []string{"部门-1"},
@@ -87,6 +103,8 @@ func TestGetGroupMembersRetDto_WithChineseIDs(t *testing.T) {
 }
 
 func TestGetGroupMembersRetDto_WithEmptyArrays(t *testing.T) {
+	t.Parallel()
+
 	dto := &GetGroupMembersRetDto{
 		UserIDs:       []string{},
 		DepartmentIDs: []string{},
@@ -99,6 +117,8 @@ func TestGetGroupMembersRetDto_WithEmptyArrays(t *testing.T) {
 }
 
 func TestGetGroupMembersRetDto_WithDuplicateIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := &GetGroupMembersRetDto{
 		UserIDs:       []string{"user-1", "user-1", "user-2"},
 		DepartmentIDs: []string{"dept-1", "dept-1"},
@@ -109,6 +129,8 @@ func TestGetGroupMembersRetDto_WithDuplicateIDs(t *testing.T) {
 }
 
 func TestGetGroupMembersRetDto_Capacity(t *testing.T) {
+	t.Parallel()
+
 	dto := NewGetGroupMembersRetDto()
 
 	// Add many users
@@ -120,6 +142,8 @@ func TestGetGroupMembersRetDto_Capacity(t *testing.T) {
 }
 
 func TestGetGroupMembersRetDto_ModifyArrays(t *testing.T) {
+	t.Parallel()
+
 	dto := NewGetGroupMembersRetDto()
 
 	dto.UserIDs = append(dto.UserIDs, "user-1")
@@ -134,6 +158,8 @@ func TestGetGroupMembersRetDto_ModifyArrays(t *testing.T) {
 }
 
 func TestGetGroupMembersRetDto_WithNilArrays(t *testing.T) {
+	t.Parallel()
+
 	dto := &GetGroupMembersRetDto{
 		UserIDs:       nil,
 		DepartmentIDs: nil,
@@ -144,6 +170,8 @@ func TestGetGroupMembersRetDto_WithNilArrays(t *testing.T) {
 }
 
 func TestGetGroupMembersRetDto_NewVsDirect(t *testing.T) {
+	t.Parallel()
+
 	dto1 := NewGetGroupMembersRetDto()
 	dto2 := &GetGroupMembersRetDto{}
 
@@ -157,6 +185,8 @@ func TestGetGroupMembersRetDto_NewVsDirect(t *testing.T) {
 }
 
 func TestGetGroupMembersRetDto_SliceOperations(t *testing.T) {
+	t.Parallel()
+
 	userIDs := []string{"user-1", "user-2", "user-3"}
 	deptIDs := []string{"dept-1", "dept-2"}
 
@@ -172,9 +202,12 @@ func TestGetGroupMembersRetDto_SliceOperations(t *testing.T) {
 
 	// Test iteration
 	count := 0
+
 	for _, userID := range dto.UserIDs {
 		assert.NotEmpty(t, userID)
+
 		count++
 	}
+
 	assert.Equal(t, 3, count)
 }

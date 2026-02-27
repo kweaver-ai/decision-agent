@@ -46,15 +46,20 @@ const validPublishConfigJSON = `{
 
 func newReleaseTx(t *testing.T) (*sql.Tx, sqlmock.Sqlmock, func()) {
 	t.Helper()
+
 	db, mock, err := sqlmock.New()
 	require.NoError(t, err)
 	mock.ExpectBegin()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
+
 	cleanup := func() {
 		require.NoError(t, mock.ExpectationsWereMet())
+
 		_ = db.Close()
 	}
+
 	return tx, mock, cleanup
 }
 
@@ -234,10 +239,11 @@ func TestReleaseSvc_Publish_MoreBranches(t *testing.T) {
 		mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 		mockHistory := idbaccessmock.NewMockIReleaseHistoryRepo(ctrl)
 		svc := &releaseSvc{
-			SvcBase:          service.NewSvcBase(),
-			agentConfigRepo:  mockAgentRepo,
+			SvcBase:            service.NewSvcBase(),
+			agentConfigRepo:    mockAgentRepo,
 			releaseHistoryRepo: mockHistory,
 		}
+
 		mockAgentRepo.EXPECT().GetByID(gomock.Any(), "a1").Return(&dapo.DataAgentPo{
 			ID: "a1", Name: "agent1", Config: validPublishConfigJSON,
 		}, nil)
@@ -265,6 +271,7 @@ func TestReleaseSvc_Publish_MoreBranches(t *testing.T) {
 			agentConfigRepo:    mockAgentRepo,
 			releaseHistoryRepo: mockHistory,
 		}
+
 		mockAgentRepo.EXPECT().GetByID(gomock.Any(), "a1").Return(&dapo.DataAgentPo{
 			ID: "a1", Name: "agent1", Config: validPublishConfigJSON,
 		}, nil)
@@ -292,6 +299,7 @@ func TestReleaseSvc_Publish_MoreBranches(t *testing.T) {
 			agentConfigRepo:    mockAgentRepo,
 			releaseHistoryRepo: mockHistory,
 		}
+
 		mockAgentRepo.EXPECT().GetByID(gomock.Any(), "a1").Return(&dapo.DataAgentPo{
 			ID: "a1", Name: "agent1", Config: "{bad-json",
 		}, nil)
@@ -325,14 +333,14 @@ func TestReleaseSvc_Publish_MoreBranches(t *testing.T) {
 		mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
 
 		svc := &releaseSvc{
-			SvcBase:               &service.SvcBase{Logger: noopReleaseLogger{}},
-			agentConfigRepo:       mockAgentRepo,
-			releaseRepo:           mockReleaseRepo,
-			releaseHistoryRepo:    mockHistory,
+			SvcBase:                &service.SvcBase{Logger: noopReleaseLogger{}},
+			agentConfigRepo:        mockAgentRepo,
+			releaseRepo:            mockReleaseRepo,
+			releaseHistoryRepo:     mockHistory,
 			releaseCategoryRelRepo: mockCategoryRel,
-			releasePermissionRepo: mockPermRepo,
-			authZHttp:             mockAuthz,
-			umHttp:                mockUm,
+			releasePermissionRepo:  mockPermRepo,
+			authZHttp:              mockAuthz,
+			umHttp:                 mockUm,
 		}
 
 		mockAgentRepo.EXPECT().GetByID(gomock.Any(), "a1").Return(&dapo.DataAgentPo{

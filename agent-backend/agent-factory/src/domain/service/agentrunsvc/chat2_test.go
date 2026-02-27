@@ -10,8 +10,8 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/conf"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
-	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	agentexecutordto "github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutordto"
+	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
@@ -21,6 +21,8 @@ import (
 
 // Chat: agentCall.Call fails (both executors nil → "not supported" error)
 func TestAgentSvc_Chat_AgentCallFailed(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -67,6 +69,8 @@ func TestAgentSvc_Chat_AgentCallFailed(t *testing.T) {
 
 // Chat: GenerateAgentCallReq fails (no KnowledgeRepo configured, toolset fetch ok but req generation hits error)
 func TestAgentSvc_Chat_GenerateAgentCallReqError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

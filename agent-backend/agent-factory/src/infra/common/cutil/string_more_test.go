@@ -7,6 +7,8 @@ import (
 )
 
 func TestGenerateRandomString(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name      string
 		length    int
@@ -50,6 +52,8 @@ func TestGenerateRandomString(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if tt.wantPanic {
 				assert.Panics(t, func() {
 					GenerateRandomString(tt.length)
@@ -64,6 +68,8 @@ func TestGenerateRandomString(t *testing.T) {
 }
 
 func TestStringSplitAndJoin(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name  string
 		input string
@@ -108,6 +114,8 @@ func TestStringSplitAndJoin(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := StringSplitAndJoin(tt.input)
 			assert.Equal(t, tt.want, result, "StringSplitAndJoin should return expected result")
 		})

@@ -9,6 +9,8 @@ import (
 )
 
 func TestDataAgentRes_GetMiddleOutputVars_EmptyConfig(t *testing.T) {
+	t.Parallel()
+
 	res := &DataAgentRes{
 		Answer: agentrespvo.NewAnswerS(),
 	}
@@ -25,6 +27,8 @@ func TestDataAgentRes_GetMiddleOutputVars_EmptyConfig(t *testing.T) {
 }
 
 func TestDataAgentRes_GetMiddleOutputVars_WithVars(t *testing.T) {
+	t.Parallel()
+
 	res := &DataAgentRes{
 		Answer: agentrespvo.NewAnswerS(),
 	}

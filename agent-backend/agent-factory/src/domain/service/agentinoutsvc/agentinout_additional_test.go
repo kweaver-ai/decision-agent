@@ -39,11 +39,13 @@ func newAgentSQLTx(t *testing.T) (*sql.Tx, sqlmock.Sqlmock, func()) {
 	db, mock, err := sqlmock.New()
 	require.NoError(t, err)
 	mock.ExpectBegin()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
 	cleanup := func() {
 		require.NoError(t, mock.ExpectationsWereMet())
+
 		_ = db.Close()
 	}
 
@@ -60,6 +62,7 @@ func makeExportData(keys ...string) *agentinoutresp.ExportResp {
 			},
 		})
 	}
+
 	return &agentinoutresp.ExportResp{Agents: agents}
 }
 
@@ -78,6 +81,7 @@ func TestAgentInOutSvc_checkBizDomainConflict(t *testing.T) {
 
 	t.Run("biz domain query error", func(t *testing.T) {
 		resp := agentinoutresp.NewImportResp()
+
 		mockBiz.EXPECT().GetAllAgentIDList(gomock.Any(), []string{"bd-1"}).
 			Return(nil, nil, errors.New("http failed"))
 
@@ -88,6 +92,7 @@ func TestAgentInOutSvc_checkBizDomainConflict(t *testing.T) {
 
 	t.Run("agent repo query error", func(t *testing.T) {
 		resp := agentinoutresp.NewImportResp()
+
 		mockBiz.EXPECT().GetAllAgentIDList(gomock.Any(), []string{"bd-1"}).
 			Return([]string{"a1"}, map[string]string{"a1": "bd-1"}, nil)
 		mockAgentRepo.EXPECT().GetByKeys(gomock.Any(), []string{"k1"}).
@@ -100,6 +105,7 @@ func TestAgentInOutSvc_checkBizDomainConflict(t *testing.T) {
 
 	t.Run("conflict found", func(t *testing.T) {
 		resp := agentinoutresp.NewImportResp()
+
 		mockBiz.EXPECT().GetAllAgentIDList(gomock.Any(), []string{"bd-1"}).
 			Return([]string{"a1"}, map[string]string{"a1": "bd-1"}, nil)
 		mockAgentRepo.EXPECT().GetByKeys(gomock.Any(), []string{"k1"}).
@@ -129,6 +135,7 @@ func TestAgentInOutSvc_importByCreate(t *testing.T) {
 
 		exportData := makeExportData("k1")
 		resp := agentinoutresp.NewImportResp()
+
 		mockAgentRepo.EXPECT().GetByKeys(gomock.Any(), []string{"k1"}).Return([]*dapo.DataAgentPo{}, nil)
 		mockAgentRepo.EXPECT().BeginTx(gomock.Any()).Return(nil, errors.New("tx failed"))
 
@@ -249,6 +256,7 @@ func TestAgentInOutSvc_importByUpsert(t *testing.T) {
 		ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1")
 
 		existing := &dapo.DataAgentPo{ID: "a1", Key: "k1", CreatedBy: "u1"}
+
 		mockBiz.EXPECT().GetAllAgentIDList(gomock.Any(), []string{"bd-1"}).Return([]string{"a1"}, map[string]string{"a1": "bd-1"}, nil)
 		mockAgentRepo.EXPECT().GetByKeys(gomock.Any(), []string{"k1"}).Return([]*dapo.DataAgentPo{existing}, nil).Times(2)
 		mockAgentRepo.EXPECT().BeginTx(gomock.Any()).Return(tx, nil)

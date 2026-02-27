@@ -7,12 +7,17 @@ import (
 )
 
 func TestUserEnabledMap_TypeDefinition(t *testing.T) {
+	t.Parallel()
+
 	// Test that UserEnabledMap is a map type
 	var m UserEnabledMap
+
 	assert.Nil(t, m)
 }
 
 func TestUserEnabledMap_WithValues(t *testing.T) {
+	t.Parallel()
+
 	m := UserEnabledMap{
 		"user-1": true,
 		"user-2": false,
@@ -26,11 +31,15 @@ func TestUserEnabledMap_WithValues(t *testing.T) {
 }
 
 func TestUserEnabledMap_Empty(t *testing.T) {
+	t.Parallel()
+
 	m := UserEnabledMap{}
 	assert.Len(t, m, 0)
 }
 
 func TestUserEnabledMap_NewMap(t *testing.T) {
+	t.Parallel()
+
 	m := make(UserEnabledMap)
 	assert.NotNil(t, m)
 
@@ -41,6 +50,8 @@ func TestUserEnabledMap_NewMap(t *testing.T) {
 }
 
 func TestUserEnabledMap_AddValues(t *testing.T) {
+	t.Parallel()
+
 	m := UserEnabledMap{}
 
 	m["user-1"] = true
@@ -53,6 +64,8 @@ func TestUserEnabledMap_AddValues(t *testing.T) {
 }
 
 func TestUserEnabledMap_UpdateValue(t *testing.T) {
+	t.Parallel()
+
 	m := UserEnabledMap{
 		"user-1": true,
 	}
@@ -65,6 +78,8 @@ func TestUserEnabledMap_UpdateValue(t *testing.T) {
 }
 
 func TestUserEnabledMap_DeleteValue(t *testing.T) {
+	t.Parallel()
+
 	m := UserEnabledMap{
 		"user-1": true,
 		"user-2": false,
@@ -81,6 +96,8 @@ func TestUserEnabledMap_DeleteValue(t *testing.T) {
 }
 
 func TestUserEnabledMap_WithChineseUserID(t *testing.T) {
+	t.Parallel()
+
 	m := UserEnabledMap{
 		"用户-1": true,
 		"用户-2": false,
@@ -91,6 +108,8 @@ func TestUserEnabledMap_WithChineseUserID(t *testing.T) {
 }
 
 func TestUserEnabledMap_Iteration(t *testing.T) {
+	t.Parallel()
+
 	m := UserEnabledMap{
 		"user-1": true,
 		"user-2": false,
@@ -102,7 +121,9 @@ func TestUserEnabledMap_Iteration(t *testing.T) {
 
 	for userID, enabled := range m {
 		assert.NotEmpty(t, userID)
+
 		count++
+
 		if enabled {
 			enabledCount++
 		}
@@ -113,6 +134,8 @@ func TestUserEnabledMap_Iteration(t *testing.T) {
 }
 
 func TestUserEnabledMap_CheckValue(t *testing.T) {
+	t.Parallel()
+
 	m := UserEnabledMap{
 		"user-1": true,
 		"user-2": false,
@@ -130,6 +153,8 @@ func TestUserEnabledMap_CheckValue(t *testing.T) {
 }
 
 func TestUserEnabledMap_WithDifferentValueTypes(t *testing.T) {
+	t.Parallel()
+
 	m := UserEnabledMap{
 		"user-1": true,
 		"user-2": false,
@@ -142,6 +167,8 @@ func TestUserEnabledMap_WithDifferentValueTypes(t *testing.T) {
 }
 
 func TestUserEnabledMap_Copy(t *testing.T) {
+	t.Parallel()
+
 	original := UserEnabledMap{
 		"user-1": true,
 		"user-2": false,
@@ -158,14 +185,17 @@ func TestUserEnabledMap_Copy(t *testing.T) {
 
 	// Modify copy shouldn't affect original
 	copy["user-3"] = true
+
 	assert.Len(t, original, 2)
 	assert.Len(t, copy, 3)
 }
 
 func TestUserEnabledMap_WithSpecialCharacters(t *testing.T) {
+	t.Parallel()
+
 	m := UserEnabledMap{
-		"user-with-dash": true,
-		"user.with.dot": false,
+		"user-with-dash":       true,
+		"user.with.dot":        false,
 		"user_with_underscore": true,
 	}
 

@@ -4,8 +4,23 @@ import (
 	"os"
 	"testing"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
+
+func TestMain(m *testing.M) {
+	// CRITICAL: cenvhelper's TestMain sets SERVICE_NAME to "mock_svc_name"
+	// We need to override it for cconf tests
+	os.Setenv("SERVICE_NAME", "AGENT_FACTORY")
+
+	// Reinitialize cenvhelper with the correct SERVICE_NAME
+	cenvhelper.InitEnvForTest()
+
+	// Run tests
+	code := m.Run()
+
+	os.Exit(code)
+}
 
 func TestGetConfigPath(t *testing.T) {
 	t.Run("default config path", func(t *testing.T) {
@@ -18,6 +33,7 @@ func TestGetConfigPath(t *testing.T) {
 		// Clean up after test
 		defer func() {
 			_configPath = ""
+
 			if originalPath != "" {
 				os.Setenv("CONFIG_PATH", originalPath)
 			} else {
@@ -134,9 +150,11 @@ func TestBaseDefConfig(t *testing.T) {
 		if config.Project.Host != "0.0.0.0" {
 			t.Errorf("Expected Host to be '0.0.0.0', got '%s'", config.Project.Host)
 		}
+
 		if config.Project.Port != 30777 {
 			t.Errorf("Expected Port to be 30777, got %d", config.Project.Port)
 		}
+
 		if config.Project.Language != rest.SimplifiedChinese {
 			t.Errorf("Expected Language to be SimplifiedChinese, got %v", config.Project.Language)
 		}
@@ -151,7 +169,6 @@ func TestGetConfigBys(t *testing.T) {
 		// This test verifies that GetConfigBys function exists
 		// The actual functionality depends on file system
 		// which is difficult to test in unit tests
-
 		// Note: Calling this with a non-existent file will call log.Fatalf
 		// which will terminate the test
 		_ = GetConfigBys
@@ -163,7 +180,6 @@ func TestLoadConfig(t *testing.T) {
 		// This test verifies that LoadConfig function exists
 		// The actual functionality depends on YAML unmarshaling
 		// which is difficult to test in unit tests
-
 		// Note: This will call log.Fatalf if the YAML is invalid
 		_ = LoadConfig
 	})
@@ -196,15 +212,21 @@ func TestGetConfigPath_WithEnv(t *testing.T) {
 	// Clean up after test
 	defer func() {
 		_configPath = ""
+
 		if originalPath != "" {
 			os.Setenv("AGENT_FACTORY_CONFIG_PATH", originalPath)
 		} else {
 			os.Unsetenv("AGENT_FACTORY_CONFIG_PATH")
 		}
+		// Reinitialize env after cleanup
+		cenvhelper.InitEnvForTest()
 	}()
 
 	// Set the environment variable
 	os.Setenv("AGENT_FACTORY_CONFIG_PATH", "/custom/config/path")
+
+	// Reinitialize cenvhelper to pick up the new env var
+	cenvhelper.InitEnvForTest()
 
 	path := GetConfigPath()
 
@@ -428,6 +450,7 @@ func TestConfig_String_WithAllFields(t *testing.T) {
 		if str == "" {
 			t.Error("Expected String to return a non-empty string")
 		}
+
 		if !contains(str, "Config") {
 			t.Error("Expected String to contain 'Config'")
 		}
@@ -441,12 +464,15 @@ func TestBaseDefConfig_DBConfig(t *testing.T) {
 		if config.DB.UserName != "anyshare" {
 			t.Errorf("Expected DB.UserName to be 'anyshare', got '%s'", config.DB.UserName)
 		}
+
 		if config.DB.DBName != "dip_data_agent" {
 			t.Errorf("Expected DB.DBName to be 'dip_data_agent', got '%s'", config.DB.DBName)
 		}
+
 		if config.DB.DBPort != 3330 {
 			t.Errorf("Expected DB.DBPort to be 3330, got %d", config.DB.DBPort)
 		}
+
 		if config.DB.Charset != "utf8mb4" {
 			t.Errorf("Expected DB.Charset to be 'utf8mb4', got '%s'", config.DB.Charset)
 		}
@@ -484,5 +510,6 @@ func containsHelper(s, substr string) bool {
 			return true
 		}
 	}
+
 	return false
 }

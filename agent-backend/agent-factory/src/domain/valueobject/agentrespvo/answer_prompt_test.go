@@ -7,6 +7,8 @@ import (
 )
 
 func TestAnswerPrompt_NewAnswerPrompt(t *testing.T) {
+	t.Parallel()
+
 	prompt := &AnswerPrompt{
 		Answer: "Test answer",
 		Think:  "Test thinking",
@@ -17,6 +19,8 @@ func TestAnswerPrompt_NewAnswerPrompt(t *testing.T) {
 }
 
 func TestAnswerPrompt_Empty(t *testing.T) {
+	t.Parallel()
+
 	prompt := &AnswerPrompt{}
 
 	assert.Empty(t, prompt.Answer)
@@ -24,6 +28,8 @@ func TestAnswerPrompt_Empty(t *testing.T) {
 }
 
 func TestAnswerPrompt_WithOnlyAnswer(t *testing.T) {
+	t.Parallel()
+
 	prompt := &AnswerPrompt{
 		Answer: "Only answer",
 	}
@@ -33,6 +39,8 @@ func TestAnswerPrompt_WithOnlyAnswer(t *testing.T) {
 }
 
 func TestAnswerPrompt_WithOnlyThink(t *testing.T) {
+	t.Parallel()
+
 	prompt := &AnswerPrompt{
 		Think: "Only thinking",
 	}
@@ -42,6 +50,8 @@ func TestAnswerPrompt_WithOnlyThink(t *testing.T) {
 }
 
 func TestAnswerPromptText_NewAnswerPromptText(t *testing.T) {
+	t.Parallel()
+
 	text := &AnswerPromptText{
 		Text: "Test text content",
 	}
@@ -50,12 +60,16 @@ func TestAnswerPromptText_NewAnswerPromptText(t *testing.T) {
 }
 
 func TestAnswerPromptText_Empty(t *testing.T) {
+	t.Parallel()
+
 	text := &AnswerPromptText{}
 
 	assert.Empty(t, text.Text)
 }
 
 func TestAnswerPromptText_WithEmptyString(t *testing.T) {
+	t.Parallel()
+
 	text := &AnswerPromptText{
 		Text: "",
 	}

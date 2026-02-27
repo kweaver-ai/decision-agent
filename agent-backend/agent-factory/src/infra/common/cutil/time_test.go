@@ -8,6 +8,8 @@ import (
 )
 
 func TestNowStr(t *testing.T) {
+	t.Parallel()
+
 	result := NowStr()
 	assert.NotEmpty(t, result)
 	assert.Contains(t, result, "-")
@@ -15,24 +17,32 @@ func TestNowStr(t *testing.T) {
 }
 
 func TestGetCurrentMSTimestamp(t *testing.T) {
+	t.Parallel()
+
 	timestamp := GetCurrentMSTimestamp()
 	assert.Greater(t, timestamp, int64(0))
 	assert.Less(t, timestamp, int64(9999999999999))
 }
 
 func TestGetCurrentTimestamp(t *testing.T) {
+	t.Parallel()
+
 	timestamp := GetCurrentTimestamp()
 	assert.Greater(t, timestamp, int64(1700000000)) // After 2023
 	assert.Less(t, timestamp, int64(9999999999))
 }
 
 func TestFormatTime(t *testing.T) {
+	t.Parallel()
+
 	testTime := time.Date(2024, 1, 15, 14, 30, 45, 0, time.UTC)
 	result := FormatTime(testTime)
 	assert.Equal(t, "2024-01-15 14:30:45", result)
 }
 
 func TestFormatTimeUnix(t *testing.T) {
+	t.Parallel()
+
 	// Just test that it returns a valid formatted string
 	timestamp := GetCurrentTimestamp()
 	result := FormatTimeUnix(timestamp)
@@ -42,6 +52,8 @@ func TestFormatTimeUnix(t *testing.T) {
 }
 
 func TestParseTime_Valid(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name      string
 		timeStr   string
@@ -88,6 +100,8 @@ func TestParseTime_Valid(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			h, m, s, err := ParseTime(tt.timeStr)
 			assert.NoError(t, err)
 			assert.Equal(t, tt.expectedH, h)
@@ -98,6 +112,8 @@ func TestParseTime_Valid(t *testing.T) {
 }
 
 func TestParseTime_InvalidFormat(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		timeStr string
@@ -126,6 +142,8 @@ func TestParseTime_InvalidFormat(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			h, m, s, err := ParseTime(tt.timeStr)
 			assert.Error(t, err)
 			assert.Equal(t, 0, h)
@@ -136,6 +154,8 @@ func TestParseTime_InvalidFormat(t *testing.T) {
 }
 
 func TestParseTime_InvalidValues(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		timeStr string
@@ -180,6 +200,8 @@ func TestParseTime_InvalidValues(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			h, m, s, err := ParseTime(tt.timeStr)
 			assert.Error(t, err)
 			assert.Equal(t, 0, h)

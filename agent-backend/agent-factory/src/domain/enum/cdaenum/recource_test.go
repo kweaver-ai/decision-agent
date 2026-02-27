@@ -7,6 +7,8 @@ import (
 )
 
 func TestResourceType_EnumCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		rt      ResourceType
@@ -36,6 +38,8 @@ func TestResourceType_EnumCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.rt.EnumCheck()
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -47,6 +51,8 @@ func TestResourceType_EnumCheck(t *testing.T) {
 }
 
 func TestResourceType_String(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		rt       ResourceType
@@ -66,6 +72,8 @@ func TestResourceType_String(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := tt.rt.String()
 			assert.Equal(t, tt.expected, got)
 		})

@@ -10,6 +10,8 @@ import (
 )
 
 func TestV2AgentCallReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := &V2AgentCallReq{
 		AgentID:      "agent-123",
 		AgentVersion: "1.0.0",
@@ -28,21 +30,23 @@ func TestV2AgentCallReq_StructFields(t *testing.T) {
 }
 
 func TestAgentOptions_StructFields(t *testing.T) {
+	t.Parallel()
+
 	retrieverFields := RetrieverDataSource{
 		Kg:  []*KgSource{{KgID: "kg-1"}},
 		Doc: []*DocSource{{ID: "doc-1"}},
 	}
 
 	options := &AgentOptions{
-		Stream:                  true,
-		Debug:                   false,
-		Retry:                   true,
-		DynamicRetrieverFields:   retrieverFields,
-		Step:                    "step1",
-		ConversationID:          "conv-123",
-		AgentRunID:              "run-456",
-		IsNeedProgress:          true,
-		EnableDependencyCache:   false,
+		Stream:                 true,
+		Debug:                  false,
+		Retry:                  true,
+		DynamicRetrieverFields: retrieverFields,
+		Step:                   "step1",
+		ConversationID:         "conv-123",
+		AgentRunID:             "run-456",
+		IsNeedProgress:         true,
+		EnableDependencyCache:  false,
 	}
 
 	assert.True(t, options.Stream)
@@ -55,6 +59,8 @@ func TestAgentOptions_StructFields(t *testing.T) {
 }
 
 func TestKgSource_StructFields(t *testing.T) {
+	t.Parallel()
+
 	fieldProps := map[string][]string{
 		"prop1": {"value1", "value2"},
 	}
@@ -74,6 +80,8 @@ func TestKgSource_StructFields(t *testing.T) {
 }
 
 func TestDocFields_StructFields(t *testing.T) {
+	t.Parallel()
+
 	fields := &DocFields{
 		Name:   "test_field",
 		Path:   "/path/to/field",
@@ -86,6 +94,8 @@ func TestDocFields_StructFields(t *testing.T) {
 }
 
 func TestDocSource_StructFields(t *testing.T) {
+	t.Parallel()
+
 	docFields := []*DocFields{
 		{Name: "field1", Path: "/path1", Source: "src1"},
 		{Name: "field2", Path: "/path2", Source: "src2"},
@@ -115,6 +125,8 @@ func TestDocSource_StructFields(t *testing.T) {
 }
 
 func TestRetrieverDataSource_StructFields(t *testing.T) {
+	t.Parallel()
+
 	dataSource := &RetrieverDataSource{
 		Kg: []*KgSource{
 			{KgID: "kg-1", Fields: []string{"f1"}},
@@ -133,6 +145,8 @@ func TestRetrieverDataSource_StructFields(t *testing.T) {
 }
 
 func TestConfig_StructFields(t *testing.T) {
+	t.Parallel()
+
 	config := Config{
 		Config: daconfvalobj.Config{},
 	}
@@ -141,6 +155,8 @@ func TestConfig_StructFields(t *testing.T) {
 }
 
 func TestV2AgentCallReq_WithAccountType(t *testing.T) {
+	t.Parallel()
+
 	req := &V2AgentCallReq{
 		XAccountID:   "app-account",
 		XAccountType: cenum.AccountTypeApp,
@@ -152,6 +168,8 @@ func TestV2AgentCallReq_WithAccountType(t *testing.T) {
 }
 
 func TestAgentOptions_WithResumeInfo(t *testing.T) {
+	t.Parallel()
+
 	interruptHandle := &InterruptHandle{
 		FrameID:       "frame-123",
 		SnapshotID:    "snapshot-456",

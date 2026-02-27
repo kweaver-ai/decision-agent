@@ -10,7 +10,10 @@ import (
 )
 
 func TestResponseBodyWriter_Write_Success(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
+
 	w := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(w)
 
@@ -29,7 +32,10 @@ func TestResponseBodyWriter_Write_Success(t *testing.T) {
 }
 
 func TestResponseBodyWriter_Write_EmptyData(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
+
 	w := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(w)
 
@@ -48,7 +54,10 @@ func TestResponseBodyWriter_Write_EmptyData(t *testing.T) {
 }
 
 func TestResponseBodyWriter_Write_MultipleWrites(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
+
 	w := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(w)
 
@@ -72,7 +81,10 @@ func TestResponseBodyWriter_Write_MultipleWrites(t *testing.T) {
 }
 
 func TestResponseBodyWriter_Write_LargeData(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
+
 	w := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(w)
 
@@ -91,7 +103,10 @@ func TestResponseBodyWriter_Write_LargeData(t *testing.T) {
 }
 
 func TestResponseBodyWriter_Write_WithSpecialCharacters(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
+
 	w := httptest.NewRecorder()
 	ctx, _ := gin.CreateTestContext(w)
 

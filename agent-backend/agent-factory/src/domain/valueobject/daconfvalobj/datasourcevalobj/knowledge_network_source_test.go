@@ -7,6 +7,8 @@ import (
 )
 
 func TestKnowledgeNetworkSource_ValObjCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		kn   *KnowledgeNetworkSource
@@ -45,6 +47,8 @@ func TestKnowledgeNetworkSource_ValObjCheck_Valid(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.kn.ValObjCheck()
 			assert.NoError(t, err)
 		})
@@ -52,6 +56,8 @@ func TestKnowledgeNetworkSource_ValObjCheck_Valid(t *testing.T) {
 }
 
 func TestKnowledgeNetworkSource_ValObjCheck_Errors(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		kn          *KnowledgeNetworkSource
@@ -78,6 +84,8 @@ func TestKnowledgeNetworkSource_ValObjCheck_Errors(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.kn.ValObjCheck()
 			assert.Error(t, err)
 			assert.Contains(t, err.Error(), tt.expectedErr)
@@ -86,6 +94,8 @@ func TestKnowledgeNetworkSource_ValObjCheck_Errors(t *testing.T) {
 }
 
 func TestKnowledgeNetworkSource_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	kn := &KnowledgeNetworkSource{}
 	errMap := kn.GetErrMsgMap()
 
@@ -95,6 +105,8 @@ func TestKnowledgeNetworkSource_GetErrMsgMap(t *testing.T) {
 }
 
 func TestObjectType_ValObjCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	objType := &ObjectType{
 		ObjectTypeID: "type-123",
 	}
@@ -104,6 +116,8 @@ func TestObjectType_ValObjCheck_Valid(t *testing.T) {
 }
 
 func TestObjectType_ValObjCheck_Error(t *testing.T) {
+	t.Parallel()
+
 	objType := &ObjectType{
 		ObjectTypeID: "",
 	}
@@ -114,6 +128,8 @@ func TestObjectType_ValObjCheck_Error(t *testing.T) {
 }
 
 func TestObjectType_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	objType := &ObjectType{}
 	errMap := objType.GetErrMsgMap()
 

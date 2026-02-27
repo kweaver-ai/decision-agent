@@ -19,6 +19,8 @@ import (
 // ---- handleMessageAndTempArea ----
 
 func TestHandleMessageAndTempArea_UpdateMsgError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -55,6 +57,8 @@ func TestHandleMessageAndTempArea_UpdateMsgError(t *testing.T) {
 }
 
 func TestHandleMessageAndTempArea_GetConversationError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -95,6 +99,8 @@ func TestHandleMessageAndTempArea_GetConversationError(t *testing.T) {
 }
 
 func TestHandleMessageAndTempArea_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -140,6 +146,8 @@ func TestHandleMessageAndTempArea_Success(t *testing.T) {
 // ---- GetHistoryAndMsgIndex ----
 
 func TestGetHistoryAndMsgIndex_EmptyConversationID_CreateError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -168,6 +176,8 @@ func TestGetHistoryAndMsgIndex_EmptyConversationID_CreateError(t *testing.T) {
 }
 
 func TestGetHistoryAndMsgIndex_EmptyConversationID_CreateSuccess(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -202,6 +212,8 @@ func TestGetHistoryAndMsgIndex_EmptyConversationID_CreateSuccess(t *testing.T) {
 }
 
 func TestGetHistoryAndMsgIndex_ExistingConversation_GetByIDError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -231,6 +243,8 @@ func TestGetHistoryAndMsgIndex_ExistingConversation_GetByIDError(t *testing.T) {
 // ---- UpsertUserAndAssistantMsg: normal chat create user msg ----
 
 func TestUpsertUserAndAssistantMsg_NormalChat_CreateUserMsgError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -263,6 +277,8 @@ func TestUpsertUserAndAssistantMsg_NormalChat_CreateUserMsgError(t *testing.T) {
 }
 
 func TestUpsertUserAndAssistantMsg_NormalChat_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

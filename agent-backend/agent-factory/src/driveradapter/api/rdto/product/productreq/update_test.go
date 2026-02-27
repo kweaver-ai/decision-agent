@@ -9,6 +9,8 @@ import (
 )
 
 func TestUpdateReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := UpdateReq{
 		Name:    "Updated Product Name",
 		Profile: "Updated product profile",
@@ -19,6 +21,8 @@ func TestUpdateReq_StructFields(t *testing.T) {
 }
 
 func TestUpdateReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := UpdateReq{}
 
 	assert.Empty(t, req.Name)
@@ -26,6 +30,8 @@ func TestUpdateReq_Empty(t *testing.T) {
 }
 
 func TestUpdateReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := UpdateReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -37,6 +43,8 @@ func TestUpdateReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestUpdateReq_CustomCheck(t *testing.T) {
+	t.Parallel()
+
 	req := UpdateReq{
 		Name: "Test Product",
 	}
@@ -47,6 +55,8 @@ func TestUpdateReq_CustomCheck(t *testing.T) {
 }
 
 func TestUpdateReq_WithName(t *testing.T) {
+	t.Parallel()
+
 	names := []string{
 		"Updated Product Name",
 		"更新的产品名称",
@@ -62,6 +72,8 @@ func TestUpdateReq_WithName(t *testing.T) {
 }
 
 func TestUpdateReq_WithProfile(t *testing.T) {
+	t.Parallel()
+
 	profiles := []string{
 		"Updated product profile",
 		"更新的产品简介",
@@ -78,6 +90,8 @@ func TestUpdateReq_WithProfile(t *testing.T) {
 }
 
 func TestUpdateReq_WithMaxLengths(t *testing.T) {
+	t.Parallel()
+
 	req := UpdateReq{
 		Name:    strings.Repeat("a", 50),
 		Profile: strings.Repeat("b", 100),
@@ -88,6 +102,8 @@ func TestUpdateReq_WithMaxLengths(t *testing.T) {
 }
 
 func TestUpdateReq_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	req := UpdateReq{
 		Name:    "Complete Update Name",
 		Profile: "Complete update profile with description",
@@ -101,6 +117,8 @@ func TestUpdateReq_WithAllFields(t *testing.T) {
 }
 
 func TestUpdateReq_WithChineseName(t *testing.T) {
+	t.Parallel()
+
 	req := UpdateReq{
 		Name: "更新的产品名称",
 	}
@@ -109,6 +127,8 @@ func TestUpdateReq_WithChineseName(t *testing.T) {
 }
 
 func TestUpdateReq_WithMixedName(t *testing.T) {
+	t.Parallel()
+
 	req := UpdateReq{
 		Name: "Updated更新的产品Name",
 	}
@@ -117,6 +137,8 @@ func TestUpdateReq_WithMixedName(t *testing.T) {
 }
 
 func TestUpdateReq_WithEmptyName(t *testing.T) {
+	t.Parallel()
+
 	req := UpdateReq{
 		Name: "",
 	}
@@ -125,6 +147,8 @@ func TestUpdateReq_WithEmptyName(t *testing.T) {
 }
 
 func TestUpdateReq_WithLongProfile(t *testing.T) {
+	t.Parallel()
+
 	req := UpdateReq{
 		Profile: strings.Repeat("a", 100),
 	}
@@ -133,7 +157,11 @@ func TestUpdateReq_WithLongProfile(t *testing.T) {
 }
 
 func TestUpdateReq_D2e(t *testing.T) {
+	t.Parallel()
+
 	t.Run("with all fields", func(t *testing.T) {
+		t.Parallel()
+
 		req := UpdateReq{
 			Name:    "Updated Product",
 			Profile: "Updated profile",
@@ -148,6 +176,8 @@ func TestUpdateReq_D2e(t *testing.T) {
 	})
 
 	t.Run("with only name", func(t *testing.T) {
+		t.Parallel()
+
 		req := UpdateReq{
 			Name: "Minimal Update",
 		}
@@ -161,6 +191,8 @@ func TestUpdateReq_D2e(t *testing.T) {
 	})
 
 	t.Run("with empty profile", func(t *testing.T) {
+		t.Parallel()
+
 		req := UpdateReq{
 			Name:    "Product Empty Profile",
 			Profile: "",
@@ -175,6 +207,8 @@ func TestUpdateReq_D2e(t *testing.T) {
 	})
 
 	t.Run("with chinese characters", func(t *testing.T) {
+		t.Parallel()
+
 		req := UpdateReq{
 			Name:    "更新的产品名称",
 			Profile: "更新的产品简介",
@@ -189,6 +223,8 @@ func TestUpdateReq_D2e(t *testing.T) {
 	})
 
 	t.Run("with long values", func(t *testing.T) {
+		t.Parallel()
+
 		req := UpdateReq{
 			Name:    strings.Repeat("a", 50),
 			Profile: strings.Repeat("b", 100),
@@ -203,6 +239,8 @@ func TestUpdateReq_D2e(t *testing.T) {
 	})
 
 	t.Run("with empty name", func(t *testing.T) {
+		t.Parallel()
+
 		req := UpdateReq{
 			Name:    "",
 			Profile: "test profile",
@@ -217,6 +255,8 @@ func TestUpdateReq_D2e(t *testing.T) {
 	})
 
 	t.Run("with mixed content", func(t *testing.T) {
+		t.Parallel()
+
 		req := UpdateReq{
 			Name:    "Updated更新的产品Name",
 			Profile: "Updated profile简介",

@@ -10,8 +10,8 @@ import (
 	"go.uber.org/mock/gomock"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_tpl/agenttplreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
@@ -40,15 +40,20 @@ func (noopTplLogger) Fatalln(...interface{})        {}
 
 func newTplTx(t *testing.T) (*sql.Tx, sqlmock.Sqlmock, func()) {
 	t.Helper()
+
 	db, mock, err := sqlmock.New()
 	require.NoError(t, err)
 	mock.ExpectBegin()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
+
 	cleanup := func() {
 		require.NoError(t, mock.ExpectationsWereMet())
+
 		_ = db.Close()
 	}
+
 	return tx, mock, cleanup
 }
 
@@ -64,6 +69,7 @@ func TestDataAgentTplSvc_HelperFunctions(t *testing.T) {
 			categoryRepo:     mockCategory,
 			publishedTplRepo: mockPubed,
 		}
+
 		mockCategory.EXPECT().GetIDNameMap(gomock.Any(), []string{"c1"}).Return(nil, assert.AnError)
 
 		err := svc.handleCategory(context.Background(), []string{"c1"}, 1, nil)
@@ -81,6 +87,7 @@ func TestDataAgentTplSvc_HelperFunctions(t *testing.T) {
 			categoryRepo:     mockCategory,
 			publishedTplRepo: mockPubed,
 		}
+
 		mockCategory.EXPECT().GetIDNameMap(gomock.Any(), []string{"c1"}).Return(map[string]string{}, nil)
 
 		err := svc.handleCategory(context.Background(), []string{"c1"}, 1, nil)
@@ -99,6 +106,7 @@ func TestDataAgentTplSvc_HelperFunctions(t *testing.T) {
 			categoryRepo:     mockCategory,
 			publishedTplRepo: mockPubed,
 		}
+
 		mockCategory.EXPECT().GetIDNameMap(gomock.Any(), []string{" c1 ", "c2"}).Return(map[string]string{
 			" c1 ": "C1", "c2": "C2",
 		}, nil)
@@ -116,6 +124,7 @@ func TestDataAgentTplSvc_HelperFunctions(t *testing.T) {
 		mockPubed := idbaccessmock.NewMockIPublishedTplRepo(ctrl)
 		svc := &dataAgentTplSvc{publishedTplRepo: mockPubed}
 		po := &dapo.DataAgentTplPo{ID: 1, Name: "n1", Key: "k1"}
+
 		mockPubed.EXPECT().DeleteByTplID(gomock.Any(), nil, int64(1)).Return(assert.AnError)
 
 		_, err := svc.genPublishedPo(context.Background(), nil, po, 1, "u1")
@@ -129,6 +138,7 @@ func TestDataAgentTplSvc_HelperFunctions(t *testing.T) {
 		mockPubed := idbaccessmock.NewMockIPublishedTplRepo(ctrl)
 		svc := &dataAgentTplSvc{publishedTplRepo: mockPubed}
 		po := &dapo.DataAgentTplPo{ID: 1, Name: "n1", Key: "k1"}
+
 		mockPubed.EXPECT().DeleteByTplID(gomock.Any(), nil, int64(1)).Return(nil)
 		mockPubed.EXPECT().Create(gomock.Any(), nil, gomock.Any()).Return(int64(9), nil)
 
@@ -149,6 +159,7 @@ func TestDataAgentTplSvc_HelperFunctions(t *testing.T) {
 		newPo := &dapo.DataAgentTplPo{}
 
 		ctx := createTplCtxWithUserID("u1")
+
 		mockTplRepo.EXPECT().Create(gomock.Any(), nil, gomock.Any()).Return(nil)
 		mockTplRepo.EXPECT().GetByKeyWithTx(gomock.Any(), nil, gomock.Any()).Return(&dapo.DataAgentTplPo{ID: 10}, nil)
 
@@ -218,6 +229,7 @@ func TestDataAgentTplSvc_PublishUnpublish_Success(t *testing.T) {
 		}
 
 		ctx := createTplCtxWithUserID("u1")
+
 		mockPms.EXPECT().GetSingleMgmtPermission(gomock.Any(), gomock.Any(), gomock.Any()).Return(true, nil)
 		mockTplRepo.EXPECT().GetByID(gomock.Any(), int64(1)).Return(&dapo.DataAgentTplPo{ID: 1, Name: "tpl1", CreatedBy: "u1"}, nil)
 		mockPubed.EXPECT().GetByTplID(gomock.Any(), int64(1)).Return(&dapo.PublishedTplPo{ID: 100, TplID: 1}, nil)
@@ -354,6 +366,7 @@ func TestDataAgentTplSvc_Copy_Update_Delete_UpdatePublishInfo(t *testing.T) {
 		}
 
 		ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1")
+
 		mockTplRepo.EXPECT().ExistsByID(gomock.Any(), int64(10)).Return(true, nil)
 		mockTplRepo.EXPECT().GetByID(gomock.Any(), int64(10)).Return(po, nil)
 		mockTplRepo.EXPECT().BeginTx(gomock.Any()).Return(tx, nil)
@@ -533,6 +546,7 @@ func TestDataAgentTplSvc_Publish_Unpublish_And_Detail_Branches(t *testing.T) {
 		}
 
 		ctx := createTplCtxWithUserID("u1")
+
 		mockPms.EXPECT().GetSingleMgmtPermission(gomock.Any(), gomock.Any(), gomock.Any()).Return(true, nil)
 		mockTplRepo.EXPECT().GetByID(gomock.Any(), int64(30)).Return(&dapo.DataAgentTplPo{ID: 30, Name: "tpl30", CreatedBy: "u1"}, nil)
 		mockPubedRepo.EXPECT().GetByTplID(gomock.Any(), int64(30)).Return(nil, sql.ErrNoRows)
@@ -557,6 +571,7 @@ func TestDataAgentTplSvc_Publish_Unpublish_And_Detail_Branches(t *testing.T) {
 		}
 
 		ctx := createTplCtxWithUserID("u1")
+
 		mockPms.EXPECT().GetSingleMgmtPermission(gomock.Any(), gomock.Any(), gomock.Any()).Return(true, nil)
 		mockTplRepo.EXPECT().GetByID(gomock.Any(), int64(31)).Return(&dapo.DataAgentTplPo{ID: 31, Name: "tpl31", CreatedBy: "u2"}, nil)
 		mockPubedRepo.EXPECT().GetByTplID(gomock.Any(), int64(31)).Return(&dapo.PublishedTplPo{ID: 301, TplID: 31}, nil)

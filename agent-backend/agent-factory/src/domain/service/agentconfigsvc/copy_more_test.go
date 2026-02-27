@@ -24,9 +24,11 @@ func TestDataAgentConfigSvc_Copy_CreateAgentError(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectRollback()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -62,9 +64,11 @@ func TestDataAgentConfigSvc_Copy_BdRelBatchCreateError(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectRollback()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -99,9 +103,11 @@ func TestDataAgentConfigSvc_Copy_AssociateResourceError(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectRollback()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -139,9 +145,11 @@ func TestDataAgentConfigSvc_Copy_Success(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectCommit()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 

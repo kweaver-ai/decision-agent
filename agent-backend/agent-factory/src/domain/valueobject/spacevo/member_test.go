@@ -9,7 +9,11 @@ import (
 )
 
 func TestMemberUniq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	t.Run("creates MemberUniq with values", func(t *testing.T) {
+		t.Parallel()
+
 		m := MemberUniq{
 			ObjType: cenum.OrgObjTypeUser,
 			ObjID:   "member-123",
@@ -20,6 +24,8 @@ func TestMemberUniq_StructFields(t *testing.T) {
 	})
 
 	t.Run("creates empty MemberUniq", func(t *testing.T) {
+		t.Parallel()
+
 		m := MemberUniq{}
 
 		assert.Empty(t, m.ObjID)
@@ -27,7 +33,11 @@ func TestMemberUniq_StructFields(t *testing.T) {
 }
 
 func TestMemberAssoc_StructFields(t *testing.T) {
+	t.Parallel()
+
 	t.Run("creates MemberAssoc with values", func(t *testing.T) {
+		t.Parallel()
+
 		ma := MemberAssoc{
 			MemberUniq: MemberUniq{
 				ObjType: cenum.OrgObjTypeUser,
@@ -42,6 +52,8 @@ func TestMemberAssoc_StructFields(t *testing.T) {
 	})
 
 	t.Run("serializes to JSON", func(t *testing.T) {
+		t.Parallel()
+
 		ma := MemberAssoc{
 			MemberUniq: MemberUniq{
 				ObjType: cenum.OrgObjTypeUser,

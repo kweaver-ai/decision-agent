@@ -12,7 +12,11 @@ import (
 )
 
 func TestGetModelApiUrlPrefix(t *testing.T) {
+	t.Parallel()
+
 	t.Run("returns url prefix with http protocol", func(t *testing.T) {
+		t.Parallel()
+
 		conf := &cconf.ModelFactoryConf{
 			ModelApiSvc: cconf.SvcConf{
 				Protocol: "http",
@@ -27,6 +31,8 @@ func TestGetModelApiUrlPrefix(t *testing.T) {
 	})
 
 	t.Run("returns url prefix with https protocol", func(t *testing.T) {
+		t.Parallel()
+
 		conf := &cconf.ModelFactoryConf{
 			ModelApiSvc: cconf.SvcConf{
 				Protocol: "https",
@@ -41,6 +47,8 @@ func TestGetModelApiUrlPrefix(t *testing.T) {
 	})
 
 	t.Run("handles empty config", func(t *testing.T) {
+		t.Parallel()
+
 		conf := &cconf.ModelFactoryConf{
 			ModelApiSvc: cconf.SvcConf{
 				Protocol: "",
@@ -72,6 +80,7 @@ func initV3InjectGlobalConfig(t *testing.T) {
 			},
 		},
 	}
+
 	t.Cleanup(func() {
 		global.GConfig = oldCfg
 		cglobal.GConfig = oldCGlobalCfg

@@ -17,6 +17,8 @@ import (
 
 // Process: IncStream=true → StreamDiff path
 func TestProcess_IncStream(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -57,6 +59,7 @@ func TestProcess_IncStream(t *testing.T) {
 
 	session := &Session{ConversationID: "conv-inc"}
 	SessionMap.Store("conv-inc", session)
+
 	defer SessionMap.Delete("conv-inc")
 
 	messageChan <- `data:{"status":"True","answer":{"final_answer":"done"}}`
@@ -68,6 +71,8 @@ func TestProcess_IncStream(t *testing.T) {
 
 // Process: non-stream errChan non-EOF → writes error to respChan
 func TestProcess_NonStream_ErrChan(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -108,6 +113,7 @@ func TestProcess_NonStream_ErrChan(t *testing.T) {
 
 	session := &Session{ConversationID: "conv-nse"}
 	SessionMap.Store("conv-nse", session)
+
 	defer SessionMap.Delete("conv-nse")
 
 	errChan <- assert.AnError
@@ -119,6 +125,8 @@ func TestProcess_NonStream_ErrChan(t *testing.T) {
 
 // Process: stream unexpected EOF → isEnd=true
 func TestProcess_Stream_UnexpectedEOF(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -154,6 +162,7 @@ func TestProcess_Stream_UnexpectedEOF(t *testing.T) {
 
 	session := &Session{ConversationID: "conv-ueof"}
 	SessionMap.Store("conv-ueof", session)
+
 	defer SessionMap.Delete("conv-ueof")
 
 	errChan <- &unexpectedEOFError{}
@@ -170,6 +179,8 @@ func (e *unexpectedEOFError) Error() string { return "unexpected EOF" }
 
 // Process: stream non-EOF error → writes error to respChan then continues
 func TestProcess_Stream_NonEOFError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -205,6 +216,7 @@ func TestProcess_Stream_NonEOFError(t *testing.T) {
 
 	session := &Session{ConversationID: "conv-sneof"}
 	SessionMap.Store("conv-sneof", session)
+
 	defer SessionMap.Delete("conv-sneof")
 
 	// non-EOF error followed by EOF to terminate
@@ -222,6 +234,8 @@ func (e *eofErrType) Error() string { return "EOF" }
 
 // Process: invalid message format (no "data:" prefix) → continue
 func TestProcess_InvalidMessageFormat(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -256,6 +270,7 @@ func TestProcess_InvalidMessageFormat(t *testing.T) {
 
 	session := &Session{ConversationID: "conv-invfmt"}
 	SessionMap.Store("conv-invfmt", session)
+
 	defer SessionMap.Delete("conv-invfmt")
 
 	// invalid format (no colon separator with "data" prefix)
@@ -268,6 +283,8 @@ func TestProcess_InvalidMessageFormat(t *testing.T) {
 
 // Process: 5s timeout branch (send message after timeout fires once)
 func TestProcess_TimeoutBranch(t *testing.T) {
+	t.Parallel()
+
 	// This test just verifies Process doesn't hang when messageChan is slow
 	// We close stopChan after a brief delay to exit
 	ctrl := gomock.NewController(t)
@@ -308,6 +325,7 @@ func TestProcess_TimeoutBranch(t *testing.T) {
 
 	session := &Session{ConversationID: "conv-to"}
 	SessionMap.Store("conv-to", session)
+
 	defer SessionMap.Delete("conv-to")
 
 	go func() {
@@ -321,6 +339,8 @@ func TestProcess_TimeoutBranch(t *testing.T) {
 
 // Process: AfterProcess error → GetByID fails (errNew != nil branch)
 func TestProcess_AfterProcessError_GetByIDFails(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -360,6 +380,7 @@ func TestProcess_AfterProcessError_GetByIDFails(t *testing.T) {
 
 	session := &Session{ConversationID: "conv-apgbid"}
 	SessionMap.Store("conv-apgbid", session)
+
 	defer SessionMap.Delete("conv-apgbid")
 
 	messageChan <- `data:{"status":"False","answer":{"final_answer":"hi"}}`

@@ -22,6 +22,8 @@ import (
 )
 
 func TestDataAgentConfigSvc_Detail_GetByIDError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -47,6 +49,8 @@ func TestDataAgentConfigSvc_Detail_GetByIDError(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_Detail_GetByKeyError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -72,6 +76,8 @@ func TestDataAgentConfigSvc_Detail_GetByKeyError(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_Detail_NotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -97,6 +103,8 @@ func TestDataAgentConfigSvc_Detail_NotFound(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_Detail_PanicsWithoutAgentConfRepo(t *testing.T) {
+	t.Parallel()
+
 	svc := &dataAgentConfigSvc{
 		SvcBase: service.NewSvcBase(),
 		// agentConfRepo is nil
@@ -110,6 +118,8 @@ func TestDataAgentConfigSvc_Detail_PanicsWithoutAgentConfRepo(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_Detail_PrivateAPI_NoPermission(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -142,11 +152,14 @@ func TestDataAgentConfigSvc_Detail_PrivateAPI_NoPermission(t *testing.T) {
 
 	// The function should at least call the repo
 	assert.NotNil(t, mockAgentConfRepo)
+
 	_ = res
 	_ = err
 }
 
 func TestDataAgentConfigSvc_Detail_BasicSuccessFlow(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -155,10 +168,10 @@ func TestDataAgentConfigSvc_Detail_BasicSuccessFlow(t *testing.T) {
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 
 	svc := &dataAgentConfigSvc{
-		SvcBase:         service.NewSvcBase(),
-		agentConfRepo:   mockAgentConfRepo,
-		pubedAgentRepo:  mockPubedAgentRepo,
-		logger:          mockLogger,
+		SvcBase:        service.NewSvcBase(),
+		agentConfRepo:  mockAgentConfRepo,
+		pubedAgentRepo: mockPubedAgentRepo,
+		logger:         mockLogger,
 	}
 
 	ctx := context.Background()
@@ -167,12 +180,12 @@ func TestDataAgentConfigSvc_Detail_BasicSuccessFlow(t *testing.T) {
 	builtInNo := cdaenum.BuiltInNo
 	configStr, _ := cutil.JSON().MarshalToString(daconfvalobj.NewConfig())
 	po := &dapo.DataAgentPo{
-		ID:         agentID,
-		Name:       "Test Agent",
-		CreatedBy:  "user-123",
-		IsBuiltIn:  &builtInNo,
-		Status:     cdaenum.StatusPublished,
-		Config:     configStr,
+		ID:        agentID,
+		Name:      "Test Agent",
+		CreatedBy: "user-123",
+		IsBuiltIn: &builtInNo,
+		Status:    cdaenum.StatusPublished,
+		Config:    configStr,
 	}
 
 	mockAgentConfRepo.EXPECT().GetByID(gomock.Any(), agentID).Return(po, nil)
@@ -186,6 +199,8 @@ func TestDataAgentConfigSvc_Detail_BasicSuccessFlow(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_Detail_UnpublishedAgent(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -222,6 +237,8 @@ func TestDataAgentConfigSvc_Detail_UnpublishedAgent(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_Detail_PrivateAPI_Published_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -258,6 +275,8 @@ func TestDataAgentConfigSvc_Detail_PrivateAPI_Published_Success(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_Detail_Unpublished_PubedAgentRepoError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -294,6 +313,8 @@ func TestDataAgentConfigSvc_Detail_Unpublished_PubedAgentRepoError(t *testing.T)
 }
 
 func TestDataAgentConfigSvc_Detail_MarkSkillPmsError_WithSkillAgents(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -341,6 +362,8 @@ func TestDataAgentConfigSvc_Detail_MarkSkillPmsError_WithSkillAgents(t *testing.
 }
 
 func TestDataAgentConfigSvc_Detail_MarkSkillPmsError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -380,6 +403,8 @@ func TestDataAgentConfigSvc_Detail_MarkSkillPmsError(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_Detail_P2EError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -409,6 +434,8 @@ func TestDataAgentConfigSvc_Detail_P2EError(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_Detail_Owner_Unpublished_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

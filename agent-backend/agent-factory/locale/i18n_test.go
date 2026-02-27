@@ -38,6 +38,7 @@ func TestI18nMap(t *testing.T) {
 		if m[rest.SimplifiedChinese] != "系统" {
 			t.Errorf("Expected Chinese to be '系统', got '%s'", m[rest.SimplifiedChinese])
 		}
+
 		if m[rest.AmericanEnglish] != "System" {
 			t.Errorf("Expected English to be 'System', got '%s'", m[rest.AmericanEnglish])
 		}
@@ -59,6 +60,7 @@ func TestAllI18nMap(t *testing.T) {
 		if m[rest.SimplifiedChinese] != "系统" {
 			t.Errorf("Expected Chinese to be '系统', got '%s'", m[rest.SimplifiedChinese])
 		}
+
 		if m[rest.AmericanEnglish] != "System" {
 			t.Errorf("Expected English to be 'System', got '%s'", m[rest.AmericanEnglish])
 		}
@@ -70,6 +72,7 @@ func TestAllI18nMap(t *testing.T) {
 		if m[rest.SimplifiedChinese] != "未知用户" {
 			t.Errorf("Expected Chinese to be '未知用户', got '%s'", m[rest.SimplifiedChinese])
 		}
+
 		if m[rest.AmericanEnglish] != "Unknown User" {
 			t.Errorf("Expected English to be 'Unknown User', got '%s'", m[rest.AmericanEnglish])
 		}
@@ -81,6 +84,7 @@ func TestAllI18nMap(t *testing.T) {
 		if m[rest.SimplifiedChinese] != "副本" {
 			t.Errorf("Expected Chinese to be '副本', got '%s'", m[rest.SimplifiedChinese])
 		}
+
 		if m[rest.AmericanEnglish] != "Duplicate" {
 			t.Errorf("Expected English to be 'Duplicate', got '%s'", m[rest.AmericanEnglish])
 		}
@@ -123,7 +127,6 @@ func TestGetI18nByCtx(t *testing.T) {
 		// This test verifies that GetI18nByCtx function exists
 		// The actual functionality depends on context and language helper
 		// which requires global config to be set
-
 		defer func() {
 			if r := recover(); r != nil {
 				// Expected to panic without global config
@@ -148,6 +151,7 @@ func TestGetI18nByCtx(t *testing.T) {
 				t.Logf("Expected panic without global config: %v", r)
 			}
 		}()
+
 		_ = GetI18nByCtx(ctx, SystemCreatedBy)
 	})
 }
@@ -178,7 +182,6 @@ func TestRegister(t *testing.T) {
 
 		Register()
 	})
-
 	// Note: We skip the other test cases because i18n.RegisterI18n can only be called once per process
 	// The first test registers successfully, subsequent tests would fail with "messageId already exist"
 }

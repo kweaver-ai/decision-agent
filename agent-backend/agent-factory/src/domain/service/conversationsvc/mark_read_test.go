@@ -6,25 +6,27 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 )
 
 func TestMarkRead(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name          string
+		name           string
 		conversationID string
 		lastestReadIdx int
-		setup         func(*gomock.Controller) (*conversationSvc, context.Context)
-		wantErr       bool
-		errContains   string
+		setup          func(*gomock.Controller) (*conversationSvc, context.Context)
+		wantErr        bool
+		errContains    string
 	}{
 		{
-			name:          "marks conversation as read successfully",
+			name:           "marks conversation as read successfully",
 			conversationID: "conv-123",
 			lastestReadIdx: 5,
 			setup: func(ctrl *gomock.Controller) (*conversationSvc, context.Context) {
@@ -35,7 +37,7 @@ func TestMarkRead(t *testing.T) {
 				repo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
 
 				svc := &conversationSvc{
-					SvcBase:         service.NewSvcBase(),
+					SvcBase:          service.NewSvcBase(),
 					conversationRepo: repo,
 				}
 
@@ -44,7 +46,7 @@ func TestMarkRead(t *testing.T) {
 			wantErr: false,
 		},
 		{
-			name:          "returns error when conversation not found",
+			name:           "returns error when conversation not found",
 			conversationID: "conv-999",
 			lastestReadIdx: 5,
 			setup: func(ctrl *gomock.Controller) (*conversationSvc, context.Context) {
@@ -54,7 +56,7 @@ func TestMarkRead(t *testing.T) {
 				repo.EXPECT().GetByID(gomock.Any(), "conv-999").Return(nil, sql.ErrNoRows)
 
 				svc := &conversationSvc{
-					SvcBase:         service.NewSvcBase(),
+					SvcBase:          service.NewSvcBase(),
 					conversationRepo: repo,
 				}
 
@@ -64,7 +66,7 @@ func TestMarkRead(t *testing.T) {
 			errContains: "NotFound",
 		},
 		{
-			name:          "returns error when get conversation fails",
+			name:           "returns error when get conversation fails",
 			conversationID: "conv-123",
 			lastestReadIdx: 5,
 			setup: func(ctrl *gomock.Controller) (*conversationSvc, context.Context) {
@@ -74,7 +76,7 @@ func TestMarkRead(t *testing.T) {
 				repo.EXPECT().GetByID(gomock.Any(), "conv-123").Return(nil, errors.New("database error"))
 
 				svc := &conversationSvc{
-					SvcBase:         service.NewSvcBase(),
+					SvcBase:          service.NewSvcBase(),
 					conversationRepo: repo,
 				}
 
@@ -84,7 +86,7 @@ func TestMarkRead(t *testing.T) {
 			errContains: "database error",
 		},
 		{
-			name:          "returns error when update fails",
+			name:           "returns error when update fails",
 			conversationID: "conv-123",
 			lastestReadIdx: 5,
 			setup: func(ctrl *gomock.Controller) (*conversationSvc, context.Context) {
@@ -95,7 +97,7 @@ func TestMarkRead(t *testing.T) {
 				repo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(errors.New("update failed"))
 
 				svc := &conversationSvc{
-					SvcBase:         service.NewSvcBase(),
+					SvcBase:          service.NewSvcBase(),
 					conversationRepo: repo,
 				}
 
@@ -108,6 +110,8 @@ func TestMarkRead(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
@@ -116,6 +120,7 @@ func TestMarkRead(t *testing.T) {
 
 			if tt.wantErr {
 				assert.Error(t, err)
+
 				if tt.errContains != "" {
 					assert.Contains(t, err.Error(), tt.errContains)
 				}

@@ -11,6 +11,8 @@ import (
 )
 
 func TestUpdateGinReqCtx(t *testing.T) {
+	t.Parallel()
+
 	router := gin.Default()
 
 	var updatedCtx context.Context

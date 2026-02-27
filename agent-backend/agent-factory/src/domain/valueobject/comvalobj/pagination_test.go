@@ -8,7 +8,11 @@ import (
 )
 
 func TestPagination_StructFields(t *testing.T) {
+	t.Parallel()
+
 	t.Run("creates pagination with values", func(t *testing.T) {
+		t.Parallel()
+
 		p := Pagination{
 			Offset: 10,
 			Limit:  20,
@@ -19,6 +23,8 @@ func TestPagination_StructFields(t *testing.T) {
 	})
 
 	t.Run("creates pagination with zero values", func(t *testing.T) {
+		t.Parallel()
+
 		p := Pagination{}
 
 		assert.Zero(t, p.Offset)
@@ -26,6 +32,8 @@ func TestPagination_StructFields(t *testing.T) {
 	})
 
 	t.Run("serializes to JSON", func(t *testing.T) {
+		t.Parallel()
+
 		p := Pagination{
 			Offset: 5,
 			Limit:  15,
@@ -38,6 +46,8 @@ func TestPagination_StructFields(t *testing.T) {
 	})
 
 	t.Run("deserializes from JSON", func(t *testing.T) {
+		t.Parallel()
+
 		jsonStr := `{"offset":10,"limit":25}`
 
 		var p Pagination
@@ -50,7 +60,11 @@ func TestPagination_StructFields(t *testing.T) {
 }
 
 func TestPagination_EdgeCases(t *testing.T) {
+	t.Parallel()
+
 	t.Run("negative offset", func(t *testing.T) {
+		t.Parallel()
+
 		p := Pagination{
 			Offset: -5,
 			Limit:  10,
@@ -61,6 +75,8 @@ func TestPagination_EdgeCases(t *testing.T) {
 	})
 
 	t.Run("negative limit", func(t *testing.T) {
+		t.Parallel()
+
 		p := Pagination{
 			Offset: 0,
 			Limit:  -1,
@@ -71,6 +87,8 @@ func TestPagination_EdgeCases(t *testing.T) {
 	})
 
 	t.Run("large values", func(t *testing.T) {
+		t.Parallel()
+
 		p := Pagination{
 			Offset: 1000000,
 			Limit:  100000,
@@ -81,6 +99,8 @@ func TestPagination_EdgeCases(t *testing.T) {
 	})
 
 	t.Run("max int values", func(t *testing.T) {
+		t.Parallel()
+
 		p := Pagination{
 			Offset: 2147483647,
 			Limit:  2147483647,
@@ -92,7 +112,11 @@ func TestPagination_EdgeCases(t *testing.T) {
 }
 
 func TestPagination_JSONEdgeCases(t *testing.T) {
+	t.Parallel()
+
 	t.Run("marshal and unmarshal roundtrip", func(t *testing.T) {
+		t.Parallel()
+
 		original := Pagination{
 			Offset: 100,
 			Limit:  50,
@@ -110,6 +134,8 @@ func TestPagination_JSONEdgeCases(t *testing.T) {
 	})
 
 	t.Run("unmarshal empty JSON", func(t *testing.T) {
+		t.Parallel()
+
 		data := []byte(`{}`)
 
 		var p Pagination
@@ -121,6 +147,8 @@ func TestPagination_JSONEdgeCases(t *testing.T) {
 	})
 
 	t.Run("marshal zero values to JSON", func(t *testing.T) {
+		t.Parallel()
+
 		p := Pagination{}
 
 		data, err := json.Marshal(p)
@@ -132,7 +160,11 @@ func TestPagination_JSONEdgeCases(t *testing.T) {
 }
 
 func TestPagination_Pointer(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create pointer to pagination", func(t *testing.T) {
+		t.Parallel()
+
 		p := &Pagination{
 			Offset: 5,
 			Limit:  10,
@@ -144,6 +176,8 @@ func TestPagination_Pointer(t *testing.T) {
 	})
 
 	t.Run("nil pagination pointer", func(t *testing.T) {
+		t.Parallel()
+
 		var p *Pagination
 
 		assert.Nil(t, p)

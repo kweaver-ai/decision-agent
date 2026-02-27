@@ -49,6 +49,7 @@ func (f *fakeUserMgmt) GetUserInfoByUserID(context.Context, []string, []string) 
 	if f.err != nil {
 		return nil, f.err
 	}
+
 	return f.infos, nil
 }
 
@@ -61,6 +62,8 @@ func (f *fakeUserMgmt) IsSuperAdmin(context.Context, string) (bool, error) {
 }
 
 func TestSquareSvc_NewSquareService_Construct(t *testing.T) {
+	t.Parallel()
+
 	oldGlobal := global.GConfig
 	oldCGlobal := cglobal.GConfig
 	oldOnce := squareSvcOnce
@@ -80,11 +83,14 @@ func TestSquareSvc_NewSquareService_Construct(t *testing.T) {
 
 	svc1 := NewSquareService()
 	svc2 := NewSquareService()
+
 	assert.NotNil(t, svc1)
 	assert.Same(t, svc1, svc2)
 }
 
 func TestSquareSvc_GetAgentInfo_UnpublishedSuccess(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -120,7 +126,11 @@ func TestSquareSvc_GetAgentInfo_UnpublishedSuccess(t *testing.T) {
 }
 
 func TestSquareSvc_notUnpublished_Additional(t *testing.T) {
+	t.Parallel()
+
 	t.Run("release repo error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockReleaseRepo := idbaccessmock.NewMockIReleaseRepo(ctrl)
@@ -131,6 +141,7 @@ func TestSquareSvc_notUnpublished_Additional(t *testing.T) {
 			releaseRepo:        mockReleaseRepo,
 			releaseHistoryRepo: mockReleaseHistoryRepo,
 		}
+
 		mockReleaseRepo.EXPECT().GetByAgentID(gomock.Any(), "a1").Return(nil, errors.New("db failed"))
 
 		err := svc.notUnpublished(context.Background(), &squarereq.AgentInfoReq{
@@ -151,6 +162,7 @@ func TestSquareSvc_notUnpublished_Additional(t *testing.T) {
 			releaseRepo:        mockReleaseRepo,
 			releaseHistoryRepo: mockReleaseHistoryRepo,
 		}
+
 		mockReleaseRepo.EXPECT().GetByAgentID(gomock.Any(), "a1").Return(nil, nil)
 		mockReleaseHistoryRepo.EXPECT().GetLatestVersionByAgentID(gomock.Any(), "a1").Return(nil, nil)
 
@@ -162,6 +174,8 @@ func TestSquareSvc_notUnpublished_Additional(t *testing.T) {
 	})
 
 	t.Run("history not found", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockReleaseRepo := idbaccessmock.NewMockIReleaseRepo(ctrl)
@@ -172,6 +186,7 @@ func TestSquareSvc_notUnpublished_Additional(t *testing.T) {
 			releaseRepo:        mockReleaseRepo,
 			releaseHistoryRepo: mockReleaseHistoryRepo,
 		}
+
 		mockReleaseRepo.EXPECT().GetByAgentID(gomock.Any(), "a1").Return(&dapo.ReleasePO{AgentVersion: "v1"}, nil)
 		mockReleaseHistoryRepo.EXPECT().GetByAgentIdVersion(gomock.Any(), "a1", "v2").Return(nil, nil)
 
@@ -184,6 +199,8 @@ func TestSquareSvc_notUnpublished_Additional(t *testing.T) {
 	})
 
 	t.Run("unmarshal error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockReleaseRepo := idbaccessmock.NewMockIReleaseRepo(ctrl)
@@ -195,6 +212,7 @@ func TestSquareSvc_notUnpublished_Additional(t *testing.T) {
 			releaseHistoryRepo:       mockReleaseHistoryRepo,
 			usermanagementHttpClient: &fakeUserMgmt{},
 		}
+
 		mockReleaseRepo.EXPECT().GetByAgentID(gomock.Any(), "a1").Return(&dapo.ReleasePO{AgentVersion: "v1"}, nil)
 		mockReleaseHistoryRepo.EXPECT().GetByAgentIdVersion(gomock.Any(), "a1", "v1").
 			Return(&dapo.ReleaseHistoryPO{AgentConfig: "{bad-json"}, nil)
@@ -208,6 +226,8 @@ func TestSquareSvc_notUnpublished_Additional(t *testing.T) {
 	})
 
 	t.Run("success with user name", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockReleaseRepo := idbaccessmock.NewMockIReleaseRepo(ctrl)
@@ -235,6 +255,7 @@ func TestSquareSvc_notUnpublished_Additional(t *testing.T) {
 				infos: map[string]*iusermanagementacc.UserInfo{"u1": {Name: "user-1"}},
 			},
 		}
+
 		mockReleaseRepo.EXPECT().GetByAgentID(gomock.Any(), "a1").Return(releasePo, nil)
 		mockReleaseHistoryRepo.EXPECT().GetByAgentIdVersion(gomock.Any(), "a1", "v1").Return(historyPo, nil)
 
@@ -251,6 +272,8 @@ func TestSquareSvc_notUnpublished_Additional(t *testing.T) {
 }
 
 func TestSquareSvc_GetRecentAgentList_SuccessAndUserInfoErr(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -271,7 +294,7 @@ func TestSquareSvc_GetRecentAgentList_SuccessAndUserInfoErr(t *testing.T) {
 	pos := []*dapo.RecentVisitAgentPO{
 		{
 			ReleaseAgentPO: dapo.ReleaseAgentPO{
-				DataAgentPo: dapo.DataAgentPo{ID: "a1", Key: "k1", Name: "n1", Config: "{}"},
+				DataAgentPo:  dapo.DataAgentPo{ID: "a1", Key: "k1", Name: "n1", Config: "{}"},
 				AgentVersion: sql.NullString{String: daconstant.AgentVersionUnpublished, Valid: true},
 			},
 			LastVisitTime: sql.NullInt64{Int64: 200, Valid: true},
@@ -302,7 +325,11 @@ func TestSquareSvc_GetRecentAgentList_SuccessAndUserInfoErr(t *testing.T) {
 }
 
 func TestSquareSvc_GetRecentAgentList_UserInfoSuccessAndBadJSON(t *testing.T) {
+	t.Parallel()
+
 	t.Run("user info success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -346,6 +373,8 @@ func TestSquareSvc_GetRecentAgentList_UserInfoSuccessAndBadJSON(t *testing.T) {
 	})
 
 	t.Run("bad json in published config", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -374,6 +403,8 @@ func TestSquareSvc_GetRecentAgentList_UserInfoSuccessAndBadJSON(t *testing.T) {
 }
 
 func TestSquareSvc_GetAgentInfo_PublishedVersionSuccess(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -426,7 +457,11 @@ func TestSquareSvc_GetAgentInfo_PublishedVersionSuccess(t *testing.T) {
 }
 
 func TestSquareSvc_notUnpublished_MoreBranches(t *testing.T) {
+	t.Parallel()
+
 	t.Run("GetByAgentIdVersion error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockReleaseRepo := idbaccessmock.NewMockIReleaseRepo(ctrl)
@@ -437,6 +472,7 @@ func TestSquareSvc_notUnpublished_MoreBranches(t *testing.T) {
 			releaseRepo:        mockReleaseRepo,
 			releaseHistoryRepo: mockReleaseHistoryRepo,
 		}
+
 		mockReleaseRepo.EXPECT().GetByAgentID(gomock.Any(), "a1").Return(&dapo.ReleasePO{AgentVersion: "v1"}, nil)
 		mockReleaseHistoryRepo.EXPECT().GetByAgentIdVersion(gomock.Any(), "a1", "v1").
 			Return(nil, errors.New("history failed"))
@@ -449,6 +485,8 @@ func TestSquareSvc_notUnpublished_MoreBranches(t *testing.T) {
 	})
 
 	t.Run("user info error ignored", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockReleaseRepo := idbaccessmock.NewMockIReleaseRepo(ctrl)
@@ -468,6 +506,7 @@ func TestSquareSvc_notUnpublished_MoreBranches(t *testing.T) {
 				err: errors.New("um failed"),
 			},
 		}
+
 		mockReleaseRepo.EXPECT().GetByAgentID(gomock.Any(), "a1").Return(&dapo.ReleasePO{AgentVersion: "v1"}, nil)
 		mockReleaseHistoryRepo.EXPECT().GetByAgentIdVersion(gomock.Any(), "a1", "v1").
 			Return(&dapo.ReleaseHistoryPO{
@@ -486,6 +525,8 @@ func TestSquareSvc_notUnpublished_MoreBranches(t *testing.T) {
 }
 
 func TestSquareSvc_GetAgentInfo_RecordVisitLogErrorIgnored(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

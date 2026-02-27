@@ -18,6 +18,8 @@ import (
 )
 
 func TestUpdateReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{}
 
 	errMap := req.GetErrMsgMap()
@@ -27,6 +29,8 @@ func TestUpdateReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestUpdateReq_CustomCheck_NonInternalAPI_WithUpdatedBy(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{}
 	req.IsInternalAPI = false
 	req.UpdatedBy = "user-123"
@@ -38,6 +42,8 @@ func TestUpdateReq_CustomCheck_NonInternalAPI_WithUpdatedBy(t *testing.T) {
 }
 
 func TestUpdateReq_CustomCheck_InternalAPI_WithoutUpdatedBy(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{}
 	req.IsInternalAPI = true
 	req.UpdatedBy = ""
@@ -49,6 +55,8 @@ func TestUpdateReq_CustomCheck_InternalAPI_WithoutUpdatedBy(t *testing.T) {
 }
 
 func TestUpdateReq_CustomCheck_InternalAPI_WithUpdatedBy(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{}
 	req.IsInternalAPI = true
 	req.UpdatedBy = "user-123"
@@ -59,6 +67,8 @@ func TestUpdateReq_CustomCheck_InternalAPI_WithUpdatedBy(t *testing.T) {
 }
 
 func TestUpdateReq_CustomCheck_NonInternalAPI_WithoutUpdatedBy(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{}
 	req.IsInternalAPI = false
 	req.UpdatedBy = ""
@@ -69,6 +79,8 @@ func TestUpdateReq_CustomCheck_NonInternalAPI_WithoutUpdatedBy(t *testing.T) {
 }
 
 func TestUpdateReq_D2e_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{
 		Name:       "Test Agent",
 		Profile:    "Test Profile",
@@ -91,6 +103,8 @@ func TestUpdateReq_D2e_WithAllFields(t *testing.T) {
 }
 
 func TestUpdateReq_D2e_WithConfig(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{
 		Name:       "Test Agent",
 		Profile:    "Test Profile",
@@ -113,6 +127,8 @@ func TestUpdateReq_D2e_WithConfig(t *testing.T) {
 }
 
 func TestUpdateReq_D2e_WithIsBuiltIn(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{
 		Name:       "Test Agent",
 		Profile:    "Test Profile",
@@ -133,6 +149,8 @@ func TestUpdateReq_D2e_WithIsBuiltIn(t *testing.T) {
 }
 
 func TestUpdateReq_D2e_WithCreatedBy(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{
 		Name:       "Test Agent",
 		Profile:    "Test Profile",
@@ -151,6 +169,8 @@ func TestUpdateReq_D2e_WithCreatedBy(t *testing.T) {
 }
 
 func TestUpdateReq_IsChanged_DifferentName(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{
 		Name:       "Updated Agent Name",
 		Profile:    "Test Profile",
@@ -178,6 +198,8 @@ func TestUpdateReq_IsChanged_DifferentName(t *testing.T) {
 }
 
 func TestUpdateReq_IsChanged_SameData(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{
 		Name:       "Test Agent",
 		Profile:    "Test Profile",
@@ -206,6 +228,8 @@ func TestUpdateReq_IsChanged_SameData(t *testing.T) {
 }
 
 func TestUpdateReq_D2e_WithStatus(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{
 		Name:       "Test Agent",
 		Profile:    "Test Profile",
@@ -226,6 +250,8 @@ func TestUpdateReq_D2e_WithStatus(t *testing.T) {
 }
 
 func TestUpdateReq_D2e_NilConfig_Panics(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{
 		Name:       "Test Agent",
 		Profile:    "Test Profile",
@@ -241,6 +267,8 @@ func TestUpdateReq_D2e_NilConfig_Panics(t *testing.T) {
 }
 
 func TestUpdateReq_D2e_WithDifferentAvatarTypes(t *testing.T) {
+	t.Parallel()
+
 	avatarTypes := []cdaenum.AvatarType{
 		cdaenum.AvatarTypeBuiltIn,
 		cdaenum.AvatarTypeUserUploaded,
@@ -270,13 +298,18 @@ func updateReqTestRegisterCheckAgentAndTplName(t *testing.T) {
 
 	v, ok := binding.Validator.Engine().(*validator.Validate)
 	require.True(t, ok)
+
 	_ = v.RegisterValidation("checkAgentAndTplName", customvalidator.CheckAgentAndTplName)
 }
 
 func TestUpdateReq_Validate(t *testing.T) {
+	t.Parallel()
+
 	updateReqTestRegisterCheckAgentAndTplName(t)
 
 	t.Run("missing required fields should return wrapped error", func(t *testing.T) {
+		t.Parallel()
+
 		req := &UpdateReq{}
 
 		err := req.Validate()
@@ -286,6 +319,8 @@ func TestUpdateReq_Validate(t *testing.T) {
 	})
 
 	t.Run("valid request should pass", func(t *testing.T) {
+		t.Parallel()
+
 		req := updateReqTestNewReq(false)
 
 		err := req.Validate()
@@ -295,6 +330,8 @@ func TestUpdateReq_Validate(t *testing.T) {
 }
 
 func TestUpdateReq_ReqCheckWithCtx(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		name        string
 		prepareReq  func() *UpdateReq
@@ -343,11 +380,14 @@ func TestUpdateReq_ReqCheckWithCtx(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tc.prepareReq().ReqCheckWithCtx(context.Background())
 
 			if tc.wantErr {
 				require.Error(t, err)
 				assert.Contains(t, err.Error(), tc.errContains)
+
 				return
 			}
 
@@ -357,9 +397,13 @@ func TestUpdateReq_ReqCheckWithCtx(t *testing.T) {
 }
 
 func TestUpdateReq_IsConfigChanged(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{}
 
 	t.Run("metadata difference should be ignored", func(t *testing.T) {
+		t.Parallel()
+
 		oldConfig := `{"input":{"fields":[]},"metadata":{"config_tpl_version":"v1"}}`
 		newConfig := `{"input":{"fields":[]},"metadata":{"config_tpl_version":"v2"}}`
 
@@ -370,6 +414,8 @@ func TestUpdateReq_IsConfigChanged(t *testing.T) {
 	})
 
 	t.Run("invalid old json should return error", func(t *testing.T) {
+		t.Parallel()
+
 		changed, err := req.IsConfigChanged("not-json", `{"input":{"fields":[]}}`)
 
 		require.Error(t, err)

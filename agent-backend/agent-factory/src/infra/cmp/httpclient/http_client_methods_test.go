@@ -22,6 +22,8 @@ func newTestHTTPClient(transport http.RoundTripper) *httpClient {
 }
 
 func TestHTTPClient_Get_Happy(t *testing.T) {
+	t.Parallel()
+
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, http.MethodGet, r.Method)
 		w.WriteHeader(http.StatusOK)
@@ -39,6 +41,8 @@ func TestHTTPClient_Get_Happy(t *testing.T) {
 }
 
 func TestHTTPClient_Get_NilClient(t *testing.T) {
+	t.Parallel()
+
 	c := &httpClient{client: nil}
 	code, body, err := c.Get("http://localhost", nil)
 	assert.Error(t, err)
@@ -47,6 +51,8 @@ func TestHTTPClient_Get_NilClient(t *testing.T) {
 }
 
 func TestHTTPClient_Post_Happy(t *testing.T) {
+	t.Parallel()
+
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, http.MethodPost, r.Method)
 		w.WriteHeader(http.StatusCreated)
@@ -62,6 +68,8 @@ func TestHTTPClient_Post_Happy(t *testing.T) {
 }
 
 func TestHTTPClient_Post_ByteSliceBody(t *testing.T) {
+	t.Parallel()
+
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte("pong"))
@@ -76,6 +84,8 @@ func TestHTTPClient_Post_ByteSliceBody(t *testing.T) {
 }
 
 func TestHTTPClient_Post_NilClient(t *testing.T) {
+	t.Parallel()
+
 	c := &httpClient{client: nil}
 	code, body, err := c.Post("http://localhost", nil, map[string]string{})
 	assert.Error(t, err)
@@ -84,6 +94,8 @@ func TestHTTPClient_Post_NilClient(t *testing.T) {
 }
 
 func TestHTTPClient_Put_Happy(t *testing.T) {
+	t.Parallel()
+
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, http.MethodPut, r.Method)
 		w.WriteHeader(http.StatusOK)
@@ -99,6 +111,8 @@ func TestHTTPClient_Put_Happy(t *testing.T) {
 }
 
 func TestHTTPClient_Delete_Happy(t *testing.T) {
+	t.Parallel()
+
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, http.MethodDelete, r.Method)
 		w.WriteHeader(http.StatusNoContent)
@@ -112,12 +126,16 @@ func TestHTTPClient_Delete_Happy(t *testing.T) {
 }
 
 func TestHTTPClient_Delete_NilClient(t *testing.T) {
+	t.Parallel()
+
 	c := &httpClient{client: nil}
 	_, err := c.Delete("http://localhost", nil)
 	assert.Error(t, err)
 }
 
 func TestHTTPClient_HttpForward_Happy(t *testing.T) {
+	t.Parallel()
+
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "application/json")
@@ -137,6 +155,8 @@ func TestHTTPClient_HttpForward_Happy(t *testing.T) {
 }
 
 func TestHTTPClient_addHeaders_Empty(t *testing.T) {
+	t.Parallel()
+
 	c := &httpClient{}
 	req, _ := http.NewRequest(http.MethodGet, "http://localhost", nil)
 	c.addHeaders(req, nil)
@@ -147,6 +167,8 @@ func TestHTTPClient_addHeaders_Empty(t *testing.T) {
 }
 
 func TestHTTPClient_addHeaders_SkipsEmptyValues(t *testing.T) {
+	t.Parallel()
+
 	c := &httpClient{}
 	req, _ := http.NewRequest(http.MethodGet, "http://localhost", nil)
 	c.addHeaders(req, map[string]string{
@@ -160,6 +182,8 @@ func TestHTTPClient_addHeaders_SkipsEmptyValues(t *testing.T) {
 }
 
 func TestHTTPClient_StreamPost_NonOKStatus(t *testing.T) {
+	t.Parallel()
+
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = w.Write([]byte("internal error"))
@@ -173,16 +197,20 @@ func TestHTTPClient_StreamPost_NonOKStatus(t *testing.T) {
 	require.NoError(t, err)
 
 	var gotErr error
+
 	for e := range errs {
 		if e != nil {
 			gotErr = e
 		}
 	}
+
 	assert.Error(t, gotErr)
 	assert.Contains(t, gotErr.Error(), "500")
 }
 
 func TestHTTPClient_Get_WithHeaders(t *testing.T) {
+	t.Parallel()
+
 	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, "Bearer token", r.Header.Get("Authorization"))
 		w.WriteHeader(http.StatusOK)

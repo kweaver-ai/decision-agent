@@ -5,16 +5,18 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdapmsenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver/v3portdrivermock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 )
 
 func TestIsHasPublishPermission(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		setup   func(*gomock.Controller) (*dataAgentTplSvc, context.Context)
@@ -85,6 +87,8 @@ func TestIsHasPublishPermission(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
@@ -102,6 +106,8 @@ func TestIsHasPublishPermission(t *testing.T) {
 }
 
 func TestIsHasUnPublishPermission(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		setup   func(*gomock.Controller) (*dataAgentTplSvc, context.Context)
@@ -152,6 +158,8 @@ func TestIsHasUnPublishPermission(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
@@ -169,6 +177,8 @@ func TestIsHasUnPublishPermission(t *testing.T) {
 }
 
 func TestIsHasUnpublishOtherUserAgentTplPermission(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		setup   func(*gomock.Controller) (*dataAgentTplSvc, context.Context)
@@ -219,6 +229,8 @@ func TestIsHasUnpublishOtherUserAgentTplPermission(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 

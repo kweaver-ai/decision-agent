@@ -8,6 +8,8 @@ import (
 )
 
 func TestPublishedAgentEo_New(t *testing.T) {
+	t.Parallel()
+
 	eo := &PublishedAgentEo{
 		PublishedByName: "John Doe",
 		Config:          &daconfvalobj.Config{},
@@ -19,6 +21,8 @@ func TestPublishedAgentEo_New(t *testing.T) {
 }
 
 func TestPublishedAgentEo_WithConfig(t *testing.T) {
+	t.Parallel()
+
 	config := &daconfvalobj.Config{
 		Metadata: daconfvalobj.ConfigMetadata{},
 	}
@@ -31,6 +35,8 @@ func TestPublishedAgentEo_WithConfig(t *testing.T) {
 }
 
 func TestPublishedAgentEo_NilConfig(t *testing.T) {
+	t.Parallel()
+
 	eo := &PublishedAgentEo{
 		Config: nil,
 	}
@@ -40,6 +46,8 @@ func TestPublishedAgentEo_NilConfig(t *testing.T) {
 }
 
 func TestPublishedAgentEo_EmptyName(t *testing.T) {
+	t.Parallel()
+
 	eo := &PublishedAgentEo{
 		PublishedByName: "",
 	}
@@ -49,6 +57,8 @@ func TestPublishedAgentEo_EmptyName(t *testing.T) {
 }
 
 func TestPublishedAgentEo_WithSpecialCharactersInName(t *testing.T) {
+	t.Parallel()
+
 	eo := &PublishedAgentEo{
 		PublishedByName: "张三 🌍",
 	}
@@ -57,6 +67,8 @@ func TestPublishedAgentEo_WithSpecialCharactersInName(t *testing.T) {
 }
 
 func TestPublishedAgentEo_StructFields(t *testing.T) {
+	t.Parallel()
+
 	eo := &PublishedAgentEo{
 		Config: &daconfvalobj.Config{},
 	}

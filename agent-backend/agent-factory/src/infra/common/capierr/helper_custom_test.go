@@ -7,6 +7,8 @@ import (
 )
 
 func TestErrorCodes_AreDefined(t *testing.T) {
+	t.Parallel()
+
 	// Test that the error code constants are properly defined
 	assert.NotEmpty(t, DataAgentConfigLlmRequired)
 	assert.NotEmpty(t, DataAgentConfigRetrieverDataSourceKnEntryExceedLimitSize)
@@ -17,12 +19,16 @@ func TestErrorCodes_AreDefined(t *testing.T) {
 }
 
 func TestErrorCodes_ConstantValues(t *testing.T) {
+	t.Parallel()
+
 	// Test specific error code values
 	assert.Equal(t, "AgentFactory.DataAgentConfig.BadRequest.LlmRequired", DataAgentConfigLlmRequired)
 	assert.Contains(t, DataAgentConfigRetrieverDataSourceKnEntryExceedLimitSize, "KnEntryExceedLimitSize")
 }
 
 func TestErrorCodes_Format(t *testing.T) {
+	t.Parallel()
+
 	// Error codes should follow the format: Service.Domain.Feature.SpecificError
 	errorCodes := []string{
 		DataAgentConfigLlmRequired,
@@ -38,6 +44,8 @@ func TestErrorCodes_Format(t *testing.T) {
 }
 
 func TestErrorCodes_Uniqueness(t *testing.T) {
+	t.Parallel()
+
 	// Each error code should be unique
 	assert.NotEqual(t, DataAgentConfigLlmRequired, DataAgentConfigRetrieverDataSourceKnEntryExceedLimitSize)
 }
@@ -53,6 +61,8 @@ func TestErrorCodes_Uniqueness(t *testing.T) {
 // Coverage for these functions remains at 0% due to this limitation.
 
 func TestCustomErrorFunctions_Signatures(t *testing.T) {
+	t.Parallel()
+
 	// Compile-time verification that the functions exist
 	_ = NewCustom400Err
 	_ = NewCustom401Err

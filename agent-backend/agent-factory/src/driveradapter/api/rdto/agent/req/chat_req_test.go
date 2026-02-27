@@ -9,6 +9,8 @@ import (
 )
 
 func TestSelectedFile_StructFields(t *testing.T) {
+	t.Parallel()
+
 	file := SelectedFile{
 		FileName: "test-file.pdf",
 	}
@@ -17,12 +19,16 @@ func TestSelectedFile_StructFields(t *testing.T) {
 }
 
 func TestSelectedFile_Empty(t *testing.T) {
+	t.Parallel()
+
 	file := SelectedFile{}
 
 	assert.Empty(t, file.FileName)
 }
 
 func TestChatReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := &ChatReq{
 		AgentAPPKey:    "app-123",
 		AgentID:        "agent-456",
@@ -47,6 +53,8 @@ func TestChatReq_StructFields(t *testing.T) {
 }
 
 func TestChatReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := &ChatReq{}
 
 	assert.Empty(t, req.AgentAPPKey)
@@ -61,6 +69,8 @@ func TestChatReq_Empty(t *testing.T) {
 }
 
 func TestChatReq_WithStreamOptions(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name      string
 		stream    bool
@@ -85,6 +95,8 @@ func TestChatReq_WithStreamOptions(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			req := &ChatReq{
 				Stream:    tt.stream,
 				IncStream: tt.incStream,
@@ -96,6 +108,8 @@ func TestChatReq_WithStreamOptions(t *testing.T) {
 }
 
 func TestChatReq_WithSelectedFiles(t *testing.T) {
+	t.Parallel()
+
 	files := []SelectedFile{
 		{FileName: "file1.pdf"},
 		{FileName: "file2.txt"},
@@ -111,6 +125,8 @@ func TestChatReq_WithSelectedFiles(t *testing.T) {
 }
 
 func TestChatReq_WithEmptySelectedFiles(t *testing.T) {
+	t.Parallel()
+
 	req := &ChatReq{
 		SelectedFiles: []SelectedFile{},
 	}
@@ -120,6 +136,8 @@ func TestChatReq_WithEmptySelectedFiles(t *testing.T) {
 }
 
 func TestChatReq_WithNilSelectedFiles(t *testing.T) {
+	t.Parallel()
+
 	req := &ChatReq{
 		SelectedFiles: nil,
 	}
@@ -128,6 +146,8 @@ func TestChatReq_WithNilSelectedFiles(t *testing.T) {
 }
 
 func TestInternalParam_StructFields(t *testing.T) {
+	t.Parallel()
+
 	param := InternalParam{
 		UserID:                "user-123",
 		Token:                 "token-456",
@@ -160,6 +180,8 @@ func TestInternalParam_StructFields(t *testing.T) {
 }
 
 func TestInternalParam_Empty(t *testing.T) {
+	t.Parallel()
+
 	param := InternalParam{}
 
 	assert.Empty(t, param.UserID)
@@ -175,6 +197,8 @@ func TestInternalParam_Empty(t *testing.T) {
 }
 
 func TestChatReq_WithHistoryLimit(t *testing.T) {
+	t.Parallel()
+
 	limits := []int{0, 5, 10, 20, 50}
 
 	for _, limit := range limits {
@@ -186,6 +210,8 @@ func TestChatReq_WithHistoryLimit(t *testing.T) {
 }
 
 func TestChatReq_WithExecutorVersion(t *testing.T) {
+	t.Parallel()
+
 	versions := []string{
 		"v1",
 		"v2",
@@ -201,6 +227,8 @@ func TestChatReq_WithExecutorVersion(t *testing.T) {
 }
 
 func TestChatReq_WithModelName(t *testing.T) {
+	t.Parallel()
+
 	models := []string{
 		"gpt-4",
 		"gpt-3.5-turbo",

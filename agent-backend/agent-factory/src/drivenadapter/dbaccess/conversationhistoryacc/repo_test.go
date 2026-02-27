@@ -33,6 +33,7 @@ func (historyTestLogger) Fatalln(...interface{})        {}
 
 func newHistoryRepoWithMock(t *testing.T) (*conversationHistoryRepo, *sqlx.DB, sqlmock.Sqlmock) {
 	t.Helper()
+
 	db, mock, err := sqlx.New()
 	require.NoError(t, err)
 
@@ -46,9 +47,12 @@ func newHistoryRepoWithMock(t *testing.T) (*conversationHistoryRepo, *sqlx.DB, s
 }
 
 func TestNewConversationHistoryRepo_Singleton(t *testing.T) {
+	t.Parallel()
+
 	oldOnce := conversationHistoryRepoOnce
 	oldImpl := conversationHistoryRepoImpl
 	oldGDB := global.GDB
+
 	t.Cleanup(func() {
 		conversationHistoryRepoOnce = oldOnce
 		conversationHistoryRepoImpl = oldImpl
@@ -57,17 +61,21 @@ func TestNewConversationHistoryRepo_Singleton(t *testing.T) {
 
 	db, _, err := sqlx.New()
 	require.NoError(t, err)
+
 	global.GDB = db
 	conversationHistoryRepoOnce = sync.Once{}
 	conversationHistoryRepoImpl = nil
 
 	r1 := NewConversationHistoryRepo()
 	r2 := NewConversationHistoryRepo()
+
 	assert.NotNil(t, r1)
 	assert.Same(t, r1, r2)
 }
 
 func TestConversationHistoryRepo_GetLatestVisitAgentIds(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newHistoryRepoWithMock(t)
 	defer db.Close()
 
@@ -83,6 +91,8 @@ func TestConversationHistoryRepo_GetLatestVisitAgentIds(t *testing.T) {
 }
 
 func TestConversationHistoryRepo_GetLatestVisitAgentIds_Error(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newHistoryRepoWithMock(t)
 	defer db.Close()
 

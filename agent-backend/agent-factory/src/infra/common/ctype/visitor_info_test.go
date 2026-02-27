@@ -8,7 +8,11 @@ import (
 )
 
 func TestVisitorInfo_StructFields(t *testing.T) {
+	t.Parallel()
+
 	t.Run("creates visitor info with all fields", func(t *testing.T) {
+		t.Parallel()
+
 		info := VisitorInfo{
 			XAccountID:        "account-123",
 			XAccountType:      cenum.AccountTypeUser,
@@ -21,6 +25,8 @@ func TestVisitorInfo_StructFields(t *testing.T) {
 	})
 
 	t.Run("allows empty visitor info", func(t *testing.T) {
+		t.Parallel()
+
 		info := VisitorInfo{}
 
 		assert.Empty(t, info.XAccountID)

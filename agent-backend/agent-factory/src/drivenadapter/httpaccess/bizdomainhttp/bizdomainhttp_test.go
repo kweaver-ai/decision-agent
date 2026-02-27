@@ -38,6 +38,8 @@ func newBizDomainAcc(serverURL string) *bizDomainHttpAcc {
 }
 
 func TestAssociateResource_Happy(t *testing.T) {
+	t.Parallel()
+
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, associateResourcePath, r.URL.Path)
 		assert.Equal(t, http.MethodPost, r.Method)
@@ -53,6 +55,8 @@ func TestAssociateResource_Happy(t *testing.T) {
 }
 
 func TestAssociateResource_HTTPError(t *testing.T) {
+	t.Parallel()
+
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = w.Write([]byte(`{"code":500}`))
@@ -66,6 +70,8 @@ func TestAssociateResource_HTTPError(t *testing.T) {
 }
 
 func TestAssociateResource_RequestFailed(t *testing.T) {
+	t.Parallel()
+
 	acc := newBizDomainAcc("http://127.0.0.1:19998")
 	req := &bizdomainhttpreq.AssociateResourceReq{}
 	err := acc.AssociateResource(context.Background(), req)
@@ -73,6 +79,8 @@ func TestAssociateResource_RequestFailed(t *testing.T) {
 }
 
 func TestQueryResourceAssociations_Happy(t *testing.T) {
+	t.Parallel()
+
 	respData := &bizdomainhttpres.QueryResourceAssociationsRes{}
 	respBytes, _ := json.Marshal(respData)
 
@@ -95,6 +103,8 @@ func TestQueryResourceAssociations_Happy(t *testing.T) {
 }
 
 func TestQueryResourceAssociations_BadJSON(t *testing.T) {
+	t.Parallel()
+
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write([]byte(`not-valid-json`))
@@ -108,6 +118,8 @@ func TestQueryResourceAssociations_BadJSON(t *testing.T) {
 }
 
 func TestQueryResourceAssociations_RequestFailed(t *testing.T) {
+	t.Parallel()
+
 	acc := newBizDomainAcc("http://127.0.0.1:19998")
 	req := &bizdomainhttpreq.QueryResourceAssociationsReq{BdID: "bd-1"}
 	_, err := acc.QueryResourceAssociations(context.Background(), req)
@@ -115,6 +127,8 @@ func TestQueryResourceAssociations_RequestFailed(t *testing.T) {
 }
 
 func TestGetAllAgentIDList_Happy(t *testing.T) {
+	t.Parallel()
+
 	respData := &bizdomainhttpres.QueryResourceAssociationsRes{}
 	respBytes, _ := json.Marshal(respData)
 
@@ -132,6 +146,8 @@ func TestGetAllAgentIDList_Happy(t *testing.T) {
 }
 
 func TestGetAllAgentIDList_EmptyBdIDs(t *testing.T) {
+	t.Parallel()
+
 	acc := newBizDomainAcc("http://127.0.0.1:19998")
 	agentIDs, agentID2BdIDMap, err := acc.GetAllAgentIDList(context.Background(), []string{})
 	require.NoError(t, err)
@@ -140,6 +156,8 @@ func TestGetAllAgentIDList_EmptyBdIDs(t *testing.T) {
 }
 
 func TestGetAllAgentIDList_HTTPError(t *testing.T) {
+	t.Parallel()
+
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
 	}))

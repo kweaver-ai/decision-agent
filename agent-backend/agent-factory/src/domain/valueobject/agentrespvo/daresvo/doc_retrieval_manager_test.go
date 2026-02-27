@@ -9,6 +9,8 @@ import (
 )
 
 func TestNewDocRetrievalManager(t *testing.T) {
+	t.Parallel()
+
 	manager := NewDocRetrievalManager()
 
 	assert.NotNil(t, manager)
@@ -16,6 +18,8 @@ func TestNewDocRetrievalManager(t *testing.T) {
 }
 
 func TestDocRetrievalManager_RegisterStrategy(t *testing.T) {
+	t.Parallel()
+
 	manager := NewDocRetrievalManager()
 	initialLen := len(manager.strategies)
 
@@ -30,6 +34,8 @@ func TestDocRetrievalManager_RegisterStrategy(t *testing.T) {
 }
 
 func TestDocRetrievalManager_ProcessResult_StandardStrategy(t *testing.T) {
+	t.Parallel()
+
 	manager := NewDocRetrievalManager()
 
 	// Standard strategy expects a map with result and full_result structure
@@ -49,6 +55,8 @@ func TestDocRetrievalManager_ProcessResult_StandardStrategy(t *testing.T) {
 }
 
 func TestDocRetrievalManager_ProcessResult_InvalidStrategy(t *testing.T) {
+	t.Parallel()
+
 	manager := NewDocRetrievalManager()
 
 	answer := "Test answer content"

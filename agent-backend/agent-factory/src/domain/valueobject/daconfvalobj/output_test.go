@@ -9,6 +9,8 @@ import (
 )
 
 func TestOutput_ValObjCheck_DolphinMode(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		output      *Output
@@ -61,6 +63,8 @@ func TestOutput_ValObjCheck_DolphinMode(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.output.ValObjCheck(true) // dolphin mode
 			if tt.expectError {
 				assert.Error(t, err)
@@ -76,6 +80,8 @@ func TestOutput_ValObjCheck_DolphinMode(t *testing.T) {
 }
 
 func TestOutput_ValObjCheck_NonDolphinMode(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		output      *Output
@@ -122,6 +128,8 @@ func TestOutput_ValObjCheck_NonDolphinMode(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.output.ValObjCheck(false) // non-dolphin mode
 			if tt.expectError {
 				assert.Error(t, err)
@@ -134,6 +142,8 @@ func TestOutput_ValObjCheck_NonDolphinMode(t *testing.T) {
 }
 
 func TestOutput_ValObjCheck_DefaultValues(t *testing.T) {
+	t.Parallel()
+
 	output := &Output{
 		Variables:     &VariablesS{},
 		DefaultFormat: cdaenum.OutputDefaultFormatJson,
@@ -149,6 +159,8 @@ func TestOutput_ValObjCheck_DefaultValues(t *testing.T) {
 }
 
 func TestVariablesS_Fields(t *testing.T) {
+	t.Parallel()
+
 	vars := &VariablesS{
 		AnswerVar:           "answer",
 		DocRetrievalVar:     "doc",
@@ -167,6 +179,8 @@ func TestVariablesS_Fields(t *testing.T) {
 }
 
 func TestOutput_Fields(t *testing.T) {
+	t.Parallel()
+
 	vars := &VariablesS{
 		AnswerVar: "ans",
 	}

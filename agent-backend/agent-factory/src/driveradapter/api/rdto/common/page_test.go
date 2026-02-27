@@ -7,6 +7,8 @@ import (
 )
 
 func TestPageSize_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	p := PageSize{}
 
 	errMsgMap := p.GetErrMsgMap()
@@ -19,6 +21,8 @@ func TestPageSize_GetErrMsgMap(t *testing.T) {
 }
 
 func TestPageSize_GetSize(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		size     int
@@ -48,6 +52,8 @@ func TestPageSize_GetSize(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			p := PageSize{Size: tt.size}
 			result := p.GetSize()
 			assert.Equal(t, tt.expected, result)
@@ -56,6 +62,8 @@ func TestPageSize_GetSize(t *testing.T) {
 }
 
 func TestPageSize_GetPage(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		page     int
@@ -85,6 +93,8 @@ func TestPageSize_GetPage(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			p := PageSize{Page: tt.page}
 			result := p.GetPage()
 			assert.Equal(t, tt.expected, result)
@@ -93,6 +103,8 @@ func TestPageSize_GetPage(t *testing.T) {
 }
 
 func TestPageSize_GetOffset(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		page     int
@@ -139,6 +151,8 @@ func TestPageSize_GetOffset(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			p := PageSize{Page: tt.page, Size: tt.size}
 			result := p.GetOffset()
 			assert.Equal(t, tt.expected, result)
@@ -147,6 +161,8 @@ func TestPageSize_GetOffset(t *testing.T) {
 }
 
 func TestPageSize_GetLimit(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		size     int
@@ -171,6 +187,8 @@ func TestPageSize_GetLimit(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			p := PageSize{Size: tt.size}
 			result := p.GetLimit()
 			assert.Equal(t, tt.expected, result)
@@ -179,6 +197,8 @@ func TestPageSize_GetLimit(t *testing.T) {
 }
 
 func TestPageSize_ToLimitOffset(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name          string
 		page          int
@@ -211,6 +231,8 @@ func TestPageSize_ToLimitOffset(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			p := PageSize{Page: tt.page, Size: tt.size}
 			result := p.ToLimitOffset()
 
@@ -221,6 +243,8 @@ func TestPageSize_ToLimitOffset(t *testing.T) {
 }
 
 func TestPageSize_EmptyStruct(t *testing.T) {
+	t.Parallel()
+
 	p := PageSize{}
 
 	assert.Equal(t, 0, p.Size)
@@ -230,6 +254,8 @@ func TestPageSize_EmptyStruct(t *testing.T) {
 }
 
 func TestPageSize_WithValues(t *testing.T) {
+	t.Parallel()
+
 	p := PageSize{
 		Page: 5,
 		Size: 50,
@@ -244,6 +270,8 @@ func TestPageSize_WithValues(t *testing.T) {
 }
 
 func TestPageByLastIntID_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	p := PageByLastIntID{}
 	errMsgMap := p.GetErrMsgMap()
 
@@ -254,6 +282,8 @@ func TestPageByLastIntID_GetErrMsgMap(t *testing.T) {
 }
 
 func TestPageByLastIntID_GetSize(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		size     int
@@ -278,6 +308,8 @@ func TestPageByLastIntID_GetSize(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			p := PageByLastIntID{Size: tt.size}
 			result := p.GetSize()
 			assert.Equal(t, tt.expected, result)
@@ -286,6 +318,8 @@ func TestPageByLastIntID_GetSize(t *testing.T) {
 }
 
 func TestPageByLastIntID_GetLimit(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		size     int
@@ -305,6 +339,8 @@ func TestPageByLastIntID_GetLimit(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			p := PageByLastIntID{Size: tt.size}
 			result := p.GetLimit()
 			assert.Equal(t, tt.expected, result)
@@ -313,6 +349,8 @@ func TestPageByLastIntID_GetLimit(t *testing.T) {
 }
 
 func TestPageByLastIntID_Fields(t *testing.T) {
+	t.Parallel()
+
 	p := PageByLastIntID{
 		Size:   20,
 		LastID: 123,
@@ -323,6 +361,8 @@ func TestPageByLastIntID_Fields(t *testing.T) {
 }
 
 func TestPageByStrID_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	p := PageByStrID{}
 	errMsgMap := p.GetErrMsgMap()
 
@@ -332,6 +372,8 @@ func TestPageByStrID_GetErrMsgMap(t *testing.T) {
 }
 
 func TestPageByStrID_GetSize(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		size     int
@@ -356,6 +398,8 @@ func TestPageByStrID_GetSize(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			p := PageByStrID{Size: tt.size}
 			result := p.GetSize()
 			assert.Equal(t, tt.expected, result)
@@ -364,6 +408,8 @@ func TestPageByStrID_GetSize(t *testing.T) {
 }
 
 func TestPageByStrID_GetLimit(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		size     int
@@ -383,6 +429,8 @@ func TestPageByStrID_GetLimit(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			p := PageByStrID{Size: tt.size}
 			result := p.GetLimit()
 			assert.Equal(t, tt.expected, result)
@@ -391,6 +439,8 @@ func TestPageByStrID_GetLimit(t *testing.T) {
 }
 
 func TestPageByStrID_Fields(t *testing.T) {
+	t.Parallel()
+
 	p := PageByStrID{
 		Size:   20,
 		LastID: "abc123",

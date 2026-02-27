@@ -19,6 +19,8 @@ func (m *MockHealthHandler) RegHealthRouter(routerGroup *gin.RouterGroup) {
 }
 
 func TestRegisterHealthRoutes_RegistersHealthGroup(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
 	engine := gin.New()
 
@@ -35,6 +37,8 @@ func TestRegisterHealthRoutes_RegistersHealthGroup(t *testing.T) {
 }
 
 func TestRegisterHealthRoutes_WithNilEngine(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
 
 	mockHandler := &MockHealthHandler{}
@@ -51,6 +55,8 @@ func TestRegisterHealthRoutes_WithNilEngine(t *testing.T) {
 }
 
 func TestRegisterHealthRoutes_CreatesCorrectPath(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
 	engine := gin.New()
 
@@ -70,6 +76,8 @@ func TestRegisterHealthRoutes_CreatesCorrectPath(t *testing.T) {
 }
 
 func TestRegisterHealthRoutes_MultipleCalls(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
 	engine := gin.New()
 
@@ -81,12 +89,14 @@ func TestRegisterHealthRoutes_MultipleCalls(t *testing.T) {
 
 	// Call registerHealthRoutes multiple times
 	server.registerHealthRoutes(engine)
+
 	firstCallCount := 0
 	if mockHandler.RegHealthRouterCalled {
 		firstCallCount = 1
 	}
 
 	server.registerHealthRoutes(engine)
+
 	secondCallCount := 0
 	if mockHandler.RegHealthRouterCalled {
 		secondCallCount = 1

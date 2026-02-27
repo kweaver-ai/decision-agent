@@ -7,6 +7,8 @@ import (
 )
 
 func TestStandardDocRetrievalStrategy_Process_Valid(t *testing.T) {
+	t.Parallel()
+
 	strategy := NewStandardDocRetrievalStrategy()
 
 	// Valid answer with all required fields
@@ -24,6 +26,8 @@ func TestStandardDocRetrievalStrategy_Process_Valid(t *testing.T) {
 }
 
 func TestStandardDocRetrievalStrategy_Process_WithErrorCode(t *testing.T) {
+	t.Parallel()
+
 	strategy := NewStandardDocRetrievalStrategy()
 
 	// Answer with error code
@@ -39,6 +43,8 @@ func TestStandardDocRetrievalStrategy_Process_WithErrorCode(t *testing.T) {
 }
 
 func TestStandardDocRetrievalStrategy_Process_MissingResult(t *testing.T) {
+	t.Parallel()
+
 	strategy := NewStandardDocRetrievalStrategy()
 
 	// Answer missing result field
@@ -55,6 +61,8 @@ func TestStandardDocRetrievalStrategy_Process_MissingResult(t *testing.T) {
 }
 
 func TestStandardDocRetrievalStrategy_Process_MissingFullResult(t *testing.T) {
+	t.Parallel()
+
 	strategy := NewStandardDocRetrievalStrategy()
 
 	// Answer missing full_result field
@@ -69,6 +77,8 @@ func TestStandardDocRetrievalStrategy_Process_MissingFullResult(t *testing.T) {
 }
 
 func TestStandardDocRetrievalStrategy_Process_FullResultNotMap(t *testing.T) {
+	t.Parallel()
+
 	strategy := NewStandardDocRetrievalStrategy()
 
 	// Answer with full_result as non-map
@@ -84,6 +94,8 @@ func TestStandardDocRetrievalStrategy_Process_FullResultNotMap(t *testing.T) {
 }
 
 func TestStandardDocRetrievalStrategy_Process_MissingText(t *testing.T) {
+	t.Parallel()
+
 	strategy := NewStandardDocRetrievalStrategy()
 
 	// Answer with full_result but missing text
@@ -101,6 +113,8 @@ func TestStandardDocRetrievalStrategy_Process_MissingText(t *testing.T) {
 }
 
 func TestStandardDocRetrievalStrategy_Process_NonMapAnswer(t *testing.T) {
+	t.Parallel()
+
 	strategy := NewStandardDocRetrievalStrategy()
 
 	// Answer is not a map (non-standard structure)
@@ -112,6 +126,8 @@ func TestStandardDocRetrievalStrategy_Process_NonMapAnswer(t *testing.T) {
 }
 
 func TestStandardDocRetrievalStrategy_Process_NilAnswer(t *testing.T) {
+	t.Parallel()
+
 	strategy := NewStandardDocRetrievalStrategy()
 
 	// Answer is nil
@@ -121,6 +137,8 @@ func TestStandardDocRetrievalStrategy_Process_NilAnswer(t *testing.T) {
 }
 
 func TestStandardDocRetrievalStrategy_GetStrategyName(t *testing.T) {
+	t.Parallel()
+
 	strategy := NewStandardDocRetrievalStrategy()
 	name := strategy.GetStrategyName()
 	assert.NotEmpty(t, name)

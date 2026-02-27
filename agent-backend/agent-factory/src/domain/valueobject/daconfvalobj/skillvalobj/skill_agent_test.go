@@ -9,11 +9,15 @@ import (
 )
 
 func TestCurrentPmsCheckStatusT_Constants(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, CurrentPmsCheckStatusT("success"), CurrentPmsCheckStatusSuccess)
 	assert.Equal(t, CurrentPmsCheckStatusT("failed"), CurrentPmsCheckStatusFailed)
 }
 
 func TestSkillAgent_ValObjCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	agent := &SkillAgent{
 		AgentKey: "test-agent-key",
 	}
@@ -24,6 +28,8 @@ func TestSkillAgent_ValObjCheck_Valid(t *testing.T) {
 }
 
 func TestSkillAgent_ValObjCheck_EmptyAgentKey(t *testing.T) {
+	t.Parallel()
+
 	agent := &SkillAgent{
 		AgentKey: "",
 	}
@@ -35,6 +41,8 @@ func TestSkillAgent_ValObjCheck_EmptyAgentKey(t *testing.T) {
 }
 
 func TestSkillAgent_NewSkillAgent(t *testing.T) {
+	t.Parallel()
+
 	inputData := json.RawMessage(`{"key": "value"}`)
 	agent := &SkillAgent{
 		AgentKey:                        "agent-key-123",
@@ -54,6 +62,8 @@ func TestSkillAgent_NewSkillAgent(t *testing.T) {
 }
 
 func TestSkillAgent_Empty(t *testing.T) {
+	t.Parallel()
+
 	agent := &SkillAgent{}
 
 	assert.Empty(t, agent.AgentKey)
@@ -64,6 +74,8 @@ func TestSkillAgent_Empty(t *testing.T) {
 }
 
 func TestSkillAgent_WithDataSourceConfig(t *testing.T) {
+	t.Parallel()
+
 	dsConfig := &DataSourceConfig{
 		Type:            skillenum.Datasource("knowledge"),
 		SpecificInherit: skillenum.DatasourceSpecificInherit("none"),
@@ -78,6 +90,8 @@ func TestSkillAgent_WithDataSourceConfig(t *testing.T) {
 }
 
 func TestSkillAgent_WithLLMConfig(t *testing.T) {
+	t.Parallel()
+
 	llmConfig := &LLMConfig{
 		Type: skillenum.LLM("openai"),
 	}
@@ -91,6 +105,8 @@ func TestSkillAgent_WithLLMConfig(t *testing.T) {
 }
 
 func TestSkillAgent_CurrentPmsCheckStatus(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name   string
 		status CurrentPmsCheckStatusT
@@ -102,6 +118,8 @@ func TestSkillAgent_CurrentPmsCheckStatus(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			agent := &SkillAgent{
 				AgentKey:              "test-key",
 				CurrentPmsCheckStatus: tt.status,
@@ -113,8 +131,10 @@ func TestSkillAgent_CurrentPmsCheckStatus(t *testing.T) {
 }
 
 func TestSkillAgent_CurrentIsExistsAndPublished(t *testing.T) {
+	t.Parallel()
+
 	agent := &SkillAgent{
-		AgentKey:                "test-key",
+		AgentKey:                    "test-key",
 		CurrentIsExistsAndPublished: true,
 	}
 

@@ -15,6 +15,8 @@ import (
 
 // AfterProcess: AnswerVar 为空时返回 error
 func TestAfterProcess_AnswerVarEmpty(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -43,6 +45,8 @@ func TestAfterProcess_AnswerVarEmpty(t *testing.T) {
 
 // AfterProcess: invalid JSON callResult → daresvo.NewDataAgentRes error
 func TestAfterProcess_InvalidCallResult(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -72,6 +76,8 @@ func TestAfterProcess_InvalidCallResult(t *testing.T) {
 
 // AfterProcess: invalid JSON → daresvo.NewDataAgentRes returns error
 func TestAfterProcess_InvalidJSON(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

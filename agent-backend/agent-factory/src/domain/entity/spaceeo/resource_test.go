@@ -9,6 +9,8 @@ import (
 )
 
 func TestNewSpaceResource_CreatesNewInstance(t *testing.T) {
+	t.Parallel()
+
 	resource1 := NewSpaceResource()
 	resource2 := NewSpaceResource()
 
@@ -20,6 +22,8 @@ func TestNewSpaceResource_CreatesNewInstance(t *testing.T) {
 }
 
 func TestSpaceResource_Fields(t *testing.T) {
+	t.Parallel()
+
 	resource := &SpaceResource{
 		SpaceResourcePo: dapo.SpaceResourcePo{
 			ID: 123,
@@ -32,6 +36,8 @@ func TestSpaceResource_Fields(t *testing.T) {
 }
 
 func TestSpaceResource_WithPublishedAgentInfo(t *testing.T) {
+	t.Parallel()
+
 	resource := &SpaceResource{
 		PublishedAgentInfo: agentvo.NewPublishedAgentInfo(),
 	}

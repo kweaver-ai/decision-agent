@@ -7,6 +7,8 @@ import (
 )
 
 func TestSkillMCP_ValObjCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	mcp := &SkillMCP{
 		MCPServerID: "mcp-server-123",
 	}
@@ -17,6 +19,8 @@ func TestSkillMCP_ValObjCheck_Valid(t *testing.T) {
 }
 
 func TestSkillMCP_ValObjCheck_EmptyServerID(t *testing.T) {
+	t.Parallel()
+
 	mcp := &SkillMCP{
 		MCPServerID: "",
 	}
@@ -28,6 +32,8 @@ func TestSkillMCP_ValObjCheck_EmptyServerID(t *testing.T) {
 }
 
 func TestSkillMCP_NewSkillMCP(t *testing.T) {
+	t.Parallel()
+
 	mcp := &SkillMCP{
 		MCPServerID: "test-mcp-server",
 	}
@@ -36,6 +42,8 @@ func TestSkillMCP_NewSkillMCP(t *testing.T) {
 }
 
 func TestSkillMCP_Empty(t *testing.T) {
+	t.Parallel()
+
 	mcp := &SkillMCP{}
 
 	assert.Empty(t, mcp.MCPServerID)

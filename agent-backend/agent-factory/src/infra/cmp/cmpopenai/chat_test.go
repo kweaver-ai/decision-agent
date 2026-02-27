@@ -8,16 +8,19 @@ import (
 )
 
 func TestGenReq(t *testing.T) {
+	t.Parallel()
+
 	cmp := &OpenAICmp{
 		model: "gpt-4",
 	}
 
 	t.Run("valid user message without system message", func(t *testing.T) {
+		t.Parallel()
+
 		userMsg := "Hello, how are you?"
 		sysMsg := ""
 
 		req, err := cmp.genReq(userMsg, sysMsg, false)
-
 		if err != nil {
 			t.Fatalf("Expected no error, got %v", err)
 		}
@@ -44,11 +47,12 @@ func TestGenReq(t *testing.T) {
 	})
 
 	t.Run("valid user message with system message", func(t *testing.T) {
+		t.Parallel()
+
 		userMsg := "Hello, how are you?"
 		sysMsg := "You are a helpful assistant."
 
 		req, err := cmp.genReq(userMsg, sysMsg, false)
-
 		if err != nil {
 			t.Fatalf("Expected no error, got %v", err)
 		}
@@ -71,11 +75,12 @@ func TestGenReq(t *testing.T) {
 	})
 
 	t.Run("with stream enabled", func(t *testing.T) {
+		t.Parallel()
+
 		userMsg := "Stream this message"
 		sysMsg := ""
 
 		req, err := cmp.genReq(userMsg, sysMsg, true)
-
 		if err != nil {
 			t.Fatalf("Expected no error, got %v", err)
 		}
@@ -86,6 +91,8 @@ func TestGenReq(t *testing.T) {
 	})
 
 	t.Run("empty user message", func(t *testing.T) {
+		t.Parallel()
+
 		userMsg := ""
 		sysMsg := "System message"
 
@@ -106,6 +113,8 @@ func TestGenReq(t *testing.T) {
 }
 
 func TestStreamChat_EmptyUserMessage(t *testing.T) {
+	t.Parallel()
+
 	cmp := &OpenAICmp{
 		model: "gpt-4",
 	}
@@ -128,6 +137,8 @@ func TestStreamChat_EmptyUserMessage(t *testing.T) {
 }
 
 func TestChat_EmptyUserMessage(t *testing.T) {
+	t.Parallel()
+
 	cmp := &OpenAICmp{
 		model: "gpt-4",
 	}

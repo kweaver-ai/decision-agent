@@ -21,6 +21,8 @@ import (
 )
 
 func TestDataAgentConfigSvc_DetailPmsCheck_PrivateAPI(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -30,9 +32,9 @@ func TestDataAgentConfigSvc_DetailPmsCheck_PrivateAPI(t *testing.T) {
 
 	ctx := context.Background()
 	po := &dapo.DataAgentPo{
-		ID:         "agent-1",
-		Name:       "Test Agent",
-		CreatedBy:  "user-123",
+		ID:        "agent-1",
+		Name:      "Test Agent",
+		CreatedBy: "user-123",
 	}
 
 	err := svc.detailPmsCheck(ctx, po, true, "user-456")
@@ -41,6 +43,8 @@ func TestDataAgentConfigSvc_DetailPmsCheck_PrivateAPI(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_DetailPmsCheck_PublicAPI_NoPermission(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -50,9 +54,9 @@ func TestDataAgentConfigSvc_DetailPmsCheck_PublicAPI_NoPermission(t *testing.T) 
 
 	ctx := context.Background()
 	po := &dapo.DataAgentPo{
-		ID:         "agent-1",
-		Name:       "Test Agent",
-		CreatedBy:  "user-123",
+		ID:        "agent-1",
+		Name:      "Test Agent",
+		CreatedBy: "user-123",
 	}
 
 	// isOwnerOrHasBuiltInAgentMgmtPermission will return error when user doesn't have permission
@@ -63,6 +67,8 @@ func TestDataAgentConfigSvc_DetailPmsCheck_PublicAPI_NoPermission(t *testing.T) 
 }
 
 func TestDataAgentConfigSvc_IsOwnerOrBuiltIn_BuiltInHasPermission(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -87,6 +93,8 @@ func TestDataAgentConfigSvc_IsOwnerOrBuiltIn_BuiltInHasPermission(t *testing.T) 
 }
 
 func TestDataAgentConfigSvc_IsOwnerOrBuiltIn_BuiltInNoPermission(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -111,6 +119,8 @@ func TestDataAgentConfigSvc_IsOwnerOrBuiltIn_BuiltInNoPermission(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_IsOwnerOrBuiltIn_BuiltInPermissionError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -134,6 +144,8 @@ func TestDataAgentConfigSvc_IsOwnerOrBuiltIn_BuiltInPermissionError(t *testing.T
 }
 
 func TestDataAgentConfigSvc_MarkSkillAgentPmsForDetail_NilSkill(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -155,6 +167,8 @@ func TestDataAgentConfigSvc_MarkSkillAgentPmsForDetail_NilSkill(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_MarkSkillAgentPmsForDetail_EmptySkillAgents(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -178,6 +192,8 @@ func TestDataAgentConfigSvc_MarkSkillAgentPmsForDetail_EmptySkillAgents(t *testi
 }
 
 func TestDataAgentConfigSvc_DetailPmsCheck_SameUser(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -198,6 +214,8 @@ func TestDataAgentConfigSvc_DetailPmsCheck_SameUser(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_MarkSkillAgentPmsForDetail_WithSkillAgents_PubedRepoError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -225,6 +243,8 @@ func TestDataAgentConfigSvc_MarkSkillAgentPmsForDetail_WithSkillAgents_PubedRepo
 }
 
 func TestDataAgentConfigSvc_MarkSkillAgentPmsForDetail_CheckUseAgentPmsError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -259,6 +279,8 @@ func TestDataAgentConfigSvc_MarkSkillAgentPmsForDetail_CheckUseAgentPmsError(t *
 }
 
 func TestDataAgentConfigSvc_MarkSkillAgentPmsForDetail_PmsCtrlHasPms(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -306,6 +328,8 @@ func TestDataAgentConfigSvc_MarkSkillAgentPmsForDetail_PmsCtrlHasPms(t *testing.
 }
 
 func TestDataAgentConfigSvc_MarkSkillAgentPmsForDetail_PmsCtrlNoPms(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -346,6 +370,8 @@ func TestDataAgentConfigSvc_MarkSkillAgentPmsForDetail_PmsCtrlNoPms(t *testing.T
 }
 
 func TestDataAgentConfigSvc_MarkSkillAgentPmsForDetail_HasPmsAndNoPms(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -393,6 +419,8 @@ func TestDataAgentConfigSvc_MarkSkillAgentPmsForDetail_HasPmsAndNoPms(t *testing
 }
 
 func TestDataAgentConfigSvc_MarkSkillAgentPmsForDetail_AgentNotInPubedMap(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

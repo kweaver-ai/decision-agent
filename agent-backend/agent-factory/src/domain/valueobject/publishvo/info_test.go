@@ -9,6 +9,8 @@ import (
 )
 
 func TestPublishInfo_NewInstance(t *testing.T) {
+	t.Parallel()
+
 	info := &PublishInfo{}
 
 	assert.NotNil(t, info)
@@ -20,6 +22,8 @@ func TestPublishInfo_NewInstance(t *testing.T) {
 }
 
 func TestPublishInfo_WithCategoryIDs(t *testing.T) {
+	t.Parallel()
+
 	info := &PublishInfo{
 		CategoryIDs: []string{"cat_1", "cat_2", "cat_3"},
 	}
@@ -31,6 +35,8 @@ func TestPublishInfo_WithCategoryIDs(t *testing.T) {
 }
 
 func TestPublishInfo_WithEmptyCategoryIDs(t *testing.T) {
+	t.Parallel()
+
 	info := &PublishInfo{
 		CategoryIDs: []string{},
 	}
@@ -40,6 +46,8 @@ func TestPublishInfo_WithEmptyCategoryIDs(t *testing.T) {
 }
 
 func TestPublishInfo_WithDescription(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		description string
@@ -64,6 +72,8 @@ func TestPublishInfo_WithDescription(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			info := &PublishInfo{
 				Description: tt.description,
 			}
@@ -74,6 +84,8 @@ func TestPublishInfo_WithDescription(t *testing.T) {
 }
 
 func TestPublishInfo_WithPublishToWhere(t *testing.T) {
+	t.Parallel()
+
 	info := &PublishInfo{
 		PublishToWhere: []daenum.PublishToWhere{
 			daenum.PublishToWhereCustomSpace,
@@ -87,6 +99,8 @@ func TestPublishInfo_WithPublishToWhere(t *testing.T) {
 }
 
 func TestPublishInfo_WithPublishToBes(t *testing.T) {
+	t.Parallel()
+
 	info := &PublishInfo{
 		PublishToBes: []cdaenum.PublishToBe{
 			cdaenum.PublishToBeSkillAgent,
@@ -98,6 +112,8 @@ func TestPublishInfo_WithPublishToBes(t *testing.T) {
 }
 
 func TestPublishInfo_WithEmptyPublishToBes(t *testing.T) {
+	t.Parallel()
+
 	info := &PublishInfo{
 		PublishToBes: []cdaenum.PublishToBe{},
 	}
@@ -107,6 +123,8 @@ func TestPublishInfo_WithEmptyPublishToBes(t *testing.T) {
 }
 
 func TestPublishInfo_FullStructure(t *testing.T) {
+	t.Parallel()
+
 	info := &PublishInfo{
 		CategoryIDs: []string{"cat_1", "cat_2"},
 		Description: "Test description",

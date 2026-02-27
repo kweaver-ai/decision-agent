@@ -12,6 +12,8 @@ import (
 )
 
 func TestNewDetailRes(t *testing.T) {
+	t.Parallel()
+
 	res := NewDetailRes()
 	assert.NotNil(t, res)
 	assert.Zero(t, res.ID)
@@ -22,7 +24,11 @@ func TestNewDetailRes(t *testing.T) {
 }
 
 func TestDetailRes_LoadFromEo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("valid eo", func(t *testing.T) {
+		t.Parallel()
+
 		res := NewDetailRes()
 		profile := "test profile"
 		builtIn := cdaenum.BuiltInYes
@@ -53,6 +59,8 @@ func TestDetailRes_LoadFromEo(t *testing.T) {
 	})
 
 	t.Run("nil profile", func(t *testing.T) {
+		t.Parallel()
+
 		res := NewDetailRes()
 		eo := &pubedeo.PublishedTpl{
 			PublishedTplPo: dapo.PublishedTplPo{
@@ -71,6 +79,8 @@ func TestDetailRes_LoadFromEo(t *testing.T) {
 }
 
 func TestDetailRes_Fields(t *testing.T) {
+	t.Parallel()
+
 	res := &DetailRes{
 		ID:          100,
 		TplID:       200,
@@ -78,7 +88,7 @@ func TestDetailRes_Fields(t *testing.T) {
 		Key:         "detail-key",
 		Avatar:      "avatar.png",
 		AvatarType:  1,
-		ProductKey:   "product-key",
+		ProductKey:  "product-key",
 		ProductName: "Product Name",
 		PublishedAt: 1234567890,
 		PublishedBy: "user-1",

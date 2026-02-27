@@ -22,15 +22,20 @@ import (
 
 func newConversationTx(t *testing.T) (*sql.Tx, sqlmock.Sqlmock, func()) {
 	t.Helper()
+
 	db, mock, err := sqlmock.New()
 	require.NoError(t, err)
 	mock.ExpectBegin()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
+
 	cleanup := func() {
 		require.NoError(t, mock.ExpectationsWereMet())
+
 		_ = db.Close()
 	}
+
 	return tx, mock, cleanup
 }
 

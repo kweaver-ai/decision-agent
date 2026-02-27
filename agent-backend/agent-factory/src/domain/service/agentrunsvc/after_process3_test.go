@@ -18,6 +18,8 @@ import (
 
 // AfterProcess: IsNeedDocRetrivalPostProcess=true branch
 func TestAfterProcess_IsNeedDocRetrivalPostProcess(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -54,6 +56,8 @@ func TestAfterProcess_IsNeedDocRetrivalPostProcess(t *testing.T) {
 
 // AfterProcess: IsNeedProgress=false → progressAns cleared
 func TestAfterProcess_IsNeedProgressFalse(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -90,6 +94,8 @@ func TestAfterProcess_IsNeedProgressFalse(t *testing.T) {
 
 // AfterProcess: status=True with TTFT already set (skip CalculateTTFT)
 func TestAfterProcess_StatusTrue_TTFTAlreadySet(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -129,6 +135,8 @@ func TestAfterProcess_StatusTrue_TTFTAlreadySet(t *testing.T) {
 
 // handleMessageAndTempArea: conversationRepo.GetByID fails
 func TestAfterProcess_HandleMsgArea_ConvGetByIDFails(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -167,6 +175,8 @@ func TestAfterProcess_HandleMsgArea_ConvGetByIDFails(t *testing.T) {
 
 // handleMessageAndTempArea: conversationRepo.Update fails
 func TestAfterProcess_HandleMsgArea_ConvUpdateFails(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -206,6 +216,8 @@ func TestAfterProcess_HandleMsgArea_ConvUpdateFails(t *testing.T) {
 
 // AfterProcess: status=True with IsNeedProgress=true (progressAns kept)
 func TestAfterProcess_StatusTrue_IsNeedProgress(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -246,6 +258,8 @@ func TestAfterProcess_StatusTrue_IsNeedProgress(t *testing.T) {
 
 // AfterProcess: status=Error with error map containing error_code
 func TestAfterProcess_StatusError_WithErrorCode(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -284,6 +298,8 @@ func TestAfterProcess_StatusError_WithErrorCode(t *testing.T) {
 
 // TransformErrorToHTTPError: non-map error
 func TestTransformErrorToHTTPError_NonMap(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	httpErr := TransformErrorToHTTPError(ctx, "plain string error")
 	assert.NotNil(t, httpErr)
@@ -291,6 +307,8 @@ func TestTransformErrorToHTTPError_NonMap(t *testing.T) {
 
 // TransformErrorToHTTPError: map without error_code
 func TestTransformErrorToHTTPError_MapNoErrorCode(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	httpErr := TransformErrorToHTTPError(ctx, map[string]interface{}{"other": "value"})
 	assert.NotNil(t, httpErr)
@@ -298,6 +316,8 @@ func TestTransformErrorToHTTPError_MapNoErrorCode(t *testing.T) {
 
 // TransformErrorToHTTPError: map with non-string error_code
 func TestTransformErrorToHTTPError_MapNonStringErrorCode(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	httpErr := TransformErrorToHTTPError(ctx, map[string]interface{}{"error_code": 123})
 	assert.NotNil(t, httpErr)
@@ -305,6 +325,8 @@ func TestTransformErrorToHTTPError_MapNonStringErrorCode(t *testing.T) {
 
 // TransformErrorToHTTPError: SkillExecption
 func TestTransformErrorToHTTPError_SkillExecption(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	httpErr := TransformErrorToHTTPError(ctx, map[string]interface{}{
 		"error_code":    "AgentExecutor.DolphinSDKException.SkillExecption",
@@ -315,6 +337,8 @@ func TestTransformErrorToHTTPError_SkillExecption(t *testing.T) {
 
 // TransformErrorToHTTPError: BaseExecption
 func TestTransformErrorToHTTPError_BaseExecption(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	httpErr := TransformErrorToHTTPError(ctx, map[string]interface{}{
 		"error_code":    "AgentExecutor.DolphinSDKException.BaseExecption",
@@ -325,6 +349,8 @@ func TestTransformErrorToHTTPError_BaseExecption(t *testing.T) {
 
 // TransformErrorToHTTPError: default error code
 func TestTransformErrorToHTTPError_DefaultCode(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	httpErr := TransformErrorToHTTPError(ctx, map[string]interface{}{
 		"error_code":    "SomeOtherCode",
@@ -335,7 +361,10 @@ func TestTransformErrorToHTTPError_DefaultCode(t *testing.T) {
 
 // TransformErrorToHTTPError: nil map
 func TestTransformErrorToHTTPError_NilMap(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
+
 	var nilMap map[string]interface{}
 	httpErr := TransformErrorToHTTPError(ctx, nilMap)
 	assert.Nil(t, httpErr)

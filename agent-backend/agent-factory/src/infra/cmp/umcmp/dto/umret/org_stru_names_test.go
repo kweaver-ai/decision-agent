@@ -7,6 +7,8 @@ import (
 )
 
 func TestIDName_StructFields(t *testing.T) {
+	t.Parallel()
+
 	idName := IDName{
 		ID:   "id-123",
 		Name: "Test Name",
@@ -17,6 +19,8 @@ func TestIDName_StructFields(t *testing.T) {
 }
 
 func TestIDName_Empty(t *testing.T) {
+	t.Parallel()
+
 	idName := IDName{}
 
 	assert.Empty(t, idName.ID)
@@ -24,6 +28,8 @@ func TestIDName_Empty(t *testing.T) {
 }
 
 func TestIDName_WithChineseValues(t *testing.T) {
+	t.Parallel()
+
 	idName := IDName{
 		ID:   "ID-123",
 		Name: "测试名称",
@@ -34,6 +40,8 @@ func TestIDName_WithChineseValues(t *testing.T) {
 }
 
 func TestGetOsnRetDto_StructFields(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnRetDto{
 		UserNames: []IDName{
 			{ID: "user-1", Name: "User 1"},
@@ -61,6 +69,8 @@ func TestGetOsnRetDto_StructFields(t *testing.T) {
 }
 
 func TestGetOsnRetDto_Empty(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnRetDto{}
 
 	assert.Nil(t, dto.UserNames)
@@ -70,6 +80,8 @@ func TestGetOsnRetDto_Empty(t *testing.T) {
 }
 
 func TestGetOsnRetDto_WithOnlyUserNames(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnRetDto{
 		UserNames: []IDName{
 			{ID: "user-1", Name: "User 1"},
@@ -83,6 +95,8 @@ func TestGetOsnRetDto_WithOnlyUserNames(t *testing.T) {
 }
 
 func TestGetOsnRetDto_WithOnlyDepartmentNames(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnRetDto{
 		DepartmentNames: []IDName{
 			{ID: "dept-1", Name: "Dept 1"},
@@ -96,6 +110,8 @@ func TestGetOsnRetDto_WithOnlyDepartmentNames(t *testing.T) {
 }
 
 func TestGetOsnRetDto_WithOnlyGroupNames(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnRetDto{
 		GroupNames: []IDName{
 			{ID: "group-1", Name: "Group 1"},
@@ -109,6 +125,8 @@ func TestGetOsnRetDto_WithOnlyGroupNames(t *testing.T) {
 }
 
 func TestGetOsnRetDto_WithOnlyAppNames(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnRetDto{
 		AppNames: []IDName{
 			{ID: "app-1", Name: "App 1"},
@@ -122,6 +140,8 @@ func TestGetOsnRetDto_WithOnlyAppNames(t *testing.T) {
 }
 
 func TestGetOsnRetDto_WithChineseNames(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnRetDto{
 		UserNames: []IDName{
 			{ID: "user-1", Name: "用户1"},
@@ -144,6 +164,8 @@ func TestGetOsnRetDto_WithChineseNames(t *testing.T) {
 }
 
 func TestGetOsnRetDto_WithEmptyArrays(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnRetDto{
 		UserNames:       []IDName{},
 		DepartmentNames: []IDName{},
@@ -163,6 +185,8 @@ func TestGetOsnRetDto_WithEmptyArrays(t *testing.T) {
 }
 
 func TestGetOsnRetDto_AppendUserNames(t *testing.T) {
+	t.Parallel()
+
 	dto := &GetOsnRetDto{}
 	dto.UserNames = append(dto.UserNames, IDName{ID: "user-1", Name: "User 1"})
 	dto.UserNames = append(dto.UserNames, IDName{ID: "user-2", Name: "User 2"})
@@ -173,6 +197,8 @@ func TestGetOsnRetDto_AppendUserNames(t *testing.T) {
 }
 
 func TestGetOsnRetDto_AppendDepartmentNames(t *testing.T) {
+	t.Parallel()
+
 	dto := &GetOsnRetDto{}
 	dto.DepartmentNames = append(dto.DepartmentNames, IDName{ID: "dept-1", Name: "Dept 1"})
 	dto.DepartmentNames = append(dto.DepartmentNames, IDName{ID: "dept-2", Name: "Dept 2"})
@@ -183,6 +209,8 @@ func TestGetOsnRetDto_AppendDepartmentNames(t *testing.T) {
 }
 
 func TestGetOsnRetDto_AppendGroupNames(t *testing.T) {
+	t.Parallel()
+
 	dto := &GetOsnRetDto{}
 	dto.GroupNames = append(dto.GroupNames, IDName{ID: "group-1", Name: "Group 1"})
 	dto.GroupNames = append(dto.GroupNames, IDName{ID: "group-2", Name: "Group 2"})
@@ -193,6 +221,8 @@ func TestGetOsnRetDto_AppendGroupNames(t *testing.T) {
 }
 
 func TestGetOsnRetDto_AppendAppNames(t *testing.T) {
+	t.Parallel()
+
 	dto := &GetOsnRetDto{}
 	dto.AppNames = append(dto.AppNames, IDName{ID: "app-1", Name: "App 1"})
 	dto.AppNames = append(dto.AppNames, IDName{ID: "app-2", Name: "App 2"})
@@ -203,6 +233,8 @@ func TestGetOsnRetDto_AppendAppNames(t *testing.T) {
 }
 
 func TestGetOsnRetDto_WithMultipleEntries(t *testing.T) {
+	t.Parallel()
+
 	userNames := make([]IDName, 50)
 	for i := 0; i < 50; i++ {
 		userNames[i] = IDName{
@@ -229,6 +261,8 @@ func TestGetOsnRetDto_WithMultipleEntries(t *testing.T) {
 }
 
 func TestGetOsnRetDto_Iteration(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnRetDto{
 		UserNames: []IDName{
 			{ID: "user-1", Name: "User 1"},
@@ -240,23 +274,31 @@ func TestGetOsnRetDto_Iteration(t *testing.T) {
 	}
 
 	count := 0
+
 	for _, userName := range dto.UserNames {
 		assert.NotEmpty(t, userName.ID)
 		assert.NotEmpty(t, userName.Name)
+
 		count++
 	}
+
 	assert.Equal(t, 2, count)
 
 	deptCount := 0
+
 	for _, deptName := range dto.DepartmentNames {
 		assert.NotEmpty(t, deptName.ID)
 		assert.NotEmpty(t, deptName.Name)
+
 		deptCount++
 	}
+
 	assert.Equal(t, 1, deptCount)
 }
 
 func TestIDName_WithSpecialCharacters(t *testing.T) {
+	t.Parallel()
+
 	idName := IDName{
 		ID:   "id@#$%",
 		Name: "Name (Test)",
@@ -267,6 +309,8 @@ func TestIDName_WithSpecialCharacters(t *testing.T) {
 }
 
 func TestGetOsnRetDto_SliceOperations(t *testing.T) {
+	t.Parallel()
+
 	dto := GetOsnRetDto{
 		UserNames: []IDName{
 			{ID: "user-1", Name: "User 1"},

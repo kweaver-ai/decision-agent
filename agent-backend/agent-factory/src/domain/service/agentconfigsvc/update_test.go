@@ -47,6 +47,7 @@ func TestDataAgentConfigSvc_Update_ProductNotFoundError(t *testing.T) {
 	}
 
 	req := &agentconfigreq.UpdateReq{ProductKey: "p-1"}
+
 	mockProductRepo.EXPECT().ExistsByKey(gomock.Any(), "p-1").Return(false, errors.New("db err"))
 
 	_, err := svc.Update(context.Background(), req, "agent-1")
@@ -67,6 +68,7 @@ func TestDataAgentConfigSvc_Update_ProductNotExists(t *testing.T) {
 	}
 
 	req := &agentconfigreq.UpdateReq{ProductKey: "p-1"}
+
 	mockProductRepo.EXPECT().ExistsByKey(gomock.Any(), "p-1").Return(false, nil)
 
 	_, err := svc.Update(context.Background(), req, "agent-1")
@@ -90,6 +92,7 @@ func TestDataAgentConfigSvc_Update_AgentNotFound(t *testing.T) {
 	}
 
 	req := &agentconfigreq.UpdateReq{ProductKey: "p-1"}
+
 	mockProductRepo.EXPECT().ExistsByKey(gomock.Any(), "p-1").Return(true, nil)
 	mockAgentConfRepo.EXPECT().GetByID(gomock.Any(), "agent-1").Return(nil, sql.ErrNoRows)
 
@@ -114,6 +117,7 @@ func TestDataAgentConfigSvc_Update_GetByIDError(t *testing.T) {
 	}
 
 	req := &agentconfigreq.UpdateReq{ProductKey: "p-1"}
+
 	mockProductRepo.EXPECT().ExistsByKey(gomock.Any(), "p-1").Return(true, nil)
 	mockAgentConfRepo.EXPECT().GetByID(gomock.Any(), "agent-1").Return(nil, errors.New("db err"))
 
@@ -362,6 +366,7 @@ func TestDataAgentConfigSvc_Update_GetByIDGenericError(t *testing.T) {
 	}
 
 	req := &agentconfigreq.UpdateReq{ProductKey: "prod-1"}
+
 	mockProductRepo.EXPECT().ExistsByKey(gomock.Any(), "prod-1").Return(true, nil)
 	mockAgentConfRepo.EXPECT().GetByID(gomock.Any(), "agent-err").Return(nil, errors.New("db error"))
 
@@ -383,6 +388,7 @@ func TestDataAgentConfigSvc_Update_ProductNotFound(t *testing.T) {
 	}
 
 	req := &agentconfigreq.UpdateReq{ProductKey: "bad-product"}
+
 	mockProductRepo.EXPECT().ExistsByKey(gomock.Any(), "bad-product").Return(false, nil)
 
 	_, err := svc.Update(context.Background(), req, "agent-1")
@@ -404,6 +410,7 @@ func TestDataAgentConfigSvc_Update_GetByIDNotFound(t *testing.T) {
 	}
 
 	req := &agentconfigreq.UpdateReq{ProductKey: "prod-1"}
+
 	mockProductRepo.EXPECT().ExistsByKey(gomock.Any(), "prod-1").Return(true, nil)
 	mockAgentConfRepo.EXPECT().GetByID(gomock.Any(), "agent-missing").Return(nil, sql.ErrNoRows)
 
@@ -411,4 +418,3 @@ func TestDataAgentConfigSvc_Update_GetByIDNotFound(t *testing.T) {
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "数据智能体配置不存在")
 }
-

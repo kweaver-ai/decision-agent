@@ -6,7 +6,6 @@ import (
 	"mime/multipart"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdapmsenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
@@ -17,9 +16,12 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver/v3portdrivermock"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestCheckSystemAgentCreatePermission_NoSystemAgents(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -53,6 +55,8 @@ func TestCheckSystemAgentCreatePermission_NoSystemAgents(t *testing.T) {
 }
 
 func TestCheckSystemAgentCreatePermission_HasPermission(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -88,6 +92,8 @@ func TestCheckSystemAgentCreatePermission_HasPermission(t *testing.T) {
 }
 
 func TestCheckSystemAgentCreatePermission_NoPermission(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -124,6 +130,8 @@ func TestCheckSystemAgentCreatePermission_NoPermission(t *testing.T) {
 }
 
 func TestCheckSystemAgentCreatePermission_PermissionError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -160,6 +168,8 @@ func TestCheckSystemAgentCreatePermission_PermissionError(t *testing.T) {
 }
 
 func TestCheckSystemAgentCreatePermission_MultipleSystemAgents(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -203,6 +213,8 @@ func TestCheckSystemAgentCreatePermission_MultipleSystemAgents(t *testing.T) {
 }
 
 func TestCheckAgentConfigValid_EmptyAgents(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentInOutSvc{
 		SvcBase: service.NewSvcBase(),
 	}
@@ -220,6 +232,8 @@ func TestCheckAgentConfigValid_EmptyAgents(t *testing.T) {
 }
 
 func TestImport_MissingUserID(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentInOutSvc{
 		SvcBase: service.NewSvcBase(),
 	}
@@ -237,6 +251,8 @@ func TestImport_MissingUserID(t *testing.T) {
 }
 
 func TestImport_FileTooLarge(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -269,6 +285,8 @@ func TestImport_FileTooLarge(t *testing.T) {
 }
 
 func TestImport_InvalidContentType(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

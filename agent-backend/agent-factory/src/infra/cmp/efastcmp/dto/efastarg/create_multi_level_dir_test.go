@@ -7,6 +7,8 @@ import (
 )
 
 func TestCreateMultiLevelDirReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := CreateMultiLevelDirReq{
 		DocId: "doc-123",
 		Path:  "folder1/folder2/folder3",
@@ -17,6 +19,8 @@ func TestCreateMultiLevelDirReq_StructFields(t *testing.T) {
 }
 
 func TestCreateMultiLevelDirReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := CreateMultiLevelDirReq{}
 
 	assert.Empty(t, req.DocId)
@@ -24,6 +28,8 @@ func TestCreateMultiLevelDirReq_Empty(t *testing.T) {
 }
 
 func TestCreateMultiLevelDirReq_WithChinesePath(t *testing.T) {
+	t.Parallel()
+
 	req := CreateMultiLevelDirReq{
 		DocId: "文档-123",
 		Path:  "文件夹1/文件夹2/文件夹3",
@@ -34,6 +40,8 @@ func TestCreateMultiLevelDirReq_WithChinesePath(t *testing.T) {
 }
 
 func TestCreateMultiLevelDirReq_WithSingleLevel(t *testing.T) {
+	t.Parallel()
+
 	req := CreateMultiLevelDirReq{
 		DocId: "doc-123",
 		Path:  "single-folder",
@@ -43,6 +51,8 @@ func TestCreateMultiLevelDirReq_WithSingleLevel(t *testing.T) {
 }
 
 func TestCreateMultiLevelDirReq_WithTwoLevels(t *testing.T) {
+	t.Parallel()
+
 	req := CreateMultiLevelDirReq{
 		DocId: "doc-123",
 		Path:  "folder1/folder2",
@@ -52,6 +62,8 @@ func TestCreateMultiLevelDirReq_WithTwoLevels(t *testing.T) {
 }
 
 func TestCreateMultiLevelDirReq_WithMultipleLevels(t *testing.T) {
+	t.Parallel()
+
 	req := CreateMultiLevelDirReq{
 		DocId: "doc-123",
 		Path:  "level1/level2/level3/level4/level5",
@@ -61,6 +73,8 @@ func TestCreateMultiLevelDirReq_WithMultipleLevels(t *testing.T) {
 }
 
 func TestCreateMultiLevelDirReq_WithSpecialCharactersInPath(t *testing.T) {
+	t.Parallel()
+
 	req := CreateMultiLevelDirReq{
 		DocId: "doc-123",
 		Path:  "folder@#$%/folder-123",
@@ -70,6 +84,8 @@ func TestCreateMultiLevelDirReq_WithSpecialCharactersInPath(t *testing.T) {
 }
 
 func TestCreateMultiLevelDirReq_WithSpacesInPath(t *testing.T) {
+	t.Parallel()
+
 	req := CreateMultiLevelDirReq{
 		DocId: "doc-123",
 		Path:  "folder 1/folder 2/folder 3",
@@ -79,6 +95,8 @@ func TestCreateMultiLevelDirReq_WithSpacesInPath(t *testing.T) {
 }
 
 func TestCreateMultiLevelDirReq_WithOnlyDocId(t *testing.T) {
+	t.Parallel()
+
 	req := CreateMultiLevelDirReq{
 		DocId: "doc-123",
 	}
@@ -88,6 +106,8 @@ func TestCreateMultiLevelDirReq_WithOnlyDocId(t *testing.T) {
 }
 
 func TestCreateMultiLevelDirReq_WithOnlyPath(t *testing.T) {
+	t.Parallel()
+
 	req := CreateMultiLevelDirReq{
 		Path: "folder1/folder2",
 	}
@@ -97,6 +117,8 @@ func TestCreateMultiLevelDirReq_WithOnlyPath(t *testing.T) {
 }
 
 func TestCreateMultiLevelDirReq_WithEmptyDocId(t *testing.T) {
+	t.Parallel()
+
 	req := CreateMultiLevelDirReq{
 		DocId: "",
 		Path:  "folder1/folder2",
@@ -107,6 +129,8 @@ func TestCreateMultiLevelDirReq_WithEmptyDocId(t *testing.T) {
 }
 
 func TestCreateMultiLevelDirReq_WithEmptyPath(t *testing.T) {
+	t.Parallel()
+
 	req := CreateMultiLevelDirReq{
 		DocId: "doc-123",
 		Path:  "",
@@ -117,6 +141,8 @@ func TestCreateMultiLevelDirReq_WithEmptyPath(t *testing.T) {
 }
 
 func TestCreateMultiLevelDirReq_WithBackwardSlashPath(t *testing.T) {
+	t.Parallel()
+
 	req := CreateMultiLevelDirReq{
 		DocId: "doc-123",
 		Path:  "folder1\\folder2\\folder3",
@@ -126,6 +152,8 @@ func TestCreateMultiLevelDirReq_WithBackwardSlashPath(t *testing.T) {
 }
 
 func TestCreateMultiLevelDirReq_WithMixedSlashPath(t *testing.T) {
+	t.Parallel()
+
 	req := CreateMultiLevelDirReq{
 		DocId: "doc-123",
 		Path:  "folder1/folder2\\folder3",
@@ -135,6 +163,8 @@ func TestCreateMultiLevelDirReq_WithMixedSlashPath(t *testing.T) {
 }
 
 func TestCreateMultiLevelDirReq_WithLeadingSlash(t *testing.T) {
+	t.Parallel()
+
 	req := CreateMultiLevelDirReq{
 		DocId: "doc-123",
 		Path:  "/folder1/folder2",
@@ -144,6 +174,8 @@ func TestCreateMultiLevelDirReq_WithLeadingSlash(t *testing.T) {
 }
 
 func TestCreateMultiLevelDirReq_WithTrailingSlash(t *testing.T) {
+	t.Parallel()
+
 	req := CreateMultiLevelDirReq{
 		DocId: "doc-123",
 		Path:  "folder1/folder2/",
@@ -153,6 +185,8 @@ func TestCreateMultiLevelDirReq_WithTrailingSlash(t *testing.T) {
 }
 
 func TestCreateMultiLevelDirReq_WithDotsInPath(t *testing.T) {
+	t.Parallel()
+
 	req := CreateMultiLevelDirReq{
 		DocId: "doc-123",
 		Path:  "folder1/./folder2/../folder3",
@@ -162,6 +196,8 @@ func TestCreateMultiLevelDirReq_WithDotsInPath(t *testing.T) {
 }
 
 func TestCreateMultiLevelDirReq_AllFieldsSet(t *testing.T) {
+	t.Parallel()
+
 	req := CreateMultiLevelDirReq{
 		DocId: "test-doc",
 		Path:  "test/path",
@@ -172,6 +208,8 @@ func TestCreateMultiLevelDirReq_AllFieldsSet(t *testing.T) {
 }
 
 func TestCreateMultiLevelDirReq_WithUnderscoresInPath(t *testing.T) {
+	t.Parallel()
+
 	req := CreateMultiLevelDirReq{
 		DocId: "doc-123",
 		Path:  "folder_1/folder_2/folder_3",
@@ -181,6 +219,8 @@ func TestCreateMultiLevelDirReq_WithUnderscoresInPath(t *testing.T) {
 }
 
 func TestCreateMultiLevelDirReq_WithHyphensInPath(t *testing.T) {
+	t.Parallel()
+
 	req := CreateMultiLevelDirReq{
 		DocId: "doc-123",
 		Path:  "folder-1/folder-2/folder-3",
@@ -190,6 +230,8 @@ func TestCreateMultiLevelDirReq_WithHyphensInPath(t *testing.T) {
 }
 
 func TestCreateMultiLevelDirReq_WithNumbersInPath(t *testing.T) {
+	t.Parallel()
+
 	req := CreateMultiLevelDirReq{
 		DocId: "doc-123",
 		Path:  "folder1/folder2/folder3",

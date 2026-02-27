@@ -5,7 +5,6 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/personal_space/personalspacereq"
@@ -14,6 +13,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver/v3portdrivermock"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 // Helper function to create context with user ID and business domain ID
@@ -23,10 +23,13 @@ func createPersonalSpaceCtx(userID, bdID string) context.Context {
 	}
 	ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), visitor)
 	ctx = context.WithValue(ctx, cenum.BizDomainIDCtxKey.String(), bdID)
+
 	return ctx
 }
 
 func TestAgentTplList_NilRequest(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -43,6 +46,8 @@ func TestAgentTplList_NilRequest(t *testing.T) {
 }
 
 func TestAgentTplList_NoUserInContext(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -66,6 +71,8 @@ func TestAgentTplList_NoUserInContext(t *testing.T) {
 }
 
 func TestAgentTplList_BizDomainHttpError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -92,6 +99,8 @@ func TestAgentTplList_BizDomainHttpError(t *testing.T) {
 }
 
 func TestAgentTplList_NoTemplatesInBusinessDomain(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -116,6 +125,8 @@ func TestAgentTplList_NoTemplatesInBusinessDomain(t *testing.T) {
 }
 
 func TestAgentList_NilRequest(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -132,6 +143,8 @@ func TestAgentList_NilRequest(t *testing.T) {
 }
 
 func TestAgentList_NoUserInContext(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -155,6 +168,8 @@ func TestAgentList_NoUserInContext(t *testing.T) {
 }
 
 func TestAgentList_NoAgentsInBusinessDomain(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -182,6 +197,8 @@ func TestAgentList_NoAgentsInBusinessDomain(t *testing.T) {
 }
 
 func TestAgentList_PermissionError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -210,6 +227,8 @@ func TestAgentList_PermissionError(t *testing.T) {
 }
 
 func TestAgentList_BizDomainHttpError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -221,6 +240,7 @@ func TestAgentList_BizDomainHttpError(t *testing.T) {
 	}
 
 	expectedErr := errors.New("business domain error")
+
 	mockPmsSvc.EXPECT().GetSingleMgmtPermission(gomock.Any(), cdaenum.ResourceTypeDataAgent, gomock.Any()).Return(true, nil)
 	mockBizDomainHttp.EXPECT().GetAllAgentIDList(gomock.Any(), []string{"bd-123"}).Return(nil, nil, expectedErr)
 

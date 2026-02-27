@@ -13,6 +13,8 @@ import (
 )
 
 func TestConversationSvc_List_PanicsWithoutConversationRepo(t *testing.T) {
+	t.Parallel()
+
 	svc := &conversationSvc{
 		SvcBase: service.NewSvcBase(),
 		// conversationRepo is nil
@@ -29,6 +31,8 @@ func TestConversationSvc_List_PanicsWithoutConversationRepo(t *testing.T) {
 }
 
 func TestConversationSvc_ListByAgentID_PanicsWithoutConversationRepo(t *testing.T) {
+	t.Parallel()
+
 	svc := &conversationSvc{
 		SvcBase: service.NewSvcBase(),
 		// conversationRepo is nil
@@ -43,6 +47,8 @@ func TestConversationSvc_ListByAgentID_PanicsWithoutConversationRepo(t *testing.
 }
 
 func TestConversationSvc_List_DatabaseError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -73,6 +79,8 @@ func TestConversationSvc_List_DatabaseError(t *testing.T) {
 }
 
 func TestConversationSvc_ListByAgentID_DatabaseError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

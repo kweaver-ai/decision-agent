@@ -7,6 +7,8 @@ import (
 )
 
 func TestCheckRunResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := &CheckRunResp{
 		IsAllowed: true,
 	}
@@ -15,6 +17,8 @@ func TestCheckRunResp_StructFields(t *testing.T) {
 }
 
 func TestCheckRunResp_NotAllowed(t *testing.T) {
+	t.Parallel()
+
 	resp := &CheckRunResp{
 		IsAllowed: false,
 	}
@@ -23,6 +27,8 @@ func TestCheckRunResp_NotAllowed(t *testing.T) {
 }
 
 func TestCheckRunResp_DefaultValue(t *testing.T) {
+	t.Parallel()
+
 	resp := &CheckRunResp{}
 
 	// Default value of bool is false

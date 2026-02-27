@@ -35,6 +35,8 @@ func getMockLogger(ctrl *gomock.Controller) (logger icmp.Logger) {
 }
 
 func TestQuery_NewQueryWithSqlBuilder(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -44,6 +46,8 @@ func TestQuery_NewQueryWithSqlBuilder(t *testing.T) {
 }
 
 func TestQuery_Tag(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -54,6 +58,8 @@ func TestQuery_Tag(t *testing.T) {
 }
 
 func TestQuery_FindOne(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -80,6 +86,8 @@ func TestQuery_FindOne(t *testing.T) {
 
 // TestQuery_FindOne_selectPartFields 测试select部分字段
 func TestQuery_FindOne_selectPartFields(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -106,6 +114,8 @@ func TestQuery_FindOne_selectPartFields(t *testing.T) {
 }
 
 func TestQuery_Find(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -135,6 +145,8 @@ func TestQuery_Find(t *testing.T) {
 }
 
 func TestQuery_Find_selectPartFields(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -164,6 +176,8 @@ func TestQuery_Find_selectPartFields(t *testing.T) {
 }
 
 func TestQuery_NewQuery(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -172,6 +186,8 @@ func TestQuery_NewQuery(t *testing.T) {
 }
 
 func TestQuery_NewQuery_FullFeature(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -215,6 +231,8 @@ func TestQuery_NewQuery_FullFeature(t *testing.T) {
 }
 
 func Test_FindColumn(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -281,6 +299,8 @@ func Test_FindColumn(t *testing.T) {
 }
 
 func Test_struct2ScanArgsByTag(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -340,6 +360,8 @@ func Test_struct2ScanArgsByTag(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if got := q.struct2ScanArgsByTag(tt.args.s); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("struct2ScanArgsByTag() = %v, want %v", got, tt.want)
 			}
@@ -348,6 +370,8 @@ func Test_struct2ScanArgsByTag(t *testing.T) {
 }
 
 func Test_struct2ScanArgsByTag_WithOption(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -379,6 +403,8 @@ func Test_struct2ScanArgsByTag_WithOption(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			opt := Option{
 				SelectFields: tt.args.fields,
 			}
@@ -390,6 +416,8 @@ func Test_struct2ScanArgsByTag_WithOption(t *testing.T) {
 }
 
 func Test_Exec(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -458,6 +486,8 @@ func Test_Exec(t *testing.T) {
 }
 
 func Test_Exists(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -482,6 +512,8 @@ func Test_Exists(t *testing.T) {
 }
 
 func Test_Count(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -506,6 +538,8 @@ func Test_Count(t *testing.T) {
 }
 
 func Test_Count_Raw(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -539,6 +573,8 @@ func (u *userT) TableName() string {
 }
 
 func Test_FromPo(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -569,6 +605,8 @@ func Test_FromPo(t *testing.T) {
 }
 
 func Test_InsertStructsInBatches(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -603,6 +641,8 @@ func Test_InsertStructsInBatches(t *testing.T) {
 }
 
 func Test_WhereByWhereBuilder(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -628,6 +668,8 @@ func Test_WhereByWhereBuilder(t *testing.T) {
 }
 
 func Test_RawExists(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -673,10 +715,14 @@ func Test_RawExists(t *testing.T) {
 }
 
 func TestSQLRunner_BuilderMethods(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	t.Run("ResetSelect", func(t *testing.T) {
+		t.Parallel()
+
 		q := NewSQLRunner(db, getMockLogger(ctrl))
 		sb := sqlhelper2.NewSelectBuilder()
 		sb.Select([]string{"id", "name"})
@@ -688,6 +734,8 @@ func TestSQLRunner_BuilderMethods(t *testing.T) {
 	})
 
 	t.Run("Page", func(t *testing.T) {
+		t.Parallel()
+
 		q := NewSQLRunner(db, getMockLogger(ctrl))
 
 		result := q.Page(2, 10)
@@ -696,6 +744,8 @@ func TestSQLRunner_BuilderMethods(t *testing.T) {
 	})
 
 	t.Run("SetUpdateFields", func(t *testing.T) {
+		t.Parallel()
+
 		q := NewSQLRunner(db, getMockLogger(ctrl))
 
 		fields := []string{"name", "age"}
@@ -705,6 +755,8 @@ func TestSQLRunner_BuilderMethods(t *testing.T) {
 	})
 
 	t.Run("Order", func(t *testing.T) {
+		t.Parallel()
+
 		q := NewSQLRunner(db, getMockLogger(ctrl))
 
 		result := q.Order("id DESC")
@@ -713,6 +765,8 @@ func TestSQLRunner_BuilderMethods(t *testing.T) {
 	})
 
 	t.Run("SetSQLBuilder", func(t *testing.T) {
+		t.Parallel()
+
 		q := NewSQLRunner(db, getMockLogger(ctrl))
 		newSb := sqlhelper2.NewSelectBuilder()
 
@@ -723,6 +777,8 @@ func TestSQLRunner_BuilderMethods(t *testing.T) {
 	})
 
 	t.Run("Limit", func(t *testing.T) {
+		t.Parallel()
+
 		q := NewSQLRunner(db, getMockLogger(ctrl))
 
 		result := q.Limit(10)
@@ -731,6 +787,8 @@ func TestSQLRunner_BuilderMethods(t *testing.T) {
 	})
 
 	t.Run("Offset", func(t *testing.T) {
+		t.Parallel()
+
 		q := NewSQLRunner(db, getMockLogger(ctrl))
 
 		result := q.Offset(5)
@@ -740,6 +798,8 @@ func TestSQLRunner_BuilderMethods(t *testing.T) {
 }
 
 func TestSQLRunner_TxSr(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -749,6 +809,8 @@ func TestSQLRunner_TxSr(t *testing.T) {
 }
 
 func TestSQLRunner_SrByISQLRunner(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -757,6 +819,8 @@ func TestSQLRunner_SrByISQLRunner(t *testing.T) {
 }
 
 func TestSQLRunner_WhereNotEqual(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -768,6 +832,8 @@ func TestSQLRunner_WhereNotEqual(t *testing.T) {
 }
 
 func TestSQLRunner_OrEqual(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -779,6 +845,8 @@ func TestSQLRunner_OrEqual(t *testing.T) {
 }
 
 func TestSQLRunner_In(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -790,6 +858,8 @@ func TestSQLRunner_In(t *testing.T) {
 }
 
 func TestSQLRunner_Like(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -801,6 +871,8 @@ func TestSQLRunner_Like(t *testing.T) {
 }
 
 func TestSQLRunner_WhereRaw(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -812,6 +884,8 @@ func TestSQLRunner_WhereRaw(t *testing.T) {
 }
 
 func TestSQLRunner_WhereByWhereBuilderOr(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -836,6 +910,8 @@ func TestSQLRunner_WhereByWhereBuilderOr(t *testing.T) {
 }
 
 func TestSQLRunner_RawExec(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -855,6 +931,8 @@ func TestSQLRunner_RawExec(t *testing.T) {
 }
 
 func TestSQLRunner_Scan(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -865,6 +943,7 @@ func TestSQLRunner_Scan(t *testing.T) {
 		WillReturnRows(sqlmock.NewRows([]string{"id", "name"}).AddRow(1, "test"))
 
 	var id int
+
 	var name string
 
 	err := q.Select([]string{"id", "name"}).
@@ -878,12 +957,15 @@ func TestSQLRunner_Scan(t *testing.T) {
 }
 
 func TestSQLRunner_Scan_PanicWithoutSelect(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	q := NewSQLRunner(db, getMockLogger(ctrl))
 
 	var id int
+
 	var name string
 
 	assert.Panics(t, func() {
@@ -894,6 +976,8 @@ func TestSQLRunner_Scan_PanicWithoutSelect(t *testing.T) {
 }
 
 func TestSQLRunner_Scan_QueryError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -904,6 +988,7 @@ func TestSQLRunner_Scan_QueryError(t *testing.T) {
 		WillReturnError(sql.ErrConnDone)
 
 	var id int
+
 	var name string
 
 	err := q.Select([]string{"id", "name"}).
@@ -915,6 +1000,8 @@ func TestSQLRunner_Scan_QueryError(t *testing.T) {
 }
 
 func TestSQLRunner_FindOne_QueryError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -937,6 +1024,8 @@ func TestSQLRunner_FindOne_QueryError(t *testing.T) {
 }
 
 func TestSQLRunner_Find_QueryError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -961,6 +1050,8 @@ func TestSQLRunner_Find_QueryError(t *testing.T) {
 }
 
 func TestSQLRunner_Find_ScanError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -987,6 +1078,8 @@ func TestSQLRunner_Find_ScanError(t *testing.T) {
 }
 
 func TestSQLRunner_FindColumn_QueryError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -1002,6 +1095,8 @@ func TestSQLRunner_FindColumn_QueryError(t *testing.T) {
 }
 
 func TestSQLRunner_FindColumn_ScanError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -1019,6 +1114,8 @@ func TestSQLRunner_FindColumn_ScanError(t *testing.T) {
 }
 
 func TestSQLRunner_Raw(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -1026,6 +1123,8 @@ func TestSQLRunner_Raw(t *testing.T) {
 
 	// Test Raw with args
 	t.Run("with args", func(t *testing.T) {
+		t.Parallel()
+
 		q2 := q.Raw("SELECT * FROM users WHERE id = ?", 123)
 		assert.NotNil(t, q2)
 		assert.Equal(t, "SELECT * FROM users WHERE id = ?", q2.rawSQL)
@@ -1035,6 +1134,8 @@ func TestSQLRunner_Raw(t *testing.T) {
 
 	// Test Raw without args
 	t.Run("without args", func(t *testing.T) {
+		t.Parallel()
+
 		q2 := q.Raw("SELECT * FROM users")
 		assert.NotNil(t, q2)
 		assert.Equal(t, "SELECT * FROM users", q2.rawSQL)
@@ -1043,6 +1144,8 @@ func TestSQLRunner_Raw(t *testing.T) {
 
 	// Test Raw with multiple args
 	t.Run("with multiple args", func(t *testing.T) {
+		t.Parallel()
+
 		q2 := q.Raw("SELECT * FROM users WHERE id = ? AND status = ?", 123, "active")
 		assert.NotNil(t, q2)
 		assert.Equal(t, "SELECT * FROM users WHERE id = ? AND status = ?", q2.rawSQL)

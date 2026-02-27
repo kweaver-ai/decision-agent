@@ -8,6 +8,8 @@ import (
 )
 
 func TestPublishedTplListEo_NewPublishedTplListEo(t *testing.T) {
+	t.Parallel()
+
 	eo := &PublishedTplListEo{
 		PublishedTplPo: dapo.PublishedTplPo{
 			ID: 123,
@@ -25,6 +27,8 @@ func TestPublishedTplListEo_NewPublishedTplListEo(t *testing.T) {
 }
 
 func TestPublishedTplListEo_Empty(t *testing.T) {
+	t.Parallel()
+
 	eo := &PublishedTplListEo{}
 
 	assert.NotNil(t, eo)
@@ -34,6 +38,8 @@ func TestPublishedTplListEo_Empty(t *testing.T) {
 }
 
 func TestPublishedTplListEo_WithPartialData(t *testing.T) {
+	t.Parallel()
+
 	eo := &PublishedTplListEo{
 		CreatedByName: "Creator",
 	}

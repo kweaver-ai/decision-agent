@@ -6,16 +6,20 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/pubedagentdbacc/padbret"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestGetPublishedAgentPo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("returns error when repo fails", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -26,6 +30,7 @@ func TestGetPublishedAgentPo(t *testing.T) {
 		}
 
 		ctx := context.Background()
+
 		mockRepo.EXPECT().GetPubedPoMapByXx(gomock.Any(), gomock.Any()).Return(nil, errors.New("repo error"))
 
 		po, err := svc.getPublishedAgentPo(ctx, "agent1")
@@ -35,6 +40,8 @@ func TestGetPublishedAgentPo(t *testing.T) {
 	})
 
 	t.Run("returns error when agent not found in result", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -60,6 +67,8 @@ func TestGetPublishedAgentPo(t *testing.T) {
 	})
 
 	t.Run("returns agent po when found", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -94,13 +103,17 @@ func TestGetPublishedAgentPo(t *testing.T) {
 }
 
 func TestGetAgentPoForCopy(t *testing.T) {
+	t.Parallel()
+
 	t.Run("returns error when repo not found", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
 		mockRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 		svc := &dataAgentConfigSvc{
-			SvcBase:      service.NewSvcBase(),
+			SvcBase:       service.NewSvcBase(),
 			agentConfRepo: mockRepo,
 		}
 
@@ -114,12 +127,14 @@ func TestGetAgentPoForCopy(t *testing.T) {
 	})
 
 	t.Run("returns agent po when found", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
 		mockRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 		svc := &dataAgentConfigSvc{
-			SvcBase:      service.NewSvcBase(),
+			SvcBase:       service.NewSvcBase(),
 			agentConfRepo: mockRepo,
 		}
 

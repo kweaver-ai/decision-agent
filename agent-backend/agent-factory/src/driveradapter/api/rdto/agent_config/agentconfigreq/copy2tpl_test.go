@@ -8,6 +8,8 @@ import (
 )
 
 func TestCopy2TplReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := Copy2TplReq{
 		Name: "Test Template",
 	}
@@ -16,12 +18,16 @@ func TestCopy2TplReq_StructFields(t *testing.T) {
 }
 
 func TestCopy2TplReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := Copy2TplReq{}
 
 	assert.Empty(t, req.Name)
 }
 
 func TestCopy2TplReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := Copy2TplReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -31,6 +37,8 @@ func TestCopy2TplReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestCopy2TplReq_ReqCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	req := Copy2TplReq{
 		Name: "Valid Template Name",
 	}
@@ -41,6 +49,8 @@ func TestCopy2TplReq_ReqCheck_Valid(t *testing.T) {
 }
 
 func TestCopy2TplReq_ReqCheck_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := Copy2TplReq{}
 
 	err := req.ReqCheck()
@@ -49,6 +59,8 @@ func TestCopy2TplReq_ReqCheck_Empty(t *testing.T) {
 }
 
 func TestCopy2TplReq_ReqCheck_NameTooLong(t *testing.T) {
+	t.Parallel()
+
 	req := Copy2TplReq{
 		Name: strings.Repeat("a", 51), // Max is 50
 	}
@@ -60,6 +72,8 @@ func TestCopy2TplReq_ReqCheck_NameTooLong(t *testing.T) {
 }
 
 func TestCopy2TplReq_ReqCheck_NameMaxLength(t *testing.T) {
+	t.Parallel()
+
 	req := Copy2TplReq{
 		Name: strings.Repeat("a", 50), // Exactly at max
 	}
@@ -70,6 +84,8 @@ func TestCopy2TplReq_ReqCheck_NameMaxLength(t *testing.T) {
 }
 
 func TestCopy2TplReq_WithDifferentNames(t *testing.T) {
+	t.Parallel()
+
 	names := []string{
 		"Template 1",
 		"中文模板",
@@ -88,6 +104,8 @@ func TestCopy2TplReq_WithDifferentNames(t *testing.T) {
 }
 
 func TestCopy2TplReq_WithUnicodeName(t *testing.T) {
+	t.Parallel()
+
 	// Test that unicode characters are counted correctly
 	// Each Chinese character is 3 bytes but 1 rune
 	req := Copy2TplReq{
@@ -100,6 +118,8 @@ func TestCopy2TplReq_WithUnicodeName(t *testing.T) {
 }
 
 func TestCopy2TplReq_WithMixedUnicodeName(t *testing.T) {
+	t.Parallel()
+
 	req := Copy2TplReq{
 		Name: "Template模板123!@#",
 	}
@@ -110,6 +130,8 @@ func TestCopy2TplReq_WithMixedUnicodeName(t *testing.T) {
 }
 
 func TestCopy2TplReq_WithNameAtBoundary(t *testing.T) {
+	t.Parallel()
+
 	// Test exactly at the boundary
 	req := Copy2TplReq{
 		Name: strings.Repeat("a", 49) + "b", // 50 characters
@@ -121,6 +143,8 @@ func TestCopy2TplReq_WithNameAtBoundary(t *testing.T) {
 }
 
 func TestCopy2TplReq_WithNameOverBoundary(t *testing.T) {
+	t.Parallel()
+
 	// Test just over the boundary
 	req := Copy2TplReq{
 		Name: strings.Repeat("a", 50) + "b", // 51 characters

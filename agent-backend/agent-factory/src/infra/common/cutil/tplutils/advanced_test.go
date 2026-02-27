@@ -7,6 +7,8 @@ import (
 )
 
 func TestRenderTemplate_Advanced(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name      string
 		tmplStr   string
@@ -49,12 +51,15 @@ func TestRenderTemplate_Advanced(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result, err := RenderTemplate(tt.tmplStr, tt.data)
 
 			if tt.wantErr {
 				assert.Error(t, err, "RenderTemplate should return error")
 			} else {
 				assert.NoError(t, err, "RenderTemplate should not return error")
+
 				if tt.wantEmpty {
 					assert.Empty(t, result, "Result should be empty")
 				}
@@ -64,6 +69,8 @@ func TestRenderTemplate_Advanced(t *testing.T) {
 }
 
 func TestSafeRenderTemplate_Advanced(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		tmplStr string
@@ -123,6 +130,8 @@ func TestSafeRenderTemplate_Advanced(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result, err := SafeRenderTemplate(tt.tmplStr, tt.data)
 			assert.NoError(t, err, "SafeRenderTemplate should not return error")
 			assert.NotEmpty(t, result, "SafeRenderTemplate should return non-empty result")

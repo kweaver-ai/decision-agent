@@ -34,6 +34,7 @@ func (releaseTestLogger) Fatalln(...interface{})        {}
 
 func newReleaseRepoWithMock(t *testing.T) (*releaseRepo, *sqlx.DB, sqlmock.Sqlmock) {
 	t.Helper()
+
 	db, mock, err := sqlx.New()
 	require.NoError(t, err)
 
@@ -48,6 +49,7 @@ func newReleaseRepoWithMock(t *testing.T) (*releaseRepo, *sqlx.DB, sqlmock.Sqlmo
 
 func newReleaseHistoryRepoWithMock(t *testing.T) (*releaseHistoryRepo, *sqlx.DB, sqlmock.Sqlmock) {
 	t.Helper()
+
 	db, mock, err := sqlx.New()
 	require.NoError(t, err)
 
@@ -62,6 +64,7 @@ func newReleaseHistoryRepoWithMock(t *testing.T) (*releaseHistoryRepo, *sqlx.DB,
 
 func newReleasePermissionRepoWithMock(t *testing.T) (*releasePermissionRepo, *sqlx.DB, sqlmock.Sqlmock) {
 	t.Helper()
+
 	db, mock, err := sqlx.New()
 	require.NoError(t, err)
 
@@ -76,6 +79,7 @@ func newReleasePermissionRepoWithMock(t *testing.T) (*releasePermissionRepo, *sq
 
 func newReleaseCategoryRelRepoWithMock(t *testing.T) (*releaseCategoryRelRepo, *sqlx.DB, sqlmock.Sqlmock) {
 	t.Helper()
+
 	db, mock, err := sqlx.New()
 	require.NoError(t, err)
 
@@ -91,9 +95,12 @@ func newReleaseCategoryRelRepoWithMock(t *testing.T) (*releaseCategoryRelRepo, *
 // --- releaseRepo Singleton ---
 
 func TestNewReleaseRepo_Singleton(t *testing.T) {
+	t.Parallel()
+
 	oldOnce := releaseRepoOnce
 	oldImpl := releaseRepoImpl
 	oldGDB := global.GDB
+
 	t.Cleanup(func() {
 		releaseRepoOnce = oldOnce
 		releaseRepoImpl = oldImpl
@@ -102,12 +109,14 @@ func TestNewReleaseRepo_Singleton(t *testing.T) {
 
 	db, _, err := sqlx.New()
 	require.NoError(t, err)
+
 	global.GDB = db
 	releaseRepoOnce = sync.Once{}
 	releaseRepoImpl = nil
 
 	r1 := NewReleaseRepo()
 	r2 := NewReleaseRepo()
+
 	assert.NotNil(t, r1)
 	assert.Same(t, r1, r2)
 }
@@ -115,6 +124,8 @@ func TestNewReleaseRepo_Singleton(t *testing.T) {
 // --- releaseRepo.Create ---
 
 func TestReleaseRepo_Create_Happy(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newReleaseRepoWithMock(t)
 	defer db.Close()
 
@@ -129,6 +140,8 @@ func TestReleaseRepo_Create_Happy(t *testing.T) {
 }
 
 func TestReleaseRepo_Create_Error(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newReleaseRepoWithMock(t)
 	defer db.Close()
 
@@ -158,6 +171,8 @@ func mockReleaseRows() *sqlmock.Rows {
 }
 
 func TestReleaseRepo_GetByAgentID_Happy(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newReleaseRepoWithMock(t)
 	defer db.Close()
 
@@ -172,6 +187,8 @@ func TestReleaseRepo_GetByAgentID_Happy(t *testing.T) {
 }
 
 func TestReleaseRepo_GetByAgentID_QueryError(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newReleaseRepoWithMock(t)
 	defer db.Close()
 
@@ -187,6 +204,8 @@ func TestReleaseRepo_GetByAgentID_QueryError(t *testing.T) {
 // --- releaseRepo.Update ---
 
 func TestReleaseRepo_Update_Happy(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newReleaseRepoWithMock(t)
 	defer db.Close()
 
@@ -200,6 +219,8 @@ func TestReleaseRepo_Update_Happy(t *testing.T) {
 }
 
 func TestReleaseRepo_Update_Error(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newReleaseRepoWithMock(t)
 	defer db.Close()
 
@@ -215,6 +236,8 @@ func TestReleaseRepo_Update_Error(t *testing.T) {
 // --- releaseRepo.DeleteByAgentID ---
 
 func TestReleaseRepo_DeleteByAgentID_Happy(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newReleaseRepoWithMock(t)
 	defer db.Close()
 
@@ -227,6 +250,8 @@ func TestReleaseRepo_DeleteByAgentID_Happy(t *testing.T) {
 }
 
 func TestReleaseRepo_DeleteByAgentID_Error(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newReleaseRepoWithMock(t)
 	defer db.Close()
 
@@ -241,9 +266,12 @@ func TestReleaseRepo_DeleteByAgentID_Error(t *testing.T) {
 // --- releaseHistoryRepo Singleton ---
 
 func TestNewReleaseHistoryRepo_Singleton(t *testing.T) {
+	t.Parallel()
+
 	oldOnce := releaseHistoryRepoOnce
 	oldImpl := releaseHistoryRepoImpl
 	oldGDB := global.GDB
+
 	t.Cleanup(func() {
 		releaseHistoryRepoOnce = oldOnce
 		releaseHistoryRepoImpl = oldImpl
@@ -252,12 +280,14 @@ func TestNewReleaseHistoryRepo_Singleton(t *testing.T) {
 
 	db, _, err := sqlx.New()
 	require.NoError(t, err)
+
 	global.GDB = db
 	releaseHistoryRepoOnce = sync.Once{}
 	releaseHistoryRepoImpl = nil
 
 	r1 := NewReleaseHistoryRepo()
 	r2 := NewReleaseHistoryRepo()
+
 	assert.NotNil(t, r1)
 	assert.Same(t, r1, r2)
 }
@@ -265,6 +295,8 @@ func TestNewReleaseHistoryRepo_Singleton(t *testing.T) {
 // --- releaseHistoryRepo.Create ---
 
 func TestReleaseHistoryRepo_Create_Happy(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newReleaseHistoryRepoWithMock(t)
 	defer db.Close()
 
@@ -279,6 +311,8 @@ func TestReleaseHistoryRepo_Create_Happy(t *testing.T) {
 }
 
 func TestReleaseHistoryRepo_Create_Error(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newReleaseHistoryRepoWithMock(t)
 	defer db.Close()
 
@@ -304,6 +338,8 @@ func mockReleaseHistoryRows() *sqlmock.Rows {
 }
 
 func TestReleaseHistoryRepo_GetByAgentIdVersion_Happy(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newReleaseHistoryRepoWithMock(t)
 	defer db.Close()
 
@@ -318,6 +354,8 @@ func TestReleaseHistoryRepo_GetByAgentIdVersion_Happy(t *testing.T) {
 }
 
 func TestReleaseHistoryRepo_GetByAgentIdVersion_QueryError(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newReleaseHistoryRepoWithMock(t)
 	defer db.Close()
 
@@ -333,6 +371,8 @@ func TestReleaseHistoryRepo_GetByAgentIdVersion_QueryError(t *testing.T) {
 // --- releaseHistoryRepo.GetLatestVersionByAgentID ---
 
 func TestReleaseHistoryRepo_GetLatestVersionByAgentID_Happy(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newReleaseHistoryRepoWithMock(t)
 	defer db.Close()
 
@@ -354,6 +394,8 @@ func TestReleaseHistoryRepo_GetLatestVersionByAgentID_Happy(t *testing.T) {
 }
 
 func TestReleaseHistoryRepo_GetLatestVersionByAgentID_Empty(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newReleaseHistoryRepoWithMock(t)
 	defer db.Close()
 
@@ -368,6 +410,8 @@ func TestReleaseHistoryRepo_GetLatestVersionByAgentID_Empty(t *testing.T) {
 }
 
 func TestReleaseHistoryRepo_GetLatestVersionByAgentID_Error(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newReleaseHistoryRepoWithMock(t)
 	defer db.Close()
 
@@ -383,9 +427,12 @@ func TestReleaseHistoryRepo_GetLatestVersionByAgentID_Error(t *testing.T) {
 // --- releasePermissionRepo Singleton ---
 
 func TestNewReleasePermissionRepo_Singleton(t *testing.T) {
+	t.Parallel()
+
 	oldOnce := releasePermissionRepoOnce
 	oldImpl := releasePermissionRepoImpl
 	oldGDB := global.GDB
+
 	t.Cleanup(func() {
 		releasePermissionRepoOnce = oldOnce
 		releasePermissionRepoImpl = oldImpl
@@ -394,12 +441,14 @@ func TestNewReleasePermissionRepo_Singleton(t *testing.T) {
 
 	db, _, err := sqlx.New()
 	require.NoError(t, err)
+
 	global.GDB = db
 	releasePermissionRepoOnce = sync.Once{}
 	releasePermissionRepoImpl = nil
 
 	r1 := NewReleasePermissionRepo()
 	r2 := NewReleasePermissionRepo()
+
 	assert.NotNil(t, r1)
 	assert.Same(t, r1, r2)
 }
@@ -407,6 +456,8 @@ func TestNewReleasePermissionRepo_Singleton(t *testing.T) {
 // --- releasePermissionRepo.Create ---
 
 func TestReleasePermissionRepo_Create_Happy(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newReleasePermissionRepoWithMock(t)
 	defer db.Close()
 
@@ -420,6 +471,8 @@ func TestReleasePermissionRepo_Create_Happy(t *testing.T) {
 }
 
 func TestReleasePermissionRepo_Create_Error(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newReleasePermissionRepoWithMock(t)
 	defer db.Close()
 
@@ -433,6 +486,8 @@ func TestReleasePermissionRepo_Create_Error(t *testing.T) {
 }
 
 func TestReleasePermissionRepo_BatchCreate_Empty(t *testing.T) {
+	t.Parallel()
+
 	repo, db, _ := newReleasePermissionRepoWithMock(t)
 	defer db.Close()
 
@@ -441,6 +496,8 @@ func TestReleasePermissionRepo_BatchCreate_Empty(t *testing.T) {
 }
 
 func TestReleasePermissionRepo_BatchCreate_Happy(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newReleasePermissionRepoWithMock(t)
 	defer db.Close()
 
@@ -459,9 +516,12 @@ func TestReleasePermissionRepo_BatchCreate_Happy(t *testing.T) {
 // --- releaseCategoryRelRepo Singleton ---
 
 func TestNewReleaseCategoryRelRepo_Singleton(t *testing.T) {
+	t.Parallel()
+
 	oldOnce := releaseCategoryRelRepoOnce
 	oldImpl := releaseCategoryRelRepoImpl
 	oldGDB := global.GDB
+
 	t.Cleanup(func() {
 		releaseCategoryRelRepoOnce = oldOnce
 		releaseCategoryRelRepoImpl = oldImpl
@@ -470,12 +530,14 @@ func TestNewReleaseCategoryRelRepo_Singleton(t *testing.T) {
 
 	db, _, err := sqlx.New()
 	require.NoError(t, err)
+
 	global.GDB = db
 	releaseCategoryRelRepoOnce = sync.Once{}
 	releaseCategoryRelRepoImpl = nil
 
 	r1 := NewReleaseCategoryRelRepo()
 	r2 := NewReleaseCategoryRelRepo()
+
 	assert.NotNil(t, r1)
 	assert.Same(t, r1, r2)
 }
@@ -483,6 +545,8 @@ func TestNewReleaseCategoryRelRepo_Singleton(t *testing.T) {
 // --- releaseCategoryRelRepo.Create ---
 
 func TestReleaseCategoryRelRepo_Create_Happy(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newReleaseCategoryRelRepoWithMock(t)
 	defer db.Close()
 
@@ -496,6 +560,8 @@ func TestReleaseCategoryRelRepo_Create_Happy(t *testing.T) {
 }
 
 func TestReleaseCategoryRelRepo_Create_Error(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newReleaseCategoryRelRepoWithMock(t)
 	defer db.Close()
 
@@ -509,6 +575,8 @@ func TestReleaseCategoryRelRepo_Create_Error(t *testing.T) {
 }
 
 func TestReleaseCategoryRelRepo_BatchCreate_Empty(t *testing.T) {
+	t.Parallel()
+
 	repo, db, _ := newReleaseCategoryRelRepoWithMock(t)
 	defer db.Close()
 
@@ -517,6 +585,8 @@ func TestReleaseCategoryRelRepo_BatchCreate_Empty(t *testing.T) {
 }
 
 func TestReleaseCategoryRelRepo_BatchCreate_Happy(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newReleaseCategoryRelRepoWithMock(t)
 	defer db.Close()
 

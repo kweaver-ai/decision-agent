@@ -7,6 +7,8 @@ import (
 )
 
 func TestPublishInfoRes_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishInfoRes{
 		Categories: []CategoryInfo{
 			{
@@ -28,12 +30,16 @@ func TestPublishInfoRes_StructFields(t *testing.T) {
 }
 
 func TestPublishInfoRes_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishInfoRes{}
 
 	assert.Nil(t, resp.Categories)
 }
 
 func TestPublishInfoRes_WithEmptyCategories(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishInfoRes{
 		Categories: []CategoryInfo{},
 	}
@@ -43,6 +49,8 @@ func TestPublishInfoRes_WithEmptyCategories(t *testing.T) {
 }
 
 func TestCategoryInfo_StructFields(t *testing.T) {
+	t.Parallel()
+
 	cat := CategoryInfo{
 		ID:   "cat-123",
 		Name: "Test Category",
@@ -53,6 +61,8 @@ func TestCategoryInfo_StructFields(t *testing.T) {
 }
 
 func TestCategoryInfo_Empty(t *testing.T) {
+	t.Parallel()
+
 	cat := CategoryInfo{}
 
 	assert.Empty(t, cat.ID)
@@ -60,6 +70,8 @@ func TestCategoryInfo_Empty(t *testing.T) {
 }
 
 func TestPublishInfoRes_WithSingleCategory(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishInfoRes{
 		Categories: []CategoryInfo{
 			{
@@ -74,6 +86,8 @@ func TestPublishInfoRes_WithSingleCategory(t *testing.T) {
 }
 
 func TestPublishInfoRes_WithMultipleCategories(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishInfoRes{
 		Categories: []CategoryInfo{
 			{ID: "cat-1", Name: "Category One"},
@@ -86,6 +100,8 @@ func TestPublishInfoRes_WithMultipleCategories(t *testing.T) {
 }
 
 func TestPublishInfoRes_Append(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishInfoRes{
 		Categories: []CategoryInfo{},
 	}
@@ -99,6 +115,8 @@ func TestPublishInfoRes_Append(t *testing.T) {
 }
 
 func TestCategoryInfo_WithDifferentIDs(t *testing.T) {
+	t.Parallel()
+
 	ids := []string{
 		"cat-001",
 		"cat-xyz",
@@ -115,6 +133,8 @@ func TestCategoryInfo_WithDifferentIDs(t *testing.T) {
 }
 
 func TestCategoryInfo_WithDifferentNames(t *testing.T) {
+	t.Parallel()
+
 	names := []string{
 		"Test Category",
 		"测试分类",
@@ -132,6 +152,8 @@ func TestCategoryInfo_WithDifferentNames(t *testing.T) {
 }
 
 func TestPublishInfoRes_WithChineseCategories(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishInfoRes{
 		Categories: []CategoryInfo{
 			{
@@ -146,6 +168,8 @@ func TestPublishInfoRes_WithChineseCategories(t *testing.T) {
 }
 
 func TestPublishInfoRes_SliceOperations(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishInfoRes{
 		Categories: []CategoryInfo{
 			{ID: "cat-1", Name: "Category 1"},
@@ -164,14 +188,19 @@ func TestPublishInfoRes_SliceOperations(t *testing.T) {
 
 	// Test iteration
 	count := 0
+
 	for _, cat := range resp.Categories {
 		assert.NotEmpty(t, cat.ID)
+
 		count++
 	}
+
 	assert.Equal(t, 3, count)
 }
 
 func TestCategoryInfo_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	cat := CategoryInfo{
 		ID:   "cat-complete",
 		Name: "Complete Category Name",

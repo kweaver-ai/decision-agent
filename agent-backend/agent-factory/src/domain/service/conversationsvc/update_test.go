@@ -5,16 +5,18 @@ import (
 	"database/sql"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 )
 
 func TestUpdate(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		req     *conversationreq.UpdateReq
@@ -35,7 +37,7 @@ func TestUpdate(t *testing.T) {
 				repo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
 
 				svc := &conversationSvc{
-					SvcBase:         service.NewSvcBase(),
+					SvcBase:          service.NewSvcBase(),
 					conversationRepo: repo,
 				}
 
@@ -59,7 +61,7 @@ func TestUpdate(t *testing.T) {
 				}).Return(nil)
 
 				svc := &conversationSvc{
-					SvcBase:         service.NewSvcBase(),
+					SvcBase:          service.NewSvcBase(),
 					conversationRepo: repo,
 				}
 
@@ -81,7 +83,7 @@ func TestUpdate(t *testing.T) {
 				repo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
 
 				svc := &conversationSvc{
-					SvcBase:         service.NewSvcBase(),
+					SvcBase:          service.NewSvcBase(),
 					conversationRepo: repo,
 				}
 
@@ -102,7 +104,7 @@ func TestUpdate(t *testing.T) {
 				repo.EXPECT().GetByID(gomock.Any(), "conv-999").Return(nil, sql.ErrNoRows)
 
 				svc := &conversationSvc{
-					SvcBase:         service.NewSvcBase(),
+					SvcBase:          service.NewSvcBase(),
 					conversationRepo: repo,
 				}
 
@@ -127,7 +129,7 @@ func TestUpdate(t *testing.T) {
 				}).Return(nil)
 
 				svc := &conversationSvc{
-					SvcBase:         service.NewSvcBase(),
+					SvcBase:          service.NewSvcBase(),
 					conversationRepo: repo,
 				}
 
@@ -149,7 +151,7 @@ func TestUpdate(t *testing.T) {
 				repo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
 
 				svc := &conversationSvc{
-					SvcBase:         service.NewSvcBase(),
+					SvcBase:          service.NewSvcBase(),
 					conversationRepo: repo,
 				}
 
@@ -171,7 +173,7 @@ func TestUpdate(t *testing.T) {
 				repo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(assert.AnError)
 
 				svc := &conversationSvc{
-					SvcBase:         service.NewSvcBase(),
+					SvcBase:          service.NewSvcBase(),
 					conversationRepo: repo,
 				}
 
@@ -183,6 +185,8 @@ func TestUpdate(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 

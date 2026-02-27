@@ -10,12 +10,14 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/ibizdomainacc/bizdomainaccmock"
 	idbaccessmock "github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/ibizdomainacc/bizdomainaccmock"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestDataAgentConfigSvc_ListForBenchmark_BizDomainError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -38,6 +40,8 @@ func TestDataAgentConfigSvc_ListForBenchmark_BizDomainError(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_ListForBenchmark_EmptyAgentIDs(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -61,6 +65,8 @@ func TestDataAgentConfigSvc_ListForBenchmark_EmptyAgentIDs(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_ListForBenchmark_RepoError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -86,6 +92,8 @@ func TestDataAgentConfigSvc_ListForBenchmark_RepoError(t *testing.T) {
 }
 
 func TestDataAgentConfigSvc_ListForBenchmark_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

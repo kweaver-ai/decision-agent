@@ -7,6 +7,8 @@ import (
 )
 
 func TestKgSource_ValObjCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		kg   *KgSource
@@ -38,6 +40,8 @@ func TestKgSource_ValObjCheck_Valid(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.kg.ValObjCheck()
 			assert.NoError(t, err)
 		})
@@ -45,6 +49,8 @@ func TestKgSource_ValObjCheck_Valid(t *testing.T) {
 }
 
 func TestKgSource_ValObjCheck_Errors(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		kg          *KgSource
@@ -75,6 +81,8 @@ func TestKgSource_ValObjCheck_Errors(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.kg.ValObjCheck()
 			assert.Error(t, err)
 			assert.Contains(t, err.Error(), tt.expectedErr)
@@ -83,6 +91,8 @@ func TestKgSource_ValObjCheck_Errors(t *testing.T) {
 }
 
 func TestKgSource_ValObjCheck_Nil(t *testing.T) {
+	t.Parallel()
+
 	var kg *KgSource
 	// Nil pointer will panic, so we test for that
 	assert.Panics(t, func() {
@@ -91,6 +101,8 @@ func TestKgSource_ValObjCheck_Nil(t *testing.T) {
 }
 
 func TestKgSource_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	kg := &KgSource{}
 	errMap := kg.GetErrMsgMap()
 
@@ -101,8 +113,10 @@ func TestKgSource_GetErrMsgMap(t *testing.T) {
 }
 
 func TestKgSource_Fields(t *testing.T) {
+	t.Parallel()
+
 	fieldProperties := map[string][]string{
-		"Person": {"name", "age", "email"},
+		"Person":  {"name", "age", "email"},
 		"Company": {"name", "address"},
 	}
 

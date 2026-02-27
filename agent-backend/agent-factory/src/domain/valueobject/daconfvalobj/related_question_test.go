@@ -7,6 +7,8 @@ import (
 )
 
 func TestRelatedQuestion_ValObjCheck(t *testing.T) {
+	t.Parallel()
+
 	rq := &RelatedQuestion{IsEnabled: true}
 	err := rq.ValObjCheck()
 	assert.NoError(t, err)

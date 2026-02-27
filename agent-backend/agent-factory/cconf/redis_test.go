@@ -20,9 +20,11 @@ func TestRedisConf_Fields(t *testing.T) {
 		if redisconf.ConnectType != "standalone" {
 			t.Errorf("Expected ConnectType to be 'standalone', got '%s'", redisconf.ConnectType)
 		}
+
 		if redisconf.DB != 0 {
 			t.Errorf("Expected DB to be 0, got %d", redisconf.DB)
 		}
+
 		if redisconf.MaxRetries != 3 {
 			t.Errorf("Expected MaxRetries to be 3, got %d", redisconf.MaxRetries)
 		}
@@ -41,6 +43,7 @@ func TestRedisConf_SentinelMode(t *testing.T) {
 		if redisconf.ConnectType != "sentinel" {
 			t.Errorf("Expected ConnectType to be 'sentinel', got '%s'", redisconf.ConnectType)
 		}
+
 		if redisconf.MasterGroupName != "mymaster" {
 			t.Errorf("Expected MasterGroupName to be 'mymaster', got '%s'", redisconf.MasterGroupName)
 		}
@@ -60,6 +63,7 @@ func TestRedisConf_MasterSlaveMode(t *testing.T) {
 		if redisconf.ConnectType != "master-slave" {
 			t.Errorf("Expected ConnectType to be 'master-slave', got '%s'", redisconf.ConnectType)
 		}
+
 		if redisconf.MasterHost != "master-host" {
 			t.Errorf("Expected MasterHost to be 'master-host', got '%s'", redisconf.MasterHost)
 		}
@@ -80,9 +84,11 @@ func TestRedisConf_TimeoutSettings(t *testing.T) {
 		if redisconf.ReadTimeout != 3 {
 			t.Errorf("Expected ReadTimeout to be 3, got %d", redisconf.ReadTimeout)
 		}
+
 		if redisconf.WriteTimeout != 3 {
 			t.Errorf("Expected WriteTimeout to be 3, got %d", redisconf.WriteTimeout)
 		}
+
 		if redisconf.IdleTimeout != 300 {
 			t.Errorf("Expected IdleTimeout to be 300, got %d", redisconf.IdleTimeout)
 		}

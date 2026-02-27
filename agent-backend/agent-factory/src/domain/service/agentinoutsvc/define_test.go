@@ -3,15 +3,19 @@ package agentinoutsvc
 import (
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/ibizdomainacc/bizdomainaccmock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestNewAgentInOutService(t *testing.T) {
+	t.Parallel()
+
 	t.Run("creates service with all dependencies", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -31,6 +35,8 @@ func TestNewAgentInOutService(t *testing.T) {
 	})
 
 	t.Run("creates service with minimal dependencies", func(t *testing.T) {
+		t.Parallel()
+
 		dto := &NewAgentInOutSvcDto{
 			SvcBase:        service.NewSvcBase(),
 			Logger:         nil,

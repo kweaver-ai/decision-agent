@@ -7,7 +7,11 @@ import (
 )
 
 func TestMarkInDocIndex(t *testing.T) {
+	t.Parallel()
+
 	t.Run("returns unchanged text when no patterns match", func(t *testing.T) {
+		t.Parallel()
+
 		text := "This is a simple text with no references"
 		has, docIndexs, newText := markInDocIndex(text, docRefPatternList)
 
@@ -17,6 +21,8 @@ func TestMarkInDocIndex(t *testing.T) {
 	})
 
 	t.Run("marks reference to single document", func(t *testing.T) {
+		t.Parallel()
+
 		text := "第1个参考信息"
 		has, docIndexs, _ := markInDocIndex(text, docRefPatternList)
 
@@ -25,6 +31,8 @@ func TestMarkInDocIndex(t *testing.T) {
 	})
 
 	t.Run("marks reference to multiple documents", func(t *testing.T) {
+		t.Parallel()
+
 		text := "第1个和第4个参考信息"
 		has, docIndexs, _ := markInDocIndex(text, docRefPatternList)
 
@@ -34,6 +42,8 @@ func TestMarkInDocIndex(t *testing.T) {
 	})
 
 	t.Run("marks reference in parentheses format", func(t *testing.T) {
+		t.Parallel()
+
 		text := "（参考信息1）"
 		has, docIndexs, newText := markInDocIndex(text, docRefPatternList)
 
@@ -43,6 +53,8 @@ func TestMarkInDocIndex(t *testing.T) {
 	})
 
 	t.Run("marks reference with comma separator", func(t *testing.T) {
+		t.Parallel()
+
 		text := "（参考信息1, 4）"
 		has, docIndexs, _ := markInDocIndex(text, docRefPatternList)
 
@@ -52,6 +64,8 @@ func TestMarkInDocIndex(t *testing.T) {
 	})
 
 	t.Run("marks reference document ID format", func(t *testing.T) {
+		t.Parallel()
+
 		text := "（参考文档ID：第2个）"
 		has, docIndexs, newText := markInDocIndex(text, docRefPatternList)
 
@@ -61,6 +75,8 @@ func TestMarkInDocIndex(t *testing.T) {
 	})
 
 	t.Run("marks reference document without prefix", func(t *testing.T) {
+		t.Parallel()
+
 		text := "参考文档第3个"
 		has, docIndexs, newText := markInDocIndex(text, docRefPatternList)
 
@@ -70,6 +86,8 @@ func TestMarkInDocIndex(t *testing.T) {
 	})
 
 	t.Run("marks multiple references with dunhao separator", func(t *testing.T) {
+		t.Parallel()
+
 		text := "参考文档第1个、第4个"
 		has, docIndexs, _ := markInDocIndex(text, docRefPatternList)
 
@@ -79,6 +97,8 @@ func TestMarkInDocIndex(t *testing.T) {
 	})
 
 	t.Run("handles text with mixed content and references", func(t *testing.T) {
+		t.Parallel()
+
 		text := "根据第1个参考信息，我们得出结论。"
 		has, docIndexs, newText := markInDocIndex(text, docRefPatternList)
 
@@ -89,6 +109,8 @@ func TestMarkInDocIndex(t *testing.T) {
 	})
 
 	t.Run("handles empty text", func(t *testing.T) {
+		t.Parallel()
+
 		text := ""
 		has, docIndexs, newText := markInDocIndex(text, docRefPatternList)
 
@@ -99,7 +121,11 @@ func TestMarkInDocIndex(t *testing.T) {
 }
 
 func TestStringIndexInfoKey(t *testing.T) {
+	t.Parallel()
+
 	t.Run("generates unique key for start and end positions", func(t *testing.T) {
+		t.Parallel()
+
 		info := &stringIndexInfo{
 			Start: 10,
 			End:   20,
@@ -113,6 +139,8 @@ func TestStringIndexInfoKey(t *testing.T) {
 	})
 
 	t.Run("generates different keys for different positions", func(t *testing.T) {
+		t.Parallel()
+
 		info1 := &stringIndexInfo{Start: 0, End: 5, Value: "first"}
 		info2 := &stringIndexInfo{Start: 10, End: 15, Value: "second"}
 
@@ -123,6 +151,8 @@ func TestStringIndexInfoKey(t *testing.T) {
 	})
 
 	t.Run("generates same key for same positions", func(t *testing.T) {
+		t.Parallel()
+
 		info1 := &stringIndexInfo{Start: 5, End: 10, Value: "first"}
 		info2 := &stringIndexInfo{Start: 5, End: 10, Value: "second"}
 
@@ -134,7 +164,11 @@ func TestStringIndexInfoKey(t *testing.T) {
 }
 
 func TestSentenceInfo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("creates sentence info with default values", func(t *testing.T) {
+		t.Parallel()
+
 		info := &sentenceInfo{
 			MaxScoreMap: make(map[string]*maxScoreSlice),
 		}
@@ -148,6 +182,8 @@ func TestSentenceInfo(t *testing.T) {
 	})
 
 	t.Run("creates sentence info with provided text", func(t *testing.T) {
+		t.Parallel()
+
 		info := &sentenceInfo{
 			Text: "test sentence",
 		}
@@ -156,6 +192,8 @@ func TestSentenceInfo(t *testing.T) {
 	})
 
 	t.Run("creates sentence info with scores", func(t *testing.T) {
+		t.Parallel()
+
 		info := &sentenceInfo{
 			MaxScoreMap: map[string]*maxScoreSlice{
 				"1": {DocIndex: 1, Score: 0.8, SliceIndex: 0},
@@ -170,7 +208,11 @@ func TestSentenceInfo(t *testing.T) {
 }
 
 func TestMaxScoreSlice(t *testing.T) {
+	t.Parallel()
+
 	t.Run("creates max score slice with all fields", func(t *testing.T) {
+		t.Parallel()
+
 		mss := &maxScoreSlice{
 			DocIndex:   1,
 			Score:      0.95,

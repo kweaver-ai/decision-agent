@@ -7,16 +7,22 @@ import (
 )
 
 func TestGetInfoType_Constant(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, GetInfoType("output_conf"), OutputConfGetInfoType)
 }
 
 func TestGetInfoType_String(t *testing.T) {
+	t.Parallel()
+
 	infoType := GetInfoType("output_conf")
 
 	assert.Equal(t, "output_conf", string(infoType))
 }
 
 func TestAgentSpecificInfoReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := AgentSpecificInfoReq{
 		GetInfoType: OutputConfGetInfoType,
 	}
@@ -26,12 +32,16 @@ func TestAgentSpecificInfoReq_StructFields(t *testing.T) {
 }
 
 func TestAgentSpecificInfoReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := AgentSpecificInfoReq{}
 
 	assert.Empty(t, req.GetInfoType)
 }
 
 func TestAgentSpecificInfoReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := AgentSpecificInfoReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -41,6 +51,8 @@ func TestAgentSpecificInfoReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestAgentSpecificInfoReq_WithValidInfoType(t *testing.T) {
+	t.Parallel()
+
 	req := AgentSpecificInfoReq{
 		GetInfoType: OutputConfGetInfoType,
 	}
@@ -50,6 +62,8 @@ func TestAgentSpecificInfoReq_WithValidInfoType(t *testing.T) {
 }
 
 func TestAgentSpecificInfoReq_WithCustomInfoType(t *testing.T) {
+	t.Parallel()
+
 	customType := GetInfoType("custom_info")
 	req := AgentSpecificInfoReq{
 		GetInfoType: customType,
@@ -60,6 +74,8 @@ func TestAgentSpecificInfoReq_WithCustomInfoType(t *testing.T) {
 }
 
 func TestAgentSpecificInfoReq_EmptyStringInfoType(t *testing.T) {
+	t.Parallel()
+
 	req := AgentSpecificInfoReq{
 		GetInfoType: GetInfoType(""),
 	}
@@ -68,6 +84,8 @@ func TestAgentSpecificInfoReq_EmptyStringInfoType(t *testing.T) {
 }
 
 func TestGetInfoType_Comparison(t *testing.T) {
+	t.Parallel()
+
 	type1 := OutputConfGetInfoType
 	type2 := GetInfoType("output_conf")
 
@@ -76,6 +94,8 @@ func TestGetInfoType_Comparison(t *testing.T) {
 }
 
 func TestGetInfoType_DifferentValues(t *testing.T) {
+	t.Parallel()
+
 	type1 := OutputConfGetInfoType
 	type2 := GetInfoType("other_type")
 
@@ -84,6 +104,8 @@ func TestGetInfoType_DifferentValues(t *testing.T) {
 }
 
 func TestAgentSpecificInfoReq_JSONTag(t *testing.T) {
+	t.Parallel()
+
 	// This test verifies the struct has the correct JSON tag
 	// The GetInfoType field should have json:"get_info_type" binding:"required"
 	req := AgentSpecificInfoReq{

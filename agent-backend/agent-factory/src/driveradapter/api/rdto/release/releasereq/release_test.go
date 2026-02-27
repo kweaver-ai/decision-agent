@@ -7,6 +7,8 @@ import (
 )
 
 func TestPermissionRange_Type(t *testing.T) {
+	t.Parallel()
+
 	// PermissionRange is a slice type
 	var pr PermissionRange
 
@@ -15,6 +17,8 @@ func TestPermissionRange_Type(t *testing.T) {
 }
 
 func TestPermissionRange_Empty(t *testing.T) {
+	t.Parallel()
+
 	pr := PermissionRange{}
 
 	assert.Empty(t, pr)
@@ -22,6 +26,8 @@ func TestPermissionRange_Empty(t *testing.T) {
 }
 
 func TestPermissionRange_WithItems(t *testing.T) {
+	t.Parallel()
+
 	pr := PermissionRange{
 		{
 			ObjectID:   "obj-1",
@@ -41,6 +47,8 @@ func TestPermissionRange_WithItems(t *testing.T) {
 }
 
 func TestPermissionRangeObject_StructFields(t *testing.T) {
+	t.Parallel()
+
 	obj := PermissionRangeObject{
 		ObjectID:   "test-obj-123",
 		ObjectType: "test-type",
@@ -51,6 +59,8 @@ func TestPermissionRangeObject_StructFields(t *testing.T) {
 }
 
 func TestPermissionRangeObject_Empty(t *testing.T) {
+	t.Parallel()
+
 	obj := PermissionRangeObject{}
 
 	assert.Empty(t, obj.ObjectID)
@@ -58,6 +68,8 @@ func TestPermissionRangeObject_Empty(t *testing.T) {
 }
 
 func TestPermissionRangeObject_WithSpecialCharacters(t *testing.T) {
+	t.Parallel()
+
 	obj := PermissionRangeObject{
 		ObjectID:   "obj-中文-123",
 		ObjectType: "type-特殊",
@@ -68,6 +80,8 @@ func TestPermissionRangeObject_WithSpecialCharacters(t *testing.T) {
 }
 
 func TestHistoryListResp_Type(t *testing.T) {
+	t.Parallel()
+
 	// HistoryListResp is a slice type
 	var list HistoryListResp
 
@@ -76,6 +90,8 @@ func TestHistoryListResp_Type(t *testing.T) {
 }
 
 func TestHistoryListResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	list := HistoryListResp{}
 
 	assert.Empty(t, list)
@@ -83,6 +99,8 @@ func TestHistoryListResp_Empty(t *testing.T) {
 }
 
 func TestHistoryListResp_WithItems(t *testing.T) {
+	t.Parallel()
+
 	list := HistoryListResp{
 		{
 			HistoryID:    "hist-1",
@@ -109,6 +127,8 @@ func TestHistoryListResp_WithItems(t *testing.T) {
 }
 
 func TestHistoryListItemResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	item := HistoryListItemResp{
 		HistoryID:    "hist-123",
 		AgentID:      "agent-456",
@@ -125,6 +145,8 @@ func TestHistoryListItemResp_StructFields(t *testing.T) {
 }
 
 func TestHistoryListItemResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	item := HistoryListItemResp{}
 
 	assert.Empty(t, item.HistoryID)
@@ -135,6 +157,8 @@ func TestHistoryListItemResp_Empty(t *testing.T) {
 }
 
 func TestHistoryListItemResp_WithVersionFormats(t *testing.T) {
+	t.Parallel()
+
 	versions := []string{
 		"1.0.0",
 		"2.1.3",
@@ -152,6 +176,8 @@ func TestHistoryListItemResp_WithVersionFormats(t *testing.T) {
 }
 
 func TestHistoryListResp_Append(t *testing.T) {
+	t.Parallel()
+
 	list := HistoryListResp{}
 
 	item1 := HistoryListItemResp{
@@ -172,6 +198,8 @@ func TestHistoryListResp_Append(t *testing.T) {
 }
 
 func TestHistoryListResp_SliceOperations(t *testing.T) {
+	t.Parallel()
+
 	list := HistoryListResp{
 		{HistoryID: "hist-1", AgentID: "agent-1"},
 		{HistoryID: "hist-2", AgentID: "agent-2"},
@@ -189,14 +217,19 @@ func TestHistoryListResp_SliceOperations(t *testing.T) {
 
 	// Test iteration
 	count := 0
+
 	for _, item := range list {
 		assert.NotEmpty(t, item.HistoryID)
+
 		count++
 	}
+
 	assert.Equal(t, 3, count)
 }
 
 func TestPermissionRange_Append(t *testing.T) {
+	t.Parallel()
+
 	pr := PermissionRange{}
 
 	obj1 := PermissionRangeObject{
@@ -217,6 +250,8 @@ func TestPermissionRange_Append(t *testing.T) {
 }
 
 func TestHistoryListItemResp_WithTimestamps(t *testing.T) {
+	t.Parallel()
+
 	timestamps := []int64{
 		1640995200000, // 2022-01-01
 		1643673600000, // 2022-02-01
@@ -235,17 +270,19 @@ func TestHistoryListItemResp_WithTimestamps(t *testing.T) {
 }
 
 func TestPermissionRange_WithDuplicateObjects(t *testing.T) {
+	t.Parallel()
+
 	pr := PermissionRange{
 		{
 			ObjectID:   "obj-1",
 			ObjectType: "type-a",
 		},
 		{
-			ObjectID:   "obj-1", // Same ID
+			ObjectID:   "obj-1",  // Same ID
 			ObjectType: "type-a", // Same type
 		},
 		{
-			ObjectID:   "obj-1", // Same ID
+			ObjectID:   "obj-1",  // Same ID
 			ObjectType: "type-b", // Different type
 		},
 	}
@@ -257,6 +294,8 @@ func TestPermissionRange_WithDuplicateObjects(t *testing.T) {
 }
 
 func TestHistoryListResp_Capacity(t *testing.T) {
+	t.Parallel()
+
 	list := make(HistoryListResp, 0, 100)
 
 	assert.Len(t, list, 0)
@@ -273,6 +312,8 @@ func TestHistoryListResp_Capacity(t *testing.T) {
 }
 
 func TestHistoryListItemResp_WithLongDescription(t *testing.T) {
+	t.Parallel()
+
 	longDesc := "This is a very long description that contains multiple words and should be stored properly in the AgentDesc field. It might contain special characters like 中文 and numbers like 12345."
 	item := HistoryListItemResp{
 		HistoryID: "hist-long",

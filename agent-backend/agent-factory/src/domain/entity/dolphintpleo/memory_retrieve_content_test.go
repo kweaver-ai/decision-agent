@@ -10,6 +10,8 @@ import (
 )
 
 func TestNewMemoryRetrieveContent(t *testing.T) {
+	t.Parallel()
+
 	content := NewMemoryRetrieveContent()
 
 	assert.NotNil(t, content)
@@ -19,6 +21,8 @@ func TestNewMemoryRetrieveContent(t *testing.T) {
 }
 
 func TestMemoryRetrieveContent_LoadFromConfig_WithMemoryEnabled(t *testing.T) {
+	t.Parallel()
+
 	content := NewMemoryRetrieveContent()
 
 	isEnabled := true
@@ -38,6 +42,8 @@ func TestMemoryRetrieveContent_LoadFromConfig_WithMemoryEnabled(t *testing.T) {
 }
 
 func TestMemoryRetrieveContent_LoadFromConfig_WithMemoryDisabled(t *testing.T) {
+	t.Parallel()
+
 	content := NewMemoryRetrieveContent()
 
 	isEnabled := false
@@ -55,6 +61,8 @@ func TestMemoryRetrieveContent_LoadFromConfig_WithMemoryDisabled(t *testing.T) {
 }
 
 func TestMemoryRetrieveContent_LoadFromConfig_NilMemoryCfg(t *testing.T) {
+	t.Parallel()
+
 	content := NewMemoryRetrieveContent()
 
 	config := &daconfvalobj.Config{
@@ -69,6 +77,8 @@ func TestMemoryRetrieveContent_LoadFromConfig_NilMemoryCfg(t *testing.T) {
 }
 
 func TestMemoryRetrieveContent_LoadFromConfig_AppendsToOther(t *testing.T) {
+	t.Parallel()
+
 	content := NewMemoryRetrieveContent()
 	content.Other = "existing content"
 
@@ -87,6 +97,8 @@ func TestMemoryRetrieveContent_LoadFromConfig_AppendsToOther(t *testing.T) {
 }
 
 func TestMemoryRetrieveContent_ToString_Empty(t *testing.T) {
+	t.Parallel()
+
 	content := NewMemoryRetrieveContent()
 
 	result := content.ToString()
@@ -95,6 +107,8 @@ func TestMemoryRetrieveContent_ToString_Empty(t *testing.T) {
 }
 
 func TestMemoryRetrieveContent_ToString_WithRelevantMemory(t *testing.T) {
+	t.Parallel()
+
 	content := NewMemoryRetrieveContent()
 	content.RelevantMemory = "memory content"
 
@@ -104,6 +118,8 @@ func TestMemoryRetrieveContent_ToString_WithRelevantMemory(t *testing.T) {
 }
 
 func TestMemoryRetrieveContent_ToString_WithOther(t *testing.T) {
+	t.Parallel()
+
 	content := NewMemoryRetrieveContent()
 	content.Other = "other content"
 
@@ -113,6 +129,8 @@ func TestMemoryRetrieveContent_ToString_WithOther(t *testing.T) {
 }
 
 func TestMemoryRetrieveContent_ToString_WithBoth(t *testing.T) {
+	t.Parallel()
+
 	content := NewMemoryRetrieveContent()
 	content.RelevantMemory = "memory content"
 	content.Other = "other content"
@@ -124,6 +142,8 @@ func TestMemoryRetrieveContent_ToString_WithBoth(t *testing.T) {
 }
 
 func TestMemoryRetrieveContent_ToDolphinTplEo(t *testing.T) {
+	t.Parallel()
+
 	content := NewMemoryRetrieveContent()
 	content.RelevantMemory = "test value"
 
@@ -136,6 +156,8 @@ func TestMemoryRetrieveContent_ToDolphinTplEo(t *testing.T) {
 }
 
 func TestMemoryRetrieveContent_ToDolphinTplEo_EmptyContent(t *testing.T) {
+	t.Parallel()
+
 	content := NewMemoryRetrieveContent()
 
 	eo := content.ToDolphinTplEo()
@@ -147,6 +169,8 @@ func TestMemoryRetrieveContent_ToDolphinTplEo_EmptyContent(t *testing.T) {
 }
 
 func TestMemoryRetrieveContent_LoadFromConfig_MultipleCalls(t *testing.T) {
+	t.Parallel()
+
 	content := NewMemoryRetrieveContent()
 
 	isEnabled := true

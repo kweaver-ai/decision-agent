@@ -8,19 +8,27 @@ import (
 )
 
 func TestGenRedisDlmUniqueValue_GeneratesValue(t *testing.T) {
+	t.Parallel()
+
 	// Note: This test requires database access and will be skipped in most environments
 	// as we don't want to create side effects during unit testing
 	t.Skip("genRedisDlmUniqueValue requires database access, skipping to avoid side effects")
 }
 
 func TestDelRedisDlmUniqueValue_DeletesValue(t *testing.T) {
+	t.Parallel()
+
 	// Note: This test requires database access and will be skipped in most environments
 	// as we don't want to create side effects during unit testing
 	t.Skip("delRedisDlmUniqueValue requires database access, skipping to avoid side effects")
 }
 
 func TestGetDefaultDlmConf_DetailedOptions(t *testing.T) {
+	t.Parallel()
+
 	t.Run("verify options array structure", func(t *testing.T) {
+		t.Parallel()
+
 		redisKeyPrefix := "test:dlm:"
 		conf := GetDefaultDlmConf(redisKeyPrefix)
 
@@ -30,6 +38,8 @@ func TestGetDefaultDlmConf_DetailedOptions(t *testing.T) {
 	})
 
 	t.Run("verify expiry configuration", func(t *testing.T) {
+		t.Parallel()
+
 		redisKeyPrefix := "test:dlm:"
 		conf := GetDefaultDlmConf(redisKeyPrefix)
 
@@ -39,6 +49,8 @@ func TestGetDefaultDlmConf_DetailedOptions(t *testing.T) {
 	})
 
 	t.Run("verify redis key prefix is set", func(t *testing.T) {
+		t.Parallel()
+
 		prefix := "myapp:lock:"
 		conf := GetDefaultDlmConf(prefix)
 
@@ -46,12 +58,16 @@ func TestGetDefaultDlmConf_DetailedOptions(t *testing.T) {
 	})
 
 	t.Run("verify delete value func is set", func(t *testing.T) {
+		t.Parallel()
+
 		conf := GetDefaultDlmConf("test:")
 
 		assert.NotNil(t, conf.DeleteValueFunc, "DeleteValueFunc should not be nil")
 	})
 
 	t.Run("verify logger is set", func(t *testing.T) {
+		t.Parallel()
+
 		conf := GetDefaultDlmConf("test:")
 
 		assert.NotNil(t, conf.Logger, "Logger should not be nil")
@@ -59,7 +75,11 @@ func TestGetDefaultDlmConf_DetailedOptions(t *testing.T) {
 }
 
 func TestGetDefaultDlmConf_EdgeCases(t *testing.T) {
+	t.Parallel()
+
 	t.Run("empty redis key prefix", func(t *testing.T) {
+		t.Parallel()
+
 		conf := GetDefaultDlmConf("")
 
 		assert.NotNil(t, conf)
@@ -67,6 +87,8 @@ func TestGetDefaultDlmConf_EdgeCases(t *testing.T) {
 	})
 
 	t.Run("redis key prefix with special characters", func(t *testing.T) {
+		t.Parallel()
+
 		specialPrefix := "test:dlm:with:special:chars:{}:"
 		conf := GetDefaultDlmConf(specialPrefix)
 
@@ -74,6 +96,8 @@ func TestGetDefaultDlmConf_EdgeCases(t *testing.T) {
 	})
 
 	t.Run("very long redis key prefix", func(t *testing.T) {
+		t.Parallel()
+
 		longPrefix := strings.Repeat("a:", 100)
 		conf := GetDefaultDlmConf(longPrefix)
 
@@ -82,7 +106,11 @@ func TestGetDefaultDlmConf_EdgeCases(t *testing.T) {
 }
 
 func TestGetDefaultDlmConf_Consistency(t *testing.T) {
+	t.Parallel()
+
 	t.Run("multiple calls return consistent config", func(t *testing.T) {
+		t.Parallel()
+
 		prefix := "test:consistency:"
 
 		conf1 := GetDefaultDlmConf(prefix)

@@ -8,6 +8,8 @@ import (
 )
 
 func TestFsMetadata_StructFields(t *testing.T) {
+	t.Parallel()
+
 	metadata := FsMetadata{
 		ID:         "file-123",
 		Name:       "Test File",
@@ -24,6 +26,8 @@ func TestFsMetadata_StructFields(t *testing.T) {
 }
 
 func TestFsMetadata_Empty(t *testing.T) {
+	t.Parallel()
+
 	metadata := FsMetadata{}
 
 	assert.Empty(t, metadata.ID)
@@ -34,6 +38,8 @@ func TestFsMetadata_Empty(t *testing.T) {
 }
 
 func TestFsMetadata_WithChineseName(t *testing.T) {
+	t.Parallel()
+
 	metadata := FsMetadata{
 		ID:         "文件-123",
 		Name:       "测试文件",
@@ -49,6 +55,8 @@ func TestFsMetadata_WithChineseName(t *testing.T) {
 }
 
 func TestFsMetadata_WithDocLibTypeDepartment(t *testing.T) {
+	t.Parallel()
+
 	metadata := FsMetadata{
 		ID:         "folder-123",
 		Name:       "Test Folder",
@@ -62,6 +70,8 @@ func TestFsMetadata_WithDocLibTypeDepartment(t *testing.T) {
 }
 
 func TestFsMetadata_WithLargeSize(t *testing.T) {
+	t.Parallel()
+
 	sizes := []int64{0, 1024, 1024 * 1024, 1024 * 1024 * 1024}
 
 	for _, size := range sizes {
@@ -74,6 +84,8 @@ func TestFsMetadata_WithLargeSize(t *testing.T) {
 }
 
 func TestFsMetadata_WithSpecialCharactersInPath(t *testing.T) {
+	t.Parallel()
+
 	metadata := FsMetadata{
 		ID:   "file-123",
 		Name: "Test File",
@@ -85,6 +97,8 @@ func TestFsMetadata_WithSpecialCharactersInPath(t *testing.T) {
 }
 
 func TestGetFsMetadataRetDto_StructFields(t *testing.T) {
+	t.Parallel()
+
 	dto := GetFsMetadataRetDto{
 		&FsMetadata{
 			ID:         "file-1",
@@ -108,6 +122,8 @@ func TestGetFsMetadataRetDto_StructFields(t *testing.T) {
 }
 
 func TestGetFsMetadataRetDto_Empty(t *testing.T) {
+	t.Parallel()
+
 	var dto GetFsMetadataRetDto
 
 	assert.Nil(t, dto)
@@ -115,12 +131,16 @@ func TestGetFsMetadataRetDto_Empty(t *testing.T) {
 }
 
 func TestGetFsMetadataRetDto_WithNil(t *testing.T) {
+	t.Parallel()
+
 	var dto GetFsMetadataRetDto
 
 	assert.Nil(t, dto)
 }
 
 func TestGetFsMetadataRetDto_Append(t *testing.T) {
+	t.Parallel()
+
 	dto := make(GetFsMetadataRetDto, 0)
 
 	dto = append(dto, &FsMetadata{
@@ -138,6 +158,8 @@ func TestGetFsMetadataRetDto_Append(t *testing.T) {
 }
 
 func TestGetFsMetadataRetDto_WithMultipleEntries(t *testing.T) {
+	t.Parallel()
+
 	dto := make(GetFsMetadataRetDto, 50)
 	for i := 0; i < 50; i++ {
 		dto[i] = &FsMetadata{
@@ -150,6 +172,8 @@ func TestGetFsMetadataRetDto_WithMultipleEntries(t *testing.T) {
 }
 
 func TestGetFsMetadataRetDto_Iteration(t *testing.T) {
+	t.Parallel()
+
 	dto := GetFsMetadataRetDto{
 		&FsMetadata{ID: "file-1", Name: "File 1"},
 		&FsMetadata{ID: "file-2", Name: "File 2"},
@@ -157,15 +181,20 @@ func TestGetFsMetadataRetDto_Iteration(t *testing.T) {
 	}
 
 	count := 0
+
 	for _, metadata := range dto {
 		assert.NotEmpty(t, metadata.ID)
 		assert.NotEmpty(t, metadata.Name)
+
 		count++
 	}
+
 	assert.Equal(t, 3, count)
 }
 
 func TestGetFsMetadataRetDto_SliceOperations(t *testing.T) {
+	t.Parallel()
+
 	dto := GetFsMetadataRetDto{
 		&FsMetadata{ID: "file-1", Name: "File 1"},
 		&FsMetadata{ID: "file-2", Name: "File 2"},
@@ -179,6 +208,8 @@ func TestGetFsMetadataRetDto_SliceOperations(t *testing.T) {
 }
 
 func TestFsMetadata_AllFieldsSet(t *testing.T) {
+	t.Parallel()
+
 	metadata := FsMetadata{
 		ID:         "test-id",
 		Name:       "test-name",
@@ -195,6 +226,8 @@ func TestFsMetadata_AllFieldsSet(t *testing.T) {
 }
 
 func TestFsMetadata_WithEmptyPath(t *testing.T) {
+	t.Parallel()
+
 	metadata := FsMetadata{
 		ID:         "file-123",
 		Name:       "Test File",
@@ -207,6 +240,8 @@ func TestFsMetadata_WithEmptyPath(t *testing.T) {
 }
 
 func TestFsMetadata_WithNegativeSize(t *testing.T) {
+	t.Parallel()
+
 	metadata := FsMetadata{
 		ID:   "file-123",
 		Name: "Test File",
@@ -217,6 +252,8 @@ func TestFsMetadata_WithNegativeSize(t *testing.T) {
 }
 
 func TestGetFsMetadataRetDto_WithMixedTypes(t *testing.T) {
+	t.Parallel()
+
 	dto := GetFsMetadataRetDto{
 		&FsMetadata{
 			ID:         "file-1",

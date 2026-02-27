@@ -7,6 +7,8 @@ import (
 )
 
 func TestDeptInfoField_StringRepresentation(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		field    DeptInfoField
 		expected string
@@ -18,18 +20,23 @@ func TestDeptInfoField_StringRepresentation(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(string(tt.field), func(t *testing.T) {
+			t.Parallel()
 			assert.Equal(t, tt.expected, string(tt.field))
 		})
 	}
 }
 
 func TestDeptInfoField_Constants(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, DeptInfoField("name"), DeptFieldName)
 	assert.Equal(t, DeptInfoField("parent_deps"), DeptFieldParentDeps)
 	assert.Equal(t, DeptInfoField("managers"), DeptFieldManagers)
 }
 
 func TestDeptFields_ToStrings(t *testing.T) {
+	t.Parallel()
+
 	fields := DeptFields{
 		DeptFieldName,
 		DeptFieldParentDeps,
@@ -44,6 +51,8 @@ func TestDeptFields_ToStrings(t *testing.T) {
 }
 
 func TestDeptFields_ToStrings_Empty(t *testing.T) {
+	t.Parallel()
+
 	fields := DeptFields{}
 	result := fields.ToStrings()
 
@@ -52,6 +61,8 @@ func TestDeptFields_ToStrings_Empty(t *testing.T) {
 }
 
 func TestDeptFields_ToStrings_SingleField(t *testing.T) {
+	t.Parallel()
+
 	fields := DeptFields{
 		DeptFieldName,
 	}
@@ -62,6 +73,8 @@ func TestDeptFields_ToStrings_SingleField(t *testing.T) {
 }
 
 func TestDeptFields_ToStrings_DuplicateFields(t *testing.T) {
+	t.Parallel()
+
 	fields := DeptFields{
 		DeptFieldName,
 		DeptFieldName,
@@ -76,6 +89,8 @@ func TestDeptFields_ToStrings_DuplicateFields(t *testing.T) {
 }
 
 func TestGetDeptInfoArgDto_StructFields(t *testing.T) {
+	t.Parallel()
+
 	dto := GetDeptInfoArgDto{
 		DeptIds: []string{"dept-1", "dept-2"},
 		Fields:  DeptFields{DeptFieldName, DeptFieldManagers},
@@ -88,6 +103,8 @@ func TestGetDeptInfoArgDto_StructFields(t *testing.T) {
 }
 
 func TestGetDeptInfoArgDto_Empty(t *testing.T) {
+	t.Parallel()
+
 	dto := GetDeptInfoArgDto{}
 
 	assert.Nil(t, dto.DeptIds)
@@ -95,6 +112,8 @@ func TestGetDeptInfoArgDto_Empty(t *testing.T) {
 }
 
 func TestGetDeptInfoArgDto_WithOnlyDeptIds(t *testing.T) {
+	t.Parallel()
+
 	dto := GetDeptInfoArgDto{
 		DeptIds: []string{"dept-1", "dept-2", "dept-3"},
 	}
@@ -104,6 +123,8 @@ func TestGetDeptInfoArgDto_WithOnlyDeptIds(t *testing.T) {
 }
 
 func TestGetDeptInfoArgDto_WithOnlyFields(t *testing.T) {
+	t.Parallel()
+
 	dto := GetDeptInfoArgDto{
 		Fields: DeptFields{DeptFieldName, DeptFieldParentDeps},
 	}
@@ -113,6 +134,8 @@ func TestGetDeptInfoArgDto_WithOnlyFields(t *testing.T) {
 }
 
 func TestGetDeptInfoArgDto_WithChineseDeptIds(t *testing.T) {
+	t.Parallel()
+
 	dto := GetDeptInfoArgDto{
 		DeptIds: []string{"部门-1", "部门-2"},
 	}
@@ -122,6 +145,8 @@ func TestGetDeptInfoArgDto_WithChineseDeptIds(t *testing.T) {
 }
 
 func TestGetDeptInfoArgDto_WithEmptyArrays(t *testing.T) {
+	t.Parallel()
+
 	dto := GetDeptInfoArgDto{
 		DeptIds: []string{},
 		Fields:  DeptFields{},
@@ -134,6 +159,8 @@ func TestGetDeptInfoArgDto_WithEmptyArrays(t *testing.T) {
 }
 
 func TestGetDeptInfoArgDto_AppendDeptIds(t *testing.T) {
+	t.Parallel()
+
 	dto := GetDeptInfoArgDto{}
 	dto.DeptIds = append(dto.DeptIds, "dept-1")
 	dto.DeptIds = append(dto.DeptIds, "dept-2")
@@ -144,6 +171,8 @@ func TestGetDeptInfoArgDto_AppendDeptIds(t *testing.T) {
 }
 
 func TestGetDeptInfoArgDto_AppendFields(t *testing.T) {
+	t.Parallel()
+
 	dto := GetDeptInfoArgDto{}
 	dto.Fields = append(dto.Fields, DeptFieldName)
 	dto.Fields = append(dto.Fields, DeptFieldManagers)
@@ -154,6 +183,8 @@ func TestGetDeptInfoArgDto_AppendFields(t *testing.T) {
 }
 
 func TestGetDeptInfoArgDto_WithMultipleDeptIds(t *testing.T) {
+	t.Parallel()
+
 	deptIds := make([]string, 50)
 	for i := 0; i < 50; i++ {
 		deptIds[i] = "dept-" + string(rune(i))
@@ -167,6 +198,8 @@ func TestGetDeptInfoArgDto_WithMultipleDeptIds(t *testing.T) {
 }
 
 func TestGetDeptInfoArgDto_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	dto := GetDeptInfoArgDto{
 		DeptIds: []string{"dept-1"},
 		Fields: DeptFields{
@@ -184,27 +217,37 @@ func TestGetDeptInfoArgDto_WithAllFields(t *testing.T) {
 }
 
 func TestGetDeptInfoArgDto_Iteration(t *testing.T) {
+	t.Parallel()
+
 	dto := GetDeptInfoArgDto{
 		DeptIds: []string{"dept-1", "dept-2", "dept-3"},
 		Fields:  DeptFields{DeptFieldName, DeptFieldManagers},
 	}
 
 	count := 0
+
 	for _, deptId := range dto.DeptIds {
 		assert.NotEmpty(t, deptId)
+
 		count++
 	}
+
 	assert.Equal(t, 3, count)
 
 	fieldCount := 0
+
 	for _, field := range dto.Fields {
 		assert.NotEmpty(t, string(field))
+
 		fieldCount++
 	}
+
 	assert.Equal(t, 2, fieldCount)
 }
 
 func TestDeptFields_SliceOperations(t *testing.T) {
+	t.Parallel()
+
 	fields := DeptFields{
 		DeptFieldName,
 		DeptFieldParentDeps,
@@ -218,6 +261,8 @@ func TestDeptFields_SliceOperations(t *testing.T) {
 }
 
 func TestGetDeptInfoArgDto_SliceOperations(t *testing.T) {
+	t.Parallel()
+
 	dto := GetDeptInfoArgDto{
 		DeptIds: []string{"dept-1", "dept-2", "dept-3"},
 	}
@@ -229,6 +274,8 @@ func TestGetDeptInfoArgDto_SliceOperations(t *testing.T) {
 }
 
 func TestDeptFields_AllFieldTypes(t *testing.T) {
+	t.Parallel()
+
 	allFields := []DeptInfoField{
 		DeptFieldName,
 		DeptFieldParentDeps,

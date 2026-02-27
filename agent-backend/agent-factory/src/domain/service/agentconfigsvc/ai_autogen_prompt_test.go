@@ -7,9 +7,11 @@ import (
 )
 
 func TestOpeningRemarksSystemPrompt(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name     string
-		language string
+		name         string
+		language     string
 		wantContains []string
 	}{
 		{
@@ -47,8 +49,11 @@ func TestOpeningRemarksSystemPrompt(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := openingRemarksSystemPrompt(tt.language)
 			assert.NotEmpty(t, result)
+
 			for _, substr := range tt.wantContains {
 				assert.Contains(t, result, substr)
 			}
@@ -57,9 +62,11 @@ func TestOpeningRemarksSystemPrompt(t *testing.T) {
 }
 
 func TestSystemPrompt(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name     string
-		language string
+		name         string
+		language     string
 		wantContains []string
 	}{
 		{
@@ -88,8 +95,11 @@ func TestSystemPrompt(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := systemPrompt(tt.language)
 			assert.NotEmpty(t, result)
+
 			for _, substr := range tt.wantContains {
 				assert.Contains(t, result, substr)
 			}
@@ -98,21 +108,23 @@ func TestSystemPrompt(t *testing.T) {
 }
 
 func TestUserPromptForOpenRemarks(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name        string
-		language    string
-		agentName   string
+		name         string
+		language     string
+		agentName    string
 		agentProfile string
-		agentSkills []string
+		agentSkills  []string
 		agentSources []string
 		wantContains []string
 	}{
 		{
-			name:        "English language",
-			language:    "en-US",
-			agentName:   "Test Agent",
+			name:         "English language",
+			language:     "en-US",
+			agentName:    "Test Agent",
 			agentProfile: "A test assistant",
-			agentSkills: []string{"skill1", "skill2"},
+			agentSkills:  []string{"skill1", "skill2"},
 			agentSources: []string{"source1"},
 			wantContains: []string{
 				"Name: Test Agent",
@@ -120,11 +132,11 @@ func TestUserPromptForOpenRemarks(t *testing.T) {
 			},
 		},
 		{
-			name:        "Simplified Chinese",
-			language:    "zh-CN",
-			agentName:   "测试助手",
+			name:         "Simplified Chinese",
+			language:     "zh-CN",
+			agentName:    "测试助手",
 			agentProfile: "测试简介",
-			agentSkills: []string{"技能1"},
+			agentSkills:  []string{"技能1"},
 			agentSources: []string{"来源1"},
 			wantContains: []string{
 				"名称：测试助手",
@@ -132,11 +144,11 @@ func TestUserPromptForOpenRemarks(t *testing.T) {
 			},
 		},
 		{
-			name:        "Traditional Chinese",
-			language:    "zh-TW",
-			agentName:   "測試助手",
+			name:         "Traditional Chinese",
+			language:     "zh-TW",
+			agentName:    "測試助手",
 			agentProfile: "測試簡介",
-			agentSkills: []string{"技能1"},
+			agentSkills:  []string{"技能1"},
 			agentSources: []string{"來源1"},
 			wantContains: []string{
 				"名稱：測試助手",
@@ -147,8 +159,11 @@ func TestUserPromptForOpenRemarks(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := userPromptForOpenRemarks(tt.language, tt.agentName, tt.agentProfile, tt.agentSkills, tt.agentSources)
 			assert.NotEmpty(t, result)
+
 			for _, substr := range tt.wantContains {
 				assert.Contains(t, result, substr)
 			}
@@ -157,17 +172,19 @@ func TestUserPromptForOpenRemarks(t *testing.T) {
 }
 
 func TestUserPromptForPresetQuestion(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name        string
-		language    string
-		agentName   string
+		name         string
+		language     string
+		agentName    string
 		agentProfile string
 		wantContains []string
 	}{
 		{
-			name:        "English language",
-			language:    "en-US",
-			agentName:   "Test Agent",
+			name:         "English language",
+			language:     "en-US",
+			agentName:    "Test Agent",
 			agentProfile: "A test assistant",
 			wantContains: []string{
 				"Please generate 3 preset questions",
@@ -175,9 +192,9 @@ func TestUserPromptForPresetQuestion(t *testing.T) {
 			},
 		},
 		{
-			name:        "Simplified Chinese",
-			language:    "zh-CN",
-			agentName:   "测试助手",
+			name:         "Simplified Chinese",
+			language:     "zh-CN",
+			agentName:    "测试助手",
 			agentProfile: "测试简介",
 			wantContains: []string{
 				"请根据上面提供的信息生成3个预设问题",
@@ -185,9 +202,9 @@ func TestUserPromptForPresetQuestion(t *testing.T) {
 			},
 		},
 		{
-			name:        "Traditional Chinese",
-			language:    "zh-TW",
-			agentName:   "測試助手",
+			name:         "Traditional Chinese",
+			language:     "zh-TW",
+			agentName:    "測試助手",
 			agentProfile: "測試簡介",
 			wantContains: []string{
 				"請根據上面提供的信息生成3個預設問題",
@@ -198,8 +215,11 @@ func TestUserPromptForPresetQuestion(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := userPromptForPresetQuestion(tt.language, tt.agentName, tt.agentProfile, []string{}, []string{})
 			assert.NotEmpty(t, result)
+
 			for _, substr := range tt.wantContains {
 				assert.Contains(t, result, substr)
 			}
@@ -208,17 +228,19 @@ func TestUserPromptForPresetQuestion(t *testing.T) {
 }
 
 func TestUserPromptForSystem(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name        string
-		language    string
-		agentName   string
+		name         string
+		language     string
+		agentName    string
 		agentProfile string
 		wantContains []string
 	}{
 		{
-			name:        "English language",
-			language:    "en-US",
-			agentName:   "Test Agent",
+			name:         "English language",
+			language:     "en-US",
+			agentName:    "Test Agent",
 			agentProfile: "A test assistant",
 			wantContains: []string{
 				"Please generate a personality and instruction",
@@ -226,9 +248,9 @@ func TestUserPromptForSystem(t *testing.T) {
 			},
 		},
 		{
-			name:        "Simplified Chinese",
-			language:    "zh-CN",
-			agentName:   "测试助手",
+			name:         "Simplified Chinese",
+			language:     "zh-CN",
+			agentName:    "测试助手",
 			agentProfile: "测试简介",
 			wantContains: []string{
 				"请根据上面提供的信息生成一个人设和指令",
@@ -236,9 +258,9 @@ func TestUserPromptForSystem(t *testing.T) {
 			},
 		},
 		{
-			name:        "Traditional Chinese",
-			language:    "zh-TW",
-			agentName:   "測試助手",
+			name:         "Traditional Chinese",
+			language:     "zh-TW",
+			agentName:    "測試助手",
 			agentProfile: "測試簡介",
 			wantContains: []string{
 				"請根據上面提供的信息生成一個人設和指令",
@@ -249,8 +271,11 @@ func TestUserPromptForSystem(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := userPromptForSystem(tt.language, tt.agentName, tt.agentProfile, []string{}, []string{})
 			assert.NotEmpty(t, result)
+
 			for _, substr := range tt.wantContains {
 				assert.Contains(t, result, substr)
 			}

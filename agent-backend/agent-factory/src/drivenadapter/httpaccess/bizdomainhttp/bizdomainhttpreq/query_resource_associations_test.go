@@ -8,6 +8,8 @@ import (
 )
 
 func TestQueryResourceAssociationsReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := QueryResourceAssociationsReq{
 		BdID:   "bd-123",
 		ID:     "resource-456",
@@ -24,6 +26,8 @@ func TestQueryResourceAssociationsReq_StructFields(t *testing.T) {
 }
 
 func TestQueryResourceAssociationsReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := QueryResourceAssociationsReq{}
 
 	assert.Empty(t, req.BdID)
@@ -34,6 +38,8 @@ func TestQueryResourceAssociationsReq_Empty(t *testing.T) {
 }
 
 func TestQueryResourceAssociationsReq_WithDifferentTypes(t *testing.T) {
+	t.Parallel()
+
 	types := []cdaenum.ResourceType{
 		cdaenum.ResourceTypeDataAgent,
 		cdaenum.ResourceTypeDataAgentTpl,
@@ -52,6 +58,8 @@ func TestQueryResourceAssociationsReq_WithDifferentTypes(t *testing.T) {
 }
 
 func TestQueryResourceAssociationsReq_WithBdID(t *testing.T) {
+	t.Parallel()
+
 	bdIDs := []string{
 		"bd-001",
 		"business-domain-123",
@@ -71,6 +79,8 @@ func TestQueryResourceAssociationsReq_WithBdID(t *testing.T) {
 }
 
 func TestQueryResourceAssociationsReq_WithPagination(t *testing.T) {
+	t.Parallel()
+
 	req := QueryResourceAssociationsReq{
 		BdID:   "bd-123",
 		Limit:  20,
@@ -83,6 +93,8 @@ func TestQueryResourceAssociationsReq_WithPagination(t *testing.T) {
 }
 
 func TestQueryResourceAssociationsReq_WithZeroPagination(t *testing.T) {
+	t.Parallel()
+
 	req := QueryResourceAssociationsReq{
 		BdID:   "bd-123",
 		Limit:  0,

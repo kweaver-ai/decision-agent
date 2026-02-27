@@ -5,7 +5,6 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/release/releasereq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
@@ -13,17 +12,20 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iumacc/httpaccmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver/v3portdrivermock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestReleaseSvc_Publish_PanicsWithoutAgentConfigRepo(t *testing.T) {
+	t.Parallel()
+
 	svc := &releaseSvc{}
 	// All repos are nil
 
 	ctx := context.Background()
 	req := &releasereq.PublishReq{
-		AgentID: "agent-123",
+		AgentID:              "agent-123",
 		UpdatePublishInfoReq: &releasereq.UpdatePublishInfoReq{},
-		IsInternalAPI: false,
+		IsInternalAPI:        false,
 	}
 
 	assert.Panics(t, func() {
@@ -32,6 +34,8 @@ func TestReleaseSvc_Publish_PanicsWithoutAgentConfigRepo(t *testing.T) {
 }
 
 func TestReleaseSvc_Publish_AgentNotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -48,9 +52,9 @@ func TestReleaseSvc_Publish_AgentNotFound(t *testing.T) {
 
 	ctx := context.Background()
 	req := &releasereq.PublishReq{
-		AgentID: "non-existent-agent",
+		AgentID:              "non-existent-agent",
 		UpdatePublishInfoReq: &releasereq.UpdatePublishInfoReq{},
-		IsInternalAPI: false,
+		IsInternalAPI:        false,
 	}
 
 	mockAgentConfigRepo.EXPECT().GetByID(gomock.Any(), "non-existent-agent").Return(nil, errors.New("record not found"))
@@ -64,6 +68,8 @@ func TestReleaseSvc_Publish_AgentNotFound(t *testing.T) {
 }
 
 func TestReleaseSvc_Publish_GetByIDError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -80,9 +86,9 @@ func TestReleaseSvc_Publish_GetByIDError(t *testing.T) {
 
 	ctx := context.Background()
 	req := &releasereq.PublishReq{
-		AgentID: "agent-123",
+		AgentID:              "agent-123",
 		UpdatePublishInfoReq: &releasereq.UpdatePublishInfoReq{},
-		IsInternalAPI: false,
+		IsInternalAPI:        false,
 	}
 
 	dbErr := errors.New("database connection failed")
@@ -98,6 +104,8 @@ func TestReleaseSvc_Publish_GetByIDError(t *testing.T) {
 }
 
 func TestReleaseSvc_Publish_AgentFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -114,9 +122,9 @@ func TestReleaseSvc_Publish_AgentFound(t *testing.T) {
 
 	ctx := context.Background()
 	req := &releasereq.PublishReq{
-		AgentID: "agent-123",
+		AgentID:              "agent-123",
 		UpdatePublishInfoReq: &releasereq.UpdatePublishInfoReq{},
-		IsInternalAPI: false,
+		IsInternalAPI:        false,
 	}
 
 	agentPo := &dapo.DataAgentPo{
@@ -134,6 +142,8 @@ func TestReleaseSvc_Publish_AgentFound(t *testing.T) {
 }
 
 func TestReleaseSvc_Publish_InternalAPI(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -150,9 +160,9 @@ func TestReleaseSvc_Publish_InternalAPI(t *testing.T) {
 
 	ctx := context.Background()
 	req := &releasereq.PublishReq{
-		AgentID: "agent-123",
+		AgentID:              "agent-123",
 		UpdatePublishInfoReq: &releasereq.UpdatePublishInfoReq{},
-		IsInternalAPI: true, // Internal API, skip permission check
+		IsInternalAPI:        true, // Internal API, skip permission check
 	}
 
 	agentPo := &dapo.DataAgentPo{

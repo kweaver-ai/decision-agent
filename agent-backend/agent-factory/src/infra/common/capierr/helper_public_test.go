@@ -8,6 +8,8 @@ import (
 )
 
 func TestNew400Err(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	detail := "Invalid input"
 
@@ -17,6 +19,8 @@ func TestNew400Err(t *testing.T) {
 }
 
 func TestNew401Err(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	detail := "Unauthorized access"
 
@@ -26,6 +30,8 @@ func TestNew401Err(t *testing.T) {
 }
 
 func TestNew403Err(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	detail := "Forbidden"
 
@@ -35,6 +41,8 @@ func TestNew403Err(t *testing.T) {
 }
 
 func TestNew404Err(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	detail := "Resource not found"
 
@@ -44,6 +52,8 @@ func TestNew404Err(t *testing.T) {
 }
 
 func TestNew405Err(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	detail := "Method not allowed"
 
@@ -53,6 +63,8 @@ func TestNew405Err(t *testing.T) {
 }
 
 func TestNew409Err(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	detail := "Conflict detected"
 
@@ -62,6 +74,8 @@ func TestNew409Err(t *testing.T) {
 }
 
 func TestNew500Err(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	detail := "Internal server error"
 
@@ -71,6 +85,8 @@ func TestNew500Err(t *testing.T) {
 }
 
 func TestNew400Err_WithNilDetail(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 
 	err := New400Err(ctx, nil)
@@ -79,11 +95,15 @@ func TestNew400Err_WithNilDetail(t *testing.T) {
 }
 
 func TestNew401Err_WithStructDetail(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
+
 	type ErrorDetail struct {
 		Field   string `json:"field"`
 		Message string `json:"message"`
 	}
+
 	detail := ErrorDetail{Field: "name", Message: "Name is required"}
 
 	err := New401Err(ctx, detail)
@@ -92,6 +112,8 @@ func TestNew401Err_WithStructDetail(t *testing.T) {
 }
 
 func TestErrorCodes(t *testing.T) {
+	t.Parallel()
+
 	// Test that error code constants are defined
 	assert.NotEmpty(t, DataAgentConfigLlmRequired)
 	assert.NotEmpty(t, DataAgentConfigRetrieverDataSourceKnEntryExceedLimitSize)

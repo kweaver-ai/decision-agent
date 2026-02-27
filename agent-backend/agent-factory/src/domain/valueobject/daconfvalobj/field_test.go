@@ -8,6 +8,8 @@ import (
 )
 
 func TestField_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	field := &Field{}
 	errMsgMap := field.GetErrMsgMap()
 	assert.NotNil(t, errMsgMap)
@@ -15,6 +17,8 @@ func TestField_GetErrMsgMap(t *testing.T) {
 }
 
 func TestField_ValObjCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		field   *Field
@@ -61,6 +65,8 @@ func TestField_ValObjCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.field.ValObjCheck()
 			if tt.wantErr {
 				assert.Error(t, err)

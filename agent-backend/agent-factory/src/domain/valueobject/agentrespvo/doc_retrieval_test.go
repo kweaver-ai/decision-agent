@@ -7,6 +7,8 @@ import (
 )
 
 func TestDocRetrievalRes_AnswerAndCites(t *testing.T) {
+	t.Parallel()
+
 	res := &DocRetrievalRes{
 		Answer: DocRetrievalAnswer{
 			Result: "test answer",
@@ -54,6 +56,8 @@ func TestDocRetrievalRes_AnswerAndCites(t *testing.T) {
 }
 
 func TestDocRetrievalRes_AnswerAndCites_NoReferences(t *testing.T) {
+	t.Parallel()
+
 	res := &DocRetrievalRes{
 		Answer: DocRetrievalAnswer{
 			Result: "test answer",
@@ -71,6 +75,8 @@ func TestDocRetrievalRes_AnswerAndCites_NoReferences(t *testing.T) {
 }
 
 func TestDocRetrievalRes_AnswerAndCites_NilReferences(t *testing.T) {
+	t.Parallel()
+
 	res := &DocRetrievalRes{
 		Answer: DocRetrievalAnswer{
 			Result: "test answer",
@@ -88,6 +94,8 @@ func TestDocRetrievalRes_AnswerAndCites_NilReferences(t *testing.T) {
 }
 
 func TestDocRetrievalRes_AnswerAndCites_WithSlices(t *testing.T) {
+	t.Parallel()
+
 	res := &DocRetrievalRes{
 		Answer: DocRetrievalAnswer{
 			Result: "test answer",

@@ -7,7 +7,11 @@ import (
 )
 
 func TestNewObservabilitySvc(t *testing.T) {
+	t.Parallel()
+
 	t.Run("creates service with all dependencies", func(t *testing.T) {
+		t.Parallel()
+
 		dto := &NewObservabilitySvcDto{
 			Logger:    nil,
 			Uniquery:  nil,
@@ -21,6 +25,8 @@ func TestNewObservabilitySvc(t *testing.T) {
 	})
 
 	t.Run("creates service with minimal dependencies", func(t *testing.T) {
+		t.Parallel()
+
 		dto := &NewObservabilitySvcDto{
 			Logger:    nil,
 			Uniquery:  nil,

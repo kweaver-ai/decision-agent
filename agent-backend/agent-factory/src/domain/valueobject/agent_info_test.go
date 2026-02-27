@@ -8,6 +8,8 @@ import (
 )
 
 func TestAgentInfo_New(t *testing.T) {
+	t.Parallel()
+
 	agentInfo := &AgentInfo{
 		AgentID:      "agent-123",
 		AgentName:    "Test Agent",
@@ -23,6 +25,8 @@ func TestAgentInfo_New(t *testing.T) {
 }
 
 func TestAgentInfo_Empty(t *testing.T) {
+	t.Parallel()
+
 	agentInfo := &AgentInfo{}
 
 	assert.NotNil(t, agentInfo)
@@ -33,6 +37,8 @@ func TestAgentInfo_Empty(t *testing.T) {
 }
 
 func TestAgentInfo_JSONSerialization(t *testing.T) {
+	t.Parallel()
+
 	agentInfo := &AgentInfo{
 		AgentID:      "agent-456",
 		AgentName:    "JSON Agent",
@@ -56,6 +62,8 @@ func TestAgentInfo_JSONSerialization(t *testing.T) {
 }
 
 func TestAgentInfo_JSONTags(t *testing.T) {
+	t.Parallel()
+
 	agentInfo := &AgentInfo{
 		AgentID:      "test-id",
 		AgentName:    "test-name",
@@ -74,6 +82,8 @@ func TestAgentInfo_JSONTags(t *testing.T) {
 }
 
 func TestAgentInfo_WithEmptyFields(t *testing.T) {
+	t.Parallel()
+
 	agentInfo := &AgentInfo{
 		AgentID:      "id-only",
 		AgentName:    "",

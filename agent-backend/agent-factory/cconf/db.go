@@ -14,4 +14,3 @@ type DBConf struct {
 	MaxOpenConns     int    `yaml:"max_open_conns"`
 	MaxOpenReadConns int    `yaml:"max_open_read_conns"`
 }
-

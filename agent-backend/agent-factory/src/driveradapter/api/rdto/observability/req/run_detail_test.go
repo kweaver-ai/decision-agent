@@ -8,6 +8,8 @@ import (
 )
 
 func TestRunDetailReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	accountType := cenum.AccountTypeUser
 	req := RunDetailReq{
 		AgentID:        "agent-123",
@@ -33,6 +35,8 @@ func TestRunDetailReq_StructFields(t *testing.T) {
 }
 
 func TestRunDetailReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := RunDetailReq{}
 
 	assert.Empty(t, req.AgentID)
@@ -47,6 +51,8 @@ func TestRunDetailReq_Empty(t *testing.T) {
 }
 
 func TestRunDetailReq_WithAgentID(t *testing.T) {
+	t.Parallel()
+
 	agentIDs := []string{
 		"agent-001",
 		"agent-test",
@@ -61,6 +67,8 @@ func TestRunDetailReq_WithAgentID(t *testing.T) {
 }
 
 func TestRunDetailReq_WithRunID(t *testing.T) {
+	t.Parallel()
+
 	runIDs := []string{
 		"run-001",
 		"run-test-123",
@@ -74,6 +82,8 @@ func TestRunDetailReq_WithRunID(t *testing.T) {
 }
 
 func TestRunDetailReq_WithTimeRange(t *testing.T) {
+	t.Parallel()
+
 	req := RunDetailReq{
 		StartTime: 1700000000000, // 2023-11-15
 		EndTime:   1700003600000, // 2023-11-15 + 1 hour
@@ -85,6 +95,8 @@ func TestRunDetailReq_WithTimeRange(t *testing.T) {
 }
 
 func TestRunDetailReq_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	accountType := cenum.AccountTypeApp
 	req := RunDetailReq{
 		AgentID:        "complete-agent",
@@ -106,6 +118,8 @@ func TestRunDetailReq_WithAllFields(t *testing.T) {
 }
 
 func TestRunDetailReq_WithDifferentAccountTypes(t *testing.T) {
+	t.Parallel()
+
 	accountTypes := []cenum.AccountType{
 		cenum.AccountTypeUser,
 		cenum.AccountTypeApp,
@@ -119,6 +133,8 @@ func TestRunDetailReq_WithDifferentAccountTypes(t *testing.T) {
 }
 
 func TestRunDetailReq_WithZeroTime(t *testing.T) {
+	t.Parallel()
+
 	req := RunDetailReq{
 		StartTime: 0,
 		EndTime:   0,
@@ -129,6 +145,8 @@ func TestRunDetailReq_WithZeroTime(t *testing.T) {
 }
 
 func TestRunDetailReq_WithNegativeTime(t *testing.T) {
+	t.Parallel()
+
 	req := RunDetailReq{
 		StartTime: -1000,
 		EndTime:   -500,

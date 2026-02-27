@@ -7,6 +7,8 @@ import (
 )
 
 func TestMergeJSONStrings_Basic(t *testing.T) {
+	t.Parallel()
+
 	json1 := `{"name":"John","age":30}`
 	json2 := `{"age":35,"city":"NY"}`
 
@@ -19,6 +21,8 @@ func TestMergeJSONStrings_Basic(t *testing.T) {
 }
 
 func TestMergeJSONStrings_InvalidJSON1(t *testing.T) {
+	t.Parallel()
+
 	json1 := `{invalid json}`
 	json2 := `{"age":35}`
 
@@ -30,6 +34,8 @@ func TestMergeJSONStrings_InvalidJSON1(t *testing.T) {
 }
 
 func TestMergeJSONStrings_InvalidJSON2(t *testing.T) {
+	t.Parallel()
+
 	json1 := `{"name":"John"}`
 	json2 := `{invalid json}`
 
@@ -41,6 +47,8 @@ func TestMergeJSONStrings_InvalidJSON2(t *testing.T) {
 }
 
 func TestMergeJSONStrings_EmptyStrings(t *testing.T) {
+	t.Parallel()
+
 	json1 := `{}`
 	json2 := `{}`
 
@@ -51,6 +59,8 @@ func TestMergeJSONStrings_EmptyStrings(t *testing.T) {
 }
 
 func TestMergeJSONStrings_Nested(t *testing.T) {
+	t.Parallel()
+
 	json1 := `{"user":{"name":"John"},"age":30}`
 	json2 := `{"user":{"age":35},"city":"NY"}`
 
@@ -62,13 +72,15 @@ func TestMergeJSONStrings_Nested(t *testing.T) {
 }
 
 func TestMergeMapInterface_Basic(t *testing.T) {
+	t.Parallel()
+
 	m := map[string]interface{}{
 		"name": "John",
 		"age":  30,
 	}
 
 	i := map[string]interface{}{
-		"age": 35,
+		"age":  35,
 		"city": "NY",
 	}
 
@@ -81,6 +93,8 @@ func TestMergeMapInterface_Basic(t *testing.T) {
 }
 
 func TestMergeMapInterface_NestedMap(t *testing.T) {
+	t.Parallel()
+
 	m := map[string]interface{}{
 		"user": map[string]interface{}{
 			"name": "John",
@@ -100,6 +114,8 @@ func TestMergeMapInterface_NestedMap(t *testing.T) {
 }
 
 func TestMergeMapInterface_InvalidInterface(t *testing.T) {
+	t.Parallel()
+
 	m := map[string]interface{}{}
 
 	i := make(chan int) // channels cannot be marshaled to JSON
@@ -111,6 +127,8 @@ func TestMergeMapInterface_InvalidInterface(t *testing.T) {
 }
 
 func TestMergeJSONStrings_Overwrite(t *testing.T) {
+	t.Parallel()
+
 	json1 := `{"name":"John","age":30}`
 	json2 := `{"name":"Jane","age":35}`
 
@@ -123,6 +141,8 @@ func TestMergeJSONStrings_Overwrite(t *testing.T) {
 }
 
 func TestMergeJSONStrings_Arrays(t *testing.T) {
+	t.Parallel()
+
 	json1 := `{"items":[1,2,3]}`
 	json2 := `{"items":[4,5]}`
 
@@ -133,6 +153,8 @@ func TestMergeJSONStrings_Arrays(t *testing.T) {
 }
 
 func TestMergeMapInterface_EmptyMap(t *testing.T) {
+	t.Parallel()
+
 	m := map[string]interface{}{}
 
 	i := map[string]interface{}{
@@ -146,6 +168,8 @@ func TestMergeMapInterface_EmptyMap(t *testing.T) {
 }
 
 func TestMergeJSONStrings_WithArray(t *testing.T) {
+	t.Parallel()
+
 	json1 := `{"data":["a","b"],"name":"test"}`
 	json2 := `{"data":["c"],"age":30}`
 

@@ -7,6 +7,8 @@ import (
 )
 
 func TestSliceToStr(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name  string
 		slice []string
@@ -47,6 +49,8 @@ func TestSliceToStr(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := SliceToStr(tt.slice, tt.sep)
 			assert.Equal(t, tt.want, result, "SliceToStr should return expected result")
 		})

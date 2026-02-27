@@ -9,6 +9,8 @@ import (
 )
 
 func TestDataAgentRes_GetDocRetrieval_Valid(t *testing.T) {
+	t.Parallel()
+
 	res := &DataAgentRes{
 		Answer: agentrespvo.NewAnswerS(),
 	}
@@ -37,6 +39,8 @@ func TestDataAgentRes_GetDocRetrieval_Valid(t *testing.T) {
 }
 
 func TestDataAgentRes_GetDocRetrieval_Empty(t *testing.T) {
+	t.Parallel()
+
 	res := &DataAgentRes{
 		Answer: agentrespvo.NewAnswerS(),
 	}
@@ -54,6 +58,8 @@ func TestDataAgentRes_GetDocRetrieval_Empty(t *testing.T) {
 }
 
 func TestDataAgentRes_GetDocRetrieval_EmptyString(t *testing.T) {
+	t.Parallel()
+
 	res := &DataAgentRes{
 		Answer: agentrespvo.NewAnswerS(),
 	}
@@ -73,6 +79,8 @@ func TestDataAgentRes_GetDocRetrieval_EmptyString(t *testing.T) {
 }
 
 func TestDataAgentRes_DocRetrievalAnswerAndCites_Valid(t *testing.T) {
+	t.Parallel()
+
 	t.Skip("TODO: Fix serialization issue - requires complex JSON structure mock")
 
 	res := &DataAgentRes{
@@ -106,6 +114,8 @@ func TestDataAgentRes_DocRetrievalAnswerAndCites_Valid(t *testing.T) {
 }
 
 func TestDataAgentRes_DocRetrievalAnswerAndCites_NilDocRetrieval(t *testing.T) {
+	t.Parallel()
+
 	res := &DataAgentRes{
 		Answer: agentrespvo.NewAnswerS(),
 	}
@@ -124,6 +134,8 @@ func TestDataAgentRes_DocRetrievalAnswerAndCites_NilDocRetrieval(t *testing.T) {
 }
 
 func TestDataAgentRes_GetDocRetrieval_InvalidJSON(t *testing.T) {
+	t.Parallel()
+
 	res := &DataAgentRes{
 		Answer: agentrespvo.NewAnswerS(),
 	}
@@ -143,6 +155,8 @@ func TestDataAgentRes_GetDocRetrieval_InvalidJSON(t *testing.T) {
 }
 
 func TestDataAgentRes_GetDocRetrieval_WithDocRetrievalData(t *testing.T) {
+	t.Parallel()
+
 	res := &DataAgentRes{
 		Answer: agentrespvo.NewAnswerS(),
 	}
@@ -172,6 +186,8 @@ func TestDataAgentRes_GetDocRetrieval_WithDocRetrievalData(t *testing.T) {
 }
 
 func TestDataAgentRes_DocRetrievalAnswerAndCites_WithDocRetrievalData(t *testing.T) {
+	t.Parallel()
+
 	res := &DataAgentRes{
 		Answer: agentrespvo.NewAnswerS(),
 	}
@@ -205,6 +221,8 @@ func TestDataAgentRes_DocRetrievalAnswerAndCites_WithDocRetrievalData(t *testing
 }
 
 func TestDataAgentRes_DocRetrievalAnswerAndCites_GetDocRetrievalError(t *testing.T) {
+	t.Parallel()
+
 	res := &DataAgentRes{
 		Answer: agentrespvo.NewAnswerS(),
 	}
@@ -223,6 +241,8 @@ func TestDataAgentRes_DocRetrievalAnswerAndCites_GetDocRetrievalError(t *testing
 }
 
 func TestDataAgentRes_GetDocRetrieval_MissingFullResultInAnswer(t *testing.T) {
+	t.Parallel()
+
 	res := &DataAgentRes{
 		Answer: agentrespvo.NewAnswerS(),
 	}
@@ -247,6 +267,8 @@ func TestDataAgentRes_GetDocRetrieval_MissingFullResultInAnswer(t *testing.T) {
 }
 
 func TestDataAgentRes_GetDocRetrieval_MissingTextInFullResult(t *testing.T) {
+	t.Parallel()
+
 	res := &DataAgentRes{
 		Answer: agentrespvo.NewAnswerS(),
 	}

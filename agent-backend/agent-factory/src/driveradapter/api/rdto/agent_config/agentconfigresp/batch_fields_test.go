@@ -10,6 +10,8 @@ import (
 )
 
 func TestNewBatchFieldsRespField(t *testing.T) {
+	t.Parallel()
+
 	field := NewBatchFieldsRespField()
 
 	assert.NotNil(t, field)
@@ -17,6 +19,8 @@ func TestNewBatchFieldsRespField(t *testing.T) {
 }
 
 func TestBatchFieldsRespField_StructFields(t *testing.T) {
+	t.Parallel()
+
 	field := &BatchFieldsRespField{
 		Name: "TestAgent",
 	}
@@ -25,12 +29,16 @@ func TestBatchFieldsRespField_StructFields(t *testing.T) {
 }
 
 func TestBatchFieldsRespField_Empty(t *testing.T) {
+	t.Parallel()
+
 	field := &BatchFieldsRespField{}
 
 	assert.Empty(t, field.Name)
 }
 
 func TestAgentFieldsItem_StructFields(t *testing.T) {
+	t.Parallel()
+
 	field := &BatchFieldsRespField{
 		Name: "TestAgent",
 	}
@@ -45,6 +53,8 @@ func TestAgentFieldsItem_StructFields(t *testing.T) {
 }
 
 func TestAgentFieldsItem_NilField(t *testing.T) {
+	t.Parallel()
+
 	item := &AgentFieldsItem{
 		AgentID: "agent-456",
 		Field:   nil,
@@ -55,6 +65,8 @@ func TestAgentFieldsItem_NilField(t *testing.T) {
 }
 
 func TestNewBatchFieldsResp(t *testing.T) {
+	t.Parallel()
+
 	resp := NewBatchFieldsResp()
 
 	assert.NotNil(t, resp)
@@ -64,6 +76,8 @@ func TestNewBatchFieldsResp(t *testing.T) {
 }
 
 func TestBatchFieldsResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	items := []*AgentFieldsItem{
 		{
 			AgentID: "agent-1",
@@ -86,6 +100,8 @@ func TestBatchFieldsResp_StructFields(t *testing.T) {
 }
 
 func TestBatchFieldsResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := &BatchFieldsResp{
 		Entries: []*AgentFieldsItem{},
 	}
@@ -94,6 +110,8 @@ func TestBatchFieldsResp_Empty(t *testing.T) {
 }
 
 func TestBatchFieldsResp_LoadFromAgentPOs(t *testing.T) {
+	t.Parallel()
+
 	pos := []*dapo.DataAgentPo{
 		{
 			ID:   "agent-1",
@@ -126,6 +144,8 @@ func TestBatchFieldsResp_LoadFromAgentPOs(t *testing.T) {
 }
 
 func TestBatchFieldsResp_LoadFromAgentPOs_Empty(t *testing.T) {
+	t.Parallel()
+
 	pos := []*dapo.DataAgentPo{}
 	requestedFields := []agentconfigreq.BatchFieldsReqField{
 		agentconfigreq.BatchFieldsReqFieldName,
@@ -139,6 +159,8 @@ func TestBatchFieldsResp_LoadFromAgentPOs_Empty(t *testing.T) {
 }
 
 func TestBatchFieldsResp_LoadFromAgentPOs_NoRequestedFields(t *testing.T) {
+	t.Parallel()
+
 	pos := []*dapo.DataAgentPo{
 		{
 			ID:   "agent-1",
@@ -157,6 +179,8 @@ func TestBatchFieldsResp_LoadFromAgentPOs_NoRequestedFields(t *testing.T) {
 }
 
 func TestBatchFieldsResp_LoadFromAgentPOs_WithMultipleFields(t *testing.T) {
+	t.Parallel()
+
 	pos := []*dapo.DataAgentPo{
 		{
 			ID:   "agent-1",
@@ -178,6 +202,8 @@ func TestBatchFieldsResp_LoadFromAgentPOs_WithMultipleFields(t *testing.T) {
 }
 
 func TestBatchFieldsResp_Append(t *testing.T) {
+	t.Parallel()
+
 	resp := NewBatchFieldsResp()
 
 	resp.Entries = append(resp.Entries, &AgentFieldsItem{

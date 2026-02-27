@@ -21,14 +21,22 @@ type redisHelperTestUnmarshalableStruct struct {
 }
 
 func TestErrNotSupportInLocalEnv(t *testing.T) {
+	t.Parallel()
+
 	t.Run("error message is correct", func(t *testing.T) {
+		t.Parallel()
+
 		err := ErrNotSupportInLocalEnv
 		assert.Equal(t, "redishelper: not support in local env", err.Error())
 	})
 }
 
 func TestSetStruct(t *testing.T) {
+	t.Parallel()
+
 	t.Run("success", func(t *testing.T) {
+		t.Parallel()
+
 		db, mock := redismock.NewClientMock()
 		value := redisHelperTestStruct{Name: "n1", Value: 1}
 		body, _ := json.Marshal(value)
@@ -42,6 +50,8 @@ func TestSetStruct(t *testing.T) {
 	})
 
 	t.Run("marshal error", func(t *testing.T) {
+		t.Parallel()
+
 		db, _ := redismock.NewClientMock()
 
 		err := SetStruct(db, "k1", redisHelperTestUnmarshalableStruct{Fn: func() {}}, time.Minute)
@@ -50,6 +60,8 @@ func TestSetStruct(t *testing.T) {
 	})
 
 	t.Run("redis set error", func(t *testing.T) {
+		t.Parallel()
+
 		db, mock := redismock.NewClientMock()
 		value := redisHelperTestStruct{Name: "n1", Value: 1}
 		body, _ := json.Marshal(value)
@@ -65,7 +77,11 @@ func TestSetStruct(t *testing.T) {
 }
 
 func TestGetStruct(t *testing.T) {
+	t.Parallel()
+
 	t.Run("success", func(t *testing.T) {
+		t.Parallel()
+
 		db, mock := redismock.NewClientMock()
 		expected := redisHelperTestStruct{Name: "n1", Value: 10}
 		body, _ := json.Marshal(expected)
@@ -81,6 +97,8 @@ func TestGetStruct(t *testing.T) {
 	})
 
 	t.Run("redis get error", func(t *testing.T) {
+		t.Parallel()
+
 		db, mock := redismock.NewClientMock()
 		mock.ExpectGet("k1").SetErr(errors.New("redis get failed"))
 
@@ -93,6 +111,8 @@ func TestGetStruct(t *testing.T) {
 	})
 
 	t.Run("json unmarshal error", func(t *testing.T) {
+		t.Parallel()
+
 		db, mock := redismock.NewClientMock()
 		mock.ExpectGet("k1").SetVal("not-json")
 
@@ -105,24 +125,33 @@ func TestGetStruct(t *testing.T) {
 }
 
 func TestSetStruct_PanicsWithNilRedisClient(t *testing.T) {
+	t.Parallel()
+
 	assert.Panics(t, func() {
 		_ = SetStruct(nil, "key", "value", 0)
 	})
 }
 
 func TestGetStruct_PanicsWithNilRedisClient(t *testing.T) {
+	t.Parallel()
+
 	assert.Panics(t, func() {
 		_ = GetStruct(nil, "key", nil)
 	})
 }
 
 func TestGetRedisClientUniversal(t *testing.T) {
+	t.Parallel()
+
 	originalClient := redisClient
+
 	t.Cleanup(func() {
 		redisClient = originalClient
 	})
 
 	t.Run("panic when redis client is not initialized", func(t *testing.T) {
+		t.Parallel()
+
 		redisClient = nil
 
 		assert.Panics(t, func() {
@@ -131,6 +160,8 @@ func TestGetRedisClientUniversal(t *testing.T) {
 	})
 
 	t.Run("return universal client when initialized", func(t *testing.T) {
+		t.Parallel()
+
 		db, _ := redismock.NewClientMock()
 		redisClient = db
 
@@ -140,6 +171,8 @@ func TestGetRedisClientUniversal(t *testing.T) {
 	})
 
 	t.Run("ErrNotSupportInLocalEnv can be checked with errors.Is", func(t *testing.T) {
+		t.Parallel()
+
 		err := errors.New("wrapped: " + ErrNotSupportInLocalEnv.Error())
 		assert.NotNil(t, err)
 	})

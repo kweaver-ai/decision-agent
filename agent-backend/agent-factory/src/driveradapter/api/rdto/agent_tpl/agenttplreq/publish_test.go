@@ -7,6 +7,8 @@ import (
 )
 
 func TestNewPublishReq(t *testing.T) {
+	t.Parallel()
+
 	req := NewPublishReq()
 
 	assert.NotNil(t, req)
@@ -15,6 +17,8 @@ func TestNewPublishReq(t *testing.T) {
 }
 
 func TestPublishReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &PublishReq{}
 	errMap := req.GetErrMsgMap()
 
@@ -23,13 +27,19 @@ func TestPublishReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestPublishReq_ReqCheck(t *testing.T) {
+	t.Parallel()
+
 	t.Run("valid request", func(t *testing.T) {
+		t.Parallel()
+
 		req := &PublishReq{}
 		err := req.ReqCheck()
 		assert.NoError(t, err)
 	})
 
 	t.Run("with business domain", func(t *testing.T) {
+		t.Parallel()
+
 		req := &PublishReq{
 			BusinessDomainID: "bd-123",
 		}
@@ -39,6 +49,8 @@ func TestPublishReq_ReqCheck(t *testing.T) {
 }
 
 func TestPublishReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := &PublishReq{
 		BusinessDomainID: "bd-456",
 	}
@@ -47,12 +59,16 @@ func TestPublishReq_StructFields(t *testing.T) {
 }
 
 func TestPublishReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := &PublishReq{}
 
 	assert.Empty(t, req.BusinessDomainID)
 }
 
 func TestPublishReq_WithBusinessDomainID(t *testing.T) {
+	t.Parallel()
+
 	bdIDs := []string{
 		"bd-001",
 		"business-domain-123",

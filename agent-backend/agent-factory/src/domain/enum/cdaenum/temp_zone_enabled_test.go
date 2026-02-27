@@ -7,6 +7,8 @@ import (
 )
 
 func TestTempZoneStatus_Values(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name   string
 		status TempZoneStatus
@@ -26,12 +28,15 @@ func TestTempZoneStatus_Values(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			assert.Equal(t, tt.value, int(tt.status))
 		})
 	}
 }
 
 func TestTempZoneStatus_IsEnabled(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name   string
 		status TempZoneStatus
@@ -61,6 +66,8 @@ func TestTempZoneStatus_IsEnabled(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := tt.status == TempZoneEnabled
 			assert.Equal(t, tt.want, got)
 		})

@@ -11,6 +11,8 @@ import (
 )
 
 func TestReleaseE2P(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		entity  *releaseeo.ReleaseEO
@@ -113,8 +115,11 @@ func TestReleaseE2P(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			po := ReleaseE2P(tt.entity)
 			require.NotNil(t, po)
+
 			if tt.checkPO != nil {
 				tt.checkPO(t, po)
 			}

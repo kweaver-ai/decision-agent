@@ -7,6 +7,8 @@ import (
 )
 
 func TestNewAnswerS(t *testing.T) {
+	t.Parallel()
+
 	answer := NewAnswerS()
 	assert.NotNil(t, answer)
 	assert.NotNil(t, answer.Interventions)
@@ -14,6 +16,8 @@ func TestNewAnswerS(t *testing.T) {
 }
 
 func TestAnswerS_Fields(t *testing.T) {
+	t.Parallel()
+
 	answer := &AnswerS{
 		Interventions: Interventions{
 			&Intervention{
@@ -32,6 +36,8 @@ func TestAnswerS_Fields(t *testing.T) {
 }
 
 func TestAnswerS_MarshalJSON(t *testing.T) {
+	t.Parallel()
+
 	answer := &AnswerS{
 		Interventions: NewInterventions(),
 		Progress:      []*Progress{},
@@ -47,6 +53,8 @@ func TestAnswerS_MarshalJSON(t *testing.T) {
 }
 
 func TestAnswerS_UnmarshalJSON(t *testing.T) {
+	t.Parallel()
+
 	jsonData := `{
 		"interventions": [],
 		"_progress": [],
@@ -66,6 +74,8 @@ func TestAnswerS_UnmarshalJSON(t *testing.T) {
 }
 
 func TestAnswerS_UnmarshalJSON_InvalidJSON(t *testing.T) {
+	t.Parallel()
+
 	invalidJSON := `{invalid json`
 
 	answer := &AnswerS{}
@@ -74,6 +84,8 @@ func TestAnswerS_UnmarshalJSON_InvalidJSON(t *testing.T) {
 }
 
 func TestAnswerS_UnmarshalJSON_Empty(t *testing.T) {
+	t.Parallel()
+
 	jsonData := `{}`
 
 	answer := &AnswerS{}
@@ -83,6 +95,8 @@ func TestAnswerS_UnmarshalJSON_Empty(t *testing.T) {
 }
 
 func TestAnswerS_UnmarshalJSON_WithKnownFields(t *testing.T) {
+	t.Parallel()
+
 	jsonData := `{
 		"interventions": [],
 		"_progress": [],
@@ -99,6 +113,8 @@ func TestAnswerS_UnmarshalJSON_WithKnownFields(t *testing.T) {
 }
 
 func TestAnswerS_UnmarshalJSON_WithProgressArray(t *testing.T) {
+	t.Parallel()
+
 	jsonData := `{
 		"interventions": [],
 		"_progress": [{"stage": "llm"}],
@@ -113,12 +129,16 @@ func TestAnswerS_UnmarshalJSON_WithProgressArray(t *testing.T) {
 }
 
 func TestNewInterventions(t *testing.T) {
+	t.Parallel()
+
 	interventions := NewInterventions()
 	assert.NotNil(t, interventions)
 	assert.Len(t, interventions, 0)
 }
 
 func TestInterventions_ToOutputVarMap(t *testing.T) {
+	t.Parallel()
+
 	interventions := Interventions{
 		&Intervention{
 			ToolName: "tool1",
@@ -139,7 +159,7 @@ func TestInterventions_ToOutputVarMap(t *testing.T) {
 			},
 		},
 		&Intervention{
-			ToolName: "tool4",
+			ToolName:     "tool4",
 			ToolCallInfo: nil,
 		},
 		&Intervention{
@@ -157,6 +177,8 @@ func TestInterventions_ToOutputVarMap(t *testing.T) {
 }
 
 func TestInterventions_ToOutputVarMap_Empty(t *testing.T) {
+	t.Parallel()
+
 	interventions := Interventions{}
 	outputVarMap := interventions.ToOutputVarMap()
 	assert.NotNil(t, outputVarMap)
@@ -164,6 +186,8 @@ func TestInterventions_ToOutputVarMap_Empty(t *testing.T) {
 }
 
 func TestIntervention_Fields(t *testing.T) {
+	t.Parallel()
+
 	intervention := &Intervention{
 		ToolName: "search_tool",
 		ToolCallInfo: &ToolCallInfo{
@@ -182,6 +206,8 @@ func TestIntervention_Fields(t *testing.T) {
 }
 
 func TestIntervention_NilToolCallInfo(t *testing.T) {
+	t.Parallel()
+
 	intervention := &Intervention{
 		ToolName:     "test_tool",
 		ToolCallInfo: nil,
@@ -192,6 +218,8 @@ func TestIntervention_NilToolCallInfo(t *testing.T) {
 }
 
 func TestToolCallInfo_Fields(t *testing.T) {
+	t.Parallel()
+
 	toolCallInfo := &ToolCallInfo{
 		ToolName:   "search",
 		Args:       []string{"arg1", "arg2"},
@@ -206,6 +234,8 @@ func TestToolCallInfo_Fields(t *testing.T) {
 }
 
 func TestProgress_Fields(t *testing.T) {
+	t.Parallel()
+
 	progress := &Progress{
 		ID:        "progress-1",
 		AgentName: "TestAgent",
@@ -217,14 +247,14 @@ func TestProgress_Fields(t *testing.T) {
 			Type: "tool",
 			Name: "search",
 		},
-		InputMessage:            "input",
-		Interrupted:             false,
-		StartTime:               100.0,
-		EndTime:                 200.0,
-		EstimatedInputTokens:    100,
-		EstimatedOutputTokens:   200,
-		EstimatedRatioTokens:    2.0,
-		TokenUsage:              TokenUsage{PromptTokens: 100, CompletionTokens: 200, TotalTokens: 300},
+		InputMessage:          "input",
+		Interrupted:           false,
+		StartTime:             100.0,
+		EndTime:               200.0,
+		EstimatedInputTokens:  100,
+		EstimatedOutputTokens: 200,
+		EstimatedRatioTokens:  2.0,
+		TokenUsage:            TokenUsage{PromptTokens: 100, CompletionTokens: 200, TotalTokens: 300},
 	}
 
 	assert.Equal(t, "progress-1", progress.ID)
@@ -241,6 +271,8 @@ func TestProgress_Fields(t *testing.T) {
 }
 
 func TestProgress_Empty(t *testing.T) {
+	t.Parallel()
+
 	progress := &Progress{}
 
 	assert.Empty(t, progress.ID)
@@ -260,6 +292,8 @@ func TestProgress_Empty(t *testing.T) {
 }
 
 func TestTokenUsage_Fields(t *testing.T) {
+	t.Parallel()
+
 	tokenUsage := TokenUsage{
 		PromptTokens:     1000,
 		CompletionTokens: 2000,
@@ -278,6 +312,8 @@ func TestTokenUsage_Fields(t *testing.T) {
 }
 
 func TestSkillInfo_Fields(t *testing.T) {
+	t.Parallel()
+
 	skillInfo := &SkillInfo{
 		Type: "tool",
 		Name: "search",
@@ -294,6 +330,8 @@ func TestSkillInfo_Fields(t *testing.T) {
 }
 
 func TestArg_Fields(t *testing.T) {
+	t.Parallel()
+
 	arg := Arg{
 		Name:  "param1",
 		Value: "value1",
@@ -306,6 +344,8 @@ func TestArg_Fields(t *testing.T) {
 }
 
 func TestIsPromptType_Valid(t *testing.T) {
+	t.Parallel()
+
 	validJSON := `{"answer": "test answer", "think": "test think"}`
 	isValid, err := IsPromptType(validJSON)
 	assert.NoError(t, err)
@@ -313,6 +353,8 @@ func TestIsPromptType_Valid(t *testing.T) {
 }
 
 func TestIsPromptType_InvalidSchema(t *testing.T) {
+	t.Parallel()
+
 	invalidJSON := `{"answer": "test answer"}` // Missing required "think" field
 	isValid, err := IsPromptType(invalidJSON)
 	assert.NoError(t, err)
@@ -320,6 +362,8 @@ func TestIsPromptType_InvalidSchema(t *testing.T) {
 }
 
 func TestIsPromptType_InvalidJSON(t *testing.T) {
+	t.Parallel()
+
 	invalidJSON := `{invalid json}`
 	isValid, err := IsPromptType(invalidJSON)
 	assert.Error(t, err)
@@ -327,6 +371,8 @@ func TestIsPromptType_InvalidJSON(t *testing.T) {
 }
 
 func TestIsPromptTypeInterface_Valid(t *testing.T) {
+	t.Parallel()
+
 	validObj := map[string]interface{}{
 		"answer": "test answer",
 		"think":  "test think",
@@ -337,6 +383,8 @@ func TestIsPromptTypeInterface_Valid(t *testing.T) {
 }
 
 func TestIsPromptTypeInterface_UnmarshalableObj(t *testing.T) {
+	t.Parallel()
+
 	// Create an object that cannot be marshaled by sonic
 	// Using a channel which cannot be marshaled to JSON
 	unmarshalableObj := make(chan int)
@@ -346,6 +394,8 @@ func TestIsPromptTypeInterface_UnmarshalableObj(t *testing.T) {
 }
 
 func TestIsExploreType_Valid(t *testing.T) {
+	t.Parallel()
+
 	validJSON := `[{
 		"agent_name": "test agent",
 		"answer": "test answer",
@@ -359,6 +409,8 @@ func TestIsExploreType_Valid(t *testing.T) {
 }
 
 func TestIsExploreType_InvalidSchema(t *testing.T) {
+	t.Parallel()
+
 	// Missing required "status" field
 	invalidJSON := `[{
 		"agent_name": "test agent",
@@ -372,6 +424,8 @@ func TestIsExploreType_InvalidSchema(t *testing.T) {
 }
 
 func TestIsExploreType_InvalidJSON(t *testing.T) {
+	t.Parallel()
+
 	invalidJSON := `[invalid json]`
 	isValid, err := IsExploreType(invalidJSON)
 	assert.Error(t, err)
@@ -379,6 +433,8 @@ func TestIsExploreType_InvalidJSON(t *testing.T) {
 }
 
 func TestIsExploreTypeInterface_Valid(t *testing.T) {
+	t.Parallel()
+
 	validObj := []map[string]interface{}{
 		{
 			"agent_name":  "test agent",
@@ -394,6 +450,8 @@ func TestIsExploreTypeInterface_Valid(t *testing.T) {
 }
 
 func TestIsExploreTypeInterface_UnmarshalableObj(t *testing.T) {
+	t.Parallel()
+
 	// Create an object that cannot be marshaled by sonic
 	unmarshalableObj := make(chan int)
 	isValid, err := IsExploreTypeInterface(unmarshalableObj)
@@ -402,6 +460,8 @@ func TestIsExploreTypeInterface_UnmarshalableObj(t *testing.T) {
 }
 
 func TestAnswerS_UnmarshalJSON_WithInvalidFieldValue(t *testing.T) {
+	t.Parallel()
+
 	// Test when a custom field value cannot be unmarshaled
 	// This tests the error case at line 103-105 in answer_data.go
 	jsonData := `{

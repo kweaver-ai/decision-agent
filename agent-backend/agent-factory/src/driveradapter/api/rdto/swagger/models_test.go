@@ -9,6 +9,8 @@ import (
 )
 
 func TestAPIError_StructFields(t *testing.T) {
+	t.Parallel()
+
 	err := APIError{
 		Code:    400,
 		Message: "请求参数错误",
@@ -21,6 +23,8 @@ func TestAPIError_StructFields(t *testing.T) {
 }
 
 func TestAPIError_Empty(t *testing.T) {
+	t.Parallel()
+
 	err := APIError{}
 
 	assert.Equal(t, 0, err.Code)
@@ -29,6 +33,8 @@ func TestAPIError_Empty(t *testing.T) {
 }
 
 func TestAPIError_WithoutDetails(t *testing.T) {
+	t.Parallel()
+
 	err := APIError{
 		Code:    404,
 		Message: "未找到资源",
@@ -40,6 +46,8 @@ func TestAPIError_WithoutDetails(t *testing.T) {
 }
 
 func TestAPIError_DifferentCodes(t *testing.T) {
+	t.Parallel()
+
 	codes := []int{
 		200, 201, 204, // Success
 		400, 401, 403, 404, // Client errors
@@ -57,6 +65,8 @@ func TestAPIError_DifferentCodes(t *testing.T) {
 }
 
 func TestAPIError_JSONTags(t *testing.T) {
+	t.Parallel()
+
 	apiErr := APIError{
 		Code:    400,
 		Message: "请求参数错误",
@@ -78,6 +88,8 @@ func TestAPIError_JSONTags(t *testing.T) {
 }
 
 func TestAPIError_WithChineseMessage(t *testing.T) {
+	t.Parallel()
+
 	err := APIError{
 		Code:    500,
 		Message: "服务器内部错误",
@@ -89,6 +101,8 @@ func TestAPIError_WithChineseMessage(t *testing.T) {
 }
 
 func TestAPIError_LongMessages(t *testing.T) {
+	t.Parallel()
+
 	longMessage := "这是一个非常长的错误消息，包含了很多详细的描述信息，用于测试长文本的处理能力"
 	longDetails := "详细错误信息：" + longMessage
 
@@ -104,6 +118,8 @@ func TestAPIError_LongMessages(t *testing.T) {
 }
 
 func TestPaginatedResponse_StructFields(t *testing.T) {
+	t.Parallel()
+
 	list := []string{"item1", "item2", "item3"}
 	resp := PaginatedResponse{
 		Total: 100,
@@ -116,6 +132,8 @@ func TestPaginatedResponse_StructFields(t *testing.T) {
 }
 
 func TestPaginatedResponse_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := PaginatedResponse{
 		Total: 0,
 		List:  []string{},
@@ -126,6 +144,8 @@ func TestPaginatedResponse_Empty(t *testing.T) {
 }
 
 func TestPaginatedResponse_NilList(t *testing.T) {
+	t.Parallel()
+
 	resp := PaginatedResponse{
 		Total: 50,
 		List:  nil,
@@ -136,6 +156,8 @@ func TestPaginatedResponse_NilList(t *testing.T) {
 }
 
 func TestPaginatedResponse_WithDifferentTypes(t *testing.T) {
+	t.Parallel()
+
 	// Test with string slice
 	stringList := []string{"a", "b", "c"}
 	resp1 := PaginatedResponse{
@@ -168,6 +190,8 @@ func TestPaginatedResponse_WithDifferentTypes(t *testing.T) {
 }
 
 func TestPaginatedResponse_LargeTotal(t *testing.T) {
+	t.Parallel()
+
 	resp := PaginatedResponse{
 		Total: 999999999,
 		List:  []string{"item"},
@@ -177,6 +201,8 @@ func TestPaginatedResponse_LargeTotal(t *testing.T) {
 }
 
 func TestPaginatedResponse_WithEmptyList(t *testing.T) {
+	t.Parallel()
+
 	resp := PaginatedResponse{
 		Total: 100,
 		List:  []interface{}{},
@@ -188,6 +214,8 @@ func TestPaginatedResponse_WithEmptyList(t *testing.T) {
 }
 
 func TestPaginatedResponse_JSONTags(t *testing.T) {
+	t.Parallel()
+
 	list := []string{"item1", "item2"}
 	resp := PaginatedResponse{
 		Total: 2,
@@ -208,6 +236,8 @@ func TestPaginatedResponse_JSONTags(t *testing.T) {
 }
 
 func TestAPIError_CommonErrors(t *testing.T) {
+	t.Parallel()
+
 	commonErrors := []struct {
 		code    int
 		message string

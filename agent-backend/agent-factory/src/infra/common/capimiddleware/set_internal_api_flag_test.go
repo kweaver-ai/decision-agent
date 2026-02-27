@@ -13,10 +13,15 @@ import (
 )
 
 func TestSetInternalAPIFlag(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
 
 	t.Run("sets flag in gin context and request context", func(t *testing.T) {
+		t.Parallel()
+
 		var capturedGinFlag interface{}
+
 		var capturedReqCtxFlag interface{}
 
 		router := gin.New()
@@ -37,11 +42,14 @@ func TestSetInternalAPIFlag(t *testing.T) {
 	})
 
 	t.Run("calls Next", func(t *testing.T) {
+		t.Parallel()
+
 		nextCalled := false
 		router := gin.New()
 		router.Use(SetInternalAPIFlag())
 		router.GET("/test", func(c *gin.Context) {
 			nextCalled = true
+
 			c.Status(http.StatusOK)
 		})
 
@@ -54,10 +62,15 @@ func TestSetInternalAPIFlag(t *testing.T) {
 }
 
 func TestIsInternalAPI(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
 
 	t.Run("returns true when flag set via middleware", func(t *testing.T) {
+		t.Parallel()
+
 		var result bool
+
 		router := gin.New()
 		router.Use(SetInternalAPIFlag())
 		router.GET("/test", func(c *gin.Context) {
@@ -74,7 +87,10 @@ func TestIsInternalAPI(t *testing.T) {
 	})
 
 	t.Run("returns false when flag not set", func(t *testing.T) {
+		t.Parallel()
+
 		var result bool
+
 		router := gin.New()
 		router.GET("/test", func(c *gin.Context) {
 			ctx := context.WithValue(c.Request.Context(), cenum.InternalAPIFlagCtxKey.String(), false)

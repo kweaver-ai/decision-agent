@@ -7,10 +7,12 @@ import (
 )
 
 func TestOutputMode_Constants(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name    string
-		mode    OutputMode
-		want    string
+		name string
+		mode OutputMode
+		want string
 	}{
 		{"file mode", OutputModeFile, "file"},
 		{"console mode", OutputModeConsole, "console"},
@@ -19,12 +21,15 @@ func TestOutputMode_Constants(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			assert.Equal(t, tt.want, string(tt.mode))
 		})
 	}
 }
 
 func TestDefaultConfig_ReturnsValidConfig(t *testing.T) {
+	t.Parallel()
+
 	config := DefaultConfig()
 
 	assert.NotNil(t, config)
@@ -40,6 +45,8 @@ func TestDefaultConfig_ReturnsValidConfig(t *testing.T) {
 }
 
 func TestConfig_GetLogFilePath_WithoutUserID(t *testing.T) {
+	t.Parallel()
+
 	config := &Config{
 		LogDir:          "log/requests",
 		FileNamePattern: "requests_2006-01-02.log",
@@ -52,6 +59,8 @@ func TestConfig_GetLogFilePath_WithoutUserID(t *testing.T) {
 }
 
 func TestConfig_GetLogFilePath_WithUserID(t *testing.T) {
+	t.Parallel()
+
 	config := &Config{
 		LogDir:          "log/requests",
 		FileNamePattern: "requests_2006-01-02.log",
@@ -65,6 +74,8 @@ func TestConfig_GetLogFilePath_WithUserID(t *testing.T) {
 }
 
 func TestConfig_GetLogFilePath_CustomPattern(t *testing.T) {
+	t.Parallel()
+
 	config := &Config{
 		LogDir:          "custom/dir",
 		FileNamePattern: "app_%Y_%m_%d.log",
@@ -77,6 +88,8 @@ func TestConfig_GetLogFilePath_CustomPattern(t *testing.T) {
 }
 
 func TestConfig_EnsureLogDir_ConsoleMode(t *testing.T) {
+	t.Parallel()
+
 	config := &Config{
 		OutputMode: OutputModeConsole,
 	}
@@ -86,6 +99,8 @@ func TestConfig_EnsureLogDir_ConsoleMode(t *testing.T) {
 }
 
 func TestConfig_EnsureLogDir_FileMode(t *testing.T) {
+	t.Parallel()
+
 	config := &Config{
 		OutputMode: OutputModeFile,
 		LogDir:     "/tmp/test-log-dir-12345",
@@ -96,6 +111,8 @@ func TestConfig_EnsureLogDir_FileMode(t *testing.T) {
 }
 
 func TestConfig_GetSingleFilePath(t *testing.T) {
+	t.Parallel()
+
 	config := &Config{
 		LogDir: "log/requests",
 	}
@@ -105,6 +122,8 @@ func TestConfig_GetSingleFilePath(t *testing.T) {
 }
 
 func TestConfig_GetSingleFilePath_CustomLogDir(t *testing.T) {
+	t.Parallel()
+
 	config := &Config{
 		LogDir: "custom/logs",
 	}
@@ -114,6 +133,8 @@ func TestConfig_GetSingleFilePath_CustomLogDir(t *testing.T) {
 }
 
 func TestConfig_EnsureSingleFileDir(t *testing.T) {
+	t.Parallel()
+
 	config := &Config{
 		LogDir: "/tmp/test-single-dir-12345",
 	}
@@ -123,6 +144,8 @@ func TestConfig_EnsureSingleFileDir(t *testing.T) {
 }
 
 func TestConfig_OutputModes(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		mode OutputMode
@@ -134,6 +157,8 @@ func TestConfig_OutputModes(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			config := &Config{
 				OutputMode: tt.mode,
 			}
@@ -143,15 +168,17 @@ func TestConfig_OutputModes(t *testing.T) {
 }
 
 func TestConfig_AllFieldsSettable(t *testing.T) {
+	t.Parallel()
+
 	config := &Config{
-		Enabled:             false,
-		OutputMode:          OutputModeBoth,
-		LogDir:              "custom/log/dir",
-		FileNamePattern:     "custom_%Y-%m-%d.log",
-		PrettyJSON:          true,
-		MaxBodySize:         2048,
-		IncludeHeaders:      false,
-		IncludeResponseBody: false,
+		Enabled:              false,
+		OutputMode:           OutputModeBoth,
+		LogDir:               "custom/log/dir",
+		FileNamePattern:      "custom_%Y-%m-%d.log",
+		PrettyJSON:           true,
+		MaxBodySize:          2048,
+		IncludeHeaders:       false,
+		IncludeResponseBody:  false,
 		SingleFileMaxEntries: 100,
 	}
 
@@ -167,6 +194,8 @@ func TestConfig_AllFieldsSettable(t *testing.T) {
 }
 
 func TestConfig_MaxBodySizeZero(t *testing.T) {
+	t.Parallel()
+
 	config := &Config{
 		MaxBodySize: 0,
 	}
@@ -175,6 +204,8 @@ func TestConfig_MaxBodySizeZero(t *testing.T) {
 }
 
 func TestConfig_SingleFileMaxEntriesZero(t *testing.T) {
+	t.Parallel()
+
 	config := &Config{
 		SingleFileMaxEntries: 0,
 	}

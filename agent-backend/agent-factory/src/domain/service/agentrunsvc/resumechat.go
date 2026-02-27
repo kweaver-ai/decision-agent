@@ -17,6 +17,7 @@ func (agentSvc *agentSvc) ResumeChat(ctx context.Context, conversationID string)
 	ctx, _ = o11y.StartInternalSpan(ctx)
 	defer o11y.EndSpan(ctx, err)
 	o11y.SetAttributes(ctx, attribute.String("conversation_id", conversationID))
+
 	sessionInterface, ok := SessionMap.Load(conversationID)
 	if !ok {
 		o11y.Error(ctx, fmt.Sprintf("[ResumeChat] conversation_id %s not found", conversationID))

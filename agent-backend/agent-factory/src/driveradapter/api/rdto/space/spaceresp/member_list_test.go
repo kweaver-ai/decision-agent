@@ -13,6 +13,8 @@ import (
 )
 
 func TestNewMemberListResp(t *testing.T) {
+	t.Parallel()
+
 	resp := NewMemberListResp()
 
 	assert.NotNil(t, resp)
@@ -21,7 +23,11 @@ func TestNewMemberListResp(t *testing.T) {
 }
 
 func TestMemberListResp_LoadFromEos(t *testing.T) {
+	t.Parallel()
+
 	t.Run("empty slice", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewMemberListResp()
 		ctx := context.Background()
 
@@ -32,6 +38,8 @@ func TestMemberListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("with single user member", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewMemberListResp()
 		ctx := context.Background()
 
@@ -61,6 +69,8 @@ func TestMemberListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("with dept member", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewMemberListResp()
 		ctx := context.Background()
 
@@ -85,6 +95,8 @@ func TestMemberListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("with user group member", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewMemberListResp()
 		ctx := context.Background()
 
@@ -109,6 +121,8 @@ func TestMemberListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("with multiple members", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewMemberListResp()
 		ctx := context.Background()
 
@@ -140,6 +154,8 @@ func TestMemberListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("member is owner when created by matches obj id", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewMemberListResp()
 		ctx := context.Background()
 
@@ -162,6 +178,8 @@ func TestMemberListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("member is not owner when created by differs from obj id", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewMemberListResp()
 		ctx := context.Background()
 
@@ -184,6 +202,8 @@ func TestMemberListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("member is myself when obj id matches current user", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewMemberListResp()
 
 		// Create context with visitor info
@@ -212,6 +232,8 @@ func TestMemberListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("member is not myself when obj id differs from current user", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewMemberListResp()
 
 		// Create context with visitor info
@@ -239,6 +261,8 @@ func TestMemberListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("dept member is not myself even when obj id matches user id", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewMemberListResp()
 
 		// Create context with visitor info - dept should not be marked as myself
@@ -266,6 +290,8 @@ func TestMemberListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("member is both owner and myself", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewMemberListResp()
 
 		// Create context with visitor info matching member's ObjID and CreatedBy
@@ -295,6 +321,8 @@ func TestMemberListResp_LoadFromEos(t *testing.T) {
 }
 
 func TestMemberItem_StructFields(t *testing.T) {
+	t.Parallel()
+
 	item := MemberItem{
 		ID:        123,
 		SpaceID:   "space-1",
@@ -319,6 +347,8 @@ func TestMemberItem_StructFields(t *testing.T) {
 }
 
 func TestMemberItem_Empty(t *testing.T) {
+	t.Parallel()
+
 	item := MemberItem{}
 
 	assert.Equal(t, int64(0), item.ID)

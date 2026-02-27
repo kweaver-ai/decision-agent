@@ -7,6 +7,8 @@ import (
 )
 
 func TestCopyUseJSON(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		dst     interface{}
@@ -54,6 +56,8 @@ func TestCopyUseJSON(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := CopyUseJSON(tt.dst, tt.src)
 			if tt.wantErr {
 				assert.Error(t, err, "CopyUseJSON should return error")

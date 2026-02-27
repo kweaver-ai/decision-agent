@@ -14,13 +14,13 @@ import (
 
 type conversationSvc struct {
 	*service.SvcBase
-	logger               icmp.Logger
-	conversationRepo     idbaccess.IConversationRepo
-	conversationMsgRepo  idbaccess.IConversationMsgRepo
-	agentExecutorV1      iagentexecutorhttp.IAgentExecutor
-	agentExecutorV2      iv2agentexecutorhttp.IV2AgentExecutor
-	sandboxPlatform      isandboxhtpp.ISandboxPlatform
-	sandboxPlatformConf  *conf.SandboxPlatformConf
+	logger              icmp.Logger
+	conversationRepo    idbaccess.IConversationRepo
+	conversationMsgRepo idbaccess.IConversationMsgRepo
+	agentExecutorV1     iagentexecutorhttp.IAgentExecutor
+	agentExecutorV2     iv2agentexecutorhttp.IV2AgentExecutor
+	sandboxPlatform     isandboxhtpp.ISandboxPlatform
+	sandboxPlatformConf *conf.SandboxPlatformConf
 }
 
 var _ iportdriver.IConversationSvc = &conversationSvc{}

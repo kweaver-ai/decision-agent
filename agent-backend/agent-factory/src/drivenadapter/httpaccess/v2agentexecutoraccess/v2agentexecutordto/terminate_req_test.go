@@ -7,6 +7,8 @@ import (
 )
 
 func TestAgentTerminateReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentTerminateReq{
 		AgentRunID: "run-123",
 	}
@@ -15,12 +17,16 @@ func TestAgentTerminateReq_StructFields(t *testing.T) {
 }
 
 func TestAgentTerminateReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentTerminateReq{}
 
 	assert.Empty(t, req.AgentRunID)
 }
 
 func TestAgentTerminateReq_WithID(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentTerminateReq{
 		AgentRunID: "agent-run-abc-xyz",
 	}
@@ -29,8 +35,10 @@ func TestAgentTerminateReq_WithID(t *testing.T) {
 }
 
 func TestAgentTerminateReq_LongID(t *testing.T) {
+	t.Parallel()
+
 	longID := "very-long-agent-run-id-with-many-characters"
-	
+
 	req := &AgentTerminateReq{
 		AgentRunID: longID,
 	}

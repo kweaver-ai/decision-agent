@@ -10,6 +10,8 @@ import (
 )
 
 func TestVarFieldType_Constants(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, VarFieldType("answer"), VarFieldTypeFinalAnswer)
 	assert.Equal(t, VarFieldType("doc_retrieval"), VarFieldTypeDocRetrieval)
 	assert.Equal(t, VarFieldType("graph_retrieval"), VarFieldTypeGraphRetrieval)
@@ -19,6 +21,8 @@ func TestVarFieldType_Constants(t *testing.T) {
 }
 
 func TestNewResHelper(t *testing.T) {
+	t.Parallel()
+
 	answer := agentrespvo.NewAnswerS()
 	outputVars := &agentconfigvo.OutputVariablesS{
 		AnswerVar: "answer",
@@ -33,6 +37,8 @@ func TestNewResHelper(t *testing.T) {
 }
 
 func TestResHelper_getSingleFieldVal_AnswerVar(t *testing.T) {
+	t.Parallel()
+
 	answer := agentrespvo.NewAnswerS()
 	answer.SetField("test_field", "test_value")
 
@@ -47,6 +53,8 @@ func TestResHelper_getSingleFieldVal_AnswerVar(t *testing.T) {
 }
 
 func TestResHelper_GetSingleFieldJSON_Valid(t *testing.T) {
+	t.Parallel()
+
 	answer := agentrespvo.NewAnswerS()
 	answer.SetField("final_answer", "This is the answer")
 
@@ -62,6 +70,8 @@ func TestResHelper_GetSingleFieldJSON_Valid(t *testing.T) {
 }
 
 func TestResHelper_GetSingleFieldJSON_NilValue(t *testing.T) {
+	t.Parallel()
+
 	answer := agentrespvo.NewAnswerS()
 	// Don't set any field
 
@@ -77,6 +87,8 @@ func TestResHelper_GetSingleFieldJSON_NilValue(t *testing.T) {
 }
 
 func TestResHelper_GetSingleFieldJSON_WithError(t *testing.T) {
+	t.Parallel()
+
 	answer := agentrespvo.NewAnswerS()
 	// Set a field with an error
 	answer.SetField("final_answer", map[string]interface{}{
@@ -103,6 +115,8 @@ func TestResHelper_GetSingleFieldJSON_WithError(t *testing.T) {
 }
 
 func TestResHelper_GetOtherVarsMap(t *testing.T) {
+	t.Parallel()
+
 	answer := agentrespvo.NewAnswerS()
 	answer.SetField("var1", "value1")
 	answer.SetField("var2", "value2")
@@ -120,6 +134,8 @@ func TestResHelper_GetOtherVarsMap(t *testing.T) {
 }
 
 func TestResHelper_GetMiddleOutputVarsMap(t *testing.T) {
+	t.Parallel()
+
 	answer := agentrespvo.NewAnswerS()
 	answer.SetField("mid_var1", "mid_val1")
 	answer.SetField("mid_var2", "mid_val2")
@@ -137,6 +153,8 @@ func TestResHelper_GetMiddleOutputVarsMap(t *testing.T) {
 }
 
 func TestResHelper_getSingleFieldVal_DocRetrieval(t *testing.T) {
+	t.Parallel()
+
 	answer := agentrespvo.NewAnswerS()
 	answer.SetField("doc_res", "doc content")
 
@@ -151,6 +169,8 @@ func TestResHelper_getSingleFieldVal_DocRetrieval(t *testing.T) {
 }
 
 func TestResHelper_getSingleFieldVal_GraphRetrieval(t *testing.T) {
+	t.Parallel()
+
 	answer := agentrespvo.NewAnswerS()
 	answer.SetField("graph_res", "graph data")
 
@@ -165,6 +185,8 @@ func TestResHelper_getSingleFieldVal_GraphRetrieval(t *testing.T) {
 }
 
 func TestResHelper_getSingleFieldVal_RelatedQuestions(t *testing.T) {
+	t.Parallel()
+
 	answer := agentrespvo.NewAnswerS()
 	answer.SetField("related_q", "question1")
 
@@ -179,6 +201,8 @@ func TestResHelper_getSingleFieldVal_RelatedQuestions(t *testing.T) {
 }
 
 func TestResHelper_getSingleFieldVal_Panic(t *testing.T) {
+	t.Parallel()
+
 	answer := agentrespvo.NewAnswerS()
 	outputVars := &agentconfigvo.OutputVariablesS{}
 
@@ -190,6 +214,8 @@ func TestResHelper_getSingleFieldVal_Panic(t *testing.T) {
 }
 
 func TestResHelper_GetOtherVarsMap_Empty(t *testing.T) {
+	t.Parallel()
+
 	answer := agentrespvo.NewAnswerS()
 
 	outputVars := &agentconfigvo.OutputVariablesS{
@@ -207,6 +233,8 @@ func TestResHelper_GetOtherVarsMap_Empty(t *testing.T) {
 }
 
 func TestResHelper_GetMiddleOutputVarsMap_Empty(t *testing.T) {
+	t.Parallel()
+
 	answer := agentrespvo.NewAnswerS()
 
 	outputVars := &agentconfigvo.OutputVariablesS{

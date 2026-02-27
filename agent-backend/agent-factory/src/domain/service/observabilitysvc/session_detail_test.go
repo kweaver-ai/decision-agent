@@ -13,6 +13,8 @@ import (
 )
 
 func TestObservabilitySvc_SessionDetail_EmptyResult(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -37,6 +39,8 @@ func TestObservabilitySvc_SessionDetail_EmptyResult(t *testing.T) {
 }
 
 func TestObservabilitySvc_SessionDetail_SingleRun(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -70,6 +74,8 @@ func TestObservabilitySvc_SessionDetail_SingleRun(t *testing.T) {
 }
 
 func TestObservabilitySvc_SessionDetail_MultipleRuns(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -110,6 +116,8 @@ func TestObservabilitySvc_SessionDetail_MultipleRuns(t *testing.T) {
 }
 
 func TestObservabilitySvc_SessionDetail_Error(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -130,6 +138,8 @@ func TestObservabilitySvc_SessionDetail_Error(t *testing.T) {
 }
 
 func TestObservabilitySvc_SessionDetail_WithAgentIDAndConversationID(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -157,6 +167,8 @@ func TestObservabilitySvc_SessionDetail_WithAgentIDAndConversationID(t *testing.
 }
 
 func TestObservabilitySvc_SessionDetail_AllRunsFailed(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

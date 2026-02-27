@@ -9,6 +9,8 @@ import (
 )
 
 func TestRoleInfo_New(t *testing.T) {
+	t.Parallel()
+
 	roleInfo := &RoleInfo{
 		RoleID:   "role-123",
 		RoleName: "Administrator",
@@ -20,6 +22,8 @@ func TestRoleInfo_New(t *testing.T) {
 }
 
 func TestUserInfo_New(t *testing.T) {
+	t.Parallel()
+
 	userInfo := &UserInfo{
 		UserID:   "user-456",
 		Username: "john_doe",
@@ -31,6 +35,8 @@ func TestUserInfo_New(t *testing.T) {
 }
 
 func TestUserGroupInfo_New(t *testing.T) {
+	t.Parallel()
+
 	groupInfo := &UserGroupInfo{
 		UserGroupID:   "group-789",
 		UserGroupName: "Developers",
@@ -42,6 +48,8 @@ func TestUserGroupInfo_New(t *testing.T) {
 }
 
 func TestDepartmentInfo_New(t *testing.T) {
+	t.Parallel()
+
 	deptInfo := &DepartmentInfo{
 		DepartmentID:   "dept-101",
 		DepartmentName: "Engineering",
@@ -53,6 +61,8 @@ func TestDepartmentInfo_New(t *testing.T) {
 }
 
 func TestAppAccountInfo_New(t *testing.T) {
+	t.Parallel()
+
 	appInfo := &AppAccountInfo{
 		AppAccountID:   "app-202",
 		AppAccountName: "Production App",
@@ -64,6 +74,8 @@ func TestAppAccountInfo_New(t *testing.T) {
 }
 
 func TestRoleInfo_JSONSerialization(t *testing.T) {
+	t.Parallel()
+
 	roleInfo := &RoleInfo{
 		RoleID:   "role-001",
 		RoleName: "Editor",
@@ -81,6 +93,8 @@ func TestRoleInfo_JSONSerialization(t *testing.T) {
 }
 
 func TestUserInfo_JSONSerialization(t *testing.T) {
+	t.Parallel()
+
 	userInfo := &UserInfo{
 		UserID:   "user-002",
 		Username: "jane_smith",
@@ -98,6 +112,8 @@ func TestUserInfo_JSONSerialization(t *testing.T) {
 }
 
 func TestDepartmentInfo_JSONTags(t *testing.T) {
+	t.Parallel()
+
 	deptInfo := &DepartmentInfo{
 		DepartmentID:   "dept-003",
 		DepartmentName: "Sales",
@@ -112,6 +128,8 @@ func TestDepartmentInfo_JSONTags(t *testing.T) {
 }
 
 func TestAppAccountInfo_JSONTags(t *testing.T) {
+	t.Parallel()
+
 	appInfo := &AppAccountInfo{
 		AppAccountID:   "app-004",
 		AppAccountName: "Staging App",
@@ -126,6 +144,8 @@ func TestAppAccountInfo_JSONTags(t *testing.T) {
 }
 
 func TestRoleInfo_EmptyFields(t *testing.T) {
+	t.Parallel()
+
 	roleInfo := &RoleInfo{}
 
 	assert.NotNil(t, roleInfo)
@@ -134,6 +154,8 @@ func TestRoleInfo_EmptyFields(t *testing.T) {
 }
 
 func TestUserInfo_EmptyFields(t *testing.T) {
+	t.Parallel()
+
 	userInfo := &UserInfo{}
 
 	assert.NotNil(t, userInfo)
@@ -142,6 +164,8 @@ func TestUserInfo_EmptyFields(t *testing.T) {
 }
 
 func TestUserGroupInfo_EmptyFields(t *testing.T) {
+	t.Parallel()
+
 	groupInfo := &UserGroupInfo{}
 
 	assert.NotNil(t, groupInfo)
@@ -150,6 +174,8 @@ func TestUserGroupInfo_EmptyFields(t *testing.T) {
 }
 
 func TestDepartmentInfo_EmptyFields(t *testing.T) {
+	t.Parallel()
+
 	deptInfo := &DepartmentInfo{}
 
 	assert.NotNil(t, deptInfo)
@@ -158,6 +184,8 @@ func TestDepartmentInfo_EmptyFields(t *testing.T) {
 }
 
 func TestAppAccountInfo_EmptyFields(t *testing.T) {
+	t.Parallel()
+
 	appInfo := &AppAccountInfo{}
 
 	assert.NotNil(t, appInfo)

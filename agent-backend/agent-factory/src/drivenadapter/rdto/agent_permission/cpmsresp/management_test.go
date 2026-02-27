@@ -7,6 +7,8 @@ import (
 )
 
 func TestAgentPermission_StructFields(t *testing.T) {
+	t.Parallel()
+
 	perm := &AgentPermission{
 		Publish:                  true,
 		Unpublish:                true,
@@ -33,6 +35,8 @@ func TestAgentPermission_StructFields(t *testing.T) {
 }
 
 func TestAgentTplPermission_StructFields(t *testing.T) {
+	t.Parallel()
+
 	perm := &AgentTplPermission{
 		Publish:                    true,
 		Unpublish:                  true,
@@ -45,6 +49,8 @@ func TestAgentTplPermission_StructFields(t *testing.T) {
 }
 
 func TestUserStatusResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := &UserStatusResp{
 		Agent:    AgentPermission{Publish: true},
 		AgentTpl: AgentTplPermission{Publish: true},
@@ -55,6 +61,8 @@ func TestUserStatusResp_StructFields(t *testing.T) {
 }
 
 func TestNewUserStatusResp(t *testing.T) {
+	t.Parallel()
+
 	resp := NewUserStatusResp()
 
 	assert.NotNil(t, resp)
@@ -63,6 +71,8 @@ func TestNewUserStatusResp(t *testing.T) {
 }
 
 func TestNewUserStatusRespAllAllowed(t *testing.T) {
+	t.Parallel()
+
 	resp := NewUserStatusRespAllAllowed()
 
 	assert.NotNil(t, resp)

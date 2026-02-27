@@ -6,7 +6,11 @@ import (
 )
 
 func TestEnvConstants(t *testing.T) {
+	t.Parallel()
+
 	t.Run("EnvPrefix constant", func(t *testing.T) {
+		t.Parallel()
+
 		expected := "AGENT_FACTORY_"
 		if EnvPrefix != expected {
 			t.Errorf("Expected EnvPrefix to be '%s', got '%s'", expected, EnvPrefix)
@@ -14,6 +18,8 @@ func TestEnvConstants(t *testing.T) {
 	})
 
 	t.Run("EnvIsLocalDev constant", func(t *testing.T) {
+		t.Parallel()
+
 		expected := "AGENT_FACTORY_LOCAL_DEV"
 		if EnvIsLocalDev != expected {
 			t.Errorf("Expected EnvIsLocalDev to be '%s', got '%s'", expected, EnvIsLocalDev)
@@ -21,6 +27,8 @@ func TestEnvConstants(t *testing.T) {
 	})
 
 	t.Run("constants are not empty", func(t *testing.T) {
+		t.Parallel()
+
 		constants := []string{
 			EnvPrefix,
 			EnvIsLocalDev,
@@ -39,6 +47,8 @@ func TestEnvConstants(t *testing.T) {
 }
 
 func TestIsLocalDev(t *testing.T) {
+	t.Parallel()
+
 	// Save original env value
 	originalValue := os.Getenv(EnvIsLocalDev)
 
@@ -54,29 +64,37 @@ func TestIsLocalDev(t *testing.T) {
 	}()
 
 	t.Run("env var true", func(t *testing.T) {
+		t.Parallel()
 		os.Setenv(EnvIsLocalDev, "true")
+
 		if !IsLocalDev() {
 			t.Error("Expected IsLocalDev to return true")
 		}
 	})
 
 	t.Run("env var false", func(t *testing.T) {
+		t.Parallel()
 		os.Setenv(EnvIsLocalDev, "false")
+
 		if IsLocalDev() {
 			t.Error("Expected IsLocalDev to return false")
 		}
 	})
 
 	t.Run("env var not set", func(t *testing.T) {
+		t.Parallel()
 		os.Unsetenv(EnvIsLocalDev)
+
 		if IsLocalDev() {
 			t.Error("Expected IsLocalDev to return false when env not set")
 		}
 	})
 
 	t.Run("mock is local dev", func(t *testing.T) {
+		t.Parallel()
 		os.Unsetenv(EnvIsLocalDev)
 		SetIsLocalDev()
+
 		if !IsLocalDev() {
 			t.Error("Expected IsLocalDev to return true when mock is set")
 		}
@@ -84,6 +102,8 @@ func TestIsLocalDev(t *testing.T) {
 }
 
 func TestIsAaronLocalDev(t *testing.T) {
+	t.Parallel()
+
 	// Save original env value
 	envVar := EnvIsLocalDev + "_AARON"
 	originalValue := os.Getenv(envVar)
@@ -98,21 +118,27 @@ func TestIsAaronLocalDev(t *testing.T) {
 	}()
 
 	t.Run("env var true", func(t *testing.T) {
+		t.Parallel()
 		os.Setenv(envVar, "true")
+
 		if !IsAaronLocalDev() {
 			t.Error("Expected IsAaronLocalDev to return true")
 		}
 	})
 
 	t.Run("env var false", func(t *testing.T) {
+		t.Parallel()
 		os.Setenv(envVar, "false")
+
 		if IsAaronLocalDev() {
 			t.Error("Expected IsAaronLocalDev to return false")
 		}
 	})
 
 	t.Run("env var not set", func(t *testing.T) {
+		t.Parallel()
 		os.Unsetenv(envVar)
+
 		if IsAaronLocalDev() {
 			t.Error("Expected IsAaronLocalDev to return false when env not set")
 		}
@@ -120,6 +146,8 @@ func TestIsAaronLocalDev(t *testing.T) {
 }
 
 func TestIsDebugMode(t *testing.T) {
+	t.Parallel()
+
 	// Save original env value
 	originalValue := os.Getenv(isDebugMode)
 
@@ -133,21 +161,27 @@ func TestIsDebugMode(t *testing.T) {
 	}()
 
 	t.Run("env var true", func(t *testing.T) {
+		t.Parallel()
 		os.Setenv(isDebugMode, "true")
+
 		if !IsDebugMode() {
 			t.Error("Expected IsDebugMode to return true")
 		}
 	})
 
 	t.Run("env var false", func(t *testing.T) {
+		t.Parallel()
 		os.Setenv(isDebugMode, "false")
+
 		if IsDebugMode() {
 			t.Error("Expected IsDebugMode to return false")
 		}
 	})
 
 	t.Run("env var not set", func(t *testing.T) {
+		t.Parallel()
 		os.Unsetenv(isDebugMode)
+
 		if IsDebugMode() {
 			t.Error("Expected IsDebugMode to return false when env not set")
 		}
@@ -155,7 +189,10 @@ func TestIsDebugMode(t *testing.T) {
 }
 
 func TestIsOprLogShowLogForDebug(t *testing.T) {
+	t.Parallel()
+
 	t.Run("test function exists", func(t *testing.T) {
+		t.Parallel()
 		// This function calls IsDebugMode internally
 		result := IsOprLogShowLogForDebug()
 		// Result depends on environment
@@ -164,6 +201,8 @@ func TestIsOprLogShowLogForDebug(t *testing.T) {
 }
 
 func TestIsSQLPrint(t *testing.T) {
+	t.Parallel()
+
 	// Save original env value
 	originalValue := os.Getenv(isSQLPrint)
 
@@ -177,21 +216,27 @@ func TestIsSQLPrint(t *testing.T) {
 	}()
 
 	t.Run("env var true", func(t *testing.T) {
+		t.Parallel()
 		os.Setenv(isSQLPrint, "true")
+
 		if !IsSQLPrint() {
 			t.Error("Expected IsSQLPrint to return true")
 		}
 	})
 
 	t.Run("env var false", func(t *testing.T) {
+		t.Parallel()
 		os.Setenv(isSQLPrint, "false")
+
 		if IsSQLPrint() {
 			t.Error("Expected IsSQLPrint to return false")
 		}
 	})
 
 	t.Run("env var not set", func(t *testing.T) {
+		t.Parallel()
 		os.Unsetenv(isSQLPrint)
+
 		if IsSQLPrint() {
 			t.Error("Expected IsSQLPrint to return false when env not set")
 		}
@@ -199,6 +244,8 @@ func TestIsSQLPrint(t *testing.T) {
 }
 
 func TestProjectPathByEnv(t *testing.T) {
+	t.Parallel()
+
 	// Save original env value
 	originalValue := os.Getenv(projPath)
 
@@ -212,6 +259,8 @@ func TestProjectPathByEnv(t *testing.T) {
 	}()
 
 	t.Run("env var set", func(t *testing.T) {
+		t.Parallel()
+
 		expectedPath := "/custom/path"
 		os.Setenv(projPath, expectedPath)
 
@@ -222,6 +271,7 @@ func TestProjectPathByEnv(t *testing.T) {
 	})
 
 	t.Run("env var not set", func(t *testing.T) {
+		t.Parallel()
 		os.Unsetenv(projPath)
 
 		result := ProjectPathByEnv()
@@ -232,6 +282,8 @@ func TestProjectPathByEnv(t *testing.T) {
 }
 
 func TestIsSkipOauthVerify(t *testing.T) {
+	t.Parallel()
+
 	// Save original env value
 	originalValue := os.Getenv(skipOauthVerify)
 
@@ -245,21 +297,27 @@ func TestIsSkipOauthVerify(t *testing.T) {
 	}()
 
 	t.Run("env var true", func(t *testing.T) {
+		t.Parallel()
 		os.Setenv(skipOauthVerify, "true")
+
 		if !IsSkipOauthVerify() {
 			t.Error("Expected IsSkipOauthVerify to return true")
 		}
 	})
 
 	t.Run("env var false", func(t *testing.T) {
+		t.Parallel()
 		os.Setenv(skipOauthVerify, "false")
+
 		if IsSkipOauthVerify() {
 			t.Error("Expected IsSkipOauthVerify to return false")
 		}
 	})
 
 	t.Run("env var not set", func(t *testing.T) {
+		t.Parallel()
 		os.Unsetenv(skipOauthVerify)
+
 		if IsSkipOauthVerify() {
 			t.Error("Expected IsSkipOauthVerify to return false when env not set")
 		}

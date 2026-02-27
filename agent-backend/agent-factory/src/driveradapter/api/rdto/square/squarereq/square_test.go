@@ -8,6 +8,8 @@ import (
 )
 
 func TestAgentInfoReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := AgentInfoReq{
 		UserID:       "user-123",
 		AgentID:      "agent-456",
@@ -22,6 +24,8 @@ func TestAgentInfoReq_StructFields(t *testing.T) {
 }
 
 func TestAgentInfoReq_EmptyValues(t *testing.T) {
+	t.Parallel()
+
 	req := AgentInfoReq{}
 
 	assert.Empty(t, req.UserID)
@@ -31,6 +35,8 @@ func TestAgentInfoReq_EmptyValues(t *testing.T) {
 }
 
 func TestAgentInfoReq_WithFalseIsVisit(t *testing.T) {
+	t.Parallel()
+
 	req := AgentInfoReq{
 		UserID:       "user-test",
 		AgentID:      "agent-test",
@@ -42,6 +48,8 @@ func TestAgentInfoReq_WithFalseIsVisit(t *testing.T) {
 }
 
 func TestAgentSquareAgentReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := AgentSquareAgentReq{
 		Name:        "TestAgent",
 		CategoryID:  "cat-123",
@@ -56,6 +64,8 @@ func TestAgentSquareAgentReq_StructFields(t *testing.T) {
 }
 
 func TestAgentSquareAgentReq_EmptyValues(t *testing.T) {
+	t.Parallel()
+
 	req := AgentSquareAgentReq{}
 
 	assert.Empty(t, req.Name)
@@ -65,6 +75,8 @@ func TestAgentSquareAgentReq_EmptyValues(t *testing.T) {
 }
 
 func TestAgentSquareAgentReq_WithPageSize(t *testing.T) {
+	t.Parallel()
+
 	req := AgentSquareAgentReq{
 		Name:        "PageAgent",
 		CategoryID:  "cat-page",
@@ -81,6 +93,8 @@ func TestAgentSquareAgentReq_WithPageSize(t *testing.T) {
 }
 
 func TestAgentSquareAgentReq_EmptyReleaseIDS(t *testing.T) {
+	t.Parallel()
+
 	req := AgentSquareAgentReq{
 		Name:        "EmptyReleases",
 		CategoryID:  "cat-empty",
@@ -93,6 +107,8 @@ func TestAgentSquareAgentReq_EmptyReleaseIDS(t *testing.T) {
 }
 
 func TestAgentSquareMyAgentReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := AgentSquareMyAgentReq{
 		UserID:                    "user-my",
 		Name:                      "MyAgent",
@@ -105,6 +121,8 @@ func TestAgentSquareMyAgentReq_StructFields(t *testing.T) {
 }
 
 func TestAgentSquareMyAgentReq_EmptyValues(t *testing.T) {
+	t.Parallel()
+
 	req := AgentSquareMyAgentReq{}
 
 	assert.Empty(t, req.UserID)
@@ -113,6 +131,8 @@ func TestAgentSquareMyAgentReq_EmptyValues(t *testing.T) {
 }
 
 func TestAgentSquareMyAgentReq_WithPageSize(t *testing.T) {
+	t.Parallel()
+
 	req := AgentSquareMyAgentReq{
 		UserID:                    "user-page",
 		Name:                      "PageAgent",
@@ -127,6 +147,8 @@ func TestAgentSquareMyAgentReq_WithPageSize(t *testing.T) {
 }
 
 func TestAgentSquareRecentAgentReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := AgentSquareRecentAgentReq{
 		UserID:    "user-recent",
 		Name:      "RecentAgent",
@@ -141,6 +163,8 @@ func TestAgentSquareRecentAgentReq_StructFields(t *testing.T) {
 }
 
 func TestAgentSquareRecentAgentReq_EmptyValues(t *testing.T) {
+	t.Parallel()
+
 	req := AgentSquareRecentAgentReq{}
 
 	assert.Empty(t, req.UserID)
@@ -150,6 +174,8 @@ func TestAgentSquareRecentAgentReq_EmptyValues(t *testing.T) {
 }
 
 func TestAgentSquareRecentAgentReq_WithPageSize(t *testing.T) {
+	t.Parallel()
+
 	req := AgentSquareRecentAgentReq{
 		UserID:    "user-time",
 		Name:      "TimeAgent",
@@ -165,6 +191,8 @@ func TestAgentSquareRecentAgentReq_WithPageSize(t *testing.T) {
 }
 
 func TestAgentSquareRecentAgentReq_TimeRange(t *testing.T) {
+	t.Parallel()
+
 	req := AgentSquareRecentAgentReq{
 		UserID:    "user-range",
 		StartTime: 1640995200000,
@@ -175,6 +203,8 @@ func TestAgentSquareRecentAgentReq_TimeRange(t *testing.T) {
 }
 
 func TestAgentSquareAgentReq_DifferentPublishToBe(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		publishToBe cdaenum.PublishToBe
@@ -199,6 +229,8 @@ func TestAgentSquareAgentReq_DifferentPublishToBe(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			req := AgentSquareAgentReq{
 				Name:        tt.name,
 				PublishToBe: tt.publishToBe,

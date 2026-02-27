@@ -7,6 +7,8 @@ import (
 )
 
 func TestDataAgentUniqFlag_New(t *testing.T) {
+	t.Parallel()
+
 	flag := NewDataAgentUniqFlag("agent-123", "1.0.0")
 
 	assert.NotNil(t, flag)
@@ -15,6 +17,8 @@ func TestDataAgentUniqFlag_New(t *testing.T) {
 }
 
 func TestDataAgentUniqFlag_ValObjCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	flag := NewDataAgentUniqFlag("agent-456", "2.0.0")
 
 	err := flag.ValObjCheck()
@@ -22,6 +26,8 @@ func TestDataAgentUniqFlag_ValObjCheck_Valid(t *testing.T) {
 }
 
 func TestDataAgentUniqFlag_ValObjCheck_EmptyAgentID(t *testing.T) {
+	t.Parallel()
+
 	flag := NewDataAgentUniqFlag("", "1.0.0")
 
 	err := flag.ValObjCheck()
@@ -30,6 +36,8 @@ func TestDataAgentUniqFlag_ValObjCheck_EmptyAgentID(t *testing.T) {
 }
 
 func TestDataAgentUniqFlag_ValObjCheck_EmptyAgentVersion(t *testing.T) {
+	t.Parallel()
+
 	flag := NewDataAgentUniqFlag("agent-789", "")
 
 	err := flag.ValObjCheck()
@@ -38,6 +46,8 @@ func TestDataAgentUniqFlag_ValObjCheck_EmptyAgentVersion(t *testing.T) {
 }
 
 func TestDataAgentUniqFlag_ValObjCheck_BothEmpty(t *testing.T) {
+	t.Parallel()
+
 	flag := NewDataAgentUniqFlag("", "")
 
 	err := flag.ValObjCheck()
@@ -46,6 +56,8 @@ func TestDataAgentUniqFlag_ValObjCheck_BothEmpty(t *testing.T) {
 }
 
 func TestDataAgentUniqFlag_IsUnpublish_True(t *testing.T) {
+	t.Parallel()
+
 	flag := NewDataAgentUniqFlag("agent-999", "v0")
 
 	result := flag.IsUnpublish()
@@ -53,6 +65,8 @@ func TestDataAgentUniqFlag_IsUnpublish_True(t *testing.T) {
 }
 
 func TestDataAgentUniqFlag_IsUnpublish_False(t *testing.T) {
+	t.Parallel()
+
 	flag := NewDataAgentUniqFlag("agent-888", "1.0.0")
 
 	result := flag.IsUnpublish()
@@ -60,6 +74,8 @@ func TestDataAgentUniqFlag_IsUnpublish_False(t *testing.T) {
 }
 
 func TestDataAgentUniqFlag_EmptyFields(t *testing.T) {
+	t.Parallel()
+
 	flag := &DataAgentUniqFlag{}
 
 	assert.NotNil(t, flag)
@@ -68,6 +84,8 @@ func TestDataAgentUniqFlag_EmptyFields(t *testing.T) {
 }
 
 func TestDataAgentUniqFlag_WithSpecialCharacters(t *testing.T) {
+	t.Parallel()
+
 	flag := NewDataAgentUniqFlag("agent-中文-123", "版本-1.0.0")
 
 	assert.Equal(t, "agent-中文-123", flag.AgentID)
@@ -75,6 +93,8 @@ func TestDataAgentUniqFlag_WithSpecialCharacters(t *testing.T) {
 }
 
 func TestDataAgentUniqFlag_LongStrings(t *testing.T) {
+	t.Parallel()
+
 	longID := "agent-" + string(make([]byte, 1000))
 	longVersion := string(make([]byte, 1000))
 

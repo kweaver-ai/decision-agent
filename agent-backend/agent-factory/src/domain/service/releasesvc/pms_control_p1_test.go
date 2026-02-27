@@ -20,6 +20,8 @@ import (
 // ---- handlePmsCtrl: pmsControl != nil 路径 ----
 
 func TestReleaseSvc_HandlePmsCtrl_WithPmsControl_RangeError(t *testing.T) {
+	t.Parallel()
+
 	setReleaseSvcTestConfig(t)
 
 	ctrl := gomock.NewController(t)
@@ -50,6 +52,8 @@ func TestReleaseSvc_HandlePmsCtrl_WithPmsControl_RangeError(t *testing.T) {
 }
 
 func TestReleaseSvc_HandlePmsCtrl_WithPmsControl_Success(t *testing.T) {
+	t.Parallel()
+
 	setReleaseSvcTestConfig(t)
 
 	ctrl := gomock.NewController(t)
@@ -87,6 +91,8 @@ func TestReleaseSvc_HandlePmsCtrl_WithPmsControl_Success(t *testing.T) {
 // ---- handlePmsCtrlRange: 各类型 BatchCreate 失败分支 ----
 
 func TestReleaseSvc_HandlePmsCtrlRange_UserBatchCreateError(t *testing.T) {
+	t.Parallel()
+
 	setReleaseSvcTestConfig(t)
 
 	ctrl := gomock.NewController(t)
@@ -113,6 +119,8 @@ func TestReleaseSvc_HandlePmsCtrlRange_UserBatchCreateError(t *testing.T) {
 }
 
 func TestReleaseSvc_HandlePmsCtrlRange_UserGroupBatchCreateError(t *testing.T) {
+	t.Parallel()
+
 	setReleaseSvcTestConfig(t)
 
 	ctrl := gomock.NewController(t)
@@ -139,6 +147,8 @@ func TestReleaseSvc_HandlePmsCtrlRange_UserGroupBatchCreateError(t *testing.T) {
 }
 
 func TestReleaseSvc_HandlePmsCtrlRange_DepartmentBatchCreateError(t *testing.T) {
+	t.Parallel()
+
 	setReleaseSvcTestConfig(t)
 
 	ctrl := gomock.NewController(t)
@@ -163,6 +173,8 @@ func TestReleaseSvc_HandlePmsCtrlRange_DepartmentBatchCreateError(t *testing.T) 
 }
 
 func TestReleaseSvc_HandlePmsCtrlRange_AppAccountBatchCreateError(t *testing.T) {
+	t.Parallel()
+
 	setReleaseSvcTestConfig(t)
 
 	ctrl := gomock.NewController(t)
@@ -187,6 +199,8 @@ func TestReleaseSvc_HandlePmsCtrlRange_AppAccountBatchCreateError(t *testing.T) 
 }
 
 func TestReleaseSvc_HandlePmsCtrlRange_GrantUsePmsError(t *testing.T) {
+	t.Parallel()
+
 	setReleaseSvcTestConfig(t)
 
 	ctrl := gomock.NewController(t)
@@ -215,6 +229,8 @@ func TestReleaseSvc_HandlePmsCtrlRange_GrantUsePmsError(t *testing.T) {
 // ---- genPmsControlRespFromPolicy ----
 
 func TestReleaseSvc_GenPmsControlRespFromPolicy_Error(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -233,6 +249,8 @@ func TestReleaseSvc_GenPmsControlRespFromPolicy_Error(t *testing.T) {
 }
 
 func TestReleaseSvc_GenPmsControlRespFromPolicy_EmptyEntries(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -254,6 +272,8 @@ func TestReleaseSvc_GenPmsControlRespFromPolicy_EmptyEntries(t *testing.T) {
 }
 
 func TestReleaseSvc_GenPmsControlRespFromPolicy_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

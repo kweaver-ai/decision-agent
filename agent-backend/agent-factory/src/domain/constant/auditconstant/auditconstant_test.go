@@ -7,6 +7,8 @@ import (
 )
 
 func TestObjectType_Constants(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, "agent", OBJECT_TYPE_AGENT)
 	assert.Equal(t, "agent_template", OBJECT_TYPE_AGENT_TEMPLATE)
 	assert.Equal(t, "custom_space", OBJECT_TYPE_CUSTOM_SPACE)
@@ -14,6 +16,8 @@ func TestObjectType_Constants(t *testing.T) {
 }
 
 func TestOperation_Constants(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, "create", CREATE)
 	assert.Equal(t, "delete", DELETE)
 	assert.Equal(t, "update", UPDATE)
@@ -27,6 +31,8 @@ func TestOperation_Constants(t *testing.T) {
 }
 
 func TestGenerateAgentAuditObject(t *testing.T) {
+	t.Parallel()
+
 	obj := GenerateAgentAuditObject("agent-1", "Test Agent")
 	assert.Equal(t, "agent", obj.Type)
 	assert.Equal(t, "agent-1", obj.ID)
@@ -34,6 +40,8 @@ func TestGenerateAgentAuditObject(t *testing.T) {
 }
 
 func TestGenerateAgentTemplateAuditObject(t *testing.T) {
+	t.Parallel()
+
 	obj := GenerateAgentTemplateAuditObject("tpl-1", "Test Template")
 	assert.Equal(t, "agent_template", obj.Type)
 	assert.Equal(t, "tpl-1", obj.ID)
@@ -41,6 +49,8 @@ func TestGenerateAgentTemplateAuditObject(t *testing.T) {
 }
 
 func TestGenerateCustomSpaceAuditObject(t *testing.T) {
+	t.Parallel()
+
 	obj := GenerateCustomSpaceAuditObject("space-1", "Test Space")
 	assert.Equal(t, "custom_space", obj.Type)
 	assert.Equal(t, "space-1", obj.ID)
@@ -48,6 +58,8 @@ func TestGenerateCustomSpaceAuditObject(t *testing.T) {
 }
 
 func TestGenerateProductAuditObject(t *testing.T) {
+	t.Parallel()
+
 	obj := GenerateProductAuditObject("product-1", "Test Product")
 	assert.Equal(t, "product", obj.Type)
 	assert.Equal(t, "product-1", obj.ID)

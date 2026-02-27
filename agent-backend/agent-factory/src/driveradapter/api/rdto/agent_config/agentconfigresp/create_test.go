@@ -7,6 +7,8 @@ import (
 )
 
 func TestCreateRes_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := CreateRes{
 		ID:      "agent-123",
 		Version: "v1.0.0",
@@ -17,6 +19,8 @@ func TestCreateRes_StructFields(t *testing.T) {
 }
 
 func TestCreateRes_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := CreateRes{}
 
 	assert.Empty(t, resp.ID)
@@ -24,6 +28,8 @@ func TestCreateRes_Empty(t *testing.T) {
 }
 
 func TestCreateRes_WithID(t *testing.T) {
+	t.Parallel()
+
 	ids := []string{
 		"agent-001",
 		"new-agent-123",
@@ -38,6 +44,8 @@ func TestCreateRes_WithID(t *testing.T) {
 }
 
 func TestCreateRes_WithVersion(t *testing.T) {
+	t.Parallel()
+
 	versions := []string{
 		"v1.0.0",
 		"v2.5.3",
@@ -53,6 +61,8 @@ func TestCreateRes_WithVersion(t *testing.T) {
 }
 
 func TestCreateRes_AllFields(t *testing.T) {
+	t.Parallel()
+
 	resp := CreateRes{
 		ID:      "complete-agent-id",
 		Version: "v3.0.0",
@@ -63,6 +73,8 @@ func TestCreateRes_AllFields(t *testing.T) {
 }
 
 func TestCreateRes_WithChineseID(t *testing.T) {
+	t.Parallel()
+
 	resp := CreateRes{
 		ID: "智能体-123",
 	}
@@ -71,6 +83,8 @@ func TestCreateRes_WithChineseID(t *testing.T) {
 }
 
 func TestCreateRes_WithUnpublishedVersion(t *testing.T) {
+	t.Parallel()
+
 	resp := CreateRes{
 		ID:      "new-agent",
 		Version: "unpublished",
@@ -81,6 +95,8 @@ func TestCreateRes_WithUnpublishedVersion(t *testing.T) {
 }
 
 func TestCreateRes_EmptyVersion(t *testing.T) {
+	t.Parallel()
+
 	resp := CreateRes{
 		ID: "agent-no-version",
 	}
@@ -90,12 +106,16 @@ func TestCreateRes_EmptyVersion(t *testing.T) {
 }
 
 func TestCreateRes_NilPointer(t *testing.T) {
+	t.Parallel()
+
 	var resp *CreateRes
 
 	assert.Nil(t, resp)
 }
 
 func TestCreateRes_NewInstance(t *testing.T) {
+	t.Parallel()
+
 	resp := &CreateRes{}
 
 	assert.NotNil(t, resp)
@@ -104,6 +124,8 @@ func TestCreateRes_NewInstance(t *testing.T) {
 }
 
 func TestCreateRes_WithSpecialCharacters(t *testing.T) {
+	t.Parallel()
+
 	resp := CreateRes{
 		ID: "agent-with-special_chars-@#$",
 	}
@@ -112,6 +134,8 @@ func TestCreateRes_WithSpecialCharacters(t *testing.T) {
 }
 
 func TestCreateRes_LongVersion(t *testing.T) {
+	t.Parallel()
+
 	longVersion := "v100.200.300-beta+build12345"
 	resp := CreateRes{
 		Version: longVersion,

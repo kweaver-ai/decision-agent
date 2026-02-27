@@ -10,6 +10,8 @@ import (
 )
 
 func TestAddMembersReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &AddMembersReq{}
 	errMap := req.GetErrMsgMap()
 
@@ -19,6 +21,8 @@ func TestAddMembersReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestAddMembersReq_CustomCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		req     *AddMembersReq
@@ -109,9 +113,12 @@ func TestAddMembersReq_CustomCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.req.CustomCheck()
 			if tt.wantErr {
 				require.Error(t, err)
+
 				if tt.errMsg != "" {
 					assert.Contains(t, err.Error(), tt.errMsg)
 				}
@@ -123,13 +130,15 @@ func TestAddMembersReq_CustomCheck(t *testing.T) {
 }
 
 func TestAddMembersReq_ToMemberEos(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name           string
-		members        []*SpaceMemberReq
-		spaceID        string
-		spaceKey       string
-		wantErr        bool
-		expectedLen     int
+		name        string
+		members     []*SpaceMemberReq
+		spaceID     string
+		spaceKey    string
+		wantErr     bool
+		expectedLen int
 	}{
 		{
 			name: "convert single member",
@@ -139,9 +148,9 @@ func TestAddMembersReq_ToMemberEos(t *testing.T) {
 					ObjID:   "user-1",
 				},
 			},
-			spaceID:    "space-1",
-			spaceKey:   "space-key-1",
-			wantErr:    false,
+			spaceID:     "space-1",
+			spaceKey:    "space-key-1",
+			wantErr:     false,
 			expectedLen: 1,
 		},
 		{
@@ -156,23 +165,25 @@ func TestAddMembersReq_ToMemberEos(t *testing.T) {
 					ObjID:   "dept-1",
 				},
 			},
-			spaceID:    "space-2",
-			spaceKey:   "space-key-2",
-			wantErr:    false,
+			spaceID:     "space-2",
+			spaceKey:    "space-key-2",
+			wantErr:     false,
 			expectedLen: 2,
 		},
 		{
-			name:     "empty members",
-			members:  []*SpaceMemberReq{},
-			spaceID:  "space-3",
-			spaceKey: "space-key-3",
-			wantErr:  false,
+			name:        "empty members",
+			members:     []*SpaceMemberReq{},
+			spaceID:     "space-3",
+			spaceKey:    "space-key-3",
+			wantErr:     false,
 			expectedLen: 0,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			req := &AddMembersReq{}
 			eos, err := req.ToMemberEos(tt.members, tt.spaceID, tt.spaceKey)
 
@@ -193,6 +204,8 @@ func TestAddMembersReq_ToMemberEos(t *testing.T) {
 }
 
 func TestAddMembersReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := &AddMembersReq{
 		Members: []*SpaceMemberReq{
 			{
@@ -209,6 +222,8 @@ func TestAddMembersReq_StructFields(t *testing.T) {
 }
 
 func TestAddMembersReq_Deduplication(t *testing.T) {
+	t.Parallel()
+
 	req := &AddMembersReq{
 		Members: []*SpaceMemberReq{
 			{

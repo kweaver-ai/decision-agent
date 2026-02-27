@@ -7,6 +7,8 @@ import (
 )
 
 func TestListReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := ListReq{}
 	req.Size = 10
 	req.Page = 1
@@ -16,6 +18,8 @@ func TestListReq_StructFields(t *testing.T) {
 }
 
 func TestListReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := ListReq{}
 
 	assert.Equal(t, 0, req.Size)
@@ -23,6 +27,8 @@ func TestListReq_Empty(t *testing.T) {
 }
 
 func TestListReq_WithPagination(t *testing.T) {
+	t.Parallel()
+
 	req := ListReq{}
 	req.Size = 20
 	req.Page = 2
@@ -32,6 +38,8 @@ func TestListReq_WithPagination(t *testing.T) {
 }
 
 func TestListReq_WithDefaultPagination(t *testing.T) {
+	t.Parallel()
+
 	req := ListReq{}
 	// PageSize has default values when Size is 0
 	req.Size = 0
@@ -42,6 +50,8 @@ func TestListReq_WithDefaultPagination(t *testing.T) {
 }
 
 func TestListReq_PaginationEdgeCases(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		page     int
@@ -76,6 +86,8 @@ func TestListReq_PaginationEdgeCases(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			req := ListReq{}
 			req.Page = tt.page
 			req.Size = tt.size
@@ -87,6 +99,8 @@ func TestListReq_PaginationEdgeCases(t *testing.T) {
 }
 
 func TestListReq_EmbeddedPageSize(t *testing.T) {
+	t.Parallel()
+
 	req := ListReq{}
 
 	// Verify that PageSize is embedded
@@ -103,6 +117,8 @@ func TestListReq_EmbeddedPageSize(t *testing.T) {
 }
 
 func TestListReq_GetOffset(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		size     int
@@ -131,6 +147,8 @@ func TestListReq_GetOffset(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			req := ListReq{}
 			req.Size = tt.size
 			req.Page = tt.page
@@ -142,6 +160,8 @@ func TestListReq_GetOffset(t *testing.T) {
 }
 
 func TestListReq_WithLargePageSize(t *testing.T) {
+	t.Parallel()
+
 	req := ListReq{}
 	req.Size = 100
 	req.Page = 5
@@ -152,6 +172,8 @@ func TestListReq_WithLargePageSize(t *testing.T) {
 }
 
 func TestListReq_WithZeroPageSize(t *testing.T) {
+	t.Parallel()
+
 	req := ListReq{}
 	req.Size = 0
 	req.Page = 1

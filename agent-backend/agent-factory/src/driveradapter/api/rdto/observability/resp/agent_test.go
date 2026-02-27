@@ -8,6 +8,8 @@ import (
 )
 
 func TestPublishInfo_StructFields(t *testing.T) {
+	t.Parallel()
+
 	info := PublishInfo{
 		IsAPIAgent:      1,
 		IsSDKAgent:      0,
@@ -22,6 +24,8 @@ func TestPublishInfo_StructFields(t *testing.T) {
 }
 
 func TestPublishInfo_Empty(t *testing.T) {
+	t.Parallel()
+
 	info := PublishInfo{}
 
 	assert.Zero(t, info.IsAPIAgent)
@@ -31,6 +35,8 @@ func TestPublishInfo_Empty(t *testing.T) {
 }
 
 func TestAgent_StructFields(t *testing.T) {
+	t.Parallel()
+
 	config := daconfvalobj.Config{}
 	agent := Agent{
 		ID:           "agent-123",
@@ -63,6 +69,8 @@ func TestAgent_StructFields(t *testing.T) {
 }
 
 func TestAgent_Empty(t *testing.T) {
+	t.Parallel()
+
 	agent := Agent{}
 
 	assert.Empty(t, agent.ID)
@@ -80,6 +88,8 @@ func TestAgent_Empty(t *testing.T) {
 }
 
 func TestAgentResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := AgentResp{
 		TotalRequests:      1000,
 		TotalSessions:      500,
@@ -100,6 +110,8 @@ func TestAgentResp_StructFields(t *testing.T) {
 }
 
 func TestAgentResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := AgentResp{}
 
 	assert.Zero(t, resp.TotalRequests)
@@ -112,6 +124,8 @@ func TestAgentResp_Empty(t *testing.T) {
 }
 
 func TestAgentResp_WithAgent(t *testing.T) {
+	t.Parallel()
+
 	agent := Agent{
 		ID:   "test-agent",
 		Name: "Test",
@@ -128,6 +142,8 @@ func TestAgentResp_WithAgent(t *testing.T) {
 }
 
 func TestPublishInfo_AllTrue(t *testing.T) {
+	t.Parallel()
+
 	info := PublishInfo{
 		IsAPIAgent:      1,
 		IsSDKAgent:      1,
@@ -142,6 +158,8 @@ func TestPublishInfo_AllTrue(t *testing.T) {
 }
 
 func TestAgent_WithPublishInfo(t *testing.T) {
+	t.Parallel()
+
 	publishInfo := PublishInfo{
 		IsAPIAgent:      1,
 		IsSDKAgent:      0,
@@ -159,6 +177,8 @@ func TestAgent_WithPublishInfo(t *testing.T) {
 }
 
 func TestAgentResp_WithChineseName(t *testing.T) {
+	t.Parallel()
+
 	agent := Agent{
 		Name: "测试智能体",
 	}
@@ -170,6 +190,8 @@ func TestAgentResp_WithChineseName(t *testing.T) {
 }
 
 func TestAgentResp_WithAllMetrics(t *testing.T) {
+	t.Parallel()
+
 	resp := AgentResp{
 		TotalRequests:      10000,
 		TotalSessions:      5000,

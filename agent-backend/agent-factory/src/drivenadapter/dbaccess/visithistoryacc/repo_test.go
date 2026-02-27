@@ -33,6 +33,7 @@ func (visitTestLogger) Fatalln(...interface{})        {}
 
 func newVisitRepoWithMock(t *testing.T) (*visitHistoryRepo, *sqlx.DB, sqlmock.Sqlmock) {
 	t.Helper()
+
 	db, mock, err := sqlx.New()
 	require.NoError(t, err)
 
@@ -54,9 +55,12 @@ func visitPO() *dapo.VisitHistoryPO {
 }
 
 func TestNewVisitHistoryRepo_Singleton(t *testing.T) {
+	t.Parallel()
+
 	oldOnce := visitHistoryRepoOnce
 	oldImpl := visitHistoryRepoImpl
 	oldGDB := global.GDB
+
 	t.Cleanup(func() {
 		visitHistoryRepoOnce = oldOnce
 		visitHistoryRepoImpl = oldImpl
@@ -65,18 +69,24 @@ func TestNewVisitHistoryRepo_Singleton(t *testing.T) {
 
 	db, _, err := sqlx.New()
 	require.NoError(t, err)
+
 	global.GDB = db
 	visitHistoryRepoOnce = sync.Once{}
 	visitHistoryRepoImpl = nil
 
 	r1 := NewVisitHistoryRepo()
 	r2 := NewVisitHistoryRepo()
+
 	require.NotNil(t, r1)
 	assert.Same(t, r1, r2)
 }
 
 func TestVisitHistoryRepo_IncVisitCount(t *testing.T) {
+	t.Parallel()
+
 	t.Run("invalid input", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, _ := newVisitRepoWithMock(t)
 		defer db.Close()
 
@@ -86,6 +96,8 @@ func TestVisitHistoryRepo_IncVisitCount(t *testing.T) {
 	})
 
 	t.Run("exists query error", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newVisitRepoWithMock(t)
 		defer db.Close()
 
@@ -101,6 +113,8 @@ func TestVisitHistoryRepo_IncVisitCount(t *testing.T) {
 	})
 
 	t.Run("insert when not exists success", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newVisitRepoWithMock(t)
 		defer db.Close()
 
@@ -118,6 +132,8 @@ func TestVisitHistoryRepo_IncVisitCount(t *testing.T) {
 	})
 
 	t.Run("insert when not exists error", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newVisitRepoWithMock(t)
 		defer db.Close()
 
@@ -135,6 +151,8 @@ func TestVisitHistoryRepo_IncVisitCount(t *testing.T) {
 	})
 
 	t.Run("update when exists", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newVisitRepoWithMock(t)
 		defer db.Close()
 
@@ -152,6 +170,8 @@ func TestVisitHistoryRepo_IncVisitCount(t *testing.T) {
 	})
 
 	t.Run("update when exists error", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newVisitRepoWithMock(t)
 		defer db.Close()
 

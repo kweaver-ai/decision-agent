@@ -8,6 +8,8 @@ import (
 )
 
 func TestSessionListReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := &SessionListReq{
 		AgentID:        "agent-123",
 		AgentVersion:   "v1.0.0",
@@ -32,6 +34,8 @@ func TestSessionListReq_StructFields(t *testing.T) {
 }
 
 func TestSessionListReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := &SessionListReq{}
 
 	assert.Empty(t, req.AgentID)
@@ -45,6 +49,8 @@ func TestSessionListReq_Empty(t *testing.T) {
 }
 
 func TestSessionListReq_WithPagination(t *testing.T) {
+	t.Parallel()
+
 	req := &SessionListReq{
 		Size: 50,
 		Page: 2,
@@ -55,6 +61,8 @@ func TestSessionListReq_WithPagination(t *testing.T) {
 }
 
 func TestSessionListReq_WithTimeRange(t *testing.T) {
+	t.Parallel()
+
 	req := &SessionListReq{
 		StartTime: 1000000000,
 		EndTime:   2000000000,
@@ -65,6 +73,8 @@ func TestSessionListReq_WithTimeRange(t *testing.T) {
 }
 
 func TestSessionListReq_WithConversationID(t *testing.T) {
+	t.Parallel()
+
 	convIDs := []string{
 		"conv-001",
 		"conv-abc-123",

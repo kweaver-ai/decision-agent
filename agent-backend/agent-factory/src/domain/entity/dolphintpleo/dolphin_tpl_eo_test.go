@@ -8,6 +8,8 @@ import (
 )
 
 func TestDolphinTplEo_Fields_All(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		key  cdaenum.DolphinTplKey
@@ -22,6 +24,8 @@ func TestDolphinTplEo_Fields_All(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			eo := &DolphinTplEo{
 				Key:   tt.key,
 				Name:  tt.name + " name",

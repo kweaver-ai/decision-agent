@@ -14,6 +14,8 @@ import (
 )
 
 func TestAgentConfig2AgentCallConfig(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	req := &agentreq.ChatReq{
 		AgentID:        "agent-123",
@@ -39,6 +41,8 @@ func TestAgentConfig2AgentCallConfig(t *testing.T) {
 }
 
 func TestAgentConfig2AgentCallConfigWithNilSkill(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	req := &agentreq.ChatReq{
 		AgentID:        "agent-123",
@@ -60,6 +64,8 @@ func TestAgentConfig2AgentCallConfigWithNilSkill(t *testing.T) {
 }
 
 func TestAgentConfig2AgentCallConfigDebug(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	req := &agentreq.DebugReq{
 		AgentID:    "agent-123",
@@ -78,6 +84,8 @@ func TestAgentConfig2AgentCallConfigDebug(t *testing.T) {
 }
 
 func TestCalculateTTFT(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		startTime   int64
@@ -114,6 +122,8 @@ func TestCalculateTTFT(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := CalculateTTFT(tt.startTime, tt.progresses, tt.callType)
 
 			if tt.wantGreater {
@@ -126,6 +136,8 @@ func TestCalculateTTFT(t *testing.T) {
 }
 
 func TestGenerateAssistantMsg(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	req := &agentreq.ChatReq{
 		AgentID: "agent-123",
@@ -139,6 +151,8 @@ func TestGenerateAssistantMsg(t *testing.T) {
 }
 
 func TestCalculateTTFTForChat_EmptyProgresses(t *testing.T) {
+	t.Parallel()
+
 	startTime := int64(1000)
 	progresses := []*agentrespvo.Progress{}
 
@@ -148,6 +162,8 @@ func TestCalculateTTFTForChat_EmptyProgresses(t *testing.T) {
 }
 
 func TestCalculateTTFTForChat_LLMWithAnswer(t *testing.T) {
+	t.Parallel()
+
 	startTime := int64(1000)
 	progresses := []*agentrespvo.Progress{
 		{
@@ -162,6 +178,8 @@ func TestCalculateTTFTForChat_LLMWithAnswer(t *testing.T) {
 }
 
 func TestCalculateTTFTForChat_LLMWithThink(t *testing.T) {
+	t.Parallel()
+
 	startTime := int64(1000)
 	progresses := []*agentrespvo.Progress{
 		{
@@ -176,6 +194,8 @@ func TestCalculateTTFTForChat_LLMWithThink(t *testing.T) {
 }
 
 func TestCalculateTTFTForChat_LLMNoContent(t *testing.T) {
+	t.Parallel()
+
 	startTime := int64(1000)
 	progresses := []*agentrespvo.Progress{
 		{
@@ -193,6 +213,8 @@ func TestCalculateTTFTForChat_LLMNoContent(t *testing.T) {
 }
 
 func TestCalculateTTFTForChat_LLMWithBothAnswerAndThink(t *testing.T) {
+	t.Parallel()
+
 	startTime := int64(1000)
 	progresses := []*agentrespvo.Progress{
 		{
@@ -209,6 +231,8 @@ func TestCalculateTTFTForChat_LLMWithBothAnswerAndThink(t *testing.T) {
 }
 
 func TestCalculateTTFTForChat_LLMWithBothThenSkill(t *testing.T) {
+	t.Parallel()
+
 	startTime := int64(1000)
 	progresses := []*agentrespvo.Progress{
 		{
@@ -238,6 +262,8 @@ func TestCalculateTTFTForChat_LLMWithBothThenSkill(t *testing.T) {
 }
 
 func TestCalculateTTFTForChat_SkillSearchMemory(t *testing.T) {
+	t.Parallel()
+
 	startTime := int64(1000)
 	progresses := []*agentrespvo.Progress{
 		{
@@ -254,6 +280,8 @@ func TestCalculateTTFTForChat_SkillSearchMemory(t *testing.T) {
 }
 
 func TestCalculateTTFTForChat_SkillDate(t *testing.T) {
+	t.Parallel()
+
 	startTime := int64(1000)
 	progresses := []*agentrespvo.Progress{
 		{
@@ -270,6 +298,8 @@ func TestCalculateTTFTForChat_SkillDate(t *testing.T) {
 }
 
 func TestCalculateTTFTForChat_SkillBuildMemory(t *testing.T) {
+	t.Parallel()
+
 	startTime := int64(1000)
 	progresses := []*agentrespvo.Progress{
 		{
@@ -286,6 +316,8 @@ func TestCalculateTTFTForChat_SkillBuildMemory(t *testing.T) {
 }
 
 func TestCalculateTTFTForChat_SkillWithShowDS(t *testing.T) {
+	t.Parallel()
+
 	startTime := int64(1000)
 	progresses := []*agentrespvo.Progress{
 		{
@@ -309,6 +341,8 @@ func TestCalculateTTFTForChat_SkillWithShowDS(t *testing.T) {
 }
 
 func TestCalculateTTFTForChat_SkillVisible(t *testing.T) {
+	t.Parallel()
+
 	startTime := int64(1000)
 	progresses := []*agentrespvo.Progress{
 		{
@@ -332,6 +366,8 @@ func TestCalculateTTFTForChat_SkillVisible(t *testing.T) {
 }
 
 func TestCalculateTTFTForChat_MultipleProgresses(t *testing.T) {
+	t.Parallel()
+
 	startTime := int64(1000)
 	progresses := []*agentrespvo.Progress{
 		{
@@ -354,6 +390,8 @@ func TestCalculateTTFTForChat_MultipleProgresses(t *testing.T) {
 }
 
 func TestAgentConfig2AgentCallConfig_WithPreDolphin(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	req := &agentreq.ChatReq{
 		AgentID:        "agent-123",
@@ -372,6 +410,8 @@ func TestAgentConfig2AgentCallConfig_WithPreDolphin(t *testing.T) {
 }
 
 func TestAgentConfig2AgentCallConfig_WithPostDolphin(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	req := &agentreq.ChatReq{
 		AgentID:        "agent-123",
@@ -390,6 +430,8 @@ func TestAgentConfig2AgentCallConfig_WithPostDolphin(t *testing.T) {
 }
 
 func TestAgentConfig2AgentCallConfigDebug_WithNilSkill(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	req := &agentreq.DebugReq{
 		AgentID:    "agent-123",

@@ -6,15 +6,17 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestDataAgentTplSvc_GetPublishInfo_PanicsWithoutPublishedTplRepo(t *testing.T) {
+	t.Parallel()
+
 	svc := &dataAgentTplSvc{
 		SvcBase: service.NewSvcBase(),
 	}
@@ -28,6 +30,8 @@ func TestDataAgentTplSvc_GetPublishInfo_PanicsWithoutPublishedTplRepo(t *testing
 }
 
 func TestDataAgentTplSvc_GetPublishInfo_PublishedTplNotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -53,6 +57,8 @@ func TestDataAgentTplSvc_GetPublishInfo_PublishedTplNotFound(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_GetPublishInfo_GetByTplIDError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -78,6 +84,8 @@ func TestDataAgentTplSvc_GetPublishInfo_GetByTplIDError(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_GetPublishInfo_GetCategoryJoinPosByTplIDError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -109,6 +117,8 @@ func TestDataAgentTplSvc_GetPublishInfo_GetCategoryJoinPosByTplIDError(t *testin
 }
 
 func TestDataAgentTplSvc_GetPublishInfo_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

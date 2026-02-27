@@ -5,16 +5,18 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/common"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squarereq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestSquareSvc_GetRecentAgentList_PanicsWithoutReleaseRepo(t *testing.T) {
+	t.Parallel()
+
 	svc := &squareSvc{
 		SvcBase: service.NewSvcBase(),
 		// releaseRepo is nil
@@ -34,6 +36,8 @@ func TestSquareSvc_GetRecentAgentList_PanicsWithoutReleaseRepo(t *testing.T) {
 }
 
 func TestSquareSvc_GetRecentAgentList_DatabaseError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -63,6 +67,8 @@ func TestSquareSvc_GetRecentAgentList_DatabaseError(t *testing.T) {
 }
 
 func TestSquareSvc_GetRecentAgentList_EmptyList(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -92,6 +98,8 @@ func TestSquareSvc_GetRecentAgentList_EmptyList(t *testing.T) {
 }
 
 func TestSquareSvc_GetRecentAgentList_PageOutOfRange(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

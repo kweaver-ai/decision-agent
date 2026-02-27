@@ -7,6 +7,8 @@ import (
 )
 
 func TestNewRepoBase(t *testing.T) {
+	t.Parallel()
+
 	repo := NewRepoBase()
 
 	assert.NotNil(t, repo)
@@ -14,12 +16,16 @@ func TestNewRepoBase(t *testing.T) {
 }
 
 func TestRepoBase_Struct(t *testing.T) {
+	t.Parallel()
+
 	repo := &RepoBase{}
 
 	assert.NotNil(t, repo)
 }
 
 func TestRepoBase_IsValidBase(t *testing.T) {
+	t.Parallel()
+
 	// Verify RepoBase can be used as a base for other repository structs
 	type testRepo struct {
 		*RepoBase

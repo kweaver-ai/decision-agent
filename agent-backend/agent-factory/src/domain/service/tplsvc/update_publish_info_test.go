@@ -6,7 +6,6 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_tpl/agenttplreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
@@ -14,9 +13,12 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver/v3portdrivermock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestDataAgentTplSvc_UpdatePublishInfo_PanicsWithoutAgentTplRepo(t *testing.T) {
+	t.Parallel()
+
 	svc := &dataAgentTplSvc{
 		SvcBase: service.NewSvcBase(),
 	}
@@ -31,6 +33,8 @@ func TestDataAgentTplSvc_UpdatePublishInfo_PanicsWithoutAgentTplRepo(t *testing.
 }
 
 func TestDataAgentTplSvc_UpdatePublishInfo_PermissionDenied(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -61,6 +65,8 @@ func TestDataAgentTplSvc_UpdatePublishInfo_PermissionDenied(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_UpdatePublishInfo_TemplateNotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -92,6 +98,8 @@ func TestDataAgentTplSvc_UpdatePublishInfo_TemplateNotFound(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_UpdatePublishInfo_GetByIDError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -124,6 +132,8 @@ func TestDataAgentTplSvc_UpdatePublishInfo_GetByIDError(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_UpdatePublishInfo_PublishedTplNotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -145,7 +155,7 @@ func TestDataAgentTplSvc_UpdatePublishInfo_PublishedTplNotFound(t *testing.T) {
 	req := &agenttplreq.UpdatePublishInfoReq{}
 
 	po := &dapo.DataAgentTplPo{
-		ID:  123,
+		ID:   123,
 		Name: "Test Template",
 	}
 

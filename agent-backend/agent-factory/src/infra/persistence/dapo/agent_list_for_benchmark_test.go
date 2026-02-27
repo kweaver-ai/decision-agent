@@ -8,7 +8,11 @@ import (
 )
 
 func TestListForBenchmarkPo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create ListForBenchmarkPo", func(t *testing.T) {
+		t.Parallel()
+
 		po := &ListForBenchmarkPo{
 			ID:        "agent-123",
 			Key:       "test-key",
@@ -21,18 +25,23 @@ func TestListForBenchmarkPo(t *testing.T) {
 		if po.ID != "agent-123" {
 			t.Errorf("Expected ID to be 'agent-123', got '%s'", po.ID)
 		}
+
 		if po.Key != "test-key" {
 			t.Errorf("Expected Key to be 'test-key', got '%s'", po.Key)
 		}
+
 		if po.Name != "Test Agent" {
 			t.Errorf("Expected Name to be 'Test Agent', got '%s'", po.Name)
 		}
+
 		if po.Version != "1.0.0" {
 			t.Errorf("Expected Version to be '1.0.0', got '%s'", po.Version)
 		}
+
 		if po.Status != cdaenum.StatusPublished {
 			t.Errorf("Expected Status to be Published, got %v", po.Status)
 		}
+
 		if po.UpdatedAt != 1234567890 {
 			t.Errorf("Expected UpdatedAt to be 1234567890, got %d", po.UpdatedAt)
 		}
@@ -40,7 +49,11 @@ func TestListForBenchmarkPo(t *testing.T) {
 }
 
 func TestListForBenchmarkAgentPo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create ListForBenchmarkAgentPo", func(t *testing.T) {
+		t.Parallel()
+
 		po := &ListForBenchmarkAgentPo{
 			ID:        "agent-123",
 			Key:       "test-key",
@@ -53,6 +66,7 @@ func TestListForBenchmarkAgentPo(t *testing.T) {
 		if po.ID != "agent-123" {
 			t.Errorf("Expected ID to be 'agent-123', got '%s'", po.ID)
 		}
+
 		if po.Key != "test-key" {
 			t.Errorf("Expected Key to be 'test-key', got '%s'", po.Key)
 		}
@@ -60,7 +74,11 @@ func TestListForBenchmarkAgentPo(t *testing.T) {
 }
 
 func TestListForBenchmarkReleasePo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create ListForBenchmarkReleasePo", func(t *testing.T) {
+		t.Parallel()
+
 		po := &ListForBenchmarkReleasePo{
 			ID:        sql.NullString{String: "agent-123", Valid: true},
 			Key:       sql.NullString{String: "test-key", Valid: true},
@@ -73,6 +91,7 @@ func TestListForBenchmarkReleasePo(t *testing.T) {
 		if !po.ID.Valid {
 			t.Error("Expected ID to be valid")
 		}
+
 		if po.ID.String != "agent-123" {
 			t.Errorf("Expected ID to be 'agent-123', got '%s'", po.ID.String)
 		}
@@ -80,7 +99,11 @@ func TestListForBenchmarkReleasePo(t *testing.T) {
 }
 
 func TestListForBenchmarkReleasePo_ToListForBenchmarkPo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("convert to ListForBenchmarkPo", func(t *testing.T) {
+		t.Parallel()
+
 		rp := &ListForBenchmarkReleasePo{
 			ID:        sql.NullString{String: "agent-123", Valid: true},
 			Key:       sql.NullString{String: "test-key", Valid: true},
@@ -99,21 +122,27 @@ func TestListForBenchmarkReleasePo_ToListForBenchmarkPo(t *testing.T) {
 		if po.ID != "agent-123" {
 			t.Errorf("Expected ID to be 'agent-123', got '%s'", po.ID)
 		}
+
 		if po.Key != "test-key" {
 			t.Errorf("Expected Key to be 'test-key', got '%s'", po.Key)
 		}
+
 		if po.Name != "Test Agent" {
 			t.Errorf("Expected Name to be 'Test Agent', got '%s'", po.Name)
 		}
+
 		if po.Version != "1.0.0" {
 			t.Errorf("Expected Version to be '1.0.0', got '%s'", po.Version)
 		}
+
 		if po.UpdatedAt != 1234567890 {
 			t.Errorf("Expected UpdatedAt to be 1234567890, got %d", po.UpdatedAt)
 		}
 	})
 
 	t.Run("convert with null values", func(t *testing.T) {
+		t.Parallel()
+
 		rp := &ListForBenchmarkReleasePo{
 			ID:        sql.NullString{String: "", Valid: false},
 			Key:       sql.NullString{String: "", Valid: false},
@@ -133,9 +162,11 @@ func TestListForBenchmarkReleasePo_ToListForBenchmarkPo(t *testing.T) {
 		if po.ID != "" {
 			t.Errorf("Expected ID to be empty, got '%s'", po.ID)
 		}
+
 		if po.Key != "" {
 			t.Errorf("Expected Key to be empty, got '%s'", po.Key)
 		}
+
 		if po.UpdatedAt != 0 {
 			t.Errorf("Expected UpdatedAt to be 0, got %d", po.UpdatedAt)
 		}
@@ -143,7 +174,11 @@ func TestListForBenchmarkReleasePo_ToListForBenchmarkPo(t *testing.T) {
 }
 
 func TestListForBenchmarkMerge(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create ListForBenchmarkMerge", func(t *testing.T) {
+		t.Parallel()
+
 		merge := &ListForBenchmarkMerge{
 			ListForBenchmarkAgentPo: ListForBenchmarkAgentPo{
 				ID:      "agent-123",
@@ -161,6 +196,7 @@ func TestListForBenchmarkMerge(t *testing.T) {
 		if merge.ListForBenchmarkAgentPo.ID != "agent-123" {
 			t.Errorf("Expected ID to be 'agent-123', got '%s'", merge.ListForBenchmarkAgentPo.ID)
 		}
+
 		if merge.ListForBenchmarkAgentPo.Key != "test-key" {
 			t.Errorf("Expected Key to be 'test-key', got '%s'", merge.ListForBenchmarkAgentPo.Key)
 		}

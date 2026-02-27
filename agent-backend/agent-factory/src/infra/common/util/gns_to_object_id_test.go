@@ -7,6 +7,8 @@ import (
 )
 
 func TestGNS2ObjectID_ValidGNS(t *testing.T) {
+	t.Parallel()
+
 	gns := "gns://doc/123/456"
 	result := GNS2ObjectID(gns)
 
@@ -14,6 +16,8 @@ func TestGNS2ObjectID_ValidGNS(t *testing.T) {
 }
 
 func TestGNS2ObjectID_SimpleGNS(t *testing.T) {
+	t.Parallel()
+
 	gns := "gns://123"
 	result := GNS2ObjectID(gns)
 
@@ -21,6 +25,8 @@ func TestGNS2ObjectID_SimpleGNS(t *testing.T) {
 }
 
 func TestGNS2ObjectID_SingleSlash(t *testing.T) {
+	t.Parallel()
+
 	gns := "123/456"
 	result := GNS2ObjectID(gns)
 
@@ -28,6 +34,8 @@ func TestGNS2ObjectID_SingleSlash(t *testing.T) {
 }
 
 func TestGNS2ObjectID_SingleID(t *testing.T) {
+	t.Parallel()
+
 	gns := "789"
 	result := GNS2ObjectID(gns)
 
@@ -35,6 +43,8 @@ func TestGNS2ObjectID_SingleID(t *testing.T) {
 }
 
 func TestGNS2ObjectID_MultipleSlashes(t *testing.T) {
+	t.Parallel()
+
 	gns := "gns://doc/123/456/789/101112"
 	result := GNS2ObjectID(gns)
 
@@ -42,6 +52,8 @@ func TestGNS2ObjectID_MultipleSlashes(t *testing.T) {
 }
 
 func TestGNS2ObjectID_EmptyString(t *testing.T) {
+	t.Parallel()
+
 	gns := ""
 	result := GNS2ObjectID(gns)
 
@@ -50,6 +62,8 @@ func TestGNS2ObjectID_EmptyString(t *testing.T) {
 }
 
 func TestGNS2ObjectID_TrailingSlash(t *testing.T) {
+	t.Parallel()
+
 	gns := "gns://123/456/"
 	result := GNS2ObjectID(gns)
 

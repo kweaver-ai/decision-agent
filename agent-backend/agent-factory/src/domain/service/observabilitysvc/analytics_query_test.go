@@ -6,9 +6,9 @@ import (
 	"testing"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/uniqueryaccess/uniquerydto"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
 	observabilityreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/observability/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squareresp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iuniqueryhttp/uniquerymock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver/v3portdrivermock"
 	"github.com/stretchr/testify/assert"
@@ -22,12 +22,15 @@ func newFullSvc(ctrl *gomock.Controller) (*observabilitySvc, *uniquerymock.MockI
 	ml := cmpmock.NewMockLogger(ctrl)
 	ms := v3portdrivermock.NewMockISquareSvc(ctrl)
 	svc := &observabilitySvc{logger: ml, uniquery: mu, squareSvc: ms}
+
 	return svc, mu, ml, ms
 }
 
 // ---------- AnalyticsQuery: unknown / default case ----------
 
 func TestObservabilitySvc_AnalyticsQuery_UnknownLevel(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -48,6 +51,8 @@ func TestObservabilitySvc_AnalyticsQuery_UnknownLevel(t *testing.T) {
 }
 
 func TestObservabilitySvc_AnalyticsQuery_EmptyLevel(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -65,6 +70,8 @@ func TestObservabilitySvc_AnalyticsQuery_EmptyLevel(t *testing.T) {
 // ---------- AnalyticsQuery: agent level ----------
 
 func TestObservabilitySvc_AnalyticsQuery_AgentLevel_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -97,6 +104,8 @@ func TestObservabilitySvc_AnalyticsQuery_AgentLevel_Success(t *testing.T) {
 }
 
 func TestObservabilitySvc_AnalyticsQuery_AgentLevel_Error(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -121,6 +130,8 @@ func TestObservabilitySvc_AnalyticsQuery_AgentLevel_Error(t *testing.T) {
 // ---------- AnalyticsQuery: session level ----------
 
 func TestObservabilitySvc_AnalyticsQuery_SessionLevel_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -155,6 +166,8 @@ func TestObservabilitySvc_AnalyticsQuery_SessionLevel_Success(t *testing.T) {
 }
 
 func TestObservabilitySvc_AnalyticsQuery_SessionLevel_EmptyRuns(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -181,6 +194,8 @@ func TestObservabilitySvc_AnalyticsQuery_SessionLevel_EmptyRuns(t *testing.T) {
 }
 
 func TestObservabilitySvc_AnalyticsQuery_SessionLevel_Error(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -205,6 +220,8 @@ func TestObservabilitySvc_AnalyticsQuery_SessionLevel_Error(t *testing.T) {
 // ---------- AnalyticsQuery: run level ----------
 
 func TestObservabilitySvc_AnalyticsQuery_RunLevel_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -230,6 +247,8 @@ func TestObservabilitySvc_AnalyticsQuery_RunLevel_Success(t *testing.T) {
 }
 
 func TestObservabilitySvc_AnalyticsQuery_RunLevel_Error(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

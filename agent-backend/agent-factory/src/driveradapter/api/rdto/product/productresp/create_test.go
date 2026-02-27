@@ -7,6 +7,8 @@ import (
 )
 
 func TestCreateRes_StructFields(t *testing.T) {
+	t.Parallel()
+
 	create := &CreateRes{
 		Key: "test-product",
 		ID:  12345,
@@ -17,6 +19,8 @@ func TestCreateRes_StructFields(t *testing.T) {
 }
 
 func TestCreateRes_Empty(t *testing.T) {
+	t.Parallel()
+
 	create := &CreateRes{}
 
 	assert.Empty(t, create.Key)
@@ -24,6 +28,8 @@ func TestCreateRes_Empty(t *testing.T) {
 }
 
 func TestCreateRes_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	create := &CreateRes{
 		Key: "smart-customer-service",
 		ID:  67890,

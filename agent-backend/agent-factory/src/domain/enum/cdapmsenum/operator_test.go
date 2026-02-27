@@ -7,6 +7,8 @@ import (
 )
 
 func TestOperator_EnumCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		operator Operator
@@ -29,6 +31,8 @@ func TestOperator_EnumCheck_Valid(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.operator.EnumCheck()
 			assert.NoError(t, err)
 		})
@@ -36,6 +40,8 @@ func TestOperator_EnumCheck_Valid(t *testing.T) {
 }
 
 func TestOperator_EnumCheck_Invalid(t *testing.T) {
+	t.Parallel()
+
 	invalidOp := Operator("invalid_operator")
 	err := invalidOp.EnumCheck()
 	assert.Error(t, err)
@@ -43,11 +49,15 @@ func TestOperator_EnumCheck_Invalid(t *testing.T) {
 }
 
 func TestOperator_String(t *testing.T) {
+	t.Parallel()
+
 	op := AgentPublish
 	assert.Equal(t, "publish", op.String())
 }
 
 func TestGetAllOperator(t *testing.T) {
+	t.Parallel()
+
 	operators := GetAllOperator()
 
 	assert.Len(t, operators, 14)
@@ -60,6 +70,8 @@ func TestGetAllOperator(t *testing.T) {
 }
 
 func TestGetAllAgentMgmtOperator(t *testing.T) {
+	t.Parallel()
+
 	operators := GetAllAgentMgmtOperator()
 
 	assert.Len(t, operators, 10)
@@ -74,6 +86,8 @@ func TestGetAllAgentMgmtOperator(t *testing.T) {
 }
 
 func TestGetAllAgentUseOperator(t *testing.T) {
+	t.Parallel()
+
 	operators := GetAllAgentUseOperator()
 
 	assert.Len(t, operators, 1)
@@ -81,6 +95,8 @@ func TestGetAllAgentUseOperator(t *testing.T) {
 }
 
 func TestGetAllAgentOperator(t *testing.T) {
+	t.Parallel()
+
 	operators := GetAllAgentOperator()
 
 	// Should be the combination of mgmt and use operators
@@ -92,6 +108,8 @@ func TestGetAllAgentOperator(t *testing.T) {
 }
 
 func TestGetAllAgentTplOperator(t *testing.T) {
+	t.Parallel()
+
 	operators := GetAllAgentTplOperator()
 
 	assert.Len(t, operators, 3)

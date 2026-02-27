@@ -9,6 +9,8 @@ import (
 )
 
 func TestDataAgentRes_GetOtherVarsMap(t *testing.T) {
+	t.Parallel()
+
 	res := &DataAgentRes{
 		Answer: agentrespvo.NewAnswerS(),
 	}
@@ -29,6 +31,8 @@ func TestDataAgentRes_GetOtherVarsMap(t *testing.T) {
 }
 
 func TestDataAgentRes_GetOtherVarsMap_Empty(t *testing.T) {
+	t.Parallel()
+
 	res := &DataAgentRes{
 		Answer: agentrespvo.NewAnswerS(),
 	}

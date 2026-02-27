@@ -7,11 +7,15 @@ import (
 )
 
 func TestPublishToWhere_Constants(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, PublishToWhere("custom_space"), PublishToWhereCustomSpace)
 	assert.Equal(t, PublishToWhere("square"), PublishToWhereSquare)
 }
 
 func TestPublishToWhere_EnumCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	validTypes := []PublishToWhere{
 		PublishToWhereCustomSpace,
 		PublishToWhereSquare,
@@ -19,6 +23,8 @@ func TestPublishToWhere_EnumCheck_Valid(t *testing.T) {
 
 	for _, ptw := range validTypes {
 		t.Run(string(ptw), func(t *testing.T) {
+			t.Parallel()
+
 			err := ptw.EnumCheck()
 			assert.NoError(t, err)
 		})
@@ -26,6 +32,8 @@ func TestPublishToWhere_EnumCheck_Valid(t *testing.T) {
 }
 
 func TestPublishToWhere_EnumCheck_Invalid(t *testing.T) {
+	t.Parallel()
+
 	invalidType := PublishToWhere("invalid_type")
 	err := invalidType.EnumCheck()
 	assert.Error(t, err)
@@ -33,12 +41,16 @@ func TestPublishToWhere_EnumCheck_Invalid(t *testing.T) {
 }
 
 func TestPublishToWhere_EnumCheck_Empty(t *testing.T) {
+	t.Parallel()
+
 	emptyType := PublishToWhere("")
 	err := emptyType.EnumCheck()
 	assert.Error(t, err)
 }
 
 func TestPublishToWhere_AllUnique(t *testing.T) {
+	t.Parallel()
+
 	publishTypes := []PublishToWhere{
 		PublishToWhereCustomSpace,
 		PublishToWhereSquare,
@@ -52,6 +64,8 @@ func TestPublishToWhere_AllUnique(t *testing.T) {
 }
 
 func TestPublishToWhere_StringValues(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		ptw      PublishToWhere
@@ -71,6 +85,8 @@ func TestPublishToWhere_StringValues(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := string(tt.ptw)
 			assert.Equal(t, tt.expected, result)
 		})

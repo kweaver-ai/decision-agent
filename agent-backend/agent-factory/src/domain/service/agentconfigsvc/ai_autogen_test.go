@@ -8,6 +8,8 @@ import (
 )
 
 func TestDataAgentConfigSvc_CheckPreSetQuestionResFormat(t *testing.T) {
+	t.Parallel()
+
 	svc := &dataAgentConfigSvc{SvcBase: service.NewSvcBase()}
 
 	tests := []struct {
@@ -52,8 +54,11 @@ func TestDataAgentConfigSvc_CheckPreSetQuestionResFormat(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			questions, ok := svc.checkPreSetQuestionResFormat(tt.content)
 			assert.Equal(t, tt.wantOk, ok)
+
 			if tt.wantOk {
 				assert.Len(t, questions, tt.wantCount)
 			}

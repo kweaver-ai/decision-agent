@@ -8,6 +8,8 @@ import (
 )
 
 func TestGetEnv_WithExistingEnv(t *testing.T) {
+	t.Parallel()
+
 	// Set up test environment variable
 	os.Setenv("TEST_ENV_VAR", "test_value")
 	defer os.Unsetenv("TEST_ENV_VAR")
@@ -17,6 +19,8 @@ func TestGetEnv_WithExistingEnv(t *testing.T) {
 }
 
 func TestGetEnv_WithNonExistingEnv(t *testing.T) {
+	t.Parallel()
+
 	// Make sure the env var doesn't exist
 	os.Unsetenv("NON_EXISTING_VAR")
 
@@ -25,6 +29,8 @@ func TestGetEnv_WithNonExistingEnv(t *testing.T) {
 }
 
 func TestGetEnv_WithEmptyEnv(t *testing.T) {
+	t.Parallel()
+
 	// Set env var to empty string
 	os.Setenv("EMPTY_VAR", "")
 	defer os.Unsetenv("EMPTY_VAR")
@@ -34,6 +40,8 @@ func TestGetEnv_WithEmptyEnv(t *testing.T) {
 }
 
 func TestGetEnvMustInt_WithValidInt(t *testing.T) {
+	t.Parallel()
+
 	os.Setenv("TEST_INT_VAR", "42")
 	defer os.Unsetenv("TEST_INT_VAR")
 
@@ -42,6 +50,8 @@ func TestGetEnvMustInt_WithValidInt(t *testing.T) {
 }
 
 func TestGetEnvMustInt_WithNonExistingEnv(t *testing.T) {
+	t.Parallel()
+
 	os.Unsetenv("NON_EXISTING_INT_VAR")
 
 	result := GetEnvMustInt("NON_EXISTING_INT_VAR", 10)
@@ -49,6 +59,8 @@ func TestGetEnvMustInt_WithNonExistingEnv(t *testing.T) {
 }
 
 func TestGetEnvMustInt_WithDefaultValue(t *testing.T) {
+	t.Parallel()
+
 	os.Unsetenv("DEFAULT_INT_VAR")
 
 	result := GetEnvMustInt("DEFAULT_INT_VAR", 99)
@@ -56,6 +68,8 @@ func TestGetEnvMustInt_WithDefaultValue(t *testing.T) {
 }
 
 func TestGetEnvMustInt_WithInvalidInt(t *testing.T) {
+	t.Parallel()
+
 	os.Setenv("INVALID_INT_VAR", "not_a_number")
 	defer os.Unsetenv("INVALID_INT_VAR")
 
@@ -65,6 +79,8 @@ func TestGetEnvMustInt_WithInvalidInt(t *testing.T) {
 }
 
 func TestGetEnvMustInt_WithNegativeInt(t *testing.T) {
+	t.Parallel()
+
 	os.Setenv("NEGATIVE_INT_VAR", "-42")
 	defer os.Unsetenv("NEGATIVE_INT_VAR")
 
@@ -73,6 +89,8 @@ func TestGetEnvMustInt_WithNegativeInt(t *testing.T) {
 }
 
 func TestGetEnvMustInt_WithZero(t *testing.T) {
+	t.Parallel()
+
 	os.Setenv("ZERO_INT_VAR", "0")
 	defer os.Unsetenv("ZERO_INT_VAR")
 

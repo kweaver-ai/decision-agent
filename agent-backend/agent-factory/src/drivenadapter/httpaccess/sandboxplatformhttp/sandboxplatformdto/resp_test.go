@@ -7,6 +7,8 @@ import (
 )
 
 func TestCreateSessionResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	maxProcesses := 10
 	workspacePath := "/workspace"
 	runtimeNode := "node-1"
@@ -16,9 +18,9 @@ func TestCreateSessionResp_StructFields(t *testing.T) {
 	lastActivityAt := "2024-01-01T01:00:00Z"
 
 	resp := &CreateSessionResp{
-		ID:            "session-123",
-		TemplateID:    "template-456",
-		Status:        "running",
+		ID:         "session-123",
+		TemplateID: "template-456",
+		Status:     "running",
 		ResourceLimit: &ResourceLimit{
 			CPU:          "2",
 			Memory:       "4GB",
@@ -49,6 +51,8 @@ func TestCreateSessionResp_StructFields(t *testing.T) {
 }
 
 func TestGetSessionResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := &GetSessionResp{
 		ID:         "session-456",
 		TemplateID: "template-789",
@@ -63,6 +67,8 @@ func TestGetSessionResp_StructFields(t *testing.T) {
 }
 
 func TestResourceLimit_StructFields(t *testing.T) {
+	t.Parallel()
+
 	maxProcesses := 5
 
 	limit := &ResourceLimit{
@@ -80,6 +86,8 @@ func TestResourceLimit_StructFields(t *testing.T) {
 }
 
 func TestResourceLimit_WithoutOptionalFields(t *testing.T) {
+	t.Parallel()
+
 	limit := &ResourceLimit{
 		CPU:    "1",
 		Memory: "2GB",
@@ -93,6 +101,8 @@ func TestResourceLimit_WithoutOptionalFields(t *testing.T) {
 }
 
 func TestCreateSessionResp_PointerFields(t *testing.T) {
+	t.Parallel()
+
 	resp := &CreateSessionResp{
 		ID:         "session-789",
 		TemplateID: "template-101",

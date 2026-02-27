@@ -11,6 +11,8 @@ import (
 )
 
 func TestRecordErrLogWithPos(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	logger := cmpmock.NewMockLogger(ctrl)

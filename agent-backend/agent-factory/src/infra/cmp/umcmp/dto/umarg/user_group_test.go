@@ -7,6 +7,8 @@ import (
 )
 
 func TestGetUserGroupListArgDto_StructFields(t *testing.T) {
+	t.Parallel()
+
 	dto := GetUserGroupListArgDto{
 		Limit:   10,
 		Offset:  5,
@@ -19,6 +21,8 @@ func TestGetUserGroupListArgDto_StructFields(t *testing.T) {
 }
 
 func TestGetUserGroupListArgDto_Empty(t *testing.T) {
+	t.Parallel()
+
 	dto := GetUserGroupListArgDto{}
 
 	assert.Equal(t, 0, dto.Limit)
@@ -27,6 +31,8 @@ func TestGetUserGroupListArgDto_Empty(t *testing.T) {
 }
 
 func TestGetUserGroupListArgDto_WithLimit(t *testing.T) {
+	t.Parallel()
+
 	limits := []int{1, 10, 100, 1000}
 
 	for _, limit := range limits {
@@ -38,6 +44,8 @@ func TestGetUserGroupListArgDto_WithLimit(t *testing.T) {
 }
 
 func TestGetUserGroupListArgDto_WithOffset(t *testing.T) {
+	t.Parallel()
+
 	offsets := []int{0, 10, 100, 999}
 
 	for _, offset := range offsets {
@@ -49,6 +57,8 @@ func TestGetUserGroupListArgDto_WithOffset(t *testing.T) {
 }
 
 func TestGetUserGroupListArgDto_WithKeyword(t *testing.T) {
+	t.Parallel()
+
 	keywords := []string{
 		"test group",
 		"测试组",
@@ -65,6 +75,8 @@ func TestGetUserGroupListArgDto_WithKeyword(t *testing.T) {
 }
 
 func TestGetUserGroupListArgDto_WithChineseKeyword(t *testing.T) {
+	t.Parallel()
+
 	dto := GetUserGroupListArgDto{
 		Keyword: "测试组名",
 	}
@@ -73,6 +85,8 @@ func TestGetUserGroupListArgDto_WithChineseKeyword(t *testing.T) {
 }
 
 func TestGetUserGroupListArgDto_WithOnlyLimit(t *testing.T) {
+	t.Parallel()
+
 	dto := GetUserGroupListArgDto{
 		Limit: 50,
 	}
@@ -83,6 +97,8 @@ func TestGetUserGroupListArgDto_WithOnlyLimit(t *testing.T) {
 }
 
 func TestGetUserGroupListArgDto_WithOnlyOffset(t *testing.T) {
+	t.Parallel()
+
 	dto := GetUserGroupListArgDto{
 		Offset: 100,
 	}
@@ -93,6 +109,8 @@ func TestGetUserGroupListArgDto_WithOnlyOffset(t *testing.T) {
 }
 
 func TestGetUserGroupListArgDto_BoundaryValues(t *testing.T) {
+	t.Parallel()
+
 	dto := GetUserGroupListArgDto{
 		Limit:   1,
 		Offset:  0,
@@ -105,6 +123,8 @@ func TestGetUserGroupListArgDto_BoundaryValues(t *testing.T) {
 }
 
 func TestGetUserGroupListArgDto_Limits(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name      string
 		limit     int
@@ -118,6 +138,8 @@ func TestGetUserGroupListArgDto_Limits(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			dto := GetUserGroupListArgDto{
 				Limit: tt.limit,
 			}
@@ -127,6 +149,8 @@ func TestGetUserGroupListArgDto_Limits(t *testing.T) {
 }
 
 func TestGetUserGroupListArgDto_WithSpecialCharacters(t *testing.T) {
+	t.Parallel()
+
 	dto := GetUserGroupListArgDto{
 		Keyword: "group@#$%",
 	}
@@ -135,6 +159,8 @@ func TestGetUserGroupListArgDto_WithSpecialCharacters(t *testing.T) {
 }
 
 func TestGetUserGroupListArgDto_AllFieldsSet(t *testing.T) {
+	t.Parallel()
+
 	dto := GetUserGroupListArgDto{
 		Limit:   100,
 		Offset:  50,
@@ -147,6 +173,8 @@ func TestGetUserGroupListArgDto_AllFieldsSet(t *testing.T) {
 }
 
 func TestGetUserGroupListArgDto_WithDifferentKeywords(t *testing.T) {
+	t.Parallel()
+
 	keywords := []string{
 		"admin",
 		"user",

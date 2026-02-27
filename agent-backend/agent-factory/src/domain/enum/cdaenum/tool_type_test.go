@@ -7,11 +7,15 @@ import (
 )
 
 func TestToolType_Constants(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, ToolType("tool"), ToolTypeTool)
 	assert.Equal(t, ToolType("agent"), ToolTypeAgent)
 }
 
 func TestToolType_EnumCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	validTypes := []ToolType{
 		ToolTypeTool,
 		ToolTypeAgent,
@@ -19,6 +23,8 @@ func TestToolType_EnumCheck_Valid(t *testing.T) {
 
 	for _, toolType := range validTypes {
 		t.Run(string(toolType), func(t *testing.T) {
+			t.Parallel()
+
 			err := toolType.EnumCheck()
 			assert.NoError(t, err)
 		})
@@ -26,6 +32,8 @@ func TestToolType_EnumCheck_Valid(t *testing.T) {
 }
 
 func TestToolType_EnumCheck_Invalid(t *testing.T) {
+	t.Parallel()
+
 	invalidType := ToolType("invalid_type")
 	err := invalidType.EnumCheck()
 	assert.Error(t, err)
@@ -33,6 +41,8 @@ func TestToolType_EnumCheck_Invalid(t *testing.T) {
 }
 
 func TestToolType_EnumCheck_Empty(t *testing.T) {
+	t.Parallel()
+
 	emptyType := ToolType("")
 	err := emptyType.EnumCheck()
 	assert.Error(t, err)
@@ -40,6 +50,8 @@ func TestToolType_EnumCheck_Empty(t *testing.T) {
 }
 
 func TestToolType_AllUnique(t *testing.T) {
+	t.Parallel()
+
 	toolTypes := []ToolType{
 		ToolTypeTool,
 		ToolTypeAgent,

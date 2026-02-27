@@ -8,6 +8,8 @@ import (
 )
 
 func TestGetRestHttpErr_NilError(t *testing.T) {
+	t.Parallel()
+
 	httpError, ok := GetRestHttpErr(nil)
 
 	assert.Nil(t, httpError)
@@ -15,6 +17,8 @@ func TestGetRestHttpErr_NilError(t *testing.T) {
 }
 
 func TestGetRestHttpErr_GenericError(t *testing.T) {
+	t.Parallel()
+
 	genericErr := errors.New("generic error")
 
 	httpError, ok := GetRestHttpErr(genericErr)
@@ -22,5 +26,3 @@ func TestGetRestHttpErr_GenericError(t *testing.T) {
 	assert.Nil(t, httpError)
 	assert.False(t, ok)
 }
-
-

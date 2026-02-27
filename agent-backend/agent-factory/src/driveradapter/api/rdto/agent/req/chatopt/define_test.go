@@ -7,11 +7,13 @@ import (
 )
 
 func TestChatOption_StructFields(t *testing.T) {
+	t.Parallel()
+
 	opt := ChatOption{
-		EnableDependencyCache:         true,
-		IsNeedHistory:                 true,
-		IsNeedDocRetrivalPostProcess:  true,
-		IsNeedProgress:                true,
+		EnableDependencyCache:        true,
+		IsNeedHistory:                true,
+		IsNeedDocRetrivalPostProcess: true,
+		IsNeedProgress:               true,
 	}
 
 	assert.True(t, opt.EnableDependencyCache)
@@ -21,6 +23,8 @@ func TestChatOption_StructFields(t *testing.T) {
 }
 
 func TestChatOption_Empty(t *testing.T) {
+	t.Parallel()
+
 	opt := ChatOption{}
 
 	assert.False(t, opt.EnableDependencyCache)
@@ -30,7 +34,11 @@ func TestChatOption_Empty(t *testing.T) {
 }
 
 func TestChatOption_Check(t *testing.T) {
+	t.Parallel()
+
 	t.Run("with normal mode and cache enabled", func(t *testing.T) {
+		t.Parallel()
+
 		opt := ChatOption{
 			EnableDependencyCache: true,
 		}
@@ -40,6 +48,8 @@ func TestChatOption_Check(t *testing.T) {
 	})
 
 	t.Run("with debug mode and cache enabled", func(t *testing.T) {
+		t.Parallel()
+
 		opt := ChatOption{
 			EnableDependencyCache: true,
 		}
@@ -50,6 +60,8 @@ func TestChatOption_Check(t *testing.T) {
 	})
 
 	t.Run("with debug mode and cache disabled", func(t *testing.T) {
+		t.Parallel()
+
 		opt := ChatOption{
 			EnableDependencyCache: false,
 		}
@@ -59,6 +71,8 @@ func TestChatOption_Check(t *testing.T) {
 	})
 
 	t.Run("with normal mode and cache disabled", func(t *testing.T) {
+		t.Parallel()
+
 		opt := ChatOption{
 			EnableDependencyCache: false,
 		}
@@ -69,14 +83,16 @@ func TestChatOption_Check(t *testing.T) {
 }
 
 func TestChatOption_WithAllFlags(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name         string
-		cache        bool
-		history      bool
-		docProcess   bool
-		progress     bool
-		isDebugMode  bool
-		expectError  bool
+		name        string
+		cache       bool
+		history     bool
+		docProcess  bool
+		progress    bool
+		isDebugMode bool
+		expectError bool
 	}{
 		{
 			name:        "all flags enabled in normal mode",
@@ -118,6 +134,8 @@ func TestChatOption_WithAllFlags(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			opt := ChatOption{
 				EnableDependencyCache:        tt.cache,
 				IsNeedHistory:                tt.history,
@@ -136,6 +154,8 @@ func TestChatOption_WithAllFlags(t *testing.T) {
 }
 
 func TestChatOption_WithHistoryEnabled(t *testing.T) {
+	t.Parallel()
+
 	opt := ChatOption{
 		IsNeedHistory: true,
 	}
@@ -146,6 +166,8 @@ func TestChatOption_WithHistoryEnabled(t *testing.T) {
 }
 
 func TestChatOption_WithDocRetrivalPostProcess(t *testing.T) {
+	t.Parallel()
+
 	opt := ChatOption{
 		IsNeedDocRetrivalPostProcess: true,
 	}
@@ -156,6 +178,8 @@ func TestChatOption_WithDocRetrivalPostProcess(t *testing.T) {
 }
 
 func TestChatOption_WithProgressEnabled(t *testing.T) {
+	t.Parallel()
+
 	opt := ChatOption{
 		IsNeedProgress: true,
 	}
@@ -166,8 +190,10 @@ func TestChatOption_WithProgressEnabled(t *testing.T) {
 }
 
 func TestChatOption_Combinations(t *testing.T) {
+	t.Parallel()
+
 	combinations := []struct {
-		name string
+		name  string
 		setup func() ChatOption
 	}{
 		{
@@ -211,6 +237,8 @@ func TestChatOption_Combinations(t *testing.T) {
 
 	for _, combo := range combinations {
 		t.Run(combo.name, func(t *testing.T) {
+			t.Parallel()
+
 			opt := combo.setup()
 			err := opt.Check(false)
 			assert.NoError(t, err)

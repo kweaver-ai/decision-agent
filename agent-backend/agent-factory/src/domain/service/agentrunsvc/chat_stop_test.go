@@ -9,6 +9,8 @@ import (
 )
 
 func TestHandleStopChan_PanicsWithoutDependencies(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{}
 	// All dependencies are nil
 
@@ -29,6 +31,8 @@ func TestHandleStopChan_PanicsWithoutDependencies(t *testing.T) {
 }
 
 func TestHandleStopChan_PanicsWithNilSession(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{}
 
 	ctx := context.Background()
@@ -44,6 +48,8 @@ func TestHandleStopChan_PanicsWithNilSession(t *testing.T) {
 }
 
 func TestHandleStopChan_VerifyFunctionSignature(t *testing.T) {
+	t.Parallel()
+
 	// This test verifies that HandleStopChan has the correct function signature
 	// The function should take (context.Context, *agentreq.ChatReq, *Session) and return error
 
@@ -66,6 +72,8 @@ func TestHandleStopChan_VerifyFunctionSignature(t *testing.T) {
 }
 
 func TestHandleStopChan_WithEmptyRequest(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{}
 
 	ctx := context.Background()
@@ -78,6 +86,8 @@ func TestHandleStopChan_WithEmptyRequest(t *testing.T) {
 }
 
 func TestHandleStopChan_WithMissingConversationID(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{}
 
 	ctx := context.Background()
@@ -94,6 +104,8 @@ func TestHandleStopChan_WithMissingConversationID(t *testing.T) {
 }
 
 func TestHandleStopChan_WithMissingAgentRunID(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{}
 
 	ctx := context.Background()
@@ -112,6 +124,8 @@ func TestHandleStopChan_WithMissingAgentRunID(t *testing.T) {
 }
 
 func TestHandleStopChan_ContextPropagation(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{}
 
 	ctx := context.Background()
@@ -130,6 +144,8 @@ func TestHandleStopChan_ContextPropagation(t *testing.T) {
 }
 
 func TestHandleStopChan_VerifySessionUsage(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{}
 
 	ctx := context.Background()
@@ -151,6 +167,8 @@ func TestHandleStopChan_VerifySessionUsage(t *testing.T) {
 }
 
 func TestHandleStopChan_VerifyResponseStructure(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{}
 
 	// This test verifies the response structure is correct
@@ -175,12 +193,16 @@ func TestHandleStopChan_VerifyResponseStructure(t *testing.T) {
 }
 
 func TestHandleStopChan_WithVariousAgentIDs(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{}
 
 	agentIDs := []string{"agent-1", "agent-2", "agent-3"}
 
 	for _, agentID := range agentIDs {
 		t.Run("agent_"+agentID, func(t *testing.T) {
+			t.Parallel()
+
 			ctx := context.Background()
 			req := &agentreq.ChatReq{
 				AgentID:        agentID,
@@ -199,6 +221,8 @@ func TestHandleStopChan_WithVariousAgentIDs(t *testing.T) {
 }
 
 func TestHandleStopChan_VerifyCancelStatus(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{}
 
 	// This test verifies that HandleStopChan properly sets the message status to cancelled

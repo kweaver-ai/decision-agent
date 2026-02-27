@@ -35,6 +35,7 @@ func (msgTestLogger) Fatalln(...interface{})        {}
 
 func newMsgRepoWithMock(t *testing.T) (*ConversationMsgRepo, *sqlx.DB, sqlmock.Sqlmock) {
 	t.Helper()
+
 	db, mock, err := sqlx.New()
 	require.NoError(t, err)
 
@@ -49,6 +50,7 @@ func newMsgRepoWithMock(t *testing.T) (*ConversationMsgRepo, *sqlx.DB, sqlmock.S
 
 func mockConversationMsgRows() *sqlmock.Rows {
 	content := "hello"
+
 	return sqlmock.NewRows([]string{
 		"f_id",
 		"f_agent_app_key",
@@ -89,9 +91,12 @@ func mockConversationMsgRows() *sqlmock.Rows {
 }
 
 func TestNewConversationMsgRepo_Singleton(t *testing.T) {
+	t.Parallel()
+
 	oldOnce := conversationMsgRepoOnce
 	oldImpl := conversationMsgRepoImpl
 	oldGDB := global.GDB
+
 	t.Cleanup(func() {
 		conversationMsgRepoOnce = oldOnce
 		conversationMsgRepoImpl = oldImpl
@@ -100,17 +105,21 @@ func TestNewConversationMsgRepo_Singleton(t *testing.T) {
 
 	db, _, err := sqlx.New()
 	require.NoError(t, err)
+
 	global.GDB = db
 	conversationMsgRepoOnce = sync.Once{}
 	conversationMsgRepoImpl = nil
 
 	r1 := NewConversationMsgRepo()
 	r2 := NewConversationMsgRepo()
+
 	assert.NotNil(t, r1)
 	assert.Same(t, r1, r2)
 }
 
 func TestConversationMsgRepo_Create(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newMsgRepoWithMock(t)
 	defer db.Close()
 
@@ -124,6 +133,8 @@ func TestConversationMsgRepo_Create(t *testing.T) {
 }
 
 func TestConversationMsgRepo_Create_InsertError(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newMsgRepoWithMock(t)
 	defer db.Close()
 
@@ -136,6 +147,8 @@ func TestConversationMsgRepo_Create_InsertError(t *testing.T) {
 }
 
 func TestConversationMsgRepo_GetByID(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newMsgRepoWithMock(t)
 	defer db.Close()
 
@@ -150,6 +163,8 @@ func TestConversationMsgRepo_GetByID(t *testing.T) {
 }
 
 func TestConversationMsgRepo_GetByID_Error(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newMsgRepoWithMock(t)
 	defer db.Close()
 
@@ -163,6 +178,8 @@ func TestConversationMsgRepo_GetByID_Error(t *testing.T) {
 }
 
 func TestConversationMsgRepo_GetMaxIndexByID(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newMsgRepoWithMock(t)
 	defer db.Close()
 
@@ -177,6 +194,8 @@ func TestConversationMsgRepo_GetMaxIndexByID(t *testing.T) {
 }
 
 func TestConversationMsgRepo_GetMaxIndexByID_Error(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newMsgRepoWithMock(t)
 	defer db.Close()
 
@@ -191,6 +210,8 @@ func TestConversationMsgRepo_GetMaxIndexByID_Error(t *testing.T) {
 }
 
 func TestConversationMsgRepo_GetLatestMsgByConversationID(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newMsgRepoWithMock(t)
 	defer db.Close()
 
@@ -205,6 +226,8 @@ func TestConversationMsgRepo_GetLatestMsgByConversationID(t *testing.T) {
 }
 
 func TestConversationMsgRepo_GetLatestMsgByConversationID_Error(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newMsgRepoWithMock(t)
 	defer db.Close()
 
@@ -218,6 +241,8 @@ func TestConversationMsgRepo_GetLatestMsgByConversationID_Error(t *testing.T) {
 }
 
 func TestConversationMsgRepo_List(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newMsgRepoWithMock(t)
 	defer db.Close()
 
@@ -232,6 +257,8 @@ func TestConversationMsgRepo_List(t *testing.T) {
 }
 
 func TestConversationMsgRepo_List_Error(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newMsgRepoWithMock(t)
 	defer db.Close()
 
@@ -246,6 +273,8 @@ func TestConversationMsgRepo_List_Error(t *testing.T) {
 }
 
 func TestConversationMsgRepo_Update(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newMsgRepoWithMock(t)
 	defer db.Close()
 
@@ -258,6 +287,8 @@ func TestConversationMsgRepo_Update(t *testing.T) {
 }
 
 func TestConversationMsgRepo_Delete(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newMsgRepoWithMock(t)
 	defer db.Close()
 
@@ -270,6 +301,8 @@ func TestConversationMsgRepo_Delete(t *testing.T) {
 }
 
 func TestConversationMsgRepo_DeleteByConversationID_And_APPKey(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newMsgRepoWithMock(t)
 	defer db.Close()
 
@@ -286,10 +319,13 @@ func TestConversationMsgRepo_DeleteByConversationID_And_APPKey(t *testing.T) {
 }
 
 func TestConversationMsgRepo_DeleteByConversationID_And_APPKey_WithTxBranch(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newMsgRepoWithMock(t)
 	defer db.Close()
 
 	mock.ExpectBegin()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 

@@ -11,6 +11,8 @@ import (
 )
 
 func TestPublishUpsertResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishUpsertResp{
 		AgentTplId:      12345,
 		PublishedAt:     1640995200000,
@@ -25,6 +27,8 @@ func TestPublishUpsertResp_StructFields(t *testing.T) {
 }
 
 func TestPublishUpsertResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishUpsertResp{}
 
 	assert.Equal(t, int64(0), resp.AgentTplId)
@@ -34,6 +38,8 @@ func TestPublishUpsertResp_Empty(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithAgentTplId(t *testing.T) {
+	t.Parallel()
+
 	ids := []int64{
 		0,
 		1,
@@ -50,6 +56,8 @@ func TestPublishUpsertResp_WithAgentTplId(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithPublishedAt(t *testing.T) {
+	t.Parallel()
+
 	timestamps := []int64{
 		1640995200000, // 2022-01-01
 		1643673600000, // 2022-02-01
@@ -67,6 +75,8 @@ func TestPublishUpsertResp_WithPublishedAt(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithPublishedBy(t *testing.T) {
+	t.Parallel()
+
 	users := []string{
 		"user-001",
 		"user-xyz",
@@ -83,6 +93,8 @@ func TestPublishUpsertResp_WithPublishedBy(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithPublishedByName(t *testing.T) {
+	t.Parallel()
+
 	names := []string{
 		"John Doe",
 		"张三",
@@ -99,6 +111,8 @@ func TestPublishUpsertResp_WithPublishedByName(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishUpsertResp{
 		AgentTplId:      98765,
 		PublishedAt:     1672531200000,
@@ -113,16 +127,21 @@ func TestPublishUpsertResp_WithAllFields(t *testing.T) {
 }
 
 func TestPublishUpsertResp_FillPublishedByName_LocalDev(t *testing.T) {
+	t.Parallel()
+
 	// Test when IsLocalDev is true - the function should append "_name" to PublishedBy
 	// Note: This test depends on environment variable APP_ENV being set to "local" or "dev"
 	// Since we can't control the environment in tests, we'll set up expectations for both paths
 
 	t.Run("with mock for non-local environment", func(t *testing.T) {
+		t.Parallel()
+
 		resp := &PublishUpsertResp{
 			PublishedBy: "user-123",
 		}
 
 		ctx := context.Background()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
@@ -137,11 +156,14 @@ func TestPublishUpsertResp_FillPublishedByName_LocalDev(t *testing.T) {
 }
 
 func TestPublishUpsertResp_FillPublishedByName_WithMock(t *testing.T) {
+	t.Parallel()
+
 	resp := &PublishUpsertResp{
 		PublishedBy: "user-123",
 	}
 
 	ctx := context.Background()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
@@ -157,12 +179,15 @@ func TestPublishUpsertResp_FillPublishedByName_WithMock(t *testing.T) {
 }
 
 func TestPublishUpsertResp_FillPublishedByName_NilResponse(t *testing.T) {
+	t.Parallel()
+
 	resp := &PublishUpsertResp{
-		PublishedBy: "",
+		PublishedBy:     "",
 		PublishedByName: "Existing Name",
 	}
 
 	ctx := context.Background()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
@@ -178,11 +203,14 @@ func TestPublishUpsertResp_FillPublishedByName_NilResponse(t *testing.T) {
 }
 
 func TestPublishUpsertResp_FillPublishedByName_EmptyUserID(t *testing.T) {
+	t.Parallel()
+
 	resp := &PublishUpsertResp{
 		PublishedBy: "",
 	}
 
 	ctx := context.Background()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
@@ -197,6 +225,8 @@ func TestPublishUpsertResp_FillPublishedByName_EmptyUserID(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithTimestamp(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishUpsertResp{
 		AgentTplId:  12345,
 		PublishedAt: 1640995200000,
@@ -209,6 +239,8 @@ func TestPublishUpsertResp_WithTimestamp(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithZeroTimestamp(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishUpsertResp{
 		PublishedAt: 0,
 	}
@@ -217,6 +249,8 @@ func TestPublishUpsertResp_WithZeroTimestamp(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithNegativeTimestamp(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishUpsertResp{
 		PublishedAt: -12345,
 	}
@@ -225,6 +259,8 @@ func TestPublishUpsertResp_WithNegativeTimestamp(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithChineseName(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishUpsertResp{
 		PublishedByName: "张三",
 	}
@@ -233,6 +269,8 @@ func TestPublishUpsertResp_WithChineseName(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithMixedName(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishUpsertResp{
 		PublishedByName: "User用户Name",
 	}
@@ -241,6 +279,8 @@ func TestPublishUpsertResp_WithMixedName(t *testing.T) {
 }
 
 func TestPublishUpsertResp_FillPublishedByName_Context(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		publishedBy string
@@ -252,11 +292,14 @@ func TestPublishUpsertResp_FillPublishedByName_Context(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			resp := &PublishUpsertResp{
 				PublishedBy: tt.publishedBy,
 			}
 
 			ctx := context.Background()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 			mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
@@ -273,11 +316,14 @@ func TestPublishUpsertResp_FillPublishedByName_Context(t *testing.T) {
 }
 
 func TestPublishUpsertResp_FillPublishedByName_Error(t *testing.T) {
+	t.Parallel()
+
 	resp := &PublishUpsertResp{
 		PublishedBy: "user-123",
 	}
 
 	ctx := context.Background()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)

@@ -8,6 +8,8 @@ import (
 )
 
 func TestNewDetailResp(t *testing.T) {
+	t.Parallel()
+
 	resp := NewDetailResp()
 
 	assert.NotNil(t, resp)
@@ -15,6 +17,8 @@ func TestNewDetailResp(t *testing.T) {
 }
 
 func TestDetailResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := DetailResp{
 		ID:        "space-123",
 		Name:      "Test Space",
@@ -37,6 +41,8 @@ func TestDetailResp_StructFields(t *testing.T) {
 }
 
 func TestDetailResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := DetailResp{}
 
 	assert.Empty(t, resp.ID)
@@ -50,6 +56,8 @@ func TestDetailResp_Empty(t *testing.T) {
 }
 
 func TestDetailResp_WithID(t *testing.T) {
+	t.Parallel()
+
 	ids := []string{
 		"space-001",
 		"space-xyz",
@@ -66,6 +74,8 @@ func TestDetailResp_WithID(t *testing.T) {
 }
 
 func TestDetailResp_WithName(t *testing.T) {
+	t.Parallel()
+
 	names := []string{
 		"Test Space",
 		"测试空间",
@@ -83,6 +93,8 @@ func TestDetailResp_WithName(t *testing.T) {
 }
 
 func TestDetailResp_WithKey(t *testing.T) {
+	t.Parallel()
+
 	keys := []string{
 		"space-key-001",
 		"space-xyz",
@@ -99,6 +111,8 @@ func TestDetailResp_WithKey(t *testing.T) {
 }
 
 func TestDetailResp_WithProfile(t *testing.T) {
+	t.Parallel()
+
 	profiles := []string{
 		"Test space profile",
 		"测试空间简介",
@@ -116,6 +130,8 @@ func TestDetailResp_WithProfile(t *testing.T) {
 }
 
 func TestDetailResp_WithTimestamps(t *testing.T) {
+	t.Parallel()
+
 	timestamps := []int64{
 		1640995200000, // 2022-01-01
 		1643673600000, // 2022-02-01
@@ -136,6 +152,8 @@ func TestDetailResp_WithTimestamps(t *testing.T) {
 }
 
 func TestDetailResp_WithCreatedBy(t *testing.T) {
+	t.Parallel()
+
 	users := []string{
 		"user-001",
 		"user-xyz",
@@ -152,6 +170,8 @@ func TestDetailResp_WithCreatedBy(t *testing.T) {
 }
 
 func TestDetailResp_WithUpdatedBy(t *testing.T) {
+	t.Parallel()
+
 	users := []string{
 		"user-001",
 		"user-xyz",
@@ -168,6 +188,8 @@ func TestDetailResp_WithUpdatedBy(t *testing.T) {
 }
 
 func TestDetailResp_LoadFromEo(t *testing.T) {
+	t.Parallel()
+
 	eo := &spaceeo.Space{}
 	eo.ID = "space-789"
 	eo.Name = "Entity Space"
@@ -189,6 +211,8 @@ func TestDetailResp_LoadFromEo(t *testing.T) {
 }
 
 func TestDetailResp_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	resp := DetailResp{
 		ID:        "space-complete",
 		Name:      "Complete Space Name",
@@ -211,6 +235,8 @@ func TestDetailResp_WithAllFields(t *testing.T) {
 }
 
 func TestDetailResp_WithNegativeTimestamps(t *testing.T) {
+	t.Parallel()
+
 	resp := DetailResp{
 		CreatedAt: -12345,
 		UpdatedAt: -67890,
@@ -221,6 +247,8 @@ func TestDetailResp_WithNegativeTimestamps(t *testing.T) {
 }
 
 func TestDetailResp_WithChineseCharacters(t *testing.T) {
+	t.Parallel()
+
 	resp := DetailResp{
 		ID:        "空间-中文",
 		Name:      "中文空间名称",

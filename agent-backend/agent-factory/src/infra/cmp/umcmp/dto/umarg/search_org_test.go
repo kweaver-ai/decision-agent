@@ -8,6 +8,8 @@ import (
 )
 
 func TestSearchOrgArgDto_StructFields(t *testing.T) {
+	t.Parallel()
+
 	dto := SearchOrgArgDto{
 		UserIDs:       []string{"user-1", "user-2"},
 		DepartmentIDs: []string{"dept-1"},
@@ -20,6 +22,8 @@ func TestSearchOrgArgDto_StructFields(t *testing.T) {
 }
 
 func TestSearchOrgArgDto_Empty(t *testing.T) {
+	t.Parallel()
+
 	dto := SearchOrgArgDto{}
 
 	assert.Nil(t, dto.UserIDs)
@@ -28,6 +32,8 @@ func TestSearchOrgArgDto_Empty(t *testing.T) {
 }
 
 func TestNewSearchOrgUMArgDto(t *testing.T) {
+	t.Parallel()
+
 	argDto := &SearchOrgArgDto{
 		UserIDs: []string{"user-1"},
 	}
@@ -40,6 +46,8 @@ func TestNewSearchOrgUMArgDto(t *testing.T) {
 }
 
 func TestNewSearchOrgUMArgDto_WithNilArgDto(t *testing.T) {
+	t.Parallel()
+
 	dto := NewSearchOrgUMArgDto(nil)
 
 	assert.NotNil(t, dto)
@@ -48,6 +56,8 @@ func TestNewSearchOrgUMArgDto_WithNilArgDto(t *testing.T) {
 }
 
 func TestSearchOrgUMArgDto_StructFields(t *testing.T) {
+	t.Parallel()
+
 	innerDto := &SearchOrgArgDto{
 		UserIDs:       []string{"user-1"},
 		DepartmentIDs: []string{"dept-1"},
@@ -64,6 +74,8 @@ func TestSearchOrgUMArgDto_StructFields(t *testing.T) {
 }
 
 func TestSearchOrgUMArgDto_Empty(t *testing.T) {
+	t.Parallel()
+
 	dto := &SearchOrgUMArgDto{}
 
 	assert.Nil(t, dto.SearchOrgArgDto)
@@ -71,6 +83,8 @@ func TestSearchOrgUMArgDto_Empty(t *testing.T) {
 }
 
 func TestSearchOrgArgDto_WithChineseIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := SearchOrgArgDto{
 		UserIDs:       []string{"用户-1", "用户-2"},
 		DepartmentIDs: []string{"部门-1"},
@@ -82,6 +96,8 @@ func TestSearchOrgArgDto_WithChineseIDs(t *testing.T) {
 }
 
 func TestSearchOrgArgDto_SliceOperations(t *testing.T) {
+	t.Parallel()
+
 	dto := SearchOrgArgDto{
 		UserIDs: []string{"user-1", "user-2"},
 		Scope:   []string{"scope-1", "scope-2"},
@@ -94,6 +110,8 @@ func TestSearchOrgArgDto_SliceOperations(t *testing.T) {
 }
 
 func TestSearchOrgArgDto_Append(t *testing.T) {
+	t.Parallel()
+
 	dto := &SearchOrgArgDto{}
 	dto.UserIDs = append(dto.UserIDs, "user-1")
 	dto.Scope = append(dto.Scope, "scope-1")
@@ -103,6 +121,8 @@ func TestSearchOrgArgDto_Append(t *testing.T) {
 }
 
 func TestSearchOrgUMArgDto_DifferentMethods(t *testing.T) {
+	t.Parallel()
+
 	methods := []string{
 		http.MethodGet,
 		http.MethodPost,
@@ -119,14 +139,18 @@ func TestSearchOrgUMArgDto_DifferentMethods(t *testing.T) {
 }
 
 func TestSearchOrgArgDto_WithMultipleArrays(t *testing.T) {
+	t.Parallel()
+
 	userIDs := make([]string, 30)
 	for i := 0; i < 30; i++ {
 		userIDs[i] = "user-" + string(rune(i))
 	}
+
 	deptIDs := make([]string, 20)
 	for i := 0; i < 20; i++ {
 		deptIDs[i] = "dept-" + string(rune(i))
 	}
+
 	scopes := make([]string, 10)
 	for i := 0; i < 10; i++ {
 		scopes[i] = "scope-" + string(rune(i))
@@ -144,6 +168,8 @@ func TestSearchOrgArgDto_WithMultipleArrays(t *testing.T) {
 }
 
 func TestSearchOrgArgDto_WithOnlyUserIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := SearchOrgArgDto{
 		UserIDs: []string{"user-1", "user-2"},
 	}
@@ -154,6 +180,8 @@ func TestSearchOrgArgDto_WithOnlyUserIDs(t *testing.T) {
 }
 
 func TestSearchOrgArgDto_WithOnlyScope(t *testing.T) {
+	t.Parallel()
+
 	dto := SearchOrgArgDto{
 		Scope: []string{"scope-1", "scope-2"},
 	}
@@ -164,6 +192,8 @@ func TestSearchOrgArgDto_WithOnlyScope(t *testing.T) {
 }
 
 func TestSearchOrgUMArgDto_DefaultMethod(t *testing.T) {
+	t.Parallel()
+
 	argDto := &SearchOrgArgDto{}
 	dto := NewSearchOrgUMArgDto(argDto)
 
@@ -171,27 +201,37 @@ func TestSearchOrgUMArgDto_DefaultMethod(t *testing.T) {
 }
 
 func TestSearchOrgArgDto_Iteration(t *testing.T) {
+	t.Parallel()
+
 	dto := SearchOrgArgDto{
 		UserIDs: []string{"user-1", "user-2"},
 		Scope:   []string{"scope-1"},
 	}
 
 	userCount := 0
+
 	for _, userID := range dto.UserIDs {
 		assert.NotEmpty(t, userID)
+
 		userCount++
 	}
+
 	assert.Equal(t, 2, userCount)
 
 	scopeCount := 0
+
 	for _, scope := range dto.Scope {
 		assert.NotEmpty(t, scope)
+
 		scopeCount++
 	}
+
 	assert.Equal(t, 1, scopeCount)
 }
 
 func TestSearchOrgArgDto_WithEmptyArrays(t *testing.T) {
+	t.Parallel()
+
 	dto := SearchOrgArgDto{
 		UserIDs:       []string{},
 		DepartmentIDs: []string{},

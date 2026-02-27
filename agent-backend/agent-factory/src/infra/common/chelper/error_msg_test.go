@@ -33,7 +33,11 @@ func (n *NestedStruct) GetErrMsgMap() map[string]string {
 }
 
 func TestErrMsg(t *testing.T) {
+	t.Parallel()
+
 	t.Run("with validation errors", func(t *testing.T) {
+		t.Parallel()
+
 		mock := &MockStruct{}
 		validate := validator.New()
 		err := validate.Struct(mock)
@@ -48,6 +52,8 @@ func TestErrMsg(t *testing.T) {
 	})
 
 	t.Run("with regular error", func(t *testing.T) {
+		t.Parallel()
+
 		mock := &MockStruct{Name: "Test", Age: 25}
 		err := errors.New("custom error message")
 
@@ -57,6 +63,8 @@ func TestErrMsg(t *testing.T) {
 	})
 
 	t.Run("with nil struct", func(t *testing.T) {
+		t.Parallel()
+
 		err := errors.New("error without struct")
 
 		msg := ErrMsg(err, nil)
@@ -65,6 +73,8 @@ func TestErrMsg(t *testing.T) {
 	})
 
 	t.Run("with struct that has no GetErrMsgMap match", func(t *testing.T) {
+		t.Parallel()
+
 		mock := &MockStruct{}
 		validate := validator.New()
 		err := validate.Struct(mock)
@@ -77,6 +87,8 @@ func TestErrMsg(t *testing.T) {
 	})
 
 	t.Run("with valid struct no validation errors", func(t *testing.T) {
+		t.Parallel()
+
 		mock := &MockStruct{Name: "Valid", Age: 30}
 		validate := validator.New()
 		err := validate.Struct(mock)
@@ -90,8 +102,13 @@ func TestErrMsg(t *testing.T) {
 }
 
 func TestGetErrsMsgs(t *testing.T) {
+	t.Parallel()
+
 	t.Run("with empty validation errors", func(t *testing.T) {
+		t.Parallel()
+
 		var validationErrs validator.ValidationErrors
+
 		mock := &MockStruct{}
 
 		// Get reflect value
@@ -104,7 +121,10 @@ func TestGetErrsMsgs(t *testing.T) {
 	})
 
 	t.Run("with nil struct interface", func(t *testing.T) {
+		t.Parallel()
+
 		var validationErrs validator.ValidationErrors
+
 		mock := &MockStruct{}
 
 		v := reflect.ValueOf(mock).Elem()
@@ -117,6 +137,8 @@ func TestGetErrsMsgs(t *testing.T) {
 	})
 
 	t.Run("with valid struct", func(t *testing.T) {
+		t.Parallel()
+
 		mock := &MockStruct{Name: "Test", Age: 25}
 		v := reflect.ValueOf(mock).Elem()
 
@@ -128,6 +150,8 @@ func TestGetErrsMsgs(t *testing.T) {
 	})
 
 	t.Run("with validation errors", func(t *testing.T) {
+		t.Parallel()
+
 		mock := &MockStruct{}
 		validate := validator.New()
 		err := validate.Struct(mock)
@@ -136,6 +160,7 @@ func TestGetErrsMsgs(t *testing.T) {
 
 		// Convert to ValidationErrors
 		var validationErrs validator.ValidationErrors
+
 		errors.As(err, &validationErrs)
 
 		v := reflect.ValueOf(mock).Elem()
@@ -148,7 +173,11 @@ func TestGetErrsMsgs(t *testing.T) {
 }
 
 func TestGetMsgMapFromMidFields(t *testing.T) {
+	t.Parallel()
+
 	t.Run("with non-composite field", func(t *testing.T) {
+		t.Parallel()
+
 		mock := &MockStruct{Name: "Test", Age: 25}
 		v := reflect.ValueOf(mock).Elem()
 
@@ -159,6 +188,8 @@ func TestGetMsgMapFromMidFields(t *testing.T) {
 	})
 
 	t.Run("with invalid field path", func(t *testing.T) {
+		t.Parallel()
+
 		mock := &MockStruct{Name: "Test", Age: 25}
 		v := reflect.ValueOf(mock).Elem()
 
@@ -169,6 +200,8 @@ func TestGetMsgMapFromMidFields(t *testing.T) {
 	})
 
 	t.Run("with empty midFieldStr", func(t *testing.T) {
+		t.Parallel()
+
 		mock := &MockStruct{Name: "Test", Age: 25}
 		v := reflect.ValueOf(mock).Elem()
 
@@ -178,6 +211,8 @@ func TestGetMsgMapFromMidFields(t *testing.T) {
 	})
 
 	t.Run("with non-struct field", func(t *testing.T) {
+		t.Parallel()
+
 		type SimpleStruct struct {
 			Name string
 			Age  int
@@ -193,6 +228,8 @@ func TestGetMsgMapFromMidFields(t *testing.T) {
 	})
 
 	t.Run("with struct that doesn't implement IErrMsgBindStruct", func(t *testing.T) {
+		t.Parallel()
+
 		type NonImplStruct struct {
 			Field string
 		}
@@ -216,6 +253,8 @@ func TestGetMsgMapFromMidFields(t *testing.T) {
 	})
 
 	t.Run("with pointer to struct", func(t *testing.T) {
+		t.Parallel()
+
 		type InnerStruct struct {
 			Field string
 		}
@@ -240,6 +279,8 @@ func TestGetMsgMapFromMidFields(t *testing.T) {
 }
 
 func TestIErrMsgBindStruct_Interface(t *testing.T) {
+	t.Parallel()
+
 	// Test that MockStruct implements the interface
 	var _ IErrMsgBindStruct = &MockStruct{}
 
@@ -248,6 +289,8 @@ func TestIErrMsgBindStruct_Interface(t *testing.T) {
 }
 
 func TestErrMsg_WithChineseErrorMessage(t *testing.T) {
+	t.Parallel()
+
 	mock := &MockStruct{}
 	validate := validator.New()
 	err := validate.Struct(mock)
@@ -262,6 +305,8 @@ func TestErrMsg_WithChineseErrorMessage(t *testing.T) {
 }
 
 func TestErrMsg_WithNonValidationError(t *testing.T) {
+	t.Parallel()
+
 	mock := &MockStruct{Name: "Test", Age: 25}
 	regularErr := errors.New("this is not a validation error")
 
@@ -271,6 +316,8 @@ func TestErrMsg_WithNonValidationError(t *testing.T) {
 }
 
 func TestErrMsg_WithEmptyValidationErrors(t *testing.T) {
+	t.Parallel()
+
 	mock := &MockStruct{Name: "Test", Age: 25}
 	validate := validator.New()
 

@@ -12,6 +12,8 @@ import (
 )
 
 func TestCreateReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &CreateReq{}
 
 	errMap := req.GetErrMsgMap()
@@ -22,6 +24,8 @@ func TestCreateReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestCreateReq_ReqCheckWithCtx(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		name        string
 		prepareReq  func() *CreateReq
@@ -82,12 +86,15 @@ func TestCreateReq_ReqCheckWithCtx(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			req := tc.prepareReq()
 			err := req.ReqCheckWithCtx(context.Background())
 
 			if tc.wantErr {
 				require.Error(t, err)
 				assert.Contains(t, err.Error(), tc.errContains)
+
 				return
 			}
 
@@ -97,7 +104,11 @@ func TestCreateReq_ReqCheckWithCtx(t *testing.T) {
 }
 
 func TestCreateReq_D2e(t *testing.T) {
+	t.Parallel()
+
 	t.Run("should auto-generate key when key is empty", func(t *testing.T) {
+		t.Parallel()
+
 		req := createReqTestNewReq(true)
 		req.Key = ""
 
@@ -112,6 +123,8 @@ func TestCreateReq_D2e(t *testing.T) {
 	})
 
 	t.Run("should keep key when provided", func(t *testing.T) {
+		t.Parallel()
+
 		req := createReqTestNewReq(true)
 		req.Key = "fixed-key"
 

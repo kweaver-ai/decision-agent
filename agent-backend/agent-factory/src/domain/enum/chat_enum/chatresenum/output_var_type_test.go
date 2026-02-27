@@ -7,18 +7,24 @@ import (
 )
 
 func TestOutputVarType_Constants(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, OutputVarType("prompt"), OutputVarTypePrompt)
 	assert.Equal(t, OutputVarType("explore"), OutputVarTypeExplore)
 	assert.Equal(t, OutputVarType("other"), OutputVarTypeOther)
 }
 
 func TestOutputVarType_NotEmpty(t *testing.T) {
+	t.Parallel()
+
 	assert.NotEmpty(t, OutputVarTypePrompt)
 	assert.NotEmpty(t, OutputVarTypeExplore)
 	assert.NotEmpty(t, OutputVarTypeOther)
 }
 
 func TestOutputVarType_AreUnique(t *testing.T) {
+	t.Parallel()
+
 	values := []OutputVarType{
 		OutputVarTypePrompt,
 		OutputVarTypeExplore,
@@ -26,6 +32,7 @@ func TestOutputVarType_AreUnique(t *testing.T) {
 	}
 
 	uniqueValues := make(map[string]bool)
+
 	for _, v := range values {
 		strValue := string(v)
 		assert.False(t, uniqueValues[strValue], "Duplicate value found: %s", strValue)
@@ -34,6 +41,8 @@ func TestOutputVarType_AreUnique(t *testing.T) {
 }
 
 func TestOutputVarType_String(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		varType  OutputVarType
@@ -58,6 +67,8 @@ func TestOutputVarType_String(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := string(tt.varType)
 			assert.Equal(t, tt.expected, result)
 		})

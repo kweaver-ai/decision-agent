@@ -8,6 +8,8 @@ import (
 )
 
 func TestNewRetrieverAdvancedConfig(t *testing.T) {
+	t.Parallel()
+
 	config := NewRetrieverAdvancedConfig()
 	assert.NotNil(t, config)
 	assert.Nil(t, config.KG)
@@ -15,6 +17,8 @@ func TestNewRetrieverAdvancedConfig(t *testing.T) {
 }
 
 func TestRetrieverAdvancedConfig_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	config := &RetrieverAdvancedConfig{}
 	errMap := config.GetErrMsgMap()
 	assert.NotNil(t, errMap)
@@ -22,6 +26,8 @@ func TestRetrieverAdvancedConfig_GetErrMsgMap(t *testing.T) {
 }
 
 func TestRetrieverAdvancedConfig_ValObjCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	validKG := 60
 	simThreshold := -5.5
 	graphRagTopK := 25
@@ -44,6 +50,8 @@ func TestRetrieverAdvancedConfig_ValObjCheck_Valid(t *testing.T) {
 }
 
 func TestRetrieverAdvancedConfig_ValObjCheck_InvalidKG(t *testing.T) {
+	t.Parallel()
+
 	invalidValue := 200 // Out of range
 	config := &RetrieverAdvancedConfig{
 		KG: &KGAdvancedConfig{
@@ -58,6 +66,8 @@ func TestRetrieverAdvancedConfig_ValObjCheck_InvalidKG(t *testing.T) {
 }
 
 func TestRetrieverAdvancedConfig_ValObjCheck_ValidDoc(t *testing.T) {
+	t.Parallel()
+
 	retrievalSlicesNum := 150
 	maxSlicePerCite := 16
 	rerankTopK := 15
@@ -85,12 +95,16 @@ func TestRetrieverAdvancedConfig_ValObjCheck_ValidDoc(t *testing.T) {
 }
 
 func TestRetrieverAdvancedConfig_ValObjCheck_Empty(t *testing.T) {
+	t.Parallel()
+
 	config := &RetrieverAdvancedConfig{}
 	err := config.ValObjCheck()
 	assert.NoError(t, err)
 }
 
 func TestDocAdvancedConfig_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	config := &DocAdvancedConfig{}
 	errMap := config.GetErrMsgMap()
 	assert.NotNil(t, errMap)
@@ -100,6 +114,8 @@ func TestDocAdvancedConfig_GetErrMsgMap(t *testing.T) {
 }
 
 func TestKGAdvancedConfig_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	config := &KGAdvancedConfig{}
 	errMap := config.GetErrMsgMap()
 	assert.NotNil(t, errMap)
@@ -109,6 +125,8 @@ func TestKGAdvancedConfig_GetErrMsgMap(t *testing.T) {
 }
 
 func TestKGAdvancedConfig_ValObjCheck_InvalidTextMatchEntityNums(t *testing.T) {
+	t.Parallel()
+
 	invalidValue := 150 // Out of range (40-100)
 	config := &KGAdvancedConfig{
 		TextMatchEntityNums: &invalidValue,
@@ -119,6 +137,8 @@ func TestKGAdvancedConfig_ValObjCheck_InvalidTextMatchEntityNums(t *testing.T) {
 }
 
 func TestKGAdvancedConfig_ValObjCheck_InvalidRerankerSimThreshold(t *testing.T) {
+	t.Parallel()
+
 	textMatchEntityNums := 60
 	invalidValue := 15.0 // Out of range (-10 to 10)
 	config := &KGAdvancedConfig{
@@ -131,6 +151,8 @@ func TestKGAdvancedConfig_ValObjCheck_InvalidRerankerSimThreshold(t *testing.T) 
 }
 
 func TestKGAdvancedConfig_ValObjCheck_InvalidGraphRagTopK(t *testing.T) {
+	t.Parallel()
+
 	textMatchEntityNums := 60
 	rerankerSimThreshold := -5.5
 	invalidValue := 150 // Out of range (10-100)
@@ -145,6 +167,8 @@ func TestKGAdvancedConfig_ValObjCheck_InvalidGraphRagTopK(t *testing.T) {
 }
 
 func TestKGAdvancedConfig_ValObjCheck_InvalidLongTextLength(t *testing.T) {
+	t.Parallel()
+
 	textMatchEntityNums := 60
 	rerankerSimThreshold := -5.5
 	graphRagTopK := 25
@@ -161,16 +185,18 @@ func TestKGAdvancedConfig_ValObjCheck_InvalidLongTextLength(t *testing.T) {
 }
 
 func TestKGAdvancedConfig_ValObjCheck_InvalidVectorMatchEntityNums(t *testing.T) {
+	t.Parallel()
+
 	textMatchEntityNums := 60
 	rerankerSimThreshold := -5.5
 	graphRagTopK := 25
 	longTextLength := 256
 	invalidValue := 150 // Out of range (40-100)
 	config := &KGAdvancedConfig{
-		TextMatchEntityNums:  &textMatchEntityNums,
-		RerankerSimThreshold: &rerankerSimThreshold,
-		GraphRagTopK:         &graphRagTopK,
-		LongTextLength:       &longTextLength,
+		TextMatchEntityNums:   &textMatchEntityNums,
+		RerankerSimThreshold:  &rerankerSimThreshold,
+		GraphRagTopK:          &graphRagTopK,
+		LongTextLength:        &longTextLength,
 		VectorMatchEntityNums: &invalidValue,
 	}
 	err := config.ValObjCheck()
@@ -179,6 +205,8 @@ func TestKGAdvancedConfig_ValObjCheck_InvalidVectorMatchEntityNums(t *testing.T)
 }
 
 func TestRetrieverAdvancedConfig_ValObjCheck_InvalidDoc(t *testing.T) {
+	t.Parallel()
+
 	retrievalSlicesNum := 250 // Out of range
 	config := &RetrieverAdvancedConfig{
 		Doc: &DocAdvancedConfig{
@@ -191,6 +219,8 @@ func TestRetrieverAdvancedConfig_ValObjCheck_InvalidDoc(t *testing.T) {
 }
 
 func TestRetrieverAdvancedConfig_ValObjCheck_AllInvalid(t *testing.T) {
+	t.Parallel()
+
 	invalidKG := 200
 	invalidDoc := 250
 	config := &RetrieverAdvancedConfig{
@@ -208,6 +238,8 @@ func TestRetrieverAdvancedConfig_ValObjCheck_AllInvalid(t *testing.T) {
 }
 
 func TestDocAdvancedConfig_ValObjCheck_InvalidRetrievalSlicesNum(t *testing.T) {
+	t.Parallel()
+
 	invalidValue := 250 // Out of range (50-200)
 	config := &DocAdvancedConfig{
 		RetrievalSlicesNum: &invalidValue,
@@ -218,6 +250,8 @@ func TestDocAdvancedConfig_ValObjCheck_InvalidRetrievalSlicesNum(t *testing.T) {
 }
 
 func TestDocAdvancedConfig_ValObjCheck_InvalidRerankTopK(t *testing.T) {
+	t.Parallel()
+
 	retrievalSlicesNum := 150
 	invalidValue := 50 // Out of range (10-30)
 	config := &DocAdvancedConfig{
@@ -230,6 +264,8 @@ func TestDocAdvancedConfig_ValObjCheck_InvalidRerankTopK(t *testing.T) {
 }
 
 func TestDocAdvancedConfig_ValObjCheck_InvalidSliceHeadNum(t *testing.T) {
+	t.Parallel()
+
 	retrievalSlicesNum := 150
 	rerankTopK := 15
 	invalidValue := 5 // Out of range (0-3)
@@ -244,6 +280,8 @@ func TestDocAdvancedConfig_ValObjCheck_InvalidSliceHeadNum(t *testing.T) {
 }
 
 func TestDocAdvancedConfig_ValObjCheck_InvalidSliceTailNum(t *testing.T) {
+	t.Parallel()
+
 	retrievalSlicesNum := 150
 	rerankTopK := 15
 	sliceHeadNum := 2
@@ -260,6 +298,8 @@ func TestDocAdvancedConfig_ValObjCheck_InvalidSliceTailNum(t *testing.T) {
 }
 
 func TestDocAdvancedConfig_ValObjCheck_InvalidDocumentsNum(t *testing.T) {
+	t.Parallel()
+
 	retrievalSlicesNum := 150
 	rerankTopK := 15
 	sliceHeadNum := 2
@@ -278,6 +318,8 @@ func TestDocAdvancedConfig_ValObjCheck_InvalidDocumentsNum(t *testing.T) {
 }
 
 func TestDocAdvancedConfig_ValObjCheck_InvalidMaxSlicePerCite(t *testing.T) {
+	t.Parallel()
+
 	retrievalSlicesNum := 150
 	rerankTopK := 15
 	sliceHeadNum := 2
@@ -298,6 +340,8 @@ func TestDocAdvancedConfig_ValObjCheck_InvalidMaxSlicePerCite(t *testing.T) {
 }
 
 func TestDocAdvancedConfig_ValObjCheck_InvalidDocumentThreshold(t *testing.T) {
+	t.Parallel()
+
 	retrievalSlicesNum := 150
 	rerankTopK := 15
 	sliceHeadNum := 2
@@ -320,6 +364,8 @@ func TestDocAdvancedConfig_ValObjCheck_InvalidDocumentThreshold(t *testing.T) {
 }
 
 func TestKGAdvancedConfig_ValObjCheck_RoundsRerankerSimThreshold(t *testing.T) {
+	t.Parallel()
+
 	vectorMatchEntityNums := 60
 	graphRagTopK := 25
 	longTextLength := 256
@@ -330,6 +376,8 @@ func TestKGAdvancedConfig_ValObjCheck_RoundsRerankerSimThreshold(t *testing.T) {
 
 	for _, threshold := range testCases {
 		t.Run("threshold_rounding", func(t *testing.T) {
+			t.Parallel()
+
 			textMatchEntityNums := 60
 			config := &KGAdvancedConfig{
 				TextMatchEntityNums:   &textMatchEntityNums,
@@ -350,6 +398,8 @@ func TestKGAdvancedConfig_ValObjCheck_RoundsRerankerSimThreshold(t *testing.T) {
 }
 
 func TestKGAdvancedConfig_ValObjCheck_BoundaryValues(t *testing.T) {
+	t.Parallel()
+
 	retrievalMaxLength := 1000
 
 	tests := []struct {
@@ -376,6 +426,8 @@ func TestKGAdvancedConfig_ValObjCheck_BoundaryValues(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			config := &KGAdvancedConfig{
 				TextMatchEntityNums:   &tt.textMatchEntityNums,
 				VectorMatchEntityNums: &tt.vectorMatchEntityNums,

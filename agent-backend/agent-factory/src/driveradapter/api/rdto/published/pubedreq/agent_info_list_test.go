@@ -7,6 +7,8 @@ import (
 )
 
 func TestNewPAInfoListReq(t *testing.T) {
+	t.Parallel()
+
 	req := NewPAInfoListReq()
 
 	assert.NotNil(t, req)
@@ -16,6 +18,8 @@ func TestNewPAInfoListReq(t *testing.T) {
 }
 
 func TestPAInfoListReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := PAInfoListReq{
 		AgentKeys:        []string{"agent-1", "agent-2"},
 		NeedConfigFields: []string{"input"},
@@ -29,6 +33,8 @@ func TestPAInfoListReq_StructFields(t *testing.T) {
 }
 
 func TestPAInfoListReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := PAInfoListReq{}
 
 	assert.Nil(t, req.AgentKeys)
@@ -36,6 +42,8 @@ func TestPAInfoListReq_Empty(t *testing.T) {
 }
 
 func TestPAInfoListReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := PAInfoListReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -45,6 +53,8 @@ func TestPAInfoListReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestPAInfoListReq_ReqCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	req := PAInfoListReq{
 		AgentKeys:        []string{"agent-1", "agent-2"},
 		NeedConfigFields: []string{"input"},
@@ -56,6 +66,8 @@ func TestPAInfoListReq_ReqCheck_Valid(t *testing.T) {
 }
 
 func TestPAInfoListReq_ReqCheck_EmptyAgentKeys(t *testing.T) {
+	t.Parallel()
+
 	req := PAInfoListReq{
 		AgentKeys: []string{},
 	}
@@ -67,10 +79,13 @@ func TestPAInfoListReq_ReqCheck_EmptyAgentKeys(t *testing.T) {
 }
 
 func TestPAInfoListReq_ReqCheck_ExceedsMaxSize(t *testing.T) {
+	t.Parallel()
+
 	agentKeys := make([]string, 1001)
 	for i := 0; i < 1001; i++ {
 		agentKeys[i] = "agent-" + string(rune(i))
 	}
+
 	req := PAInfoListReq{
 		AgentKeys: agentKeys,
 	}
@@ -82,10 +97,13 @@ func TestPAInfoListReq_ReqCheck_ExceedsMaxSize(t *testing.T) {
 }
 
 func TestPAInfoListReq_ReqCheck_MaxSize(t *testing.T) {
+	t.Parallel()
+
 	agentKeys := make([]string, 1000)
 	for i := 0; i < 1000; i++ {
 		agentKeys[i] = "agent-" + string(rune(i))
 	}
+
 	req := PAInfoListReq{
 		AgentKeys: agentKeys,
 	}
@@ -96,6 +114,8 @@ func TestPAInfoListReq_ReqCheck_MaxSize(t *testing.T) {
 }
 
 func TestPAInfoListReq_ReqCheck_InvalidNeedConfigFields(t *testing.T) {
+	t.Parallel()
+
 	req := PAInfoListReq{
 		AgentKeys:        []string{"agent-1"},
 		NeedConfigFields: []string{"invalid"},
@@ -108,6 +128,8 @@ func TestPAInfoListReq_ReqCheck_InvalidNeedConfigFields(t *testing.T) {
 }
 
 func TestPAInfoListReq_ReqCheck_MultipleNeedConfigFields(t *testing.T) {
+	t.Parallel()
+
 	req := PAInfoListReq{
 		AgentKeys:        []string{"agent-1"},
 		NeedConfigFields: []string{"input", "output"},
@@ -120,6 +142,8 @@ func TestPAInfoListReq_ReqCheck_MultipleNeedConfigFields(t *testing.T) {
 }
 
 func TestPAInfoListReq_ReqCheck_ValidNeedConfigFields(t *testing.T) {
+	t.Parallel()
+
 	req := PAInfoListReq{
 		AgentKeys:        []string{"agent-1"},
 		NeedConfigFields: []string{"input"},
@@ -131,6 +155,8 @@ func TestPAInfoListReq_ReqCheck_ValidNeedConfigFields(t *testing.T) {
 }
 
 func TestPAInfoListReq_ReqCheck_NoNeedConfigFields(t *testing.T) {
+	t.Parallel()
+
 	req := PAInfoListReq{
 		AgentKeys:        []string{"agent-1"},
 		NeedConfigFields: []string{},
@@ -142,6 +168,8 @@ func TestPAInfoListReq_ReqCheck_NoNeedConfigFields(t *testing.T) {
 }
 
 func TestPAInfoListReq_HlDefaultVal(t *testing.T) {
+	t.Parallel()
+
 	req := PAInfoListReq{
 		AgentKeys: []string{"agent-1"},
 	}
@@ -153,6 +181,8 @@ func TestPAInfoListReq_HlDefaultVal(t *testing.T) {
 }
 
 func TestPAInfoListReq_HlDefaultVal_AlreadySet(t *testing.T) {
+	t.Parallel()
+
 	req := PAInfoListReq{
 		AgentKeys:        []string{"agent-1"},
 		NeedConfigFields: []string{"input"},
@@ -165,6 +195,8 @@ func TestPAInfoListReq_HlDefaultVal_AlreadySet(t *testing.T) {
 }
 
 func TestPAInfoListReq_WithSingleAgentKey(t *testing.T) {
+	t.Parallel()
+
 	req := PAInfoListReq{
 		AgentKeys: []string{"agent-123"},
 	}
@@ -176,6 +208,8 @@ func TestPAInfoListReq_WithSingleAgentKey(t *testing.T) {
 }
 
 func TestPAInfoListReq_WithMultipleAgentKeys(t *testing.T) {
+	t.Parallel()
+
 	agentKeys := []string{
 		"agent-001",
 		"agent-002",
@@ -192,6 +226,8 @@ func TestPAInfoListReq_WithMultipleAgentKeys(t *testing.T) {
 }
 
 func TestPAInfoListReq_WithSpecialAgentKeys(t *testing.T) {
+	t.Parallel()
+
 	agentKeys := []string{
 		"agent-中文",
 		"agent-123",

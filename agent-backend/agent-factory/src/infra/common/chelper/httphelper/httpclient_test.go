@@ -9,6 +9,8 @@ import (
 )
 
 func TestNewHTTPClient(t *testing.T) {
+	t.Parallel()
+
 	client := NewHTTPClient()
 
 	assert.NotNil(t, client, "NewHTTPClient should return a non-nil client")
@@ -16,6 +18,8 @@ func TestNewHTTPClient(t *testing.T) {
 }
 
 func TestNewHTTPClient_WithNoOptions(t *testing.T) {
+	t.Parallel()
+
 	c := NewHTTPClient()
 	httpClient, ok := c.(*httpClient)
 	require.True(t, ok, "Should be able to cast to *httpClient")
@@ -25,6 +29,8 @@ func TestNewHTTPClient_WithNoOptions(t *testing.T) {
 }
 
 func TestNewHTTPClient_WithToken(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name  string
 		token string
@@ -45,6 +51,8 @@ func TestNewHTTPClient_WithToken(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			c := NewHTTPClient(WithToken(tt.token))
 			httpClient, ok := c.(*httpClient)
 			require.True(t, ok)
@@ -54,6 +62,7 @@ func TestNewHTTPClient_WithToken(t *testing.T) {
 			if len(expectedToken) > 7 && expectedToken[:7] == "Bearer " {
 				expectedToken = expectedToken[7:]
 			}
+
 			if expectedToken == "" {
 				expectedToken = ""
 			}
@@ -64,6 +73,8 @@ func TestNewHTTPClient_WithToken(t *testing.T) {
 }
 
 func TestWithToken_BearerPrefixRemoval(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		input       string
@@ -98,6 +109,8 @@ func TestWithToken_BearerPrefixRemoval(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			c := NewHTTPClient(WithToken(tt.input))
 			httpClient, ok := c.(*httpClient)
 			require.True(t, ok)
@@ -108,6 +121,8 @@ func TestWithToken_BearerPrefixRemoval(t *testing.T) {
 }
 
 func TestNewHTTPClient_WithHeader(t *testing.T) {
+	t.Parallel()
+
 	c := NewHTTPClient(WithHeader("X-Custom-Header", "custom-value"))
 	httpClient, ok := c.(*httpClient)
 	require.True(t, ok)
@@ -118,6 +133,8 @@ func TestNewHTTPClient_WithHeader(t *testing.T) {
 }
 
 func TestNewHTTPClient_WithHeaders(t *testing.T) {
+	t.Parallel()
+
 	headers := map[string]string{
 		"X-Header-1": "value1",
 		"X-Header-2": "value2",
@@ -133,6 +150,8 @@ func TestNewHTTPClient_WithHeaders(t *testing.T) {
 }
 
 func TestNewHTTPClient_WithEmptyHeaders(t *testing.T) {
+	t.Parallel()
+
 	c := NewHTTPClient(WithHeaders(map[string]string{}))
 	httpClient, ok := c.(*httpClient)
 	require.True(t, ok)
@@ -141,6 +160,8 @@ func TestNewHTTPClient_WithEmptyHeaders(t *testing.T) {
 }
 
 func TestNewHTTPClient_MultipleOptions(t *testing.T) {
+	t.Parallel()
+
 	c := NewHTTPClient(
 		WithToken("test-token"),
 		WithHeader("X-Custom-1", "value1"),
@@ -158,6 +179,8 @@ func TestNewHTTPClient_MultipleOptions(t *testing.T) {
 }
 
 func TestNewHTTPClient_WithHeaderOverrides(t *testing.T) {
+	t.Parallel()
+
 	c := NewHTTPClient(
 		WithHeader("X-Test", "value1"),
 		WithHeader("X-Test", "value2"),
@@ -170,6 +193,8 @@ func TestNewHTTPClient_WithHeaderOverrides(t *testing.T) {
 }
 
 func TestHttpClient_GetClient(t *testing.T) {
+	t.Parallel()
+
 	c := NewHTTPClient()
 	httpClient, ok := c.(*httpClient)
 	require.True(t, ok)
@@ -180,11 +205,16 @@ func TestHttpClient_GetClient(t *testing.T) {
 }
 
 func TestHttpClient_ImplementsIHttpClient(t *testing.T) {
+	t.Parallel()
+
 	var _ icmp.IHttpClient = NewHTTPClient()
+
 	assert.NotNil(t, NewHTTPClient())
 }
 
 func TestHttpClient_SetContentType(t *testing.T) {
+	t.Parallel()
+
 	c := NewHTTPClient()
 	httpClient, ok := c.(*httpClient)
 	require.True(t, ok)
@@ -198,6 +228,8 @@ func TestHttpClient_SetContentType(t *testing.T) {
 }
 
 func TestOptionFunction(t *testing.T) {
+	t.Parallel()
+
 	// Test that Option function type works correctly
 	var opt Option
 	opt = func(c *httpClient) {
@@ -211,6 +243,8 @@ func TestOptionFunction(t *testing.T) {
 }
 
 func TestNewHTTPClient_ChainedOptions(t *testing.T) {
+	t.Parallel()
+
 	c := NewHTTPClient(
 		WithToken("token1"),
 		WithToken("token2"), // This will override
@@ -224,6 +258,8 @@ func TestNewHTTPClient_ChainedOptions(t *testing.T) {
 }
 
 func TestWithToken_EmptyString(t *testing.T) {
+	t.Parallel()
+
 	c := NewHTTPClient(WithToken(""))
 	httpClient, ok := c.(*httpClient)
 	require.True(t, ok)
@@ -232,6 +268,8 @@ func TestWithToken_EmptyString(t *testing.T) {
 }
 
 func TestWithToken_WhitespaceOnly(t *testing.T) {
+	t.Parallel()
+
 	c := NewHTTPClient(WithToken("   "))
 	httpClient, ok := c.(*httpClient)
 	require.True(t, ok)
@@ -240,6 +278,8 @@ func TestWithToken_WhitespaceOnly(t *testing.T) {
 }
 
 func TestDetailMap(t *testing.T) {
+	t.Parallel()
+
 	// Test that DetailMap type alias works correctly
 	detail := DetailMap{
 		"field1": "value1",
@@ -253,6 +293,8 @@ func TestDetailMap(t *testing.T) {
 }
 
 func TestCommonResp_Structure(t *testing.T) {
+	t.Parallel()
+
 	resp := CommonResp{
 		Code:        400,
 		Cause:       "test cause",
@@ -273,6 +315,8 @@ func TestCommonResp_Structure(t *testing.T) {
 }
 
 func TestCommonRespError_TypeAlias(t *testing.T) {
+	t.Parallel()
+
 	resp := CommonResp{
 		Code:    500,
 		Message: "error",
@@ -287,6 +331,8 @@ func TestCommonRespError_TypeAlias(t *testing.T) {
 }
 
 func TestNewHTTPClient_PreservesExistingTransport(t *testing.T) {
+	t.Parallel()
+
 	// Test that the HTTP client is properly initialized with OpenTelemetry transport
 	c := NewHTTPClient()
 	httpClient, ok := c.(*httpClient)
@@ -298,6 +344,8 @@ func TestNewHTTPClient_PreservesExistingTransport(t *testing.T) {
 }
 
 func TestHttpClient_TransportConfiguration(t *testing.T) {
+	t.Parallel()
+
 	c := NewHTTPClient()
 	httpClient, ok := c.(*httpClient)
 	require.True(t, ok)
@@ -309,12 +357,16 @@ func TestHttpClient_TransportConfiguration(t *testing.T) {
 }
 
 func TestWithHeaders_NilMap(t *testing.T) {
+	t.Parallel()
+
 	// This test verifies that WithHeaders handles nil gracefully
 	c := NewHTTPClient(WithHeaders(nil))
 	assert.NotNil(t, c)
 }
 
 func TestWithToken_VariousFormats(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		token    string
@@ -349,6 +401,8 @@ func TestWithToken_VariousFormats(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			c := NewHTTPClient(WithToken(tt.token))
 			httpClient, ok := c.(*httpClient)
 			require.True(t, ok)
@@ -358,6 +412,8 @@ func TestWithToken_VariousFormats(t *testing.T) {
 }
 
 func TestNewHTTPClient_UnderlyingClientNotNil(t *testing.T) {
+	t.Parallel()
+
 	c := NewHTTPClient()
 	httpClient, ok := c.(*httpClient)
 	require.True(t, ok)
@@ -369,6 +425,8 @@ func TestNewHTTPClient_UnderlyingClientNotNil(t *testing.T) {
 }
 
 func TestHttpClient_GetClient_ReturnsSameInstance(t *testing.T) {
+	t.Parallel()
+
 	c := NewHTTPClient()
 	httpClient, ok := c.(*httpClient)
 	require.True(t, ok)

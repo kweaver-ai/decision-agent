@@ -11,6 +11,8 @@ import (
 )
 
 func TestDefOutputConf(t *testing.T) {
+	t.Parallel()
+
 	assert.NotNil(t, DefOutputConf)
 	assert.Equal(t, "answer", DefOutputConf.AnswerVar)
 	assert.Equal(t, "doc_retrieval_res", DefOutputConf.DocRetrievalVar)
@@ -20,6 +22,8 @@ func TestDefOutputConf(t *testing.T) {
 }
 
 func TestDataAgentRes_NewDataAgentRes_ValidJSON(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	data := []byte(`{
 		"answer": {
@@ -46,6 +50,8 @@ func TestDataAgentRes_NewDataAgentRes_ValidJSON(t *testing.T) {
 }
 
 func TestDataAgentRes_NewDataAgentRes_InvalidJSON(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	data := []byte(`{invalid json`)
 
@@ -60,6 +66,8 @@ func TestDataAgentRes_NewDataAgentRes_InvalidJSON(t *testing.T) {
 }
 
 func TestDataAgentRes_GetAnswerHelper(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	data := []byte(`{
 		"answer": {
@@ -80,10 +88,12 @@ func TestDataAgentRes_GetAnswerHelper(t *testing.T) {
 }
 
 func TestDataAgentRes_Fields(t *testing.T) {
+	t.Parallel()
+
 	res := &DataAgentRes{
-		Answer:    agentrespvo.NewAnswerS(),
-		Status:    "running",
-		Error:     "test error",
+		Answer:     agentrespvo.NewAnswerS(),
+		Status:     "running",
+		Error:      "test error",
 		AgentRunID: "run-123",
 	}
 

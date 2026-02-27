@@ -8,6 +8,8 @@ import (
 )
 
 func TestConfigMetadata_SetConfigTplVersion_Valid(t *testing.T) {
+	t.Parallel()
+
 	metadata := &ConfigMetadata{}
 
 	assert.NotPanics(t, func() {
@@ -18,6 +20,8 @@ func TestConfigMetadata_SetConfigTplVersion_Valid(t *testing.T) {
 }
 
 func TestConfigMetadata_SetConfigTplVersion_Invalid(t *testing.T) {
+	t.Parallel()
+
 	metadata := &ConfigMetadata{}
 
 	assert.Panics(t, func() {
@@ -26,6 +30,8 @@ func TestConfigMetadata_SetConfigTplVersion_Invalid(t *testing.T) {
 }
 
 func TestConfigMetadata_GetConfigTplVersion(t *testing.T) {
+	t.Parallel()
+
 	metadata := &ConfigMetadata{
 		ConfigTplVersion: agentconfigenum.ConfigTplVersionV1,
 	}
@@ -35,6 +41,8 @@ func TestConfigMetadata_GetConfigTplVersion(t *testing.T) {
 }
 
 func TestConfigMetadata_SetConfigLastSetTimestamp(t *testing.T) {
+	t.Parallel()
+
 	metadata := &ConfigMetadata{}
 	before := metadata.ConfigLastSetTimestamp
 
@@ -46,6 +54,8 @@ func TestConfigMetadata_SetConfigLastSetTimestamp(t *testing.T) {
 }
 
 func TestConfigMetadata_GetConfigLastSetTimestamp(t *testing.T) {
+	t.Parallel()
+
 	expectedTimestamp := uint64(1234567890)
 	metadata := &ConfigMetadata{
 		ConfigLastSetTimestamp: expectedTimestamp,
@@ -56,6 +66,8 @@ func TestConfigMetadata_GetConfigLastSetTimestamp(t *testing.T) {
 }
 
 func TestConfigMetadata_Fields(t *testing.T) {
+	t.Parallel()
+
 	metadata := &ConfigMetadata{
 		ConfigTplVersion:       agentconfigenum.ConfigTplVersionV1,
 		ConfigLastSetTimestamp: 9876543210,

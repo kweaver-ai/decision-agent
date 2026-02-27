@@ -5,7 +5,6 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdapmsenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
@@ -14,9 +13,12 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver/v3portdrivermock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 )
 
 func TestIsHasTplPublishPermission(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		setup   func(*gomock.Controller) (*dataAgentConfigSvc, context.Context)
@@ -87,6 +89,8 @@ func TestIsHasTplPublishPermission(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
@@ -104,6 +108,8 @@ func TestIsHasTplPublishPermission(t *testing.T) {
 }
 
 func TestIsHasBuiltInAgentMgmtPermission(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		setup   func(*gomock.Controller) (*dataAgentConfigSvc, context.Context)
@@ -154,6 +160,8 @@ func TestIsHasBuiltInAgentMgmtPermission(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
@@ -171,6 +179,8 @@ func TestIsHasBuiltInAgentMgmtPermission(t *testing.T) {
 }
 
 func TestIsHasSystemAgentCreatePermission(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		setup   func(*gomock.Controller) (*dataAgentConfigSvc, context.Context)
@@ -221,6 +231,8 @@ func TestIsHasSystemAgentCreatePermission(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
@@ -238,6 +250,8 @@ func TestIsHasSystemAgentCreatePermission(t *testing.T) {
 }
 
 func TestIsOwnerOrHasBuiltInAgentMgmtPermission(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		setup   func(*gomock.Controller) (*dataAgentConfigSvc, context.Context, *dapo.DataAgentPo)
@@ -344,6 +358,8 @@ func TestIsOwnerOrHasBuiltInAgentMgmtPermission(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
@@ -360,6 +376,8 @@ func TestIsOwnerOrHasBuiltInAgentMgmtPermission(t *testing.T) {
 }
 
 func TestCheckUseAgentPms(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		setup   func(*gomock.Controller) (*dataAgentConfigSvc, context.Context, map[string]*dapo.PublishedJoinPo, string)
@@ -378,7 +396,7 @@ func TestCheckUseAgentPms(t *testing.T) {
 					Return(map[string]struct{}{}, nil)
 
 				svc := &dataAgentConfigSvc{
-					SvcBase:  service.NewSvcBase(),
+					SvcBase:   service.NewSvcBase(),
 					authZHttp: authZHttp,
 				}
 
@@ -472,7 +490,7 @@ func TestCheckUseAgentPms(t *testing.T) {
 					})
 
 				svc := &dataAgentConfigSvc{
-					SvcBase:  service.NewSvcBase(),
+					SvcBase:   service.NewSvcBase(),
 					authZHttp: authZHttp,
 				}
 
@@ -508,7 +526,7 @@ func TestCheckUseAgentPms(t *testing.T) {
 					Return(map[string]struct{}{}, nil)
 
 				svc := &dataAgentConfigSvc{
-					SvcBase:  service.NewSvcBase(),
+					SvcBase:   service.NewSvcBase(),
 					authZHttp: authZHttp,
 				}
 
@@ -541,7 +559,7 @@ func TestCheckUseAgentPms(t *testing.T) {
 					Return(nil, errors.New("authorization error"))
 
 				svc := &dataAgentConfigSvc{
-					SvcBase:  service.NewSvcBase(),
+					SvcBase:   service.NewSvcBase(),
 					authZHttp: authZHttp,
 				}
 
@@ -564,7 +582,7 @@ func TestCheckUseAgentPms(t *testing.T) {
 					Return(map[string]struct{}{}, nil)
 
 				svc := &dataAgentConfigSvc{
-					SvcBase:  service.NewSvcBase(),
+					SvcBase:   service.NewSvcBase(),
 					authZHttp: authZHttp,
 				}
 
@@ -577,6 +595,8 @@ func TestCheckUseAgentPms(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 

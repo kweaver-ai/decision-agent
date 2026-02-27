@@ -26,12 +26,17 @@ func (m *MockDolphinTpl) ToString() string {
 }
 
 func TestIDolphinTpl_Interface(t *testing.T) {
+	t.Parallel()
+
 	// Test that MockDolphinTpl implements IDolphinTpl
 	var _ IDolphinTpl = &MockDolphinTpl{}
+
 	assert.True(t, true)
 }
 
 func TestMockDolphinTpl_LoadFromConfig(t *testing.T) {
+	t.Parallel()
+
 	mock := &MockDolphinTpl{}
 	config := daconfvalobj.NewConfig()
 
@@ -42,6 +47,8 @@ func TestMockDolphinTpl_LoadFromConfig(t *testing.T) {
 }
 
 func TestMockDolphinTpl_ToString(t *testing.T) {
+	t.Parallel()
+
 	mock := &MockDolphinTpl{
 		ToStringResult: "test result",
 	}
@@ -53,6 +60,8 @@ func TestMockDolphinTpl_ToString(t *testing.T) {
 }
 
 func TestMockDolphinTpl_ToString_Empty(t *testing.T) {
+	t.Parallel()
+
 	mock := &MockDolphinTpl{}
 
 	result := mock.ToString()

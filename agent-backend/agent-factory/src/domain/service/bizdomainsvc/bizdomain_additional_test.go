@@ -38,11 +38,13 @@ func newSQLTx(t *testing.T) (*sql.Tx, sqlmock.Sqlmock, func()) {
 	require.NoError(t, err)
 
 	mock.ExpectBegin()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
 	cleanup := func() {
 		require.NoError(t, mock.ExpectationsWereMet())
+
 		_ = db.Close()
 	}
 
@@ -63,6 +65,7 @@ func TestBizDomainSvc_InitBizDomainAgentRel_Additional(t *testing.T) {
 		mockHTTP := bizdomainaccmock.NewMockBizDomainHttpAcc(ctrl)
 
 		svc := &BizDomainSvc{logger: noopLogger{}, bizDomainHttp: mockHTTP}
+
 		mockRelRepo.EXPECT().BeginTx(gomock.Any()).Return(tx, nil)
 		mockRelRepo.EXPECT().GetByBizDomainID(gomock.Any(), tx, gomock.Any()).
 			Return([]*dapo.BizDomainAgentRelPo{{AgentID: "a1"}}, nil)

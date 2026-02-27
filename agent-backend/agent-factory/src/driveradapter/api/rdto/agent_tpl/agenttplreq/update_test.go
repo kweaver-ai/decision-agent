@@ -3,12 +3,14 @@ package agenttplreq
 import (
 	"testing"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestUpdateReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{}
 	errMsgMap := req.GetErrMsgMap()
 
@@ -34,6 +36,8 @@ func TestUpdateReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestUpdateReq_GetErrMsgMapConsistency(t *testing.T) {
+	t.Parallel()
+
 	req1 := &UpdateReq{}
 	req2 := &UpdateReq{Name: "Test"}
 	req3 := &UpdateReq{Profile: strPtr("test profile")}
@@ -47,6 +51,8 @@ func TestUpdateReq_GetErrMsgMapConsistency(t *testing.T) {
 }
 
 func TestUpdateReq_New(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{}
 
 	assert.NotNil(t, req)
@@ -58,6 +64,8 @@ func TestUpdateReq_New(t *testing.T) {
 }
 
 func TestUpdateReq_WithName(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{
 		Name: "Test Agent Template",
 	}
@@ -66,6 +74,8 @@ func TestUpdateReq_WithName(t *testing.T) {
 }
 
 func TestUpdateReq_WithProfile(t *testing.T) {
+	t.Parallel()
+
 	profile := "This is a test profile"
 	req := &UpdateReq{
 		Profile: &profile,
@@ -76,6 +86,8 @@ func TestUpdateReq_WithProfile(t *testing.T) {
 }
 
 func TestUpdateReq_WithNilProfile(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{
 		Profile: nil,
 	}
@@ -84,6 +96,8 @@ func TestUpdateReq_WithNilProfile(t *testing.T) {
 }
 
 func TestUpdateReq_WithAvatar(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{
 		Avatar: "avatar.png",
 	}
@@ -92,6 +106,8 @@ func TestUpdateReq_WithAvatar(t *testing.T) {
 }
 
 func TestUpdateReq_WithAvatarType(t *testing.T) {
+	t.Parallel()
+
 	avatarTypes := []int{0, 1, 2, 3}
 
 	for _, avatarType := range avatarTypes {
@@ -103,6 +119,8 @@ func TestUpdateReq_WithAvatarType(t *testing.T) {
 }
 
 func TestUpdateReq_WithConfig(t *testing.T) {
+	t.Parallel()
+
 	config := &daconfvalobj.Config{
 		Input:  &daconfvalobj.Input{},
 		Output: &daconfvalobj.Output{},
@@ -116,6 +134,8 @@ func TestUpdateReq_WithConfig(t *testing.T) {
 }
 
 func TestUpdateReq_WithNilConfig(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReq{
 		Config: nil,
 	}
@@ -124,6 +144,8 @@ func TestUpdateReq_WithNilConfig(t *testing.T) {
 }
 
 func TestUpdateReq_AllFields(t *testing.T) {
+	t.Parallel()
+
 	profile := "Test profile"
 	config := &daconfvalobj.Config{
 		Input:  &daconfvalobj.Input{},
@@ -146,7 +168,11 @@ func TestUpdateReq_AllFields(t *testing.T) {
 }
 
 func TestUpdateReq_D2e(t *testing.T) {
+	t.Parallel()
+
 	t.Run("valid request", func(t *testing.T) {
+		t.Parallel()
+
 		profile := "Test profile"
 		req := &UpdateReq{
 			Name:       "Test Template",
@@ -170,6 +196,8 @@ func TestUpdateReq_D2e(t *testing.T) {
 	})
 
 	t.Run("with nil profile", func(t *testing.T) {
+		t.Parallel()
+
 		req := &UpdateReq{
 			Name:    "Test Template",
 			Profile: nil,
@@ -187,6 +215,8 @@ func TestUpdateReq_D2e(t *testing.T) {
 	})
 
 	t.Run("with empty name", func(t *testing.T) {
+		t.Parallel()
+
 		req := &UpdateReq{
 			Name: "",
 			Config: &daconfvalobj.Config{
@@ -203,6 +233,8 @@ func TestUpdateReq_D2e(t *testing.T) {
 	})
 
 	t.Run("with zero avatar type", func(t *testing.T) {
+		t.Parallel()
+
 		req := &UpdateReq{
 			Name:       "Test Template",
 			AvatarType: 0,
@@ -221,6 +253,8 @@ func TestUpdateReq_D2e(t *testing.T) {
 }
 
 func TestUpdateReq_ProfileMaxLength(t *testing.T) {
+	t.Parallel()
+
 	shortProfile := "Short profile"
 	req := &UpdateReq{
 		Profile: &shortProfile,
@@ -230,6 +264,8 @@ func TestUpdateReq_ProfileMaxLength(t *testing.T) {
 }
 
 func TestUpdateReq_NameMaxLength(t *testing.T) {
+	t.Parallel()
+
 	name50 := "12345678901234567890123456789012345678901234567890"
 	req := &UpdateReq{
 		Name: name50,
@@ -240,7 +276,11 @@ func TestUpdateReq_NameMaxLength(t *testing.T) {
 }
 
 func TestUpdateReq_StructFieldsIndependent(t *testing.T) {
+	t.Parallel()
+
 	t.Run("name independent", func(t *testing.T) {
+		t.Parallel()
+
 		req := &UpdateReq{Name: "Test"}
 		assert.Equal(t, "Test", req.Name)
 		assert.Nil(t, req.Profile)
@@ -248,6 +288,8 @@ func TestUpdateReq_StructFieldsIndependent(t *testing.T) {
 	})
 
 	t.Run("profile independent", func(t *testing.T) {
+		t.Parallel()
+
 		profile := "Profile"
 		req := &UpdateReq{Profile: &profile}
 		assert.Empty(t, req.Name)
@@ -256,6 +298,8 @@ func TestUpdateReq_StructFieldsIndependent(t *testing.T) {
 	})
 
 	t.Run("avatar independent", func(t *testing.T) {
+		t.Parallel()
+
 		req := &UpdateReq{Avatar: "test.png"}
 		assert.Empty(t, req.Name)
 		assert.Nil(t, req.Profile)
@@ -264,6 +308,8 @@ func TestUpdateReq_StructFieldsIndependent(t *testing.T) {
 	})
 
 	t.Run("avatar type independent", func(t *testing.T) {
+		t.Parallel()
+
 		req := &UpdateReq{AvatarType: 2}
 		assert.Empty(t, req.Name)
 		assert.Nil(t, req.Profile)
@@ -273,6 +319,8 @@ func TestUpdateReq_StructFieldsIndependent(t *testing.T) {
 	})
 
 	t.Run("config independent", func(t *testing.T) {
+		t.Parallel()
+
 		config := &daconfvalobj.Config{}
 		req := &UpdateReq{Config: config}
 		assert.Empty(t, req.Name)

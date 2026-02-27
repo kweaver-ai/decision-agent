@@ -5,16 +5,18 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestDataAgentTplSvc_Delete_ZeroIDReturnsError(t *testing.T) {
+	t.Parallel()
+
 	svc := &dataAgentTplSvc{
 		SvcBase: service.NewSvcBase(),
 	}
@@ -32,6 +34,8 @@ func TestDataAgentTplSvc_Delete_ZeroIDReturnsError(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_Delete_PanicsWithoutAgentTplRepo(t *testing.T) {
+	t.Parallel()
+
 	svc := &dataAgentTplSvc{
 		SvcBase: service.NewSvcBase(),
 	}
@@ -46,6 +50,8 @@ func TestDataAgentTplSvc_Delete_PanicsWithoutAgentTplRepo(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_Delete_TemplateNotExists(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -72,6 +78,8 @@ func TestDataAgentTplSvc_Delete_TemplateNotExists(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_Delete_ExistsByIDError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -98,6 +106,8 @@ func TestDataAgentTplSvc_Delete_ExistsByIDError(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_Delete_GetByIDError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -116,6 +126,7 @@ func TestDataAgentTplSvc_Delete_GetByIDError(t *testing.T) {
 
 	// Exists returns true but GetByID fails
 	mockAgentTplRepo.EXPECT().ExistsByID(gomock.Any(), id).Return(true, nil)
+
 	dbErr := errors.New("database connection failed")
 	mockAgentTplRepo.EXPECT().GetByID(gomock.Any(), id).Return(nil, dbErr)
 
@@ -126,6 +137,8 @@ func TestDataAgentTplSvc_Delete_GetByIDError(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_Delete_TemplatePublished(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -159,6 +172,8 @@ func TestDataAgentTplSvc_Delete_TemplatePublished(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_Delete_NotOwner(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

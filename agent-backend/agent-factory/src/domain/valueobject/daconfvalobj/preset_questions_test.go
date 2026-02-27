@@ -3,6 +3,8 @@ package daconfvalobj
 import "testing"
 
 func TestPresetQuestion_ValObjCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		p       *PresetQuestion
@@ -45,6 +47,8 @@ func TestPresetQuestion_ValObjCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.p.ValObjCheck()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ValObjCheck() error = %v, wantErr %v", err, tt.wantErr)

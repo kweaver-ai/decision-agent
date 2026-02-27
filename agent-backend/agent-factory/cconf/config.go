@@ -37,10 +37,10 @@ type Config struct {
 	Redis   RedisConf `yaml:"redis"`
 	Hydra   HydraCfg  `yaml:"hydra"`
 
-	ModelFactory   *ModelFactoryConf   `yaml:"model_factory"`
-	Authorization  *AuthzCfg           `yaml:"authorization"`
-	AgentFactory   *AgentFactoryConf   `yaml:"agent_factory"`
-	BizDomain      *BizDomainConf      `yaml:"biz_domain"`
+	ModelFactory  *ModelFactoryConf `yaml:"model_factory"`
+	Authorization *AuthzCfg         `yaml:"authorization"`
+	AgentFactory  *AgentFactoryConf `yaml:"agent_factory"`
+	BizDomain     *BizDomainConf    `yaml:"biz_domain"`
 
 	MqCfgPath string
 }
@@ -54,8 +54,10 @@ func (c *Config) String() string {
 	if err != nil {
 		return fmt.Sprintf("Config{error: %v}", err)
 	}
+
 	return "======= Config =======\n" + string(b) + "\n======= End Config ======="
 }
+
 func (c *Config) Check() (err error) {
 	err = c.Project.Check()
 	if err != nil {
@@ -133,6 +135,7 @@ func BaseDefConfig() (defConf *Config) {
 func GetConfigBys(fileName string) []byte {
 	configFilePath := filepath.Join(GetConfigPath(), fileName)
 	log.Printf("Loading config file: %s\n", configFilePath)
+
 	file, err := os.ReadFile(configFilePath)
 	if err != nil {
 		log.Fatalf("load %v failed: %v", configFilePath, err)
@@ -154,4 +157,3 @@ func LoadConfig(file []byte, configImpl IConf) IConf {
 
 	return configImpl
 }
-

@@ -10,6 +10,8 @@ import (
 )
 
 func TestSetDefaultValue_SetsDefaultConfigTplVersion(t *testing.T) {
+	t.Parallel()
+
 	config := daconfvalobj.NewConfig()
 
 	setDefaultValue(config)
@@ -18,6 +20,8 @@ func TestSetDefaultValue_SetsDefaultConfigTplVersion(t *testing.T) {
 }
 
 func TestSetDefaultValue_DoesNotOverrideExistingVersion(t *testing.T) {
+	t.Parallel()
+
 	config := daconfvalobj.NewConfig()
 	config.GetConfigMetadata().SetConfigTplVersion(agentconfigenum.ConfigTplVersionV1)
 
@@ -27,6 +31,8 @@ func TestSetDefaultValue_DoesNotOverrideExistingVersion(t *testing.T) {
 }
 
 func TestHandleConfig_SetsDefaultValues(t *testing.T) {
+	t.Parallel()
+
 	config := daconfvalobj.NewConfig()
 
 	err := HandleConfig(config)
@@ -36,6 +42,8 @@ func TestHandleConfig_SetsDefaultValues(t *testing.T) {
 }
 
 func TestHandleConfig_WithExistingVersion(t *testing.T) {
+	t.Parallel()
+
 	config := daconfvalobj.NewConfig()
 	config.GetConfigMetadata().SetConfigTplVersion(agentconfigenum.ConfigTplVersionV1)
 
@@ -46,6 +54,8 @@ func TestHandleConfig_WithExistingVersion(t *testing.T) {
 }
 
 func TestHandleConfig_NilConfig(t *testing.T) {
+	t.Parallel()
+
 	var config *daconfvalobj.Config = nil
 
 	// This test documents behavior with nil config
@@ -57,6 +67,8 @@ func TestHandleConfig_NilConfig(t *testing.T) {
 }
 
 func TestD2eCommonAfterD2e_SetsConfigLastSetTimestamp(t *testing.T) {
+	t.Parallel()
+
 	config := daconfvalobj.NewConfig()
 	eo := &daconfeo.DataAgent{
 		Config: config,
@@ -72,6 +84,8 @@ func TestD2eCommonAfterD2e_SetsConfigLastSetTimestamp(t *testing.T) {
 }
 
 func TestD2eCommonAfterD2e_WithNilEntity(t *testing.T) {
+	t.Parallel()
+
 	var eo *daconfeo.DataAgent = nil
 
 	// This test documents behavior with nil entity
@@ -83,6 +97,8 @@ func TestD2eCommonAfterD2e_WithNilEntity(t *testing.T) {
 }
 
 func TestSetDefaultValue_MultipleCalls(t *testing.T) {
+	t.Parallel()
+
 	config := daconfvalobj.NewConfig()
 
 	setDefaultValue(config)
@@ -96,6 +112,8 @@ func TestSetDefaultValue_MultipleCalls(t *testing.T) {
 }
 
 func TestHandleConfig_MultipleCalls(t *testing.T) {
+	t.Parallel()
+
 	config := daconfvalobj.NewConfig()
 
 	err1 := HandleConfig(config)

@@ -7,6 +7,8 @@ import (
 )
 
 func TestListReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := &ListReq{
 		ConversationID: "conv-123",
 	}
@@ -15,12 +17,16 @@ func TestListReq_StructFields(t *testing.T) {
 }
 
 func TestListReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := &ListReq{}
 
 	assert.Empty(t, req.ConversationID)
 }
 
 func TestListReq_WithConversationID(t *testing.T) {
+	t.Parallel()
+
 	ids := []string{
 		"conv-001",
 		"test-conversation",

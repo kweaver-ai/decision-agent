@@ -8,6 +8,8 @@ import (
 )
 
 func TestSetAccountInfoToHeaderMap_NilHeaderMap(t *testing.T) {
+	t.Parallel()
+
 	var headerMap map[string]string = nil
 
 	// Should not panic with nil map
@@ -17,6 +19,8 @@ func TestSetAccountInfoToHeaderMap_NilHeaderMap(t *testing.T) {
 }
 
 func TestSetAccountInfoToHeaderMap_ValidInput(t *testing.T) {
+	t.Parallel()
+
 	headerMap := make(map[string]string)
 	accountID := "account123"
 	accountType := cenum.AccountTypeUser
@@ -33,6 +37,8 @@ func TestSetAccountInfoToHeaderMap_ValidInput(t *testing.T) {
 }
 
 func TestSetAccountInfoToHeaderMap_WithExistingValues(t *testing.T) {
+	t.Parallel()
+
 	headerMap := map[string]string{
 		"existing_key": "existing_value",
 	}
@@ -50,11 +56,13 @@ func TestSetAccountInfoToHeaderMap_WithExistingValues(t *testing.T) {
 }
 
 func TestSetAccountInfoToHeaderMap_OverwritesExistingAccountHeaders(t *testing.T) {
+	t.Parallel()
+
 	accountTypeUser := cenum.AccountTypeUser
 	headerMap := map[string]string{
-		cenum.HeaderXAccountID.String():     "old_account",
-		cenum.HeaderXAccountType.String():   accountTypeUser.String(),
-		cenum.HeaderXAccountIDOld.String():  "old_account_old",
+		cenum.HeaderXAccountID.String():      "old_account",
+		cenum.HeaderXAccountType.String():    accountTypeUser.String(),
+		cenum.HeaderXAccountIDOld.String():   "old_account_old",
 		cenum.HeaderXAccountTypeOld.String(): accountTypeUser.String(),
 	}
 	newAccountID := "new_account"
@@ -70,6 +78,8 @@ func TestSetAccountInfoToHeaderMap_OverwritesExistingAccountHeaders(t *testing.T
 }
 
 func TestSetAccountInfoToHeaderMap_EmptyAccountID(t *testing.T) {
+	t.Parallel()
+
 	headerMap := make(map[string]string)
 
 	SetAccountInfoToHeaderMap(headerMap, "", cenum.AccountTypeUser)
@@ -81,6 +91,8 @@ func TestSetAccountInfoToHeaderMap_EmptyAccountID(t *testing.T) {
 }
 
 func TestSetAccountInfoToHeaderMap_AllAccountTypes(t *testing.T) {
+	t.Parallel()
+
 	accountTypes := []cenum.AccountType{
 		cenum.AccountTypeUser,
 		cenum.AccountTypeApp,
@@ -89,6 +101,8 @@ func TestSetAccountInfoToHeaderMap_AllAccountTypes(t *testing.T) {
 
 	for _, accountType := range accountTypes {
 		t.Run(accountType.String(), func(t *testing.T) {
+			t.Parallel()
+
 			headerMap := make(map[string]string)
 			accountID := "test_account"
 
@@ -101,6 +115,8 @@ func TestSetAccountInfoToHeaderMap_AllAccountTypes(t *testing.T) {
 }
 
 func TestSetAccountInfoToHeaderMap_MultipleCalls(t *testing.T) {
+	t.Parallel()
+
 	headerMap := make(map[string]string)
 
 	SetAccountInfoToHeaderMap(headerMap, "account1", cenum.AccountTypeUser)
@@ -113,6 +129,8 @@ func TestSetAccountInfoToHeaderMap_MultipleCalls(t *testing.T) {
 }
 
 func TestSetAccountInfoToHeaderMap_AccountTypeAnonymous(t *testing.T) {
+	t.Parallel()
+
 	headerMap := make(map[string]string)
 	accountID := "anonymous_account"
 	accountTypeAnonymous := cenum.AccountTypeAnonymous

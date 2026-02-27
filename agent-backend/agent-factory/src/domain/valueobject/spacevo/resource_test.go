@@ -8,6 +8,8 @@ import (
 )
 
 func TestResourceUniq_New(t *testing.T) {
+	t.Parallel()
+
 	resource := &ResourceUniq{
 		ResourceType: cdaenum.ResourceTypeDataAgent,
 		ResourceID:   "resource-123",
@@ -19,6 +21,8 @@ func TestResourceUniq_New(t *testing.T) {
 }
 
 func TestResourceUniq_EmptyFields(t *testing.T) {
+	t.Parallel()
+
 	resource := &ResourceUniq{}
 
 	assert.NotNil(t, resource)
@@ -26,6 +30,8 @@ func TestResourceUniq_EmptyFields(t *testing.T) {
 }
 
 func TestResourceAssoc_New(t *testing.T) {
+	t.Parallel()
+
 	assoc := &ResourceAssoc{
 		ResourceUniq: ResourceUniq{
 			ResourceType: cdaenum.ResourceTypeDataAgent,
@@ -41,6 +47,8 @@ func TestResourceAssoc_New(t *testing.T) {
 }
 
 func TestResourceAssoc_EmptyFields(t *testing.T) {
+	t.Parallel()
+
 	assoc := &ResourceAssoc{}
 
 	assert.NotNil(t, assoc)
@@ -49,6 +57,8 @@ func TestResourceAssoc_EmptyFields(t *testing.T) {
 }
 
 func TestResourceAssoc_WithLargeAssocID(t *testing.T) {
+	t.Parallel()
+
 	assoc := &ResourceAssoc{
 		ResourceUniq: ResourceUniq{
 			ResourceType: cdaenum.ResourceTypeDataAgent,

@@ -25,9 +25,11 @@ func TestHydraCfg_Fields(t *testing.T) {
 		if hydra.UserMgnt.Host != "user-mgmt.local" {
 			t.Errorf("Expected UserMgnt.Host to be 'user-mgmt.local', got '%s'", hydra.UserMgnt.Host)
 		}
+
 		if hydra.HydraPublic.Port != 4444 {
 			t.Errorf("Expected HydraPublic.Port to be 4444, got %d", hydra.HydraPublic.Port)
 		}
+
 		if hydra.HydraAdmin.Port != 4445 {
 			t.Errorf("Expected HydraAdmin.Port to be 4445, got %d", hydra.HydraAdmin.Port)
 		}

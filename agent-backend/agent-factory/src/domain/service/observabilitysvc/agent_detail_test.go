@@ -6,9 +6,9 @@ import (
 	"testing"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/uniqueryaccess/uniquerydto"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
 	observabilityreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/observability/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squareresp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iuniqueryhttp/uniquerymock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver/v3portdrivermock"
 	"github.com/stretchr/testify/assert"
@@ -20,7 +20,7 @@ import (
 func makeAgentDetailEntry(sessionID, agentID, status string, totalTime, ttft, toolCallCount, toolCallFailedCount float64, startTime, endTime float64) map[string]any {
 	return map[string]any{
 		"Attributes": map[string]any{
-			"session_id":              map[string]any{"Data": sessionID},
+			"session_id":             map[string]any{"Data": sessionID},
 			"agent_id":               map[string]any{"Data": agentID},
 			"status":                 map[string]any{"Data": status},
 			"total_time":             map[string]any{"Data": totalTime},
@@ -42,6 +42,7 @@ func newSvcWithSquare(ctrl *gomock.Controller) (*observabilitySvc, *v3portdriver
 		uniquery:  mockUniquery,
 		squareSvc: mockSquare,
 	}
+
 	return svc, mockSquare
 }
 
@@ -50,10 +51,13 @@ func newSvcWithAll(ctrl *gomock.Controller) (*observabilitySvc, *uniquerymock.Mo
 	ml := cmpmock_new(ctrl)
 	ms := v3portdrivermock.NewMockISquareSvc(ctrl)
 	svc := &observabilitySvc{logger: ml, uniquery: mu, squareSvc: ms}
+
 	return svc, mu, ml, ms
 }
 
 func TestObservabilitySvc_AgentDetail_Success_EmptyEntries(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -80,6 +84,8 @@ func TestObservabilitySvc_AgentDetail_Success_EmptyEntries(t *testing.T) {
 }
 
 func TestObservabilitySvc_AgentDetail_Success_WithEntries(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -111,8 +117,8 @@ func TestObservabilitySvc_AgentDetail_Success_WithEntries(t *testing.T) {
 	require.NoError(t, err)
 	require.NotNil(t, resp)
 	assert.Equal(t, 4, resp.TotalRequests)
-	assert.Equal(t, 2, resp.TotalSessions)           // session-1, session-2
-	assert.Equal(t, 2, resp.AvgSessionRounds)        // 4/2 = 2
+	assert.Equal(t, 2, resp.TotalSessions)            // session-1, session-2
+	assert.Equal(t, 2, resp.AvgSessionRounds)         // 4/2 = 2
 	assert.Equal(t, float32(75), resp.RunSuccessRate) // 3/4 * 100
 	// avgExecuteDuration: (2+3+1.5)/3 = 2.16... → int = 2
 	assert.Equal(t, 2, resp.AvgExecuteDuration)
@@ -121,6 +127,8 @@ func TestObservabilitySvc_AgentDetail_Success_WithEntries(t *testing.T) {
 }
 
 func TestObservabilitySvc_AgentDetail_GetAgentInfoError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -136,6 +144,8 @@ func TestObservabilitySvc_AgentDetail_GetAgentInfoError(t *testing.T) {
 }
 
 func TestObservabilitySvc_AgentDetail_UniqueryError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -153,6 +163,8 @@ func TestObservabilitySvc_AgentDetail_UniqueryError(t *testing.T) {
 }
 
 func TestObservabilitySvc_AgentDetail_ZeroValues(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -176,6 +188,8 @@ func TestObservabilitySvc_AgentDetail_ZeroValues(t *testing.T) {
 }
 
 func TestObservabilitySvc_AgentDetail_AllRunsFailed(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

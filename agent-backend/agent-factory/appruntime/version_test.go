@@ -99,19 +99,19 @@ func TestServerVersion_Parts(t *testing.T) {
 func TestGoArch_IsValid(t *testing.T) {
 	// Common valid architectures
 	validArchs := map[string]bool{
-		"386":       true,
-		"amd64":     true,
-		"arm":       true,
-		"arm64":     true,
-		"ppc64":     true,
-		"ppc64le":   true,
-		"mips":      true,
-		"mipsle":    true,
-		"mips64":    true,
-		"mips64le":  true,
-		"riscv64":   true,
-		"s390x":     true,
-		"wasm":      true,
+		"386":      true,
+		"amd64":    true,
+		"arm":      true,
+		"arm64":    true,
+		"ppc64":    true,
+		"ppc64le":  true,
+		"mips":     true,
+		"mipsle":   true,
+		"mips64":   true,
+		"mips64le": true,
+		"riscv64":  true,
+		"s390x":    true,
+		"wasm":     true,
 	}
 
 	assert.True(t, validArchs[GoArch], "GoArch should be a valid architecture")
@@ -128,11 +128,13 @@ func TestServerVersion_IsSemVer(t *testing.T) {
 	// Semantic versioning format: X.Y.Z
 	version := ServerVersion
 	dotCount := 0
+
 	for _, c := range version {
 		if c == '.' {
 			dotCount++
 		}
 	}
+
 	assert.Equal(t, 2, dotCount, "Version should have exactly 2 dots (X.Y.Z format)")
 }
 

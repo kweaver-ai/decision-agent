@@ -8,6 +8,8 @@ import (
 )
 
 func TestJSONNormalizer_MarshalJSON_Empty(t *testing.T) {
+	t.Parallel()
+
 	jn := JSONNormalizer{}
 
 	result, err := json.Marshal(jn)
@@ -16,6 +18,8 @@ func TestJSONNormalizer_MarshalJSON_Empty(t *testing.T) {
 }
 
 func TestJSONNormalizer_MarshalJSON_SingleKey(t *testing.T) {
+	t.Parallel()
+
 	jn := JSONNormalizer{
 		"name": "John",
 	}
@@ -26,6 +30,8 @@ func TestJSONNormalizer_MarshalJSON_SingleKey(t *testing.T) {
 }
 
 func TestJSONNormalizer_MarshalJSON_MultipleKeys_Sorted(t *testing.T) {
+	t.Parallel()
+
 	jn := JSONNormalizer{
 		"zebra":  1,
 		"apple":  2,
@@ -38,6 +44,8 @@ func TestJSONNormalizer_MarshalJSON_MultipleKeys_Sorted(t *testing.T) {
 }
 
 func TestJSONNormalizer_MarshalJSON_WithNestedObject(t *testing.T) {
+	t.Parallel()
+
 	jn := JSONNormalizer{
 		"name": "John",
 		"address": map[string]interface{}{
@@ -54,6 +62,8 @@ func TestJSONNormalizer_MarshalJSON_WithNestedObject(t *testing.T) {
 }
 
 func TestJSONNormalizer_MarshalJSON_WithArray(t *testing.T) {
+	t.Parallel()
+
 	jn := JSONNormalizer{
 		"items": []int{1, 2, 3},
 		"count": 3,
@@ -65,6 +75,8 @@ func TestJSONNormalizer_MarshalJSON_WithArray(t *testing.T) {
 }
 
 func TestJSONNormalizer_MarshalJSON_WithMixedTypes(t *testing.T) {
+	t.Parallel()
+
 	jn := JSONNormalizer{
 		"string":  "value",
 		"number":  42,
@@ -88,9 +100,11 @@ func TestJSONNormalizer_MarshalJSON_WithMixedTypes(t *testing.T) {
 }
 
 func TestJSONNormalizer_MarshalJSON_WithUnmarshalableValue(t *testing.T) {
+	t.Parallel()
+
 	// Create a function which cannot be marshaled
 	jn := JSONNormalizer{
-		"valid": "value",
+		"valid":   "value",
 		"invalid": func() {}, // functions cannot be marshaled
 	}
 
@@ -99,6 +113,8 @@ func TestJSONNormalizer_MarshalJSON_WithUnmarshalableValue(t *testing.T) {
 }
 
 func TestJSONStrCompare(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		jsonStr1 string
@@ -145,11 +161,14 @@ func TestJSONStrCompare(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result, err := JSONStrCompare(tt.jsonStr1, tt.jsonStr2)
 			if tt.expected {
 				if err != nil {
 					t.Errorf("JSONStrCompare() unexpected error: %v", err)
 				}
+
 				if !result {
 					t.Errorf("JSONStrCompare() = %v, want true", result)
 				}
@@ -163,6 +182,8 @@ func TestJSONStrCompare(t *testing.T) {
 }
 
 func TestJSONStrCompare_InvalidJSON1(t *testing.T) {
+	t.Parallel()
+
 	json1 := `{"name":"John",invalid}`
 	json2 := `{"name":"John","age":30}`
 
@@ -173,6 +194,8 @@ func TestJSONStrCompare_InvalidJSON1(t *testing.T) {
 }
 
 func TestJSONStrCompare_InvalidJSON2(t *testing.T) {
+	t.Parallel()
+
 	json1 := `{"name":"John","age":30}`
 	json2 := `{"name":"John",invalid}`
 
@@ -183,6 +206,8 @@ func TestJSONStrCompare_InvalidJSON2(t *testing.T) {
 }
 
 func TestJSONStrCompare_BothInvalidJSON(t *testing.T) {
+	t.Parallel()
+
 	json1 := `{invalid}`
 	json2 := `{invalid}`
 
@@ -192,6 +217,8 @@ func TestJSONStrCompare_BothInvalidJSON(t *testing.T) {
 }
 
 func TestJSONStrCompare_NestedObjects(t *testing.T) {
+	t.Parallel()
+
 	json1 := `{"user":{"name":"John","age":30},"id":123}`
 	json2 := `{"id":123,"user":{"age":30,"name":"John"}}`
 
@@ -201,6 +228,8 @@ func TestJSONStrCompare_NestedObjects(t *testing.T) {
 }
 
 func TestJSONStrCompare_NestedObjects_DifferentValues(t *testing.T) {
+	t.Parallel()
+
 	json1 := `{"user":{"name":"John","age":30}}`
 	json2 := `{"user":{"name":"John","age":31}}`
 
@@ -210,6 +239,8 @@ func TestJSONStrCompare_NestedObjects_DifferentValues(t *testing.T) {
 }
 
 func TestJSONStrCompare_WithArrays(t *testing.T) {
+	t.Parallel()
+
 	json1 := `{"items":[1,2,3],"count":3}`
 	json2 := `{"count":3,"items":[1,2,3]}`
 
@@ -219,6 +250,8 @@ func TestJSONStrCompare_WithArrays(t *testing.T) {
 }
 
 func TestJSONStrCompare_WithArrays_DifferentOrder(t *testing.T) {
+	t.Parallel()
+
 	json1 := `{"items":[1,2,3]}`
 	json2 := `{"items":[3,2,1]}`
 
@@ -228,6 +261,8 @@ func TestJSONStrCompare_WithArrays_DifferentOrder(t *testing.T) {
 }
 
 func TestJSONStrCompare_WithNull(t *testing.T) {
+	t.Parallel()
+
 	json1 := `{"name":null,"age":30}`
 	json2 := `{"age":30,"name":null}`
 
@@ -237,6 +272,8 @@ func TestJSONStrCompare_WithNull(t *testing.T) {
 }
 
 func TestJSONStrCompare_WithBoolean(t *testing.T) {
+	t.Parallel()
+
 	json1 := `{"active":true,"admin":false}`
 	json2 := `{"admin":false,"active":true}`
 
@@ -246,6 +283,8 @@ func TestJSONStrCompare_WithBoolean(t *testing.T) {
 }
 
 func TestJSONStrCompare_OneEmpty(t *testing.T) {
+	t.Parallel()
+
 	json1 := `{}`
 	json2 := `{"name":"John"}`
 
@@ -255,6 +294,8 @@ func TestJSONStrCompare_OneEmpty(t *testing.T) {
 }
 
 func TestJSONStrCompare_ComplexNested(t *testing.T) {
+	t.Parallel()
+
 	json1 := `{"user":{"profile":{"name":"John","age":30},"settings":{"theme":"dark"}},"id":123}`
 	json2 := `{"id":123,"user":{"settings":{"theme":"dark"},"profile":{"age":30,"name":"John"}}}`
 
@@ -264,6 +305,8 @@ func TestJSONStrCompare_ComplexNested(t *testing.T) {
 }
 
 func TestJSONStrCompare_Whitespace(t *testing.T) {
+	t.Parallel()
+
 	json1 := `  {  "name"  :  "John"  ,  "age"  :  30  }  `
 	json2 := `{"name":"John","age":30}`
 

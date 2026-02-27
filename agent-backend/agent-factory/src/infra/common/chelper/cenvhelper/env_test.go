@@ -30,13 +30,17 @@ func cleanupTestEnv() {
 }
 
 func TestIsLocalDev(t *testing.T) {
+	t.Parallel()
+
 	// 在测试开始前清理环境变量
 	cleanupTestEnv()
 	defer cleanupTestEnv()
 
 	// 测试用例1: 无运行场景参数，环境变量为 true
 	t.Run("no scenarios and env var is true", func(t *testing.T) {
+		t.Parallel()
 		os.Setenv("MOCK_SVC_NAME_LOCAL_DEV", "true")
+
 		defer os.Unsetenv("MOCK_SVC_NAME_LOCAL_DEV")
 
 		if !IsLocalDev() {
@@ -46,7 +50,9 @@ func TestIsLocalDev(t *testing.T) {
 
 	// 测试用例2: 无运行场景参数，环境变量为 false
 	t.Run("no scenarios and env var is false", func(t *testing.T) {
+		t.Parallel()
 		os.Setenv("MOCK_SVC_NAME_LOCAL_DEV", "false")
+
 		defer os.Unsetenv("MOCK_SVC_NAME_LOCAL_DEV")
 
 		if IsLocalDev() {
@@ -56,6 +62,7 @@ func TestIsLocalDev(t *testing.T) {
 
 	// 测试用例3: 无运行场景参数，环境变量未设置
 	t.Run("no scenarios and env var not set", func(t *testing.T) {
+		t.Parallel()
 		os.Unsetenv("MOCK_SVC_NAME_LOCAL_DEV")
 
 		if IsLocalDev() {
@@ -65,7 +72,9 @@ func TestIsLocalDev(t *testing.T) {
 
 	// 测试用例4: 有运行场景参数，但 LOCAL_DEV 为 false
 	t.Run("with scenarios but LOCAL_DEV is false", func(t *testing.T) {
+		t.Parallel()
 		os.Setenv("MOCK_SVC_NAME_LOCAL_DEV", "false")
+
 		defer os.Unsetenv("MOCK_SVC_NAME_LOCAL_DEV")
 
 		if IsLocalDev(RunScenario_Aaron_Local_Dev) {
@@ -104,6 +113,7 @@ func TestIsLocalDev(t *testing.T) {
 
 	// 测试用例7: 完整的成功场景
 	t.Run("complete success scenario", func(t *testing.T) {
+		t.Parallel()
 		os.Setenv("MOCK_SVC_NAME_LOCAL_DEV", "true")
 		os.Setenv("MOCK_SVC_NAME_RUN_SCENARIO", "aaron_local_dev")
 
@@ -119,6 +129,7 @@ func TestIsLocalDev(t *testing.T) {
 
 	// 测试用例8: 运行场景不匹配
 	t.Run("scenario does not match", func(t *testing.T) {
+		t.Parallel()
 		os.Setenv("MOCK_SVC_NAME_LOCAL_DEV", "true")
 		os.Setenv("MOCK_SVC_NAME_RUN_SCENARIO", "other_scenario")
 
@@ -134,12 +145,15 @@ func TestIsLocalDev(t *testing.T) {
 }
 
 func TestIsAaronLocalDev(t *testing.T) {
+	t.Parallel()
+
 	// 在测试开始前清理环境变量
 	cleanupTestEnv()
 	defer cleanupTestEnv()
 
 	// 测试用例1: Aaron 本地开发环境开启
 	t.Run("aaron local dev enabled", func(t *testing.T) {
+		t.Parallel()
 		os.Setenv("MOCK_SVC_NAME_LOCAL_DEV", "true")
 		os.Setenv("MOCK_SVC_NAME_RUN_SCENARIO", "aaron_local_dev")
 
@@ -155,7 +169,9 @@ func TestIsAaronLocalDev(t *testing.T) {
 
 	// 测试用例2: Aaron 本地开发环境关闭
 	t.Run("aaron local dev disabled", func(t *testing.T) {
+		t.Parallel()
 		os.Setenv("MOCK_SVC_NAME_LOCAL_DEV", "false")
+
 		defer os.Unsetenv("MOCK_SVC_NAME_LOCAL_DEV")
 
 		if IsAaronLocalDev() {
@@ -165,13 +181,17 @@ func TestIsAaronLocalDev(t *testing.T) {
 }
 
 func TestIsDebugMode(t *testing.T) {
+	t.Parallel()
+
 	// 在测试开始前清理环境变量
 	cleanupTestEnv()
 	defer cleanupTestEnv()
 
 	// 测试用例1: debug 模式开启
 	t.Run("debug mode is true", func(t *testing.T) {
+		t.Parallel()
 		os.Setenv("MOCK_SVC_NAME_DEBUG_MODE", "true")
+
 		defer os.Unsetenv("MOCK_SVC_NAME_DEBUG_MODE")
 
 		if !IsDebugMode() {
@@ -181,7 +201,9 @@ func TestIsDebugMode(t *testing.T) {
 
 	// 测试用例2: debug 模式关闭
 	t.Run("debug mode is false", func(t *testing.T) {
+		t.Parallel()
 		os.Setenv("MOCK_SVC_NAME_DEBUG_MODE", "false")
+
 		defer os.Unsetenv("MOCK_SVC_NAME_DEBUG_MODE")
 
 		if IsDebugMode() {
@@ -191,6 +213,7 @@ func TestIsDebugMode(t *testing.T) {
 
 	// 测试用例3: debug 模式未设置
 	t.Run("debug mode not set", func(t *testing.T) {
+		t.Parallel()
 		os.Unsetenv("MOCK_SVC_NAME_DEBUG_MODE")
 
 		if IsDebugMode() {
@@ -200,11 +223,15 @@ func TestIsDebugMode(t *testing.T) {
 }
 
 func TestIsSQLPrint(t *testing.T) {
+	t.Parallel()
+
 	cleanupTestEnv()
 	defer cleanupTestEnv()
 
 	t.Run("sql print is true", func(t *testing.T) {
+		t.Parallel()
 		os.Setenv("MOCK_SVC_NAME_SQL_PRINT", "true")
+
 		defer os.Unsetenv("MOCK_SVC_NAME_SQL_PRINT")
 
 		if !IsSQLPrint() {
@@ -213,7 +240,9 @@ func TestIsSQLPrint(t *testing.T) {
 	})
 
 	t.Run("sql print is false", func(t *testing.T) {
+		t.Parallel()
 		os.Setenv("MOCK_SVC_NAME_SQL_PRINT", "false")
+
 		defer os.Unsetenv("MOCK_SVC_NAME_SQL_PRINT")
 
 		if IsSQLPrint() {
@@ -222,6 +251,7 @@ func TestIsSQLPrint(t *testing.T) {
 	})
 
 	t.Run("sql print not set", func(t *testing.T) {
+		t.Parallel()
 		os.Unsetenv("MOCK_SVC_NAME_SQL_PRINT")
 
 		if IsSQLPrint() {
@@ -231,12 +261,17 @@ func TestIsSQLPrint(t *testing.T) {
 }
 
 func TestProjectPathByEnv(t *testing.T) {
+	t.Parallel()
+
 	cleanupTestEnv()
 	defer cleanupTestEnv()
 
 	t.Run("project path is set", func(t *testing.T) {
+		t.Parallel()
+
 		expectedPath := "/test/project/path"
 		os.Setenv("MOCK_SVC_NAME_PROJECT_PATH", expectedPath)
+
 		defer os.Unsetenv("MOCK_SVC_NAME_PROJECT_PATH")
 
 		result := ProjectPathByEnv()
@@ -246,6 +281,7 @@ func TestProjectPathByEnv(t *testing.T) {
 	})
 
 	t.Run("project path is empty", func(t *testing.T) {
+		t.Parallel()
 		os.Unsetenv("MOCK_SVC_NAME_PROJECT_PATH")
 
 		result := ProjectPathByEnv()
@@ -256,12 +292,17 @@ func TestProjectPathByEnv(t *testing.T) {
 }
 
 func TestConfigPathFromEnv(t *testing.T) {
+	t.Parallel()
+
 	cleanupTestEnv()
 	defer cleanupTestEnv()
 
 	t.Run("config path is set", func(t *testing.T) {
+		t.Parallel()
+
 		expectedPath := "/test/config/path"
 		os.Setenv("MOCK_SVC_NAME_CONFIG_PATH", expectedPath)
+
 		defer os.Unsetenv("MOCK_SVC_NAME_CONFIG_PATH")
 
 		result := ConfigPathFromEnv()
@@ -271,6 +312,7 @@ func TestConfigPathFromEnv(t *testing.T) {
 	})
 
 	t.Run("config path is empty", func(t *testing.T) {
+		t.Parallel()
 		os.Unsetenv("MOCK_SVC_NAME_CONFIG_PATH")
 
 		result := ConfigPathFromEnv()
@@ -281,6 +323,8 @@ func TestConfigPathFromEnv(t *testing.T) {
 }
 
 func TestConfigPathFromEnv_PanicWhenNotInited(t *testing.T) {
+	t.Parallel()
+
 	// Save and restore isEnvInited
 	oldInited := isEnvInited
 	defer func() {
@@ -299,6 +343,8 @@ func TestConfigPathFromEnv_PanicWhenNotInited(t *testing.T) {
 }
 
 func TestProjectPathByEnv_PanicWhenNotInited(t *testing.T) {
+	t.Parallel()
+
 	// Save and restore isEnvInited
 	oldInited := isEnvInited
 	defer func() {
@@ -317,6 +363,8 @@ func TestProjectPathByEnv_PanicWhenNotInited(t *testing.T) {
 }
 
 func TestIsDebugMode_PanicWhenNotInited(t *testing.T) {
+	t.Parallel()
+
 	// Save and restore isEnvInited
 	oldInited := isEnvInited
 	defer func() {
@@ -335,6 +383,8 @@ func TestIsDebugMode_PanicWhenNotInited(t *testing.T) {
 }
 
 func TestIsSQLPrint_PanicWhenNotInited(t *testing.T) {
+	t.Parallel()
+
 	// Save and restore isEnvInited
 	oldInited := isEnvInited
 	defer func() {
@@ -353,6 +403,8 @@ func TestIsSQLPrint_PanicWhenNotInited(t *testing.T) {
 }
 
 func TestIsLocalDev_PanicWhenNotInited(t *testing.T) {
+	t.Parallel()
+
 	// Save and restore isEnvInited
 	oldInited := isEnvInited
 	defer func() {

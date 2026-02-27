@@ -11,6 +11,8 @@ import (
 )
 
 func TestProduct(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		po      *dapo.ProductPo
@@ -45,11 +47,14 @@ func TestProduct(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			eo, err := Product(tt.po)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {
 				require.NoError(t, err)
+
 				if tt.checkEO != nil {
 					tt.checkEO(t, eo)
 				}
@@ -59,12 +64,14 @@ func TestProduct(t *testing.T) {
 }
 
 func TestProducts(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 
 	tests := []struct {
-		name    string
-		pos     []*dapo.ProductPo
-		wantErr bool
+		name     string
+		pos      []*dapo.ProductPo
+		wantErr  bool
 		checkEOs func(t *testing.T, eos []*producteo.Product)
 	}{
 		{
@@ -110,11 +117,14 @@ func TestProducts(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			eos, err := Products(ctx, tt.pos)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {
 				require.NoError(t, err)
+
 				if tt.checkEOs != nil {
 					tt.checkEOs(t, eos)
 				}

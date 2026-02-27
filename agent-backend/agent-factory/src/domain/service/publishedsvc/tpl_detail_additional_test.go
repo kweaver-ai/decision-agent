@@ -14,6 +14,8 @@ import (
 )
 
 func TestPublishedSvc_PubedTplDetail_NotFound(t *testing.T) {
+	t.Parallel()
+
 	initCGlobalConfig(t)
 
 	ctrl := gomock.NewController(t)
@@ -35,6 +37,8 @@ func TestPublishedSvc_PubedTplDetail_NotFound(t *testing.T) {
 }
 
 func TestPublishedSvc_PubedTplDetail_ProductRepoError(t *testing.T) {
+	t.Parallel()
+
 	initCGlobalConfig(t)
 
 	ctrl := gomock.NewController(t)
@@ -65,6 +69,8 @@ func TestPublishedSvc_PubedTplDetail_ProductRepoError(t *testing.T) {
 }
 
 func TestPublishedSvc_PubedTplDetail_Success(t *testing.T) {
+	t.Parallel()
+
 	initCGlobalConfig(t)
 
 	ctrl := gomock.NewController(t)

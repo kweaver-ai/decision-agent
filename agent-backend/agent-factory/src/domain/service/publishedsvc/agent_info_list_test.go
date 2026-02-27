@@ -20,14 +20,18 @@ import (
 
 func initCGlobalConfig(t *testing.T) {
 	t.Helper()
+
 	oldCfg := cglobal.GConfig
 	cglobal.GConfig = cconf.BaseDefConfig()
+
 	t.Cleanup(func() {
 		cglobal.GConfig = oldCfg
 	})
 }
 
 func TestPublishedSvc_GetPubedAgentInfoList_RepoError(t *testing.T) {
+	t.Parallel()
+
 	initCGlobalConfig(t)
 
 	ctrl := gomock.NewController(t)
@@ -53,6 +57,8 @@ func TestPublishedSvc_GetPubedAgentInfoList_RepoError(t *testing.T) {
 }
 
 func TestPublishedSvc_GetPubedAgentInfoList_EmptyPos(t *testing.T) {
+	t.Parallel()
+
 	initCGlobalConfig(t)
 
 	ctrl := gomock.NewController(t)
@@ -78,6 +84,8 @@ func TestPublishedSvc_GetPubedAgentInfoList_EmptyPos(t *testing.T) {
 }
 
 func TestPublishedSvc_GetPubedAgentInfoList_ConvertError(t *testing.T) {
+	t.Parallel()
+
 	initCGlobalConfig(t)
 
 	ctrl := gomock.NewController(t)
@@ -119,6 +127,8 @@ func TestPublishedSvc_GetPubedAgentInfoList_ConvertError(t *testing.T) {
 }
 
 func TestPublishedSvc_GetPubedAgentInfoList_Success(t *testing.T) {
+	t.Parallel()
+
 	initCGlobalConfig(t)
 
 	ctrl := gomock.NewController(t)

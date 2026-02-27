@@ -9,10 +9,12 @@ import (
 )
 
 func TestSkill_ValObjCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name    string
-		skill   *Skill
-		wantErr bool
+		name     string
+		skill    *Skill
+		wantErr  bool
 		checkErr func(t *testing.T, err error)
 	}{
 		{
@@ -131,9 +133,12 @@ func TestSkill_ValObjCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.skill.ValObjCheck()
 			if tt.wantErr {
 				require.Error(t, err)
+
 				if tt.checkErr != nil {
 					tt.checkErr(t, err)
 				}
@@ -145,10 +150,12 @@ func TestSkill_ValObjCheck(t *testing.T) {
 }
 
 func TestSkillTool_ValObjCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name    string
-		tool    *SkillTool
-		wantErr bool
+		name     string
+		tool     *SkillTool
+		wantErr  bool
 		checkErr func(t *testing.T, err error)
 	}{
 		{
@@ -233,15 +240,20 @@ func TestSkillTool_ValObjCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			var err error
+
 			if tt.tool == nil {
 				// Nil pointer will panic, so we skip it
 				t.Skip("nil tool test skipped - would panic")
 				return
 			}
+
 			err = tt.tool.ValObjCheck()
 			if tt.wantErr {
 				require.Error(t, err)
+
 				if tt.checkErr != nil {
 					tt.checkErr(t, err)
 				}
@@ -253,10 +265,12 @@ func TestSkillTool_ValObjCheck(t *testing.T) {
 }
 
 func TestSkillAgent_ValObjCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name    string
-		agent   *SkillAgent
-		wantErr bool
+		name     string
+		agent    *SkillAgent
+		wantErr  bool
 		checkErr func(t *testing.T, err error)
 	}{
 		{
@@ -322,8 +336,8 @@ func TestSkillAgent_ValObjCheck(t *testing.T) {
 		{
 			name: "agent with pms check status",
 			agent: &SkillAgent{
-				AgentKey:                "agent-1",
-				CurrentPmsCheckStatus:   CurrentPmsCheckStatusSuccess,
+				AgentKey:                    "agent-1",
+				CurrentPmsCheckStatus:       CurrentPmsCheckStatusSuccess,
 				CurrentIsExistsAndPublished: true,
 			},
 			wantErr: false,
@@ -332,15 +346,20 @@ func TestSkillAgent_ValObjCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			var err error
+
 			if tt.agent == nil {
 				// Nil pointer will panic, so we skip it
 				t.Skip("nil agent test skipped - would panic")
 				return
 			}
+
 			err = tt.agent.ValObjCheck()
 			if tt.wantErr {
 				require.Error(t, err)
+
 				if tt.checkErr != nil {
 					tt.checkErr(t, err)
 				}
@@ -352,10 +371,12 @@ func TestSkillAgent_ValObjCheck(t *testing.T) {
 }
 
 func TestSkillMCP_ValObjCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name    string
-		mcp     *SkillMCP
-		wantErr bool
+		name     string
+		mcp      *SkillMCP
+		wantErr  bool
 		checkErr func(t *testing.T, err error)
 	}{
 		{
@@ -385,15 +406,20 @@ func TestSkillMCP_ValObjCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			var err error
+
 			if tt.mcp == nil {
 				// Nil pointer will panic, so we skip it
 				t.Skip("nil mcp test skipped - would panic")
 				return
 			}
+
 			err = tt.mcp.ValObjCheck()
 			if tt.wantErr {
 				require.Error(t, err)
+
 				if tt.checkErr != nil {
 					tt.checkErr(t, err)
 				}
@@ -405,6 +431,8 @@ func TestSkillMCP_ValObjCheck(t *testing.T) {
 }
 
 func TestCurrentPmsCheckStatusT(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name   string
 		status CurrentPmsCheckStatusT
@@ -434,6 +462,7 @@ func TestCurrentPmsCheckStatusT(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			// CurrentPmsCheckStatusT is just a string type alias
 			// Any value is technically valid
 			assert.NotEmpty(t, string(tt.status) != "" || tt.status == "")
@@ -442,6 +471,8 @@ func TestCurrentPmsCheckStatusT(t *testing.T) {
 }
 
 func TestResultProcessStrategy(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		strategy ResultProcessStrategy
@@ -472,6 +503,7 @@ func TestResultProcessStrategy(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			// ResultProcessStrategy doesn't have validation
 			// Just verify it can be created
 			assert.NotNil(t, tt.strategy.Category)

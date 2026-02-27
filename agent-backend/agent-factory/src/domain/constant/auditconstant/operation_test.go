@@ -7,6 +7,8 @@ import (
 )
 
 func TestAuditOperations_Basic(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, "create", CREATE)
 	assert.Equal(t, "delete", DELETE)
 	assert.Equal(t, "update", UPDATE)
@@ -16,6 +18,8 @@ func TestAuditOperations_Basic(t *testing.T) {
 }
 
 func TestAuditOperations_Advanced(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, "import", IMPORT)
 	assert.Equal(t, "export", EXPORT)
 	assert.Equal(t, "modify_publish", MODIFY_PUBLISH)
@@ -23,6 +27,8 @@ func TestAuditOperations_Advanced(t *testing.T) {
 }
 
 func TestAuditOperations_NotEmpty(t *testing.T) {
+	t.Parallel()
+
 	assert.NotEmpty(t, CREATE)
 	assert.NotEmpty(t, DELETE)
 	assert.NotEmpty(t, UPDATE)
@@ -31,6 +37,8 @@ func TestAuditOperations_NotEmpty(t *testing.T) {
 }
 
 func TestAuditOperations_AreUnique(t *testing.T) {
+	t.Parallel()
+
 	operations := []string{
 		CREATE, DELETE, UPDATE, COPY, PUBLISH, UNPUBLISH,
 		IMPORT, EXPORT, MODIFY_PUBLISH, COPY_PUBLISH,
@@ -44,6 +52,8 @@ func TestAuditOperations_AreUnique(t *testing.T) {
 }
 
 func TestAuditOperation_ValidValues(t *testing.T) {
+	t.Parallel()
+
 	validOperations := []string{
 		CREATE, DELETE, UPDATE, COPY, PUBLISH, UNPUBLISH,
 		IMPORT, EXPORT, MODIFY_PUBLISH, COPY_PUBLISH,

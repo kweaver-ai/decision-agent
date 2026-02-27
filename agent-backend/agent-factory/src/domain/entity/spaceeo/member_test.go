@@ -8,6 +8,8 @@ import (
 )
 
 func TestSpaceMember_NewSpaceMember(t *testing.T) {
+	t.Parallel()
+
 	member := &SpaceMember{
 		SpaceMemberPo: dapo.SpaceMemberPo{
 			ID: 123,
@@ -21,6 +23,8 @@ func TestSpaceMember_NewSpaceMember(t *testing.T) {
 }
 
 func TestSpaceMember_EmptyMember(t *testing.T) {
+	t.Parallel()
+
 	member := &SpaceMember{}
 
 	assert.NotNil(t, member)
@@ -28,6 +32,8 @@ func TestSpaceMember_EmptyMember(t *testing.T) {
 }
 
 func TestSpaceMember_WithNilPo(t *testing.T) {
+	t.Parallel()
+
 	member := &SpaceMember{
 		ObjName: "Test",
 	}

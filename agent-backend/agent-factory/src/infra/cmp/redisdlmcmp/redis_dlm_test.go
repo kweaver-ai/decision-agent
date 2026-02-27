@@ -8,7 +8,11 @@ import (
 )
 
 func TestNewRedisDlmCmp(t *testing.T) {
+	t.Parallel()
+
 	t.Run("valid config", func(t *testing.T) {
+		t.Parallel()
+
 		conf := &RedisDlmCmpConf{
 			WatchDogInterval: 5 * time.Second,
 			RedisKeyPrefix:   "test",
@@ -22,6 +26,7 @@ func TestNewRedisDlmCmp(t *testing.T) {
 	})
 
 	t.Run("nil config", func(t *testing.T) {
+		t.Parallel()
 		// This will panic with nil config
 		defer func() {
 			if r := recover(); r != nil {
@@ -35,7 +40,11 @@ func TestNewRedisDlmCmp(t *testing.T) {
 }
 
 func TestRedisDlmCmpConf(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create config", func(t *testing.T) {
+		t.Parallel()
+
 		conf := &RedisDlmCmpConf{
 			WatchDogInterval: 10 * time.Second,
 			RedisKeyPrefix:   "test:prefix",
@@ -47,17 +56,21 @@ func TestRedisDlmCmpConf(t *testing.T) {
 		if conf.WatchDogInterval != 10*time.Second {
 			t.Errorf("Expected WatchDogInterval to be 10s, got %v", conf.WatchDogInterval)
 		}
+
 		if conf.RedisKeyPrefix != "test:prefix" {
 			t.Errorf("Expected RedisKeyPrefix to be 'test:prefix', got '%s'", conf.RedisKeyPrefix)
 		}
 	})
 
 	t.Run("zero value config", func(t *testing.T) {
+		t.Parallel()
+
 		var conf RedisDlmCmpConf
 
 		if conf.WatchDogInterval != 0 {
 			t.Errorf("Expected WatchDogInterval to be 0, got %v", conf.WatchDogInterval)
 		}
+
 		if conf.RedisKeyPrefix != "" {
 			t.Errorf("Expected RedisKeyPrefix to be empty, got '%s'", conf.RedisKeyPrefix)
 		}
@@ -65,7 +78,10 @@ func TestRedisDlmCmpConf(t *testing.T) {
 }
 
 func TestRedisDlmCmp_NewMutex(t *testing.T) {
+	t.Parallel()
+
 	t.Run("test method exists", func(t *testing.T) {
+		t.Parallel()
 		// Verify the method exists (compile-time check)
 		// Note: Actually calling this will fail without proper Redis setup
 		type redisDlmCmpInterface interface {
@@ -78,7 +94,11 @@ func TestRedisDlmCmp_NewMutex(t *testing.T) {
 }
 
 func TestRedisDlmMutexStruct(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create redisDlmMutex instance", func(t *testing.T) {
+		t.Parallel()
+
 		mutex := &redisDlmMutex{}
 
 		if mutex == nil {
@@ -87,20 +107,26 @@ func TestRedisDlmMutexStruct(t *testing.T) {
 	})
 
 	t.Run("zero values", func(t *testing.T) {
+		t.Parallel()
+
 		mutex := &redisDlmMutex{}
 
 		if mutex.redSyncMutex != nil {
 			t.Error("Expected redSyncMutex to be nil")
 		}
+
 		if mutex.done != nil {
 			t.Error("Expected done to be nil")
 		}
+
 		if mutex.watchDogInterval != 0 {
 			t.Errorf("Expected watchDogInterval to be 0, got %v", mutex.watchDogInterval)
 		}
+
 		if mutex.deleteValueFunc != nil {
 			t.Error("Expected deleteValueFunc to be nil")
 		}
+
 		if mutex.logger != nil {
 			t.Error("Expected logger to be nil")
 		}
@@ -108,7 +134,11 @@ func TestRedisDlmMutexStruct(t *testing.T) {
 }
 
 func TestRedisDlmMutex_Lock(t *testing.T) {
+	t.Parallel()
+
 	t.Run("test method exists", func(t *testing.T) {
+		t.Parallel()
+
 		mutex := &redisDlmMutex{}
 
 		// Verify the method exists (compile-time check)
@@ -118,7 +148,11 @@ func TestRedisDlmMutex_Lock(t *testing.T) {
 }
 
 func TestRedisDlmMutex_Unlock(t *testing.T) {
+	t.Parallel()
+
 	t.Run("test method exists", func(t *testing.T) {
+		t.Parallel()
+
 		mutex := &redisDlmMutex{}
 
 		// Verify the method exists (compile-time check)
@@ -128,7 +162,11 @@ func TestRedisDlmMutex_Unlock(t *testing.T) {
 }
 
 func TestWatchDog(t *testing.T) {
+	t.Parallel()
+
 	t.Run("test method exists", func(t *testing.T) {
+		t.Parallel()
+
 		mutex := &redisDlmMutex{}
 
 		// Verify the method exists (compile-time check)
@@ -137,6 +175,8 @@ func TestWatchDog(t *testing.T) {
 	})
 
 	t.Run("panic with zero interval", func(t *testing.T) {
+		t.Parallel()
+
 		mutex := &redisDlmMutex{
 			watchDogInterval: 0,
 		}

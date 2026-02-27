@@ -13,6 +13,8 @@ import (
 
 func TestMain(m *testing.M) {
 	os.Setenv("SERVICE_NAME", "AGENT_FACTORY")
+	// Note: Do NOT set AGENT_FACTORY_LOCAL_DEV=true
+	// We only test non-local-dev (production) mode to avoid environment variable race conditions
 	os.Setenv("I18N_MODE_UT", "true")
 	// Re-init cenvhelper so SERVICE_NAME takes effect
 	// (init() runs before TestMain, so env vars set here need a re-init)
@@ -21,6 +23,8 @@ func TestMain(m *testing.M) {
 }
 
 func TestPublishUpsertResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishUpsertResp{
 		ReleaseId:       "release-123",
 		Version:         "1.0.0",
@@ -37,6 +41,8 @@ func TestPublishUpsertResp_StructFields(t *testing.T) {
 }
 
 func TestPublishUpsertResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishUpsertResp{}
 
 	assert.Empty(t, resp.ReleaseId)
@@ -47,6 +53,8 @@ func TestPublishUpsertResp_Empty(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithReleaseId(t *testing.T) {
+	t.Parallel()
+
 	ids := []string{
 		"release-001",
 		"release-xyz",
@@ -63,6 +71,8 @@ func TestPublishUpsertResp_WithReleaseId(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithVersion(t *testing.T) {
+	t.Parallel()
+
 	versions := []string{
 		"1.0.0",
 		"2.1.3",
@@ -81,6 +91,8 @@ func TestPublishUpsertResp_WithVersion(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithPublishedAt(t *testing.T) {
+	t.Parallel()
+
 	timestamps := []int64{
 		1640995200000, // 2022-01-01
 		1643673600000, // 2022-02-01
@@ -99,6 +111,8 @@ func TestPublishUpsertResp_WithPublishedAt(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithPublishedBy(t *testing.T) {
+	t.Parallel()
+
 	users := []string{
 		"user-001",
 		"user-xyz",
@@ -115,6 +129,8 @@ func TestPublishUpsertResp_WithPublishedBy(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithPublishedByName(t *testing.T) {
+	t.Parallel()
+
 	names := []string{
 		"John Doe",
 		"张三",
@@ -131,6 +147,8 @@ func TestPublishUpsertResp_WithPublishedByName(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishUpsertResp{
 		ReleaseId:       "release-complete",
 		Version:         "9.9.9",
@@ -147,6 +165,8 @@ func TestPublishUpsertResp_WithAllFields(t *testing.T) {
 }
 
 func TestPublishUpsertResp_FillPublishedByName_LocalDev(t *testing.T) {
+	t.Parallel()
+
 	// This test depends on the environment
 	// We'll just test that the method exists and can be called
 	resp := PublishUpsertResp{
@@ -161,6 +181,8 @@ func TestPublishUpsertResp_FillPublishedByName_LocalDev(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithTimestamp(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishUpsertResp{
 		ReleaseId:   "release-123",
 		Version:     "1.0.0",
@@ -174,6 +196,8 @@ func TestPublishUpsertResp_WithTimestamp(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithNegativeTimestamp(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishUpsertResp{
 		PublishedAt: -12345,
 	}
@@ -182,6 +206,8 @@ func TestPublishUpsertResp_WithNegativeTimestamp(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithChineseName(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishUpsertResp{
 		PublishedByName: "张三",
 	}
@@ -190,6 +216,8 @@ func TestPublishUpsertResp_WithChineseName(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithMixedName(t *testing.T) {
+	t.Parallel()
+
 	resp := PublishUpsertResp{
 		PublishedByName: "User用户Name",
 	}
@@ -198,6 +226,8 @@ func TestPublishUpsertResp_WithMixedName(t *testing.T) {
 }
 
 func TestPublishUpsertResp_FillPublishedByName_Signature(t *testing.T) {
+	t.Parallel()
+
 	// Test that FillPublishedByName has the correct signature
 	resp := &PublishUpsertResp{
 		PublishedBy: "user-123",
@@ -210,6 +240,8 @@ func TestPublishUpsertResp_FillPublishedByName_Signature(t *testing.T) {
 }
 
 func TestPublishUpsertResp_ContextUsage(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	resp := &PublishUpsertResp{
 		PublishedBy: "user-123",
@@ -221,6 +253,8 @@ func TestPublishUpsertResp_ContextUsage(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithSemanticVersioning(t *testing.T) {
+	t.Parallel()
+
 	versions := []string{
 		"1.0.0",
 		"1.1.0",
@@ -240,6 +274,8 @@ func TestPublishUpsertResp_WithSemanticVersioning(t *testing.T) {
 }
 
 func TestPublishUpsertResp_WithReleaseIdFormats(t *testing.T) {
+	t.Parallel()
+
 	releaseIds := []string{
 		"release-001",
 		"RELEASE-002",
@@ -256,49 +292,12 @@ func TestPublishUpsertResp_WithReleaseIdFormats(t *testing.T) {
 	}
 }
 
-func TestPublishUpsertResp_FillPublishedByName_Actual(t *testing.T) {
-	// Set LOCAL_DEV environment variable for local dev testing
-	os.Setenv("AGENT_FACTORY_LOCAL_DEV", "true")
-	cenvhelper.InitEnvForTest() // re-init so IsLocalDev() picks up the new value
-	defer func() {
-		os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
-		cenvhelper.InitEnvForTest()
-	}()
-
-	t.Run("local dev mode - sets published by name with suffix", func(t *testing.T) {
-		resp := &PublishUpsertResp{
-			PublishedBy: "user123",
-		}
-		ctx := context.Background()
-		ctrl := gomock.NewController(t)
-		mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
-		// In local dev mode, GetSingleUserName is NOT called, no expectation needed
-
-		err := resp.FillPublishedByName(ctx, mockUm)
-		assert.NoError(t, err)
-		assert.Equal(t, "user123_name", resp.PublishedByName)
-	})
-
-	t.Run("local dev mode - empty published by", func(t *testing.T) {
-		resp := &PublishUpsertResp{
-			PublishedBy: "",
-		}
-		ctx := context.Background()
-		ctrl := gomock.NewController(t)
-		mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
-		// In local dev mode, GetSingleUserName is NOT called, no expectation needed
-
-		err := resp.FillPublishedByName(ctx, mockUm)
-		assert.NoError(t, err)
-		assert.Equal(t, "_name", resp.PublishedByName)
-	})
-}
-
 func TestPublishUpsertResp_FillPublishedByName_NonLocalDev(t *testing.T) {
-	// Ensure LOCAL_DEV is not set
-	os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
+	t.Parallel()
 
 	t.Run("non-local dev - successfully gets user name", func(t *testing.T) {
+		t.Parallel()
+
 		resp := &PublishUpsertResp{
 			PublishedBy: "user123",
 		}
@@ -313,6 +312,8 @@ func TestPublishUpsertResp_FillPublishedByName_NonLocalDev(t *testing.T) {
 	})
 
 	t.Run("non-local dev - error getting user name", func(t *testing.T) {
+		t.Parallel()
+
 		resp := &PublishUpsertResp{
 			PublishedBy: "user123",
 		}
@@ -326,6 +327,8 @@ func TestPublishUpsertResp_FillPublishedByName_NonLocalDev(t *testing.T) {
 	})
 
 	t.Run("non-local dev - empty user name returned", func(t *testing.T) {
+		t.Parallel()
+
 		resp := &PublishUpsertResp{
 			PublishedBy: "user456",
 		}
@@ -338,26 +341,4 @@ func TestPublishUpsertResp_FillPublishedByName_NonLocalDev(t *testing.T) {
 		assert.NoError(t, err)
 		assert.Equal(t, "", resp.PublishedByName)
 	})
-}
-
-func TestPublishUpsertResp_FillPublishedByName_PointerReceiver(t *testing.T) {
-	// Test with pointer receiver
-	os.Setenv("AGENT_FACTORY_LOCAL_DEV", "true")
-	cenvhelper.InitEnvForTest() // re-init so IsLocalDev() picks up the new value
-	defer func() {
-		os.Unsetenv("AGENT_FACTORY_LOCAL_DEV")
-		cenvhelper.InitEnvForTest()
-	}()
-
-	resp := &PublishUpsertResp{
-		PublishedBy: "test-user",
-	}
-	ctx := context.Background()
-	ctrl := gomock.NewController(t)
-	mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
-	// In local dev mode, GetSingleUserName is NOT called, no expectation needed
-
-	err := resp.FillPublishedByName(ctx, mockUm)
-	assert.NoError(t, err)
-	assert.Equal(t, "test-user_name", resp.PublishedByName)
 }

@@ -6,16 +6,16 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_tpl/agenttplreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_tpl/agenttplreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 // Helper function to create context with user ID
@@ -23,6 +23,7 @@ func createTplCtxWithUserID(userID string) context.Context {
 	visitor := &rest.Visitor{
 		ID: userID,
 	}
+
 	return context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), visitor)
 }
 
@@ -55,9 +56,9 @@ func TestDetail_Success(t *testing.T) {
 	mockProductRepo.EXPECT().GetByKey(gomock.Any(), "test-product").Return(productPo, nil)
 
 	svc := &dataAgentTplSvc{
-		SvcBase:       service.NewSvcBase(),
-		agentTplRepo:  mockAgentTplRepo,
-		productRepo:   mockProductRepo,
+		SvcBase:      service.NewSvcBase(),
+		agentTplRepo: mockAgentTplRepo,
+		productRepo:  mockProductRepo,
 	}
 
 	ctx := context.Background()
@@ -78,9 +79,9 @@ func TestDetail_NotFound(t *testing.T) {
 	mockAgentTplRepo.EXPECT().GetByID(gomock.Any(), templateID).Return(nil, sql.ErrNoRows)
 
 	svc := &dataAgentTplSvc{
-		SvcBase:       service.NewSvcBase(),
-		agentTplRepo:  mockAgentTplRepo,
-		productRepo:   mockProductRepo,
+		SvcBase:      service.NewSvcBase(),
+		agentTplRepo: mockAgentTplRepo,
+		productRepo:  mockProductRepo,
 	}
 
 	ctx := context.Background()
@@ -103,9 +104,9 @@ func TestDetail_RepositoryError(t *testing.T) {
 	mockAgentTplRepo.EXPECT().GetByID(gomock.Any(), templateID).Return(nil, expectedErr)
 
 	svc := &dataAgentTplSvc{
-		SvcBase:       service.NewSvcBase(),
-		agentTplRepo:  mockAgentTplRepo,
-		productRepo:   mockProductRepo,
+		SvcBase:      service.NewSvcBase(),
+		agentTplRepo: mockAgentTplRepo,
+		productRepo:  mockProductRepo,
 	}
 
 	ctx := context.Background()
@@ -145,9 +146,9 @@ func TestDetailByKey_Success(t *testing.T) {
 	mockProductRepo.EXPECT().GetByKey(gomock.Any(), "test-product").Return(productPo, nil)
 
 	svc := &dataAgentTplSvc{
-		SvcBase:       service.NewSvcBase(),
-		agentTplRepo:  mockAgentTplRepo,
-		productRepo:   mockProductRepo,
+		SvcBase:      service.NewSvcBase(),
+		agentTplRepo: mockAgentTplRepo,
+		productRepo:  mockProductRepo,
 	}
 
 	ctx := context.Background()
@@ -169,9 +170,9 @@ func TestDetailByKey_NotFound(t *testing.T) {
 	mockAgentTplRepo.EXPECT().GetByKey(gomock.Any(), templateKey).Return(nil, expectedErr)
 
 	svc := &dataAgentTplSvc{
-		SvcBase:       service.NewSvcBase(),
-		agentTplRepo:  mockAgentTplRepo,
-		productRepo:   mockProductRepo,
+		SvcBase:      service.NewSvcBase(),
+		agentTplRepo: mockAgentTplRepo,
+		productRepo:  mockProductRepo,
 	}
 
 	ctx := context.Background()
@@ -323,6 +324,7 @@ func TestUpdate_RepositoryErrorOnExistsCheck(t *testing.T) {
 	}
 
 	expectedErr := errors.New("database error")
+
 	mockAgentTplRepo.EXPECT().GetByID(gomock.Any(), templateID).Return(oldPo, nil)
 	mockAgentTplRepo.EXPECT().ExistsByNameExcludeID(gomock.Any(), req.Name, templateID).Return(false, expectedErr)
 

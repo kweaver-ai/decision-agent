@@ -10,6 +10,8 @@ import (
 )
 
 func TestNewRetrieverDataSource(t *testing.T) {
+	t.Parallel()
+
 	ds := NewRetrieverDataSource()
 
 	assert.NotNil(t, ds)
@@ -27,10 +29,12 @@ func TestNewRetrieverDataSource(t *testing.T) {
 }
 
 func TestRetrieverDataSource_IsNotSet(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name   string
-		ds     *RetrieverDataSource
-		want   bool
+		name string
+		ds   *RetrieverDataSource
+		want bool
 	}{
 		{
 			name: "all empty",
@@ -72,6 +76,8 @@ func TestRetrieverDataSource_IsNotSet(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := tt.ds.IsNotSet()
 			assert.Equal(t, tt.want, got)
 		})
@@ -79,6 +85,8 @@ func TestRetrieverDataSource_IsNotSet(t *testing.T) {
 }
 
 func TestRetrieverDataSource_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	ds := &RetrieverDataSource{}
 	msgMap := ds.GetErrMsgMap()
 
@@ -87,6 +95,8 @@ func TestRetrieverDataSource_GetErrMsgMap(t *testing.T) {
 }
 
 func TestRetrieverDataSource_ValObjCheckWithCtx_Empty(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	ds := &RetrieverDataSource{
 		Kg:     []*KgSource{},
@@ -99,6 +109,8 @@ func TestRetrieverDataSource_ValObjCheckWithCtx_Empty(t *testing.T) {
 }
 
 func TestRetrieverDataSource_ValObjCheckWithCtx_WithInvalidKg(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	ds := &RetrieverDataSource{
 		Kg: []*KgSource{{}}, // Invalid - missing required fields
@@ -113,6 +125,8 @@ func TestRetrieverDataSource_ValObjCheckWithCtx_WithInvalidKg(t *testing.T) {
 }
 
 func TestRetrieverDataSource_ValObjCheckWithCtx_WithValidKg(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	validKG := 60
 	simThreshold := -5.5
@@ -139,9 +153,11 @@ func TestRetrieverDataSource_ValObjCheckWithCtx_WithValidKg(t *testing.T) {
 }
 
 func TestRetrieverDataSource_ValObjCheckWithCtx_MissingAdvancedConfig(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	ds := &RetrieverDataSource{
-		Kg: []*KgSource{{KgID: "test-kg", Fields: []string{"field1"}}},
+		Kg:             []*KgSource{{KgID: "test-kg", Fields: []string{"field1"}}},
 		AdvancedConfig: nil,
 	}
 
@@ -151,6 +167,8 @@ func TestRetrieverDataSource_ValObjCheckWithCtx_MissingAdvancedConfig(t *testing
 }
 
 func TestRetrieverDataSource_ValObjCheckWithCtx_MissingKgAdvancedConfig(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	ds := &RetrieverDataSource{
 		Kg: []*KgSource{{KgID: "test-kg", Fields: []string{"field1"}}},
@@ -165,6 +183,8 @@ func TestRetrieverDataSource_ValObjCheckWithCtx_MissingKgAdvancedConfig(t *testi
 }
 
 func TestRetrieverDataSource_ValObjCheckWithCtx_WithInvalidDoc(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	ds := &RetrieverDataSource{
 		Doc: []*DocSource{{DsID: ""}}, // Invalid - missing required fields
@@ -179,6 +199,8 @@ func TestRetrieverDataSource_ValObjCheckWithCtx_WithInvalidDoc(t *testing.T) {
 }
 
 func TestRetrieverDataSource_ValObjCheckWithCtx_WithValidDoc(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	retrievalSlicesNum := 100
 	maxSlicePerCite := 5
@@ -218,6 +240,8 @@ func TestRetrieverDataSource_ValObjCheckWithCtx_WithValidDoc(t *testing.T) {
 }
 
 func TestRetrieverDataSource_ValObjCheckWithCtx_MissingDocAdvancedConfig(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	// Create a valid DocSourceField with all required fields
 	validField := &DocSourceField{
@@ -240,6 +264,8 @@ func TestRetrieverDataSource_ValObjCheckWithCtx_MissingDocAdvancedConfig(t *test
 }
 
 func TestRetrieverDataSource_ValObjCheckWithCtx_KgAdvancedConfigInvalidWhenKgEmpty(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	ds := &RetrieverDataSource{
 		Kg: []*KgSource{},
@@ -254,6 +280,8 @@ func TestRetrieverDataSource_ValObjCheckWithCtx_KgAdvancedConfigInvalidWhenKgEmp
 }
 
 func TestRetrieverDataSource_ValObjCheckWithCtx_DocAdvancedConfigInvalidWhenDocEmpty(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	ds := &RetrieverDataSource{
 		Doc: []*DocSource{},
@@ -268,6 +296,8 @@ func TestRetrieverDataSource_ValObjCheckWithCtx_DocAdvancedConfigInvalidWhenDocE
 }
 
 func TestRetrieverDataSource_GetBuiltInDocDataSource(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		ds   *RetrieverDataSource
@@ -304,6 +334,8 @@ func TestRetrieverDataSource_GetBuiltInDocDataSource(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := tt.ds.GetBuiltInDocDataSource()
 			if tt.want == nil {
 				assert.Nil(t, got)
@@ -316,6 +348,8 @@ func TestRetrieverDataSource_GetBuiltInDocDataSource(t *testing.T) {
 }
 
 func TestRetrieverDataSource_GetBuiltInDsDocSourceFields(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name      string
 		ds        *RetrieverDataSource
@@ -355,6 +389,8 @@ func TestRetrieverDataSource_GetBuiltInDsDocSourceFields(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := tt.ds.GetBuiltInDsDocSourceFields()
 			assert.Len(t, got, tt.wantCount)
 		})
@@ -362,6 +398,8 @@ func TestRetrieverDataSource_GetBuiltInDsDocSourceFields(t *testing.T) {
 }
 
 func TestRetrieverDataSource_GetFirstDocDatasetId(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		ds   *RetrieverDataSource
@@ -380,9 +418,9 @@ func TestRetrieverDataSource_GetFirstDocDatasetId(t *testing.T) {
 				Doc: []*DocSource{
 					{DsID: "1", Fields: []*DocSourceField{{Name: "field1"}}},
 					{
-						DsID:      "0",
-						Fields:    []*DocSourceField{{Name: "field2"}},
-						Datasets:  []string{"dataset1", "dataset2"},
+						DsID:     "0",
+						Fields:   []*DocSourceField{{Name: "field2"}},
+						Datasets: []string{"dataset1", "dataset2"},
 					},
 				},
 			},
@@ -411,6 +449,8 @@ func TestRetrieverDataSource_GetFirstDocDatasetId(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := tt.ds.GetFirstDocDatasetId()
 			assert.Equal(t, tt.want, got)
 		})
@@ -418,6 +458,8 @@ func TestRetrieverDataSource_GetFirstDocDatasetId(t *testing.T) {
 }
 
 func TestRetrieverDataSource_ValObjCheckWithCtx_InvalidKnowledgeNetwork(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	ds := &RetrieverDataSource{
 		KnowledgeNetwork: []*KnowledgeNetworkSource{
@@ -431,6 +473,8 @@ func TestRetrieverDataSource_ValObjCheckWithCtx_InvalidKnowledgeNetwork(t *testi
 }
 
 func TestRetrieverDataSource_ValObjCheckWithCtx_ValidKnowledgeNetwork(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	ds := &RetrieverDataSource{
 		KnowledgeNetwork: []*KnowledgeNetworkSource{
@@ -449,6 +493,8 @@ func TestRetrieverDataSource_ValObjCheckWithCtx_ValidKnowledgeNetwork(t *testing
 }
 
 func TestRetrieverDataSource_ValObjCheckWithCtx_InvalidKnEntry(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	ds := &RetrieverDataSource{
 		KnEntry: []*KnEntrySource{

@@ -9,6 +9,8 @@ import (
 )
 
 func TestYamlParse(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		yamlStr  string
@@ -30,7 +32,7 @@ b:
 a: Easy!
 b:
   c: 2
-  d: [3, 4]`), 0644)
+  d: [3, 4]`), 0o644)
 				if err != nil {
 					return "", err
 				}
@@ -65,6 +67,8 @@ b:
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			filePath, err := tt.setup()
 			if err != nil {
 				t.Fatal(err)

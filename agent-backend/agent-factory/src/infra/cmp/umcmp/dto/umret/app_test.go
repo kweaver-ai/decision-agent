@@ -7,6 +7,8 @@ import (
 )
 
 func TestAppInfo_StructFields(t *testing.T) {
+	t.Parallel()
+
 	info := AppInfo{
 		ID:   "app-123",
 		Name: "Test App",
@@ -17,6 +19,8 @@ func TestAppInfo_StructFields(t *testing.T) {
 }
 
 func TestAppInfo_Empty(t *testing.T) {
+	t.Parallel()
+
 	info := AppInfo{}
 
 	assert.Empty(t, info.ID)
@@ -24,6 +28,8 @@ func TestAppInfo_Empty(t *testing.T) {
 }
 
 func TestAppInfo_WithChineseName(t *testing.T) {
+	t.Parallel()
+
 	info := AppInfo{
 		ID:   "应用-123",
 		Name: "测试应用",
@@ -34,6 +40,8 @@ func TestAppInfo_WithChineseName(t *testing.T) {
 }
 
 func TestAppListResDto_StructFields(t *testing.T) {
+	t.Parallel()
+
 	dto := AppListResDto{
 		Entries: []*AppInfo{
 			{ID: "app-1", Name: "App 1"},
@@ -48,6 +56,8 @@ func TestAppListResDto_StructFields(t *testing.T) {
 }
 
 func TestAppListResDto_Empty(t *testing.T) {
+	t.Parallel()
+
 	dto := AppListResDto{}
 
 	assert.Nil(t, dto.Entries)
@@ -55,6 +65,8 @@ func TestAppListResDto_Empty(t *testing.T) {
 }
 
 func TestAppListResDto_AddEntries(t *testing.T) {
+	t.Parallel()
+
 	dto := AppListResDto{}
 
 	dto.Entries = append(dto.Entries, &AppInfo{
@@ -72,6 +84,8 @@ func TestAppListResDto_AddEntries(t *testing.T) {
 }
 
 func TestAppListResDto_WithTotalCount(t *testing.T) {
+	t.Parallel()
+
 	totalCounts := []int64{0, 1, 100, 1000, 999999}
 
 	for _, tc := range totalCounts {
@@ -83,6 +97,8 @@ func TestAppListResDto_WithTotalCount(t *testing.T) {
 }
 
 func TestAppListResDto_WithMultipleEntries(t *testing.T) {
+	t.Parallel()
+
 	entries := make([]*AppInfo, 50)
 	for i := 0; i < 50; i++ {
 		entries[i] = &AppInfo{
@@ -101,6 +117,8 @@ func TestAppListResDto_WithMultipleEntries(t *testing.T) {
 }
 
 func TestAppListResDto_Iteration(t *testing.T) {
+	t.Parallel()
+
 	dto := AppListResDto{}
 
 	for i := 0; i < 5; i++ {
@@ -111,15 +129,20 @@ func TestAppListResDto_Iteration(t *testing.T) {
 	}
 
 	count := 0
+
 	for _, entry := range dto.Entries {
 		assert.NotEmpty(t, entry.ID)
 		assert.NotEmpty(t, entry.Name)
+
 		count++
 	}
+
 	assert.Equal(t, 5, count)
 }
 
 func TestAppInfo_WithSpecialCharacters(t *testing.T) {
+	t.Parallel()
+
 	info := AppInfo{
 		ID:   "app@#$%",
 		Name: "App Name (Test)",
@@ -130,6 +153,8 @@ func TestAppInfo_WithSpecialCharacters(t *testing.T) {
 }
 
 func TestAppListResDto_WithOnlyTotalCount(t *testing.T) {
+	t.Parallel()
+
 	dto := AppListResDto{
 		TotalCount: 10,
 	}
@@ -139,6 +164,8 @@ func TestAppListResDto_WithOnlyTotalCount(t *testing.T) {
 }
 
 func TestAppListResDto_WithOnlyEntries(t *testing.T) {
+	t.Parallel()
+
 	dto := AppListResDto{
 		Entries: []*AppInfo{
 			{ID: "app-1", Name: "App 1"},

@@ -5,15 +5,17 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squarereq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iumacc/httpaccmock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestSquareSvc_GetAgentInfo_PanicsWithoutAgentConfRepo(t *testing.T) {
+	t.Parallel()
+
 	svc := &squareSvc{
 		SvcBase: service.NewSvcBase(),
 	}
@@ -29,6 +31,8 @@ func TestSquareSvc_GetAgentInfo_PanicsWithoutAgentConfRepo(t *testing.T) {
 }
 
 func TestSquareSvc_GetAgentInfo_AgentNotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -57,6 +61,8 @@ func TestSquareSvc_GetAgentInfo_AgentNotFound(t *testing.T) {
 }
 
 func TestSquareSvc_GetAgentInfo_GetByIDError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

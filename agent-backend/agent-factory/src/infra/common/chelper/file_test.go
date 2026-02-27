@@ -13,18 +13,23 @@ import (
 )
 
 func TestAppendWriteToFile(t *testing.T) {
+	t.Parallel()
+
 	t.Run("should not write file in non-local env", func(t *testing.T) {
+		t.Parallel()
 		filePath := filepath.Join(t.TempDir(), "non-local.txt")
 		fileTestSetupLocalEnv(t, false)
 
 		err := AppendWriteToFile(filePath, "hello")
 
 		require.NoError(t, err)
+
 		_, statErr := os.Stat(filePath)
 		assert.True(t, os.IsNotExist(statErr))
 	})
 
 	t.Run("should append content in local env", func(t *testing.T) {
+		t.Parallel()
 		filePath := filepath.Join(t.TempDir(), "local-append.txt")
 		fileTestSetupLocalEnv(t, true)
 
@@ -37,17 +42,21 @@ func TestAppendWriteToFile(t *testing.T) {
 	})
 
 	t.Run("should be thread-safe and keep all writes in local env", func(t *testing.T) {
+		t.Parallel()
 		filePath := filepath.Join(t.TempDir(), "local-concurrent.txt")
 		fileTestSetupLocalEnv(t, true)
 
 		var wg sync.WaitGroup
 		for i := 0; i < 10; i++ {
 			wg.Add(1)
+
 			go func() {
 				defer wg.Done()
+
 				_ = AppendWriteToFile(filePath, "line\n")
 			}()
 		}
+
 		wg.Wait()
 
 		content, readErr := os.ReadFile(filePath)
@@ -76,6 +85,7 @@ func fileTestSetupLocalEnv(t *testing.T, isLocal bool) {
 			_ = os.Setenv(k, v)
 			return
 		}
+
 		_ = os.Unsetenv(k)
 	}
 

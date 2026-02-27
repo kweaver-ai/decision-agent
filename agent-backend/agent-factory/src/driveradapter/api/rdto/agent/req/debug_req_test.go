@@ -7,21 +7,23 @@ import (
 )
 
 func TestDebugReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	input := DebugInput{
 		Query: "Test query",
 	}
 
 	req := DebugReq{
-		AgentID:        "agent-123",
-		AgentVersion:   "v1.0.0",
-		Input:          input,
-		ConversationID: "conv-456",
-		ChatMode:       "debug",
-		Stream:         true,
-		IncStream:      false,
-		UserID:         "user-789",
-		Token:          "token-101",
-		AgentAPPKey:    "app-202",
+		AgentID:         "agent-123",
+		AgentVersion:    "v1.0.0",
+		Input:           input,
+		ConversationID:  "conv-456",
+		ChatMode:        "debug",
+		Stream:          true,
+		IncStream:       false,
+		UserID:          "user-789",
+		Token:           "token-101",
+		AgentAPPKey:     "app-202",
 		ExecutorVersion: "v2",
 	}
 
@@ -39,6 +41,8 @@ func TestDebugReq_StructFields(t *testing.T) {
 }
 
 func TestDebugReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := DebugReq{}
 
 	assert.Empty(t, req.AgentID)
@@ -54,6 +58,8 @@ func TestDebugReq_Empty(t *testing.T) {
 }
 
 func TestDebugInput_StructFields(t *testing.T) {
+	t.Parallel()
+
 	input := DebugInput{
 		Query: "Test query",
 		CustomQuerys: map[string]interface{}{
@@ -69,6 +75,8 @@ func TestDebugInput_StructFields(t *testing.T) {
 }
 
 func TestDebugInput_Empty(t *testing.T) {
+	t.Parallel()
+
 	input := DebugInput{}
 
 	assert.Empty(t, input.Query)
@@ -77,6 +85,8 @@ func TestDebugInput_Empty(t *testing.T) {
 }
 
 func TestDebugReq_WithStreamOptions(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name      string
 		stream    bool
@@ -101,6 +111,8 @@ func TestDebugReq_WithStreamOptions(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			req := DebugReq{
 				Stream:    tt.stream,
 				IncStream: tt.incStream,
@@ -112,6 +124,8 @@ func TestDebugReq_WithStreamOptions(t *testing.T) {
 }
 
 func TestDebugReq_WithSelectedFiles(t *testing.T) {
+	t.Parallel()
+
 	files := []SelectedFile{
 		{FileName: "file1.pdf"},
 		{FileName: "file2.txt"},
@@ -127,6 +141,8 @@ func TestDebugReq_WithSelectedFiles(t *testing.T) {
 }
 
 func TestDebugReq_WithExecutorVersion(t *testing.T) {
+	t.Parallel()
+
 	versions := []string{
 		"v1",
 		"v2",
@@ -142,6 +158,8 @@ func TestDebugReq_WithExecutorVersion(t *testing.T) {
 }
 
 func TestDebugReq_WithAgentID(t *testing.T) {
+	t.Parallel()
+
 	agentIDs := []string{
 		"agent-001",
 		"test-agent",
@@ -158,6 +176,8 @@ func TestDebugReq_WithAgentID(t *testing.T) {
 }
 
 func TestDebugInput_WithQuery(t *testing.T) {
+	t.Parallel()
+
 	queries := []string{
 		"Test query 1",
 		"Test query 2",
@@ -174,13 +194,15 @@ func TestDebugInput_WithQuery(t *testing.T) {
 }
 
 func TestDebugInput_WithCustomQuerys(t *testing.T) {
+	t.Parallel()
+
 	input := DebugInput{
 		CustomQuerys: map[string]interface{}{
-			"string_key":  "string_value",
-			"number_key":  42,
-			"bool_key":    true,
-			"null_key":    nil,
-			"object_key":  map[string]string{"nested": "value"},
+			"string_key": "string_value",
+			"number_key": 42,
+			"bool_key":   true,
+			"null_key":   nil,
+			"object_key": map[string]string{"nested": "value"},
 		},
 	}
 
@@ -191,6 +213,8 @@ func TestDebugInput_WithCustomQuerys(t *testing.T) {
 }
 
 func TestDebugReq_WithConversationID(t *testing.T) {
+	t.Parallel()
+
 	convIDs := []string{
 		"conv-001",
 		"test-conversation",

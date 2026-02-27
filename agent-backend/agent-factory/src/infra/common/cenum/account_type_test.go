@@ -7,19 +7,27 @@ import (
 )
 
 func TestAccountType_Constants(t *testing.T) {
+	t.Parallel()
+
 	t.Run("AccountTypeUser constant", func(t *testing.T) {
+		t.Parallel()
+
 		if AccountTypeUser != "user" {
 			t.Errorf("Expected AccountTypeUser to be 'user', got '%s'", AccountTypeUser)
 		}
 	})
 
 	t.Run("AccountTypeApp constant", func(t *testing.T) {
+		t.Parallel()
+
 		if AccountTypeApp != "app" {
 			t.Errorf("Expected AccountTypeApp to be 'app', got '%s'", AccountTypeApp)
 		}
 	})
 
 	t.Run("AccountTypeAnonymous constant", func(t *testing.T) {
+		t.Parallel()
+
 		if AccountTypeAnonymous != "anonymous" {
 			t.Errorf("Expected AccountTypeAnonymous to be 'anonymous', got '%s'", AccountTypeAnonymous)
 		}
@@ -27,7 +35,11 @@ func TestAccountType_Constants(t *testing.T) {
 }
 
 func TestAccountType_String(t *testing.T) {
+	t.Parallel()
+
 	t.Run("user account type", func(t *testing.T) {
+		t.Parallel()
+
 		at := AccountTypeUser
 		result := at.String()
 
@@ -37,6 +49,8 @@ func TestAccountType_String(t *testing.T) {
 	})
 
 	t.Run("app account type", func(t *testing.T) {
+		t.Parallel()
+
 		at := AccountTypeApp
 		result := at.String()
 
@@ -47,34 +61,44 @@ func TestAccountType_String(t *testing.T) {
 }
 
 func TestAccountType_EnumCheck(t *testing.T) {
-	t.Run("valid user account type", func(t *testing.T) {
-		at := AccountTypeUser
-		err := at.EnumCheck()
+	t.Parallel()
 
+	t.Run("valid user account type", func(t *testing.T) {
+		t.Parallel()
+
+		at := AccountTypeUser
+
+		err := at.EnumCheck()
 		if err != nil {
 			t.Errorf("Expected no error for valid user account type, got %v", err)
 		}
 	})
 
 	t.Run("valid app account type", func(t *testing.T) {
-		at := AccountTypeApp
-		err := at.EnumCheck()
+		t.Parallel()
 
+		at := AccountTypeApp
+
+		err := at.EnumCheck()
 		if err != nil {
 			t.Errorf("Expected no error for valid app account type, got %v", err)
 		}
 	})
 
 	t.Run("valid anonymous account type", func(t *testing.T) {
-		at := AccountTypeAnonymous
-		err := at.EnumCheck()
+		t.Parallel()
 
+		at := AccountTypeAnonymous
+
+		err := at.EnumCheck()
 		if err != nil {
 			t.Errorf("Expected no error for valid anonymous account type, got %v", err)
 		}
 	})
 
 	t.Run("invalid account type", func(t *testing.T) {
+		t.Parallel()
+
 		at := AccountType("invalid")
 		err := at.EnumCheck()
 
@@ -85,8 +109,13 @@ func TestAccountType_EnumCheck(t *testing.T) {
 }
 
 func TestAccountType_LoadFromMDLVisitorType(t *testing.T) {
+	t.Parallel()
+
 	t.Run("load from real name visitor type", func(t *testing.T) {
+		t.Parallel()
+
 		var at AccountType
+
 		at.LoadFromMDLVisitorType(rest.VisitorType_RealName)
 
 		if at != AccountTypeUser {
@@ -95,7 +124,10 @@ func TestAccountType_LoadFromMDLVisitorType(t *testing.T) {
 	})
 
 	t.Run("load from user visitor type", func(t *testing.T) {
+		t.Parallel()
+
 		var at AccountType
+
 		at.LoadFromMDLVisitorType(rest.VisitorType_User)
 
 		if at != AccountTypeUser {
@@ -104,7 +136,10 @@ func TestAccountType_LoadFromMDLVisitorType(t *testing.T) {
 	})
 
 	t.Run("load from anonymous visitor type", func(t *testing.T) {
+		t.Parallel()
+
 		var at AccountType
+
 		at.LoadFromMDLVisitorType(rest.VisitorType_Anonymous)
 
 		if at != AccountTypeAnonymous {
@@ -113,7 +148,10 @@ func TestAccountType_LoadFromMDLVisitorType(t *testing.T) {
 	})
 
 	t.Run("load from app visitor type", func(t *testing.T) {
+		t.Parallel()
+
 		var at AccountType
+
 		at.LoadFromMDLVisitorType(rest.VisitorType_App)
 
 		if at != AccountTypeApp {
@@ -122,6 +160,8 @@ func TestAccountType_LoadFromMDLVisitorType(t *testing.T) {
 	})
 
 	t.Run("panic on invalid visitor type", func(t *testing.T) {
+		t.Parallel()
+
 		defer func() {
 			if r := recover(); r == nil {
 				t.Error("Expected panic for invalid visitor type, but did not panic")
@@ -129,12 +169,17 @@ func TestAccountType_LoadFromMDLVisitorType(t *testing.T) {
 		}()
 
 		var at AccountType
+
 		at.LoadFromMDLVisitorType(rest.VisitorType("invalid"))
 	})
 }
 
 func TestAccountType_ToMDLVisitorType(t *testing.T) {
+	t.Parallel()
+
 	t.Run("user account type to visitor type", func(t *testing.T) {
+		t.Parallel()
+
 		at := AccountTypeUser
 		result := at.ToMDLVisitorType()
 
@@ -144,6 +189,8 @@ func TestAccountType_ToMDLVisitorType(t *testing.T) {
 	})
 
 	t.Run("app account type to visitor type", func(t *testing.T) {
+		t.Parallel()
+
 		at := AccountTypeApp
 		result := at.ToMDLVisitorType()
 
@@ -153,6 +200,8 @@ func TestAccountType_ToMDLVisitorType(t *testing.T) {
 	})
 
 	t.Run("anonymous account type to visitor type", func(t *testing.T) {
+		t.Parallel()
+
 		at := AccountTypeAnonymous
 		result := at.ToMDLVisitorType()
 
@@ -162,6 +211,8 @@ func TestAccountType_ToMDLVisitorType(t *testing.T) {
 	})
 
 	t.Run("panic on invalid account type", func(t *testing.T) {
+		t.Parallel()
+
 		defer func() {
 			if r := recover(); r == nil {
 				t.Error("Expected panic for invalid account type, but did not panic")

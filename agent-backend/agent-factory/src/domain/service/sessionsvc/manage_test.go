@@ -5,15 +5,17 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/session/sessionreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/ctype"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/iredisaccess/isessionredis/isessionredismock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestManage_UnsupportedAction(t *testing.T) {
+	t.Parallel()
+
 	svc := &sessionSvc{}
 
 	req := sessionreq.ManageReq{
@@ -28,6 +30,8 @@ func TestManage_UnsupportedAction(t *testing.T) {
 }
 
 func TestManage_ValidActionsWithoutDeps(t *testing.T) {
+	t.Parallel()
+
 	// Test that valid actions are properly routed
 	// Even though they will fail due to missing dependencies,
 	// this verifies the routing logic works correctly
@@ -49,6 +53,8 @@ func TestManage_ValidActionsWithoutDeps(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			req := sessionreq.ManageReq{
 				Action:         tc.action,
 				ConversationID: "conv-123",
@@ -68,6 +74,8 @@ func TestManage_ValidActionsWithoutDeps(t *testing.T) {
 }
 
 func TestTriggerAgentCacheUpsert_NoAgentExecutor(t *testing.T) {
+	t.Parallel()
+
 	svc := &sessionSvc{
 		// agentExecutorV1 is nil
 	}
@@ -84,6 +92,8 @@ func TestTriggerAgentCacheUpsert_NoAgentExecutor(t *testing.T) {
 }
 
 func TestManage_HandleGetInfoOrCreate_Error(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -116,6 +126,8 @@ func TestManage_HandleGetInfoOrCreate_Error(t *testing.T) {
 }
 
 func TestManage_HandleRecoverLifetimeOrCreate_Error(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -148,6 +160,8 @@ func TestManage_HandleRecoverLifetimeOrCreate_Error(t *testing.T) {
 }
 
 func TestManage_HandleGetInfoOrCreate_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -180,6 +194,8 @@ func TestManage_HandleGetInfoOrCreate_Success(t *testing.T) {
 }
 
 func TestManage_HandleRecoverLifetimeOrCreate_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

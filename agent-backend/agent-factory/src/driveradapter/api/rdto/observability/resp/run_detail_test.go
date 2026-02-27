@@ -7,6 +7,8 @@ import (
 )
 
 func TestRunDetailResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := RunDetailResp{
 		RunID:               "run-123",
 		AgentID:             "agent-456",
@@ -45,6 +47,8 @@ func TestRunDetailResp_StructFields(t *testing.T) {
 }
 
 func TestRunDetailResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := RunDetailResp{}
 
 	assert.Empty(t, resp.RunID)
@@ -66,6 +70,8 @@ func TestRunDetailResp_Empty(t *testing.T) {
 }
 
 func TestRunDetailResp_WithDifferentCallTypes(t *testing.T) {
+	t.Parallel()
+
 	callTypes := []string{
 		"chat",
 		"debugchat",
@@ -79,6 +85,8 @@ func TestRunDetailResp_WithDifferentCallTypes(t *testing.T) {
 }
 
 func TestRunDetailResp_WithStatus(t *testing.T) {
+	t.Parallel()
+
 	statuses := []string{
 		"Success",
 		"Failed",
@@ -93,6 +101,8 @@ func TestRunDetailResp_WithStatus(t *testing.T) {
 }
 
 func TestRunDetailResp_WithFailedToolCalls(t *testing.T) {
+	t.Parallel()
+
 	resp := RunDetailResp{
 		ToolCallCount:       5,
 		ToolCallFailedCount: 2,
@@ -103,6 +113,8 @@ func TestRunDetailResp_WithFailedToolCalls(t *testing.T) {
 }
 
 func TestRunDetailResp_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	resp := RunDetailResp{
 		RunID:               "complete-run",
 		AgentID:             "complete-agent",

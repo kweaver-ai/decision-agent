@@ -7,6 +7,8 @@ import (
 )
 
 func TestConversationListReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := &ConversationListReq{
 		AgentID:      "agent-123",
 		AgentVersion: "v1.0.0",
@@ -27,6 +29,8 @@ func TestConversationListReq_StructFields(t *testing.T) {
 }
 
 func TestConversationListReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := &ConversationListReq{}
 
 	assert.Empty(t, req.AgentID)
@@ -39,6 +43,8 @@ func TestConversationListReq_Empty(t *testing.T) {
 }
 
 func TestConversationListReq_WithPagination(t *testing.T) {
+	t.Parallel()
+
 	req := &ConversationListReq{
 		Size: 50,
 		Page: 2,
@@ -49,6 +55,8 @@ func TestConversationListReq_WithPagination(t *testing.T) {
 }
 
 func TestConversationListReq_WithTimeRange(t *testing.T) {
+	t.Parallel()
+
 	req := &ConversationListReq{
 		StartTime: 1000000000,
 		EndTime:   2000000000,
@@ -59,6 +67,8 @@ func TestConversationListReq_WithTimeRange(t *testing.T) {
 }
 
 func TestConversationListReq_WithDifferentPageSizes(t *testing.T) {
+	t.Parallel()
+
 	pageSizes := []int{0, 10, 20, 50, 100}
 
 	for _, size := range pageSizes {

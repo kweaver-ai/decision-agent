@@ -26,6 +26,7 @@ func BuildWorkspaceContextMessage(conversationID string, userID string, selected
 	}
 
 	var fileList strings.Builder
+
 	for _, file := range selectedFiles {
 		// file.FileName 现在是完整路径，例如：/workspace/conv-123/uploads/temparea/data.csv
 		// 提取文件名用于显示，完整路径直接使用

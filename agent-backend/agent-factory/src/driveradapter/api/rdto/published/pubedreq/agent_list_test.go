@@ -9,6 +9,8 @@ import (
 )
 
 func TestPubedAgentListReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &PubedAgentListReq{}
 	errMap := req.GetErrMsgMap()
 
@@ -17,6 +19,8 @@ func TestPubedAgentListReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestPubedAgentListReq_CustomCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		req     *PubedAgentListReq
@@ -25,9 +29,9 @@ func TestPubedAgentListReq_CustomCheck(t *testing.T) {
 		{
 			name: "valid request",
 			req: &PubedAgentListReq{
-				IDs:     make([]string, 10),
-				AgentKeys: make([]string, 5),
-				ExcludeAgentKeys: make([]string, 3),
+				IDs:               make([]string, 10),
+				AgentKeys:         make([]string, 5),
+				ExcludeAgentKeys:  make([]string, 3),
 				BusinessDomainIDs: make([]string, 1),
 			},
 			wantErr: false,
@@ -71,6 +75,8 @@ func TestPubedAgentListReq_CustomCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.req.CustomCheck()
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -82,7 +88,11 @@ func TestPubedAgentListReq_CustomCheck(t *testing.T) {
 }
 
 func TestPubedAgentListReq_LoadMarkerStr(t *testing.T) {
+	t.Parallel()
+
 	t.Run("empty marker string", func(t *testing.T) {
+		t.Parallel()
+
 		req := &PubedAgentListReq{
 			PaginationMarkerStr: "",
 		}
@@ -93,6 +103,7 @@ func TestPubedAgentListReq_LoadMarkerStr(t *testing.T) {
 	})
 
 	t.Run("valid marker string", func(t *testing.T) {
+		t.Parallel()
 		// Create a valid marker with proper field names: published_at and last_release_id
 		validMarker := "eyJwdWJsaXNoZWRfYXQiOjEyMzQ1Njc4OTAsImxhc3RfcmVsZWFzZV9pZCI6ImFnZW50LTEyMyJ9"
 		req := &PubedAgentListReq{
@@ -107,6 +118,8 @@ func TestPubedAgentListReq_LoadMarkerStr(t *testing.T) {
 	})
 
 	t.Run("invalid base64 marker string", func(t *testing.T) {
+		t.Parallel()
+
 		req := &PubedAgentListReq{
 			PaginationMarkerStr: "not-valid-base64!!!",
 		}
@@ -117,6 +130,7 @@ func TestPubedAgentListReq_LoadMarkerStr(t *testing.T) {
 	})
 
 	t.Run("invalid JSON in marker string", func(t *testing.T) {
+		t.Parallel()
 		// Valid base64 but invalid JSON
 		invalidJSONMarker := "eyJpbnZhbGlkIGpzb24ifQ==" // base64 of "{invalid json}"
 		req := &PubedAgentListReq{
@@ -129,6 +143,8 @@ func TestPubedAgentListReq_LoadMarkerStr(t *testing.T) {
 	})
 
 	t.Run("nil marker after load", func(t *testing.T) {
+		t.Parallel()
+
 		req := &PubedAgentListReq{
 			PaginationMarkerStr: "",
 		}
@@ -140,18 +156,20 @@ func TestPubedAgentListReq_LoadMarkerStr(t *testing.T) {
 }
 
 func TestPubedAgentListReq_Fields(t *testing.T) {
+	t.Parallel()
+
 	req := &PubedAgentListReq{
-		Name:              "test agent",
-		CategoryID:        "cat-1",
-		ToBeFlag:          cdaenum.PublishToBeAPIAgent,
-		CustomSpaceID:     "space-1",
-		IsToCustomSpace:   1,
-		IsToSquare:        0,
-		Size:              20,
+		Name:                "test agent",
+		CategoryID:          "cat-1",
+		ToBeFlag:            cdaenum.PublishToBeAPIAgent,
+		CustomSpaceID:       "space-1",
+		IsToCustomSpace:     1,
+		IsToSquare:          0,
+		Size:                20,
 		PaginationMarkerStr: "marker-123",
-		BusinessDomainIDs: []string{"domain-1"},
-		AgentKeys:         []string{"agent-1"},
-		ExcludeAgentKeys:  []string{"agent-2"},
+		BusinessDomainIDs:   []string{"domain-1"},
+		AgentKeys:           []string{"agent-1"},
+		ExcludeAgentKeys:    []string{"agent-2"},
 	}
 
 	assert.Equal(t, "test agent", req.Name)
@@ -168,6 +186,8 @@ func TestPubedAgentListReq_Fields(t *testing.T) {
 }
 
 func TestPubedAgentListReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := &PubedAgentListReq{}
 
 	assert.Empty(t, req.Name)
@@ -182,22 +202,24 @@ func TestPubedAgentListReq_Empty(t *testing.T) {
 }
 
 func TestPubedAgentListReq_WithAllFieldsSet(t *testing.T) {
+	t.Parallel()
+
 	ids := make([]string, 500)
 	agentKeys := make([]string, 200)
 	excludeKeys := make([]string, 100)
 
 	req := &PubedAgentListReq{
-		Name:              "Full Name",
-		IDs:               ids,
-		AgentKeys:         agentKeys,
-		ExcludeAgentKeys:  excludeKeys,
-		CategoryID:        "category-full",
-		ToBeFlag:          cdaenum.PublishToBeWebSDKAgent,
-		CustomSpaceID:     "custom-space-full",
-		IsToCustomSpace:   1,
-		IsToSquare:        1,
-		BusinessDomainIDs: []string{"domain-1", "domain-2"},
-		Size:              100,
+		Name:                "Full Name",
+		IDs:                 ids,
+		AgentKeys:           agentKeys,
+		ExcludeAgentKeys:    excludeKeys,
+		CategoryID:          "category-full",
+		ToBeFlag:            cdaenum.PublishToBeWebSDKAgent,
+		CustomSpaceID:       "custom-space-full",
+		IsToCustomSpace:     1,
+		IsToSquare:          1,
+		BusinessDomainIDs:   []string{"domain-1", "domain-2"},
+		Size:                100,
 		PaginationMarkerStr: "marker-full",
 	}
 
@@ -216,6 +238,8 @@ func TestPubedAgentListReq_WithAllFieldsSet(t *testing.T) {
 }
 
 func TestPubedAgentListReq_CustomCheck_EmptySlices(t *testing.T) {
+	t.Parallel()
+
 	req := &PubedAgentListReq{
 		IDs:               []string{},
 		AgentKeys:         []string{},
@@ -228,7 +252,11 @@ func TestPubedAgentListReq_CustomCheck_EmptySlices(t *testing.T) {
 }
 
 func TestPubedAgentListReq_CustomCheck_AllBoundaryConditions(t *testing.T) {
+	t.Parallel()
+
 	t.Run("ids at boundary (1000)", func(t *testing.T) {
+		t.Parallel()
+
 		req := &PubedAgentListReq{
 			IDs: make([]string, 1000),
 		}
@@ -237,6 +265,8 @@ func TestPubedAgentListReq_CustomCheck_AllBoundaryConditions(t *testing.T) {
 	})
 
 	t.Run("agent_keys at boundary (1000)", func(t *testing.T) {
+		t.Parallel()
+
 		req := &PubedAgentListReq{
 			AgentKeys: make([]string, 1000),
 		}
@@ -245,6 +275,8 @@ func TestPubedAgentListReq_CustomCheck_AllBoundaryConditions(t *testing.T) {
 	})
 
 	t.Run("exclude_agent_keys at boundary (1000)", func(t *testing.T) {
+		t.Parallel()
+
 		req := &PubedAgentListReq{
 			ExcludeAgentKeys: make([]string, 1000),
 		}

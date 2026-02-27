@@ -10,7 +10,11 @@ import (
 )
 
 func TestNewHTTPHealthHandler(t *testing.T) {
+	t.Parallel()
+
 	t.Run("returns singleton handler", func(t *testing.T) {
+		t.Parallel()
+
 		handler1 := NewHTTPHealthHandler()
 		handler2 := NewHTTPHealthHandler()
 
@@ -20,7 +24,10 @@ func TestNewHTTPHealthHandler(t *testing.T) {
 }
 
 func TestHTTPHealthHandler_RegHealthRouter(t *testing.T) {
+	t.Parallel()
+
 	t.Run("registers health check routes", func(t *testing.T) {
+		t.Parallel()
 		gin.SetMode(gin.TestMode)
 		router := gin.New()
 		routerGroup := router.Group("/health")
@@ -49,8 +56,12 @@ func TestHTTPHealthHandler_RegHealthRouter(t *testing.T) {
 }
 
 func TestHTTPHealthHandler_getReady(t *testing.T) {
+	t.Parallel()
+
 	t.Run("returns ready status", func(t *testing.T) {
+		t.Parallel()
 		gin.SetMode(gin.TestMode)
+
 		handler := &httpHealthHandler{}
 
 		w := httptest.NewRecorder()
@@ -65,8 +76,12 @@ func TestHTTPHealthHandler_getReady(t *testing.T) {
 }
 
 func TestHTTPHealthHandler_getAlive(t *testing.T) {
+	t.Parallel()
+
 	t.Run("returns alive status", func(t *testing.T) {
+		t.Parallel()
 		gin.SetMode(gin.TestMode)
+
 		handler := &httpHealthHandler{}
 
 		w := httptest.NewRecorder()

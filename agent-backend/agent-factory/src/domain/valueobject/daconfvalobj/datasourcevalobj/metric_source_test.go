@@ -7,6 +7,8 @@ import (
 )
 
 func TestMetricSource_ValObjCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	metric := &MetricSource{
 		MetricModelID: "metric-123",
 	}
@@ -16,6 +18,8 @@ func TestMetricSource_ValObjCheck_Valid(t *testing.T) {
 }
 
 func TestMetricSource_ValObjCheck_Error(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		m    *MetricSource
@@ -28,12 +32,14 @@ func TestMetricSource_ValObjCheck_Error(t *testing.T) {
 		},
 		{
 			name: "nil struct",
-			m:   &MetricSource{},
+			m:    &MetricSource{},
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.m.ValObjCheck()
 			assert.Error(t, err)
 			assert.Contains(t, err.Error(), "metric_model_id is required")
@@ -42,6 +48,8 @@ func TestMetricSource_ValObjCheck_Error(t *testing.T) {
 }
 
 func TestMetricSource_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	metric := &MetricSource{}
 	errMap := metric.GetErrMsgMap()
 
@@ -51,6 +59,8 @@ func TestMetricSource_GetErrMsgMap(t *testing.T) {
 }
 
 func TestMetricSource_Fields(t *testing.T) {
+	t.Parallel()
+
 	metric := &MetricSource{
 		MetricModelID: "metric-456",
 	}

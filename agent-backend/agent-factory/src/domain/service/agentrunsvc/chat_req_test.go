@@ -29,6 +29,8 @@ func newTestAgent() *squareresp.AgentMarketAgentInfoResp {
 }
 
 func TestAgentSvc_GenerateAgentCallReq_Basic(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -59,6 +61,8 @@ func TestAgentSvc_GenerateAgentCallReq_Basic(t *testing.T) {
 }
 
 func TestAgentSvc_GenerateAgentCallReq_DeepThinkingMode(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -86,6 +90,8 @@ func TestAgentSvc_GenerateAgentCallReq_DeepThinkingMode(t *testing.T) {
 }
 
 func TestAgentSvc_GenerateAgentCallReq_WithHistory(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -117,6 +123,8 @@ func TestAgentSvc_GenerateAgentCallReq_WithHistory(t *testing.T) {
 }
 
 func TestAgentSvc_GenerateAgentCallReq_WithNilContexts(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

@@ -8,6 +8,8 @@ import (
 )
 
 func TestObservabilityConversationDetail_StructFields(t *testing.T) {
+	t.Parallel()
+
 	detail := ObservabilityConversationDetail{
 		SessionCount: 5,
 	}
@@ -16,12 +18,16 @@ func TestObservabilityConversationDetail_StructFields(t *testing.T) {
 }
 
 func TestObservabilityConversationDetail_Empty(t *testing.T) {
+	t.Parallel()
+
 	detail := ObservabilityConversationDetail{}
 
 	assert.Equal(t, 0, detail.SessionCount)
 }
 
 func TestObservabilityConversationDetail_WithSessionCount(t *testing.T) {
+	t.Parallel()
+
 	counts := []int{0, 1, 5, 10, 100}
 
 	for _, count := range counts {
@@ -33,6 +39,8 @@ func TestObservabilityConversationDetail_WithSessionCount(t *testing.T) {
 }
 
 func TestConversationListResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	entries := []ObservabilityConversationDetail{
 		{SessionCount: 1},
 		{SessionCount: 2},
@@ -50,6 +58,8 @@ func TestConversationListResp_StructFields(t *testing.T) {
 }
 
 func TestConversationListResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := ConversationListResp{}
 
 	assert.Nil(t, resp.Entries)
@@ -57,6 +67,8 @@ func TestConversationListResp_Empty(t *testing.T) {
 }
 
 func TestConversationListResp_WithEmptyEntries(t *testing.T) {
+	t.Parallel()
+
 	resp := ConversationListResp{
 		Entries:    []ObservabilityConversationDetail{},
 		TotalCount: 0,
@@ -68,6 +80,8 @@ func TestConversationListResp_WithEmptyEntries(t *testing.T) {
 }
 
 func TestConversationListResp_WithSingleEntry(t *testing.T) {
+	t.Parallel()
+
 	entries := []ObservabilityConversationDetail{
 		{SessionCount: 42},
 	}
@@ -83,6 +97,8 @@ func TestConversationListResp_WithSingleEntry(t *testing.T) {
 }
 
 func TestConversationListResp_WithConversationDetail(t *testing.T) {
+	t.Parallel()
+
 	convDetail := conversationresp.ConversationDetail{}
 
 	entries := []ObservabilityConversationDetail{
@@ -102,6 +118,8 @@ func TestConversationListResp_WithConversationDetail(t *testing.T) {
 }
 
 func TestConversationListResp_WithTotalCount(t *testing.T) {
+	t.Parallel()
+
 	totalCounts := []int64{0, 1, 10, 100, 1000}
 
 	for _, totalCount := range totalCounts {

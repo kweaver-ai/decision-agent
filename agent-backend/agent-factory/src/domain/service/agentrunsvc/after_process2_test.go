@@ -30,11 +30,14 @@ func newAfterProcessAgent() *squareresp.AgentMarketAgentInfoResp {
 	agent.Config.Output = &daconfvalobj.Output{
 		Variables: &daconfvalobj.VariablesS{AnswerVar: "answer"},
 	}
+
 	return agent
 }
 
 // AfterProcess: status=False, no handleMessageAndTempArea → success
 func TestAfterProcess_StatusFalse_Full(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -65,6 +68,8 @@ func TestAfterProcess_StatusFalse_Full(t *testing.T) {
 
 // AfterProcess: status=True → calls handleMessageAndTempArea
 func TestAfterProcess_StatusTrue_Full(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -100,6 +105,8 @@ func TestAfterProcess_StatusTrue_Full(t *testing.T) {
 
 // AfterProcess: status=Error → calls handleMessageAndTempArea then returns error
 func TestAfterProcess_StatusError_Full(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -134,6 +141,8 @@ func TestAfterProcess_StatusError_Full(t *testing.T) {
 
 // AfterProcess: handleMessageAndTempArea fails
 func TestAfterProcess_HandleMsgAreaError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

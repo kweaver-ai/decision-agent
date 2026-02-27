@@ -9,6 +9,8 @@ import (
 )
 
 func TestPublishedTpl_NewPublishedTpl(t *testing.T) {
+	t.Parallel()
+
 	tpl := &PublishedTpl{
 		PublishedTplPo: dapo.PublishedTplPo{
 			ID: 123,
@@ -22,6 +24,8 @@ func TestPublishedTpl_NewPublishedTpl(t *testing.T) {
 }
 
 func TestPublishedTpl_WithConfig(t *testing.T) {
+	t.Parallel()
+
 	config := daconfvalobj.NewConfig()
 	tpl := &PublishedTpl{
 		Config: config,
@@ -32,6 +36,8 @@ func TestPublishedTpl_WithConfig(t *testing.T) {
 }
 
 func TestPublishedTpl_Empty(t *testing.T) {
+	t.Parallel()
+
 	tpl := &PublishedTpl{}
 
 	assert.NotNil(t, tpl)

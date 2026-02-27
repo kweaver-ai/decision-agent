@@ -7,6 +7,8 @@ import (
 )
 
 func TestAugment_ValObjCheck(t *testing.T) {
+	t.Parallel()
+
 	validKg := KgSource{
 		KgID:   "kg1",
 		Fields: []string{"field1", "field2"},
@@ -67,6 +69,8 @@ func TestAugment_ValObjCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.augment.ValObjCheck()
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -78,6 +82,8 @@ func TestAugment_ValObjCheck(t *testing.T) {
 }
 
 func TestAugment_DataSource_ValObjCheck(t *testing.T) {
+	t.Parallel()
+
 	validKg := KgSource{
 		KgID:   "kg1",
 		Fields: []string{"field1", "field2"},
@@ -114,6 +120,8 @@ func TestAugment_DataSource_ValObjCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.ads.ValObjCheck()
 			if tt.wantErr {
 				if err == nil {

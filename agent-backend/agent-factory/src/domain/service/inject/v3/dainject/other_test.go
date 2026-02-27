@@ -8,6 +8,8 @@ import (
 )
 
 func TestNewOtherSvc_CreatesService(t *testing.T) {
+	t.Parallel()
+
 	svc := NewOtherSvc()
 
 	assert.NotNil(t, svc)
@@ -15,6 +17,8 @@ func TestNewOtherSvc_CreatesService(t *testing.T) {
 }
 
 func TestNewOtherSvc_Singleton(t *testing.T) {
+	t.Parallel()
+
 	svc1 := NewOtherSvc()
 	svc2 := NewOtherSvc()
 

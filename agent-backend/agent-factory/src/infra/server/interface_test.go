@@ -21,7 +21,11 @@ func (m *MockServer) Shutdown(ctx context.Context) error {
 }
 
 func TestIServer(t *testing.T) {
+	t.Parallel()
+
 	t.Run("interface implementation", func(t *testing.T) {
+		t.Parallel()
+
 		var server IServer = &MockServer{}
 
 		// Verify Start method can be called
@@ -29,14 +33,16 @@ func TestIServer(t *testing.T) {
 
 		// Verify Shutdown method can be called
 		ctx := context.Background()
-		err := server.Shutdown(ctx)
 
+		err := server.Shutdown(ctx)
 		if err != nil {
 			t.Errorf("Expected no error from Shutdown, got %v", err)
 		}
 	})
 
 	t.Run("nil server", func(t *testing.T) {
+		t.Parallel()
+
 		var server IServer
 
 		// Calling methods on nil interface should panic
@@ -51,7 +57,11 @@ func TestIServer(t *testing.T) {
 }
 
 func TestMockServer(t *testing.T) {
+	t.Parallel()
+
 	t.Run("mock start", func(t *testing.T) {
+		t.Parallel()
+
 		mock := &MockServer{}
 		mock.Start()
 
@@ -61,6 +71,8 @@ func TestMockServer(t *testing.T) {
 	})
 
 	t.Run("mock shutdown", func(t *testing.T) {
+		t.Parallel()
+
 		mock := &MockServer{}
 		ctx := context.Background()
 		mock.Shutdown(ctx)

@@ -13,6 +13,8 @@ import (
 )
 
 func TestNewDetailRes(t *testing.T) {
+	t.Parallel()
+
 	res := NewDetailRes()
 
 	assert.NotNil(t, res)
@@ -28,7 +30,11 @@ func TestNewDetailRes(t *testing.T) {
 }
 
 func TestDetailRes_LoadFromEo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("load from valid entity", func(t *testing.T) {
+		t.Parallel()
+
 		res := NewDetailRes()
 
 		builtInYes := cdaenum.BuiltInYes
@@ -36,16 +42,16 @@ func TestDetailRes_LoadFromEo(t *testing.T) {
 		isDefault := true
 		eo := &daconfeo.DataAgent{
 			DataAgentPo: dapo.DataAgentPo{
-				ID:          "agent-123",
-				Key:         "test-agent",
-				Name:        "Test Agent",
-				Profile:     strPtr("Test profile"),
-				AvatarType:  cdaenum.AvatarTypeBuiltIn,
-				Avatar:      "🤖",
-				ProductKey:  "product-key",
-				IsBuiltIn:   &builtInYes,
+				ID:            "agent-123",
+				Key:           "test-agent",
+				Name:          "Test Agent",
+				Profile:       strPtr("Test profile"),
+				AvatarType:    cdaenum.AvatarTypeBuiltIn,
+				Avatar:        "🤖",
+				ProductKey:    "product-key",
+				IsBuiltIn:     &builtInYes,
 				IsSystemAgent: &systemAgentYes,
-				Status:      cdaenum.StatusPublished,
+				Status:        cdaenum.StatusPublished,
 			},
 			Config: &daconfvalobj.Config{
 				Input:  &daconfvalobj.Input{},
@@ -80,17 +86,19 @@ func TestDetailRes_LoadFromEo(t *testing.T) {
 	})
 
 	t.Run("load from entity with nil pointers", func(t *testing.T) {
+		t.Parallel()
+
 		res := NewDetailRes()
 
 		eo := &daconfeo.DataAgent{
 			DataAgentPo: dapo.DataAgentPo{
-				ID:          "agent-456",
-				Key:         "minimal-agent",
-				Name:        "Minimal Agent",
-				Profile:     nil,
-				IsBuiltIn:   nil,
+				ID:            "agent-456",
+				Key:           "minimal-agent",
+				Name:          "Minimal Agent",
+				Profile:       nil,
+				IsBuiltIn:     nil,
 				IsSystemAgent: nil,
-				Status:      cdaenum.StatusUnpublished,
+				Status:        cdaenum.StatusUnpublished,
 			},
 			Config: &daconfvalobj.Config{
 				Input:  &daconfvalobj.Input{},
@@ -112,6 +120,8 @@ func TestDetailRes_LoadFromEo(t *testing.T) {
 	})
 
 	t.Run("load from entity with config", func(t *testing.T) {
+		t.Parallel()
+
 		res := NewDetailRes()
 
 		eo := &daconfeo.DataAgent{
@@ -146,17 +156,19 @@ func TestDetailRes_LoadFromEo(t *testing.T) {
 }
 
 func TestDetailRes_Fields(t *testing.T) {
+	t.Parallel()
+
 	res := &DetailRes{
-		ID:            "test-id",
-		Key:           "test-key",
-		Name:          "Test Name",
-		Profile:       "Test Profile",
-		AvatarType:    cdaenum.AvatarTypeUserUploaded,
-		Avatar:        "avatar.png",
-		ProductKey:    "product-1",
-		ProductName:   "Product 1",
-		Status:        cdaenum.StatusPublished,
-		IsPublished:   true,
+		ID:          "test-id",
+		Key:         "test-key",
+		Name:        "Test Name",
+		Profile:     "Test Profile",
+		AvatarType:  cdaenum.AvatarTypeUserUploaded,
+		Avatar:      "avatar.png",
+		ProductKey:  "product-1",
+		ProductName: "Product 1",
+		Status:      cdaenum.StatusPublished,
+		IsPublished: true,
 	}
 
 	assert.Equal(t, "test-id", res.ID)
@@ -172,13 +184,15 @@ func TestDetailRes_Fields(t *testing.T) {
 }
 
 func TestDetailRes_WithChineseCharacters(t *testing.T) {
+	t.Parallel()
+
 	res := NewDetailRes()
 
 	eo := &daconfeo.DataAgent{
 		DataAgentPo: dapo.DataAgentPo{
-			ID:    "zh-cn-id",
-			Key:   "zhongwen-key",
-			Name:  "中文智能体",
+			ID:      "zh-cn-id",
+			Key:     "zhongwen-key",
+			Name:    "中文智能体",
 			Profile: strPtr("中文描述"),
 		},
 		Config: &daconfvalobj.Config{

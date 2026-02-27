@@ -8,7 +8,11 @@ import (
 )
 
 func TestDataAgentTplPo_TableName(t *testing.T) {
+	t.Parallel()
+
 	t.Run("table name", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentTplPo{}
 		tableName := po.TableName()
 
@@ -20,7 +24,11 @@ func TestDataAgentTplPo_TableName(t *testing.T) {
 }
 
 func TestDataAgentTplPo_SetIsBuiltIn(t *testing.T) {
+	t.Parallel()
+
 	t.Run("set built in flag", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentTplPo{}
 		builtIn := cdaenum.BuiltInYes
 		po.SetIsBuiltIn(builtIn)
@@ -28,6 +36,7 @@ func TestDataAgentTplPo_SetIsBuiltIn(t *testing.T) {
 		if po.IsBuiltIn == nil {
 			t.Error("Expected IsBuiltIn to be set")
 		}
+
 		if *po.IsBuiltIn != builtIn {
 			t.Errorf("Expected IsBuiltIn to be %v, got %v", builtIn, *po.IsBuiltIn)
 		}
@@ -35,7 +44,11 @@ func TestDataAgentTplPo_SetIsBuiltIn(t *testing.T) {
 }
 
 func TestDataAgentTplPo_SetPublishedAt(t *testing.T) {
+	t.Parallel()
+
 	t.Run("set published at", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentTplPo{}
 		publishedAt := int64(1234567890)
 		po.SetPublishedAt(publishedAt)
@@ -43,6 +56,7 @@ func TestDataAgentTplPo_SetPublishedAt(t *testing.T) {
 		if po.PublishedAt == nil {
 			t.Error("Expected PublishedAt to be set")
 		}
+
 		if *po.PublishedAt != publishedAt {
 			t.Errorf("Expected PublishedAt to be %d, got %d", publishedAt, *po.PublishedAt)
 		}
@@ -50,7 +64,11 @@ func TestDataAgentTplPo_SetPublishedAt(t *testing.T) {
 }
 
 func TestDataAgentTplPo_SetPublishedBy(t *testing.T) {
+	t.Parallel()
+
 	t.Run("set published by", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentTplPo{}
 		publishedBy := "user-123"
 		po.SetPublishedBy(publishedBy)
@@ -58,6 +76,7 @@ func TestDataAgentTplPo_SetPublishedBy(t *testing.T) {
 		if po.PublishedBy == nil {
 			t.Error("Expected PublishedBy to be set")
 		}
+
 		if *po.PublishedBy != publishedBy {
 			t.Errorf("Expected PublishedBy to be '%s', got '%s'", publishedBy, *po.PublishedBy)
 		}
@@ -65,7 +84,11 @@ func TestDataAgentTplPo_SetPublishedBy(t *testing.T) {
 }
 
 func TestDataAgentTplPo_GetPublishedAtInt64(t *testing.T) {
+	t.Parallel()
+
 	t.Run("nil published at returns 0", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentTplPo{}
 		result := po.GetPublishedAtInt64()
 
@@ -75,6 +98,8 @@ func TestDataAgentTplPo_GetPublishedAtInt64(t *testing.T) {
 	})
 
 	t.Run("returns published at value", func(t *testing.T) {
+		t.Parallel()
+
 		publishedAt := int64(1234567890)
 		po := &DataAgentTplPo{}
 		po.SetPublishedAt(publishedAt)
@@ -87,7 +112,11 @@ func TestDataAgentTplPo_GetPublishedAtInt64(t *testing.T) {
 }
 
 func TestDataAgentTplPo_GetPublishedByString(t *testing.T) {
+	t.Parallel()
+
 	t.Run("nil published by returns empty", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentTplPo{}
 		result := po.GetPublishedByString()
 
@@ -97,6 +126,8 @@ func TestDataAgentTplPo_GetPublishedByString(t *testing.T) {
 	})
 
 	t.Run("returns published by value", func(t *testing.T) {
+		t.Parallel()
+
 		publishedBy := "user-123"
 		po := &DataAgentTplPo{}
 		po.SetPublishedBy(publishedBy)
@@ -109,7 +140,11 @@ func TestDataAgentTplPo_GetPublishedByString(t *testing.T) {
 }
 
 func TestDataAgentTplPO(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create data agent template PO", func(t *testing.T) {
+		t.Parallel()
+
 		profile := "test profile"
 		builtIn := cdaenum.BuiltInYes
 		publishedAt := int64(1234567890)
@@ -141,21 +176,27 @@ func TestDataAgentTplPO(t *testing.T) {
 		if po.ID != 123 {
 			t.Errorf("Expected ID to be 123, got %d", po.ID)
 		}
+
 		if po.Name != "Test Template" {
 			t.Errorf("Expected Name to be 'Test Template', got '%s'", po.Name)
 		}
+
 		if po.Key != "test-template" {
 			t.Errorf("Expected Key to be 'test-template', got '%s'", po.Key)
 		}
+
 		if po.AvatarType != cdaenum.AvatarTypeBuiltIn {
 			t.Errorf("Expected AvatarType to be BuiltIn, got %v", po.AvatarType)
 		}
+
 		if po.Status != cdaenum.StatusUnpublished {
 			t.Errorf("Expected Status to be Draft, got %v", po.Status)
 		}
 	})
 
 	t.Run("with user uploaded avatar", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentTplPo{
 			ID:         456,
 			Name:       "Test Template 2",
@@ -166,12 +207,15 @@ func TestDataAgentTplPO(t *testing.T) {
 		if po.AvatarType != cdaenum.AvatarTypeUserUploaded {
 			t.Errorf("Expected AvatarType to be UserUploaded, got %v", po.AvatarType)
 		}
+
 		if po.Avatar != "custom-avatar.jpg" {
 			t.Errorf("Expected Avatar to be 'custom-avatar.jpg', got '%s'", po.Avatar)
 		}
 	})
 
 	t.Run("with AI generated avatar", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentTplPo{
 			ID:         789,
 			Name:       "Test Template 3",
@@ -186,7 +230,11 @@ func TestDataAgentTplPO(t *testing.T) {
 }
 
 func TestDataAgentTplIDStrPo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create template with string ID", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentTplIDStrPo{
 			DataAgentTplPo: DataAgentTplPo{
 				ID:   123,
@@ -198,6 +246,7 @@ func TestDataAgentTplIDStrPo(t *testing.T) {
 		if po.DataAgentTplPo.ID != 123 {
 			t.Errorf("Expected DataAgentTplPo.ID to be 123, got %d", po.DataAgentTplPo.ID)
 		}
+
 		if po.ID != "tpl-123" {
 			t.Errorf("Expected ID to be 'tpl-123', got '%s'", po.ID)
 		}
@@ -205,7 +254,11 @@ func TestDataAgentTplIDStrPo(t *testing.T) {
 }
 
 func TestDataAgentTplPo_GetConfigStruct(t *testing.T) {
+	t.Parallel()
+
 	t.Run("valid config json", func(t *testing.T) {
+		t.Parallel()
+
 		configJSON := `{"input":{"fields":[]},"output":{}}`
 		po := &DataAgentTplPo{Config: configJSON}
 
@@ -213,12 +266,15 @@ func TestDataAgentTplPo_GetConfigStruct(t *testing.T) {
 		if err != nil {
 			t.Errorf("Expected no error, got %v", err)
 		}
+
 		if conf == nil {
 			t.Error("Expected config struct to be returned")
 		}
 	})
 
 	t.Run("invalid config json", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentTplPo{Config: "{invalid json"}
 
 		_, err := po.GetConfigStruct()
@@ -228,6 +284,8 @@ func TestDataAgentTplPo_GetConfigStruct(t *testing.T) {
 	})
 
 	t.Run("empty config", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentTplPo{Config: ""}
 
 		_, err := po.GetConfigStruct()
@@ -238,7 +296,11 @@ func TestDataAgentTplPo_GetConfigStruct(t *testing.T) {
 }
 
 func TestDataAgentTplPo_SetConfigStruct(t *testing.T) {
+	t.Parallel()
+
 	t.Run("set config and get back", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentTplPo{}
 		configJSON := `{"input":{"fields":[]},"output":{}}`
 
@@ -250,6 +312,7 @@ func TestDataAgentTplPo_SetConfigStruct(t *testing.T) {
 		if err != nil {
 			t.Errorf("Expected no error, got %v", err)
 		}
+
 		if conf == nil {
 			t.Error("Expected config struct to be returned")
 		}
@@ -257,7 +320,11 @@ func TestDataAgentTplPo_SetConfigStruct(t *testing.T) {
 }
 
 func TestDataAgentTplPo_RemoveDataSourceFromConfig(t *testing.T) {
+	t.Parallel()
+
 	t.Run("remove data source without dolphin", func(t *testing.T) {
+		t.Parallel()
+
 		configJSON := `{"input":{"fields":[]},"output":{},"data_source":{}}`
 		po := &DataAgentTplPo{Config: configJSON}
 
@@ -268,6 +335,8 @@ func TestDataAgentTplPo_RemoveDataSourceFromConfig(t *testing.T) {
 	})
 
 	t.Run("remove data source with invalid config", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentTplPo{Config: "{invalid json"}
 
 		err := po.RemoveDataSourceFromConfig(false)
@@ -277,6 +346,8 @@ func TestDataAgentTplPo_RemoveDataSourceFromConfig(t *testing.T) {
 	})
 
 	t.Run("remove data source with dolphin flag true", func(t *testing.T) {
+		t.Parallel()
+
 		configJSON := `{"input":{"fields":[]},"output":{},"data_source":{},"pre_dolphin":[]}`
 		po := &DataAgentTplPo{Config: configJSON}
 

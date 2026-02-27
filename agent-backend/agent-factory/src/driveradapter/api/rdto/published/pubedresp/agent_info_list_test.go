@@ -10,6 +10,8 @@ import (
 )
 
 func TestNewPublishedAgentInfoListItem(t *testing.T) {
+	t.Parallel()
+
 	item := NewPublishedAgentInfoListItem()
 	assert.NotNil(t, item)
 	assert.NotNil(t, item.PublishInfo)
@@ -18,7 +20,11 @@ func TestNewPublishedAgentInfoListItem(t *testing.T) {
 }
 
 func TestPublishedAgentInfoListItem_HlConfig(t *testing.T) {
+	t.Parallel()
+
 	t.Run("with input field", func(t *testing.T) {
+		t.Parallel()
+
 		item := &PublishedAgentInfoListItem{
 			Config: &daconfvalobj.Config{
 				Input:  &daconfvalobj.Input{},
@@ -34,6 +40,8 @@ func TestPublishedAgentInfoListItem_HlConfig(t *testing.T) {
 	})
 
 	t.Run("with no fields", func(t *testing.T) {
+		t.Parallel()
+
 		item := &PublishedAgentInfoListItem{
 			Config: &daconfvalobj.Config{
 				Input:  &daconfvalobj.Input{},
@@ -49,6 +57,8 @@ func TestPublishedAgentInfoListItem_HlConfig(t *testing.T) {
 	})
 
 	t.Run("nil config", func(t *testing.T) {
+		t.Parallel()
+
 		item := &PublishedAgentInfoListItem{
 			Config: nil,
 		}
@@ -60,6 +70,8 @@ func TestPublishedAgentInfoListItem_HlConfig(t *testing.T) {
 }
 
 func TestNewPublishedAgentInfoListResp(t *testing.T) {
+	t.Parallel()
+
 	resp := NewPublishedAgentInfoListResp()
 	assert.NotNil(t, resp)
 	assert.NotNil(t, resp.Entries)
@@ -67,7 +79,11 @@ func TestNewPublishedAgentInfoListResp(t *testing.T) {
 }
 
 func TestPAInfoListResp_LoadFromEos(t *testing.T) {
+	t.Parallel()
+
 	t.Run("empty eos", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewPublishedAgentInfoListResp()
 		eos := []*pubedeo.PublishedAgentEo{}
 
@@ -77,6 +93,8 @@ func TestPAInfoListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("with single eo", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewPublishedAgentInfoListResp()
 		eo := &pubedeo.PublishedAgentEo{}
 
@@ -86,6 +104,8 @@ func TestPAInfoListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("with config fields - expects panic due to nil config", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewPublishedAgentInfoListResp()
 		eo := &pubedeo.PublishedAgentEo{}
 
@@ -96,6 +116,8 @@ func TestPAInfoListResp_LoadFromEos(t *testing.T) {
 }
 
 func TestPublishedAgentInfoListItem_Fields(t *testing.T) {
+	t.Parallel()
+
 	item := &PublishedAgentInfoListItem{
 		ID:            "agent-123",
 		Version:       "v1.0",

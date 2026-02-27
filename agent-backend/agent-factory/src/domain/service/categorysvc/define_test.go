@@ -8,6 +8,8 @@ import (
 )
 
 func TestCategorySvc_StructFields(t *testing.T) {
+	t.Parallel()
+
 	svc := NewCategorySvc()
 
 	// Type assertion to access internal fields
@@ -18,6 +20,8 @@ func TestCategorySvc_StructFields(t *testing.T) {
 }
 
 func TestCategorySvc_ConcurrentCreation(t *testing.T) {
+	t.Parallel()
+
 	done := make(chan bool)
 
 	// Create multiple goroutines that all call NewCategorySvc
@@ -41,12 +45,16 @@ func TestCategorySvc_ConcurrentCreation(t *testing.T) {
 }
 
 func TestCategorySvc_IsSingleton(t *testing.T) {
+	t.Parallel()
+
 	// Verify singleton pattern works correctly
 	var wg sync.WaitGroup
 	for i := 0; i < 100; i++ {
 		wg.Add(1)
+
 		go func() {
 			defer wg.Done()
+
 			svc := NewCategorySvc()
 			assert.NotNil(t, svc)
 		}()

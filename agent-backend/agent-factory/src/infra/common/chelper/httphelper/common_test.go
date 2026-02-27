@@ -6,6 +6,8 @@ import (
 )
 
 func TestCommonRespError_Error(t *testing.T) {
+	t.Parallel()
+
 	// 测试CommonRespError的Error方法
 	tests := []struct {
 		name string
@@ -46,6 +48,8 @@ func TestCommonRespError_Error(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := tt.resp.Error()
 			if got != tt.want {
 				t.Errorf("CommonRespError.Error() = %v, want %v", got, tt.want)
@@ -55,6 +59,8 @@ func TestCommonRespError_Error(t *testing.T) {
 }
 
 func TestBuildQueryParams(t *testing.T) {
+	t.Parallel()
+
 	// 创建httpClient实例用于测试
 	client := &httpClient{}
 
@@ -148,6 +154,8 @@ func TestBuildQueryParams(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := client.buildQueryParams(tt.queryData)
 			// 注意：map的遍历顺序不确定，所以我们需要验证结果包含所有预期的键值对
 			if tt.want == "" {

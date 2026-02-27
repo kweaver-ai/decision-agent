@@ -9,6 +9,8 @@ import (
 )
 
 func TestGetDefaultTp(t *testing.T) {
+	t.Parallel()
+
 	tp := GetDefaultTp()
 
 	assert.NotNil(t, tp, "GetDefaultTp should return a non-nil Transport")
@@ -22,6 +24,8 @@ func TestGetDefaultTp(t *testing.T) {
 }
 
 func TestGetDefaultTp_DialContextTimeouts(t *testing.T) {
+	t.Parallel()
+
 	tp := GetDefaultTp()
 
 	// Note: We can't directly access the Dialer's timeouts without reflection
@@ -30,6 +34,8 @@ func TestGetDefaultTp_DialContextTimeouts(t *testing.T) {
 }
 
 func TestGetClient(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		timeout time.Duration
@@ -58,6 +64,8 @@ func TestGetClient(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			client := GetClient(tt.timeout)
 
 			assert.NotNil(t, client, "GetClient should return a non-nil Client")
@@ -68,6 +76,8 @@ func TestGetClient(t *testing.T) {
 }
 
 func TestGetClient_TransportType(t *testing.T) {
+	t.Parallel()
+
 	client := GetClient(5 * time.Second)
 
 	assert.NotNil(t, client.Transport)
@@ -77,6 +87,8 @@ func TestGetClient_TransportType(t *testing.T) {
 }
 
 func TestGetDefaultStdClient(t *testing.T) {
+	t.Parallel()
+
 	client := GetDefaultStdClient()
 
 	assert.NotNil(t, client, "GetDefaultStdClient should return a non-nil Client")
@@ -84,6 +96,8 @@ func TestGetDefaultStdClient(t *testing.T) {
 }
 
 func TestGetDefaultStdClient_SameInstance(t *testing.T) {
+	t.Parallel()
+
 	client1 := GetDefaultStdClient()
 	client2 := GetDefaultStdClient()
 
@@ -92,6 +106,8 @@ func TestGetDefaultStdClient_SameInstance(t *testing.T) {
 }
 
 func TestGetDefaultClient(t *testing.T) {
+	t.Parallel()
+
 	client := GetDefaultClient()
 
 	assert.NotNil(t, client, "GetDefaultClient should return a non-nil Client")
@@ -99,6 +115,8 @@ func TestGetDefaultClient(t *testing.T) {
 }
 
 func TestGetDefaultClient_SameAsStdClient(t *testing.T) {
+	t.Parallel()
+
 	stdClient := GetDefaultStdClient()
 	defaultClient := GetDefaultClient()
 
@@ -106,6 +124,8 @@ func TestGetDefaultClient_SameAsStdClient(t *testing.T) {
 }
 
 func TestGetClient_MultipleCalls(t *testing.T) {
+	t.Parallel()
+
 	client1 := GetClient(5 * time.Second)
 	client2 := GetClient(10 * time.Second)
 
@@ -121,6 +141,8 @@ func TestGetClient_MultipleCalls(t *testing.T) {
 }
 
 func TestGetClient_TransportConfiguration(t *testing.T) {
+	t.Parallel()
+
 	timeout := 15 * time.Second
 	client := GetClient(timeout)
 
@@ -135,10 +157,14 @@ func TestGetClient_TransportConfiguration(t *testing.T) {
 }
 
 func TestTransport_Constants(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, 5, RetryInterval, "RetryInterval should be 5")
 }
 
 func TestGetDefaultTp_HasForceAttemptHTTP2(t *testing.T) {
+	t.Parallel()
+
 	tp := GetDefaultTp()
 
 	// Verify HTTP/2 is enabled
@@ -146,6 +172,8 @@ func TestGetDefaultTp_HasForceAttemptHTTP2(t *testing.T) {
 }
 
 func TestGetClient_ZeroTimeoutBehavior(t *testing.T) {
+	t.Parallel()
+
 	// A zero timeout means no timeout (infinite wait)
 	client := GetClient(0)
 
@@ -154,6 +182,8 @@ func TestGetClient_ZeroTimeoutBehavior(t *testing.T) {
 }
 
 func TestGetClient_NegativeTimeout(t *testing.T) {
+	t.Parallel()
+
 	// Test with negative timeout (should still work, though not recommended)
 	client := GetClient(-1 * time.Second)
 

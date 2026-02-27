@@ -5,18 +5,20 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_inout/agentinoutreq"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver/v3portdrivermock"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestAgentInOutSvc_Export_NoUserIDReturnsError(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentInOutSvc{
 		SvcBase: service.NewSvcBase(),
 	}
@@ -35,6 +37,8 @@ func TestAgentInOutSvc_Export_NoUserIDReturnsError(t *testing.T) {
 }
 
 func TestAgentInOutSvc_Export_PanicsWithoutAgentConfRepo(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentInOutSvc{
 		SvcBase: service.NewSvcBase(),
 	}
@@ -57,6 +61,8 @@ func TestAgentInOutSvc_Export_PanicsWithoutAgentConfRepo(t *testing.T) {
 }
 
 func TestAgentInOutSvc_Export_GetByIDsAndCreatedByError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -92,6 +98,8 @@ func TestAgentInOutSvc_Export_GetByIDsAndCreatedByError(t *testing.T) {
 }
 
 func TestAgentInOutSvc_Export_AgentNotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -126,5 +134,3 @@ func TestAgentInOutSvc_Export_AgentNotFound(t *testing.T) {
 	assert.Empty(t, filename)
 	assert.Contains(t, err.Error(), "not_found_agents")
 }
-
-

@@ -8,6 +8,8 @@ import (
 )
 
 func TestNewSvcBase(t *testing.T) {
+	t.Parallel()
+
 	svcBase := NewSvcBase()
 
 	assert.NotNil(t, svcBase)
@@ -15,6 +17,8 @@ func TestNewSvcBase(t *testing.T) {
 }
 
 func TestNewSvcBase_CreatesNewInstance(t *testing.T) {
+	t.Parallel()
+
 	svcBase1 := NewSvcBase()
 	svcBase2 := NewSvcBase()
 
@@ -27,6 +31,8 @@ func TestNewSvcBase_CreatesNewInstance(t *testing.T) {
 }
 
 func TestSvcBase_StructFields(t *testing.T) {
+	t.Parallel()
+
 	svcBase := &SvcBase{}
 
 	assert.NotNil(t, svcBase)
@@ -35,6 +41,8 @@ func TestSvcBase_StructFields(t *testing.T) {
 }
 
 func TestGetMockedDlm(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

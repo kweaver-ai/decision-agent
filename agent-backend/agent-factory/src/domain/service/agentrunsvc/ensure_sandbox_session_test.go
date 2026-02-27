@@ -27,6 +27,7 @@ func (m *mockGetSessionSandbox) CreateSession(ctx context.Context, req sandboxpl
 	if m.createSessionFunc != nil {
 		return m.createSessionFunc(ctx, req)
 	}
+
 	return &sandboxplatformdto.CreateSessionResp{
 		ID:     *req.ID,
 		Status: "running",
@@ -37,6 +38,7 @@ func (m *mockGetSessionSandbox) GetSession(ctx context.Context, sessionID string
 	if m.getSessionFunc != nil {
 		return m.getSessionFunc(ctx, sessionID)
 	}
+
 	return &sandboxplatformdto.GetSessionResp{
 		ID:     sessionID,
 		Status: "running",
@@ -47,6 +49,7 @@ func (m *mockGetSessionSandbox) DeleteSession(ctx context.Context, sessionID str
 	if m.deleteSessionFunc != nil {
 		return m.deleteSessionFunc(ctx, sessionID)
 	}
+
 	return nil
 }
 
@@ -65,62 +68,84 @@ func allowAnyLoggerCalls(mockLogger *cmpmock.MockLogger) {
 }
 
 func TestIsSessionNotFoundError(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{}
 	ctx := context.Background()
 
 	t.Run("returns true for 404 HTTPError", func(t *testing.T) {
+		t.Parallel()
+
 		err := rest.NewHTTPError(ctx, http.StatusNotFound, rest.PublicError_NotFound)
 		result := svc.isSessionNotFoundError(err)
 		assert.True(t, result)
 	})
 
 	t.Run("returns false for 500 HTTPError", func(t *testing.T) {
+		t.Parallel()
+
 		err := rest.NewHTTPError(ctx, http.StatusInternalServerError, rest.PublicError_InternalServerError)
 		result := svc.isSessionNotFoundError(err)
 		assert.False(t, result)
 	})
 
 	t.Run("returns false for non-HTTPError", func(t *testing.T) {
+		t.Parallel()
+
 		err := errors.New("some error")
 		result := svc.isSessionNotFoundError(err)
 		assert.False(t, result)
 	})
 
 	t.Run("returns false for nil error", func(t *testing.T) {
+		t.Parallel()
+
 		result := svc.isSessionNotFoundError(nil)
 		assert.False(t, result)
 	})
 }
 
 func TestIsSessionAlreadyExistsError_AgentSvc(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{}
 	ctx := context.Background()
 
 	t.Run("returns true for 409 HTTPError", func(t *testing.T) {
+		t.Parallel()
+
 		err := rest.NewHTTPError(ctx, http.StatusConflict, rest.PublicError_Conflict)
 		result := svc.isSessionAlreadyExistsError(err)
 		assert.True(t, result)
 	})
 
 	t.Run("returns true for error with 'already exists' message", func(t *testing.T) {
+		t.Parallel()
+
 		err := errors.New("session already exists")
 		result := svc.isSessionAlreadyExistsError(err)
 		assert.True(t, result)
 	})
 
 	t.Run("returns false for other HTTPError", func(t *testing.T) {
+		t.Parallel()
+
 		err := rest.NewHTTPError(ctx, http.StatusBadRequest, rest.PublicError_BadRequest)
 		result := svc.isSessionAlreadyExistsError(err)
 		assert.False(t, result)
 	})
 
 	t.Run("returns false for non-HTTPError without 'already exists'", func(t *testing.T) {
+		t.Parallel()
+
 		err := errors.New("some other error")
 		result := svc.isSessionAlreadyExistsError(err)
 		assert.False(t, result)
 	})
 
 	t.Run("case sensitive check for 'already exists'", func(t *testing.T) {
+		t.Parallel()
+
 		err := errors.New("Session ALREADY EXISTS error")
 		result := svc.isSessionAlreadyExistsError(err)
 		assert.False(t, result) // Implementation is case-sensitive, only checks lowercase "already exists"
@@ -128,11 +153,14 @@ func TestIsSessionAlreadyExistsError_AgentSvc(t *testing.T) {
 }
 
 func TestEnsureSandboxSession_SessionRunning(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 	allowAnyLoggerCalls(mockLogger)
+
 	mockSandbox := &mockGetSessionSandbox{
 		getSessionFunc: func(ctx context.Context, sessionID string) (*sandboxplatformdto.GetSessionResp, error) {
 			return &sandboxplatformdto.GetSessionResp{
@@ -169,11 +197,14 @@ func TestEnsureSandboxSession_SessionRunning(t *testing.T) {
 }
 
 func TestEnsureSandboxSession_SessionNotFound_CreatesNew(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 	allowAnyLoggerCalls(mockLogger)
+
 	sessionCreated := false
 	getCallCount := 0
 
@@ -230,11 +261,14 @@ func TestEnsureSandboxSession_SessionNotFound_CreatesNew(t *testing.T) {
 }
 
 func TestEnsureSandboxSession_SessionFailed_DeletesAndRecreates(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 	allowAnyLoggerCalls(mockLogger)
+
 	sessionDeleted := false
 	sessionCreated := false
 	getCallCount := 0
@@ -296,11 +330,14 @@ func TestEnsureSandboxSession_SessionFailed_DeletesAndRecreates(t *testing.T) {
 }
 
 func TestEnsureSandboxSession_SessionErrorStatus_DeletesAndRecreates(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 	allowAnyLoggerCalls(mockLogger)
+
 	sessionDeleted := false
 	sessionCreated := false
 	getCallCount := 0
@@ -362,11 +399,14 @@ func TestEnsureSandboxSession_SessionErrorStatus_DeletesAndRecreates(t *testing.
 }
 
 func TestEnsureSandboxSession_SessionStopped_DeletesAndRecreates(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 	allowAnyLoggerCalls(mockLogger)
+
 	sessionDeleted := false
 	sessionCreated := false
 	getCallCount := 0
@@ -428,11 +468,14 @@ func TestEnsureSandboxSession_SessionStopped_DeletesAndRecreates(t *testing.T) {
 }
 
 func TestEnsureSandboxSession_GetSessionError_CreatesNew(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 	allowAnyLoggerCalls(mockLogger)
+
 	sessionCreated := false
 	getCallCount := 0
 
@@ -485,11 +528,14 @@ func TestEnsureSandboxSession_GetSessionError_CreatesNew(t *testing.T) {
 }
 
 func TestEnsureSandboxSession_SessionAlreadyExists_WaitsForReady(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 	allowAnyLoggerCalls(mockLogger)
+
 	createCallCount := 0
 	getCallCount := 0
 

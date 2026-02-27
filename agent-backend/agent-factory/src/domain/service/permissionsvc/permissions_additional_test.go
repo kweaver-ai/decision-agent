@@ -23,18 +23,24 @@ import (
 
 func setPermissionDisablePmsCheck(t *testing.T, disable bool) {
 	t.Helper()
+
 	oldCfg := global.GConfig
 	global.GConfig = &conf.Config{
 		SwitchFields: conf.NewSwitchFields(),
 	}
 	global.GConfig.SwitchFields.DisablePmsCheck = disable
+
 	t.Cleanup(func() {
 		global.GConfig = oldCfg
 	})
 }
 
 func TestPermissionSvc_GetPolicyOfAgentUse(t *testing.T) {
+	t.Parallel()
+
 	t.Run("list policy error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -50,6 +56,8 @@ func TestPermissionSvc_GetPolicyOfAgentUse(t *testing.T) {
 	})
 
 	t.Run("nil result", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -68,6 +76,8 @@ func TestPermissionSvc_GetPolicyOfAgentUse(t *testing.T) {
 	})
 
 	t.Run("filter expires error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -92,6 +102,8 @@ func TestPermissionSvc_GetPolicyOfAgentUse(t *testing.T) {
 	})
 
 	t.Run("success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -128,7 +140,9 @@ func TestPermissionSvc_GetPolicyOfAgentUse(t *testing.T) {
 }
 
 func TestPermissionSvc_CheckUsePermission_AdditionalBranches(t *testing.T) {
+	// 不使用 t.Parallel() - 此测试修改全局配置
 	t.Run("disable pms check", func(t *testing.T) {
+		// 不使用 t.Parallel() - 修改全局状态
 		setPermissionDisablePmsCheck(t, true)
 
 		svc := &permissionSvc{}
@@ -140,6 +154,7 @@ func TestPermissionSvc_CheckUsePermission_AdditionalBranches(t *testing.T) {
 	})
 
 	t.Run("owner can use", func(t *testing.T) {
+		// 不使用 t.Parallel() - 修改全局状态
 		setPermissionDisablePmsCheck(t, false)
 
 		ctrl := gomock.NewController(t)
@@ -166,6 +181,7 @@ func TestPermissionSvc_CheckUsePermission_AdditionalBranches(t *testing.T) {
 	})
 
 	t.Run("release repo error", func(t *testing.T) {
+		// 不使用 t.Parallel() - 修改全局状态
 		setPermissionDisablePmsCheck(t, false)
 
 		ctrl := gomock.NewController(t)
@@ -195,6 +211,7 @@ func TestPermissionSvc_CheckUsePermission_AdditionalBranches(t *testing.T) {
 	})
 
 	t.Run("release exists and not pms ctrl", func(t *testing.T) {
+		// 不使用 t.Parallel() - 修改全局状态
 		setPermissionDisablePmsCheck(t, false)
 
 		ctrl := gomock.NewController(t)
@@ -211,6 +228,7 @@ func TestPermissionSvc_CheckUsePermission_AdditionalBranches(t *testing.T) {
 
 		mockAgentRepo.EXPECT().GetByID(gomock.Any(), "a1").
 			Return(&dapo.DataAgentPo{ID: "a1", CreatedBy: "owner"}, nil)
+
 		isPmsCtrl := 0
 		mockReleaseRepo.EXPECT().GetByAgentID(gomock.Any(), "a1").
 			Return(&dapo.ReleasePO{IsPmsCtrl: &isPmsCtrl}, nil)

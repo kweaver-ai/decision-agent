@@ -6,11 +6,11 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 // Note: The Detail function uses observability (o11y.StartInternalSpan/o11y.EndSpan)
@@ -18,6 +18,8 @@ import (
 // and error handling paths, acknowledging the observability limitations.
 
 func TestConversationSvc_Detail_ConversationNotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -43,6 +45,8 @@ func TestConversationSvc_Detail_ConversationNotFound(t *testing.T) {
 }
 
 func TestConversationSvc_Detail_GetByIDError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -68,6 +72,8 @@ func TestConversationSvc_Detail_GetByIDError(t *testing.T) {
 }
 
 func TestConversationSvc_Detail_P2EError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -84,12 +90,12 @@ func TestConversationSvc_Detail_P2EError(t *testing.T) {
 	conversationID := "conv-123"
 
 	po := &dapo.ConversationPO{
-		ID:         conversationID,
+		ID:          conversationID,
 		AgentAPPKey: "agent-123",
-		CreateBy:   "user-123",
-		UpdateBy:   "user-123",
-		Title:      "Test Conversation",
-		Ext:        new(string),
+		CreateBy:    "user-123",
+		UpdateBy:    "user-123",
+		Title:       "Test Conversation",
+		Ext:         new(string),
 	}
 
 	mockConversationRepo.EXPECT().GetByID(gomock.Any(), conversationID).Return(po, nil)
@@ -102,6 +108,8 @@ func TestConversationSvc_Detail_P2EError(t *testing.T) {
 }
 
 func TestConversationSvc_Detail_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -119,12 +127,12 @@ func TestConversationSvc_Detail_Success(t *testing.T) {
 
 	title := "Test Conversation"
 	po := &dapo.ConversationPO{
-		ID:         conversationID,
+		ID:          conversationID,
 		AgentAPPKey: "agent-123",
-		CreateBy:   "user-123",
-		UpdateBy:   "user-123",
-		Title:      title,
-		Ext:        new(string),
+		CreateBy:    "user-123",
+		UpdateBy:    "user-123",
+		Title:       title,
+		Ext:         new(string),
 	}
 
 	mockConversationRepo.EXPECT().GetByID(gomock.Any(), conversationID).Return(po, nil)
@@ -137,6 +145,8 @@ func TestConversationSvc_Detail_Success(t *testing.T) {
 }
 
 func TestConversationSvc_Detail_PanicsWithoutConversationRepo(t *testing.T) {
+	t.Parallel()
+
 	svc := &conversationSvc{
 		SvcBase: service.NewSvcBase(),
 		// conversationRepo is nil

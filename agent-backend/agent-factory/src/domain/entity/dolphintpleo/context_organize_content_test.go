@@ -11,9 +11,11 @@ import (
 )
 
 func TestNewContextOrganizeContent(t *testing.T) {
+	t.Parallel()
+
 	otherTpl := &OtherTplStruct{
-		DocRetrieve:   NewDocRetrieveContent(),
-		GraphRetrieve: NewGraphRetrieveContent(),
+		DocRetrieve:    NewDocRetrieveContent(),
+		GraphRetrieve:  NewGraphRetrieveContent(),
 		MemoryRetrieve: NewMemoryRetrieveContent(),
 	}
 
@@ -27,9 +29,11 @@ func TestNewContextOrganizeContent(t *testing.T) {
 }
 
 func TestContextOrganizeContent_LoadFromConfig_WithDocRetrieve(t *testing.T) {
+	t.Parallel()
+
 	otherTpl := &OtherTplStruct{
-		DocRetrieve:   NewDocRetrieveContent(),
-		GraphRetrieve: NewGraphRetrieveContent(),
+		DocRetrieve:    NewDocRetrieveContent(),
+		GraphRetrieve:  NewGraphRetrieveContent(),
 		MemoryRetrieve: NewMemoryRetrieveContent(),
 	}
 	otherTpl.DocRetrieve.IsEnable = true
@@ -48,9 +52,11 @@ func TestContextOrganizeContent_LoadFromConfig_WithDocRetrieve(t *testing.T) {
 }
 
 func TestContextOrganizeContent_LoadFromConfig_WithGraphRetrieve(t *testing.T) {
+	t.Parallel()
+
 	otherTpl := &OtherTplStruct{
-		DocRetrieve:   NewDocRetrieveContent(),
-		GraphRetrieve: NewGraphRetrieveContent(),
+		DocRetrieve:    NewDocRetrieveContent(),
+		GraphRetrieve:  NewGraphRetrieveContent(),
 		MemoryRetrieve: NewMemoryRetrieveContent(),
 	}
 	otherTpl.GraphRetrieve.IsEnable = true
@@ -69,9 +75,11 @@ func TestContextOrganizeContent_LoadFromConfig_WithGraphRetrieve(t *testing.T) {
 }
 
 func TestContextOrganizeContent_LoadFromConfig_DocRetrieveDisabled(t *testing.T) {
+	t.Parallel()
+
 	otherTpl := &OtherTplStruct{
-		DocRetrieve:   NewDocRetrieveContent(),
-		GraphRetrieve: NewGraphRetrieveContent(),
+		DocRetrieve:    NewDocRetrieveContent(),
+		GraphRetrieve:  NewGraphRetrieveContent(),
 		MemoryRetrieve: NewMemoryRetrieveContent(),
 	}
 	otherTpl.DocRetrieve.IsEnable = true
@@ -91,9 +99,11 @@ func TestContextOrganizeContent_LoadFromConfig_DocRetrieveDisabled(t *testing.T)
 }
 
 func TestContextOrganizeContent_LoadFromConfig_GraphRetrieveDisabled(t *testing.T) {
+	t.Parallel()
+
 	otherTpl := &OtherTplStruct{
-		DocRetrieve:   NewDocRetrieveContent(),
-		GraphRetrieve: NewGraphRetrieveContent(),
+		DocRetrieve:    NewDocRetrieveContent(),
+		GraphRetrieve:  NewGraphRetrieveContent(),
 		MemoryRetrieve: NewMemoryRetrieveContent(),
 	}
 	otherTpl.GraphRetrieve.IsEnable = true
@@ -113,9 +123,11 @@ func TestContextOrganizeContent_LoadFromConfig_GraphRetrieveDisabled(t *testing.
 }
 
 func TestContextOrganizeContent_LoadFromConfig_NoReferences(t *testing.T) {
+	t.Parallel()
+
 	otherTpl := &OtherTplStruct{
-		DocRetrieve:   NewDocRetrieveContent(),
-		GraphRetrieve: NewGraphRetrieveContent(),
+		DocRetrieve:    NewDocRetrieveContent(),
+		GraphRetrieve:  NewGraphRetrieveContent(),
 		MemoryRetrieve: NewMemoryRetrieveContent(),
 	}
 
@@ -131,9 +143,11 @@ func TestContextOrganizeContent_LoadFromConfig_NoReferences(t *testing.T) {
 }
 
 func TestContextOrganizeContent_ToString_WithReference(t *testing.T) {
+	t.Parallel()
+
 	otherTpl := &OtherTplStruct{
-		DocRetrieve:   NewDocRetrieveContent(),
-		GraphRetrieve: NewGraphRetrieveContent(),
+		DocRetrieve:    NewDocRetrieveContent(),
+		GraphRetrieve:  NewGraphRetrieveContent(),
 		MemoryRetrieve: NewMemoryRetrieveContent(),
 	}
 	otherTpl.DocRetrieve.IsEnable = true
@@ -151,9 +165,11 @@ func TestContextOrganizeContent_ToString_WithReference(t *testing.T) {
 }
 
 func TestContextOrganizeContent_ToString_WithoutReference(t *testing.T) {
+	t.Parallel()
+
 	otherTpl := &OtherTplStruct{
-		DocRetrieve:   NewDocRetrieveContent(),
-		GraphRetrieve: NewGraphRetrieveContent(),
+		DocRetrieve:    NewDocRetrieveContent(),
+		GraphRetrieve:  NewGraphRetrieveContent(),
 		MemoryRetrieve: NewMemoryRetrieveContent(),
 	}
 
@@ -168,9 +184,11 @@ func TestContextOrganizeContent_ToString_WithoutReference(t *testing.T) {
 }
 
 func TestContextOrganizeContent_ToString_WithTempZoneContent(t *testing.T) {
+	t.Parallel()
+
 	otherTpl := &OtherTplStruct{
-		DocRetrieve:   NewDocRetrieveContent(),
-		GraphRetrieve: NewGraphRetrieveContent(),
+		DocRetrieve:    NewDocRetrieveContent(),
+		GraphRetrieve:  NewGraphRetrieveContent(),
 		MemoryRetrieve: NewMemoryRetrieveContent(),
 	}
 
@@ -185,9 +203,11 @@ func TestContextOrganizeContent_ToString_WithTempZoneContent(t *testing.T) {
 }
 
 func TestContextOrganizeContent_ToString_WithGraphRetrieveContent(t *testing.T) {
+	t.Parallel()
+
 	otherTpl := &OtherTplStruct{
-		DocRetrieve:   NewDocRetrieveContent(),
-		GraphRetrieve: NewGraphRetrieveContent(),
+		DocRetrieve:    NewDocRetrieveContent(),
+		GraphRetrieve:  NewGraphRetrieveContent(),
 		MemoryRetrieve: NewMemoryRetrieveContent(),
 	}
 
@@ -202,9 +222,11 @@ func TestContextOrganizeContent_ToString_WithGraphRetrieveContent(t *testing.T) 
 }
 
 func TestContextOrganizeContent_ToString_AllContentTypes(t *testing.T) {
+	t.Parallel()
+
 	otherTpl := &OtherTplStruct{
-		DocRetrieve:   NewDocRetrieveContent(),
-		GraphRetrieve: NewGraphRetrieveContent(),
+		DocRetrieve:    NewDocRetrieveContent(),
+		GraphRetrieve:  NewGraphRetrieveContent(),
 		MemoryRetrieve: NewMemoryRetrieveContent(),
 	}
 
@@ -225,9 +247,11 @@ func TestContextOrganizeContent_ToString_AllContentTypes(t *testing.T) {
 }
 
 func TestContextOrganizeContent_ToDolphinTplEo(t *testing.T) {
+	t.Parallel()
+
 	otherTpl := &OtherTplStruct{
-		DocRetrieve:   NewDocRetrieveContent(),
-		GraphRetrieve: NewGraphRetrieveContent(),
+		DocRetrieve:    NewDocRetrieveContent(),
+		GraphRetrieve:  NewGraphRetrieveContent(),
 		MemoryRetrieve: NewMemoryRetrieveContent(),
 	}
 
@@ -244,10 +268,12 @@ func TestContextOrganizeContent_ToDolphinTplEo(t *testing.T) {
 }
 
 func TestContextOrganizeContent_LoadFromConfig_DataSourceWithDoc(t *testing.T) {
+	t.Parallel()
+
 	docSource := &datasourcevalobj.DocSource{}
 	otherTpl := &OtherTplStruct{
-		DocRetrieve:   NewDocRetrieveContent(),
-		GraphRetrieve: NewGraphRetrieveContent(),
+		DocRetrieve:    NewDocRetrieveContent(),
+		GraphRetrieve:  NewGraphRetrieveContent(),
 		MemoryRetrieve: NewMemoryRetrieveContent(),
 	}
 
@@ -268,10 +294,12 @@ func TestContextOrganizeContent_LoadFromConfig_DataSourceWithDoc(t *testing.T) {
 }
 
 func TestContextOrganizeContent_LoadFromConfig_DataSourceWithGraph(t *testing.T) {
+	t.Parallel()
+
 	kgSource := &datasourcevalobj.KgSource{}
 	otherTpl := &OtherTplStruct{
-		DocRetrieve:   NewDocRetrieveContent(),
-		GraphRetrieve: NewGraphRetrieveContent(),
+		DocRetrieve:    NewDocRetrieveContent(),
+		GraphRetrieve:  NewGraphRetrieveContent(),
 		MemoryRetrieve: NewMemoryRetrieveContent(),
 	}
 
@@ -292,9 +320,11 @@ func TestContextOrganizeContent_LoadFromConfig_DataSourceWithGraph(t *testing.T)
 }
 
 func TestContextOrganizeContent_ToString_EmptyContent(t *testing.T) {
+	t.Parallel()
+
 	otherTpl := &OtherTplStruct{
-		DocRetrieve:   NewDocRetrieveContent(),
-		GraphRetrieve: NewGraphRetrieveContent(),
+		DocRetrieve:    NewDocRetrieveContent(),
+		GraphRetrieve:  NewGraphRetrieveContent(),
 		MemoryRetrieve: NewMemoryRetrieveContent(),
 	}
 

@@ -13,6 +13,8 @@ import (
 )
 
 func TestGetBizDomainIDFromGinHeader(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
 
 	tests := []struct {
@@ -52,6 +54,8 @@ func TestGetBizDomainIDFromGinHeader(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			var c *gin.Context
 			if tt.setupContext != nil {
 				c, _ = gin.CreateTestContext(httptest.NewRecorder())
@@ -62,6 +66,7 @@ func TestGetBizDomainIDFromGinHeader(t *testing.T) {
 
 			if tt.wantErr {
 				require.Error(t, err)
+
 				if tt.errContains != "" {
 					assert.Contains(t, err.Error(), tt.errContains)
 				}
@@ -75,34 +80,38 @@ func TestGetBizDomainIDFromGinHeader(t *testing.T) {
 }
 
 func TestGetBizDomainIDFromCtx(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name    string
-		ctx     context.Context
-		wantID  string
+		name      string
+		ctx       context.Context
+		wantID    string
 		wantPanic bool
 	}{
 		{
-			name:   "nil context panics",
-			ctx:    nil,
-			wantID: "",
+			name:      "nil context panics",
+			ctx:       nil,
+			wantID:    "",
 			wantPanic: true,
 		},
 		{
-			name:   "context without biz domain ID",
-			ctx:    context.Background(),
-			wantID: "",
+			name:      "context without biz domain ID",
+			ctx:       context.Background(),
+			wantID:    "",
 			wantPanic: false,
 		},
 		{
-			name: "context with biz domain ID",
-			ctx: context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "domain-456"),
-			wantID: "domain-456",
+			name:      "context with biz domain ID",
+			ctx:       context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "domain-456"),
+			wantID:    "domain-456",
 			wantPanic: false,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if tt.wantPanic {
 				assert.Panics(t, func() {
 					GetBizDomainIDFromCtx(tt.ctx)
@@ -115,7 +124,10 @@ func TestGetBizDomainIDFromCtx(t *testing.T) {
 	}
 
 	t.Run("context with wrong type panics", func(t *testing.T) {
+		t.Parallel()
+
 		ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), 123)
+
 		assert.Panics(t, func() {
 			GetBizDomainIDFromCtx(ctx)
 		})
@@ -123,6 +135,8 @@ func TestGetBizDomainIDFromCtx(t *testing.T) {
 }
 
 func TestGetUserIDFromGinContext(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
 
 	tests := []struct {
@@ -165,6 +179,8 @@ func TestGetUserIDFromGinContext(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			c, _ := gin.CreateTestContext(httptest.NewRecorder())
 			if tt.setupContext != nil {
 				tt.setupContext(c)
@@ -174,6 +190,7 @@ func TestGetUserIDFromGinContext(t *testing.T) {
 
 			if tt.wantErr {
 				require.Error(t, err)
+
 				if tt.errContains != "" {
 					assert.Contains(t, err.Error(), tt.errContains)
 				}
@@ -186,6 +203,8 @@ func TestGetUserIDFromGinContext(t *testing.T) {
 }
 
 func TestGetVisitorFromCtx(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name      string
 		ctx       context.Context
@@ -206,21 +225,23 @@ func TestGetVisitorFromCtx(t *testing.T) {
 		{
 			name: "context with visitor",
 			ctx: context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{
-				ID:       "visitor-123",
-				TokenID:  "token-456",
+				ID:      "visitor-123",
+				TokenID: "token-456",
 			}),
 			wantID:  "visitor-123",
 			wantNil: false,
 		},
 		{
-			name: "context with wrong type panics",
-			ctx: context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), "not a visitor"),
+			name:      "context with wrong type panics",
+			ctx:       context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), "not a visitor"),
 			wantPanic: true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if tt.wantPanic {
 				assert.Panics(t, func() {
 					GetVisitorFromCtx(tt.ctx)
@@ -239,6 +260,8 @@ func TestGetVisitorFromCtx(t *testing.T) {
 }
 
 func TestGetUserIDFromCtx(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name   string
 		ctx    context.Context
@@ -260,6 +283,8 @@ func TestGetUserIDFromCtx(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			userID := GetUserIDFromCtx(tt.ctx)
 			assert.Equal(t, tt.wantID, userID)
 		})
@@ -267,10 +292,12 @@ func TestGetUserIDFromCtx(t *testing.T) {
 }
 
 func TestGetUserTokenFromCtx(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name       string
-		ctx        context.Context
-		wantToken  string
+		name      string
+		ctx       context.Context
+		wantToken string
 	}{
 		{
 			name:      "context without visitor",
@@ -288,6 +315,8 @@ func TestGetUserTokenFromCtx(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			token := GetUserTokenFromCtx(tt.ctx)
 			assert.Equal(t, tt.wantToken, token)
 		})
@@ -295,16 +324,18 @@ func TestGetUserTokenFromCtx(t *testing.T) {
 }
 
 func TestGetTraceIDFromCtx(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name       string
-		ctx        context.Context
+		name        string
+		ctx         context.Context
 		wantTraceID string
-		wantPanic  bool
+		wantPanic   bool
 	}{
 		{
-			name:        "nil context panics",
-			ctx:         nil,
-			wantPanic:   true,
+			name:      "nil context panics",
+			ctx:       nil,
+			wantPanic: true,
 		},
 		{
 			name:        "context without trace ID",
@@ -312,19 +343,21 @@ func TestGetTraceIDFromCtx(t *testing.T) {
 			wantTraceID: "",
 		},
 		{
-			name: "context with trace ID",
-			ctx: context.WithValue(context.Background(), cenum.TraceIDCtxKey.String(), "trace-123"),
+			name:        "context with trace ID",
+			ctx:         context.WithValue(context.Background(), cenum.TraceIDCtxKey.String(), "trace-123"),
 			wantTraceID: "trace-123",
 		},
 		{
-			name: "context with wrong type panics",
-			ctx: context.WithValue(context.Background(), cenum.TraceIDCtxKey.String(), 123),
+			name:      "context with wrong type panics",
+			ctx:       context.WithValue(context.Background(), cenum.TraceIDCtxKey.String(), 123),
 			wantPanic: true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if tt.wantPanic {
 				assert.Panics(t, func() {
 					GetTraceIDFromCtx(tt.ctx)
@@ -338,43 +371,47 @@ func TestGetTraceIDFromCtx(t *testing.T) {
 }
 
 func TestGetVisitLanguageCtx(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name       string
-		ctx        context.Context
-		wantLang   rest.Language
-		wantPanic  bool
+		name      string
+		ctx       context.Context
+		wantLang  rest.Language
+		wantPanic bool
 	}{
 		{
-			name:     "nil context panics",
-			ctx:      nil,
+			name:      "nil context panics",
+			ctx:       nil,
 			wantPanic: true,
 		},
 		{
-			name:     "context without language panics (GConfig not initialized)",
-			ctx:      context.Background(),
+			name:      "context without language panics (GConfig not initialized)",
+			ctx:       context.Background(),
 			wantPanic: true, // GConfig.GetDefaultLanguage() panics when GConfig is nil
 		},
 		{
-			name: "context with simplified chinese",
-			ctx: context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese),
-			wantLang: rest.SimplifiedChinese,
+			name:      "context with simplified chinese",
+			ctx:       context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese),
+			wantLang:  rest.SimplifiedChinese,
 			wantPanic: false,
 		},
 		{
-			name: "context with american english",
-			ctx: context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.AmericanEnglish),
-			wantLang: rest.AmericanEnglish,
+			name:      "context with american english",
+			ctx:       context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.AmericanEnglish),
+			wantLang:  rest.AmericanEnglish,
 			wantPanic: false,
 		},
 		{
-			name: "context with wrong type panics",
-			ctx: context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), 123),
+			name:      "context with wrong type panics",
+			ctx:       context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), 123),
 			wantPanic: true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if tt.wantPanic {
 				assert.Panics(t, func() {
 					GetVisitLanguageCtx(tt.ctx)

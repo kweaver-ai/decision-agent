@@ -5,6 +5,8 @@ import (
 )
 
 func TestSafeRenderTemplate(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		template string
@@ -131,6 +133,8 @@ func TestSafeRenderTemplate(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result, err := SafeRenderTemplate(tt.template, tt.data)
 
 			// 检查错误
@@ -150,6 +154,8 @@ func TestSafeRenderTemplate(t *testing.T) {
 }
 
 func TestSafeRenderTemplate_EdgeCases(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		template string
@@ -192,10 +198,13 @@ func TestSafeRenderTemplate_EdgeCases(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result, err := SafeRenderTemplate(tt.template, tt.data)
 			if err != nil {
 				t.Errorf("SafeRenderTemplate() unexpected error = %v", err)
 			}
+
 			if result != tt.expected {
 				t.Errorf("SafeRenderTemplate() = %v, want %v", result, tt.expected)
 			}
@@ -205,6 +214,8 @@ func TestSafeRenderTemplate_EdgeCases(t *testing.T) {
 
 // 测试 SafeGet 函数
 func TestSafeGet(t *testing.T) {
+	t.Parallel()
+
 	data := map[string]interface{}{
 		"User": map[string]interface{}{
 			"Name": "张三",
@@ -248,6 +259,8 @@ func TestSafeGet(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := SafeGet(data, tt.path)
 			if result != tt.expected {
 				t.Errorf("SafeGet() = %v, want %v", result, tt.expected)
@@ -260,6 +273,8 @@ func TestSafeGet(t *testing.T) {
 
 // Test SafeGet with nil data
 func TestSafeGet_NilData(t *testing.T) {
+	t.Parallel()
+
 	result := SafeGet(nil, "User.Name")
 	if result != nil {
 		t.Errorf("SafeGet() with nil data = %v, want nil", result)
@@ -268,6 +283,8 @@ func TestSafeGet_NilData(t *testing.T) {
 
 // Test SafeGet with non-map intermediate value
 func TestSafeGet_NonMapIntermediate(t *testing.T) {
+	t.Parallel()
+
 	data := map[string]interface{}{
 		"User": "string value", // Not a map
 	}
@@ -280,6 +297,8 @@ func TestSafeGet_NonMapIntermediate(t *testing.T) {
 
 // Test SafeGet with empty path
 func TestSafeGet_EmptyPath(t *testing.T) {
+	t.Parallel()
+
 	data := map[string]interface{}{
 		"User": "张三",
 	}
@@ -294,6 +313,8 @@ func TestSafeGet_EmptyPath(t *testing.T) {
 
 // Test SafeRenderTemplate with nil value in data
 func TestSafeRenderTemplate_NilValue(t *testing.T) {
+	t.Parallel()
+
 	template := "用户: {{.User.Name}}"
 	data := map[string]interface{}{
 		"User": map[string]interface{}{
@@ -313,6 +334,8 @@ func TestSafeRenderTemplate_NilValue(t *testing.T) {
 
 // Test SafeRenderTemplate with template that has no closing brace after dot
 func TestSafeRenderTemplate_MalformedTemplate(t *testing.T) {
+	t.Parallel()
+
 	// SafeRenderTemplate converts {{.xxx}} to {{safe "xxx"}} before parsing
 	// So {{.User.Name gets converted to {{safe "User.Name}} which is valid
 	// The missing brace becomes part of the rest string
@@ -334,6 +357,8 @@ func TestSafeRenderTemplate_MalformedTemplate(t *testing.T) {
 
 // Test SafeRenderTemplate_InvalidTemplateSyntax tests error handling
 func TestSafeRenderTemplate_InvalidTemplateSyntax(t *testing.T) {
+	t.Parallel()
+
 	// A template with unclosed action or invalid syntax
 	template := "{{.User.Name" // This will be converted to {{safe "User.Name" which is valid
 	data := map[string]interface{}{
@@ -351,6 +376,8 @@ func TestSafeRenderTemplate_InvalidTemplateSyntax(t *testing.T) {
 
 // Test SafeRenderTemplate_EmptyPlaceholder tests the case where data is nil
 func TestSafeRenderTemplate_NilData(t *testing.T) {
+	t.Parallel()
+
 	template := "Hello {{.User.Name}}"
 	data := map[string]interface{}{} // Empty data map
 
@@ -366,6 +393,8 @@ func TestSafeRenderTemplate_NilData(t *testing.T) {
 
 // Test SafeRenderTemplate_SinglePlaceholder tests template with single variable
 func TestSafeRenderTemplate_SinglePlaceholder(t *testing.T) {
+	t.Parallel()
+
 	template := "{{.Name}}"
 	data := map[string]interface{}{
 		"Name": "Test",
@@ -375,6 +404,7 @@ func TestSafeRenderTemplate_SinglePlaceholder(t *testing.T) {
 	if err != nil {
 		t.Errorf("SafeRenderTemplate() unexpected error = %v", err)
 	}
+
 	if result != "Test" {
 		t.Errorf("SafeRenderTemplate() = %v, want 'Test'", result)
 	}
@@ -382,6 +412,8 @@ func TestSafeRenderTemplate_SinglePlaceholder(t *testing.T) {
 
 // Test SafeRenderTemplate_NoPlaceholder tests template without variables
 func TestSafeRenderTemplate_NoPlaceholder(t *testing.T) {
+	t.Parallel()
+
 	template := "Just plain text without variables"
 	data := map[string]interface{}{
 		"User": "Test",
@@ -391,6 +423,7 @@ func TestSafeRenderTemplate_NoPlaceholder(t *testing.T) {
 	if err != nil {
 		t.Errorf("SafeRenderTemplate() unexpected error = %v", err)
 	}
+
 	if result != "Just plain text without variables" {
 		t.Errorf("SafeRenderTemplate() = %v, want 'Just plain text without variables'", result)
 	}
@@ -398,6 +431,8 @@ func TestSafeRenderTemplate_NoPlaceholder(t *testing.T) {
 
 // Test SafeRenderTemplate_UnclosedPlaceholder tests template with {{. but no closing }}
 func TestSafeRenderTemplate_UnclosedPlaceholder(t *testing.T) {
+	t.Parallel()
+
 	// Test the else branch when idx == -1 (no closing brace found)
 	template := "Hello {{.User.Name and more text"
 	data := map[string]interface{}{
@@ -416,6 +451,8 @@ func TestSafeRenderTemplate_UnclosedPlaceholder(t *testing.T) {
 
 // Test SafeRenderTemplate_MultipleOpeningBraces tests template with multiple {{. but no closing
 func TestSafeRenderTemplate_MultipleOpeningBraces(t *testing.T) {
+	t.Parallel()
+
 	template := "{{.A}} {{.B unclosed {{.C}}"
 	data := map[string]interface{}{
 		"A": "1",
@@ -427,5 +464,6 @@ func TestSafeRenderTemplate_MultipleOpeningBraces(t *testing.T) {
 	if err != nil {
 		t.Errorf("SafeRenderTemplate() unexpected error = %v", err)
 	}
+
 	t.Logf("Result with multiple opening braces: %s", result)
 }

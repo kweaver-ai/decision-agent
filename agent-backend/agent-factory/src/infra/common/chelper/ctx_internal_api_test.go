@@ -9,6 +9,8 @@ import (
 )
 
 func TestIsInternalAPIFromCtx_WithTrueValue(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.WithValue(context.Background(), cenum.InternalAPIFlagCtxKey.String(), true)
 
 	isInternal := IsInternalAPIFromCtx(ctx)
@@ -17,6 +19,8 @@ func TestIsInternalAPIFromCtx_WithTrueValue(t *testing.T) {
 }
 
 func TestIsInternalAPIFromCtx_WithFalseValue(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.WithValue(context.Background(), cenum.InternalAPIFlagCtxKey.String(), false)
 
 	isInternal := IsInternalAPIFromCtx(ctx)
@@ -25,6 +29,8 @@ func TestIsInternalAPIFromCtx_WithFalseValue(t *testing.T) {
 }
 
 func TestIsInternalAPIFromCtx_WithNilValue(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 
 	isInternal := IsInternalAPIFromCtx(ctx)
@@ -33,6 +39,8 @@ func TestIsInternalAPIFromCtx_WithNilValue(t *testing.T) {
 }
 
 func TestIsInternalAPIFromCtx_WithInvalidType(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.WithValue(context.Background(), cenum.InternalAPIFlagCtxKey.String(), "not_a_bool")
 
 	assert.Panics(t, func() {
@@ -41,6 +49,8 @@ func TestIsInternalAPIFromCtx_WithInvalidType(t *testing.T) {
 }
 
 func TestIsInternalAPIFromCtx_WithIntValue(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.WithValue(context.Background(), cenum.InternalAPIFlagCtxKey.String(), 1)
 
 	assert.Panics(t, func() {
@@ -49,6 +59,8 @@ func TestIsInternalAPIFromCtx_WithIntValue(t *testing.T) {
 }
 
 func TestIsInternalAPIFromCtx_DerivedContext(t *testing.T) {
+	t.Parallel()
+
 	baseCtx := context.Background()
 	ctx := context.WithValue(baseCtx, cenum.InternalAPIFlagCtxKey.String(), true)
 

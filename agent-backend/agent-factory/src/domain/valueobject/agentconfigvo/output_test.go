@@ -10,12 +10,16 @@ import (
 )
 
 func TestNewOutputVariablesS(t *testing.T) {
+	t.Parallel()
+
 	vars := NewOutputVariablesS()
 	assert.NotNil(t, vars)
 	assert.IsType(t, &OutputVariablesS{}, vars)
 }
 
 func TestExtractOutputFromLine(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		line string
@@ -50,6 +54,8 @@ func TestExtractOutputFromLine(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := extractOutputFromLine(tt.line)
 			assert.Equal(t, tt.want, got)
 		})
@@ -57,6 +63,8 @@ func TestExtractOutputFromLine(t *testing.T) {
 }
 
 func TestOutputVariablesS_LoadFromConfig_PanicsWithNilConfig(t *testing.T) {
+	t.Parallel()
+
 	v := &OutputVariablesS{}
 
 	assert.Panics(t, func() {
@@ -65,6 +73,8 @@ func TestOutputVariablesS_LoadFromConfig_PanicsWithNilConfig(t *testing.T) {
 }
 
 func TestOutputVariablesS_LoadFromConfig_PanicsWithNilOutput(t *testing.T) {
+	t.Parallel()
+
 	v := &OutputVariablesS{}
 
 	config := &daconfvalobj.Config{
@@ -77,6 +87,8 @@ func TestOutputVariablesS_LoadFromConfig_PanicsWithNilOutput(t *testing.T) {
 }
 
 func TestExtractOutputsFromText(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name      string
 		text      string
@@ -111,6 +123,8 @@ func TestExtractOutputsFromText(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			outputs, err := ExtractOutputsFromText(tt.text)
 			assert.NoError(t, err)
 			assert.Len(t, outputs, tt.wantCount)
@@ -119,6 +133,8 @@ func TestExtractOutputsFromText(t *testing.T) {
 }
 
 func TestExtractOutputsFromText_Errors(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		text string
@@ -135,6 +151,8 @@ func TestExtractOutputsFromText_Errors(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			outputs, err := ExtractOutputsFromText(tt.text)
 			assert.NoError(t, err)
 			assert.Len(t, outputs, 0)
@@ -143,6 +161,8 @@ func TestExtractOutputsFromText_Errors(t *testing.T) {
 }
 
 func TestOutputVariablesS_LoadFromConfig(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		config  *daconfvalobj.Config
@@ -247,12 +267,16 @@ func TestOutputVariablesS_LoadFromConfig(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			v := &OutputVariablesS{}
+
 			err := v.LoadFromConfig(tt.config)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {
 				require.NoError(t, err)
+
 				if tt.check != nil {
 					tt.check(t, v)
 				}
@@ -262,6 +286,8 @@ func TestOutputVariablesS_LoadFromConfig(t *testing.T) {
 }
 
 func TestOutputVariablesS_ToVariable(t *testing.T) {
+	t.Parallel()
+
 	v := &OutputVariablesS{
 		AnswerVar:           "answer",
 		DocRetrievalVar:     "doc_res",
@@ -281,6 +307,8 @@ func TestOutputVariablesS_ToVariable(t *testing.T) {
 }
 
 func TestOutputVariablesS_ToVariable_Empty(t *testing.T) {
+	t.Parallel()
+
 	v := &OutputVariablesS{}
 
 	variable, err := v.ToVariable()
@@ -291,6 +319,8 @@ func TestOutputVariablesS_ToVariable_Empty(t *testing.T) {
 }
 
 func TestOutputVariablesS_LoadFromConfig_EmptyDolphinWithMode(t *testing.T) {
+	t.Parallel()
+
 	// Test when dolphin is empty but mode is enabled
 	config := &daconfvalobj.Config{
 		IsDolphinMode: cdaenum.DolphinModeEnabled,
@@ -311,6 +341,8 @@ func TestOutputVariablesS_LoadFromConfig_EmptyDolphinWithMode(t *testing.T) {
 }
 
 func TestExtractOutputFromLine_ComplexPatterns(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		line string
@@ -340,6 +372,8 @@ func TestExtractOutputFromLine_ComplexPatterns(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := extractOutputFromLine(tt.line)
 			assert.Equal(t, tt.want, got)
 		})

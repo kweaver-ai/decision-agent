@@ -7,6 +7,8 @@ import (
 )
 
 func TestListForBenchmarkReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := ListForBenchmarkReq{
 		Name:                "Test Agent",
 		AgentIDsByBizDomain: []string{"agent-1", "agent-2"},
@@ -23,6 +25,8 @@ func TestListForBenchmarkReq_StructFields(t *testing.T) {
 }
 
 func TestListForBenchmarkReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := ListForBenchmarkReq{}
 
 	assert.Empty(t, req.Name)
@@ -32,6 +36,8 @@ func TestListForBenchmarkReq_Empty(t *testing.T) {
 }
 
 func TestListForBenchmarkReq_WithPagination(t *testing.T) {
+	t.Parallel()
+
 	req := ListForBenchmarkReq{}
 	req.Size = 20
 	req.Page = 2
@@ -41,6 +47,8 @@ func TestListForBenchmarkReq_WithPagination(t *testing.T) {
 }
 
 func TestListForBenchmarkReq_WithDefaultPagination(t *testing.T) {
+	t.Parallel()
+
 	req := ListForBenchmarkReq{}
 	// PageSize has default values when Size is 0
 	req.Size = 0
@@ -51,6 +59,8 @@ func TestListForBenchmarkReq_WithDefaultPagination(t *testing.T) {
 }
 
 func TestListForBenchmarkReq_WithName(t *testing.T) {
+	t.Parallel()
+
 	names := []string{
 		"Test Agent",
 		"中文智能体",
@@ -67,6 +77,8 @@ func TestListForBenchmarkReq_WithName(t *testing.T) {
 }
 
 func TestListForBenchmarkReq_WithAgentIDsByBizDomain(t *testing.T) {
+	t.Parallel()
+
 	agentIDs := []string{
 		"agent-001",
 		"agent-002",
@@ -84,6 +96,8 @@ func TestListForBenchmarkReq_WithAgentIDsByBizDomain(t *testing.T) {
 }
 
 func TestListForBenchmarkReq_WithEmptyAgentIDsByBizDomain(t *testing.T) {
+	t.Parallel()
+
 	req := ListForBenchmarkReq{
 		AgentIDsByBizDomain: []string{},
 	}
@@ -93,6 +107,8 @@ func TestListForBenchmarkReq_WithEmptyAgentIDsByBizDomain(t *testing.T) {
 }
 
 func TestListForBenchmarkReq_WithNilAgentIDsByBizDomain(t *testing.T) {
+	t.Parallel()
+
 	req := ListForBenchmarkReq{
 		AgentIDsByBizDomain: nil,
 	}
@@ -101,6 +117,8 @@ func TestListForBenchmarkReq_WithNilAgentIDsByBizDomain(t *testing.T) {
 }
 
 func TestListForBenchmarkReq_PaginationEdgeCases(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		page     int
@@ -135,6 +153,8 @@ func TestListForBenchmarkReq_PaginationEdgeCases(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			req := ListForBenchmarkReq{}
 			req.Page = tt.page
 			req.Size = tt.size
@@ -146,6 +166,8 @@ func TestListForBenchmarkReq_PaginationEdgeCases(t *testing.T) {
 }
 
 func TestListForBenchmarkReq_EmbeddedPageSize(t *testing.T) {
+	t.Parallel()
+
 	req := ListForBenchmarkReq{}
 
 	// Verify that PageSize is embedded
@@ -162,6 +184,8 @@ func TestListForBenchmarkReq_EmbeddedPageSize(t *testing.T) {
 }
 
 func TestListForBenchmarkReq_WithNameFilter(t *testing.T) {
+	t.Parallel()
+
 	req := ListForBenchmarkReq{
 		Name: "My Agent",
 	}
@@ -175,6 +199,8 @@ func TestListForBenchmarkReq_WithNameFilter(t *testing.T) {
 }
 
 func TestListForBenchmarkReq_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	req := ListForBenchmarkReq{
 		Name:                "Complete Agent",
 		AgentIDsByBizDomain: []string{"agent-1", "agent-2", "agent-3"},
@@ -190,6 +216,8 @@ func TestListForBenchmarkReq_WithAllFields(t *testing.T) {
 }
 
 func TestListForBenchmarkReq_ModifyAgentIDsByBizDomain(t *testing.T) {
+	t.Parallel()
+
 	req := ListForBenchmarkReq{
 		AgentIDsByBizDomain: []string{"agent-1"},
 	}

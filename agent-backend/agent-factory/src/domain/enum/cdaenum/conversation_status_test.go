@@ -7,6 +7,8 @@ import (
 )
 
 func TestConversationStatus_Constants(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, ConversationStatus("processing"), ConvStatusProcessing)
 	assert.Equal(t, ConversationStatus("completed"), ConvStatusCompleted)
 	assert.Equal(t, ConversationStatus("cancelled"), ConvStatusCancelled)
@@ -14,6 +16,8 @@ func TestConversationStatus_Constants(t *testing.T) {
 }
 
 func TestConversationStatus_StringValues(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		status   ConversationStatus
@@ -43,6 +47,8 @@ func TestConversationStatus_StringValues(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := string(tt.status)
 			assert.Equal(t, tt.expected, result)
 		})
@@ -50,6 +56,8 @@ func TestConversationStatus_StringValues(t *testing.T) {
 }
 
 func TestConversationStatus_AllUnique(t *testing.T) {
+	t.Parallel()
+
 	statuses := []ConversationStatus{
 		ConvStatusProcessing,
 		ConvStatusCompleted,
@@ -65,6 +73,8 @@ func TestConversationStatus_AllUnique(t *testing.T) {
 }
 
 func TestConversationStatus_NotEmpty(t *testing.T) {
+	t.Parallel()
+
 	assert.NotEmpty(t, ConvStatusProcessing)
 	assert.NotEmpty(t, ConvStatusCompleted)
 	assert.NotEmpty(t, ConvStatusCancelled)

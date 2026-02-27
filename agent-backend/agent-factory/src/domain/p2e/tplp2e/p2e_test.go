@@ -13,6 +13,8 @@ import (
 )
 
 func TestAgentTplListEo(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 
 	builtInYes := cdaenum.BuiltInYes
@@ -65,21 +67,21 @@ func TestAgentTplListEo(t *testing.T) {
 		{
 			name: "template with all fields",
 			po: &dapo.DataAgentTplPo{
-				ID:           3,
-				Name:         "Full Template",
-				Key:          "full-template",
-				Profile:      strPtr("Full description"),
-				ProductKey:   "product-key",
-				Avatar:       "📝",
-				AvatarType:   cdaenum.AvatarTypeBuiltIn,
-				IsBuiltIn:    &builtInYes,
-				CreatedBy:    "creator",
-				UpdatedBy:    "updater",
-				PublishedBy:  &publishedBy,
-				PublishedAt:  &publishedAt,
-				Status:       cdaenum.StatusPublished,
-				CreatedType:  daenum.AgentTplCreatedTypeCopyFromAgent,
-				CreateFrom:   "from-test",
+				ID:          3,
+				Name:        "Full Template",
+				Key:         "full-template",
+				Profile:     strPtr("Full description"),
+				ProductKey:  "product-key",
+				Avatar:      "📝",
+				AvatarType:  cdaenum.AvatarTypeBuiltIn,
+				IsBuiltIn:   &builtInYes,
+				CreatedBy:   "creator",
+				UpdatedBy:   "updater",
+				PublishedBy: &publishedBy,
+				PublishedAt: &publishedAt,
+				Status:      cdaenum.StatusPublished,
+				CreatedType: daenum.AgentTplCreatedTypeCopyFromAgent,
+				CreateFrom:  "from-test",
 			},
 			wantErr: false,
 			checkEo: func(t *testing.T, eo *daconfeo.DataAgentTplListEo) {
@@ -98,11 +100,14 @@ func TestAgentTplListEo(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			eo, err := AgentTplListEo(ctx, tt.po)
 			if tt.wantErr {
 				require.Error(t, err)
 			} else {
 				require.NoError(t, err)
+
 				if tt.checkEo != nil {
 					tt.checkEo(t, eo)
 				}
@@ -112,6 +117,8 @@ func TestAgentTplListEo(t *testing.T) {
 }
 
 func TestAgentTplListEo_EmptyPO(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 
 	po := &dapo.DataAgentTplPo{}

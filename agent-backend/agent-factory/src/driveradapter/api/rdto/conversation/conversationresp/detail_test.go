@@ -9,13 +9,19 @@ import (
 )
 
 func TestNewConversationDetail(t *testing.T) {
+	t.Parallel()
+
 	detail := NewConversationDetail()
 
 	assert.NotNil(t, detail)
 }
 
 func TestConversationDetail_LoadFromEo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("load from conversation eo", func(t *testing.T) {
+		t.Parallel()
+
 		detail := NewConversationDetail()
 		eo := &conversationeo.Conversation{}
 
@@ -25,6 +31,8 @@ func TestConversationDetail_LoadFromEo(t *testing.T) {
 	})
 
 	t.Run("with nil eo causes panic", func(t *testing.T) {
+		t.Parallel()
+
 		detail := NewConversationDetail()
 
 		assert.Panics(t, func() {
@@ -34,6 +42,8 @@ func TestConversationDetail_LoadFromEo(t *testing.T) {
 }
 
 func TestConversationDetail_StructFields(t *testing.T) {
+	t.Parallel()
+
 	detail := &ConversationDetail{
 		TempareaId: "temp-123",
 		Status:     cdaenum.ConvStatusCompleted,
@@ -44,6 +54,8 @@ func TestConversationDetail_StructFields(t *testing.T) {
 }
 
 func TestConversationDetail_Empty(t *testing.T) {
+	t.Parallel()
+
 	detail := &ConversationDetail{}
 
 	assert.Empty(t, detail.TempareaId)
@@ -51,6 +63,8 @@ func TestConversationDetail_Empty(t *testing.T) {
 }
 
 func TestListConversationResp_Type(t *testing.T) {
+	t.Parallel()
+
 	var resp ListConversationResp
 
 	// Verify it's a slice type
@@ -59,12 +73,16 @@ func TestListConversationResp_Type(t *testing.T) {
 }
 
 func TestListConversationResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	var resp ListConversationResp
 
 	assert.Empty(t, resp)
 }
 
 func TestInitConversationResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := &InitConversationResp{
 		ID:               "conv-123",
 		SandboxSessionID: "session-456",
@@ -77,6 +95,8 @@ func TestInitConversationResp_StructFields(t *testing.T) {
 }
 
 func TestInitConversationResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := &InitConversationResp{}
 
 	assert.Empty(t, resp.ID)
@@ -85,6 +105,8 @@ func TestInitConversationResp_Empty(t *testing.T) {
 }
 
 func TestInitConversationResp_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	resp := &InitConversationResp{
 		ID:               "test-id",
 		SandboxSessionID: "test-session",
@@ -97,6 +119,8 @@ func TestInitConversationResp_WithAllFields(t *testing.T) {
 }
 
 func TestConversationDetail_WithValues(t *testing.T) {
+	t.Parallel()
+
 	detail := &ConversationDetail{
 		TempareaId: "area-123",
 		Status:     cdaenum.ConvStatusProcessing,
@@ -107,6 +131,8 @@ func TestConversationDetail_WithValues(t *testing.T) {
 }
 
 func TestConversationDetail_StatusValues(t *testing.T) {
+	t.Parallel()
+
 	statuses := []cdaenum.ConversationStatus{
 		cdaenum.ConvStatusCompleted,
 		cdaenum.ConvStatusProcessing,
@@ -123,6 +149,8 @@ func TestConversationDetail_StatusValues(t *testing.T) {
 }
 
 func TestConversationDetail_EmbeddedConversation(t *testing.T) {
+	t.Parallel()
+
 	detail := &ConversationDetail{}
 
 	// The embedded Conversation struct should be accessible
@@ -130,6 +158,8 @@ func TestConversationDetail_EmbeddedConversation(t *testing.T) {
 }
 
 func TestListConversationResp_Append(t *testing.T) {
+	t.Parallel()
+
 	var resp ListConversationResp
 
 	detail1 := ConversationDetail{TempareaId: "1"}

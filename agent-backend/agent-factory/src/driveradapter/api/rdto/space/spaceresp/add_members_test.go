@@ -4,12 +4,14 @@ import (
 	"testing"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/spacevo"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/space/spacereq"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewAddMembersResp(t *testing.T) {
+	t.Parallel()
+
 	resp := NewAddMembersResp()
 
 	assert.NotNil(t, resp)
@@ -19,6 +21,8 @@ func TestNewAddMembersResp(t *testing.T) {
 }
 
 func TestAddMembersResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	success := []*spacevo.MemberAssoc{
 		{
 			MemberUniq: spacevo.MemberUniq{
@@ -47,6 +51,8 @@ func TestAddMembersResp_StructFields(t *testing.T) {
 }
 
 func TestAddMembersResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := AddMembersResp{}
 
 	assert.Nil(t, resp.Success)
@@ -54,6 +60,8 @@ func TestAddMembersResp_Empty(t *testing.T) {
 }
 
 func TestNewAddMemberFailed(t *testing.T) {
+	t.Parallel()
+
 	failed := NewAddMemberFailed()
 
 	assert.NotNil(t, failed)
@@ -62,6 +70,8 @@ func TestNewAddMemberFailed(t *testing.T) {
 }
 
 func TestAddMemberFailed_StructFields(t *testing.T) {
+	t.Parallel()
+
 	members := []*spacereq.SpaceMemberReq{
 		{
 			ObjType: cenum.OrgObjTypeUser,
@@ -83,12 +93,16 @@ func TestAddMemberFailed_StructFields(t *testing.T) {
 }
 
 func TestAddMemberFailed_Empty(t *testing.T) {
+	t.Parallel()
+
 	failed := AddMemberFailed{}
 
 	assert.Nil(t, failed.MemberAlreadyExists)
 }
 
 func TestAddMembersResp_WithAllSuccess(t *testing.T) {
+	t.Parallel()
+
 	success := []*spacevo.MemberAssoc{
 		{
 			MemberUniq: spacevo.MemberUniq{
@@ -117,6 +131,8 @@ func TestAddMembersResp_WithAllSuccess(t *testing.T) {
 }
 
 func TestAddMembersResp_WithAllFailed(t *testing.T) {
+	t.Parallel()
+
 	failed := NewAddMemberFailed()
 	failed.MemberAlreadyExists = []*spacereq.SpaceMemberReq{
 		{
@@ -135,6 +151,8 @@ func TestAddMembersResp_WithAllFailed(t *testing.T) {
 }
 
 func TestAddMemberFailed_WithDifferentMemberTypes(t *testing.T) {
+	t.Parallel()
+
 	members := []*spacereq.SpaceMemberReq{
 		{
 			ObjType: cenum.OrgObjTypeUser,
@@ -158,6 +176,8 @@ func TestAddMemberFailed_WithDifferentMemberTypes(t *testing.T) {
 }
 
 func TestAddMembersResp_WithMixedResults(t *testing.T) {
+	t.Parallel()
+
 	success := []*spacevo.MemberAssoc{
 		{
 			MemberUniq: spacevo.MemberUniq{

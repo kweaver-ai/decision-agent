@@ -10,6 +10,8 @@ import (
 )
 
 func TestReleaseEO_IsPmsCtrlBool(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		eo   *ReleaseEO
@@ -47,6 +49,8 @@ func TestReleaseEO_IsPmsCtrlBool(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := tt.eo.IsPmsCtrlBool()
 			assert.Equal(t, tt.want, got)
 		})
@@ -54,6 +58,8 @@ func TestReleaseEO_IsPmsCtrlBool(t *testing.T) {
 }
 
 func TestReleaseEO_SetIsPmsCtrl(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name      string
 		eo        *ReleaseEO
@@ -88,6 +94,7 @@ func TestReleaseEO_SetIsPmsCtrl(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			tt.eo.SetIsPmsCtrl(tt.isPmsCtrl)
 			assert.Equal(t, tt.want, tt.eo.IsPmsCtrl)
 		})
@@ -95,9 +102,11 @@ func TestReleaseEO_SetIsPmsCtrl(t *testing.T) {
 }
 
 func TestReleaseDAConfWrapperEO(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name string
-		eo   *ReleaseDAConfWrapperEO
+		name  string
+		eo    *ReleaseDAConfWrapperEO
 		check func(t *testing.T, eo *ReleaseDAConfWrapperEO)
 	}{
 		{
@@ -137,6 +146,8 @@ func TestReleaseDAConfWrapperEO(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if tt.check != nil {
 				tt.check(t, tt.eo)
 			}
@@ -145,15 +156,17 @@ func TestReleaseDAConfWrapperEO(t *testing.T) {
 }
 
 func TestReleaseEO_PublishToBes(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name string
-		eo   *ReleaseEO
+		name  string
+		eo    *ReleaseEO
 		check func(t *testing.T, eo *ReleaseEO)
 	}{
 		{
 			name: "with publish targets",
 			eo: &ReleaseEO{
-				ID:           "release-1",
+				ID: "release-1",
 				PublishToBes: []cdaenum.PublishToBe{
 					cdaenum.PublishToBeAPIAgent,
 					cdaenum.PublishToBeWebSDKAgent,
@@ -189,6 +202,8 @@ func TestReleaseEO_PublishToBes(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if tt.check != nil {
 				tt.check(t, tt.eo)
 			}
@@ -197,15 +212,17 @@ func TestReleaseEO_PublishToBes(t *testing.T) {
 }
 
 func TestReleaseEO_PublishToWhere(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name string
-		eo   *ReleaseEO
+		name  string
+		eo    *ReleaseEO
 		check func(t *testing.T, eo *ReleaseEO)
 	}{
 		{
 			name: "with publish where targets",
 			eo: &ReleaseEO{
-				ID:             "release-1",
+				ID: "release-1",
 				PublishToWhere: []daenum.PublishToWhere{
 					daenum.PublishToWhereCustomSpace,
 					daenum.PublishToWhereSquare,
@@ -231,6 +248,8 @@ func TestReleaseEO_PublishToWhere(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if tt.check != nil {
 				tt.check(t, tt.eo)
 			}

@@ -7,6 +7,8 @@ import (
 )
 
 func TestOperator_Check_ValidOperators(t *testing.T) {
+	t.Parallel()
+
 	validOperators := []Operator{
 		OperatorGt,
 		OperatorEq,
@@ -23,6 +25,8 @@ func TestOperator_Check_ValidOperators(t *testing.T) {
 
 	for _, op := range validOperators {
 		t.Run(string(op), func(t *testing.T) {
+			t.Parallel()
+
 			result := op.Check()
 			assert.True(t, result, "Operator %s should be valid", op)
 		})
@@ -30,6 +34,8 @@ func TestOperator_Check_ValidOperators(t *testing.T) {
 }
 
 func TestOperator_Check_InvalidOperators(t *testing.T) {
+	t.Parallel()
+
 	invalidOperators := []Operator{
 		"",
 		"invalid",
@@ -42,6 +48,8 @@ func TestOperator_Check_InvalidOperators(t *testing.T) {
 
 	for _, op := range invalidOperators {
 		t.Run(string(op), func(t *testing.T) {
+			t.Parallel()
+
 			result := op.Check()
 			assert.False(t, result, "Operator %s should be invalid", op)
 		})
@@ -49,6 +57,8 @@ func TestOperator_Check_InvalidOperators(t *testing.T) {
 }
 
 func TestOperator_Check_OperatorNotLike(t *testing.T) {
+	t.Parallel()
+
 	// Note: OperatorNotLike is defined but not in the valid list in Check()
 	// This test documents the current behavior
 	result := OperatorNotLike.Check()
@@ -56,6 +66,8 @@ func TestOperator_Check_OperatorNotLike(t *testing.T) {
 }
 
 func TestOperator_ConstantValues(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		operator Operator
@@ -77,23 +89,30 @@ func TestOperator_ConstantValues(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			assert.Equal(t, tt.expected, string(tt.operator))
 		})
 	}
 }
 
 func TestOperator_StringRepresentation(t *testing.T) {
+	t.Parallel()
+
 	op := OperatorGt
 	assert.Equal(t, " > ", string(op))
 }
 
 func TestOperator_CustomOperator(t *testing.T) {
+	t.Parallel()
+
 	customOp := Operator(" custom_op ")
 	result := customOp.Check()
 	assert.False(t, result, "Custom operators should not be valid")
 }
 
 func TestOperator_CaseSensitivity(t *testing.T) {
+	t.Parallel()
+
 	// Operators are case-sensitive
 	op := Operator(" LIKE ")
 	result := op.Check()
@@ -101,6 +120,8 @@ func TestOperator_CaseSensitivity(t *testing.T) {
 }
 
 func TestOperator_Whitespace(t *testing.T) {
+	t.Parallel()
+
 	// Test that whitespace matters
 	op1 := Operator("=")
 	op2 := Operator(OperatorEq)

@@ -8,6 +8,8 @@ import (
 )
 
 func TestBuildUserQuery(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name           string
 		originalQuery  string
@@ -62,6 +64,8 @@ func TestBuildUserQuery(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := buildUserQuery(tt.originalQuery, tt.conversationID, tt.selectedFiles)
 
 			for _, substr := range tt.wantContains {
@@ -72,6 +76,8 @@ func TestBuildUserQuery(t *testing.T) {
 }
 
 func TestBuildWorkspaceContextMessage(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name           string
 		conversationID string
@@ -117,6 +123,8 @@ func TestBuildWorkspaceContextMessage(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := buildWorkspaceContextMessage(tt.conversationID, tt.userID, tt.selectedFiles)
 
 			if len(tt.wantContains) == 0 {

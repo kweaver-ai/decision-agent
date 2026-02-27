@@ -12,6 +12,8 @@ import (
 )
 
 func TestLogFailedExecution(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 
 	visitorInfo := &agentreq.InternalParam{
@@ -65,6 +67,8 @@ func TestLogFailedExecution(t *testing.T) {
 }
 
 func TestLogFailedExecutionWithEmptySessionID(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 
 	visitorInfo := &agentreq.InternalParam{
@@ -73,8 +77,8 @@ func TestLogFailedExecutionWithEmptySessionID(t *testing.T) {
 	}
 
 	req := &agentreq.ChatReq{
-		InternalParam: *visitorInfo,
-		AgentID:       "agent-123",
+		InternalParam:  *visitorInfo,
+		AgentID:        "agent-123",
 		ConversationID: "conv-789",
 		// ConversationSessionID is empty - should be generated
 		Query: "test query",

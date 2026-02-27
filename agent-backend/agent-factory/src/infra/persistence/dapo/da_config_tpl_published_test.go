@@ -7,7 +7,11 @@ import (
 )
 
 func TestPublishedTplPo_TableName(t *testing.T) {
+	t.Parallel()
+
 	t.Run("table name", func(t *testing.T) {
+		t.Parallel()
+
 		po := &PublishedTplPo{}
 		tableName := po.TableName()
 
@@ -19,7 +23,11 @@ func TestPublishedTplPo_TableName(t *testing.T) {
 }
 
 func TestPublishedTplPo_SetIsBuiltIn(t *testing.T) {
+	t.Parallel()
+
 	t.Run("set built in flag", func(t *testing.T) {
+		t.Parallel()
+
 		po := &PublishedTplPo{}
 		builtIn := cdaenum.BuiltInYes
 		po.SetIsBuiltIn(builtIn)
@@ -27,6 +35,7 @@ func TestPublishedTplPo_SetIsBuiltIn(t *testing.T) {
 		if po.IsBuiltIn == nil {
 			t.Error("Expected IsBuiltIn to be set")
 		}
+
 		if *po.IsBuiltIn != builtIn {
 			t.Errorf("Expected IsBuiltIn to be %v, got %v", builtIn, *po.IsBuiltIn)
 		}
@@ -34,7 +43,11 @@ func TestPublishedTplPo_SetIsBuiltIn(t *testing.T) {
 }
 
 func TestPublishedTplPo(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create published template PO", func(t *testing.T) {
+		t.Parallel()
+
 		profile := "test profile"
 		builtIn := cdaenum.BuiltInYes
 
@@ -56,33 +69,43 @@ func TestPublishedTplPo(t *testing.T) {
 		if po.ID != 123 {
 			t.Errorf("Expected ID to be 123, got %d", po.ID)
 		}
+
 		if po.Name != "Published Template" {
 			t.Errorf("Expected Name to be 'Published Template', got '%s'", po.Name)
 		}
+
 		if po.Key != "published-template" {
 			t.Errorf("Expected Key to be 'published-template', got '%s'", po.Key)
 		}
+
 		if po.AvatarType != cdaenum.AvatarTypeBuiltIn {
 			t.Errorf("Expected AvatarType to be BuiltIn, got %v", po.AvatarType)
 		}
+
 		if po.Avatar != "default-avatar" {
 			t.Errorf("Expected Avatar to be 'default-avatar', got '%s'", po.Avatar)
 		}
+
 		if po.Config != `{"key": "value"}` {
 			t.Errorf("Expected Config to be '{\"key\": \"value\"}', got '%s'", po.Config)
 		}
+
 		if po.PublishedAt != 1234567890 {
 			t.Errorf("Expected PublishedAt to be 1234567890, got %d", po.PublishedAt)
 		}
+
 		if po.PublishedBy != "user-123" {
 			t.Errorf("Expected PublishedBy to be 'user-123', got '%s'", po.PublishedBy)
 		}
+
 		if po.TplID != 456 {
 			t.Errorf("Expected TplID to be 456, got %d", po.TplID)
 		}
 	})
 
 	t.Run("with nil profile", func(t *testing.T) {
+		t.Parallel()
+
 		po := &PublishedTplPo{
 			ID:         789,
 			Name:       "Template 2",
@@ -97,6 +120,8 @@ func TestPublishedTplPo(t *testing.T) {
 	})
 
 	t.Run("with nil IsBuiltIn", func(t *testing.T) {
+		t.Parallel()
+
 		po := &PublishedTplPo{
 			ID:         999,
 			Name:       "Template 3",

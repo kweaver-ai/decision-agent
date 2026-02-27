@@ -3,6 +3,8 @@ package cutil
 import "testing"
 
 func TestAddToJSON(t *testing.T) {
+	t.Parallel()
+
 	jsonStr := `{"name":"John", "age":30, "cars":{"car1":"Ford","car2":"BMW"}}`
 	jsonPath := "cars.car3"
 	value := "Audi"
@@ -20,6 +22,8 @@ func TestAddToJSON(t *testing.T) {
 }
 
 func TestAddKeyToJSONArray(t *testing.T) {
+	t.Parallel()
+
 	jsonArrayStr := `[{"a":1},{"a":1},{"a":1}]`
 	key := "b"
 	value := 2
@@ -37,6 +41,8 @@ func TestAddKeyToJSONArray(t *testing.T) {
 }
 
 func TestAddToJSON_InvalidJSON(t *testing.T) {
+	t.Parallel()
+
 	jsonStr := `{invalid json}`
 	jsonPath := "key"
 	value := "value"
@@ -48,6 +54,8 @@ func TestAddToJSON_InvalidJSON(t *testing.T) {
 }
 
 func TestAddToJSON_InvalidPath(t *testing.T) {
+	t.Parallel()
+
 	jsonStr := `{"name":"John"}`
 	jsonPath := "" // Empty path might cause issues
 	value := "value"
@@ -60,6 +68,8 @@ func TestAddToJSON_InvalidPath(t *testing.T) {
 }
 
 func TestAddKeyToJSONArray_InvalidJSON(t *testing.T) {
+	t.Parallel()
+
 	jsonArrayStr := `{invalid json}`
 	key := "b"
 	value := 2
@@ -71,6 +81,8 @@ func TestAddKeyToJSONArray_InvalidJSON(t *testing.T) {
 }
 
 func TestAddKeyToJSONArray_EmptyArray(t *testing.T) {
+	t.Parallel()
+
 	jsonArrayStr := `[]`
 	key := "b"
 	value := 2
@@ -88,6 +100,8 @@ func TestAddKeyToJSONArray_EmptyArray(t *testing.T) {
 }
 
 func TestAddKeyToJSONArray_SingleElement(t *testing.T) {
+	t.Parallel()
+
 	jsonArrayStr := `[{"a":1}]`
 	key := "b"
 	value := 2
@@ -105,6 +119,8 @@ func TestAddKeyToJSONArray_SingleElement(t *testing.T) {
 }
 
 func TestRemoveKeyFromJSON(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		jsonStr     string
@@ -158,6 +174,8 @@ func TestRemoveKeyFromJSON(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result, err := RemoveKeyFromJSON(tt.jsonStr, tt.jsonPath)
 
 			if tt.expectError {

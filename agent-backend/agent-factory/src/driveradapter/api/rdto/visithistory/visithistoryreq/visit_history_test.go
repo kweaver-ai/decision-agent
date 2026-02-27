@@ -7,6 +7,8 @@ import (
 )
 
 func TestVisitHistoryReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := VisitHistoryReq{
 		UserID:    "user-123",
 		StartTime: 1640995200000, // 2022-01-01 00:00:00 UTC in milliseconds
@@ -19,6 +21,8 @@ func TestVisitHistoryReq_StructFields(t *testing.T) {
 }
 
 func TestVisitHistoryReq_EmptyValues(t *testing.T) {
+	t.Parallel()
+
 	req := VisitHistoryReq{}
 
 	assert.Empty(t, req.UserID)
@@ -27,6 +31,8 @@ func TestVisitHistoryReq_EmptyValues(t *testing.T) {
 }
 
 func TestVisitHistoryReq_WithPageSize(t *testing.T) {
+	t.Parallel()
+
 	req := VisitHistoryReq{
 		UserID:    "user-456",
 		StartTime: 1640995200000,
@@ -43,6 +49,8 @@ func TestVisitHistoryReq_WithPageSize(t *testing.T) {
 }
 
 func TestVisitHistoryReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := VisitHistoryReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -56,6 +64,8 @@ func TestVisitHistoryReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestVisitHistoryReq_TimeRange(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name      string
 		startTime int64
@@ -96,6 +106,8 @@ func TestVisitHistoryReq_TimeRange(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			req := VisitHistoryReq{
 				StartTime: tt.startTime,
 				EndTime:   tt.endTime,
@@ -111,6 +123,8 @@ func TestVisitHistoryReq_TimeRange(t *testing.T) {
 }
 
 func TestVisitHistoryReq_PageSizeMethods(t *testing.T) {
+	t.Parallel()
+
 	req := VisitHistoryReq{
 		UserID:    "user-789",
 		StartTime: 1640995200000,
@@ -144,6 +158,8 @@ func TestVisitHistoryReq_PageSizeMethods(t *testing.T) {
 }
 
 func TestVisitHistoryReq_ToLimitOffset(t *testing.T) {
+	t.Parallel()
+
 	req := VisitHistoryReq{
 		UserID:    "user-999",
 		StartTime: 1640995200000,
@@ -159,6 +175,8 @@ func TestVisitHistoryReq_ToLimitOffset(t *testing.T) {
 }
 
 func TestVisitHistoryReq_Complete(t *testing.T) {
+	t.Parallel()
+
 	req := VisitHistoryReq{
 		UserID:    "user-complete",
 		StartTime: 1640995200000,
@@ -177,6 +195,8 @@ func TestVisitHistoryReq_Complete(t *testing.T) {
 }
 
 func TestVisitHistoryReq_EmptyWithDefaults(t *testing.T) {
+	t.Parallel()
+
 	req := VisitHistoryReq{}
 
 	// PageSize methods should work with defaults
@@ -192,6 +212,8 @@ func TestVisitHistoryReq_EmptyWithDefaults(t *testing.T) {
 }
 
 func TestVisitHistoryReq_LargePageNumbers(t *testing.T) {
+	t.Parallel()
+
 	req := VisitHistoryReq{
 		UserID:    "user-large",
 		StartTime: 1640995200000,

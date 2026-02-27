@@ -5,13 +5,15 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestPublishedSvc_PubedTplDetail_PanicsWithoutPublishedTplRepo(t *testing.T) {
+	t.Parallel()
+
 	svc := &publishedSvc{
 		SvcBase: service.NewSvcBase(),
 	}
@@ -25,6 +27,8 @@ func TestPublishedSvc_PubedTplDetail_PanicsWithoutPublishedTplRepo(t *testing.T)
 }
 
 func TestPublishedSvc_PubedTplDetail_TemplateNotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -51,6 +55,8 @@ func TestPublishedSvc_PubedTplDetail_TemplateNotFound(t *testing.T) {
 }
 
 func TestPublishedSvc_PubedTplDetail_GetByTplIDError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -76,6 +82,8 @@ func TestPublishedSvc_PubedTplDetail_GetByTplIDError(t *testing.T) {
 }
 
 func TestPublishedSvc_PubedTplDetail_ConvertPanic(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

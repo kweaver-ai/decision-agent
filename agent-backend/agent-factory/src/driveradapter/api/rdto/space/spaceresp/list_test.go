@@ -9,7 +9,11 @@ import (
 )
 
 func TestNewListResp(t *testing.T) {
+	t.Parallel()
+
 	t.Run("with total", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewListResp(10)
 
 		assert.NotNil(t, resp)
@@ -19,6 +23,8 @@ func TestNewListResp(t *testing.T) {
 	})
 
 	t.Run("with zero total", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewListResp(0)
 
 		assert.NotNil(t, resp)
@@ -27,6 +33,8 @@ func TestNewListResp(t *testing.T) {
 	})
 
 	t.Run("with negative total", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewListResp(-1)
 
 		assert.NotNil(t, resp)
@@ -36,7 +44,11 @@ func TestNewListResp(t *testing.T) {
 }
 
 func TestListResp_LoadFromEos(t *testing.T) {
+	t.Parallel()
+
 	t.Run("empty slice", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewListResp(0)
 		err := resp.LoadFromEos([]*spaceeo.Space{})
 
@@ -45,6 +57,8 @@ func TestListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("nil slice", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewListResp(0)
 		err := resp.LoadFromEos(nil)
 
@@ -53,6 +67,8 @@ func TestListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("single space", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewListResp(1)
 		eos := []*spaceeo.Space{
 			{
@@ -84,6 +100,8 @@ func TestListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("multiple spaces", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewListResp(2)
 		eos := []*spaceeo.Space{
 			{
@@ -115,6 +133,8 @@ func TestListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("with empty fields", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewListResp(1)
 		eos := []*spaceeo.Space{
 			{
@@ -137,17 +157,19 @@ func TestListResp_LoadFromEos(t *testing.T) {
 }
 
 func TestListItem_StructFields(t *testing.T) {
+	t.Parallel()
+
 	item := ListItem{
-		ID:             "space-1",
-		Name:           "Test Space",
-		Key:            "test-space",
-		Profile:        "Test profile",
-		CreatedAt:      1234567890,
-		UpdatedAt:      1234567899,
-		CreatedBy:      "user-1",
-		UpdatedBy:      "user-2",
-		CreatedByName:  "User One",
-		UpdatedByName:  "User Two",
+		ID:            "space-1",
+		Name:          "Test Space",
+		Key:           "test-space",
+		Profile:       "Test profile",
+		CreatedAt:     1234567890,
+		UpdatedAt:     1234567899,
+		CreatedBy:     "user-1",
+		UpdatedBy:     "user-2",
+		CreatedByName: "User One",
+		UpdatedByName: "User Two",
 	}
 
 	assert.Equal(t, "space-1", item.ID)
@@ -163,6 +185,8 @@ func TestListItem_StructFields(t *testing.T) {
 }
 
 func TestListItem_Empty(t *testing.T) {
+	t.Parallel()
+
 	item := ListItem{}
 
 	assert.Empty(t, item.ID)
@@ -178,6 +202,8 @@ func TestListItem_Empty(t *testing.T) {
 }
 
 func TestListResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := ListResp{
 		Entries: []*ListItem{
 			{ID: "space-1", Name: "Space One"},

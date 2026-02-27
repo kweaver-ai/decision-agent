@@ -10,6 +10,8 @@ import (
 )
 
 func TestAddResourcesReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &AddResourcesReq{}
 	errMap := req.GetErrMsgMap()
 
@@ -19,6 +21,8 @@ func TestAddResourcesReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestAddResourcesReq_TmpHandleResourceType(t *testing.T) {
+	t.Parallel()
+
 	req := &AddResourcesReq{
 		Resources: []*SpaceResourceReq{
 			{
@@ -40,6 +44,8 @@ func TestAddResourcesReq_TmpHandleResourceType(t *testing.T) {
 }
 
 func TestAddResourcesReq_CustomCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		req     *AddResourcesReq
@@ -130,9 +136,12 @@ func TestAddResourcesReq_CustomCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.req.CustomCheck()
 			if tt.wantErr {
 				require.Error(t, err)
+
 				if tt.errMsg != "" {
 					assert.Contains(t, err.Error(), tt.errMsg)
 				}
@@ -144,6 +153,8 @@ func TestAddResourcesReq_CustomCheck(t *testing.T) {
 }
 
 func TestAddResourcesReq_ToResourceEos(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		resources   []*SpaceResourceReq
@@ -194,6 +205,8 @@ func TestAddResourcesReq_ToResourceEos(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			req := &AddResourcesReq{}
 			eos, err := req.ToResourceEos(tt.resources, tt.spaceID, tt.spaceKey)
 
@@ -214,6 +227,8 @@ func TestAddResourcesReq_ToResourceEos(t *testing.T) {
 }
 
 func TestAddResourcesReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := &AddResourcesReq{
 		Resources: []*SpaceResourceReq{
 			{
@@ -230,6 +245,8 @@ func TestAddResourcesReq_StructFields(t *testing.T) {
 }
 
 func TestAddResourcesReq_Deduplication(t *testing.T) {
+	t.Parallel()
+
 	req := &AddResourcesReq{
 		Resources: []*SpaceResourceReq{
 			{
@@ -256,6 +273,8 @@ func TestAddResourcesReq_Deduplication(t *testing.T) {
 }
 
 func TestAddResourcesReq_AllResourceTypes(t *testing.T) {
+	t.Parallel()
+
 	req := &AddResourcesReq{
 		Resources: []*SpaceResourceReq{
 			{

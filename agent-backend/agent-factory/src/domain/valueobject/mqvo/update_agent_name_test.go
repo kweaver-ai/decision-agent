@@ -8,9 +8,11 @@ import (
 )
 
 func TestNewUpdateAgentNameMqMsg(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		id         string
-		agentName  string
+		id        string
+		agentName string
 	}{
 		{
 			id:        "agent_123",
@@ -44,6 +46,8 @@ func TestNewUpdateAgentNameMqMsg(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.id+"_"+tt.agentName, func(t *testing.T) {
+			t.Parallel()
+
 			msg := NewUpdateAgentNameMqMsg(tt.id, tt.agentName)
 
 			assert.NotNil(t, msg)
@@ -55,6 +59,8 @@ func TestNewUpdateAgentNameMqMsg(t *testing.T) {
 }
 
 func TestUpdateAgentNameMqMsg_NewInstance(t *testing.T) {
+	t.Parallel()
+
 	msg := &UpdateAgentNameMqMsg{}
 
 	assert.NotNil(t, msg)
@@ -64,6 +70,8 @@ func TestUpdateAgentNameMqMsg_NewInstance(t *testing.T) {
 }
 
 func TestUpdateAgentNameMqMsg_WithTplType(t *testing.T) {
+	t.Parallel()
+
 	msg := &UpdateAgentNameMqMsg{
 		ID:   "test_id",
 		Type: cdaenum.ResourceTypeDataAgentTpl,
@@ -76,6 +84,8 @@ func TestUpdateAgentNameMqMsg_WithTplType(t *testing.T) {
 }
 
 func TestUpdateAgentNameMqMsg_TypeConstant(t *testing.T) {
+	t.Parallel()
+
 	msg := NewUpdateAgentNameMqMsg("id", "name")
 
 	assert.Equal(t, cdaenum.ResourceTypeDataAgent, msg.Type)

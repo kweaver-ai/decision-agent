@@ -8,6 +8,8 @@ import (
 )
 
 func TestNewFormatter(t *testing.T) {
+	t.Parallel()
+
 	formatter := NewFormatter(true, 1000)
 
 	assert.NotNil(t, formatter)
@@ -16,6 +18,8 @@ func TestNewFormatter(t *testing.T) {
 }
 
 func TestNewFormatter_DefaultValues(t *testing.T) {
+	t.Parallel()
+
 	formatter := NewFormatter(false, 0)
 
 	assert.NotNil(t, formatter)
@@ -24,6 +28,8 @@ func TestNewFormatter_DefaultValues(t *testing.T) {
 }
 
 func TestFormatter_Format_BasicRecord(t *testing.T) {
+	t.Parallel()
+
 	formatter := NewFormatter(false, 0)
 
 	record := &LogRecord{
@@ -50,6 +56,8 @@ func TestFormatter_Format_BasicRecord(t *testing.T) {
 }
 
 func TestFormatter_Format_WithHeaders(t *testing.T) {
+	t.Parallel()
+
 	formatter := NewFormatter(false, 0)
 
 	record := &LogRecord{
@@ -58,7 +66,7 @@ func TestFormatter_Format_WithHeaders(t *testing.T) {
 			Method:    "POST",
 			URL:       "http://example.com/api",
 			Headers: map[string]string{
-				"Content-Type": "application/json",
+				"Content-Type":  "application/json",
 				"Authorization": "Bearer token123",
 			},
 			Body: `{"test":"data"}`,
@@ -83,6 +91,8 @@ func TestFormatter_Format_WithHeaders(t *testing.T) {
 }
 
 func TestFormatter_Format_TruncatesBody(t *testing.T) {
+	t.Parallel()
+
 	formatter := NewFormatter(false, 20)
 
 	longBody := "This is a very long body that should be truncated"
@@ -106,6 +116,8 @@ func TestFormatter_Format_TruncatesBody(t *testing.T) {
 }
 
 func TestFormatter_Format_GeneratesCURL(t *testing.T) {
+	t.Parallel()
+
 	formatter := NewFormatter(false, 0)
 
 	record := &LogRecord{
@@ -133,6 +145,8 @@ func TestFormatter_Format_GeneratesCURL(t *testing.T) {
 }
 
 func TestFormatter_Format_GETNoBody(t *testing.T) {
+	t.Parallel()
+
 	formatter := NewFormatter(false, 0)
 
 	record := &LogRecord{
@@ -159,6 +173,8 @@ func TestFormatter_Format_GETNoBody(t *testing.T) {
 }
 
 func TestFormatter_Format_PrettyJSON(t *testing.T) {
+	t.Parallel()
+
 	formatter := NewFormatter(true, 0)
 
 	jsonBody := `{"name":"test","value":123}`
@@ -185,6 +201,8 @@ func TestFormatter_Format_PrettyJSON(t *testing.T) {
 }
 
 func TestFormatter_Format_Separators(t *testing.T) {
+	t.Parallel()
+
 	formatter := NewFormatter(false, 0)
 
 	record := &LogRecord{
@@ -208,6 +226,8 @@ func TestFormatter_Format_Separators(t *testing.T) {
 }
 
 func TestFormatter_CURL_SkipsCertainHeaders(t *testing.T) {
+	t.Parallel()
+
 	formatter := NewFormatter(false, 0)
 
 	record := &LogRecord{
@@ -233,12 +253,13 @@ func TestFormatter_CURL_SkipsCertainHeaders(t *testing.T) {
 	// Authorization should be in curl
 	assert.Contains(t, output, "Authorization")
 	assert.Contains(t, output, "Bearer token")
-
 	// But these headers should be skipped
 	// Note: The exact behavior depends on implementation
 }
 
 func TestFormatter_Format_EmptyHeaders(t *testing.T) {
+	t.Parallel()
+
 	formatter := NewFormatter(false, 0)
 
 	record := &LogRecord{
@@ -261,6 +282,8 @@ func TestFormatter_Format_EmptyHeaders(t *testing.T) {
 }
 
 func TestFormatter_Format_PUTRequest(t *testing.T) {
+	t.Parallel()
+
 	formatter := NewFormatter(false, 0)
 
 	record := &LogRecord{
@@ -284,6 +307,8 @@ func TestFormatter_Format_PUTRequest(t *testing.T) {
 }
 
 func TestFormatter_Format_PATCHRequest(t *testing.T) {
+	t.Parallel()
+
 	formatter := NewFormatter(false, 0)
 
 	record := &LogRecord{
@@ -306,6 +331,8 @@ func TestFormatter_Format_PATCHRequest(t *testing.T) {
 }
 
 func TestFormatter_Format_DELETERequest(t *testing.T) {
+	t.Parallel()
+
 	formatter := NewFormatter(false, 0)
 
 	record := &LogRecord{
@@ -327,6 +354,8 @@ func TestFormatter_Format_DELETERequest(t *testing.T) {
 }
 
 func TestFormatter_MaxBodySize_Zero(t *testing.T) {
+	t.Parallel()
+
 	formatter := NewFormatter(false, 0) // 0 means no limit
 
 	longBody := string(make([]byte, 100))
@@ -354,6 +383,8 @@ func TestFormatter_MaxBodySize_Zero(t *testing.T) {
 }
 
 func TestIsJSON_Object(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name  string
 		input string
@@ -371,6 +402,8 @@ func TestIsJSON_Object(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := isJSON(tt.input)
 			assert.Equal(t, tt.want, result)
 		})
@@ -378,6 +411,8 @@ func TestIsJSON_Object(t *testing.T) {
 }
 
 func TestFormatJSON_Valid(t *testing.T) {
+	t.Parallel()
+
 	input := `{"name":"test","value":123}`
 
 	output, err := formatJSON(input)
@@ -388,6 +423,8 @@ func TestFormatJSON_Valid(t *testing.T) {
 }
 
 func TestFormatJSON_Invalid(t *testing.T) {
+	t.Parallel()
+
 	input := `not valid json`
 
 	_, err := formatJSON(input)

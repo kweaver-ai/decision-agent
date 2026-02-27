@@ -16,6 +16,7 @@ func (m *MockConfig) IsDebug() bool {
 func TestIConf_Interface(t *testing.T) {
 	t.Run("IConf interface implementation", func(t *testing.T) {
 		var _ IConf = (*Config)(nil)
+
 		var _ IConf = (*MockConfig)(nil)
 		// Test passes if compilation succeeds
 	})
@@ -40,6 +41,7 @@ func TestMockConfig_IsDebug(t *testing.T) {
 func TestConfig_ImplementsIConf(t *testing.T) {
 	t.Run("Config implements IConf", func(t *testing.T) {
 		config := &Config{}
+
 		var iConf IConf = config
 		_ = iConf.IsDebug()
 	})

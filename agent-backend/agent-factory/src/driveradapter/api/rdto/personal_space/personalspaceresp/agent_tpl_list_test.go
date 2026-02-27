@@ -10,6 +10,8 @@ import (
 )
 
 func TestNewAgentTplListResp(t *testing.T) {
+	t.Parallel()
+
 	resp := NewAgentTplListResp()
 
 	assert.NotNil(t, resp)
@@ -18,23 +20,25 @@ func TestNewAgentTplListResp(t *testing.T) {
 }
 
 func TestAgentTplListItem_StructFields(t *testing.T) {
+	t.Parallel()
+
 	item := &AgentTplListItem{
-		ID:        123,
-		Key:       "tpl-key",
-		IsBuiltIn: 1,
-		Name:      "Test Template",
-		Profile:   "Test profile",
-		Status:    cdaenum.StatusPublished,
+		ID:                  123,
+		Key:                 "tpl-key",
+		IsBuiltIn:           1,
+		Name:                "Test Template",
+		Profile:             "Test profile",
+		Status:              cdaenum.StatusPublished,
 		AgentTplCreatedType: daenum.AgentTplCreatedTypeCopyFromAgent,
-		CreatedBy:     "user-1",
-		CreatedByName: "User One",
-		CreatedAt:     1234567890,
-		UpdatedBy:     "user-2",
-		UpdatedByName: "User Two",
-		UpdatedAt:     1234567891,
-		PublishedAt:     1234567892,
-		PublishedBy:     "user-3",
-		PublishedByName: "User Three",
+		CreatedBy:           "user-1",
+		CreatedByName:       "User One",
+		CreatedAt:           1234567890,
+		UpdatedBy:           "user-2",
+		UpdatedByName:       "User Two",
+		UpdatedAt:           1234567891,
+		PublishedAt:         1234567892,
+		PublishedBy:         "user-3",
+		PublishedByName:     "User Three",
 	}
 
 	assert.Equal(t, int64(123), item.ID)
@@ -49,6 +53,8 @@ func TestAgentTplListItem_StructFields(t *testing.T) {
 }
 
 func TestAgentTplListResp_LoadFromEos_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := NewAgentTplListResp()
 	eos := []*daconfeo.DataAgentTplListEo{}
 
@@ -60,12 +66,14 @@ func TestAgentTplListResp_LoadFromEos_Empty(t *testing.T) {
 }
 
 func TestAgentTplListResp_LoadFromEos_Single(t *testing.T) {
+	t.Parallel()
+
 	resp := NewAgentTplListResp()
-	
+
 	eo := &daconfeo.DataAgentTplListEo{}
 	// Note: The actual copying requires the EO to have fields populated,
 	// but this test verifies the method exists and can be called
-	
+
 	err := resp.LoadFromEos([]*daconfeo.DataAgentTplListEo{eo})
 
 	assert.NoError(t, err)
@@ -73,14 +81,16 @@ func TestAgentTplListResp_LoadFromEos_Single(t *testing.T) {
 }
 
 func TestAgentTplListResp_LoadFromEos_Multiple(t *testing.T) {
+	t.Parallel()
+
 	resp := NewAgentTplListResp()
-	
+
 	eos := []*daconfeo.DataAgentTplListEo{
 		{},
 		{},
 		{},
 	}
-	
+
 	err := resp.LoadFromEos(eos)
 
 	assert.NoError(t, err)
@@ -88,6 +98,8 @@ func TestAgentTplListResp_LoadFromEos_Multiple(t *testing.T) {
 }
 
 func TestAgentTplListResp_genMarkerStr_EmptyEntries(t *testing.T) {
+	t.Parallel()
+
 	resp := &AgentTplListResp{
 		Entries: []*AgentTplListItem{},
 	}
@@ -99,6 +111,8 @@ func TestAgentTplListResp_genMarkerStr_EmptyEntries(t *testing.T) {
 }
 
 func TestAgentTplListResp_genMarkerStr_IsLastPage(t *testing.T) {
+	t.Parallel()
+
 	resp := &AgentTplListResp{
 		Entries: []*AgentTplListItem{
 			{ID: 1, UpdatedAt: 100},
@@ -113,9 +127,11 @@ func TestAgentTplListResp_genMarkerStr_IsLastPage(t *testing.T) {
 }
 
 func TestAgentTplListResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	marker := &PTplListPaginationMarker{}
 	resp := &AgentTplListResp{
-		Entries:            []*AgentTplListItem{},
+		Entries:             []*AgentTplListItem{},
 		PaginationMarkerStr: "marker-string",
 		Marker:              marker,
 		IsLastPage:          true,
@@ -128,6 +144,8 @@ func TestAgentTplListResp_StructFields(t *testing.T) {
 }
 
 func TestAgentTplListItem_Empty(t *testing.T) {
+	t.Parallel()
+
 	item := &AgentTplListItem{}
 
 	assert.Zero(t, item.ID)

@@ -5,15 +5,17 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation_message/conversationmsgreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 )
 
 func TestConversation_WithoutMessages(t *testing.T) {
+	t.Parallel()
+
 	po := &dapo.ConversationPO{
 		ID: "conv-1",
 	}
@@ -27,6 +29,8 @@ func TestConversation_WithoutMessages(t *testing.T) {
 }
 
 func TestConversation_WithMessages(t *testing.T) {
+	t.Parallel()
+
 	// Note: This test requires a mock IConversationMsgRepo
 	// With nil repo, this will panic, so we test for that
 	po := &dapo.ConversationPO{
@@ -39,6 +43,8 @@ func TestConversation_WithMessages(t *testing.T) {
 }
 
 func TestConversation_EmptyPO(t *testing.T) {
+	t.Parallel()
+
 	po := &dapo.ConversationPO{}
 
 	eo, err := Conversation(context.Background(), po, nil, false)
@@ -48,6 +54,8 @@ func TestConversation_EmptyPO(t *testing.T) {
 }
 
 func TestConversations_EmptyList(t *testing.T) {
+	t.Parallel()
+
 	pos := []*dapo.ConversationPO{}
 
 	eos, err := Conversations(context.Background(), pos, nil)
@@ -58,6 +66,8 @@ func TestConversations_EmptyList(t *testing.T) {
 }
 
 func TestConversations_SingleItem(t *testing.T) {
+	t.Parallel()
+
 	pos := []*dapo.ConversationPO{
 		{ID: "conv-1"},
 	}
@@ -71,6 +81,8 @@ func TestConversations_SingleItem(t *testing.T) {
 }
 
 func TestConversations_MultipleItems(t *testing.T) {
+	t.Parallel()
+
 	pos := []*dapo.ConversationPO{
 		{ID: "conv-1"},
 		{ID: "conv-2"},
@@ -88,7 +100,10 @@ func TestConversations_MultipleItems(t *testing.T) {
 }
 
 func TestConversation_WithMessages_Success(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -110,7 +125,10 @@ func TestConversation_WithMessages_Success(t *testing.T) {
 }
 
 func TestConversation_WithMessages_Error(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -131,7 +149,10 @@ func TestConversation_WithMessages_Error(t *testing.T) {
 }
 
 func TestConversations_Error(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

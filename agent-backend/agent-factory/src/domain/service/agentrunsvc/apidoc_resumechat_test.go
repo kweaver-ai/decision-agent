@@ -23,6 +23,8 @@ import (
 // ---------- GetAPIDoc tests ----------
 
 func TestAgentSvc_GetAPIDoc_SquareSvcError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -45,6 +47,8 @@ func TestAgentSvc_GetAPIDoc_SquareSvcError(t *testing.T) {
 }
 
 func TestAgentSvc_GetAPIDoc_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -69,6 +73,8 @@ func TestAgentSvc_GetAPIDoc_Success(t *testing.T) {
 }
 
 func TestAgentSvc_GetAPIDoc_CustomFieldsAndProfile(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -140,6 +146,8 @@ func TestAgentSvc_GetAPIDoc_CustomFieldsAndProfile(t *testing.T) {
 }
 
 func TestAgentSvc_GetAPIDoc_RemoveEmptyCustomQuerys(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -192,6 +200,8 @@ func TestAgentSvc_GetAPIDoc_RemoveEmptyCustomQuerys(t *testing.T) {
 // ---------- ResumeChat tests ----------
 
 func TestAgentSvc_ResumeChat_SessionNotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -210,6 +220,8 @@ func TestAgentSvc_ResumeChat_SessionNotFound(t *testing.T) {
 }
 
 func TestAgentSvc_ResumeChat_SessionFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -224,6 +236,7 @@ func TestAgentSvc_ResumeChat_SessionFound(t *testing.T) {
 	// Register a session
 	session := &Session{ConversationID: "conv-resume-test"}
 	SessionMap.Store("conv-resume-test", session)
+
 	defer SessionMap.Delete("conv-resume-test")
 
 	// Close the signal after a short time so the goroutine exits
@@ -243,6 +256,8 @@ func TestAgentSvc_ResumeChat_SessionFound(t *testing.T) {
 }
 
 func TestAgentSvc_ResumeChat_SessionFoundWithExistingSignal(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -258,6 +273,7 @@ func TestAgentSvc_ResumeChat_SessionFoundWithExistingSignal(t *testing.T) {
 	existingSignal := make(chan struct{})
 	session := &Session{ConversationID: "conv-resume-existing", Signal: existingSignal}
 	SessionMap.Store("conv-resume-existing", session)
+
 	defer SessionMap.Delete("conv-resume-existing")
 
 	// Close the signal immediately
@@ -273,6 +289,7 @@ func TestAgentSvc_ResumeChat_SessionFoundWithExistingSignal(t *testing.T) {
 	go func() {
 		for range ch {
 		}
+
 		close(done)
 	}()
 
@@ -284,6 +301,8 @@ func TestAgentSvc_ResumeChat_SessionFoundWithExistingSignal(t *testing.T) {
 }
 
 func TestAgentSvc_ResumeChat_WithSignalUpdates(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -300,6 +319,7 @@ func TestAgentSvc_ResumeChat_WithSignalUpdates(t *testing.T) {
 		TempMsgResp:    agentresp.ChatResp{ConversationID: "conv-resume-signal"},
 	}
 	SessionMap.Store("conv-resume-signal", session)
+
 	defer SessionMap.Delete("conv-resume-signal")
 
 	ch, err := svc.ResumeChat(context.Background(), "conv-resume-signal")
@@ -316,10 +336,12 @@ func TestAgentSvc_ResumeChat_WithSignalUpdates(t *testing.T) {
 
 	received := 0
 	done := make(chan struct{})
+
 	go func() {
 		for range ch {
 			received++
 		}
+
 		close(done)
 	}()
 

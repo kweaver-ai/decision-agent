@@ -9,7 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/mock/gomock"
 
-	"github.com/sashabaranov/go-openai"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/daenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
@@ -19,14 +18,17 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/imodelfactoryacc/modelfactoryaccmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver/v3portdrivermock"
+	"github.com/sashabaranov/go-openai"
 	"github.com/stretchr/testify/assert"
 )
 
 // newTestGinCtx creates a gin.Context for testing.
 func newTestGinCtx() *gin.Context {
 	gin.SetMode(gin.TestMode)
+
 	w := httptest.NewRecorder()
 	c, _ := gin.CreateTestContext(w)
+
 	return c
 }
 
@@ -136,6 +138,7 @@ func TestDataAgentConfigSvc_Copy2TplAndPublish_NoPermission(t *testing.T) {
 	}
 
 	ctx := context.Background()
+
 	mockPmsSvc.EXPECT().GetSingleMgmtPermission(gomock.Any(), gomock.Any(), gomock.Any()).Return(false, nil)
 
 	_, _, err := svc.Copy2TplAndPublish(ctx, "agent-1", &agenttplreq.PublishReq{})
@@ -155,6 +158,7 @@ func TestDataAgentConfigSvc_Copy2TplAndPublish_PermissionError(t *testing.T) {
 	}
 
 	ctx := context.Background()
+
 	mockPmsSvc.EXPECT().GetSingleMgmtPermission(gomock.Any(), gomock.Any(), gomock.Any()).Return(false, errors.New("pms error"))
 
 	_, _, err := svc.Copy2TplAndPublish(ctx, "agent-1", &agenttplreq.PublishReq{})
@@ -188,7 +192,6 @@ func TestDataAgentConfigSvc_Copy2TplAndPublish_GetTxError(t *testing.T) {
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "开启事务失败")
 }
-
 
 func TestDataAgentConfigSvc_AIAutogenV3_SystemPrompt_NilAcc(t *testing.T) {
 	svc := &dataAgentConfigSvc{

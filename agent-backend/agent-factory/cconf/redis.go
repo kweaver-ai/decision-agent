@@ -37,4 +37,3 @@ type RedisConf struct {
 	MaxConnAge         int `yaml:"max_conn_age"`         // 连接最长时间 默认300秒
 	PoolTimeout        int `yaml:"pool_timeout"`         // 如果连接池已满 等待可用连接的时间 默认8秒
 }
-

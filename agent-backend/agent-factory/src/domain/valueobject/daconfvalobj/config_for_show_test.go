@@ -10,6 +10,8 @@ import (
 )
 
 func TestConfigForShow_New(t *testing.T) {
+	t.Parallel()
+
 	config := &ConfigForShow{
 		Input: &Input{
 			Fields: []*Field{},
@@ -23,6 +25,8 @@ func TestConfigForShow_New(t *testing.T) {
 }
 
 func TestConfigForShow_WithSystemPrompt(t *testing.T) {
+	t.Parallel()
+
 	config := &ConfigForShow{
 		Input:        &Input{Fields: []*Field{}},
 		SystemPrompt: "You are a helpful assistant",
@@ -33,16 +37,20 @@ func TestConfigForShow_WithSystemPrompt(t *testing.T) {
 }
 
 func TestConfigForShow_WithDolphin(t *testing.T) {
+	t.Parallel()
+
 	config := &ConfigForShow{
-		Input:  &Input{Fields: []*Field{}},
+		Input:   &Input{Fields: []*Field{}},
 		Dolphin: "dolphin prompt template",
-		Output: &Output{},
+		Output:  &Output{},
 	}
 
 	assert.Equal(t, "dolphin prompt template", config.Dolphin)
 }
 
 func TestConfigForShow_WithDolphinMode(t *testing.T) {
+	t.Parallel()
+
 	config := &ConfigForShow{
 		Input:         &Input{Fields: []*Field{}},
 		IsDolphinMode: cdaenum.DolphinModeEnabled,
@@ -53,6 +61,8 @@ func TestConfigForShow_WithDolphinMode(t *testing.T) {
 }
 
 func TestConfigForShow_WithDataSource(t *testing.T) {
+	t.Parallel()
+
 	ds := &datasourcevalobj.RetrieverDataSource{
 		Doc: []*datasourcevalobj.DocSource{},
 	}
@@ -68,6 +78,8 @@ func TestConfigForShow_WithDataSource(t *testing.T) {
 }
 
 func TestConfigForShow_WithSkill(t *testing.T) {
+	t.Parallel()
+
 	skill := &skillvalobj.Skill{
 		Agents: []*skillvalobj.SkillAgent{},
 		Tools:  []*skillvalobj.SkillTool{},
@@ -83,6 +95,8 @@ func TestConfigForShow_WithSkill(t *testing.T) {
 }
 
 func TestConfigForShow_WithLlms(t *testing.T) {
+	t.Parallel()
+
 	llms := []*LlmItem{
 		{
 			LlmConfig: &LlmConfig{},
@@ -99,16 +113,20 @@ func TestConfigForShow_WithLlms(t *testing.T) {
 }
 
 func TestConfigForShow_WithOpeningRemarkConfig(t *testing.T) {
+	t.Parallel()
+
 	config := &ConfigForShow{
-		Input:             &Input{Fields: []*Field{}},
+		Input:               &Input{Fields: []*Field{}},
 		OpeningRemarkConfig: &OpeningRemarkConfig{},
-		Output:            &Output{},
+		Output:              &Output{},
 	}
 
 	assert.NotNil(t, config.OpeningRemarkConfig)
 }
 
 func TestConfigForShow_WithPresetQuestions(t *testing.T) {
+	t.Parallel()
+
 	questions := []*PresetQuestion{
 		{
 			Question: "What is this?",
@@ -126,18 +144,20 @@ func TestConfigForShow_WithPresetQuestions(t *testing.T) {
 }
 
 func TestConfigForShow_AllFields(t *testing.T) {
+	t.Parallel()
+
 	config := &ConfigForShow{
-		Input:                 &Input{Fields: []*Field{}},
-		SystemPrompt:          "system prompt",
-		Dolphin:               "dolphin template",
-		IsDolphinMode:         cdaenum.DolphinModeEnabled,
-		DataSource:            &datasourcevalobj.RetrieverDataSource{},
-		Skill:                 &skillvalobj.Skill{},
-		Llms:                  []*LlmItem{},
-		IsDataFlowSetEnabled:   1,
-		OpeningRemarkConfig:   &OpeningRemarkConfig{},
-		PresetQuestions:       []*PresetQuestion{},
-		Output:                &Output{},
+		Input:                &Input{Fields: []*Field{}},
+		SystemPrompt:         "system prompt",
+		Dolphin:              "dolphin template",
+		IsDolphinMode:        cdaenum.DolphinModeEnabled,
+		DataSource:           &datasourcevalobj.RetrieverDataSource{},
+		Skill:                &skillvalobj.Skill{},
+		Llms:                 []*LlmItem{},
+		IsDataFlowSetEnabled: 1,
+		OpeningRemarkConfig:  &OpeningRemarkConfig{},
+		PresetQuestions:      []*PresetQuestion{},
+		Output:               &Output{},
 	}
 
 	assert.NotNil(t, config.Input)

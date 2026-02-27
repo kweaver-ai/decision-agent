@@ -5,7 +5,11 @@ import (
 )
 
 func TestNewEFast(t *testing.T) {
+	t.Parallel()
+
 	t.Run("valid config", func(t *testing.T) {
+		t.Parallel()
+
 		conf := &EFastConf{
 			PrivateScheme: "http",
 			PrivateHost:   "localhost",
@@ -30,24 +34,31 @@ func TestNewEFast(t *testing.T) {
 		if efastImpl.privateScheme != "http" {
 			t.Errorf("Expected privateScheme to be 'http', got '%s'", efastImpl.privateScheme)
 		}
+
 		if efastImpl.privateHost != "localhost" {
 			t.Errorf("Expected privateHost to be 'localhost', got '%s'", efastImpl.privateHost)
 		}
+
 		if efastImpl.privatePort != 8080 {
 			t.Errorf("Expected privatePort to be 8080, got %d", efastImpl.privatePort)
 		}
+
 		if efastImpl.publicScheme != "https" {
 			t.Errorf("Expected publicScheme to be 'https', got '%s'", efastImpl.publicScheme)
 		}
+
 		if efastImpl.publicHost != "example.com" {
 			t.Errorf("Expected publicHost to be 'example.com', got '%s'", efastImpl.publicHost)
 		}
+
 		if efastImpl.publicPort != 443 {
 			t.Errorf("Expected publicPort to be 443, got %d", efastImpl.publicPort)
 		}
 	})
 
 	t.Run("minimal config", func(t *testing.T) {
+		t.Parallel()
+
 		conf := &EFastConf{
 			PrivateScheme: "",
 			PrivateHost:   "",
@@ -72,15 +83,18 @@ func TestNewEFast(t *testing.T) {
 		if efastImpl.privateScheme != "" {
 			t.Errorf("Expected privateScheme to be empty, got '%s'", efastImpl.privateScheme)
 		}
+
 		if efastImpl.privateHost != "" {
 			t.Errorf("Expected privateHost to be empty, got '%s'", efastImpl.privateHost)
 		}
+
 		if efastImpl.privatePort != 0 {
 			t.Errorf("Expected privatePort to be 0, got %d", efastImpl.privatePort)
 		}
 	})
 
 	t.Run("nil config", func(t *testing.T) {
+		t.Parallel()
 		// This will panic with nil config, but let's verify the behavior
 		defer func() {
 			if r := recover(); r != nil {
@@ -97,7 +111,11 @@ func TestNewEFast(t *testing.T) {
 }
 
 func TestEFastConf(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create config", func(t *testing.T) {
+		t.Parallel()
+
 		conf := &EFastConf{
 			PrivateScheme: "http",
 			PrivateHost:   "localhost",
@@ -110,23 +128,29 @@ func TestEFastConf(t *testing.T) {
 		if conf.PrivateScheme != "http" {
 			t.Errorf("Expected PrivateScheme to be 'http', got '%s'", conf.PrivateScheme)
 		}
+
 		if conf.PrivateHost != "localhost" {
 			t.Errorf("Expected PrivateHost to be 'localhost', got '%s'", conf.PrivateHost)
 		}
+
 		if conf.PrivatePort != 8080 {
 			t.Errorf("Expected PrivatePort to be 8080, got %d", conf.PrivatePort)
 		}
 	})
 
 	t.Run("zero value config", func(t *testing.T) {
+		t.Parallel()
+
 		var conf EFastConf
 
 		if conf.PrivateScheme != "" {
 			t.Errorf("Expected PrivateScheme to be empty, got '%s'", conf.PrivateScheme)
 		}
+
 		if conf.PrivateHost != "" {
 			t.Errorf("Expected PrivateHost to be empty, got '%s'", conf.PrivateHost)
 		}
+
 		if conf.PrivatePort != 0 {
 			t.Errorf("Expected PrivatePort to be 0, got %d", conf.PrivatePort)
 		}

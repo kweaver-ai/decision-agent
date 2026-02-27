@@ -9,6 +9,8 @@ import (
 )
 
 func TestNewPublishReq(t *testing.T) {
+	t.Parallel()
+
 	req := NewPublishReq()
 
 	assert.NotNil(t, req)
@@ -17,11 +19,13 @@ func TestNewPublishReq(t *testing.T) {
 }
 
 func TestPublishReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := &PublishReq{
-		UserID:           "user-123",
-		AgentID:          "agent-456",
-		BusinessDomainID: "domain-789",
-		IsInternalAPI:    true,
+		UserID:               "user-123",
+		AgentID:              "agent-456",
+		BusinessDomainID:     "domain-789",
+		IsInternalAPI:        true,
 		UpdatePublishInfoReq: &UpdatePublishInfoReq{},
 	}
 	req.Description = "Test description"
@@ -34,6 +38,8 @@ func TestPublishReq_StructFields(t *testing.T) {
 }
 
 func TestPublishReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := &PublishReq{}
 
 	assert.Empty(t, req.UserID)
@@ -43,6 +49,8 @@ func TestPublishReq_Empty(t *testing.T) {
 }
 
 func TestPublishReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &PublishReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -52,8 +60,10 @@ func TestPublishReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestPublishReq_ReqCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	req := &PublishReq{
-		AgentID: "agent-123",
+		AgentID:              "agent-123",
 		UpdatePublishInfoReq: &UpdatePublishInfoReq{},
 	}
 	req.PublishToWhere = []daenum.PublishToWhere{
@@ -69,8 +79,10 @@ func TestPublishReq_ReqCheck_Valid(t *testing.T) {
 }
 
 func TestPublishReq_ReqCheck_EmptyAgentID(t *testing.T) {
+	t.Parallel()
+
 	req := &PublishReq{
-		AgentID: "",
+		AgentID:              "",
 		UpdatePublishInfoReq: &UpdatePublishInfoReq{},
 	}
 	req.PublishToWhere = []daenum.PublishToWhere{
@@ -84,8 +96,10 @@ func TestPublishReq_ReqCheck_EmptyAgentID(t *testing.T) {
 }
 
 func TestPublishReq_ReqCheck_InvalidPublishInfo(t *testing.T) {
+	t.Parallel()
+
 	req := &PublishReq{
-		AgentID: "agent-123",
+		AgentID:              "agent-123",
 		UpdatePublishInfoReq: &UpdatePublishInfoReq{},
 	}
 	req.PublishToBes = []cdaenum.PublishToBe{
@@ -99,11 +113,13 @@ func TestPublishReq_ReqCheck_InvalidPublishInfo(t *testing.T) {
 }
 
 func TestPublishReq_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	req := &PublishReq{
-		UserID:           "user-001",
-		AgentID:          "agent-002",
-		BusinessDomainID: "domain-003",
-		IsInternalAPI:    false,
+		UserID:               "user-001",
+		AgentID:              "agent-002",
+		BusinessDomainID:     "domain-003",
+		IsInternalAPI:        false,
 		UpdatePublishInfoReq: &UpdatePublishInfoReq{},
 	}
 	req.CategoryIDs = []string{"cat-1", "cat-2"}
@@ -126,6 +142,8 @@ func TestPublishReq_WithAllFields(t *testing.T) {
 }
 
 func TestPublishReq_IsInternalAPI(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name          string
 		isInternalAPI bool
@@ -142,6 +160,8 @@ func TestPublishReq_IsInternalAPI(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			req := &PublishReq{
 				AgentID:       "agent-123",
 				IsInternalAPI: tt.isInternalAPI,
@@ -153,6 +173,8 @@ func TestPublishReq_IsInternalAPI(t *testing.T) {
 }
 
 func TestPublishReq_WithBusinessDomainID(t *testing.T) {
+	t.Parallel()
+
 	domainIDs := []string{
 		"domain-001",
 		"domain-xyz",
@@ -171,6 +193,8 @@ func TestPublishReq_WithBusinessDomainID(t *testing.T) {
 }
 
 func TestPublishReq_WithUserID(t *testing.T) {
+	t.Parallel()
+
 	userIDs := []string{
 		"user-001",
 		"user-admin",
@@ -188,6 +212,8 @@ func TestPublishReq_WithUserID(t *testing.T) {
 }
 
 func TestPublishReq_WithInvalidAgentID(t *testing.T) {
+	t.Parallel()
+
 	invalidAgentIDs := []string{
 		"",
 	}
@@ -205,6 +231,8 @@ func TestPublishReq_WithInvalidAgentID(t *testing.T) {
 }
 
 func TestPublishReq_WithValidAgentID(t *testing.T) {
+	t.Parallel()
+
 	validAgentIDs := []string{
 		"agent-001",
 		"agent-xyz",
@@ -215,7 +243,7 @@ func TestPublishReq_WithValidAgentID(t *testing.T) {
 
 	for _, agentID := range validAgentIDs {
 		req := &PublishReq{
-			AgentID: agentID,
+			AgentID:              agentID,
 			UpdatePublishInfoReq: &UpdatePublishInfoReq{},
 		}
 		req.PublishToWhere = []daenum.PublishToWhere{
@@ -229,6 +257,8 @@ func TestPublishReq_WithValidAgentID(t *testing.T) {
 }
 
 func TestPublishReq_EmptyUpdatePublishInfoReq(t *testing.T) {
+	t.Parallel()
+
 	req := NewPublishReq()
 	req.AgentID = "agent-123"
 

@@ -13,6 +13,8 @@ import (
 )
 
 func TestObservabilitySvc_RunList_EmptyResult(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -37,6 +39,8 @@ func TestObservabilitySvc_RunList_EmptyResult(t *testing.T) {
 }
 
 func TestObservabilitySvc_RunList_MultipleRuns(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -72,6 +76,8 @@ func TestObservabilitySvc_RunList_MultipleRuns(t *testing.T) {
 }
 
 func TestObservabilitySvc_RunList_WithConversationID(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -100,6 +106,8 @@ func TestObservabilitySvc_RunList_WithConversationID(t *testing.T) {
 }
 
 func TestObservabilitySvc_RunList_Error(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -122,6 +130,8 @@ func TestObservabilitySvc_RunList_Error(t *testing.T) {
 }
 
 func TestObservabilitySvc_RunList_NoAgentIDNoConversationID(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

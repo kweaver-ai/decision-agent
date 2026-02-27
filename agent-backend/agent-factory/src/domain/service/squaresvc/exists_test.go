@@ -12,7 +12,11 @@ import (
 )
 
 func TestIsAgentExists(t *testing.T) {
+	t.Parallel()
+
 	t.Run("agent exists", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -30,6 +34,8 @@ func TestIsAgentExists(t *testing.T) {
 	})
 
 	t.Run("agent does not exist", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -47,6 +53,8 @@ func TestIsAgentExists(t *testing.T) {
 	})
 
 	t.Run("repository error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -67,7 +75,11 @@ func TestIsAgentExists(t *testing.T) {
 }
 
 func TestIsSpaceExists(t *testing.T) {
+	t.Parallel()
+
 	t.Run("space exists", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -85,6 +97,8 @@ func TestIsSpaceExists(t *testing.T) {
 	})
 
 	t.Run("space does not exist", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -102,6 +116,8 @@ func TestIsSpaceExists(t *testing.T) {
 	})
 
 	t.Run("repository error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 

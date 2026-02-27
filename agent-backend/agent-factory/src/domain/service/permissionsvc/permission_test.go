@@ -5,7 +5,6 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdapmsenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
@@ -13,9 +12,12 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iauthzacc/authzaccmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iumacc/httpaccmock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestNewPermissionService_WithAllDependencies(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -36,14 +38,16 @@ func TestNewPermissionService_WithAllDependencies(t *testing.T) {
 }
 
 func TestNewPermissionService_WithMinimalDependencies(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	dto := &NewPermissionSvcDto{
-		SvcBase: service.NewSvcBase(),
+		SvcBase:               service.NewSvcBase(),
 		AgentConfigRepo:       nil,
 		ReleaseRepo:           nil,
-		ReleasePermissionRepo:  nil,
+		ReleasePermissionRepo: nil,
 		UmHttp:                nil,
 		AuthZHttp:             nil,
 		SpaceRepo:             nil,
@@ -55,14 +59,16 @@ func TestNewPermissionService_WithMinimalDependencies(t *testing.T) {
 }
 
 func TestBuildAgentOperationItem(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name           string
-		op             cdapmsenum.Operator
-		expectedNil    bool
-		expectedID     string
-		checkNames     bool
-		checkScope     bool
-		expectedScope  []string
+		name          string
+		op            cdapmsenum.Operator
+		expectedNil   bool
+		expectedID    string
+		checkNames    bool
+		checkScope    bool
+		expectedScope []string
 	}{
 		{
 			name:          "AgentPublish operation",
@@ -109,6 +115,8 @@ func TestBuildAgentOperationItem(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := buildAgentOperationItem(tt.op)
 
 			if tt.expectedNil {
@@ -126,6 +134,7 @@ func TestBuildAgentOperationItem(t *testing.T) {
 					for _, name := range result.Name {
 						languages[name.Language] = true
 					}
+
 					assert.True(t, languages["zh-cn"])
 					assert.True(t, languages["en-us"])
 					assert.True(t, languages["zh-tw"])
@@ -140,11 +149,15 @@ func TestBuildAgentOperationItem(t *testing.T) {
 }
 
 func TestBuildAgentOperationItem_AllAgentOperations(t *testing.T) {
+	t.Parallel()
+
 	// Test all agent operations have proper mappings
 	allOps := cdapmsenum.GetAllAgentOperator()
 
 	for _, op := range allOps {
 		t.Run(string(op), func(t *testing.T) {
+			t.Parallel()
+
 			result := buildAgentOperationItem(op)
 			assert.NotNil(t, result, "Operation %s should have a valid mapping", op)
 			assert.Equal(t, string(op), result.ID)
@@ -155,11 +168,13 @@ func TestBuildAgentOperationItem_AllAgentOperations(t *testing.T) {
 }
 
 func TestBuildAgentOperationItem_AllPublishVariants(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name      string
-		op        cdapmsenum.Operator
-		scope     []string
-		hasNames  bool
+		name     string
+		op       cdapmsenum.Operator
+		scope    []string
+		hasNames bool
 	}{
 		{
 			name:     "AgentPublishToBeSkillAgent",
@@ -207,10 +222,13 @@ func TestBuildAgentOperationItem_AllPublishVariants(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := buildAgentOperationItem(tt.op)
 			assert.NotNil(t, result)
 			assert.Equal(t, string(tt.op), result.ID)
 			assert.Equal(t, tt.scope, result.Scope)
+
 			if tt.hasNames {
 				assert.NotNil(t, result.Name)
 				assert.Len(t, result.Name, 3)
@@ -220,6 +238,8 @@ func TestBuildAgentOperationItem_AllPublishVariants(t *testing.T) {
 }
 
 func TestCheckByPmsPlatform_EmptyAccessorIDs(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -240,6 +260,8 @@ func TestCheckByPmsPlatform_EmptyAccessorIDs(t *testing.T) {
 }
 
 func TestCheckByPmsPlatform_WithUserID(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -263,6 +285,8 @@ func TestCheckByPmsPlatform_WithUserID(t *testing.T) {
 }
 
 func TestCheckByPmsPlatform_WithAppAccountID(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -286,6 +310,8 @@ func TestCheckByPmsPlatform_WithAppAccountID(t *testing.T) {
 }
 
 func TestCheckByPmsPlatform_AuthZError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -311,6 +337,8 @@ func TestCheckByPmsPlatform_AuthZError(t *testing.T) {
 }
 
 func TestCheckUserPms_OwnerHasPermission(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -331,6 +359,8 @@ func TestCheckUserPms_OwnerHasPermission(t *testing.T) {
 }
 
 func TestCheckUserPms_EmptyAccessorIDs(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -358,6 +388,8 @@ func TestCheckUserPms_EmptyAccessorIDs(t *testing.T) {
 }
 
 func TestCheckUserPms_NonOwnerWithPublishedAgentNoPermissionControl(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -389,6 +421,8 @@ func TestCheckUserPms_NonOwnerWithPublishedAgentNoPermissionControl(t *testing.T
 }
 
 func TestCheckUserPms_ReleaseRepositoryError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -415,6 +449,8 @@ func TestCheckUserPms_ReleaseRepositoryError(t *testing.T) {
 }
 
 func TestCheckUserPms_NoReleaseWithPermissionCheck(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

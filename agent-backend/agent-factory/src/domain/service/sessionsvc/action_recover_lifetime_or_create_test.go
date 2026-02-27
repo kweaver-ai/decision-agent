@@ -5,15 +5,17 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/session/sessionreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/ctype"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/iredisaccess/isessionredis/isessionredismock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestHandleRecoverLifetimeOrCreate_SessionExists(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -44,6 +46,8 @@ func TestHandleRecoverLifetimeOrCreate_SessionExists(t *testing.T) {
 }
 
 func TestHandleRecoverLifetimeOrCreate_SessionNotExists(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -74,6 +78,8 @@ func TestHandleRecoverLifetimeOrCreate_SessionNotExists(t *testing.T) {
 }
 
 func TestHandleRecoverLifetimeOrCreate_RefreshSessionError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -102,6 +108,8 @@ func TestHandleRecoverLifetimeOrCreate_RefreshSessionError(t *testing.T) {
 }
 
 func TestHandleRecoverLifetimeOrCreate_SetSessionError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -119,6 +127,7 @@ func TestHandleRecoverLifetimeOrCreate_SetSessionError(t *testing.T) {
 	visitorInfo := &ctype.VisitorInfo{}
 
 	mockSessionRedis.EXPECT().RefreshSession(gomock.Any(), "conv-123", gomock.Any()).Return(false, int64(0), nil)
+
 	expectedErr := errors.New("failed to set session")
 	mockSessionRedis.EXPECT().SetSession(gomock.Any(), "conv-123", gomock.Any(), gomock.Any()).Return(false, expectedErr)
 	mockLogger.EXPECT().Errorf(gomock.Any(), gomock.Any()).Times(1)
@@ -131,6 +140,8 @@ func TestHandleRecoverLifetimeOrCreate_SetSessionError(t *testing.T) {
 }
 
 func TestHandleRecoverLifetimeOrCreate_GetTTLError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -148,6 +159,7 @@ func TestHandleRecoverLifetimeOrCreate_GetTTLError(t *testing.T) {
 	visitorInfo := &ctype.VisitorInfo{}
 
 	mockSessionRedis.EXPECT().RefreshSession(gomock.Any(), "conv-123", gomock.Any()).Return(true, int64(1234567890), nil)
+
 	expectedErr := errors.New("failed to get ttl")
 	mockSessionRedis.EXPECT().GetSessionTTL(gomock.Any(), "conv-123").Return(0, expectedErr)
 	mockLogger.EXPECT().Errorf(gomock.Any(), gomock.Any()).Times(1)
@@ -160,6 +172,8 @@ func TestHandleRecoverLifetimeOrCreate_GetTTLError(t *testing.T) {
 }
 
 func TestHandleRecoverLifetimeOrCreate_NoCacheTrigger(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

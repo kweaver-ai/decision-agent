@@ -8,7 +8,11 @@ import (
 )
 
 func TestAddCiteDocMark(t *testing.T) {
+	t.Parallel()
+
 	t.Run("returns unchanged answer when no cites provided", func(t *testing.T) {
+		t.Parallel()
+
 		svc := &agentSvc{}
 		answer := "This is a simple answer"
 		cites := []*agentrespvo.CiteDoc{}
@@ -19,6 +23,8 @@ func TestAddCiteDocMark(t *testing.T) {
 	})
 
 	t.Run("returns unchanged answer when cites is nil", func(t *testing.T) {
+		t.Parallel()
+
 		svc := &agentSvc{}
 		answer := "This is a simple answer"
 
@@ -28,6 +34,8 @@ func TestAddCiteDocMark(t *testing.T) {
 	})
 
 	t.Run("returns empty string when answer is empty", func(t *testing.T) {
+		t.Parallel()
+
 		svc := &agentSvc{}
 		answer := ""
 		cites := []*agentrespvo.CiteDoc{
@@ -40,6 +48,8 @@ func TestAddCiteDocMark(t *testing.T) {
 	})
 
 	t.Run("processes single cite with empty slices", func(t *testing.T) {
+		t.Parallel()
+
 		svc := &agentSvc{}
 		answer := "This is an answer。"
 		cites := []*agentrespvo.CiteDoc{
@@ -53,6 +63,8 @@ func TestAddCiteDocMark(t *testing.T) {
 	})
 
 	t.Run("processes multiple cites with content", func(t *testing.T) {
+		t.Parallel()
+
 		svc := &agentSvc{}
 		answer := "First sentence。Second sentence。Third sentence。"
 		cites := []*agentrespvo.CiteDoc{
@@ -67,7 +79,11 @@ func TestAddCiteDocMark(t *testing.T) {
 }
 
 func TestGetSentenceDocScore(t *testing.T) {
+	t.Parallel()
+
 	t.Run("returns sentence info with empty doc cites", func(t *testing.T) {
+		t.Parallel()
+
 		svc := &agentSvc{}
 		sentence := "This is a test sentence"
 		docCites := map[int]*docCite{}
@@ -82,6 +98,8 @@ func TestGetSentenceDocScore(t *testing.T) {
 	})
 
 	t.Run("returns sentence info with nil slices", func(t *testing.T) {
+		t.Parallel()
+
 		svc := &agentSvc{}
 		sentence := "Test sentence"
 		docCites := map[int]*docCite{
@@ -95,6 +113,8 @@ func TestGetSentenceDocScore(t *testing.T) {
 	})
 
 	t.Run("processes single doc cite with single slice", func(t *testing.T) {
+		t.Parallel()
+
 		svc := &agentSvc{}
 		sentence := "This is a test sentence about something"
 		docCites := map[int]*docCite{
@@ -112,6 +132,8 @@ func TestGetSentenceDocScore(t *testing.T) {
 	})
 
 	t.Run("processes multiple doc cites", func(t *testing.T) {
+		t.Parallel()
+
 		svc := &agentSvc{}
 		sentence := "Test sentence"
 		docCites := map[int]*docCite{
@@ -126,6 +148,8 @@ func TestGetSentenceDocScore(t *testing.T) {
 	})
 
 	t.Run("calculates average score across all cites", func(t *testing.T) {
+		t.Parallel()
+
 		svc := &agentSvc{}
 		sentence := "Test sentence"
 		docCites := map[int]*docCite{
@@ -141,7 +165,11 @@ func TestGetSentenceDocScore(t *testing.T) {
 }
 
 func TestHlRef(t *testing.T) {
+	t.Parallel()
+
 	t.Run("handles sentence with no scores", func(t *testing.T) {
+		t.Parallel()
+
 		svc := &agentSvc{}
 		sentenceInfo := &sentenceInfo{
 			MaxScoreMap: map[string]*maxScoreSlice{},
@@ -156,6 +184,8 @@ func TestHlRef(t *testing.T) {
 	})
 
 	t.Run("handles sentence with scores below cut score", func(t *testing.T) {
+		t.Parallel()
+
 		svc := &agentSvc{}
 		sentenceInfo := &sentenceInfo{
 			MaxScoreMap: map[string]*maxScoreSlice{
@@ -172,6 +202,8 @@ func TestHlRef(t *testing.T) {
 	})
 
 	t.Run("handles sentence with scores above cut score", func(t *testing.T) {
+		t.Parallel()
+
 		svc := &agentSvc{}
 		sentenceInfo := &sentenceInfo{
 			MaxScoreMap: map[string]*maxScoreSlice{
@@ -189,6 +221,8 @@ func TestHlRef(t *testing.T) {
 	})
 
 	t.Run("handles sentence with multiple scores above cut score", func(t *testing.T) {
+		t.Parallel()
+
 		svc := &agentSvc{}
 		sentenceInfo := &sentenceInfo{
 			MaxScoreMap: map[string]*maxScoreSlice{
@@ -207,6 +241,8 @@ func TestHlRef(t *testing.T) {
 	})
 
 	t.Run("handles sentence with avg score plus cap score above cut score", func(t *testing.T) {
+		t.Parallel()
+
 		svc := &agentSvc{}
 		sentenceInfo := &sentenceInfo{
 			MaxScoreMap: map[string]*maxScoreSlice{
@@ -223,6 +259,8 @@ func TestHlRef(t *testing.T) {
 	})
 
 	t.Run("handles sentence with no max score map entries", func(t *testing.T) {
+		t.Parallel()
+
 		svc := &agentSvc{}
 		sentenceInfo := &sentenceInfo{
 			MaxScoreMap: map[string]*maxScoreSlice{},
@@ -239,7 +277,11 @@ func TestHlRef(t *testing.T) {
 }
 
 func TestSameWordsPercentage(t *testing.T) {
+	t.Parallel()
+
 	t.Run("returns 0.0 for same words percentage", func(t *testing.T) {
+		t.Parallel()
+
 		svc := &agentSvc{}
 		sentence := "test sentence"
 		sliceContent := "test content"
@@ -250,6 +292,8 @@ func TestSameWordsPercentage(t *testing.T) {
 	})
 
 	t.Run("returns 0.0 for empty inputs", func(t *testing.T) {
+		t.Parallel()
+
 		svc := &agentSvc{}
 
 		result := svc.sameWordsPercentage("", "")
@@ -258,6 +302,8 @@ func TestSameWordsPercentage(t *testing.T) {
 	})
 
 	t.Run("returns 0.0 for different inputs", func(t *testing.T) {
+		t.Parallel()
+
 		svc := &agentSvc{}
 		sentence := "completely different text"
 		sliceContent := "another unrelated content"

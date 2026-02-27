@@ -6,15 +6,19 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestCheckAndGetID(t *testing.T) {
+	t.Parallel()
+
 	t.Run("agent exists by ID - returns same ID", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -33,6 +37,8 @@ func TestCheckAndGetID(t *testing.T) {
 	})
 
 	t.Run("agent exists by key - returns agent ID from key lookup", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -57,6 +63,8 @@ func TestCheckAndGetID(t *testing.T) {
 	})
 
 	t.Run("agent not found - returns 404 error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -77,6 +85,8 @@ func TestCheckAndGetID(t *testing.T) {
 	})
 
 	t.Run("repository error on ExistsByID - returns error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -97,6 +107,8 @@ func TestCheckAndGetID(t *testing.T) {
 	})
 
 	t.Run("repository error on GetByKey - returns error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -119,15 +131,19 @@ func TestCheckAndGetID(t *testing.T) {
 }
 
 func TestGetLatestVersion(t *testing.T) {
+	t.Parallel()
+
 	t.Run("release exists - returns release version", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
 		mockReleaseHistoryRepo := idbaccessmock.NewMockIReleaseHistoryRepo(ctrl)
 
 		releasePo := &dapo.ReleasePO{
-			ID:          "release-123",
-			AgentID:     "agent-123",
+			ID:           "release-123",
+			AgentID:      "agent-123",
 			AgentVersion: "v1.0.0",
 		}
 
@@ -143,6 +159,8 @@ func TestGetLatestVersion(t *testing.T) {
 	})
 
 	t.Run("release nil - gets from history", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -167,6 +185,8 @@ func TestGetLatestVersion(t *testing.T) {
 	})
 
 	t.Run("no release or history - returns unpublished", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -185,6 +205,8 @@ func TestGetLatestVersion(t *testing.T) {
 	})
 
 	t.Run("history repo error - returns error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 

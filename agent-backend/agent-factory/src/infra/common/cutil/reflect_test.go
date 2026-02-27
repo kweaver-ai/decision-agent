@@ -7,6 +7,8 @@ import (
 )
 
 func TestIsStringOrNumber(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name  string
 		value interface{}
@@ -101,12 +103,15 @@ func TestIsStringOrNumber(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := IsStringOrNumber(tt.value)
 			assert.Equal(t, tt.want, result, "IsStringOrNumber should return expected result")
 		})
 	}
 
 	t.Run("nil", func(t *testing.T) {
+		t.Parallel()
 		assert.Panics(t, func() {
 			IsStringOrNumber(nil)
 		}, "IsStringOrNumber should panic for nil value")
@@ -114,6 +119,8 @@ func TestIsStringOrNumber(t *testing.T) {
 }
 
 func TestIsZeroValue(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name  string
 		value interface{}
@@ -193,6 +200,8 @@ func TestIsZeroValue(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := IsZeroValue(tt.value)
 			assert.Equal(t, tt.want, result, "IsZeroValue should return expected result")
 		})

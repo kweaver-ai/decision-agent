@@ -9,8 +9,12 @@ import (
 )
 
 func TestValidate(t *testing.T) {
+	t.Parallel()
+
 	// 测试用例：成功验证
 	t.Run("Valid Config", func(t *testing.T) {
+		t.Parallel()
+
 		maxFileCount := 10
 		singleChatMaxSelectFileCount := 3
 		config := &TempZoneConfig{
@@ -31,6 +35,8 @@ func TestValidate(t *testing.T) {
 
 	// 测试用例：TmpFileUseType 缺失
 	t.Run("Missing TmpFileUseType", func(t *testing.T) {
+		t.Parallel()
+
 		maxFileCount := 10
 		singleChatMaxSelectFileCount := 3
 		config := &TempZoneConfig{
@@ -56,6 +62,8 @@ func TestValidate(t *testing.T) {
 	// 测试用例：MaxFileCount 超过最大值
 	// 注意：Validate()方法只检查required字段，不检查数值范围，所以这个测试应该通过
 	t.Run("MaxFileCount Exceeds Maximum", func(t *testing.T) {
+		t.Parallel()
+
 		maxFileCount := 51 // 超过最大值50，但Validate()不会检查这个
 		singleChatMaxSelectFileCount := 3
 		config := &TempZoneConfig{
@@ -79,6 +87,8 @@ func TestValidate(t *testing.T) {
 	// 测试用例：MaxFileCount 低于最小值
 	// 注意：Validate()方法只检查required字段，不检查数值范围
 	t.Run("MaxFileCount Below Minimum", func(t *testing.T) {
+		t.Parallel()
+
 		maxFileCount := 0 // 低于最小值1，但Validate()不会检查这个
 		singleChatMaxSelectFileCount := 3
 		config := &TempZoneConfig{
@@ -102,6 +112,8 @@ func TestValidate(t *testing.T) {
 	// 测试用例：SingleChatMaxSelectFileCount 超过最大值
 	// 注意：Validate()方法只检查required字段，不检查数值范围
 	t.Run("SingleChatMaxSelectFileCount Exceeds Maximum", func(t *testing.T) {
+		t.Parallel()
+
 		maxFileCount := 10
 		singleChatMaxSelectFileCount := 6 // 超过最大值5，但Validate()不会检查这个
 		config := &TempZoneConfig{
@@ -125,6 +137,8 @@ func TestValidate(t *testing.T) {
 	// 测试用例：SingleChatMaxSelectFileCount 低于最小值
 	// 注意：Validate()方法只检查required字段，不检查数值范围
 	t.Run("SingleChatMaxSelectFileCount Below Minimum", func(t *testing.T) {
+		t.Parallel()
+
 		maxFileCount := 10
 		singleChatMaxSelectFileCount := 0 // 低于最小值1，但Validate()不会检查这个
 		config := &TempZoneConfig{
@@ -147,6 +161,8 @@ func TestValidate(t *testing.T) {
 
 	// 测试用例：SingleFileSizeLimit 缺失
 	t.Run("Missing SingleFileSizeLimit", func(t *testing.T) {
+		t.Parallel()
+
 		maxFileCount := 10
 		singleChatMaxSelectFileCount := 3
 		config := &TempZoneConfig{
@@ -171,6 +187,8 @@ func TestValidate(t *testing.T) {
 
 	// 测试用例：SingleFileSizeLimitUnit 缺失
 	t.Run("Missing SingleFileSizeLimitUnit", func(t *testing.T) {
+		t.Parallel()
+
 		maxFileCount := 10
 		singleChatMaxSelectFileCount := 3
 		config := &TempZoneConfig{
@@ -195,6 +213,8 @@ func TestValidate(t *testing.T) {
 
 	// 测试用例：SupportDataType 缺失
 	t.Run("Missing SupportDataType", func(t *testing.T) {
+		t.Parallel()
+
 		maxFileCount := 10
 		singleChatMaxSelectFileCount := 3
 		config := &TempZoneConfig{
@@ -219,6 +239,8 @@ func TestValidate(t *testing.T) {
 
 	// 测试用例：AllowedFileCategories 缺失
 	t.Run("Missing AllowedFileCategories", func(t *testing.T) {
+		t.Parallel()
+
 		maxFileCount := 10
 		singleChatMaxSelectFileCount := 3
 		config := &TempZoneConfig{
@@ -243,8 +265,12 @@ func TestValidate(t *testing.T) {
 }
 
 func TestValObjCheck(t *testing.T) {
+	t.Parallel()
+
 	// 测试用例：成功验证
 	t.Run("Valid Config", func(t *testing.T) {
+		t.Parallel()
+
 		maxFileCount := 10
 		singleChatMaxSelectFileCount := 3
 		config := &TempZoneConfig{
@@ -266,6 +292,8 @@ func TestValObjCheck(t *testing.T) {
 
 	// 测试用例：基本参数校验失败
 	t.Run("Basic Validation Fails", func(t *testing.T) {
+		t.Parallel()
+
 		maxFileCount := 51 // 超过最大值50
 		singleChatMaxSelectFileCount := 3
 		config := &TempZoneConfig{
@@ -292,6 +320,8 @@ func TestValObjCheck(t *testing.T) {
 
 	// 测试用例：临时文件使用类型无效
 	t.Run("Invalid TmpFileUseType", func(t *testing.T) {
+		t.Parallel()
+
 		maxFileCount := 10
 		singleChatMaxSelectFileCount := 3
 		config := &TempZoneConfig{
@@ -317,6 +347,8 @@ func TestValObjCheck(t *testing.T) {
 
 	// 测试用例：支持的数据类型无效
 	t.Run("Invalid SupportDataType", func(t *testing.T) {
+		t.Parallel()
+
 		maxFileCount := 10
 		singleChatMaxSelectFileCount := 3
 		config := &TempZoneConfig{
@@ -342,6 +374,8 @@ func TestValObjCheck(t *testing.T) {
 
 	// 测试用例：允许的文件类别无效
 	t.Run("Invalid AllowedFileCategories", func(t *testing.T) {
+		t.Parallel()
+
 		maxFileCount := 10
 		singleChatMaxSelectFileCount := 3
 		config := &TempZoneConfig{
@@ -367,6 +401,8 @@ func TestValObjCheck(t *testing.T) {
 
 	// 测试用例：单文件大小限制单位无效
 	t.Run("Invalid SingleFileSizeLimitUnit", func(t *testing.T) {
+		t.Parallel()
+
 		maxFileCount := 10
 		singleChatMaxSelectFileCount := 3
 		config := &TempZoneConfig{
@@ -392,6 +428,8 @@ func TestValObjCheck(t *testing.T) {
 
 	// 测试用例：单文件大小超出最大限制（100MB）
 	t.Run("SingleFileSizeLimit Exceeds Maximum", func(t *testing.T) {
+		t.Parallel()
+
 		maxFileCount := 10
 		singleChatMaxSelectFileCount := 3
 		config := &TempZoneConfig{
@@ -417,6 +455,8 @@ func TestValObjCheck(t *testing.T) {
 }
 
 func TestTempZoneConfig_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	config := &TempZoneConfig{}
 	msgMap := config.GetErrMsgMap()
 
@@ -459,6 +499,8 @@ func TestTempZoneConfig_GetErrMsgMap(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := msgMap[tt.key]
 			if got != tt.want {
 				t.Errorf("GetErrMsgMap()[%q] = %q, want %q", tt.key, got, tt.want)
@@ -468,6 +510,8 @@ func TestTempZoneConfig_GetErrMsgMap(t *testing.T) {
 }
 
 func TestTempZoneConfig_GenAllowedFileTypes_Valid(t *testing.T) {
+	t.Parallel()
+
 	config := &TempZoneConfig{
 		AllowedFileCategories: cdaenum.AllowedFileCategories{"document"},
 	}
@@ -476,15 +520,19 @@ func TestTempZoneConfig_GenAllowedFileTypes_Valid(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GenAllowedFileTypes failed: %v", err)
 	}
+
 	if config.AllowedFileTypes == nil {
 		t.Fatal("AllowedFileTypes should not be nil")
 	}
+
 	if len(config.AllowedFileTypes) == 0 {
 		t.Fatal("AllowedFileTypes should not be empty")
 	}
 }
 
 func TestTempZoneConfig_GenAllowedFileTypes_NilCategories(t *testing.T) {
+	t.Parallel()
+
 	config := &TempZoneConfig{
 		AllowedFileCategories: nil,
 	}
@@ -493,12 +541,15 @@ func TestTempZoneConfig_GenAllowedFileTypes_NilCategories(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GenAllowedFileTypes failed: %v", err)
 	}
+
 	if config.AllowedFileTypes != nil {
 		t.Fatal("AllowedFileTypes should be nil when categories is nil")
 	}
 }
 
 func TestTempZoneConfig_GenAllowedFileTypes_MultipleCategories(t *testing.T) {
+	t.Parallel()
+
 	config := &TempZoneConfig{
 		AllowedFileCategories: cdaenum.AllowedFileCategories{"document", "pdf", "text"},
 	}
@@ -507,15 +558,19 @@ func TestTempZoneConfig_GenAllowedFileTypes_MultipleCategories(t *testing.T) {
 	if err != nil {
 		t.Fatalf("GenAllowedFileTypes failed: %v", err)
 	}
+
 	if config.AllowedFileTypes == nil {
 		t.Fatal("AllowedFileTypes should not be nil")
 	}
+
 	if len(config.AllowedFileTypes) == 0 {
 		t.Fatal("AllowedFileTypes should not be empty")
 	}
 }
 
 func TestTempZoneConfig_GenAllowedFileTypes_InvalidCategory(t *testing.T) {
+	t.Parallel()
+
 	config := &TempZoneConfig{
 		AllowedFileCategories: cdaenum.AllowedFileCategories{"invalid_category"},
 	}
@@ -528,9 +583,13 @@ func TestTempZoneConfig_GenAllowedFileTypes_InvalidCategory(t *testing.T) {
 
 // Test ValObjCheck with SingleChatMaxSelectFileCount range errors
 func TestValObjCheck_SingleChatMaxSelectFileCountRange(t *testing.T) {
+	t.Parallel()
+
 	maxFileCount := 10
 
 	t.Run("SingleChatMaxSelectFileCount too low", func(t *testing.T) {
+		t.Parallel()
+
 		singleChatMaxSelectFileCount := 0 // Below minimum of 1
 		config := &TempZoneConfig{
 			Name:                         "临时区",
@@ -549,6 +608,8 @@ func TestValObjCheck_SingleChatMaxSelectFileCountRange(t *testing.T) {
 	})
 
 	t.Run("SingleChatMaxSelectFileCount too high", func(t *testing.T) {
+		t.Parallel()
+
 		singleChatMaxSelectFileCount := 6 // Above maximum of 5
 		config := &TempZoneConfig{
 			Name:                         "临时区",
@@ -569,9 +630,13 @@ func TestValObjCheck_SingleChatMaxSelectFileCountRange(t *testing.T) {
 
 // Test ValObjCheck with MaxFileCount range errors
 func TestValObjCheck_MaxFileCountRange(t *testing.T) {
+	t.Parallel()
+
 	singleChatMaxSelectFileCount := 3
 
 	t.Run("MaxFileCount too low", func(t *testing.T) {
+		t.Parallel()
+
 		maxFileCount := 0 // Below minimum of 1
 		config := &TempZoneConfig{
 			Name:                         "临时区",
@@ -590,6 +655,8 @@ func TestValObjCheck_MaxFileCountRange(t *testing.T) {
 	})
 
 	t.Run("MaxFileCount too high", func(t *testing.T) {
+		t.Parallel()
+
 		maxFileCount := 51 // Above maximum of 50
 		config := &TempZoneConfig{
 			Name:                         "临时区",
@@ -610,18 +677,19 @@ func TestValObjCheck_MaxFileCountRange(t *testing.T) {
 
 // Test ValObjCheck with nil MaxFileCount and SingleChatMaxSelectFileCount
 func TestValObjCheck_NilOptionalFields(t *testing.T) {
+	t.Parallel()
+
 	config := &TempZoneConfig{
-		Name:                    "临时区",
-		TmpFileUseType:          cdaenum.TmpFileUseTypeUpload,
-		MaxFileCount:            nil, // nil should be allowed
+		Name:                         "临时区",
+		TmpFileUseType:               cdaenum.TmpFileUseTypeUpload,
+		MaxFileCount:                 nil, // nil should be allowed
 		SingleChatMaxSelectFileCount: nil, // nil should be allowed
-		SingleFileSizeLimit:     50,
-		SingleFileSizeLimitUnit: cdaenum.MB,
-		SupportDataType:         cdaenum.SupportDataTypes{"file"},
-		AllowedFileCategories:   cdaenum.AllowedFileCategories{"document"},
+		SingleFileSizeLimit:          50,
+		SingleFileSizeLimitUnit:      cdaenum.MB,
+		SupportDataType:              cdaenum.SupportDataTypes{"file"},
+		AllowedFileCategories:        cdaenum.AllowedFileCategories{"document"},
 	}
 
 	err := config.ValObjCheck()
 	assert.NoError(t, err)
 }
-

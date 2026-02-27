@@ -7,12 +7,14 @@ import (
 )
 
 func TestPubedTplListReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := PubedTplListReq{
-		Name:               "Test Template",
-		CategoryID:         "cat-123",
-		Size:               10,
+		Name:                "Test Template",
+		CategoryID:          "cat-123",
+		Size:                10,
 		PaginationMarkerStr: "marker",
-		TplIDsByBd:         []string{"tpl-1", "tpl-2"},
+		TplIDsByBd:          []string{"tpl-1", "tpl-2"},
 	}
 
 	assert.Equal(t, "Test Template", req.Name)
@@ -23,6 +25,8 @@ func TestPubedTplListReq_StructFields(t *testing.T) {
 }
 
 func TestPubedTplListReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := PubedTplListReq{}
 
 	assert.Empty(t, req.Name)
@@ -34,6 +38,8 @@ func TestPubedTplListReq_Empty(t *testing.T) {
 }
 
 func TestPubedTplListReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := PubedTplListReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -43,6 +49,8 @@ func TestPubedTplListReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestPubedTplListReq_LoadMarkerStr_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := PubedTplListReq{
 		PaginationMarkerStr: "",
 	}
@@ -54,6 +62,8 @@ func TestPubedTplListReq_LoadMarkerStr_Empty(t *testing.T) {
 }
 
 func TestPubedTplListReq_LoadMarkerStr_WithMarker(t *testing.T) {
+	t.Parallel()
+
 	// Valid marker with proper field names: last_pubed_tpl_id
 	validMarker := "eyJsYXN0X3B1YmVkX3RwbF9pZCI6MTIzNDU2Nzg5MH0="
 	req := PubedTplListReq{
@@ -67,6 +77,8 @@ func TestPubedTplListReq_LoadMarkerStr_WithMarker(t *testing.T) {
 }
 
 func TestPubedTplListReq_LoadMarkerStr_InvalidBase64(t *testing.T) {
+	t.Parallel()
+
 	req := PubedTplListReq{
 		PaginationMarkerStr: "not-valid-base64!!!",
 	}
@@ -77,6 +89,8 @@ func TestPubedTplListReq_LoadMarkerStr_InvalidBase64(t *testing.T) {
 }
 
 func TestPubedTplListReq_LoadMarkerStr_InvalidJSON(t *testing.T) {
+	t.Parallel()
+
 	// Valid base64 but invalid JSON
 	invalidJSONMarker := "eyJpbnZhbGlkIGpzb24ifQ=="
 	req := PubedTplListReq{
@@ -89,6 +103,8 @@ func TestPubedTplListReq_LoadMarkerStr_InvalidJSON(t *testing.T) {
 }
 
 func TestPubedTplListReq_WithName(t *testing.T) {
+	t.Parallel()
+
 	names := []string{
 		"Test Template",
 		"测试模板",
@@ -105,6 +121,8 @@ func TestPubedTplListReq_WithName(t *testing.T) {
 }
 
 func TestPubedTplListReq_WithCategoryID(t *testing.T) {
+	t.Parallel()
+
 	categoryIDs := []string{
 		"cat-001",
 		"cat-xyz",
@@ -121,6 +139,8 @@ func TestPubedTplListReq_WithCategoryID(t *testing.T) {
 }
 
 func TestPubedTplListReq_WithSize(t *testing.T) {
+	t.Parallel()
+
 	sizes := []int{
 		0,
 		1,
@@ -138,6 +158,8 @@ func TestPubedTplListReq_WithSize(t *testing.T) {
 }
 
 func TestPubedTplListReq_WithTplIDsByBd(t *testing.T) {
+	t.Parallel()
+
 	tplIDs := []string{
 		"tpl-001",
 		"tpl-002",
@@ -155,6 +177,8 @@ func TestPubedTplListReq_WithTplIDsByBd(t *testing.T) {
 }
 
 func TestPubedTplListReq_WithEmptyTplIDsByBd(t *testing.T) {
+	t.Parallel()
+
 	req := PubedTplListReq{
 		TplIDsByBd: []string{},
 	}
@@ -164,6 +188,8 @@ func TestPubedTplListReq_WithEmptyTplIDsByBd(t *testing.T) {
 }
 
 func TestPubedTplListReq_WithNilTplIDsByBd(t *testing.T) {
+	t.Parallel()
+
 	req := PubedTplListReq{
 		TplIDsByBd: nil,
 	}
@@ -172,6 +198,8 @@ func TestPubedTplListReq_WithNilTplIDsByBd(t *testing.T) {
 }
 
 func TestPubedTplListReq_WithPaginationMarkerStr(t *testing.T) {
+	t.Parallel()
+
 	markerStrs := []string{
 		"marker1",
 		"marker2",
@@ -187,12 +215,14 @@ func TestPubedTplListReq_WithPaginationMarkerStr(t *testing.T) {
 }
 
 func TestPubedTplListReq_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	req := PubedTplListReq{
-		Name:               "Complete Template",
-		CategoryID:         "cat-complete",
-		Size:               25,
+		Name:                "Complete Template",
+		CategoryID:          "cat-complete",
+		Size:                25,
 		PaginationMarkerStr: "complete-marker",
-		TplIDsByBd:         []string{"tpl-complete"},
+		TplIDsByBd:          []string{"tpl-complete"},
 	}
 
 	assert.Equal(t, "Complete Template", req.Name)
@@ -203,6 +233,8 @@ func TestPubedTplListReq_WithAllFields(t *testing.T) {
 }
 
 func TestPubedTplListReq_ModifyTplIDsByBd(t *testing.T) {
+	t.Parallel()
+
 	req := PubedTplListReq{
 		TplIDsByBd: []string{"tpl-1"},
 	}

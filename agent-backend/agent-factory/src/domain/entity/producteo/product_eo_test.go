@@ -8,6 +8,8 @@ import (
 )
 
 func TestProduct_Embedded(t *testing.T) {
+	t.Parallel()
+
 	po := &dapo.ProductPo{
 		ID:   123,
 		Name: "Test Product",
@@ -24,6 +26,8 @@ func TestProduct_Embedded(t *testing.T) {
 }
 
 func TestProduct_Empty(t *testing.T) {
+	t.Parallel()
+
 	product := &Product{}
 	assert.Empty(t, product.ID)
 	assert.Empty(t, product.Name)

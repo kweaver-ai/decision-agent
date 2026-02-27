@@ -8,6 +8,8 @@ import (
 )
 
 func TestGetGroupMembersArgDto_StructFields(t *testing.T) {
+	t.Parallel()
+
 	dto := GetGroupMembersArgDto{
 		GroupIDs: []string{"group-1", "group-2"},
 	}
@@ -17,12 +19,16 @@ func TestGetGroupMembersArgDto_StructFields(t *testing.T) {
 }
 
 func TestGetGroupMembersArgDto_Empty(t *testing.T) {
+	t.Parallel()
+
 	dto := GetGroupMembersArgDto{}
 
 	assert.Nil(t, dto.GroupIDs)
 }
 
 func TestNewGetGroupMembersUMArgDto(t *testing.T) {
+	t.Parallel()
+
 	argDto := &GetGroupMembersArgDto{
 		GroupIDs: []string{"group-1"},
 	}
@@ -35,6 +41,8 @@ func TestNewGetGroupMembersUMArgDto(t *testing.T) {
 }
 
 func TestNewGetGroupMembersUMArgDto_WithNilArgDto(t *testing.T) {
+	t.Parallel()
+
 	dto := NewGetGroupMembersUMArgDto(nil)
 
 	assert.NotNil(t, dto)
@@ -43,6 +51,8 @@ func TestNewGetGroupMembersUMArgDto_WithNilArgDto(t *testing.T) {
 }
 
 func TestGetGroupMembersUMArgDto_StructFields(t *testing.T) {
+	t.Parallel()
+
 	innerDto := &GetGroupMembersArgDto{
 		GroupIDs: []string{"group-1", "group-2"},
 	}
@@ -57,6 +67,8 @@ func TestGetGroupMembersUMArgDto_StructFields(t *testing.T) {
 }
 
 func TestGetGroupMembersUMArgDto_Empty(t *testing.T) {
+	t.Parallel()
+
 	dto := &GetGroupMembersUMArgDto{}
 
 	assert.Nil(t, dto.GetGroupMembersArgDto)
@@ -64,6 +76,8 @@ func TestGetGroupMembersUMArgDto_Empty(t *testing.T) {
 }
 
 func TestGetGroupMembersArgDto_WithChineseIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := GetGroupMembersArgDto{
 		GroupIDs: []string{"组-1", "组-2"},
 	}
@@ -73,6 +87,8 @@ func TestGetGroupMembersArgDto_WithChineseIDs(t *testing.T) {
 }
 
 func TestGetGroupMembersArgDto_SliceOperations(t *testing.T) {
+	t.Parallel()
+
 	groupIDs := []string{"group-1", "group-2", "group-3"}
 
 	dto := GetGroupMembersArgDto{
@@ -86,6 +102,8 @@ func TestGetGroupMembersArgDto_SliceOperations(t *testing.T) {
 }
 
 func TestGetGroupMembersArgDto_Append(t *testing.T) {
+	t.Parallel()
+
 	dto := GetGroupMembersArgDto{}
 	dto.GroupIDs = append(dto.GroupIDs, "group-1")
 	dto.GroupIDs = append(dto.GroupIDs, "group-2")
@@ -94,6 +112,8 @@ func TestGetGroupMembersArgDto_Append(t *testing.T) {
 }
 
 func TestGetGroupMembersUMArgDto_DifferentMethods(t *testing.T) {
+	t.Parallel()
+
 	methods := []string{
 		http.MethodGet,
 		http.MethodPost,
@@ -110,6 +130,8 @@ func TestGetGroupMembersUMArgDto_DifferentMethods(t *testing.T) {
 }
 
 func TestGetGroupMembersArgDto_WithMultipleGroups(t *testing.T) {
+	t.Parallel()
+
 	groupIDs := make([]string, 50)
 	for i := 0; i < 50; i++ {
 		groupIDs[i] = "group-" + string(rune(i))
@@ -123,6 +145,8 @@ func TestGetGroupMembersArgDto_WithMultipleGroups(t *testing.T) {
 }
 
 func TestGetGroupMembersUMArgDto_WithGetGroupMembersArgDto(t *testing.T) {
+	t.Parallel()
+
 	argDto := &GetGroupMembersArgDto{
 		GroupIDs: []string{"group-1"},
 	}
@@ -134,6 +158,8 @@ func TestGetGroupMembersUMArgDto_WithGetGroupMembersArgDto(t *testing.T) {
 }
 
 func TestGetGroupMembersArgDto_EmptySlice(t *testing.T) {
+	t.Parallel()
+
 	dto := GetGroupMembersArgDto{
 		GroupIDs: []string{},
 	}
@@ -143,6 +169,8 @@ func TestGetGroupMembersArgDto_EmptySlice(t *testing.T) {
 }
 
 func TestGetGroupMembersUMArgDto_DefaultMethod(t *testing.T) {
+	t.Parallel()
+
 	argDto := &GetGroupMembersArgDto{}
 	dto := NewGetGroupMembersUMArgDto(argDto)
 
@@ -150,14 +178,19 @@ func TestGetGroupMembersUMArgDto_DefaultMethod(t *testing.T) {
 }
 
 func TestGetGroupMembersArgDto_Iteration(t *testing.T) {
+	t.Parallel()
+
 	dto := GetGroupMembersArgDto{
 		GroupIDs: []string{"group-1", "group-2", "group-3"},
 	}
 
 	count := 0
+
 	for _, groupID := range dto.GroupIDs {
 		assert.NotEmpty(t, groupID)
+
 		count++
 	}
+
 	assert.Equal(t, 3, count)
 }

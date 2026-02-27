@@ -5,12 +5,12 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
+	"go.uber.org/mock/gomock"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/umcmp/umtypes"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iumacc/httpaccmock"
@@ -21,6 +21,8 @@ import (
 
 // TestGetPublishInfo_GetByReleaseIDError 分类关联查询出错
 func TestGetPublishInfo_GetByReleaseIDError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -50,6 +52,8 @@ func TestGetPublishInfo_GetByReleaseIDError(t *testing.T) {
 
 // TestGetPublishInfo_CategoryNameMapError 分类名称映射查询出错
 func TestGetPublishInfo_CategoryNameMapError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -84,6 +88,8 @@ func TestGetPublishInfo_CategoryNameMapError(t *testing.T) {
 
 // TestGetPublishInfo_WithCategoriesSuccess 含分类信息，无权限控制，成功
 func TestGetPublishInfo_WithCategoriesSuccess(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -102,6 +108,7 @@ func TestGetPublishInfo_WithCategoriesSuccess(t *testing.T) {
 
 	ctx := context.Background()
 	isPmsCtrl := 0
+
 	mockAgentRepo.EXPECT().ExistsByID(ctx, "agent-3").Return(true, nil)
 	mockReleaseRepo.EXPECT().GetByAgentID(ctx, "agent-3").Return(&dapo.ReleasePO{
 		ID:        "rel-3",
@@ -128,6 +135,8 @@ func TestGetPublishInfo_WithCategoriesSuccess(t *testing.T) {
 
 // TestGetPublishInfo_WithPermissionsGetError 权限控制开启但 repo 查询出错
 func TestGetPublishInfo_WithPermissionsGetError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -162,6 +171,8 @@ func TestGetPublishInfo_WithPermissionsGetError(t *testing.T) {
 
 // TestGetPublishInfo_WithPermissionsSuccess 权限控制开启，成功获取（本地开发模式下）
 func TestGetPublishInfo_WithPermissionsSuccess(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -211,6 +222,8 @@ func TestGetPublishInfo_WithPermissionsSuccess(t *testing.T) {
 
 // TestGetPublishInfo_WithPermissions_EmptyList 有权限控制标志但权限为空时，不调用 genPmsControlResp
 func TestGetPublishInfo_WithPermissions_EmptyList(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -250,6 +263,8 @@ func TestGetPublishInfo_WithPermissions_EmptyList(t *testing.T) {
 
 // TestGenPmsControlResp_LocalDev_AllTypes 非本地环境调用 GetOsnNames 出错
 func TestGenPmsControlResp_LocalDev_AllTypes(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -291,6 +306,8 @@ func TestGenPmsControlResp_LocalDev_AllTypes(t *testing.T) {
 
 // TestGenPmsControlResp_GetOsnNames_Success 非本地环境，GetOsnNames 成功，用户名不在 map → unknownUser
 func TestGenPmsControlResp_GetOsnNames_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -318,6 +335,7 @@ func TestGenPmsControlResp_GetOsnNames_Success(t *testing.T) {
 	assert.Len(t, resp.Users, 2)
 	// u-found 有名字
 	var foundUsername, missingUsername string
+
 	for _, u := range resp.Users {
 		if u.UserID == "u-found" {
 			foundUsername = u.Username
@@ -325,6 +343,7 @@ func TestGenPmsControlResp_GetOsnNames_Success(t *testing.T) {
 			missingUsername = u.Username
 		}
 	}
+
 	assert.Equal(t, "Found User", foundUsername)
 	// u-missing 不在 map，应该使用 unknownUserName（i18n）
 	assert.NotEmpty(t, missingUsername)
@@ -332,6 +351,8 @@ func TestGenPmsControlResp_GetOsnNames_Success(t *testing.T) {
 
 // TestGenPmsControlResp_GetOsnNames_Error GetOsnNames 返回错误
 func TestGenPmsControlResp_GetOsnNames_Error(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

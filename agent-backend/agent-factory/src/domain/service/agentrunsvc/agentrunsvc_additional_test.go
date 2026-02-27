@@ -30,6 +30,8 @@ import (
 // ---------- GenerateAgentCallReq 额外分支 ----------
 
 func TestAgentSvc_GenerateAgentCallReq_WithSelectedFiles(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockLogger := cmpmock.NewMockLogger(ctrl)
@@ -51,6 +53,8 @@ func TestAgentSvc_GenerateAgentCallReq_WithSelectedFiles(t *testing.T) {
 }
 
 func TestAgentSvc_GenerateAgentCallReq_RegenerateWithModelName(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockLogger := cmpmock.NewMockLogger(ctrl)
@@ -71,6 +75,8 @@ func TestAgentSvc_GenerateAgentCallReq_RegenerateWithModelName(t *testing.T) {
 }
 
 func TestAgentSvc_GenerateAgentCallReq_RegenerateNoModelName(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockLogger := cmpmock.NewMockLogger(ctrl)
@@ -91,6 +97,8 @@ func TestAgentSvc_GenerateAgentCallReq_RegenerateNoModelName(t *testing.T) {
 }
 
 func TestAgentSvc_GenerateAgentCallReq_WithFileField(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockLogger := cmpmock.NewMockLogger(ctrl)
@@ -118,6 +126,8 @@ func TestAgentSvc_GenerateAgentCallReq_WithFileField(t *testing.T) {
 }
 
 func TestAgentSvc_GenerateAgentCallReq_DeepThinkingWithLLMs(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockLogger := cmpmock.NewMockLogger(ctrl)
@@ -137,6 +147,8 @@ func TestAgentSvc_GenerateAgentCallReq_DeepThinkingWithLLMs(t *testing.T) {
 }
 
 func TestAgentSvc_GenerateAgentCallReq_DeepThinkingSwitchDefaultModel(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockLogger := cmpmock.NewMockLogger(ctrl)
@@ -179,10 +191,12 @@ func TestAgentSvc_GenerateAgentCallReq_DeepThinkingSwitchDefaultModel(t *testing
 	require.NotNil(t, result)
 
 	var defaultLlm, defaultRlm bool
+
 	for _, llm := range result.Config.Llms {
 		if llm.LlmConfig != nil && llm.LlmConfig.Name == "default-llm" {
 			defaultLlm = llm.IsDefault
 		}
+
 		if llm.LlmConfig != nil && llm.LlmConfig.Name == "reasoning-llm" {
 			defaultRlm = llm.IsDefault
 		}
@@ -193,6 +207,8 @@ func TestAgentSvc_GenerateAgentCallReq_DeepThinkingSwitchDefaultModel(t *testing
 }
 
 func TestAgentSvc_GenerateAgentCallReq_RegenerateRaisesTemperatureAndTopK(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockLogger := cmpmock.NewMockLogger(ctrl)
@@ -231,6 +247,8 @@ func TestAgentSvc_GenerateAgentCallReq_RegenerateRaisesTemperatureAndTopK(t *tes
 }
 
 func TestAgentSvc_GenerateAgentCallReq_InjectWorkspaceContextAndInputMapping(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockLogger := cmpmock.NewMockLogger(ctrl)
@@ -276,6 +294,8 @@ func TestAgentSvc_GenerateAgentCallReq_InjectWorkspaceContextAndInputMapping(t *
 // ---------- TerminateChat 测试 ----------
 
 func TestAgentSvc_TerminateChat_StopChanNotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockLogger := cmpmock.NewMockLogger(ctrl)
@@ -288,6 +308,8 @@ func TestAgentSvc_TerminateChat_StopChanNotFound(t *testing.T) {
 }
 
 func TestAgentSvc_TerminateChat_StopChanNotFoundButHasInterrupted(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockMsgRepo := idbaccessmock.NewMockIConversationMsgRepo(ctrl)
@@ -306,6 +328,8 @@ func TestAgentSvc_TerminateChat_StopChanNotFoundButHasInterrupted(t *testing.T) 
 }
 
 func TestAgentSvc_TerminateChat_StopChanFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockLogger := cmpmock.NewMockLogger(ctrl)
@@ -322,6 +346,8 @@ func TestAgentSvc_TerminateChat_StopChanFound(t *testing.T) {
 }
 
 func TestAgentSvc_TerminateChat_InterruptedMsgGetError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockMsgRepo := idbaccessmock.NewMockIConversationMsgRepo(ctrl)
@@ -342,6 +368,8 @@ func TestAgentSvc_TerminateChat_InterruptedMsgGetError(t *testing.T) {
 // ---------- waitForSessionReady 额外分支测试 ----------
 
 func TestAgentSvc_WaitForSessionReady_SessionErrorState(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockLogger := cmpmock.NewMockLogger(ctrl)
@@ -371,6 +399,8 @@ func TestAgentSvc_WaitForSessionReady_SessionErrorState(t *testing.T) {
 }
 
 func TestAgentSvc_WaitForSessionReady_Timeout(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockLogger := cmpmock.NewMockLogger(ctrl)
@@ -399,6 +429,8 @@ func TestAgentSvc_WaitForSessionReady_Timeout(t *testing.T) {
 }
 
 func TestAgentSvc_WaitForSessionReady_InvalidInterval(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockLogger := cmpmock.NewMockLogger(ctrl)
@@ -427,6 +459,8 @@ func TestAgentSvc_WaitForSessionReady_InvalidInterval(t *testing.T) {
 }
 
 func TestAgentSvc_WaitForSessionReady_GetSessionError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockLogger := cmpmock.NewMockLogger(ctrl)
@@ -456,6 +490,8 @@ func TestAgentSvc_WaitForSessionReady_GetSessionError(t *testing.T) {
 // ---------- createNewSession 额外分支 ----------
 
 func TestAgentSvc_CreateNewSession_DefaultResourceValues(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockLogger := cmpmock.NewMockLogger(ctrl)
@@ -495,6 +531,8 @@ func TestAgentSvc_CreateNewSession_DefaultResourceValues(t *testing.T) {
 }
 
 func TestAgentSvc_CreateNewSession_EmptyCreateRespID(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockLogger := cmpmock.NewMockLogger(ctrl)
@@ -527,6 +565,8 @@ func TestAgentSvc_CreateNewSession_EmptyCreateRespID(t *testing.T) {
 }
 
 func TestAgentSvc_CreateNewSession_CreateFailed(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockLogger := cmpmock.NewMockLogger(ctrl)
@@ -557,6 +597,8 @@ func TestAgentSvc_CreateNewSession_CreateFailed(t *testing.T) {
 // ---------- NewStreamingResponseLogger DEBUG 模式测试 ----------
 
 func TestNewStreamingResponseLogger_DebugMode_Success(t *testing.T) {
+	t.Parallel()
+
 	tmpDir := t.TempDir()
 	// IsDebugMode checks <SERVICE_NAME>_DEBUG_MODE env var at init time; we test via direct struct construction
 	// Just verify LogChunk and Complete work on a real logger instance
@@ -564,11 +606,14 @@ func TestNewStreamingResponseLogger_DebugMode_Success(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	f.Close()
+
 	f2, err := os.Create(f.Name())
 	if err != nil {
 		t.Fatal(err)
 	}
+
 	l := &StreamingResponseLogger{
 		file:           f2,
 		conversationID: "conv-debug-test",
@@ -580,12 +625,14 @@ func TestNewStreamingResponseLogger_DebugMode_Success(t *testing.T) {
 }
 
 func TestNewStreamingResponseLogger_DebugMode_InvalidDir(t *testing.T) {
+	// t.Parallel() - 移除：此测试使用 t.Setenv() 修改环境变量，不能与 t.Parallel() 同时使用
 	t.Setenv("APP_DEBUG", "true")
 	// Use a path that can't be created under /proc (on Linux) or a file as dir
 	tmpFile, err := os.CreateTemp("", "testfile")
 	if err != nil {
 		t.Skip("cannot create temp file for test")
 	}
+
 	defer os.Remove(tmpFile.Name())
 	tmpFile.Close()
 
@@ -599,6 +646,8 @@ func TestNewStreamingResponseLogger_DebugMode_InvalidDir(t *testing.T) {
 // ---------- UpsertUserAndAssistantMsg 额外分支 ----------
 
 func TestAgentSvc_UpsertUserAndAssistantMsg_RegenerateAssistantMsg_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockMsgRepo := idbaccessmock.NewMockIConversationMsgRepo(ctrl)
@@ -625,6 +674,8 @@ func TestAgentSvc_UpsertUserAndAssistantMsg_RegenerateAssistantMsg_Success(t *te
 }
 
 func TestAgentSvc_UpsertUserAndAssistantMsg_InterruptedMsg_UpdateError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockMsgRepo := idbaccessmock.NewMockIConversationMsgRepo(ctrl)
@@ -650,6 +701,8 @@ func TestAgentSvc_UpsertUserAndAssistantMsg_InterruptedMsg_UpdateError(t *testin
 // ---------- GetHistoryAndMsgIndex with sql not found ----------
 
 func TestAgentSvc_GetHistoryAndMsgIndex_ExistingConversation_MaxIndexNotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockConvRepo := idbaccessmock.NewMockIConversationRepo(ctrl)
@@ -665,12 +718,15 @@ func TestAgentSvc_GetHistoryAndMsgIndex_ExistingConversation_MaxIndexNotFound(t 
 	_, _, idx, err := svc.GetHistoryAndMsgIndex(ctx, req)
 	// record not found is not sql.ErrNoRows so it will be treated as general error
 	assert.Error(t, err)
+
 	_ = idx
 }
 
 // ---------- HandleStopChan Success ensures conversation update ----------
 
 func TestAgentSvc_HandleStopChan_UpdateConversationError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 	mockConvRepo := idbaccessmock.NewMockIConversationRepo(ctrl)
@@ -691,5 +747,7 @@ func TestAgentSvc_HandleStopChan_UpdateConversationError(t *testing.T) {
 }
 
 // Use time package to avoid import error.
-var _ = time.Now
-var _ = agentresp.ChatResp{}
+var (
+	_ = time.Now
+	_ = agentresp.ChatResp{}
+)

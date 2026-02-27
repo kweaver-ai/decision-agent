@@ -7,6 +7,8 @@ import (
 )
 
 func TestNewImportResp(t *testing.T) {
+	t.Parallel()
+
 	resp := NewImportResp()
 
 	assert.NotNil(t, resp)
@@ -18,6 +20,8 @@ func TestNewImportResp(t *testing.T) {
 }
 
 func TestImportResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := ImportResp{
 		IsSuccess: true,
 		ConfigInvalid: []*ImportFailItem{
@@ -42,6 +46,8 @@ func TestImportResp_StructFields(t *testing.T) {
 }
 
 func TestImportResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := ImportResp{}
 
 	assert.False(t, resp.IsSuccess)
@@ -52,6 +58,8 @@ func TestImportResp_Empty(t *testing.T) {
 }
 
 func TestImportFailItem_StructFields(t *testing.T) {
+	t.Parallel()
+
 	item := ImportFailItem{
 		AgentKey:  "agent-key-123",
 		AgentName: "Agent Name",
@@ -62,6 +70,8 @@ func TestImportFailItem_StructFields(t *testing.T) {
 }
 
 func TestImportFailItem_Empty(t *testing.T) {
+	t.Parallel()
+
 	item := ImportFailItem{}
 
 	assert.Empty(t, item.AgentKey)
@@ -69,6 +79,8 @@ func TestImportFailItem_Empty(t *testing.T) {
 }
 
 func TestImportResp_HasFail_WithConfigInvalid(t *testing.T) {
+	t.Parallel()
+
 	resp := NewImportResp()
 	resp.ConfigInvalid = append(resp.ConfigInvalid, &ImportFailItem{
 		AgentKey:  "key-1",
@@ -79,6 +91,8 @@ func TestImportResp_HasFail_WithConfigInvalid(t *testing.T) {
 }
 
 func TestImportResp_HasFail_WithNoCreateSystemAgentPms(t *testing.T) {
+	t.Parallel()
+
 	resp := NewImportResp()
 	resp.NoCreateSystemAgentPms = append(resp.NoCreateSystemAgentPms, &ImportFailItem{
 		AgentKey:  "key-1",
@@ -89,6 +103,8 @@ func TestImportResp_HasFail_WithNoCreateSystemAgentPms(t *testing.T) {
 }
 
 func TestImportResp_HasFail_WithAgentKeyConflict(t *testing.T) {
+	t.Parallel()
+
 	resp := NewImportResp()
 	resp.AgentKeyConflict = append(resp.AgentKeyConflict, &ImportFailItem{
 		AgentKey:  "key-1",
@@ -99,6 +115,8 @@ func TestImportResp_HasFail_WithAgentKeyConflict(t *testing.T) {
 }
 
 func TestImportResp_HasFail_WithBizDomainConflict(t *testing.T) {
+	t.Parallel()
+
 	resp := NewImportResp()
 	resp.BizDomainConflict = append(resp.BizDomainConflict, &ImportFailItem{
 		AgentKey:  "key-1",
@@ -109,12 +127,16 @@ func TestImportResp_HasFail_WithBizDomainConflict(t *testing.T) {
 }
 
 func TestImportResp_HasFail_NoFail(t *testing.T) {
+	t.Parallel()
+
 	resp := NewImportResp()
 
 	assert.False(t, resp.HasFail())
 }
 
 func TestImportResp_HasFail_MultipleFailTypes(t *testing.T) {
+	t.Parallel()
+
 	resp := NewImportResp()
 	resp.ConfigInvalid = append(resp.ConfigInvalid, &ImportFailItem{
 		AgentKey:  "key-1",
@@ -129,6 +151,8 @@ func TestImportResp_HasFail_MultipleFailTypes(t *testing.T) {
 }
 
 func TestImportResp_AddConfigInvalid(t *testing.T) {
+	t.Parallel()
+
 	resp := NewImportResp()
 	resp.AddConfigInvalid("key-1", "name-1")
 
@@ -138,6 +162,8 @@ func TestImportResp_AddConfigInvalid(t *testing.T) {
 }
 
 func TestImportResp_AddConfigInvalid_Multiple(t *testing.T) {
+	t.Parallel()
+
 	resp := NewImportResp()
 	resp.AddConfigInvalid("key-1", "name-1")
 	resp.AddConfigInvalid("key-2", "name-2")
@@ -147,6 +173,8 @@ func TestImportResp_AddConfigInvalid_Multiple(t *testing.T) {
 }
 
 func TestImportResp_AddNoCreateSystemAgentPms(t *testing.T) {
+	t.Parallel()
+
 	resp := NewImportResp()
 	resp.AddNoCreateSystemAgentPms("key-1", "name-1")
 
@@ -156,6 +184,8 @@ func TestImportResp_AddNoCreateSystemAgentPms(t *testing.T) {
 }
 
 func TestImportResp_AddNoCreateSystemAgentPms_Multiple(t *testing.T) {
+	t.Parallel()
+
 	resp := NewImportResp()
 	resp.AddNoCreateSystemAgentPms("key-1", "name-1")
 	resp.AddNoCreateSystemAgentPms("key-2", "name-2")
@@ -164,6 +194,8 @@ func TestImportResp_AddNoCreateSystemAgentPms_Multiple(t *testing.T) {
 }
 
 func TestImportResp_AddAgentKeyConflict(t *testing.T) {
+	t.Parallel()
+
 	resp := NewImportResp()
 	resp.AddAgentKeyConflict("key-1", "name-1")
 
@@ -173,6 +205,8 @@ func TestImportResp_AddAgentKeyConflict(t *testing.T) {
 }
 
 func TestImportResp_AddAgentKeyConflict_Multiple(t *testing.T) {
+	t.Parallel()
+
 	resp := NewImportResp()
 	resp.AddAgentKeyConflict("key-1", "name-1")
 	resp.AddAgentKeyConflict("key-2", "name-2")
@@ -181,6 +215,8 @@ func TestImportResp_AddAgentKeyConflict_Multiple(t *testing.T) {
 }
 
 func TestImportResp_AddBizDomainConflict(t *testing.T) {
+	t.Parallel()
+
 	resp := NewImportResp()
 	resp.AddBizDomainConflict("key-1", "name-1")
 
@@ -190,6 +226,8 @@ func TestImportResp_AddBizDomainConflict(t *testing.T) {
 }
 
 func TestImportResp_AddBizDomainConflict_Multiple(t *testing.T) {
+	t.Parallel()
+
 	resp := NewImportResp()
 	resp.AddBizDomainConflict("key-1", "name-1")
 	resp.AddBizDomainConflict("key-2", "name-2")
@@ -198,6 +236,8 @@ func TestImportResp_AddBizDomainConflict_Multiple(t *testing.T) {
 }
 
 func TestImportResp_WithChineseCharacters(t *testing.T) {
+	t.Parallel()
+
 	resp := NewImportResp()
 	resp.AddConfigInvalid("中文-key", "中文-name")
 
@@ -207,6 +247,8 @@ func TestImportResp_WithChineseCharacters(t *testing.T) {
 }
 
 func TestImportResp_AllFailTypes(t *testing.T) {
+	t.Parallel()
+
 	resp := NewImportResp()
 	resp.AddConfigInvalid("key-1", "name-1")
 	resp.AddNoCreateSystemAgentPms("key-2", "name-2")
@@ -221,6 +263,8 @@ func TestImportResp_AllFailTypes(t *testing.T) {
 }
 
 func TestImportResp_WithEmptyStrings(t *testing.T) {
+	t.Parallel()
+
 	resp := NewImportResp()
 	resp.AddConfigInvalid("", "")
 
@@ -230,6 +274,8 @@ func TestImportResp_WithEmptyStrings(t *testing.T) {
 }
 
 func TestImportResp_WithSpecialCharacters(t *testing.T) {
+	t.Parallel()
+
 	resp := NewImportResp()
 	resp.AddConfigInvalid("key-@#$%", "name-!@#$%")
 
@@ -239,6 +285,8 @@ func TestImportResp_WithSpecialCharacters(t *testing.T) {
 }
 
 func TestImportResp_IsSuccessTrue(t *testing.T) {
+	t.Parallel()
+
 	resp := ImportResp{
 		IsSuccess: true,
 	}
@@ -247,6 +295,8 @@ func TestImportResp_IsSuccessTrue(t *testing.T) {
 }
 
 func TestImportResp_IsSuccessFalse(t *testing.T) {
+	t.Parallel()
+
 	resp := ImportResp{
 		IsSuccess: false,
 	}
@@ -255,6 +305,8 @@ func TestImportResp_IsSuccessFalse(t *testing.T) {
 }
 
 func TestImportResp_WithAllFailTypesMultipleItems(t *testing.T) {
+	t.Parallel()
+
 	resp := NewImportResp()
 
 	// Add multiple items to each fail type

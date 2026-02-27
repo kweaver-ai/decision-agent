@@ -7,7 +7,10 @@ import (
 )
 
 func TestPanicTrace(t *testing.T) {
+	t.Parallel()
+
 	t.Run("get panic trace", func(t *testing.T) {
+		t.Parallel()
 		// PanicTrace uses runtime.Stack which will return the current goroutine's stack
 		// This test verifies that PanicTrace returns a byte slice
 		trace := PanicTrace()
@@ -25,6 +28,8 @@ func TestPanicTrace(t *testing.T) {
 	})
 
 	t.Run("verify trace structure", func(t *testing.T) {
+		t.Parallel()
+
 		trace := PanicTrace()
 
 		if len(trace) == 0 {
@@ -42,7 +47,11 @@ func TestPanicTrace(t *testing.T) {
 }
 
 func TestPanicTraceErrLog(t *testing.T) {
+	t.Parallel()
+
 	t.Run("panic trace with error message", func(t *testing.T) {
+		t.Parallel()
+
 		err := "test error"
 		logMessage := PanicTraceErrLog(err)
 
@@ -52,6 +61,8 @@ func TestPanicTraceErrLog(t *testing.T) {
 	})
 
 	t.Run("panic trace with error struct", func(t *testing.T) {
+		t.Parallel()
+
 		err := &customErr{msg: "struct error"}
 		logMessage := PanicTraceErrLog(err)
 
@@ -60,6 +71,8 @@ func TestPanicTraceErrLog(t *testing.T) {
 	})
 
 	t.Run("panic trace with int error", func(t *testing.T) {
+		t.Parallel()
+
 		err := 123
 		logMessage := PanicTraceErrLog(err)
 
@@ -70,6 +83,8 @@ func TestPanicTraceErrLog(t *testing.T) {
 	})
 
 	t.Run("panic trace with nil", func(t *testing.T) {
+		t.Parallel()
+
 		logMessage := PanicTraceErrLog(nil)
 
 		assert.NotEmpty(t, logMessage)

@@ -7,8 +7,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdapmsenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/authzhttp/authzhttpreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/authzhttp/authzhttpres"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iauthzacc"
 )
 
@@ -26,45 +26,59 @@ func NewMockAuthZHttpAcc(logger icmp.Logger) iauthzacc.AuthZHttpAcc {
 
 func (m *mockAuthZHttpAcc) ResourceList(ctx context.Context, req *authzhttpreq.ResourceListReq) (list []*authzhttpres.ResourceListItem, err error) {
 	m.logger.Infof("[MockAuthZ] ResourceList: accessorID=%s, resourceType=%s", req.Accessor.ID, req.Resource.Type)
+
 	list = []*authzhttpres.ResourceListItem{}
+
 	return list, nil
 }
 
 func (m *mockAuthZHttpAcc) ResourceFilter(ctx context.Context, req *authzhttpreq.ResourceFilterReq) (list []*authzhttpres.ResourceListItem, err error) {
 	m.logger.Infof("[MockAuthZ] ResourceFilter: accessorID=%s, resourceCount=%d", req.Accessor.ID, len(req.Resources))
+
 	list = []*authzhttpres.ResourceListItem{}
+
 	return list, nil
 }
 
 func (m *mockAuthZHttpAcc) ResourceOperation(ctx context.Context, req *authzhttpreq.ResourceOperationReq) (list []*authzhttpres.ResourceOperationItem, err error) {
 	m.logger.Infof("[MockAuthZ] ResourceOperation: accessorID=%s, resourceCount=%d", req.Accessor.ID, len(req.Resources))
+
 	list = []*authzhttpres.ResourceOperationItem{}
+
 	return list, nil
 }
 
 func (m *mockAuthZHttpAcc) GetCanUseAgentIDs(ctx context.Context, uid string) (agentIDs []string, err error) {
 	m.logger.Infof("[MockAuthZ] GetCanUseAgentIDs: uid=%s", uid)
+
 	agentIDs = []string{}
+
 	return agentIDs, nil
 }
 
 func (m *mockAuthZHttpAcc) FilterCanUseAgentIDs(ctx context.Context, uid string, agentIDs []string) (filteredAgentIDs []string, err error) {
 	m.logger.Infof("[MockAuthZ] FilterCanUseAgentIDs: uid=%s, agentCount=%d", uid, len(agentIDs))
+
 	filteredAgentIDs = []string{}
+
 	return filteredAgentIDs, nil
 }
 
 func (m *mockAuthZHttpAcc) FilterCanUseAgentIDMap(ctx context.Context, uid string, agentIDs []string) (filteredAgentIDMap map[string]struct{}, err error) {
 	m.logger.Infof("[MockAuthZ] FilterCanUseAgentIDMap: uid=%s, agentCount=%d", uid, len(agentIDs))
+
 	filteredAgentIDMap = make(map[string]struct{})
+
 	return filteredAgentIDMap, nil
 }
 
 func (m *mockAuthZHttpAcc) OperationCheck(ctx context.Context, req *authzhttpreq.SingleCheckReq) (result *authzhttpres.SingleCheckResult, err error) {
 	m.logger.Infof("[MockAuthZ] OperationCheck: accessorID=%s, resourceID=%s", req.Accessor.ID, req.Resource.ID)
+
 	result = &authzhttpres.SingleCheckResult{
 		Result: true,
 	}
+
 	return result, nil
 }
 
@@ -75,13 +89,17 @@ func (m *mockAuthZHttpAcc) SingleAgentUseCheck(ctx context.Context, accessorID s
 
 func (m *mockAuthZHttpAcc) GetAgentResourceOpsByUid(ctx context.Context, uid string) (opMap map[cdapmsenum.Operator]bool, err error) {
 	m.logger.Infof("[MockAuthZ] GetAgentResourceOpsByUid: uid=%s", uid)
+
 	opMap = map[cdapmsenum.Operator]bool{}
+
 	return opMap, nil
 }
 
 func (m *mockAuthZHttpAcc) GetAgentTplResourceOpsByUid(ctx context.Context, uid string) (opMap map[cdapmsenum.Operator]bool, err error) {
 	m.logger.Infof("[MockAuthZ] GetAgentTplResourceOpsByUid: uid=%s", uid)
+
 	opMap = map[cdapmsenum.Operator]bool{}
+
 	return opMap, nil
 }
 
@@ -127,13 +145,17 @@ func (m *mockAuthZHttpAcc) DeleteAgentPolicy(ctx context.Context, agentID string
 
 func (m *mockAuthZHttpAcc) ListPolicy(ctx context.Context, req *authzhttpreq.ListPolicyReq, userToken string) (res *authzhttpres.ListPolicyRes, err error) {
 	m.logger.Infof("[MockAuthZ] ListPolicy")
+
 	res = &authzhttpres.ListPolicyRes{}
+
 	return res, nil
 }
 
 func (m *mockAuthZHttpAcc) ListPolicyAll(ctx context.Context, req *authzhttpreq.ListPolicyReq, userToken string) (res *authzhttpres.ListPolicyRes, err error) {
 	m.logger.Infof("[MockAuthZ] ListPolicyAll")
+
 	res = &authzhttpres.ListPolicyRes{}
+
 	return res, nil
 }
 

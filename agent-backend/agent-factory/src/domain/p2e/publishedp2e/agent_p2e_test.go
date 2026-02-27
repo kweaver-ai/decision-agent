@@ -10,13 +10,15 @@ import (
 )
 
 func TestPublishedAgent_Simple(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 
 	po := &dapo.PublishedJoinPo{
 		DataAgentPo: dapo.DataAgentPo{
-			ID:        "agent1",
-			Name:      "Test Agent",
-			Key:       "test-agent",
+			ID:         "agent1",
+			Name:       "Test Agent",
+			Key:        "test-agent",
 			ProductKey: "product1",
 		},
 		ReleasePartPo: dapo.ReleasePartPo{
@@ -39,6 +41,8 @@ func TestPublishedAgent_Simple(t *testing.T) {
 }
 
 func TestPublishedAgent_WithConfig(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 
 	configJSON := `{"profile":"test profile"}`
@@ -61,6 +65,8 @@ func TestPublishedAgent_WithConfig(t *testing.T) {
 }
 
 func TestPublishedAgent_InvalidConfig(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 
 	invalidJSON := `{invalid json`
@@ -80,10 +86,13 @@ func TestPublishedAgent_InvalidConfig(t *testing.T) {
 	// Just check that the error is properly wrapped
 	assert.Error(t, err)
 	assert.Contains(t, err.Error(), "PublishedAgent unmarshal config error")
+
 	_ = eo // EO may be non-nil even on error
 }
 
 func TestPublishedAgent_WithEmptyConfig(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 
 	po := &dapo.PublishedJoinPo{
@@ -104,6 +113,8 @@ func TestPublishedAgent_WithEmptyConfig(t *testing.T) {
 }
 
 func TestPublishedAgent_WithIsPmsCtrl(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 
 	po := &dapo.PublishedJoinPo{
@@ -113,7 +124,7 @@ func TestPublishedAgent_WithIsPmsCtrl(t *testing.T) {
 		},
 		ReleasePartPo: dapo.ReleasePartPo{
 			ReleaseID: "release1",
-			IsPmsCtrl:  1,
+			IsPmsCtrl: 1,
 		},
 	}
 
@@ -124,6 +135,8 @@ func TestPublishedAgent_WithIsPmsCtrl(t *testing.T) {
 }
 
 func TestPublishedAgent_NoUnmarshalConfig(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 
 	configJSON := `{"profile":"test profile"}`

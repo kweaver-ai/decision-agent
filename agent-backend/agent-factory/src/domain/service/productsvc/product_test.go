@@ -6,7 +6,6 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/product/productreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
@@ -14,6 +13,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 // Helper function to create context with user ID
@@ -21,10 +21,13 @@ func createContextWithUserID(userID string) context.Context {
 	visitor := &rest.Visitor{
 		ID: userID,
 	}
+
 	return context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), visitor)
 }
 
 func TestCreate_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -53,6 +56,8 @@ func TestCreate_Success(t *testing.T) {
 }
 
 func TestCreate_NameAlreadyExists(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -78,6 +83,8 @@ func TestCreate_NameAlreadyExists(t *testing.T) {
 }
 
 func TestCreate_KeyAlreadyExists(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -104,6 +111,8 @@ func TestCreate_KeyAlreadyExists(t *testing.T) {
 }
 
 func TestCreate_WithoutKey(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -131,6 +140,8 @@ func TestCreate_WithoutKey(t *testing.T) {
 }
 
 func TestCreate_RepositoryError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -157,6 +168,8 @@ func TestCreate_RepositoryError(t *testing.T) {
 }
 
 func TestDetail_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -185,6 +198,8 @@ func TestDetail_Success(t *testing.T) {
 }
 
 func TestDetail_NotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -207,6 +222,8 @@ func TestDetail_NotFound(t *testing.T) {
 }
 
 func TestGetByKey_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -235,6 +252,8 @@ func TestGetByKey_Success(t *testing.T) {
 }
 
 func TestGetByKey_NotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -257,6 +276,8 @@ func TestGetByKey_NotFound(t *testing.T) {
 }
 
 func TestList_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -285,6 +306,8 @@ func TestList_Success(t *testing.T) {
 }
 
 func TestList_Empty(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -308,6 +331,8 @@ func TestList_Empty(t *testing.T) {
 }
 
 func TestUpdate_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -344,6 +369,8 @@ func TestUpdate_Success(t *testing.T) {
 }
 
 func TestUpdate_NotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -370,6 +397,8 @@ func TestUpdate_NotFound(t *testing.T) {
 }
 
 func TestUpdate_NameAlreadyExists(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -403,6 +432,8 @@ func TestUpdate_NameAlreadyExists(t *testing.T) {
 }
 
 func TestDelete_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -434,6 +465,8 @@ func TestDelete_Success(t *testing.T) {
 }
 
 func TestDelete_NotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -456,6 +489,8 @@ func TestDelete_NotFound(t *testing.T) {
 }
 
 func TestDelete_RepositoryErrorOnExists(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -478,6 +513,8 @@ func TestDelete_RepositoryErrorOnExists(t *testing.T) {
 }
 
 func TestList_RepositoryError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -501,6 +538,8 @@ func TestList_RepositoryError(t *testing.T) {
 }
 
 func TestList_P2EConversionError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -534,6 +573,8 @@ func TestList_P2EConversionError(t *testing.T) {
 }
 
 func TestList_LoadFromEoError(t *testing.T) {
+	t.Parallel()
+
 	// This test would require creating a scenario where LoadFromEo fails
 	// Since LoadFromEo uses CopyStructUseJSON which rarely fails for simple structs,
 	// we'll just verify the function handles the empty case properly
@@ -564,6 +605,8 @@ func TestList_LoadFromEoError(t *testing.T) {
 }
 
 func TestList_DatabaseNotFoundError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -588,6 +631,8 @@ func TestList_DatabaseNotFoundError(t *testing.T) {
 }
 
 func TestCreate_ExistsByKeyError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -598,6 +643,7 @@ func TestCreate_ExistsByKeyError(t *testing.T) {
 	}
 
 	expectedErr := errors.New("database connection failed")
+
 	mockProductRepo.EXPECT().ExistsByName(gomock.Any(), req.Name).Return(false, nil)
 	mockProductRepo.EXPECT().ExistsByKey(gomock.Any(), req.Key).Return(false, expectedErr)
 
@@ -614,6 +660,8 @@ func TestCreate_ExistsByKeyError(t *testing.T) {
 }
 
 func TestDetail_RepositoryError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -636,6 +684,8 @@ func TestDetail_RepositoryError(t *testing.T) {
 }
 
 func TestGetByKey_RepositoryError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -658,6 +708,8 @@ func TestGetByKey_RepositoryError(t *testing.T) {
 }
 
 func TestUpdate_RepositoryErrorOnUpdate(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -675,6 +727,7 @@ func TestUpdate_RepositoryErrorOnUpdate(t *testing.T) {
 	}
 
 	expectedErr := errors.New("database update failed")
+
 	mockProductRepo.EXPECT().GetByID(gomock.Any(), productID).Return(existingPo, nil)
 	mockProductRepo.EXPECT().ExistsByNameExcludeID(gomock.Any(), req.Name, productID).Return(false, nil)
 	mockProductRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(expectedErr)
@@ -692,6 +745,8 @@ func TestUpdate_RepositoryErrorOnUpdate(t *testing.T) {
 }
 
 func TestUpdate_RepositoryErrorOnExistsCheck(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -709,6 +764,7 @@ func TestUpdate_RepositoryErrorOnExistsCheck(t *testing.T) {
 	}
 
 	expectedErr := errors.New("database connection failed")
+
 	mockProductRepo.EXPECT().GetByID(gomock.Any(), productID).Return(existingPo, nil)
 	mockProductRepo.EXPECT().ExistsByNameExcludeID(gomock.Any(), req.Name, productID).Return(false, expectedErr)
 
@@ -725,6 +781,8 @@ func TestUpdate_RepositoryErrorOnExistsCheck(t *testing.T) {
 }
 
 func TestDelete_RepositoryErrorOnGet(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -732,6 +790,7 @@ func TestDelete_RepositoryErrorOnGet(t *testing.T) {
 	productID := int64(123)
 
 	expectedErr := errors.New("database error")
+
 	mockProductRepo.EXPECT().ExistsByID(gomock.Any(), productID).Return(true, nil)
 	mockProductRepo.EXPECT().GetByID(gomock.Any(), productID).Return(nil, expectedErr)
 
@@ -748,6 +807,8 @@ func TestDelete_RepositoryErrorOnGet(t *testing.T) {
 }
 
 func TestCreate_RepositoryErrorOnCreate(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -759,6 +820,7 @@ func TestCreate_RepositoryErrorOnCreate(t *testing.T) {
 	}
 
 	expectedErr := errors.New("database insert failed")
+
 	mockProductRepo.EXPECT().ExistsByName(gomock.Any(), req.Name).Return(false, nil)
 	mockProductRepo.EXPECT().ExistsByKey(gomock.Any(), req.Key).Return(false, nil)
 	mockProductRepo.EXPECT().Create(gomock.Any(), gomock.Any()).Return("", expectedErr)

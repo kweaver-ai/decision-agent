@@ -8,7 +8,11 @@ import (
 )
 
 func TestDataAgentPo_TableName(t *testing.T) {
+	t.Parallel()
+
 	t.Run("table name", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentPo{}
 		tableName := po.TableName()
 
@@ -20,8 +24,13 @@ func TestDataAgentPo_TableName(t *testing.T) {
 }
 
 func TestDataAgentPo_IsBuiltInBool(t *testing.T) {
+	t.Parallel()
+
 	t.Run("nil is built in", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentPo{IsBuiltIn: nil}
+
 		result := po.IsBuiltInBool()
 		if result {
 			t.Error("Expected IsBuiltInBool to return false for nil")
@@ -29,8 +38,11 @@ func TestDataAgentPo_IsBuiltInBool(t *testing.T) {
 	})
 
 	t.Run("built in yes", func(t *testing.T) {
+		t.Parallel()
+
 		builtIn := cdaenum.BuiltInYes
 		po := &DataAgentPo{IsBuiltIn: &builtIn}
+
 		result := po.IsBuiltInBool()
 		if !result {
 			t.Error("Expected IsBuiltInBool to return true for BuiltInYes")
@@ -38,8 +50,11 @@ func TestDataAgentPo_IsBuiltInBool(t *testing.T) {
 	})
 
 	t.Run("built in no", func(t *testing.T) {
+		t.Parallel()
+
 		builtIn := cdaenum.BuiltInNo
 		po := &DataAgentPo{IsBuiltIn: &builtIn}
+
 		result := po.IsBuiltInBool()
 		if result {
 			t.Error("Expected IsBuiltInBool to return false for BuiltInNo")
@@ -48,25 +63,33 @@ func TestDataAgentPo_IsBuiltInBool(t *testing.T) {
 }
 
 func TestDataAgentPo_SetIsBuiltIn(t *testing.T) {
+	t.Parallel()
+
 	t.Run("set to yes", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentPo{}
 		po.SetIsBuiltIn(cdaenum.BuiltInYes)
 
 		if po.IsBuiltIn == nil {
 			t.Fatal("Expected IsBuiltIn to be non-nil")
 		}
+
 		if *po.IsBuiltIn != cdaenum.BuiltInYes {
 			t.Error("Expected IsBuiltIn to be set to BuiltInYes")
 		}
 	})
 
 	t.Run("set to no", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentPo{}
 		po.SetIsBuiltIn(cdaenum.BuiltInNo)
 
 		if po.IsBuiltIn == nil {
 			t.Fatal("Expected IsBuiltIn to be non-nil")
 		}
+
 		if *po.IsBuiltIn != cdaenum.BuiltInNo {
 			t.Error("Expected IsBuiltIn to be set to BuiltInNo")
 		}
@@ -74,7 +97,11 @@ func TestDataAgentPo_SetIsBuiltIn(t *testing.T) {
 }
 
 func TestDataAgentPo_GetProfileStr(t *testing.T) {
+	t.Parallel()
+
 	t.Run("with profile", func(t *testing.T) {
+		t.Parallel()
+
 		profile := "Test profile"
 		po := &DataAgentPo{Profile: &profile}
 		result := po.GetProfileStr()
@@ -85,6 +112,8 @@ func TestDataAgentPo_GetProfileStr(t *testing.T) {
 	})
 
 	t.Run("nil profile", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentPo{Profile: nil}
 		result := po.GetProfileStr()
 
@@ -95,7 +124,11 @@ func TestDataAgentPo_GetProfileStr(t *testing.T) {
 }
 
 func TestDataAgentPo_ResetForImport(t *testing.T) {
+	t.Parallel()
+
 	t.Run("reset for import", func(t *testing.T) {
+		t.Parallel()
+
 		profile := "Test profile"
 		builtIn := cdaenum.BuiltInYes
 		po := &DataAgentPo{
@@ -118,33 +151,43 @@ func TestDataAgentPo_ResetForImport(t *testing.T) {
 		if po.ID != "" {
 			t.Errorf("Expected ID to be empty after reset, got '%s'", po.ID)
 		}
+
 		if po.CreatedAt != 0 {
 			t.Errorf("Expected CreatedAt to be 0 after reset, got %d", po.CreatedAt)
 		}
+
 		if po.UpdatedAt != 0 {
 			t.Errorf("Expected UpdatedAt to be 0 after reset, got %d", po.UpdatedAt)
 		}
+
 		if po.CreatedBy != "" {
 			t.Errorf("Expected CreatedBy to be empty after reset, got '%s'", po.CreatedBy)
 		}
+
 		if po.UpdatedBy != "" {
 			t.Errorf("Expected UpdatedBy to be empty after reset, got '%s'", po.UpdatedBy)
 		}
+
 		if po.DeletedAt != 0 {
 			t.Errorf("Expected DeletedAt to be 0 after reset, got %d", po.DeletedAt)
 		}
+
 		if po.DeletedBy != "" {
 			t.Errorf("Expected DeletedBy to be empty after reset, got '%s'", po.DeletedBy)
 		}
+
 		if po.CreatedType != daenum.AgentCreatedTypeImport {
 			t.Errorf("Expected CreatedType to be Import, got %v", po.CreatedType)
 		}
+
 		if po.CreateFrom != "" {
 			t.Errorf("Expected CreateFrom to be empty after reset, got '%s'", po.CreateFrom)
 		}
+
 		if po.Status != cdaenum.StatusUnpublished {
 			t.Errorf("Expected Status to be Unpublished, got %v", po.Status)
 		}
+
 		if po.IsBuiltIn != nil {
 			t.Error("Expected IsBuiltIn to be nil after reset")
 		}
@@ -152,7 +195,11 @@ func TestDataAgentPo_ResetForImport(t *testing.T) {
 }
 
 func TestDataAgentPo_GetConfigStruct(t *testing.T) {
+	t.Parallel()
+
 	t.Run("valid config json", func(t *testing.T) {
+		t.Parallel()
+
 		configJSON := `{"input":{"fields":[]},"output":{}}`
 		po := &DataAgentPo{Config: configJSON}
 
@@ -160,12 +207,15 @@ func TestDataAgentPo_GetConfigStruct(t *testing.T) {
 		if err != nil {
 			t.Errorf("Expected no error, got %v", err)
 		}
+
 		if conf == nil {
 			t.Error("Expected config struct to be returned")
 		}
 	})
 
 	t.Run("invalid config json", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentPo{Config: "{invalid json"}
 
 		_, err := po.GetConfigStruct()
@@ -175,6 +225,8 @@ func TestDataAgentPo_GetConfigStruct(t *testing.T) {
 	})
 
 	t.Run("empty config", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentPo{Config: ""}
 
 		_, err := po.GetConfigStruct()
@@ -186,7 +238,11 @@ func TestDataAgentPo_GetConfigStruct(t *testing.T) {
 }
 
 func TestDataAgentPo_SetConfigStruct(t *testing.T) {
+	t.Parallel()
+
 	t.Run("set config struct with valid json", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentPo{}
 		configJSON := `{"input":{"fields":[]},"output":{}}`
 
@@ -199,12 +255,15 @@ func TestDataAgentPo_SetConfigStruct(t *testing.T) {
 		if err != nil {
 			t.Errorf("Expected no error, got %v", err)
 		}
+
 		if conf == nil {
 			t.Error("Expected config struct to be returned")
 		}
 	})
 
 	t.Run("set config then get it back", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentPo{}
 
 		// Set a valid config
@@ -226,6 +285,7 @@ func TestDataAgentPo_SetConfigStruct(t *testing.T) {
 		if err != nil {
 			t.Errorf("Expected no error on second get, got %v", err)
 		}
+
 		if conf2 == nil {
 			t.Error("Expected config struct to be returned on second get")
 		}
@@ -233,7 +293,11 @@ func TestDataAgentPo_SetConfigStruct(t *testing.T) {
 }
 
 func TestDataAgentPo_RemoveDataSourceFromConfig(t *testing.T) {
+	t.Parallel()
+
 	t.Run("remove data source without dolphin", func(t *testing.T) {
+		t.Parallel()
+
 		configJSON := `{"input":{"fields":[]},"output":{},"data_source":{}}`
 		po := &DataAgentPo{Config: configJSON}
 
@@ -244,6 +308,8 @@ func TestDataAgentPo_RemoveDataSourceFromConfig(t *testing.T) {
 	})
 
 	t.Run("remove data source with invalid config", func(t *testing.T) {
+		t.Parallel()
+
 		po := &DataAgentPo{Config: "{invalid json"}
 
 		err := po.RemoveDataSourceFromConfig(false)
@@ -254,6 +320,8 @@ func TestDataAgentPo_RemoveDataSourceFromConfig(t *testing.T) {
 	})
 
 	t.Run("remove data source with dolphin flag true", func(t *testing.T) {
+		t.Parallel()
+
 		configJSON := `{"input":{"fields":[]},"output":{},"data_source":{},"pre_dolphin":[]}`
 		po := &DataAgentPo{Config: configJSON}
 

@@ -7,6 +7,8 @@ import (
 )
 
 func TestLimitOffset_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	l := LimitOffset{}
 
 	errMsgMap := l.GetErrMsgMap()
@@ -17,6 +19,8 @@ func TestLimitOffset_GetErrMsgMap(t *testing.T) {
 }
 
 func TestLimitOffset_GetLimit(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name           string
 		limit          int
@@ -51,6 +55,8 @@ func TestLimitOffset_GetLimit(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			l := LimitOffset{Limit: tt.limit}
 			result := l.GetLimit()
 			assert.Equal(t, tt.expectedResult, result)
@@ -59,6 +65,8 @@ func TestLimitOffset_GetLimit(t *testing.T) {
 }
 
 func TestLimitOffset_GetOffset(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name           string
 		offset         int
@@ -83,6 +91,8 @@ func TestLimitOffset_GetOffset(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			l := LimitOffset{Offset: tt.offset}
 			result := l.GetOffset()
 			assert.Equal(t, tt.expectedResult, result)
@@ -91,6 +101,8 @@ func TestLimitOffset_GetOffset(t *testing.T) {
 }
 
 func TestLimitOffset_DefaultValues(t *testing.T) {
+	t.Parallel()
+
 	l := LimitOffset{}
 
 	assert.Equal(t, 0, l.Limit)
@@ -99,6 +111,8 @@ func TestLimitOffset_DefaultValues(t *testing.T) {
 }
 
 func TestLimitOffset_WithValues(t *testing.T) {
+	t.Parallel()
+
 	l := LimitOffset{
 		Limit:  50,
 		Offset: 100,

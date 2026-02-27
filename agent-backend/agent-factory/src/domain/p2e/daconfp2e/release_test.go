@@ -11,6 +11,8 @@ import (
 )
 
 func TestReleaseDAConfEoSimple(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 
 	isPmsCtrl := 1
@@ -24,8 +26,8 @@ func TestReleaseDAConfEoSimple(t *testing.T) {
 		{
 			name: "valid release with agent config",
 			po: &dapo.ReleasePO{
-				ID:          "1",
-				AgentID:     "agent-1",
+				ID:      "1",
+				AgentID: "agent-1",
 				AgentConfig: `{
 					"id": "1",
 					"key": "test-agent",
@@ -58,12 +60,12 @@ func TestReleaseDAConfEoSimple(t *testing.T) {
 		{
 			name: "valid release with all fields",
 			po: &dapo.ReleasePO{
-				ID:          "1",
-				AgentID:     "agent-1",
+				ID:           "1",
+				AgentID:      "agent-1",
 				AgentVersion: "1.0",
-				AgentDesc:   "Test description",
-				IsPmsCtrl:   &isPmsCtrl,
-				AgentConfig: `{"id":"1","key":"test-agent","name":"Test Agent","config":"{\"input\":{\"fields\":[{\"name\":\"question\",\"type\":\"text\"}]}}"}`,
+				AgentDesc:    "Test description",
+				IsPmsCtrl:    &isPmsCtrl,
+				AgentConfig:  `{"id":"1","key":"test-agent","name":"Test Agent","config":"{\"input\":{\"fields\":[{\"name\":\"question\",\"type\":\"text\"}]}}"}`,
 			},
 			wantErr: false,
 			checkEo: func(t *testing.T, eo *releaseeo.ReleaseDAConfWrapperEO) {
@@ -99,11 +101,14 @@ func TestReleaseDAConfEoSimple(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			eo, err := ReleaseDAConfEoSimple(ctx, tt.po)
 			if tt.wantErr {
 				require.Error(t, err)
 			} else {
 				require.NoError(t, err)
+
 				if tt.checkEo != nil {
 					tt.checkEo(t, eo)
 				}
@@ -113,18 +118,20 @@ func TestReleaseDAConfEoSimple(t *testing.T) {
 }
 
 func TestReleaseDAConfEoSimple_ReleasePOFields(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 
 	isAPIAgent := 1
 	isPmsCtrl := 1
 
 	releasePo := &dapo.ReleasePO{
-		ID:          "release-1",
-		AgentID:     "agent-1",
+		ID:           "release-1",
+		AgentID:      "agent-1",
 		AgentVersion: "1.0.0",
-		AgentDesc:   "Test agent description",
-		IsAPIAgent:  &isAPIAgent,
-		IsPmsCtrl:   &isPmsCtrl,
+		AgentDesc:    "Test agent description",
+		IsAPIAgent:   &isAPIAgent,
+		IsPmsCtrl:    &isPmsCtrl,
 		AgentConfig: `{
 			"id": "1",
 			"key": "test-agent",

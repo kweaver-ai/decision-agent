@@ -7,6 +7,8 @@ import (
 )
 
 func TestFileCheckReq_Type(t *testing.T) {
+	t.Parallel()
+
 	// FileCheckReq is a slice type
 	var req FileCheckReq
 
@@ -15,6 +17,8 @@ func TestFileCheckReq_Type(t *testing.T) {
 }
 
 func TestFileCheckReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := FileCheckReq{}
 
 	assert.Empty(t, req)
@@ -22,6 +26,8 @@ func TestFileCheckReq_Empty(t *testing.T) {
 }
 
 func TestFileCheckReq_WithItems(t *testing.T) {
+	t.Parallel()
+
 	req := FileCheckReq{
 		{
 			ID: "check-1",
@@ -37,6 +43,8 @@ func TestFileCheckReq_WithItems(t *testing.T) {
 }
 
 func TestFileCheck_StructFields(t *testing.T) {
+	t.Parallel()
+
 	check := FileCheck{
 		ID: "check-123",
 	}
@@ -45,12 +53,16 @@ func TestFileCheck_StructFields(t *testing.T) {
 }
 
 func TestFileCheck_Empty(t *testing.T) {
+	t.Parallel()
+
 	check := FileCheck{}
 
 	assert.Empty(t, check.ID)
 }
 
 func TestFileCheckReq_WithMultipleIDs(t *testing.T) {
+	t.Parallel()
+
 	ids := []string{
 		"check-001",
 		"check-002",
@@ -72,6 +84,8 @@ func TestFileCheckReq_WithMultipleIDs(t *testing.T) {
 }
 
 func TestFileCheckReq_SliceOperations(t *testing.T) {
+	t.Parallel()
+
 	req := FileCheckReq{
 		{ID: "check-1"},
 		{ID: "check-2"},
@@ -89,14 +103,19 @@ func TestFileCheckReq_SliceOperations(t *testing.T) {
 
 	// Test iteration
 	count := 0
+
 	for _, check := range req {
 		assert.NotEmpty(t, check.ID)
+
 		count++
 	}
+
 	assert.Equal(t, 3, count)
 }
 
 func TestFileCheckReq_Capacity(t *testing.T) {
+	t.Parallel()
+
 	req := make(FileCheckReq, 0, 100)
 
 	assert.Len(t, req, 0)
@@ -113,6 +132,8 @@ func TestFileCheckReq_Capacity(t *testing.T) {
 }
 
 func TestFileCheck_WithDifferentIDs(t *testing.T) {
+	t.Parallel()
+
 	ids := []string{
 		"check-001",
 		"check-xyz",
@@ -129,6 +150,8 @@ func TestFileCheck_WithDifferentIDs(t *testing.T) {
 }
 
 func TestFileCheckReq_WithDuplicateIDs(t *testing.T) {
+	t.Parallel()
+
 	req := FileCheckReq{
 		{ID: "check-dup"},
 		{ID: "check-dup"},
@@ -142,6 +165,8 @@ func TestFileCheckReq_WithDuplicateIDs(t *testing.T) {
 }
 
 func TestFileCheckReq_Append(t *testing.T) {
+	t.Parallel()
+
 	req := FileCheckReq{}
 
 	req = append(req, FileCheck{ID: "check-1"})

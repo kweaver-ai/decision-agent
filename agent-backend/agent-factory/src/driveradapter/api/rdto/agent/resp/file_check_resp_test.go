@@ -7,6 +7,8 @@ import (
 )
 
 func TestFileCheckResp_StructFields(t *testing.T) {
+	t.Parallel()
+
 	resp := FileCheckResp{
 		Progress: 50,
 		ProcessInfo: []Info{
@@ -30,6 +32,8 @@ func TestFileCheckResp_StructFields(t *testing.T) {
 }
 
 func TestFileCheckResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := FileCheckResp{}
 
 	assert.Equal(t, 0, resp.Progress)
@@ -37,6 +41,8 @@ func TestFileCheckResp_Empty(t *testing.T) {
 }
 
 func TestInfo_StructFields(t *testing.T) {
+	t.Parallel()
+
 	info := Info{
 		ID:     "info-123",
 		Status: "completed",
@@ -47,6 +53,8 @@ func TestInfo_StructFields(t *testing.T) {
 }
 
 func TestInfo_Empty(t *testing.T) {
+	t.Parallel()
+
 	info := Info{}
 
 	assert.Empty(t, info.ID)
@@ -54,6 +62,8 @@ func TestInfo_Empty(t *testing.T) {
 }
 
 func TestInfo_WithDifferentStatuses(t *testing.T) {
+	t.Parallel()
+
 	statuses := []string{
 		"completed",
 		"processing",
@@ -72,6 +82,8 @@ func TestInfo_WithDifferentStatuses(t *testing.T) {
 }
 
 func TestFileCheckResp_WithDifferentProgress(t *testing.T) {
+	t.Parallel()
+
 	progressValues := []int{
 		0,
 		25,
@@ -89,6 +101,8 @@ func TestFileCheckResp_WithDifferentProgress(t *testing.T) {
 }
 
 func TestFileCheckResp_WithSingleInfo(t *testing.T) {
+	t.Parallel()
+
 	resp := FileCheckResp{
 		Progress: 100,
 		ProcessInfo: []Info{
@@ -104,6 +118,8 @@ func TestFileCheckResp_WithSingleInfo(t *testing.T) {
 }
 
 func TestFileCheckResp_WithNoInfo(t *testing.T) {
+	t.Parallel()
+
 	resp := FileCheckResp{
 		Progress:    100,
 		ProcessInfo: []Info{},
@@ -115,6 +131,8 @@ func TestFileCheckResp_WithNoInfo(t *testing.T) {
 }
 
 func TestFileCheckResp_WithMultipleInfo(t *testing.T) {
+	t.Parallel()
+
 	infos := []Info{
 		{ID: "info-1", Status: "completed"},
 		{ID: "info-2", Status: "completed"},
@@ -132,6 +150,8 @@ func TestFileCheckResp_WithMultipleInfo(t *testing.T) {
 }
 
 func TestFileCheckResp_WithCompletedStatus(t *testing.T) {
+	t.Parallel()
+
 	resp := FileCheckResp{
 		Progress: 100,
 		ProcessInfo: []Info{
@@ -147,6 +167,8 @@ func TestFileCheckResp_WithCompletedStatus(t *testing.T) {
 }
 
 func TestFileCheckResp_WithProcessingStatus(t *testing.T) {
+	t.Parallel()
+
 	resp := FileCheckResp{
 		Progress: 50,
 		ProcessInfo: []Info{
@@ -162,6 +184,8 @@ func TestFileCheckResp_WithProcessingStatus(t *testing.T) {
 }
 
 func TestFileCheckResp_WithFailedStatus(t *testing.T) {
+	t.Parallel()
+
 	resp := FileCheckResp{
 		Progress: 75,
 		ProcessInfo: []Info{
@@ -177,6 +201,8 @@ func TestFileCheckResp_WithFailedStatus(t *testing.T) {
 }
 
 func TestFileCheckResp_MixedStatuses(t *testing.T) {
+	t.Parallel()
+
 	resp := FileCheckResp{
 		Progress: 60,
 		ProcessInfo: []Info{
@@ -190,6 +216,8 @@ func TestFileCheckResp_MixedStatuses(t *testing.T) {
 }
 
 func TestInfo_WithChineseStatus(t *testing.T) {
+	t.Parallel()
+
 	info := Info{
 		ID:     "info-中文",
 		Status: "已完成",
@@ -200,6 +228,8 @@ func TestInfo_WithChineseStatus(t *testing.T) {
 }
 
 func TestFileCheckResp_WithChineseStatus(t *testing.T) {
+	t.Parallel()
+
 	resp := FileCheckResp{
 		Progress: 100,
 		ProcessInfo: []Info{

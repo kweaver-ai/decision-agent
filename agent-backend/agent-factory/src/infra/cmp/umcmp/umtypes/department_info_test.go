@@ -7,6 +7,8 @@ import (
 )
 
 func TestParentDepInfo_StructFields(t *testing.T) {
+	t.Parallel()
+
 	info := ParentDepInfo{
 		ID:   "dept-123",
 		Name: "Parent Department",
@@ -19,6 +21,8 @@ func TestParentDepInfo_StructFields(t *testing.T) {
 }
 
 func TestParentDepInfo_Empty(t *testing.T) {
+	t.Parallel()
+
 	info := ParentDepInfo{}
 
 	assert.Empty(t, info.ID)
@@ -27,6 +31,8 @@ func TestParentDepInfo_Empty(t *testing.T) {
 }
 
 func TestParentDepInfo_WithChineseName(t *testing.T) {
+	t.Parallel()
+
 	info := ParentDepInfo{
 		ID:   "部门-123",
 		Name: "父部门",
@@ -39,6 +45,8 @@ func TestParentDepInfo_WithChineseName(t *testing.T) {
 }
 
 func TestParentDepInfo_WithOnlyID(t *testing.T) {
+	t.Parallel()
+
 	info := ParentDepInfo{
 		ID: "dept-123",
 	}
@@ -49,6 +57,8 @@ func TestParentDepInfo_WithOnlyID(t *testing.T) {
 }
 
 func TestParentDepInfo_WithOnlyName(t *testing.T) {
+	t.Parallel()
+
 	info := ParentDepInfo{
 		Name: "Test Department",
 	}
@@ -59,6 +69,8 @@ func TestParentDepInfo_WithOnlyName(t *testing.T) {
 }
 
 func TestParentDepInfo_TypeIsAlwaysDepartment(t *testing.T) {
+	t.Parallel()
+
 	info := ParentDepInfo{
 		ID:   "dept-123",
 		Name: "Department",
@@ -69,6 +81,8 @@ func TestParentDepInfo_TypeIsAlwaysDepartment(t *testing.T) {
 }
 
 func TestDepartmentInfo_StructFields(t *testing.T) {
+	t.Parallel()
+
 	parentDeps := []*ParentDepInfo{
 		{ID: "parent-1", Name: "Parent 1", Type: "department"},
 		{ID: "parent-2", Name: "Parent 2", Type: "department"},
@@ -87,6 +101,8 @@ func TestDepartmentInfo_StructFields(t *testing.T) {
 }
 
 func TestDepartmentInfo_Empty(t *testing.T) {
+	t.Parallel()
+
 	info := DepartmentInfo{}
 
 	assert.Empty(t, info.DepartmentId)
@@ -95,6 +111,8 @@ func TestDepartmentInfo_Empty(t *testing.T) {
 }
 
 func TestDepartmentInfo_WithChineseName(t *testing.T) {
+	t.Parallel()
+
 	info := DepartmentInfo{
 		DepartmentId: "部门-123",
 		Name:         "测试部门",
@@ -105,6 +123,8 @@ func TestDepartmentInfo_WithChineseName(t *testing.T) {
 }
 
 func TestDepartmentInfo_WithOnlyDepartmentId(t *testing.T) {
+	t.Parallel()
+
 	info := DepartmentInfo{
 		DepartmentId: "dept-123",
 	}
@@ -115,6 +135,8 @@ func TestDepartmentInfo_WithOnlyDepartmentId(t *testing.T) {
 }
 
 func TestDepartmentInfo_WithOnlyName(t *testing.T) {
+	t.Parallel()
+
 	info := DepartmentInfo{
 		Name: "Test Department",
 	}
@@ -125,6 +147,8 @@ func TestDepartmentInfo_WithOnlyName(t *testing.T) {
 }
 
 func TestDepartmentInfo_WithSingleParentDep(t *testing.T) {
+	t.Parallel()
+
 	parentDeps := []*ParentDepInfo{
 		{ID: "parent-1", Name: "Parent 1", Type: "department"},
 	}
@@ -140,6 +164,8 @@ func TestDepartmentInfo_WithSingleParentDep(t *testing.T) {
 }
 
 func TestDepartmentInfo_WithMultipleParentDeps(t *testing.T) {
+	t.Parallel()
+
 	parentDeps := make([]*ParentDepInfo, 10)
 	for i := 0; i < 10; i++ {
 		parentDeps[i] = &ParentDepInfo{
@@ -159,6 +185,8 @@ func TestDepartmentInfo_WithMultipleParentDeps(t *testing.T) {
 }
 
 func TestDepartmentInfo_WithEmptyParentDeps(t *testing.T) {
+	t.Parallel()
+
 	parentDeps := []*ParentDepInfo{}
 
 	info := DepartmentInfo{
@@ -172,6 +200,8 @@ func TestDepartmentInfo_WithEmptyParentDeps(t *testing.T) {
 }
 
 func TestDepartmentInfo_WithNilParentDeps(t *testing.T) {
+	t.Parallel()
+
 	info := DepartmentInfo{
 		DepartmentId: "dept-123",
 		Name:         "Test Department",
@@ -182,6 +212,8 @@ func TestDepartmentInfo_WithNilParentDeps(t *testing.T) {
 }
 
 func TestParentDepInfo_AllFieldsSet(t *testing.T) {
+	t.Parallel()
+
 	info := ParentDepInfo{
 		ID:   "test-id",
 		Name: "test-name",
@@ -194,6 +226,8 @@ func TestParentDepInfo_AllFieldsSet(t *testing.T) {
 }
 
 func TestDepartmentInfo_AllFieldsSet(t *testing.T) {
+	t.Parallel()
+
 	parentDeps := []*ParentDepInfo{
 		{ID: "parent-1", Name: "Parent 1", Type: "department"},
 	}

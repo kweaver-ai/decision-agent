@@ -22,17 +22,23 @@ import (
 
 func setReleaseSvcTestConfig(t *testing.T) {
 	t.Helper()
+
 	oldCfg := cglobal.GConfig
 	cglobal.GConfig = cconf.BaseDefConfig()
+
 	t.Cleanup(func() {
 		cglobal.GConfig = oldCfg
 	})
 }
 
 func TestReleaseSvc_handlePmsCtrl_MoreBranches(t *testing.T) {
+	t.Parallel()
+
 	setReleaseSvcTestConfig(t)
 
 	t.Run("delete permissions failed", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -41,6 +47,7 @@ func TestReleaseSvc_handlePmsCtrl_MoreBranches(t *testing.T) {
 			SvcBase:               service.NewSvcBase(),
 			releasePermissionRepo: mockPermRepo,
 		}
+
 		mockPermRepo.EXPECT().DelByReleaseID(gomock.Any(), nil, "r1").Return(errors.New("del failed"))
 
 		err := svc.handlePmsCtrl(context.Background(), nil, "r1", "a1", nil)
@@ -49,6 +56,8 @@ func TestReleaseSvc_handlePmsCtrl_MoreBranches(t *testing.T) {
 	})
 
 	t.Run("get agent name failed", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -59,6 +68,7 @@ func TestReleaseSvc_handlePmsCtrl_MoreBranches(t *testing.T) {
 			releasePermissionRepo: mockPermRepo,
 			agentConfigRepo:       mockAgentRepo,
 		}
+
 		mockPermRepo.EXPECT().DelByReleaseID(gomock.Any(), nil, "r1").Return(nil)
 		mockAgentRepo.EXPECT().GetIDNameMapByID(gomock.Any(), []string{"a1"}).Return(nil, errors.New("db failed"))
 
@@ -68,6 +78,8 @@ func TestReleaseSvc_handlePmsCtrl_MoreBranches(t *testing.T) {
 	})
 
 	t.Run("remove use pms failed", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -91,6 +103,8 @@ func TestReleaseSvc_handlePmsCtrl_MoreBranches(t *testing.T) {
 	})
 
 	t.Run("success without pms control", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -114,9 +128,13 @@ func TestReleaseSvc_handlePmsCtrl_MoreBranches(t *testing.T) {
 }
 
 func TestReleaseSvc_handlePmsCtrlRange_And_genPmsControlResp(t *testing.T) {
+	t.Parallel()
+
 	setReleaseSvcTestConfig(t)
 
 	t.Run("handlePmsCtrlRange role batch create failed", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -126,6 +144,7 @@ func TestReleaseSvc_handlePmsCtrlRange_And_genPmsControlResp(t *testing.T) {
 			releasePermissionRepo: mockPermRepo,
 		}
 		pms := &pmsvo.PmsControlObjS{RoleIDs: []string{"r1"}}
+
 		mockPermRepo.EXPECT().BatchCreate(gomock.Any(), nil, gomock.Any()).Return(errors.New("role insert failed"))
 
 		err := svc.handlePmsCtrlRange(context.Background(), pms, "rel1", "agent1", nil, "agent-name")
@@ -134,6 +153,8 @@ func TestReleaseSvc_handlePmsCtrlRange_And_genPmsControlResp(t *testing.T) {
 	})
 
 	t.Run("handlePmsCtrlRange success", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -160,6 +181,8 @@ func TestReleaseSvc_handlePmsCtrlRange_And_genPmsControlResp(t *testing.T) {
 	})
 
 	t.Run("genPmsControlResp get osn failed", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -169,6 +192,7 @@ func TestReleaseSvc_handlePmsCtrlRange_And_genPmsControlResp(t *testing.T) {
 			umHttp:  mockUm,
 		}
 		pos := []*dapo.ReleasePermissionPO{{ObjectType: cenum.PmsTargetObjTypeUser, ObjectId: "u1"}}
+
 		mockUm.EXPECT().GetOsnNames(gomock.Any(), gomock.Any()).Return(nil, errors.New("um failed"))
 
 		resp, err := svc.genPmsControlResp(context.Background(), pos)
@@ -177,6 +201,8 @@ func TestReleaseSvc_handlePmsCtrlRange_And_genPmsControlResp(t *testing.T) {
 	})
 
 	t.Run("genPmsControlResp success with unknown user fallback", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 

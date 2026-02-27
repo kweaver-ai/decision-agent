@@ -10,6 +10,8 @@ import (
 )
 
 func TestNewPublishedAgentInfo(t *testing.T) {
+	t.Parallel()
+
 	info := NewPublishedAgentInfo()
 	assert.NotNil(t, info)
 	assert.Empty(t, info.PublishedBy)
@@ -21,22 +23,24 @@ func TestNewPublishedAgentInfo(t *testing.T) {
 }
 
 func TestPublishedAgentInfo_LoadFromReleaseAgentPO(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name    string
-		po      *dapo.PublishedJoinPo
-		wantErr bool
+		name      string
+		po        *dapo.PublishedJoinPo
+		wantErr   bool
 		checkInfo func(t *testing.T, info *PublishedAgentInfo)
 	}{
 		{
 			name: "valid published agent po",
 			po: &dapo.PublishedJoinPo{
 				ReleasePartPo: dapo.ReleasePartPo{
-					ReleaseID:    "release-1",
-					PublishDesc:   "Test publish",
-					Version:       "v1.0.0",
-					PublishedAt:    1000000,
-					PublishedBy:    "user-1",
-					IsPmsCtrl:      1,
+					ReleaseID:   "release-1",
+					PublishDesc: "Test publish",
+					Version:     "v1.0.0",
+					PublishedAt: 1000000,
+					PublishedBy: "user-1",
+					IsPmsCtrl:   1,
 					PublishedToBeStruct: dapo.PublishedToBeStruct{
 						IsAPIAgent:      1,
 						IsWebSDKAgent:   0,
@@ -70,7 +74,7 @@ func TestPublishedAgentInfo_LoadFromReleaseAgentPO(t *testing.T) {
 			name: "minimal published agent po",
 			po: &dapo.PublishedJoinPo{
 				ReleasePartPo: dapo.ReleasePartPo{
-					ReleaseID:  "release-2",
+					ReleaseID:   "release-2",
 					PublishedAt: 2000000,
 					PublishedBy: "user-2",
 				},
@@ -86,12 +90,16 @@ func TestPublishedAgentInfo_LoadFromReleaseAgentPO(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			info := NewPublishedAgentInfo()
+
 			err := info.LoadFromReleaseAgentPO(tt.po)
 			if tt.wantErr {
 				require.Error(t, err)
 			} else {
 				require.NoError(t, err)
+
 				if tt.checkInfo != nil {
 					tt.checkInfo(t, info)
 				}
@@ -101,14 +109,16 @@ func TestPublishedAgentInfo_LoadFromReleaseAgentPO(t *testing.T) {
 }
 
 func TestPublishedAgentInfo_Fields(t *testing.T) {
+	t.Parallel()
+
 	info := &PublishedAgentInfo{
-		PublishedBy:      "user-1",
-		PublishedByName:  "User One",
-		PublishedAt:      1000000,
+		PublishedBy:     "user-1",
+		PublishedByName: "User One",
+		PublishedAt:     1000000,
 		Profile:         "Agent profile",
 		Version:         "v1.0",
-		AvatarType:       cdaenum.AvatarTypeUserUploaded,
-		Avatar:           "custom.png",
+		AvatarType:      cdaenum.AvatarTypeUserUploaded,
+		Avatar:          "custom.png",
 		PublishedToBeStruct: dapo.PublishedToBeStruct{
 			IsAPIAgent:      1,
 			IsWebSDKAgent:   1,
@@ -131,6 +141,8 @@ func TestPublishedAgentInfo_Fields(t *testing.T) {
 }
 
 func TestPublishUserInfo(t *testing.T) {
+	t.Parallel()
+
 	info := &PublishUserInfo{
 		UserID:   "user-123",
 		Username: "testuser",
@@ -146,10 +158,12 @@ func strPtr(s string) *string {
 }
 
 func TestPublishedAgentInfo_LoadFromReleaseAgentPO_AllFields(t *testing.T) {
+	t.Parallel()
+
 	info := NewPublishedAgentInfo()
 	po := &dapo.PublishedJoinPo{
 		ReleasePartPo: dapo.ReleasePartPo{
-			ReleaseID:  "release-full",
+			ReleaseID:   "release-full",
 			PublishDesc: "Full publish description",
 			Version:     "v2.5.0",
 			PublishedAt: 1700000000,
@@ -187,6 +201,8 @@ func TestPublishedAgentInfo_LoadFromReleaseAgentPO_AllFields(t *testing.T) {
 }
 
 func TestPublishedAgentInfo_LoadFromReleaseAgentPO_WithNilPO(t *testing.T) {
+	t.Parallel()
+
 	info := NewPublishedAgentInfo()
 	// LoadFromReleaseAgentPO with nil po will panic on CopyStructUseJSON
 	assert.Panics(t, func() {
@@ -195,11 +211,13 @@ func TestPublishedAgentInfo_LoadFromReleaseAgentPO_WithNilPO(t *testing.T) {
 }
 
 func TestPublishedAgentInfo_LoadFromReleaseAgentPO_WithEmptyValues(t *testing.T) {
+	t.Parallel()
+
 	info := NewPublishedAgentInfo()
 	po := &dapo.PublishedJoinPo{
 		ReleasePartPo: dapo.ReleasePartPo{
-			ReleaseID:  "",
-			Version:    "",
+			ReleaseID:   "",
+			Version:     "",
 			PublishedBy: "",
 		},
 	}
@@ -211,6 +229,8 @@ func TestPublishedAgentInfo_LoadFromReleaseAgentPO_WithEmptyValues(t *testing.T)
 }
 
 func TestPublishedAgentInfo_EmptyInitStruct(t *testing.T) {
+	t.Parallel()
+
 	info := &PublishedAgentInfo{}
 	assert.Empty(t, info.PublishedBy)
 	assert.Empty(t, info.Version)
@@ -220,12 +240,16 @@ func TestPublishedAgentInfo_EmptyInitStruct(t *testing.T) {
 }
 
 func TestPublishUserInfo_Empty(t *testing.T) {
+	t.Parallel()
+
 	info := &PublishUserInfo{}
 	assert.Empty(t, info.UserID)
 	assert.Empty(t, info.Username)
 }
 
 func TestPublishUserInfo_WithChineseCharacters(t *testing.T) {
+	t.Parallel()
+
 	info := &PublishUserInfo{
 		UserID:   "用户-123",
 		Username: "中文用户名",
@@ -236,8 +260,10 @@ func TestPublishUserInfo_WithChineseCharacters(t *testing.T) {
 }
 
 func TestPublishedAgentInfo_LoadFromReleaseAgentPO_AllAvatarTypes(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name      string
+		name       string
 		avatarType cdaenum.AvatarType
 	}{
 		{"built-in avatar", cdaenum.AvatarTypeBuiltIn},
@@ -247,10 +273,12 @@ func TestPublishedAgentInfo_LoadFromReleaseAgentPO_AllAvatarTypes(t *testing.T) 
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			info := NewPublishedAgentInfo()
 			po := &dapo.PublishedJoinPo{
 				ReleasePartPo: dapo.ReleasePartPo{
-					ReleaseID:  "release-test",
+					ReleaseID:   "release-test",
 					PublishedBy: "user-1",
 				},
 				DataAgentPo: dapo.DataAgentPo{

@@ -13,6 +13,8 @@ import (
 )
 
 func TestAddCitesToProgress_EmptyProgresses(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -31,6 +33,8 @@ func TestAddCitesToProgress_EmptyProgresses(t *testing.T) {
 }
 
 func TestAddCitesToProgress_NonDocQaAgent(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -52,6 +56,8 @@ func TestAddCitesToProgress_NonDocQaAgent(t *testing.T) {
 }
 
 func TestAddCitesToProgress_DocQaNotCompleted(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -73,6 +79,8 @@ func TestAddCitesToProgress_DocQaNotCompleted(t *testing.T) {
 }
 
 func TestAddCitesToProgress_DocQaCompleted_WithAnswer(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -99,6 +107,8 @@ func TestAddCitesToProgress_DocQaCompleted_WithAnswer(t *testing.T) {
 }
 
 func TestAddCitesToProgress_DocQaCompleted_NonSerializableAnswer(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

@@ -5,16 +5,20 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_inout/agentinoutresp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestUpsertCheckRepeatAgentKey(t *testing.T) {
+	t.Parallel()
+
 	t.Run("no existing agents - returns empty map", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -42,6 +46,8 @@ func TestUpsertCheckRepeatAgentKey(t *testing.T) {
 	})
 
 	t.Run("agent owned by current user - added to map", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -77,6 +83,8 @@ func TestUpsertCheckRepeatAgentKey(t *testing.T) {
 	})
 
 	t.Run("agent owned by different user - marked as conflict", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -112,6 +120,8 @@ func TestUpsertCheckRepeatAgentKey(t *testing.T) {
 	})
 
 	t.Run("multiple agents - mixed ownership", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -149,6 +159,8 @@ func TestUpsertCheckRepeatAgentKey(t *testing.T) {
 	})
 
 	t.Run("repository error - returns error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 

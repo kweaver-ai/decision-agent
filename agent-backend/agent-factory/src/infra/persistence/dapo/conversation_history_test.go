@@ -5,7 +5,11 @@ import (
 )
 
 func TestConversationHistoryLatestVisitAgentPO_TableName(t *testing.T) {
+	t.Parallel()
+
 	t.Run("table name", func(t *testing.T) {
+		t.Parallel()
+
 		po := &ConversationHistoryLatestVisitAgentPO{}
 		tableName := po.TableName()
 
@@ -17,7 +21,11 @@ func TestConversationHistoryLatestVisitAgentPO_TableName(t *testing.T) {
 }
 
 func TestConversationHistoryLatestVisitAgentPO(t *testing.T) {
+	t.Parallel()
+
 	t.Run("create conversation history PO", func(t *testing.T) {
+		t.Parallel()
+
 		po := &ConversationHistoryLatestVisitAgentPO{
 			AgentId:      "agent-123",
 			LastModifyAt: 1234567890,
@@ -26,6 +34,7 @@ func TestConversationHistoryLatestVisitAgentPO(t *testing.T) {
 		if po.AgentId != "agent-123" {
 			t.Errorf("Expected AgentId to be 'agent-123', got '%s'", po.AgentId)
 		}
+
 		if po.LastModifyAt != 1234567890 {
 			t.Errorf("Expected LastModifyAt to be 1234567890, got %d", po.LastModifyAt)
 		}

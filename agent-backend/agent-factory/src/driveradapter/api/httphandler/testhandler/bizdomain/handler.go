@@ -31,8 +31,6 @@ func NewBizDomainTestHandler() *BizDomainTestHandler {
 
 // RegisterRoutes 注册路由
 func (h *BizDomainTestHandler) RegisterRoutes(router *gin.RouterGroup) {
-
 	// https://{host}:{port}/api/agent-factory/internal/v3/test/bizdomain/query-resource-associations
 	router.POST("/test/bizdomain/query-resource-associations", h.QueryResourceAssociationsTestHandler)
-
 }

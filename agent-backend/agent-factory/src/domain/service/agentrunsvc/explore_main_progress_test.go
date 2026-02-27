@@ -20,6 +20,8 @@ import (
 // ---- mainHandle ----
 
 func TestMainHandle_NilAnswer(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{SvcBase: service.NewSvcBase()}
 
 	thinking := ""
@@ -36,6 +38,8 @@ func TestMainHandle_NilAnswer(t *testing.T) {
 }
 
 func TestMainHandle_EmptyTextAndThinking(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{SvcBase: service.NewSvcBase()}
 
 	thinking := ""
@@ -53,6 +57,8 @@ func TestMainHandle_EmptyTextAndThinking(t *testing.T) {
 }
 
 func TestMainHandle_WithText(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{SvcBase: service.NewSvcBase()}
 
 	thinking := ""
@@ -73,6 +79,8 @@ func TestMainHandle_WithText(t *testing.T) {
 // ---- handleExplore ----
 
 func TestHandleExplore_EmptyList(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{SvcBase: service.NewSvcBase()}
 
 	dto := handleExploreDto{
@@ -87,6 +95,8 @@ func TestHandleExplore_EmptyList(t *testing.T) {
 }
 
 func TestHandleExplore_MainSkill(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -106,6 +116,8 @@ func TestHandleExplore_MainSkill(t *testing.T) {
 }
 
 func TestHandleExplore_ToolSkill(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -129,6 +141,8 @@ func TestHandleExplore_ToolSkill(t *testing.T) {
 }
 
 func TestHandleExplore_AgentSkill(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -154,6 +168,8 @@ func TestHandleExplore_AgentSkill(t *testing.T) {
 // ---- handleProgress ----
 
 func TestHandleProgress_EmptyProgresses_NoInterrupt(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -175,6 +191,8 @@ func TestHandleProgress_EmptyProgresses_NoInterrupt(t *testing.T) {
 }
 
 func TestHandleProgress_WithCompletedAndProcessing(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -210,6 +228,8 @@ func TestHandleProgress_WithCompletedAndProcessing(t *testing.T) {
 // ---- handleProgressOld ----
 
 func TestHandleProgressOld_EmptyProgresses_NoInterrupt(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -234,6 +254,8 @@ func TestHandleProgressOld_EmptyProgresses_NoInterrupt(t *testing.T) {
 }
 
 func TestHandleProgressOld_WithCompletedAndProcessing(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -267,6 +289,8 @@ func TestHandleProgressOld_WithCompletedAndProcessing(t *testing.T) {
 // ---- forResumeInterrupt ----
 
 func TestForResumeInterrupt_NoInterruptedMsgID(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{SvcBase: service.NewSvcBase()}
 
 	req := &agentreq.ChatReq{
@@ -280,6 +304,8 @@ func TestForResumeInterrupt_NoInterruptedMsgID(t *testing.T) {
 }
 
 func TestForResumeInterrupt_UnmarshalError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -290,6 +316,7 @@ func TestForResumeInterrupt_UnmarshalError(t *testing.T) {
 	}
 
 	isInterruptPreProgressGetMap.Delete("msg-fri-5")
+
 	invalidJSON := "{invalid-json"
 	msgPO := &dapo.ConversationMsgPO{ID: "interrupted-msg-invalid", Content: &invalidJSON}
 	mockConvMsgRepo.EXPECT().GetByID(gomock.Any(), "interrupted-msg-invalid").Return(msgPO, nil)
@@ -305,7 +332,11 @@ func TestForResumeInterrupt_UnmarshalError(t *testing.T) {
 }
 
 func TestForResumeInterrupt_MiddleAnswerNilAndValidProgress(t *testing.T) {
+	t.Parallel()
+
 	t.Run("middle_answer is nil should warn and return empty", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -320,6 +351,7 @@ func TestForResumeInterrupt_MiddleAnswerNilAndValidProgress(t *testing.T) {
 		}
 
 		isInterruptPreProgressGetMap.Delete("msg-fri-6")
+
 		content := `{"middle_answer":null}`
 		msgPO := &dapo.ConversationMsgPO{ID: "interrupted-msg-nil", Content: &content}
 		mockConvMsgRepo.EXPECT().GetByID(gomock.Any(), "interrupted-msg-nil").Return(msgPO, nil)
@@ -335,6 +367,8 @@ func TestForResumeInterrupt_MiddleAnswerNilAndValidProgress(t *testing.T) {
 	})
 
 	t.Run("valid progress should append and mark fetched", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -345,6 +379,7 @@ func TestForResumeInterrupt_MiddleAnswerNilAndValidProgress(t *testing.T) {
 		}
 
 		isInterruptPreProgressGetMap.Delete("msg-fri-7")
+
 		content := `{"middle_answer":{"progress":[{"id":"pg-1","status":"completed"}]}}`
 		msgPO := &dapo.ConversationMsgPO{ID: "interrupted-msg-ok", Content: &content}
 		mockConvMsgRepo.EXPECT().GetByID(gomock.Any(), "interrupted-msg-ok").Return(msgPO, nil)
@@ -365,6 +400,8 @@ func TestForResumeInterrupt_MiddleAnswerNilAndValidProgress(t *testing.T) {
 }
 
 func TestForResumeInterrupt_AlreadyFetched(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{SvcBase: service.NewSvcBase()}
 
 	isInterruptPreProgressGetMap.Store("msg-fri-2", true)
@@ -381,6 +418,8 @@ func TestForResumeInterrupt_AlreadyFetched(t *testing.T) {
 }
 
 func TestForResumeInterrupt_GetByIDError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -404,6 +443,8 @@ func TestForResumeInterrupt_GetByIDError(t *testing.T) {
 }
 
 func TestForResumeInterrupt_NilContent(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -416,6 +457,7 @@ func TestForResumeInterrupt_NilContent(t *testing.T) {
 	}
 
 	isInterruptPreProgressGetMap.Delete("msg-fri-4")
+
 	msgPO := &dapo.ConversationMsgPO{ID: "interrupted-msg-z", Content: nil}
 	mockConvMsgRepo.EXPECT().GetByID(gomock.Any(), "interrupted-msg-z").Return(msgPO, nil)
 

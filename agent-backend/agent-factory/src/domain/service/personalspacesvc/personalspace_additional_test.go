@@ -23,17 +23,23 @@ import (
 
 func setPersonalSpaceTestConfig(t *testing.T) {
 	t.Helper()
+
 	oldCfg := cglobal.GConfig
 	cglobal.GConfig = cconf.BaseDefConfig()
+
 	t.Cleanup(func() {
 		cglobal.GConfig = oldCfg
 	})
 }
 
 func TestPersonalSpaceService_AgentList_MoreBranches(t *testing.T) {
+	t.Parallel()
+
 	setPersonalSpaceTestConfig(t)
 
 	t.Run("repo error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -60,6 +66,8 @@ func TestPersonalSpaceService_AgentList_MoreBranches(t *testing.T) {
 	})
 
 	t.Run("empty agent list from repo", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -87,6 +95,8 @@ func TestPersonalSpaceService_AgentList_MoreBranches(t *testing.T) {
 	})
 
 	t.Run("published map repo error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -121,6 +131,8 @@ func TestPersonalSpaceService_AgentList_MoreBranches(t *testing.T) {
 	})
 
 	t.Run("success with next page marker", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -162,9 +174,13 @@ func TestPersonalSpaceService_AgentList_MoreBranches(t *testing.T) {
 }
 
 func TestPersonalSpaceService_AgentTplList_MoreBranches(t *testing.T) {
+	t.Parallel()
+
 	setPersonalSpaceTestConfig(t)
 
 	t.Run("repo error", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -190,6 +206,8 @@ func TestPersonalSpaceService_AgentTplList_MoreBranches(t *testing.T) {
 	})
 
 	t.Run("empty tpl list from repo", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
@@ -216,6 +234,8 @@ func TestPersonalSpaceService_AgentTplList_MoreBranches(t *testing.T) {
 	})
 
 	t.Run("success with next page marker", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 

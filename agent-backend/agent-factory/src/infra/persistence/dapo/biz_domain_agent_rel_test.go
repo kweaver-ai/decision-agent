@@ -3,7 +3,11 @@ package dapo
 import "testing"
 
 func TestBizDomainAgentRelPo_TableName(t *testing.T) {
+	t.Parallel()
+
 	t.Run("table name", func(t *testing.T) {
+		t.Parallel()
+
 		po := &BizDomainAgentRelPo{}
 		tableName := po.TableName()
 
@@ -15,7 +19,11 @@ func TestBizDomainAgentRelPo_TableName(t *testing.T) {
 }
 
 func TestBizDomainAgentTplRelPo_TableName(t *testing.T) {
+	t.Parallel()
+
 	t.Run("table name", func(t *testing.T) {
+		t.Parallel()
+
 		po := &BizDomainAgentTplRelPo{}
 		tableName := po.TableName()
 

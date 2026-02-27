@@ -8,6 +8,8 @@ import (
 )
 
 func TestRecentListAgentResp_Type(t *testing.T) {
+	t.Parallel()
+
 	// RecentListAgentResp is a slice type
 	var list RecentListAgentResp
 
@@ -16,6 +18,8 @@ func TestRecentListAgentResp_Type(t *testing.T) {
 }
 
 func TestRecentListAgentResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	list := RecentListAgentResp{}
 
 	assert.Empty(t, list)
@@ -23,6 +27,8 @@ func TestRecentListAgentResp_Empty(t *testing.T) {
 }
 
 func TestRecentListAgentResp_WithMultipleItems(t *testing.T) {
+	t.Parallel()
+
 	list := RecentListAgentResp{
 		{
 			CategoryId:      "cat-1",
@@ -52,6 +58,8 @@ func TestRecentListAgentResp_WithMultipleItems(t *testing.T) {
 }
 
 func TestRecentAgentListItem_StructFields(t *testing.T) {
+	t.Parallel()
+
 	item := RecentAgentListItem{
 		CategoryId:      "cat-123",
 		CategoryName:    "TestCategory",
@@ -74,6 +82,8 @@ func TestRecentAgentListItem_StructFields(t *testing.T) {
 }
 
 func TestRecentAgentListItem_EmptyValues(t *testing.T) {
+	t.Parallel()
+
 	item := RecentAgentListItem{}
 
 	assert.Empty(t, item.CategoryId)
@@ -87,6 +97,8 @@ func TestRecentAgentListItem_EmptyValues(t *testing.T) {
 }
 
 func TestRecentAgentListItem_NilPublishInfo(t *testing.T) {
+	t.Parallel()
+
 	item := RecentAgentListItem{
 		CategoryId:   "cat-nil",
 		CategoryName: "NilCategory",
@@ -97,21 +109,23 @@ func TestRecentAgentListItem_NilPublishInfo(t *testing.T) {
 }
 
 func TestRecentListAgentResp_Append(t *testing.T) {
+	t.Parallel()
+
 	list := RecentListAgentResp{}
 
 	// Append items
 	list = append(list, RecentAgentListItem{
-		CategoryId:      "cat-1",
-		CategoryName:    "Category 1",
-		Version:         "1.0.0",
-		PublishInfo:     &publishvo.ListPublishInfo{},
+		CategoryId:   "cat-1",
+		CategoryName: "Category 1",
+		Version:      "1.0.0",
+		PublishInfo:  &publishvo.ListPublishInfo{},
 	})
 
 	list = append(list, RecentAgentListItem{
-		CategoryId:      "cat-2",
-		CategoryName:    "Category 2",
-		Version:         "2.0.0",
-		PublishInfo:     &publishvo.ListPublishInfo{},
+		CategoryId:   "cat-2",
+		CategoryName: "Category 2",
+		Version:      "2.0.0",
+		PublishInfo:  &publishvo.ListPublishInfo{},
 	})
 
 	assert.Len(t, list, 2)
@@ -120,6 +134,8 @@ func TestRecentListAgentResp_Append(t *testing.T) {
 }
 
 func TestRecentAgentListItem_TimestampComparison(t *testing.T) {
+	t.Parallel()
+
 	olderItem := RecentAgentListItem{
 		CategoryId:  "cat-older",
 		PublishedAt: 1640995200000, // Earlier
@@ -135,6 +151,8 @@ func TestRecentAgentListItem_TimestampComparison(t *testing.T) {
 }
 
 func TestRecentAgentListItem_WithSpecialCharacters(t *testing.T) {
+	t.Parallel()
+
 	item := RecentAgentListItem{
 		CategoryId:      "cat-中文-123",
 		CategoryName:    "分类名称",
@@ -152,6 +170,8 @@ func TestRecentAgentListItem_WithSpecialCharacters(t *testing.T) {
 }
 
 func TestRecentListAgentResp_SliceOperations(t *testing.T) {
+	t.Parallel()
+
 	list := RecentListAgentResp{
 		{CategoryId: "cat-1", PublishInfo: &publishvo.ListPublishInfo{}},
 		{CategoryId: "cat-2", PublishInfo: &publishvo.ListPublishInfo{}},
@@ -163,10 +183,13 @@ func TestRecentListAgentResp_SliceOperations(t *testing.T) {
 
 	// Test iteration
 	count := 0
+
 	for _, item := range list {
 		assert.NotEmpty(t, item.CategoryId)
+
 		count++
 	}
+
 	assert.Equal(t, 3, count)
 
 	// Test slicing
@@ -177,6 +200,8 @@ func TestRecentListAgentResp_SliceOperations(t *testing.T) {
 }
 
 func TestRecentAgentListItem_VersionFormats(t *testing.T) {
+	t.Parallel()
+
 	versions := []string{
 		"1.0.0",
 		"2.0.0-alpha",

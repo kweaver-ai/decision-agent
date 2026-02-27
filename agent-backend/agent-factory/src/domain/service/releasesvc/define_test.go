@@ -10,19 +10,23 @@ import (
 )
 
 func TestNewReleaseService(t *testing.T) {
+	t.Parallel()
+
 	t.Run("creates service with all dependencies", func(t *testing.T) {
+		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 
 		dto := &NewReleaseSvcDto{
-			SvcBase:                service.NewSvcBase(),
-			ReleaseRepo:            idbaccessmock.NewMockIReleaseRepo(ctrl),
-			ReleaseHistoryRepo:     idbaccessmock.NewMockIReleaseHistoryRepo(ctrl),
-			AgentConfigRepo:        idbaccessmock.NewMockIDataAgentConfigRepo(ctrl),
-			ReleaseCategoryRepo:    idbaccessmock.NewMockIReleaseCategoryRelRepo(ctrl),
-			ReleasePermissionRepo:  idbaccessmock.NewMockIReleasePermissionRepo(ctrl),
-			CategoryRepo:           idbaccessmock.NewMockICategoryRepo(ctrl),
-			SpaceResourceRepo:      idbaccessmock.NewMockISpaceResourceRepo(ctrl),
+			SvcBase:               service.NewSvcBase(),
+			ReleaseRepo:           idbaccessmock.NewMockIReleaseRepo(ctrl),
+			ReleaseHistoryRepo:    idbaccessmock.NewMockIReleaseHistoryRepo(ctrl),
+			AgentConfigRepo:       idbaccessmock.NewMockIDataAgentConfigRepo(ctrl),
+			ReleaseCategoryRepo:   idbaccessmock.NewMockIReleaseCategoryRelRepo(ctrl),
+			ReleasePermissionRepo: idbaccessmock.NewMockIReleasePermissionRepo(ctrl),
+			CategoryRepo:          idbaccessmock.NewMockICategoryRepo(ctrl),
+			SpaceResourceRepo:     idbaccessmock.NewMockISpaceResourceRepo(ctrl),
 		}
 
 		svc := NewReleaseService(dto)
@@ -32,15 +36,17 @@ func TestNewReleaseService(t *testing.T) {
 	})
 
 	t.Run("creates service with minimal dependencies", func(t *testing.T) {
+		t.Parallel()
+
 		dto := &NewReleaseSvcDto{
-			SvcBase:                service.NewSvcBase(),
-			ReleaseRepo:            nil,
-			ReleaseHistoryRepo:     nil,
-			AgentConfigRepo:        nil,
-			ReleaseCategoryRepo:    nil,
-			ReleasePermissionRepo:  nil,
-			CategoryRepo:           nil,
-			SpaceResourceRepo:      nil,
+			SvcBase:               service.NewSvcBase(),
+			ReleaseRepo:           nil,
+			ReleaseHistoryRepo:    nil,
+			AgentConfigRepo:       nil,
+			ReleaseCategoryRepo:   nil,
+			ReleasePermissionRepo: nil,
+			CategoryRepo:          nil,
+			SpaceResourceRepo:     nil,
 		}
 
 		svc := NewReleaseService(dto)

@@ -7,11 +7,15 @@ import (
 )
 
 func TestModelType_Constants(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, ModelType("llm"), ModelTypeLlm)
 	assert.Equal(t, ModelType("rlm"), ModelTypeRlm)
 }
 
 func TestModelType_EnumCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	validTypes := []ModelType{
 		ModelTypeLlm,
 		ModelTypeRlm,
@@ -19,6 +23,8 @@ func TestModelType_EnumCheck_Valid(t *testing.T) {
 
 	for _, modelType := range validTypes {
 		t.Run(string(modelType), func(t *testing.T) {
+			t.Parallel()
+
 			err := modelType.EnumCheck()
 			assert.NoError(t, err)
 		})
@@ -26,6 +32,8 @@ func TestModelType_EnumCheck_Valid(t *testing.T) {
 }
 
 func TestModelType_EnumCheck_Invalid(t *testing.T) {
+	t.Parallel()
+
 	invalidType := ModelType("invalid_type")
 	err := invalidType.EnumCheck()
 	assert.Error(t, err)
@@ -33,6 +41,8 @@ func TestModelType_EnumCheck_Invalid(t *testing.T) {
 }
 
 func TestModelType_EnumCheck_Empty(t *testing.T) {
+	t.Parallel()
+
 	emptyType := ModelType("")
 	err := emptyType.EnumCheck()
 	assert.Error(t, err)
@@ -40,6 +50,8 @@ func TestModelType_EnumCheck_Empty(t *testing.T) {
 }
 
 func TestModelType_AllUnique(t *testing.T) {
+	t.Parallel()
+
 	modelTypes := []ModelType{
 		ModelTypeLlm,
 		ModelTypeRlm,

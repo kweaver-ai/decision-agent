@@ -8,13 +8,19 @@ import (
 )
 
 func TestNewPTplListPaginationMarker(t *testing.T) {
+	t.Parallel()
+
 	marker := NewPTplListPaginationMarker()
 	assert.NotNil(t, marker)
 	assert.Zero(t, marker.LastPubedTplID)
 }
 
 func TestPTplListPaginationMarker_ToString(t *testing.T) {
+	t.Parallel()
+
 	t.Run("valid marker", func(t *testing.T) {
+		t.Parallel()
+
 		marker := &PTplListPaginationMarker{
 			LastPubedTplID: 12345,
 		}
@@ -25,6 +31,8 @@ func TestPTplListPaginationMarker_ToString(t *testing.T) {
 	})
 
 	t.Run("empty marker", func(t *testing.T) {
+		t.Parallel()
+
 		marker := &PTplListPaginationMarker{}
 
 		str, err := marker.ToString()
@@ -34,25 +42,35 @@ func TestPTplListPaginationMarker_ToString(t *testing.T) {
 }
 
 func TestPTplListPaginationMarker_LoadFromStr(t *testing.T) {
+	t.Parallel()
+
 	t.Run("empty string", func(t *testing.T) {
+		t.Parallel()
+
 		marker := &PTplListPaginationMarker{}
 		err := marker.LoadFromStr("")
 		assert.NoError(t, err)
 	})
 
 	t.Run("invalid base64", func(t *testing.T) {
+		t.Parallel()
+
 		marker := &PTplListPaginationMarker{}
 		err := marker.LoadFromStr("invalid base64!")
 		assert.Error(t, err)
 	})
 
 	t.Run("invalid json", func(t *testing.T) {
+		t.Parallel()
+
 		marker := &PTplListPaginationMarker{}
 		err := marker.LoadFromStr("aGVsbG8=") // "hello" in base64
 		assert.Error(t, err)
 	})
 
 	t.Run("round trip", func(t *testing.T) {
+		t.Parallel()
+
 		original := &PTplListPaginationMarker{
 			LastPubedTplID: 999,
 		}
@@ -68,6 +86,8 @@ func TestPTplListPaginationMarker_LoadFromStr(t *testing.T) {
 }
 
 func TestNewPublishedAgentTplListResp(t *testing.T) {
+	t.Parallel()
+
 	resp := NewPublishedAgentTplListResp()
 	assert.NotNil(t, resp)
 	assert.NotNil(t, resp.Entries)
@@ -77,7 +97,11 @@ func TestNewPublishedAgentTplListResp(t *testing.T) {
 }
 
 func TestPublishedAgentTplListResp_LoadFromEos(t *testing.T) {
+	t.Parallel()
+
 	t.Run("empty eos", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewPublishedAgentTplListResp()
 		eos := []*pubedeo.PublishedTplListEo{}
 
@@ -88,6 +112,8 @@ func TestPublishedAgentTplListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("with single eo", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewPublishedAgentTplListResp()
 		eo := &pubedeo.PublishedTplListEo{}
 
@@ -97,6 +123,8 @@ func TestPublishedAgentTplListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("is last page", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewPublishedAgentTplListResp()
 		resp.IsLastPage = true
 		eo := &pubedeo.PublishedTplListEo{}
@@ -107,6 +135,8 @@ func TestPublishedAgentTplListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("with multiple eos", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewPublishedAgentTplListResp()
 		eos := []*pubedeo.PublishedTplListEo{
 			{},
@@ -120,7 +150,11 @@ func TestPublishedAgentTplListResp_LoadFromEos(t *testing.T) {
 }
 
 func TestPublishedAgentTplListResp_genMarkerStr(t *testing.T) {
+	t.Parallel()
+
 	t.Run("empty entries", func(t *testing.T) {
+		t.Parallel()
+
 		resp := &PublishedAgentTplListResp{
 			Entries: []*PubedTplListItemResp{},
 		}
@@ -131,6 +165,8 @@ func TestPublishedAgentTplListResp_genMarkerStr(t *testing.T) {
 	})
 
 	t.Run("is last page", func(t *testing.T) {
+		t.Parallel()
+
 		resp := &PublishedAgentTplListResp{
 			Entries: []*PubedTplListItemResp{
 				{ID: 123},
@@ -144,6 +180,8 @@ func TestPublishedAgentTplListResp_genMarkerStr(t *testing.T) {
 	})
 
 	t.Run("valid entries", func(t *testing.T) {
+		t.Parallel()
+
 		resp := &PublishedAgentTplListResp{
 			Entries: []*PubedTplListItemResp{
 				{ID: 100},
@@ -158,6 +196,8 @@ func TestPublishedAgentTplListResp_genMarkerStr(t *testing.T) {
 }
 
 func TestPubedTplListItemResp_Fields(t *testing.T) {
+	t.Parallel()
+
 	item := &PubedTplListItemResp{
 		ID:        123,
 		TplID:     456,

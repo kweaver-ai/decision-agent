@@ -8,6 +8,8 @@ import (
 )
 
 func TestInput_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	input := &Input{}
 	msgMap := input.GetErrMsgMap()
 
@@ -30,6 +32,8 @@ func TestInput_GetErrMsgMap(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := msgMap[tt.key]
 			if got != tt.want {
 				t.Errorf("GetErrMsgMap()[%q] = %q, want %q", tt.key, got, tt.want)
@@ -39,6 +43,8 @@ func TestInput_GetErrMsgMap(t *testing.T) {
 }
 
 func TestInput_ValObjCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   *Input
@@ -144,6 +150,8 @@ func TestInput_ValObjCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.input.ValObjCheck()
 			if tt.wantErr {
 				assert.Error(t, err, "expected error")
@@ -153,4 +161,3 @@ func TestInput_ValObjCheck(t *testing.T) {
 		})
 	}
 }
-

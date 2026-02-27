@@ -8,6 +8,8 @@ import (
 )
 
 func TestMessagePO_NewMessage(t *testing.T) {
+	t.Parallel()
+
 	content := "Hello World"
 	msg := &dapo.ConversationMsgPO{
 		ID:      "msg-123",
@@ -20,6 +22,8 @@ func TestMessagePO_NewMessage(t *testing.T) {
 }
 
 func TestMessagePO_EmptyMessage(t *testing.T) {
+	t.Parallel()
+
 	msg := &dapo.ConversationMsgPO{}
 
 	assert.NotNil(t, msg)

@@ -11,11 +11,15 @@ import (
 )
 
 func TestGetAnyshareOauth2Token(t *testing.T) {
+	t.Parallel()
+
 	t.Skip("Skipped: Function uses log.Fatal which terminates test process. " +
 		"Tests for RSA decryption and base64 decoding are covered in other test functions.")
 }
 
 func TestParseRSAPrivateKey(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		keyPEM      []byte
@@ -51,6 +55,8 @@ InvalidKeyData
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			key, err := parseRSAPrivateKey(tt.keyPEM)
 
 			if tt.expectError {
@@ -66,6 +72,8 @@ InvalidKeyData
 }
 
 func TestRSAPrivateDecryptPKCS1(t *testing.T) {
+	t.Parallel()
+
 	privateKey, err := parseRSAPrivateKey([]byte(RSA_PRIVATE_KEY))
 	require.NoError(t, err)
 
@@ -96,6 +104,8 @@ func TestRSAPrivateDecryptPKCS1(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			decrypted, err := rsaPrivateDecryptPKCS1(privateKey, tt.encryptedData)
 
 			if tt.expectedError {
@@ -111,6 +121,8 @@ func TestRSAPrivateDecryptPKCS1(t *testing.T) {
 }
 
 func TestRSAPrivateDecryptOAEP(t *testing.T) {
+	t.Parallel()
+
 	privateKey, err := parseRSAPrivateKey([]byte(RSA_PRIVATE_KEY))
 	require.NoError(t, err)
 
@@ -141,6 +153,8 @@ func TestRSAPrivateDecryptOAEP(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			decrypted, err := rsaPrivateDecryptOAEP(privateKey, tt.encryptedData)
 
 			if tt.expectedError {

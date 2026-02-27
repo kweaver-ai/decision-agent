@@ -7,6 +7,8 @@ import (
 )
 
 func TestConversationMsgStatus_Constants(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, ConversationMsgStatus("received"), MsgStatusReceived)
 	assert.Equal(t, ConversationMsgStatus("processed"), MsgStatusProcessed)
 	assert.Equal(t, ConversationMsgStatus("processing"), MsgStatusProcessing)
@@ -16,6 +18,8 @@ func TestConversationMsgStatus_Constants(t *testing.T) {
 }
 
 func TestConversationMsgStatus_EnumCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	validStatuses := []ConversationMsgStatus{
 		MsgStatusReceived,
 		MsgStatusProcessed,
@@ -27,6 +31,8 @@ func TestConversationMsgStatus_EnumCheck_Valid(t *testing.T) {
 
 	for _, status := range validStatuses {
 		t.Run(string(status), func(t *testing.T) {
+			t.Parallel()
+
 			err := status.EnumCheck()
 			assert.NoError(t, err)
 		})
@@ -34,6 +40,8 @@ func TestConversationMsgStatus_EnumCheck_Valid(t *testing.T) {
 }
 
 func TestConversationMsgStatus_EnumCheck_Invalid(t *testing.T) {
+	t.Parallel()
+
 	invalidStatus := ConversationMsgStatus("invalid_status")
 	err := invalidStatus.EnumCheck()
 	assert.Error(t, err)
@@ -41,12 +49,16 @@ func TestConversationMsgStatus_EnumCheck_Invalid(t *testing.T) {
 }
 
 func TestConversationMsgStatus_EnumCheck_Empty(t *testing.T) {
+	t.Parallel()
+
 	emptyStatus := ConversationMsgStatus("")
 	err := emptyStatus.EnumCheck()
 	assert.Error(t, err)
 }
 
 func TestConversationMsgStatus_AllUnique(t *testing.T) {
+	t.Parallel()
+
 	statuses := []ConversationMsgStatus{
 		MsgStatusReceived,
 		MsgStatusProcessed,

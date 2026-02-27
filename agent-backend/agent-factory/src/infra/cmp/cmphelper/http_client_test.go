@@ -6,7 +6,11 @@ import (
 )
 
 func TestGetClientWithTimeout(t *testing.T) {
+	t.Parallel()
+
 	t.Run("with timeout", func(t *testing.T) {
+		t.Parallel()
+
 		timeout := 30 * time.Second
 		client := GetClientWithTimeout(timeout)
 
@@ -16,6 +20,8 @@ func TestGetClientWithTimeout(t *testing.T) {
 	})
 
 	t.Run("with zero timeout", func(t *testing.T) {
+		t.Parallel()
+
 		timeout := 0 * time.Second
 		client := GetClientWithTimeout(timeout)
 
@@ -25,6 +31,8 @@ func TestGetClientWithTimeout(t *testing.T) {
 	})
 
 	t.Run("with options", func(t *testing.T) {
+		t.Parallel()
+
 		timeout := 10 * time.Second
 		client := GetClientWithTimeout(timeout)
 
@@ -35,7 +43,11 @@ func TestGetClientWithTimeout(t *testing.T) {
 }
 
 func TestGetClient(t *testing.T) {
+	t.Parallel()
+
 	t.Run("default client", func(t *testing.T) {
+		t.Parallel()
+
 		client := GetClient()
 
 		if client == nil {
@@ -44,6 +56,8 @@ func TestGetClient(t *testing.T) {
 	})
 
 	t.Run("with options", func(t *testing.T) {
+		t.Parallel()
+
 		client := GetClient()
 
 		if client == nil {

@@ -4,15 +4,17 @@ import (
 	"context"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_config/agentconfigreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestUpdateStatusTest_CopyJSONError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -33,6 +35,8 @@ func TestUpdateStatusTest_CopyJSONError(t *testing.T) {
 }
 
 func TestTmpTest(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		testFlag string
@@ -49,7 +53,7 @@ func TestTmpTest(t *testing.T) {
 				repo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 
 				svc := &dataAgentConfigSvc{
-					SvcBase:      service.NewSvcBase(),
+					SvcBase:       service.NewSvcBase(),
 					agentConfRepo: repo,
 				}
 
@@ -72,7 +76,7 @@ func TestTmpTest(t *testing.T) {
 				repo.EXPECT().UpdateStatus(gomock.Any(), gomock.Any(), cdaenum.StatusPublished, "agent-123", "").Return(nil)
 
 				svc := &dataAgentConfigSvc{
-					SvcBase:      service.NewSvcBase(),
+					SvcBase:       service.NewSvcBase(),
 					agentConfRepo: repo,
 				}
 
@@ -84,6 +88,8 @@ func TestTmpTest(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 

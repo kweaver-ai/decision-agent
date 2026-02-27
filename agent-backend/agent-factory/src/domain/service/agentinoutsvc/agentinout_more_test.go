@@ -10,9 +10,9 @@ import (
 	"strings"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
+	"go.uber.org/mock/gomock"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/daconstant"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
@@ -54,8 +54,10 @@ func buildJSONFileHeader(t *testing.T, filename string, content []byte) *multipa
 
 func registerCheckAgentAndTplNameValidator(t *testing.T) {
 	t.Helper()
+
 	v, ok := binding.Validator.Engine().(*validator.Validate)
 	assert.True(t, ok)
+
 	_ = v.RegisterValidation("checkAgentAndTplName", func(fl validator.FieldLevel) bool {
 		return true
 	})
@@ -63,6 +65,7 @@ func registerCheckAgentAndTplNameValidator(t *testing.T) {
 
 func validImportJSON(t *testing.T) []byte {
 	t.Helper()
+
 	exportData := &agentinoutresp.ExportResp{
 		Agents: []*agentinoutresp.ExportAgentItem{
 			{
@@ -84,6 +87,7 @@ func validImportJSON(t *testing.T) []byte {
 	}
 	bys, err := json.Marshal(exportData)
 	assert.NoError(t, err)
+
 	return bys
 }
 
@@ -145,6 +149,7 @@ func TestAgentInOutSvc_Import_MoreBranches(t *testing.T) {
 				DataAgentPo: &dapo.DataAgentPo{Key: "k", Name: "n", Config: "{}"},
 			})
 		}
+
 		bys, _ := json.Marshal(&agentinoutresp.ExportResp{Agents: agents})
 		req.File = buildJSONFileHeader(t, "many.json", bys)
 
@@ -191,9 +196,9 @@ func TestAgentInOutSvc_Import_MoreBranches(t *testing.T) {
 
 		mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 		svc := &agentInOutSvc{
-			SvcBase:      service.NewSvcBase(),
+			SvcBase:       service.NewSvcBase(),
 			agentConfRepo: mockAgentRepo,
-			logger:       noopAgentLogger{},
+			logger:        noopAgentLogger{},
 		}
 		req := agentinoutreq.NewImportReq()
 		req.ImportType = agentinoutreq.ImportTypeCreate
@@ -218,10 +223,10 @@ func TestAgentInOutSvc_Import_MoreBranches(t *testing.T) {
 		mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 		mockBiz := bizdomainaccmock.NewMockBizDomainHttpAcc(ctrl)
 		svc := &agentInOutSvc{
-			SvcBase:      service.NewSvcBase(),
+			SvcBase:       service.NewSvcBase(),
 			agentConfRepo: mockAgentRepo,
 			bizDomainHttp: mockBiz,
-			logger:       noopAgentLogger{},
+			logger:        noopAgentLogger{},
 		}
 		req := agentinoutreq.NewImportReq()
 		req.ImportType = agentinoutreq.ImportTypeUpsert
@@ -305,6 +310,7 @@ func TestAgentInOutSvc_checkAgentConfigValid_And_importCheck(t *testing.T) {
 			},
 		}
 		resp := agentinoutresp.NewImportResp()
+
 		mockPms.EXPECT().GetSingleMgmtPermission(gomock.Any(), cdaenum.ResourceTypeDataAgent, cdapmsenum.AgentCreateSystemAgent).
 			Return(false, assert.AnError)
 
@@ -320,7 +326,7 @@ func TestAgentInOutSvc_importByCreateCheck_More(t *testing.T) {
 
 	mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 	svc := &agentInOutSvc{
-		SvcBase:      service.NewSvcBase(),
+		SvcBase:       service.NewSvcBase(),
 		agentConfRepo: mockAgentRepo,
 	}
 
@@ -331,6 +337,7 @@ func TestAgentInOutSvc_importByCreateCheck_More(t *testing.T) {
 			},
 		}
 		resp := agentinoutresp.NewImportResp()
+
 		mockAgentRepo.EXPECT().GetByKeys(gomock.Any(), []string{"k1"}).Return(nil, assert.AnError)
 
 		err := svc.importByCreateCheck(context.Background(), exportData, resp)
@@ -344,6 +351,7 @@ func TestAgentInOutSvc_importByCreateCheck_More(t *testing.T) {
 			},
 		}
 		resp := agentinoutresp.NewImportResp()
+
 		mockAgentRepo.EXPECT().GetByKeys(gomock.Any(), []string{"k1"}).
 			Return([]*dapo.DataAgentPo{{Key: "k1", Name: "old"}}, nil)
 
@@ -361,7 +369,7 @@ func TestAgentInOutSvc_importByUpsertCheck_More(t *testing.T) {
 	mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 	mockBiz := bizdomainaccmock.NewMockBizDomainHttpAcc(ctrl)
 	svc := &agentInOutSvc{
-		SvcBase:      service.NewSvcBase(),
+		SvcBase:       service.NewSvcBase(),
 		agentConfRepo: mockAgentRepo,
 		bizDomainHttp: mockBiz,
 	}
@@ -394,6 +402,7 @@ func TestAgentInOutSvc_importByUpsertCheck_More(t *testing.T) {
 			},
 		}
 		resp := agentinoutresp.NewImportResp()
+
 		mockBiz.EXPECT().GetAllAgentIDList(gomock.Any(), []string{"bd-1"}).
 			Return([]string{}, map[string]string{}, nil)
 		mockAgentRepo.EXPECT().GetByKeys(gomock.Any(), []string{"k2"}).
@@ -413,10 +422,11 @@ func TestAgentInOutSvc_Export_Success(t *testing.T) {
 
 	mockAgentConfRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
 	svc := &agentInOutSvc{
-		SvcBase:      service.NewSvcBase(),
+		SvcBase:       service.NewSvcBase(),
 		agentConfRepo: mockAgentConfRepo,
 	}
 	req := &agentinoutreq.ExportReq{AgentIDs: []string{"a1"}}
+
 	mockAgentConfRepo.EXPECT().GetByIDsAndCreatedBy(gomock.Any(), []string{"a1"}, "u1").
 		Return([]*dapo.DataAgentPo{
 			{

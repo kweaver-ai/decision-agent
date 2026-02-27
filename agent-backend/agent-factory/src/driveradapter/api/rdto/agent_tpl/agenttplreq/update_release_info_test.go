@@ -7,6 +7,8 @@ import (
 )
 
 func TestUpdateReleaseInfoReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReleaseInfoReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -16,6 +18,8 @@ func TestUpdateReleaseInfoReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestUpdateReleaseInfoReq_New(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReleaseInfoReq{}
 
 	assert.NotNil(t, req)
@@ -24,6 +28,8 @@ func TestUpdateReleaseInfoReq_New(t *testing.T) {
 }
 
 func TestUpdateReleaseInfoReq_WithValues(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReleaseInfoReq{
 		ReleaseNote: "Version 1.0.0 release",
 		Version:     "1.0.0",
@@ -34,6 +40,8 @@ func TestUpdateReleaseInfoReq_WithValues(t *testing.T) {
 }
 
 func TestUpdateReleaseInfoReq_WithEmptyValues(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReleaseInfoReq{
 		ReleaseNote: "",
 		Version:     "",
@@ -44,6 +52,8 @@ func TestUpdateReleaseInfoReq_WithEmptyValues(t *testing.T) {
 }
 
 func TestUpdateReleaseInfoReq_WithOnlyReleaseNote(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReleaseInfoReq{
 		ReleaseNote: "Bug fixes and improvements",
 	}
@@ -53,6 +63,8 @@ func TestUpdateReleaseInfoReq_WithOnlyReleaseNote(t *testing.T) {
 }
 
 func TestUpdateReleaseInfoReq_WithOnlyVersion(t *testing.T) {
+	t.Parallel()
+
 	req := &UpdateReleaseInfoReq{
 		Version: "2.0.0",
 	}
@@ -62,6 +74,8 @@ func TestUpdateReleaseInfoReq_WithOnlyVersion(t *testing.T) {
 }
 
 func TestUpdateReleaseInfoReq_GetErrMsgMapConsistency(t *testing.T) {
+	t.Parallel()
+
 	req1 := &UpdateReleaseInfoReq{}
 	req2 := &UpdateReleaseInfoReq{
 		ReleaseNote: "test",

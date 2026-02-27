@@ -7,6 +7,8 @@ import (
 )
 
 func TestGetAppListArgDto_StructFields(t *testing.T) {
+	t.Parallel()
+
 	dto := GetAppListArgDto{
 		Limit:   10,
 		Offset:  5,
@@ -19,6 +21,8 @@ func TestGetAppListArgDto_StructFields(t *testing.T) {
 }
 
 func TestGetAppListArgDto_Empty(t *testing.T) {
+	t.Parallel()
+
 	dto := GetAppListArgDto{}
 
 	assert.Equal(t, 0, dto.Limit)
@@ -27,6 +31,8 @@ func TestGetAppListArgDto_Empty(t *testing.T) {
 }
 
 func TestGetAppListArgDto_WithLimit(t *testing.T) {
+	t.Parallel()
+
 	limits := []int{1, 10, 100, 1000}
 
 	for _, limit := range limits {
@@ -38,6 +44,8 @@ func TestGetAppListArgDto_WithLimit(t *testing.T) {
 }
 
 func TestGetAppListArgDto_WithOffset(t *testing.T) {
+	t.Parallel()
+
 	offsets := []int{0, 10, 100, 999}
 
 	for _, offset := range offsets {
@@ -49,6 +57,8 @@ func TestGetAppListArgDto_WithOffset(t *testing.T) {
 }
 
 func TestGetAppListArgDto_WithKeyword(t *testing.T) {
+	t.Parallel()
+
 	keywords := []string{
 		"test app",
 		"测试应用",
@@ -65,6 +75,8 @@ func TestGetAppListArgDto_WithKeyword(t *testing.T) {
 }
 
 func TestGetAppListArgDto_WithChineseKeyword(t *testing.T) {
+	t.Parallel()
+
 	dto := GetAppListArgDto{
 		Keyword: "测试应用名",
 	}
@@ -73,6 +85,8 @@ func TestGetAppListArgDto_WithChineseKeyword(t *testing.T) {
 }
 
 func TestGetAppListArgDto_WithOnlyLimit(t *testing.T) {
+	t.Parallel()
+
 	dto := GetAppListArgDto{
 		Limit: 50,
 	}
@@ -83,6 +97,8 @@ func TestGetAppListArgDto_WithOnlyLimit(t *testing.T) {
 }
 
 func TestGetAppListArgDto_WithOnlyOffset(t *testing.T) {
+	t.Parallel()
+
 	dto := GetAppListArgDto{
 		Offset: 100,
 	}
@@ -93,6 +109,8 @@ func TestGetAppListArgDto_WithOnlyOffset(t *testing.T) {
 }
 
 func TestGetAppListArgDto_WithOnlyKeyword(t *testing.T) {
+	t.Parallel()
+
 	dto := GetAppListArgDto{
 		Keyword: "search",
 	}
@@ -103,6 +121,8 @@ func TestGetAppListArgDto_WithOnlyKeyword(t *testing.T) {
 }
 
 func TestGetAppListArgDto_BoundaryValues(t *testing.T) {
+	t.Parallel()
+
 	dto := GetAppListArgDto{
 		Limit:   1,
 		Offset:  0,
@@ -115,6 +135,8 @@ func TestGetAppListArgDto_BoundaryValues(t *testing.T) {
 }
 
 func TestGetAppListArgDto_Limits(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name      string
 		limit     int
@@ -128,6 +150,8 @@ func TestGetAppListArgDto_Limits(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			dto := GetAppListArgDto{
 				Limit: tt.limit,
 			}
@@ -137,6 +161,8 @@ func TestGetAppListArgDto_Limits(t *testing.T) {
 }
 
 func TestGetAppListArgDto_WithSpecialCharacters(t *testing.T) {
+	t.Parallel()
+
 	dto := GetAppListArgDto{
 		Keyword: "app@#$%",
 	}
@@ -145,6 +171,8 @@ func TestGetAppListArgDto_WithSpecialCharacters(t *testing.T) {
 }
 
 func TestGetAppListArgDto_AllFieldsSet(t *testing.T) {
+	t.Parallel()
+
 	dto := GetAppListArgDto{
 		Limit:   100,
 		Offset:  50,
@@ -157,6 +185,8 @@ func TestGetAppListArgDto_AllFieldsSet(t *testing.T) {
 }
 
 func TestGetAppListArgDto_WithDifferentKeywords(t *testing.T) {
+	t.Parallel()
+
 	keywords := []string{
 		"admin",
 		"user",
@@ -175,6 +205,8 @@ func TestGetAppListArgDto_WithDifferentKeywords(t *testing.T) {
 }
 
 func TestGetAppListArgDto_WithMaximumLimit(t *testing.T) {
+	t.Parallel()
+
 	dto := GetAppListArgDto{
 		Limit: 1000,
 	}
@@ -183,6 +215,8 @@ func TestGetAppListArgDto_WithMaximumLimit(t *testing.T) {
 }
 
 func TestGetAppListArgDto_WithLargeOffset(t *testing.T) {
+	t.Parallel()
+
 	dto := GetAppListArgDto{
 		Offset: 9999,
 	}

@@ -8,7 +8,11 @@ import (
 )
 
 func TestGetLogger(t *testing.T) {
+	t.Parallel()
+
 	t.Run("GetLogger returns a value", func(t *testing.T) {
+		t.Parallel()
+
 		logger := GetLogger()
 		// Logger may be initialized by test environment, just verify it doesn't panic
 		_ = logger
@@ -16,7 +20,11 @@ func TestGetLogger(t *testing.T) {
 }
 
 func TestGetMetrics(t *testing.T) {
+	t.Parallel()
+
 	t.Run("GetMetrics returns a value", func(t *testing.T) {
+		t.Parallel()
+
 		metrics := GetMetrics()
 		// Metrics may be initialized by test environment, just verify it doesn't panic
 		_ = metrics
@@ -24,7 +32,11 @@ func TestGetMetrics(t *testing.T) {
 }
 
 func TestGetDependencyInjector(t *testing.T) {
+	t.Parallel()
+
 	t.Run("GetDependencyInjector returns a value", func(t *testing.T) {
+		t.Parallel()
+
 		injector := GetDependencyInjector()
 		// Injector may be initialized by test environment, just verify it doesn't panic
 		_ = injector
@@ -32,7 +44,10 @@ func TestGetDependencyInjector(t *testing.T) {
 }
 
 func TestGlobalVariables(t *testing.T) {
+	t.Parallel()
+
 	t.Run("global variables are declared", func(t *testing.T) {
+		t.Parallel()
 		// Verify the global variables exist (compile-time check)
 		// Just access the variables to ensure they're declared
 		_ = GConfig
@@ -44,21 +59,30 @@ func TestGlobalVariables(t *testing.T) {
 }
 
 func TestInitLogger_Singleton(t *testing.T) {
+	t.Parallel()
+
 	t.Run("InitLogger function exists", func(t *testing.T) {
+		t.Parallel()
 		// Verify the function exists (compile-time check)
 		assert.NotNil(t, InitLogger)
 	})
 }
 
 func TestInitMetrics_Singleton(t *testing.T) {
+	t.Parallel()
+
 	t.Run("InitMetrics function exists", func(t *testing.T) {
+		t.Parallel()
 		// Verify the function exists (compile-time check)
 		assert.NotNil(t, InitMetrics)
 	})
 }
 
 func TestInitDependencyInjector_RequiresDependencies(t *testing.T) {
+	t.Parallel()
+
 	t.Run("InitDependencyInjector requires Logger and Metrics", func(t *testing.T) {
+		t.Parallel()
 		// Save original state
 		originalLogger := GLogger
 		originalMetrics := GMetrics
@@ -82,7 +106,10 @@ func TestInitDependencyInjector_RequiresDependencies(t *testing.T) {
 }
 
 func TestShutdownOpenTelemetry_Safe(t *testing.T) {
+	t.Parallel()
+
 	t.Run("ShutdownOpenTelemetry is safe to call", func(t *testing.T) {
+		t.Parallel()
 		// Save original state
 		originalLogger := GLogger
 		originalMetrics := GMetrics
@@ -97,14 +124,20 @@ func TestShutdownOpenTelemetry_Safe(t *testing.T) {
 }
 
 func TestInitOpenTelemetry_FunctionExists(t *testing.T) {
+	t.Parallel()
+
 	t.Run("InitOpenTelemetry function signature", func(t *testing.T) {
+		t.Parallel()
 		// Verify the function exists (compile-time check)
 		assert.NotNil(t, InitOpenTelemetry)
 	})
 }
 
 func TestGetLogger_ThreadSafe(t *testing.T) {
+	t.Parallel()
+
 	t.Run("GetLogger is thread-safe", func(t *testing.T) {
+		t.Parallel()
 		// Multiple goroutines can call GetLogger concurrently
 		for range 10 {
 			go func() {
@@ -115,7 +148,10 @@ func TestGetLogger_ThreadSafe(t *testing.T) {
 }
 
 func TestGetMetrics_ThreadSafe(t *testing.T) {
+	t.Parallel()
+
 	t.Run("GetMetrics is thread-safe", func(t *testing.T) {
+		t.Parallel()
 		// Multiple goroutines can call GetMetrics concurrently
 		for range 10 {
 			go func() {
@@ -126,7 +162,10 @@ func TestGetMetrics_ThreadSafe(t *testing.T) {
 }
 
 func TestGetDependencyInjector_ThreadSafe(t *testing.T) {
+	t.Parallel()
+
 	t.Run("GetDependencyInjector is thread-safe", func(t *testing.T) {
+		t.Parallel()
 		// Multiple goroutines can call GetDependencyInjector concurrently
 		for range 10 {
 			go func() {

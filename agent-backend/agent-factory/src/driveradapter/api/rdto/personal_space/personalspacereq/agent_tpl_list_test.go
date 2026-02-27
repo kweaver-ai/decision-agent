@@ -10,11 +10,13 @@ import (
 )
 
 func TestAgentTplListReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentTplListReq{
-		Name:        "test template",
-		ProductKey:   "product-123",
-		CategoryID:   "category-456",
-		Size:         20,
+		Name:                "test template",
+		ProductKey:          "product-123",
+		CategoryID:          "category-456",
+		Size:                20,
 		PaginationMarkerStr: "marker-string",
 	}
 
@@ -26,6 +28,8 @@ func TestAgentTplListReq_StructFields(t *testing.T) {
 }
 
 func TestAgentTplListReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentTplListReq{}
 
 	errMap := req.GetErrMsgMap()
@@ -35,6 +39,8 @@ func TestAgentTplListReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestAgentTplListReq_CustomCheck_EmptyEnums(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentTplListReq{}
 
 	err := req.CustomCheck()
@@ -43,6 +49,8 @@ func TestAgentTplListReq_CustomCheck_EmptyEnums(t *testing.T) {
 }
 
 func TestAgentTplListReq_CustomCheck_ValidPublishStatus(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentTplListReq{
 		PublishStatus: cdaenum.StatusPublished,
 	}
@@ -53,6 +61,8 @@ func TestAgentTplListReq_CustomCheck_ValidPublishStatus(t *testing.T) {
 }
 
 func TestAgentTplListReq_CustomCheck_ValidAgentTplCreatedType(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentTplListReq{
 		AgentTplCreatedType: daenum.AgentTplCreatedTypeCopyFromAgent,
 	}
@@ -63,6 +73,8 @@ func TestAgentTplListReq_CustomCheck_ValidAgentTplCreatedType(t *testing.T) {
 }
 
 func TestAgentTplListReq_CustomCheck_InvalidPublishStatus(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentTplListReq{
 		PublishStatus: cdaenum.Status("invalid"),
 	}
@@ -74,6 +86,8 @@ func TestAgentTplListReq_CustomCheck_InvalidPublishStatus(t *testing.T) {
 }
 
 func TestAgentTplListReq_CustomCheck_InvalidAgentTplCreatedType(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentTplListReq{
 		AgentTplCreatedType: daenum.AgentTplCreatedType("invalid_type"),
 	}
@@ -85,6 +99,8 @@ func TestAgentTplListReq_CustomCheck_InvalidAgentTplCreatedType(t *testing.T) {
 }
 
 func TestAgentTplListReq_LoadMarkerStr_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentTplListReq{
 		PaginationMarkerStr: "",
 	}
@@ -96,11 +112,13 @@ func TestAgentTplListReq_LoadMarkerStr_Empty(t *testing.T) {
 }
 
 func TestAgentTplListReq_LoadMarkerStr_Valid(t *testing.T) {
+	t.Parallel()
+
 	// Create a marker string by serializing a marker
 	marker := &personalspaceresp.PTplListPaginationMarker{}
 	marker.UpdatedAt = 123456
 	marker.LastTplID = 789
-	
+
 	markerStr, _ := marker.ToString()
 
 	req := &AgentTplListReq{
@@ -114,6 +132,8 @@ func TestAgentTplListReq_LoadMarkerStr_Valid(t *testing.T) {
 }
 
 func TestAgentTplListReq_LoadMarkerStr_Invalid(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentTplListReq{
 		PaginationMarkerStr: "invalid-base64-string",
 	}
@@ -124,6 +144,8 @@ func TestAgentTplListReq_LoadMarkerStr_Invalid(t *testing.T) {
 }
 
 func TestAgentTplListReq_DefaultValues(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentTplListReq{}
 
 	assert.Empty(t, req.Name)
@@ -136,13 +158,15 @@ func TestAgentTplListReq_DefaultValues(t *testing.T) {
 }
 
 func TestAgentTplListReq_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	req := &AgentTplListReq{
-		Name:        "My Template",
-		ProductKey:   "product-key",
-		CategoryID:   "cat-id",
-		PublishStatus: cdaenum.StatusPublished,
+		Name:                "My Template",
+		ProductKey:          "product-key",
+		CategoryID:          "cat-id",
+		PublishStatus:       cdaenum.StatusPublished,
 		AgentTplCreatedType: daenum.AgentTplCreatedTypeCopyFromTpl,
-		Size:         50,
+		Size:                50,
 		PaginationMarkerStr: "eyJ1cGRhdGVkX2F0IjoxMjM0NTYsImxhc3RfdHBsX2lkIjo3ODl9",
 	}
 

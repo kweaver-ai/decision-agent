@@ -11,6 +11,8 @@ import (
 )
 
 func TestNewGraphRetrieveContent(t *testing.T) {
+	t.Parallel()
+
 	content := NewGraphRetrieveContent()
 
 	assert.NotNil(t, content)
@@ -19,6 +21,8 @@ func TestNewGraphRetrieveContent(t *testing.T) {
 }
 
 func TestGraphRetrieveContent_LoadFromConfig_BuiltInGraphQAAgent(t *testing.T) {
+	t.Parallel()
+
 	content := NewGraphRetrieveContent()
 
 	config := &daconfvalobj.Config{}
@@ -31,6 +35,8 @@ func TestGraphRetrieveContent_LoadFromConfig_BuiltInGraphQAAgent(t *testing.T) {
 }
 
 func TestGraphRetrieveContent_LoadFromConfig_WithKgDataSource(t *testing.T) {
+	t.Parallel()
+
 	content := NewGraphRetrieveContent()
 
 	kgSource := &datasourcevalobj.KgSource{}
@@ -50,6 +56,8 @@ func TestGraphRetrieveContent_LoadFromConfig_WithKgDataSource(t *testing.T) {
 }
 
 func TestGraphRetrieveContent_LoadFromConfig_NoKgDataSource(t *testing.T) {
+	t.Parallel()
+
 	content := NewGraphRetrieveContent()
 
 	config := &daconfvalobj.Config{
@@ -66,6 +74,8 @@ func TestGraphRetrieveContent_LoadFromConfig_NoKgDataSource(t *testing.T) {
 }
 
 func TestGraphRetrieveContent_LoadFromConfig_NilDataSource(t *testing.T) {
+	t.Parallel()
+
 	content := NewGraphRetrieveContent()
 
 	config := &daconfvalobj.Config{
@@ -80,6 +90,8 @@ func TestGraphRetrieveContent_LoadFromConfig_NilDataSource(t *testing.T) {
 }
 
 func TestGraphRetrieveContent_LoadFromConfig_NilKgField(t *testing.T) {
+	t.Parallel()
+
 	content := NewGraphRetrieveContent()
 
 	config := &daconfvalobj.Config{
@@ -96,6 +108,8 @@ func TestGraphRetrieveContent_LoadFromConfig_NilKgField(t *testing.T) {
 }
 
 func TestGraphRetrieveContent_LoadFromConfig_MultipleKgSources(t *testing.T) {
+	t.Parallel()
+
 	content := NewGraphRetrieveContent()
 
 	kgSource1 := &datasourcevalobj.KgSource{}
@@ -114,6 +128,8 @@ func TestGraphRetrieveContent_LoadFromConfig_MultipleKgSources(t *testing.T) {
 }
 
 func TestGraphRetrieveContent_ToString_Empty(t *testing.T) {
+	t.Parallel()
+
 	content := NewGraphRetrieveContent()
 
 	result := content.ToString()
@@ -122,6 +138,8 @@ func TestGraphRetrieveContent_ToString_Empty(t *testing.T) {
 }
 
 func TestGraphRetrieveContent_ToString_WithContent(t *testing.T) {
+	t.Parallel()
+
 	content := NewGraphRetrieveContent()
 	content.Content = "test graph content"
 
@@ -131,6 +149,8 @@ func TestGraphRetrieveContent_ToString_WithContent(t *testing.T) {
 }
 
 func TestGraphRetrieveContent_ToDolphinTplEo(t *testing.T) {
+	t.Parallel()
+
 	content := NewGraphRetrieveContent()
 	content.Content = "test value"
 
@@ -143,6 +163,8 @@ func TestGraphRetrieveContent_ToDolphinTplEo(t *testing.T) {
 }
 
 func TestGraphRetrieveContent_ToDolphinTplEo_EmptyContent(t *testing.T) {
+	t.Parallel()
+
 	content := NewGraphRetrieveContent()
 
 	eo := content.ToDolphinTplEo()
@@ -154,6 +176,8 @@ func TestGraphRetrieveContent_ToDolphinTplEo_EmptyContent(t *testing.T) {
 }
 
 func TestGraphRetrieveContent_LoadFromConfig_BuiltInTakesPrecedence(t *testing.T) {
+	t.Parallel()
+
 	content := NewGraphRetrieveContent()
 
 	kgSource := &datasourcevalobj.KgSource{}

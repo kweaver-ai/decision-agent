@@ -14,6 +14,8 @@ import (
 )
 
 func TestAgentSvc_ToolHandle_NilAnswer(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{SvcBase: service.NewSvcBase()}
 
 	ctx := context.Background()
@@ -34,6 +36,8 @@ func TestAgentSvc_ToolHandle_NilAnswer(t *testing.T) {
 }
 
 func TestAgentSvc_ToolHandle_StringAnswer(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{SvcBase: service.NewSvcBase()}
 
 	ctx := context.Background()
@@ -56,6 +60,8 @@ func TestAgentSvc_ToolHandle_StringAnswer(t *testing.T) {
 }
 
 func TestAgentSvc_ToolHandle_NonStringAnswer(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -82,6 +88,8 @@ func TestAgentSvc_ToolHandle_NonStringAnswer(t *testing.T) {
 }
 
 func TestAgentSvc_ToAnswerJSONStr_ValidAnswer(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{SvcBase: service.NewSvcBase()}
 
 	ctx := context.Background()
@@ -98,6 +106,8 @@ func TestAgentSvc_ToAnswerJSONStr_ValidAnswer(t *testing.T) {
 }
 
 func TestAgentSvc_ToAnswerJSONStr_UnmarshalableAnswer(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

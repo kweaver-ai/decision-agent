@@ -9,6 +9,8 @@ import (
 )
 
 func TestNewPAListPaginationMarker(t *testing.T) {
+	t.Parallel()
+
 	marker := NewPAListPaginationMarker()
 	assert.NotNil(t, marker)
 	assert.Zero(t, marker.PublishedAt)
@@ -16,7 +18,11 @@ func TestNewPAListPaginationMarker(t *testing.T) {
 }
 
 func TestPAListPaginationMarker_ToString(t *testing.T) {
+	t.Parallel()
+
 	t.Run("valid marker", func(t *testing.T) {
+		t.Parallel()
+
 		marker := &PAListPaginationMarker{
 			PublishedAt:   1234567890,
 			LastReleaseID: "release-123",
@@ -28,6 +34,8 @@ func TestPAListPaginationMarker_ToString(t *testing.T) {
 	})
 
 	t.Run("empty marker", func(t *testing.T) {
+		t.Parallel()
+
 		marker := &PAListPaginationMarker{}
 
 		str, err := marker.ToString()
@@ -37,25 +45,35 @@ func TestPAListPaginationMarker_ToString(t *testing.T) {
 }
 
 func TestPAListPaginationMarker_LoadFromStr(t *testing.T) {
+	t.Parallel()
+
 	t.Run("empty string", func(t *testing.T) {
+		t.Parallel()
+
 		marker := &PAListPaginationMarker{}
 		err := marker.LoadFromStr("")
 		assert.NoError(t, err)
 	})
 
 	t.Run("invalid base64", func(t *testing.T) {
+		t.Parallel()
+
 		marker := &PAListPaginationMarker{}
 		err := marker.LoadFromStr("invalid base64!")
 		assert.Error(t, err)
 	})
 
 	t.Run("invalid json", func(t *testing.T) {
+		t.Parallel()
+
 		marker := &PAListPaginationMarker{}
 		err := marker.LoadFromStr("aGVsbG8=") // "hello" in base64
 		assert.Error(t, err)
 	})
 
 	t.Run("round trip", func(t *testing.T) {
+		t.Parallel()
+
 		original := &PAListPaginationMarker{
 			PublishedAt:   9876543210,
 			LastReleaseID: "release-xyz",
@@ -73,7 +91,11 @@ func TestPAListPaginationMarker_LoadFromStr(t *testing.T) {
 }
 
 func TestPAListPaginationMarker_LoadFromPos(t *testing.T) {
+	t.Parallel()
+
 	t.Run("empty pos", func(t *testing.T) {
+		t.Parallel()
+
 		marker := &PAListPaginationMarker{}
 		marker.LoadFromPos([]*dapo.PublishedJoinPo{})
 		assert.Zero(t, marker.PublishedAt)
@@ -81,6 +103,8 @@ func TestPAListPaginationMarker_LoadFromPos(t *testing.T) {
 	})
 
 	t.Run("single pos", func(t *testing.T) {
+		t.Parallel()
+
 		pos := []*dapo.PublishedJoinPo{
 			{
 				ReleasePartPo: dapo.ReleasePartPo{
@@ -97,6 +121,8 @@ func TestPAListPaginationMarker_LoadFromPos(t *testing.T) {
 	})
 
 	t.Run("multiple pos", func(t *testing.T) {
+		t.Parallel()
+
 		pos := []*dapo.PublishedJoinPo{
 			{
 				ReleasePartPo: dapo.ReleasePartPo{
@@ -120,6 +146,8 @@ func TestPAListPaginationMarker_LoadFromPos(t *testing.T) {
 }
 
 func TestNewPAListItemResp(t *testing.T) {
+	t.Parallel()
+
 	item := NewPAListItemResp()
 	assert.NotNil(t, item)
 	assert.NotNil(t, item.PublishInfo)
@@ -128,6 +156,8 @@ func TestNewPAListItemResp(t *testing.T) {
 }
 
 func TestNewPAListResp(t *testing.T) {
+	t.Parallel()
+
 	resp := NewPAListResp()
 	assert.NotNil(t, resp)
 	assert.NotNil(t, resp.Entries)
@@ -137,7 +167,11 @@ func TestNewPAListResp(t *testing.T) {
 }
 
 func TestPubedAgentListResp_LoadFromEos(t *testing.T) {
+	t.Parallel()
+
 	t.Run("empty eos", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewPAListResp()
 		eos := []*pubedeo.PublishedAgentEo{}
 		agentID2BdIDMap := map[string]string{}
@@ -149,6 +183,8 @@ func TestPubedAgentListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("with single eo", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewPAListResp()
 		eo := &pubedeo.PublishedAgentEo{}
 		agentID2BdIDMap := map[string]string{}
@@ -159,6 +195,8 @@ func TestPubedAgentListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("is last page", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewPAListResp()
 		resp.IsLastPage = true
 		eo := &pubedeo.PublishedAgentEo{}
@@ -171,7 +209,11 @@ func TestPubedAgentListResp_LoadFromEos(t *testing.T) {
 }
 
 func TestPubedAgentListResp_genMarkerStr(t *testing.T) {
+	t.Parallel()
+
 	t.Run("empty entries", func(t *testing.T) {
+		t.Parallel()
+
 		resp := &PubedAgentListResp{
 			Entries: []*PAListItemResp{},
 		}
@@ -182,6 +224,8 @@ func TestPubedAgentListResp_genMarkerStr(t *testing.T) {
 	})
 
 	t.Run("is last page", func(t *testing.T) {
+		t.Parallel()
+
 		resp := &PubedAgentListResp{
 			Entries: []*PAListItemResp{
 				{ReleaseID: "release-1", PublishedAt: 1000000},
@@ -195,6 +239,8 @@ func TestPubedAgentListResp_genMarkerStr(t *testing.T) {
 	})
 
 	t.Run("valid entries", func(t *testing.T) {
+		t.Parallel()
+
 		resp := &PubedAgentListResp{
 			Entries: []*PAListItemResp{
 				{ReleaseID: "release-1", PublishedAt: 1000000},

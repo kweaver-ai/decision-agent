@@ -37,6 +37,7 @@ func (tplTestLogger) Fatalln(...interface{})        {}
 
 func newTplRepoWithMock(t *testing.T) (*DAConfigTplRepo, *sqlx.DB, sqlmock.Sqlmock) {
 	t.Helper()
+
 	db, mock, err := sqlx.New()
 	require.NoError(t, err)
 
@@ -105,9 +106,12 @@ func tplUserCtx(uid string) context.Context {
 }
 
 func TestNewDataAgentTplRepo_Singleton(t *testing.T) {
+	t.Parallel()
+
 	oldOnce := agentTplRepoOnce
 	oldImpl := agentTplRepoImpl
 	oldGDB := global.GDB
+
 	t.Cleanup(func() {
 		agentTplRepoOnce = oldOnce
 		agentTplRepoImpl = oldImpl
@@ -116,17 +120,21 @@ func TestNewDataAgentTplRepo_Singleton(t *testing.T) {
 
 	db, _, err := sqlx.New()
 	require.NoError(t, err)
+
 	global.GDB = db
 	agentTplRepoOnce = sync.Once{}
 	agentTplRepoImpl = nil
 
 	r1 := NewDataAgentTplRepo()
 	r2 := NewDataAgentTplRepo()
+
 	assert.NotNil(t, r1)
 	assert.Same(t, r1, r2)
 }
 
 func TestDAConfigTplRepo_CreateAndUpdate(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newTplRepoWithMock(t)
 	defer db.Close()
 
@@ -144,7 +152,11 @@ func TestDAConfigTplRepo_CreateAndUpdate(t *testing.T) {
 }
 
 func TestDAConfigTplRepo_ExistsMethods(t *testing.T) {
+	t.Parallel()
+
 	t.Run("exists true", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newTplRepoWithMock(t)
 		defer db.Close()
 
@@ -161,9 +173,11 @@ func TestDAConfigTplRepo_ExistsMethods(t *testing.T) {
 		e1, err := repo.ExistsByName(context.Background(), "n1")
 		require.NoError(t, err)
 		assert.True(t, e1)
+
 		e2, err := repo.ExistsByKey(context.Background(), "k1")
 		require.NoError(t, err)
 		assert.True(t, e2)
+
 		e3, err := repo.ExistsByID(context.Background(), 1)
 		require.NoError(t, err)
 		assert.True(t, e3)
@@ -171,6 +185,8 @@ func TestDAConfigTplRepo_ExistsMethods(t *testing.T) {
 	})
 
 	t.Run("exclude id branches", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newTplRepoWithMock(t)
 		defer db.Close()
 
@@ -192,6 +208,8 @@ func TestDAConfigTplRepo_ExistsMethods(t *testing.T) {
 }
 
 func TestDAConfigTplRepo_GetAllIDsAndGetByMethods(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newTplRepoWithMock(t)
 	defer db.Close()
 
@@ -235,11 +253,16 @@ func TestDAConfigTplRepo_GetAllIDsAndGetByMethods(t *testing.T) {
 }
 
 func TestDAConfigTplRepo_GetByWithTxAndCategoryAndMap(t *testing.T) {
+	t.Parallel()
+
 	t.Run("tx and category success", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newTplRepoWithMock(t)
 		defer db.Close()
 
 		mock.ExpectBegin()
+
 		tx, err := db.Begin()
 		require.NoError(t, err)
 
@@ -264,6 +287,7 @@ func TestDAConfigTplRepo_GetByWithTxAndCategoryAndMap(t *testing.T) {
 		pos, err := repo.GetByCategoryID(context.Background(), "c1")
 		require.NoError(t, err)
 		assert.Len(t, pos, 1)
+
 		m, err := repo.GetMapByIDs(context.Background(), []int64{1, 2})
 		require.NoError(t, err)
 		assert.Len(t, m, 1)
@@ -272,6 +296,8 @@ func TestDAConfigTplRepo_GetByWithTxAndCategoryAndMap(t *testing.T) {
 	})
 
 	t.Run("map empty and tx error branch", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newTplRepoWithMock(t)
 		defer db.Close()
 
@@ -280,6 +306,7 @@ func TestDAConfigTplRepo_GetByWithTxAndCategoryAndMap(t *testing.T) {
 		assert.Empty(t, m)
 
 		mock.ExpectBegin()
+
 		tx, err := db.Begin()
 		require.NoError(t, err)
 		mock.ExpectQuery(`select .* from t_data_agent_config_tpl where f_deleted_at = \? and f_id = \?`).
@@ -296,7 +323,11 @@ func TestDAConfigTplRepo_GetByWithTxAndCategoryAndMap(t *testing.T) {
 }
 
 func TestDAConfigTplRepo_UpdateStatusAndDelete(t *testing.T) {
+	t.Parallel()
+
 	t.Run("update status branches", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newTplRepoWithMock(t)
 		defer db.Close()
 
@@ -317,6 +348,8 @@ func TestDAConfigTplRepo_UpdateStatusAndDelete(t *testing.T) {
 	})
 
 	t.Run("delete uid empty and success", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newTplRepoWithMock(t)
 		defer db.Close()
 
@@ -326,6 +359,7 @@ func TestDAConfigTplRepo_UpdateStatusAndDelete(t *testing.T) {
 
 		mock.ExpectExec(`update t_data_agent_config_tpl set .* where f_id = \?`).
 			WillReturnResult(sqlmock.NewResult(0, 1))
+
 		err = repo.Delete(tplUserCtx("u1"), nil, 1)
 		require.NoError(t, err)
 		require.NoError(t, mock.ExpectationsWereMet())

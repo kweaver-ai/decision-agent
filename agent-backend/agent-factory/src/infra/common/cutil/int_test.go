@@ -3,6 +3,8 @@ package cutil
 import "testing"
 
 func TestMinInt(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		a    int
@@ -20,6 +22,8 @@ func TestMinInt(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if got := MinInt(tt.a, tt.b); got != tt.want {
 				t.Errorf("MinInt(%d, %d) = %d, want %d", tt.a, tt.b, got, tt.want)
 			}
@@ -28,6 +32,8 @@ func TestMinInt(t *testing.T) {
 }
 
 func TestMaxInt(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		a    int
@@ -45,6 +51,8 @@ func TestMaxInt(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if got := MaxInt(tt.a, tt.b); got != tt.want {
 				t.Errorf("MaxInt(%d, %d) = %d, want %d", tt.a, tt.b, got, tt.want)
 			}

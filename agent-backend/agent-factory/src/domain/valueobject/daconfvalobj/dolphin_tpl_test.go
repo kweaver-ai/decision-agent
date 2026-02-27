@@ -8,6 +8,8 @@ import (
 )
 
 func TestDolphinTpl_ValObjCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		tpl  *DolphinTpl
@@ -84,6 +86,8 @@ func TestDolphinTpl_ValObjCheck_Valid(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.tpl.ValObjCheck()
 			assert.NoError(t, err)
 		})
@@ -91,6 +95,8 @@ func TestDolphinTpl_ValObjCheck_Valid(t *testing.T) {
 }
 
 func TestDolphinTpl_ValObjCheck_Errors(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		tpl         *DolphinTpl
@@ -124,6 +130,8 @@ func TestDolphinTpl_ValObjCheck_Errors(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.tpl.ValObjCheck()
 			assert.Error(t, err)
 			assert.Contains(t, err.Error(), tt.expectedErr)
@@ -132,6 +140,8 @@ func TestDolphinTpl_ValObjCheck_Errors(t *testing.T) {
 }
 
 func TestDolphinTpl_ValObjCheck_Nil(t *testing.T) {
+	t.Parallel()
+
 	var tpl *DolphinTpl
 	// Nil pointer will panic, so we test for that
 	assert.Panics(t, func() {
@@ -140,6 +150,8 @@ func TestDolphinTpl_ValObjCheck_Nil(t *testing.T) {
 }
 
 func TestDolphinTpl_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	tpl := &DolphinTpl{}
 	errMap := tpl.GetErrMsgMap()
 
@@ -150,6 +162,8 @@ func TestDolphinTpl_GetErrMsgMap(t *testing.T) {
 }
 
 func TestDolphinTpl_Fields(t *testing.T) {
+	t.Parallel()
+
 	tpl := &DolphinTpl{
 		Key:     cdaenum.DolphinTplKeyDocRetrieve,
 		Name:    "Test Template",

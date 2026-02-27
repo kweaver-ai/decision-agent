@@ -20,6 +20,8 @@ import (
 )
 
 func TestReleaseSvc_GetPublishInfo(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		agentID string
@@ -304,6 +306,8 @@ func TestReleaseSvc_GetPublishInfo(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if tt.skip {
 				t.Skip("TODO: Fix this test case")
 				return
@@ -382,6 +386,8 @@ func TestReleaseSvc_GetPublishInfo(t *testing.T) {
 }
 
 func TestReleaseSvc_genPmsControlRespFromPolicy(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		agentID string
@@ -495,6 +501,8 @@ func TestReleaseSvc_genPmsControlRespFromPolicy(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			ctrl := gomock.NewController(t)
 			defer ctrl.Finish()
 
@@ -544,6 +552,8 @@ func TestReleaseSvc_genPmsControlRespFromPolicy(t *testing.T) {
 }
 
 func TestReleaseSvc_GetPublishInfo_ExistsByIDError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -563,6 +573,8 @@ func TestReleaseSvc_GetPublishInfo_ExistsByIDError(t *testing.T) {
 }
 
 func TestReleaseSvc_GetPublishInfo_AgentNotExists(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -581,6 +593,8 @@ func TestReleaseSvc_GetPublishInfo_AgentNotExists(t *testing.T) {
 }
 
 func TestReleaseSvc_GetPublishInfo_GetByAgentIDError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -603,6 +617,8 @@ func TestReleaseSvc_GetPublishInfo_GetByAgentIDError(t *testing.T) {
 }
 
 func TestReleaseSvc_GetPublishInfo_ReleaseNotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

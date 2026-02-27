@@ -7,6 +7,8 @@ import (
 )
 
 func TestInsertBuilder_Insert(t *testing.T) {
+	t.Parallel()
+
 	ib := NewInsertBuilder()
 	ib.Insert(map[string]interface{}{
 		"key1": "value1",
@@ -17,6 +19,8 @@ func TestInsertBuilder_Insert(t *testing.T) {
 }
 
 func TestInsertBuilder_From(t *testing.T) {
+	t.Parallel()
+
 	ib := NewInsertBuilder()
 	ib.From("table1")
 
@@ -24,6 +28,8 @@ func TestInsertBuilder_From(t *testing.T) {
 }
 
 func TestInsertBuilder_Tag(t *testing.T) {
+	t.Parallel()
+
 	ib := NewInsertBuilder()
 	ib.Tag("json")
 
@@ -31,6 +37,8 @@ func TestInsertBuilder_Tag(t *testing.T) {
 }
 
 func TestInsertBuilder_InsertStruct(t *testing.T) {
+	t.Parallel()
+
 	ib := NewInsertBuilder()
 	ib.Tag("json")
 	ib.InsertStruct(struct {
@@ -45,6 +53,8 @@ func TestInsertBuilder_InsertStruct(t *testing.T) {
 }
 
 func TestInsertBuilder_Insert_ToInsertSql(t *testing.T) {
+	t.Parallel()
+
 	ib := NewInsertBuilder()
 	ib.Insert(map[string]interface{}{
 		"key1": "value1",
@@ -61,6 +71,8 @@ func TestInsertBuilder_Insert_ToInsertSql(t *testing.T) {
 }
 
 func TestInsertBuilder_InsertStruct_ToInsertSql(t *testing.T) {
+	t.Parallel()
+
 	ib := NewInsertBuilder()
 	ib.From("table1")
 	ib.Tag("json")
@@ -174,6 +186,8 @@ func TestInsertBuilder_InsertStruct_ToInsertSql(t *testing.T) {
 }
 
 func TestInsertBuilder_InsertStructs_ToBatchInsertSql(t *testing.T) {
+	t.Parallel()
+
 	ib := NewInsertBuilder()
 	ib.From("table1")
 	ib.Tag("json")
@@ -205,6 +219,8 @@ func TestInsertBuilder_InsertStructs_ToBatchInsertSql(t *testing.T) {
 }
 
 func TestInsertBuilder_InsertStructs_ToBatchInsertSql_toBatchInsertSqlCheck(t *testing.T) {
+	t.Parallel()
+
 	// 1. 检查ib.rows中的每一条插入记录的字段的数量是否一致
 	ib := NewInsertBuilder()
 	ib.From("table1")
@@ -261,6 +277,8 @@ func TestInsertBuilder_InsertStructs_ToBatchInsertSql_toBatchInsertSqlCheck(t *t
 }
 
 func TestInsertBuilder_InsertStructs_EmptySlice(t *testing.T) {
+	t.Parallel()
+
 	ib := NewInsertBuilder()
 	ib.From("table1")
 	ib.Tag("json")
@@ -274,6 +292,8 @@ func TestInsertBuilder_InsertStructs_EmptySlice(t *testing.T) {
 }
 
 func TestInsertBuilder_InsertStructs_UnsupportedType(t *testing.T) {
+	t.Parallel()
+
 	ib := NewInsertBuilder()
 	ib.From("table1")
 	ib.Tag("json")
@@ -295,6 +315,8 @@ func TestInsertBuilder_InsertStructs_UnsupportedType(t *testing.T) {
 }
 
 func TestInsertBuilder_InsertStructs_PanicWhenNoTag(t *testing.T) {
+	t.Parallel()
+
 	ib := NewInsertBuilder()
 	ib.From("table1")
 	ib.Tag("") // Explicitly set tag to empty to trigger panic
@@ -311,6 +333,8 @@ func TestInsertBuilder_InsertStructs_PanicWhenNoTag(t *testing.T) {
 }
 
 func TestInsertBuilder_InsertStructs_PanicWhenNotSlice(t *testing.T) {
+	t.Parallel()
+
 	ib := NewInsertBuilder()
 	ib.From("table1")
 	ib.Tag("json")

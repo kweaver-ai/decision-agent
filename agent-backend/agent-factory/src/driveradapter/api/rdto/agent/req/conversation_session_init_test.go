@@ -8,7 +8,11 @@ import (
 )
 
 func TestConversationSessionInitReq_Check(t *testing.T) {
+	t.Parallel()
+
 	t.Run("with valid request", func(t *testing.T) {
+		t.Parallel()
+
 		req := &ConversationSessionInitReq{
 			ConversationID: "conv-123",
 			AgentID:        "agent-456",
@@ -20,6 +24,8 @@ func TestConversationSessionInitReq_Check(t *testing.T) {
 	})
 
 	t.Run("with empty conversation_id", func(t *testing.T) {
+		t.Parallel()
+
 		req := &ConversationSessionInitReq{
 			ConversationID: "",
 		}
@@ -30,6 +36,8 @@ func TestConversationSessionInitReq_Check(t *testing.T) {
 	})
 
 	t.Run("with agent_id but empty agent_version", func(t *testing.T) {
+		t.Parallel()
+
 		req := &ConversationSessionInitReq{
 			ConversationID: "conv-123",
 			AgentID:        "agent-456",
@@ -42,6 +50,8 @@ func TestConversationSessionInitReq_Check(t *testing.T) {
 	})
 
 	t.Run("without agent_id", func(t *testing.T) {
+		t.Parallel()
+
 		req := &ConversationSessionInitReq{
 			ConversationID: "conv-123",
 			AgentID:        "",
@@ -53,6 +63,8 @@ func TestConversationSessionInitReq_Check(t *testing.T) {
 	})
 
 	t.Run("with only conversation_id", func(t *testing.T) {
+		t.Parallel()
+
 		req := &ConversationSessionInitReq{
 			ConversationID: "conv-789",
 		}
@@ -63,6 +75,8 @@ func TestConversationSessionInitReq_Check(t *testing.T) {
 }
 
 func TestConversationSessionInitReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := &ConversationSessionInitReq{
 		ConversationID:        "conv-123",
 		ConversationSessionID: "session-456",
@@ -85,6 +99,8 @@ func TestConversationSessionInitReq_StructFields(t *testing.T) {
 }
 
 func TestConversationSessionInitReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := &ConversationSessionInitReq{}
 
 	assert.Empty(t, req.ConversationID)
@@ -97,6 +113,8 @@ func TestConversationSessionInitReq_Empty(t *testing.T) {
 }
 
 func TestConversationSessionInitReq_WithSessionID(t *testing.T) {
+	t.Parallel()
+
 	sessionIDs := []string{
 		"session-001",
 		"session-abc-123",

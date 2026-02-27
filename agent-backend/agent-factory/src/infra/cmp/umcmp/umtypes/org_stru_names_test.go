@@ -8,6 +8,8 @@ import (
 )
 
 func TestOsnInfoMapS_StructFields(t *testing.T) {
+	t.Parallel()
+
 	m := OsnInfoMapS{
 		UserNameMap:       map[string]string{"user-1": "User 1"},
 		DepartmentNameMap: map[string]string{"dept-1": "Dept 1"},
@@ -22,6 +24,8 @@ func TestOsnInfoMapS_StructFields(t *testing.T) {
 }
 
 func TestOsnInfoMapS_Empty(t *testing.T) {
+	t.Parallel()
+
 	m := OsnInfoMapS{}
 
 	assert.Nil(t, m.UserNameMap)
@@ -31,6 +35,8 @@ func TestOsnInfoMapS_Empty(t *testing.T) {
 }
 
 func TestNewOsnInfoMapS(t *testing.T) {
+	t.Parallel()
+
 	m := NewOsnInfoMapS()
 
 	assert.NotNil(t, m)
@@ -45,6 +51,8 @@ func TestNewOsnInfoMapS(t *testing.T) {
 }
 
 func TestOsnInfoMapS_FromGetOsnRetDto_WithUsers(t *testing.T) {
+	t.Parallel()
+
 	dto := &umret.GetOsnRetDto{
 		UserNames: []umret.IDName{
 			{ID: "user-1", Name: "User 1"},
@@ -61,6 +69,8 @@ func TestOsnInfoMapS_FromGetOsnRetDto_WithUsers(t *testing.T) {
 }
 
 func TestOsnInfoMapS_FromGetOsnRetDto_WithDepartments(t *testing.T) {
+	t.Parallel()
+
 	dto := &umret.GetOsnRetDto{
 		DepartmentNames: []umret.IDName{
 			{ID: "dept-1", Name: "Dept 1"},
@@ -77,6 +87,8 @@ func TestOsnInfoMapS_FromGetOsnRetDto_WithDepartments(t *testing.T) {
 }
 
 func TestOsnInfoMapS_FromGetOsnRetDto_WithGroups(t *testing.T) {
+	t.Parallel()
+
 	dto := &umret.GetOsnRetDto{
 		GroupNames: []umret.IDName{
 			{ID: "group-1", Name: "Group 1"},
@@ -93,6 +105,8 @@ func TestOsnInfoMapS_FromGetOsnRetDto_WithGroups(t *testing.T) {
 }
 
 func TestOsnInfoMapS_FromGetOsnRetDto_WithApps(t *testing.T) {
+	t.Parallel()
+
 	dto := &umret.GetOsnRetDto{
 		AppNames: []umret.IDName{
 			{ID: "app-1", Name: "App 1"},
@@ -109,6 +123,8 @@ func TestOsnInfoMapS_FromGetOsnRetDto_WithApps(t *testing.T) {
 }
 
 func TestOsnInfoMapS_FromGetOsnRetDto_WithAllTypes(t *testing.T) {
+	t.Parallel()
+
 	dto := &umret.GetOsnRetDto{
 		UserNames: []umret.IDName{
 			{ID: "user-1", Name: "User 1"},
@@ -134,6 +150,8 @@ func TestOsnInfoMapS_FromGetOsnRetDto_WithAllTypes(t *testing.T) {
 }
 
 func TestOsnInfoMapS_FromGetOsnRetDto_WithChineseNames(t *testing.T) {
+	t.Parallel()
+
 	dto := &umret.GetOsnRetDto{
 		UserNames: []umret.IDName{
 			{ID: "user-1", Name: "用户1"},
@@ -151,6 +169,8 @@ func TestOsnInfoMapS_FromGetOsnRetDto_WithChineseNames(t *testing.T) {
 }
 
 func TestOsnInfoMapS_FromGetOsnRetDto_WithEmptyDto(t *testing.T) {
+	t.Parallel()
+
 	dto := &umret.GetOsnRetDto{}
 
 	m := NewOsnInfoMapS()
@@ -163,6 +183,8 @@ func TestOsnInfoMapS_FromGetOsnRetDto_WithEmptyDto(t *testing.T) {
 }
 
 func TestOsnInfoMapS_FromGetOsnRetDto_WithNilDto(t *testing.T) {
+	t.Parallel()
+
 	m := NewOsnInfoMapS()
 
 	// FromGetOsnRetDto will panic if dto is nil
@@ -172,6 +194,8 @@ func TestOsnInfoMapS_FromGetOsnRetDto_WithNilDto(t *testing.T) {
 }
 
 func TestOsnInfoMapS_FromGetOsnRetDto_WithDuplicateIDs(t *testing.T) {
+	t.Parallel()
+
 	dto := &umret.GetOsnRetDto{
 		UserNames: []umret.IDName{
 			{ID: "user-1", Name: "User 1"},
@@ -188,6 +212,8 @@ func TestOsnInfoMapS_FromGetOsnRetDto_WithDuplicateIDs(t *testing.T) {
 }
 
 func TestOsnInfoMapS_FromGetOsnRetDto_WithMultipleEntries(t *testing.T) {
+	t.Parallel()
+
 	userNames := make([]umret.IDName, 50)
 	for i := 0; i < 50; i++ {
 		userNames[i] = umret.IDName{
@@ -207,6 +233,8 @@ func TestOsnInfoMapS_FromGetOsnRetDto_WithMultipleEntries(t *testing.T) {
 }
 
 func TestOsnInfoMapS_AllMapsInitialized(t *testing.T) {
+	t.Parallel()
+
 	m := NewOsnInfoMapS()
 
 	// All maps should be initialized
@@ -217,6 +245,8 @@ func TestOsnInfoMapS_AllMapsInitialized(t *testing.T) {
 }
 
 func TestOsnInfoMapS_SetValueDirectly(t *testing.T) {
+	t.Parallel()
+
 	m := NewOsnInfoMapS()
 
 	m.UserNameMap["user-1"] = "User 1"

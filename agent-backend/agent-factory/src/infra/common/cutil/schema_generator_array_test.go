@@ -7,6 +7,8 @@ import (
 )
 
 func TestCreateDynamicStruct_WithArrays(t *testing.T) {
+	t.Parallel()
+
 	schemaStr := `{
 		"names": {
 			"type": "array",
@@ -57,6 +59,8 @@ func TestCreateDynamicStruct_WithArrays(t *testing.T) {
 }
 
 func TestCreateDynamicStruct_ArrayWithObjectItems(t *testing.T) {
+	t.Parallel()
+
 	schemaStr := `{
 		"items": {
 			"type": "array",
@@ -85,6 +89,8 @@ func TestCreateDynamicStruct_ArrayWithObjectItems(t *testing.T) {
 }
 
 func TestCreateDynamicStruct_ArrayWithObjectNoProperties(t *testing.T) {
+	t.Parallel()
+
 	schemaStr := `{
 		"items": {
 			"type": "array",
@@ -110,6 +116,8 @@ func TestCreateDynamicStruct_ArrayWithObjectNoProperties(t *testing.T) {
 }
 
 func TestCreateDynamicStruct_ArrayWithUnknownType(t *testing.T) {
+	t.Parallel()
+
 	schemaStr := `{
 		"unknown": {
 			"type": "array",
@@ -134,6 +142,8 @@ func TestCreateDynamicStruct_ArrayWithUnknownType(t *testing.T) {
 }
 
 func TestGetArrayElementType_ObjectWithNilProperties(t *testing.T) {
+	t.Parallel()
+
 	// Test the case where prop.Type is "object" and prop.Properties is nil
 	// This should return map[string]interface{}
 	prop := &JSONSchemaProperty{

@@ -11,6 +11,8 @@ import (
 )
 
 func TestNewResourceListResp(t *testing.T) {
+	t.Parallel()
+
 	resp := NewResourceListResp()
 
 	assert.NotNil(t, resp)
@@ -19,7 +21,11 @@ func TestNewResourceListResp(t *testing.T) {
 }
 
 func TestResourceListResp_LoadFromEos(t *testing.T) {
+	t.Parallel()
+
 	t.Run("empty slice", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewResourceListResp()
 
 		err := resp.LoadFromEos([]*spaceeo.SpaceResource{})
@@ -29,6 +35,8 @@ func TestResourceListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("with single data agent resource", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewResourceListResp()
 
 		eos := []*spaceeo.SpaceResource{
@@ -57,6 +65,8 @@ func TestResourceListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("with data agent tpl resource", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewResourceListResp()
 
 		eos := []*spaceeo.SpaceResource{
@@ -80,6 +90,8 @@ func TestResourceListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("with multiple resources", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewResourceListResp()
 
 		eos := []*spaceeo.SpaceResource{
@@ -112,6 +124,8 @@ func TestResourceListResp_LoadFromEos(t *testing.T) {
 	})
 
 	t.Run("with nil published agent info", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewResourceListResp()
 
 		eos := []*spaceeo.SpaceResource{
@@ -134,6 +148,8 @@ func TestResourceListResp_LoadFromEos(t *testing.T) {
 }
 
 func TestResourceItem_StructFields(t *testing.T) {
+	t.Parallel()
+
 	item := ResourceItem{
 		ID:           123,
 		SpaceID:      "space-1",
@@ -154,6 +170,8 @@ func TestResourceItem_StructFields(t *testing.T) {
 }
 
 func TestResourceItem_Empty(t *testing.T) {
+	t.Parallel()
+
 	item := ResourceItem{}
 
 	assert.Equal(t, int64(0), item.ID)
@@ -166,6 +184,8 @@ func TestResourceItem_Empty(t *testing.T) {
 }
 
 func TestResourceItem_WithPublishedAgentInfo(t *testing.T) {
+	t.Parallel()
+
 	// Test the structure can accept published agent info
 	item := ResourceItem{
 		ID:           1,
@@ -180,6 +200,8 @@ func TestResourceItem_WithPublishedAgentInfo(t *testing.T) {
 }
 
 func TestResourceItem_WithTplType(t *testing.T) {
+	t.Parallel()
+
 	item := ResourceItem{
 		ID:           1,
 		SpaceID:      "space-1",

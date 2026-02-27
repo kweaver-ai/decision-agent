@@ -8,6 +8,8 @@ import (
 )
 
 func TestNewImportReq(t *testing.T) {
+	t.Parallel()
+
 	req := NewImportReq()
 
 	assert.NotNil(t, req)
@@ -15,6 +17,8 @@ func TestNewImportReq(t *testing.T) {
 }
 
 func TestImportReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	fileHeader := &multipart.FileHeader{
 		Filename: "test.json",
 	}
@@ -28,6 +32,8 @@ func TestImportReq_StructFields(t *testing.T) {
 }
 
 func TestImportReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := &ImportReq{}
 
 	assert.Nil(t, req.File)
@@ -35,6 +41,8 @@ func TestImportReq_Empty(t *testing.T) {
 }
 
 func TestImportReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &ImportReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -45,6 +53,8 @@ func TestImportReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestImportReq_ValueCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	req := &ImportReq{
 		File:       &multipart.FileHeader{},
 		ImportType: ImportTypeUpsert,
@@ -56,6 +66,8 @@ func TestImportReq_ValueCheck_Valid(t *testing.T) {
 }
 
 func TestImportReq_ValueCheck_InvalidImportType(t *testing.T) {
+	t.Parallel()
+
 	req := &ImportReq{
 		File:       &multipart.FileHeader{},
 		ImportType: ImportType("invalid"),
@@ -67,6 +79,8 @@ func TestImportReq_ValueCheck_InvalidImportType(t *testing.T) {
 }
 
 func TestNewExportReq(t *testing.T) {
+	t.Parallel()
+
 	req := NewExportReq()
 
 	assert.NotNil(t, req)
@@ -75,6 +89,8 @@ func TestNewExportReq(t *testing.T) {
 }
 
 func TestExportReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := &ExportReq{
 		AgentIDs: []string{"agent-1", "agent-2"},
 	}
@@ -85,12 +101,16 @@ func TestExportReq_StructFields(t *testing.T) {
 }
 
 func TestExportReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := &ExportReq{}
 
 	assert.Empty(t, req.AgentIDs)
 }
 
 func TestExportReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &ExportReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -100,6 +120,8 @@ func TestExportReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestExportReq_CustomCheckAndDedupl_Valid(t *testing.T) {
+	t.Parallel()
+
 	req := &ExportReq{
 		AgentIDs: []string{"agent-1", "agent-2", "agent-3"},
 	}
@@ -111,6 +133,8 @@ func TestExportReq_CustomCheckAndDedupl_Valid(t *testing.T) {
 }
 
 func TestExportReq_CustomCheckAndDedupl_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := &ExportReq{
 		AgentIDs: []string{},
 	}
@@ -122,6 +146,8 @@ func TestExportReq_CustomCheckAndDedupl_Empty(t *testing.T) {
 }
 
 func TestExportReq_CustomCheckAndDedupl_WithDuplicates(t *testing.T) {
+	t.Parallel()
+
 	req := &ExportReq{
 		AgentIDs: []string{"agent-1", "agent-2", "agent-1", "agent-3", "agent-2"},
 	}
@@ -133,6 +159,8 @@ func TestExportReq_CustomCheckAndDedupl_WithDuplicates(t *testing.T) {
 }
 
 func TestExportReq_CustomCheckAndDedupl_AllDuplicates(t *testing.T) {
+	t.Parallel()
+
 	req := &ExportReq{
 		AgentIDs: []string{"agent-1", "agent-1", "agent-1"},
 	}
@@ -144,12 +172,16 @@ func TestExportReq_CustomCheckAndDedupl_AllDuplicates(t *testing.T) {
 }
 
 func TestExportReq_CustomCheckAndDedupl_ExceedsMaxSize(t *testing.T) {
+	t.Parallel()
+
 	// Create a request with more than max size agent IDs
 	maxSize := 500 // AgentInoutMaxSize = 500
 	agentIDs := make([]string, maxSize+1)
+
 	for i := 0; i <= maxSize; i++ {
 		agentIDs[i] = "agent-" + string(rune(i))
 	}
+
 	req := &ExportReq{
 		AgentIDs: agentIDs,
 	}
@@ -161,6 +193,8 @@ func TestExportReq_CustomCheckAndDedupl_ExceedsMaxSize(t *testing.T) {
 }
 
 func TestExportReq_WithSingleAgentID(t *testing.T) {
+	t.Parallel()
+
 	req := &ExportReq{
 		AgentIDs: []string{"agent-123"},
 	}
@@ -172,6 +206,8 @@ func TestExportReq_WithSingleAgentID(t *testing.T) {
 }
 
 func TestExportReq_WithMultipleAgentIDs(t *testing.T) {
+	t.Parallel()
+
 	req := &ExportReq{
 		AgentIDs: []string{
 			"agent-001",
@@ -189,6 +225,8 @@ func TestExportReq_WithMultipleAgentIDs(t *testing.T) {
 }
 
 func TestImportReq_WithDifferentImportTypes(t *testing.T) {
+	t.Parallel()
+
 	types := []ImportType{
 		ImportTypeUpsert,
 		ImportTypeCreate,
@@ -207,6 +245,8 @@ func TestImportReq_WithDifferentImportTypes(t *testing.T) {
 }
 
 func TestExportReq_CustomCheck_PreservesOrder(t *testing.T) {
+	t.Parallel()
+
 	req := &ExportReq{
 		AgentIDs: []string{"agent-3", "agent-1", "agent-2"},
 	}
@@ -222,6 +262,8 @@ func TestExportReq_CustomCheck_PreservesOrder(t *testing.T) {
 }
 
 func TestExportReq_CustomCheck_NoChangesWhenNoDuplicates(t *testing.T) {
+	t.Parallel()
+
 	originalIDs := []string{"agent-1", "agent-2", "agent-3"}
 	req := &ExportReq{
 		AgentIDs: originalIDs,

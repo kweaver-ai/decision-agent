@@ -9,6 +9,8 @@ import (
 )
 
 func TestLogSuccessExecution(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 
 	visitorInfo := &agentreq.InternalParam{
@@ -54,6 +56,8 @@ func TestLogSuccessExecution(t *testing.T) {
 }
 
 func TestLogSuccessExecutionWithVariousProgressTypes(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 
 	visitorInfo := &agentreq.InternalParam{

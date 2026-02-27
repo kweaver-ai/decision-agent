@@ -3,12 +3,14 @@ package sessionsvc
 import (
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/iredisaccess/isessionredis/isessionredismock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestNewSessionService(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -22,6 +24,8 @@ func TestNewSessionService(t *testing.T) {
 }
 
 func TestNewSessionService_WithLogger(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -37,6 +41,8 @@ func TestNewSessionService_WithLogger(t *testing.T) {
 }
 
 func TestNewSessionService_WithMinimalDependencies(t *testing.T) {
+	t.Parallel()
+
 	dto := &NewSessionSvcDto{
 		SessionRedis: nil,
 		Logger:       nil,
@@ -48,6 +54,8 @@ func TestNewSessionService_WithMinimalDependencies(t *testing.T) {
 }
 
 func TestNewSessionService_WithNilDependencies(t *testing.T) {
+	t.Parallel()
+
 	dto := &NewSessionSvcDto{}
 
 	svc := NewSessionService(dto)

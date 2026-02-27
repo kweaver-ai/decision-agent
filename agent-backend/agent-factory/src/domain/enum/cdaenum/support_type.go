@@ -18,6 +18,7 @@ func (c SupportDataTypes) EnumCheck() (err error) {
 		err = errors.New("[SupportDataTypes]: cannot be empty")
 		return
 	}
+
 	for _, t := range c {
 		if !cutil.ExistsGeneric(ValidSupportDataTypes, t) {
 			err = errors.New("[SupportDataTypes]: invalid type")

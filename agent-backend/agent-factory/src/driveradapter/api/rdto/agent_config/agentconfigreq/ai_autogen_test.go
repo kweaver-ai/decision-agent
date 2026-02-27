@@ -10,6 +10,8 @@ import (
 )
 
 func TestParams_StructFields(t *testing.T) {
+	t.Parallel()
+
 	params := &Params{
 		Name:    "TestAgent",
 		Profile: "Test profile",
@@ -24,6 +26,8 @@ func TestParams_StructFields(t *testing.T) {
 }
 
 func TestParams_Empty(t *testing.T) {
+	t.Parallel()
+
 	params := &Params{}
 
 	assert.Empty(t, params.Name)
@@ -33,6 +37,8 @@ func TestParams_Empty(t *testing.T) {
 }
 
 func TestParams_ReqCheck_AllFieldsProvided(t *testing.T) {
+	t.Parallel()
+
 	params := &Params{
 		Name:    "TestAgent",
 		Profile: "Test profile",
@@ -46,6 +52,8 @@ func TestParams_ReqCheck_AllFieldsProvided(t *testing.T) {
 }
 
 func TestParams_ReqCheck_OnlyName(t *testing.T) {
+	t.Parallel()
+
 	params := &Params{
 		Name: "TestAgent",
 	}
@@ -56,6 +64,8 @@ func TestParams_ReqCheck_OnlyName(t *testing.T) {
 }
 
 func TestParams_ReqCheck_OnlyProfile(t *testing.T) {
+	t.Parallel()
+
 	params := &Params{
 		Profile: "Test profile",
 	}
@@ -66,6 +76,8 @@ func TestParams_ReqCheck_OnlyProfile(t *testing.T) {
 }
 
 func TestParams_ReqCheck_OnlySkills(t *testing.T) {
+	t.Parallel()
+
 	params := &Params{
 		Skills: []string{"skill1", "skill2"},
 	}
@@ -76,6 +88,8 @@ func TestParams_ReqCheck_OnlySkills(t *testing.T) {
 }
 
 func TestParams_ReqCheck_OnlySources(t *testing.T) {
+	t.Parallel()
+
 	params := &Params{
 		Sources: []string{"source1"},
 	}
@@ -86,6 +100,8 @@ func TestParams_ReqCheck_OnlySources(t *testing.T) {
 }
 
 func TestParams_ReqCheck_AllEmpty(t *testing.T) {
+	t.Parallel()
+
 	params := &Params{}
 
 	err := params.ReqCheck()
@@ -95,6 +111,8 @@ func TestParams_ReqCheck_AllEmpty(t *testing.T) {
 }
 
 func TestParams_ReqCheck_EmptyArrays(t *testing.T) {
+	t.Parallel()
+
 	params := &Params{
 		Name:    "",
 		Profile: "",
@@ -108,6 +126,8 @@ func TestParams_ReqCheck_EmptyArrays(t *testing.T) {
 }
 
 func TestAiAutogenReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	params := &Params{
 		Name: "TestAgent",
 	}
@@ -129,6 +149,8 @@ func TestAiAutogenReq_StructFields(t *testing.T) {
 }
 
 func TestAiAutogenReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &AiAutogenReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -139,6 +161,8 @@ func TestAiAutogenReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestAiAutogenReq_IsNotStream(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		from     daenum.AiAutogenFrom
@@ -163,6 +187,8 @@ func TestAiAutogenReq_IsNotStream(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			req := &AiAutogenReq{
 				From: tt.from,
 			}
@@ -175,6 +201,8 @@ func TestAiAutogenReq_IsNotStream(t *testing.T) {
 }
 
 func TestAiAutogenReq_ReqCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	req := &AiAutogenReq{
 		Params: &Params{
 			Name: "TestAgent",
@@ -188,6 +216,8 @@ func TestAiAutogenReq_ReqCheck_Valid(t *testing.T) {
 }
 
 func TestAiAutogenReq_ReqCheck_NilParams(t *testing.T) {
+	t.Parallel()
+
 	req := &AiAutogenReq{
 		Params: nil,
 		From:   daenum.AiAutogenFromSystemPrompt,
@@ -200,6 +230,8 @@ func TestAiAutogenReq_ReqCheck_NilParams(t *testing.T) {
 }
 
 func TestAiAutogenReq_ReqCheck_InvalidParams(t *testing.T) {
+	t.Parallel()
+
 	req := &AiAutogenReq{
 		Params: &Params{
 			// All empty
@@ -214,6 +246,8 @@ func TestAiAutogenReq_ReqCheck_InvalidParams(t *testing.T) {
 }
 
 func TestAiAutogenReq_ReqCheck_InvalidFrom(t *testing.T) {
+	t.Parallel()
+
 	req := &AiAutogenReq{
 		Params: &Params{
 			Name: "TestAgent",
@@ -228,6 +262,8 @@ func TestAiAutogenReq_ReqCheck_InvalidFrom(t *testing.T) {
 }
 
 func TestAiAutogenReq_WithDifferentFromTypes(t *testing.T) {
+	t.Parallel()
+
 	fromTypes := []daenum.AiAutogenFrom{
 		daenum.AiAutogenFromSystemPrompt,
 		daenum.AiAutogenFromOpeningRemarks,
@@ -249,6 +285,8 @@ func TestAiAutogenReq_WithDifferentFromTypes(t *testing.T) {
 }
 
 func TestAiAutogenReq_StreamAndNotStream(t *testing.T) {
+	t.Parallel()
+
 	req := &AiAutogenReq{
 		Params: &Params{
 			Name: "TestAgent",
@@ -265,6 +303,8 @@ func TestAiAutogenReq_StreamAndNotStream(t *testing.T) {
 }
 
 func TestAiAutogenReq_WithAccountTypes(t *testing.T) {
+	t.Parallel()
+
 	accountTypes := []cenum.AccountType{
 		cenum.AccountTypeUser,
 		cenum.AccountTypeApp,
@@ -286,6 +326,8 @@ func TestAiAutogenReq_WithAccountTypes(t *testing.T) {
 }
 
 func TestAiAutogenReq_ComplexParams(t *testing.T) {
+	t.Parallel()
+
 	req := &AiAutogenReq{
 		Params: &Params{
 			Name:    "ComplexAgent",

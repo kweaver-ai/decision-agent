@@ -10,6 +10,8 @@ import (
 )
 
 func TestSession_UpdateAndGetTempMsgResp(t *testing.T) {
+	t.Parallel()
+
 	session := &Session{
 		ConversationID: "conv-123",
 		Signal:         make(chan struct{}, 1),
@@ -30,6 +32,8 @@ func TestSession_UpdateAndGetTempMsgResp(t *testing.T) {
 }
 
 func TestSession_GetAndSetIsResuming(t *testing.T) {
+	t.Parallel()
+
 	session := &Session{
 		ConversationID: "conv-123",
 		Signal:         make(chan struct{}, 1),
@@ -45,6 +49,8 @@ func TestSession_GetAndSetIsResuming(t *testing.T) {
 }
 
 func TestSession_SetAndGetSignal(t *testing.T) {
+	t.Parallel()
+
 	session := &Session{
 		ConversationID: "conv-123",
 	}
@@ -57,6 +63,8 @@ func TestSession_SetAndGetSignal(t *testing.T) {
 }
 
 func TestSession_CloseSignal(t *testing.T) {
+	t.Parallel()
+
 	session := &Session{
 		ConversationID: "conv-123",
 		Signal:         make(chan struct{}, 1),
@@ -69,7 +77,11 @@ func TestSession_CloseSignal(t *testing.T) {
 }
 
 func TestSession_SendSignal(t *testing.T) {
+	t.Parallel()
+
 	t.Run("sends signal when resuming", func(t *testing.T) {
+		t.Parallel()
+
 		session := &Session{
 			ConversationID: "conv-123",
 			Signal:         make(chan struct{}, 1),
@@ -87,6 +99,8 @@ func TestSession_SendSignal(t *testing.T) {
 	})
 
 	t.Run("does not send signal when not resuming", func(t *testing.T) {
+		t.Parallel()
+
 		session := &Session{
 			ConversationID: "conv-123",
 			Signal:         make(chan struct{}, 1),
@@ -104,6 +118,8 @@ func TestSession_SendSignal(t *testing.T) {
 	})
 
 	t.Run("does not panic when signal is nil", func(t *testing.T) {
+		t.Parallel()
+
 		session := &Session{
 			ConversationID: "conv-123",
 			Signal:         nil,
@@ -117,6 +133,8 @@ func TestSession_SendSignal(t *testing.T) {
 }
 
 func TestSession_ConcurrencySafety(t *testing.T) {
+	t.Parallel()
+
 	session := &Session{
 		ConversationID: "conv-123",
 		Signal:         make(chan struct{}, 10),

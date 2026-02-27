@@ -12,6 +12,8 @@ import (
 )
 
 func TestNewDolphinTplListResp(t *testing.T) {
+	t.Parallel()
+
 	resp := NewDolphinTplListResp()
 	assert.NotNil(t, resp)
 	assert.NotNil(t, resp.PreDolphin)
@@ -21,7 +23,11 @@ func TestNewDolphinTplListResp(t *testing.T) {
 }
 
 func TestDolphinTplListResp_LoadFromConfig(t *testing.T) {
+	t.Parallel()
+
 	t.Run("with valid config", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewDolphinTplListResp()
 		req := &otherreq.DolphinTplListReq{
 			Config: &daconfvalobj.Config{
@@ -36,10 +42,12 @@ func TestDolphinTplListResp_LoadFromConfig(t *testing.T) {
 	})
 
 	t.Run("with DocQA agent", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewDolphinTplListResp()
 		req := &otherreq.DolphinTplListReq{
 			Config:          &daconfvalobj.Config{},
-			BuiltInAgentKey:  builtinagentenum.AgentKeyDocQA,
+			BuiltInAgentKey: builtinagentenum.AgentKeyDocQA,
 		}
 
 		err := resp.LoadFromConfig(req)
@@ -47,10 +55,12 @@ func TestDolphinTplListResp_LoadFromConfig(t *testing.T) {
 	})
 
 	t.Run("with empty config", func(t *testing.T) {
+		t.Parallel()
+
 		resp := NewDolphinTplListResp()
 		req := &otherreq.DolphinTplListReq{
 			Config:          &daconfvalobj.Config{},
-			BuiltInAgentKey:  builtinagentenum.AgentKeyDocQA,
+			BuiltInAgentKey: builtinagentenum.AgentKeyDocQA,
 		}
 
 		err := resp.LoadFromConfig(req)
@@ -59,6 +69,8 @@ func TestDolphinTplListResp_LoadFromConfig(t *testing.T) {
 }
 
 func TestDolphinTplListResp_Fields(t *testing.T) {
+	t.Parallel()
+
 	preEo := &dolphintpleo.DolphinTplEo{}
 	postEo := &dolphintpleo.DolphinTplEo{}
 
@@ -72,6 +84,8 @@ func TestDolphinTplListResp_Fields(t *testing.T) {
 }
 
 func TestDolphinTplListResp_Empty(t *testing.T) {
+	t.Parallel()
+
 	resp := &DolphinTplListResp{
 		PreDolphin:  []*dolphintpleo.DolphinTplEo{},
 		PostDolphin: []*dolphintpleo.DolphinTplEo{},
@@ -82,6 +96,8 @@ func TestDolphinTplListResp_Empty(t *testing.T) {
 }
 
 func TestDolphinTplListResp_WithAllBuiltInAgentKeys(t *testing.T) {
+	t.Parallel()
+
 	agentKeys := []builtinagentenum.AgentKey{
 		builtinagentenum.AgentKeyDocQA,
 		builtinagentenum.AgentKeyGraphQA,
@@ -94,6 +110,8 @@ func TestDolphinTplListResp_WithAllBuiltInAgentKeys(t *testing.T) {
 
 	for _, key := range agentKeys {
 		t.Run(key.String(), func(t *testing.T) {
+			t.Parallel()
+
 			resp := NewDolphinTplListResp()
 			req := &otherreq.DolphinTplListReq{
 				Config:          &daconfvalobj.Config{},
@@ -107,6 +125,8 @@ func TestDolphinTplListResp_WithAllBuiltInAgentKeys(t *testing.T) {
 }
 
 func TestDolphinTplListResp_StructInitialization(t *testing.T) {
+	t.Parallel()
+
 	resp := &DolphinTplListResp{}
 
 	// Verify struct is initialized
@@ -117,6 +137,8 @@ func TestDolphinTplListResp_StructInitialization(t *testing.T) {
 }
 
 func TestDolphinTplListResp_LoadFromConfig_WithMemoryRetrieve(t *testing.T) {
+	t.Parallel()
+
 	resp := NewDolphinTplListResp()
 	isEnabled := true
 	req := &otherreq.DolphinTplListReq{
@@ -136,6 +158,8 @@ func TestDolphinTplListResp_LoadFromConfig_WithMemoryRetrieve(t *testing.T) {
 }
 
 func TestDolphinTplListResp_LoadFromConfig_WithDocRetrieve(t *testing.T) {
+	t.Parallel()
+
 	resp := NewDolphinTplListResp()
 	req := &otherreq.DolphinTplListReq{
 		Config: &daconfvalobj.Config{
@@ -159,6 +183,8 @@ func TestDolphinTplListResp_LoadFromConfig_WithDocRetrieve(t *testing.T) {
 }
 
 func TestDolphinTplListResp_LoadFromConfig_WithRelatedQuestions(t *testing.T) {
+	t.Parallel()
+
 	resp := NewDolphinTplListResp()
 	isEnabled := true
 	req := &otherreq.DolphinTplListReq{

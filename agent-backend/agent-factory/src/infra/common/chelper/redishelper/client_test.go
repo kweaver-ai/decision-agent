@@ -20,6 +20,7 @@ func startFakeRedisServer(t *testing.T) (host string, port string, shutdown func
 	require.NoError(t, err)
 
 	done := make(chan struct{})
+
 	var wg sync.WaitGroup
 
 	writeResp := func(conn net.Conn, payload []byte) {
@@ -27,12 +28,15 @@ func startFakeRedisServer(t *testing.T) (host string, port string, shutdown func
 		if bytes.Contains(bytes.ToUpper(payload), []byte("PING")) {
 			resp = []byte("+PONG\r\n")
 		}
+
 		_, _ = conn.Write(resp)
 	}
 
 	wg.Add(1)
+
 	go func() {
 		defer wg.Done()
+
 		for {
 			conn, acceptErr := ln.Accept()
 			if acceptErr != nil {
@@ -45,13 +49,16 @@ func startFakeRedisServer(t *testing.T) (host string, port string, shutdown func
 			}
 
 			wg.Add(1)
+
 			go func(c net.Conn) {
 				defer wg.Done()
 				defer c.Close()
 
 				buf := make([]byte, 4096)
+
 				for {
 					_ = c.SetReadDeadline(time.Now().Add(100 * time.Millisecond))
+
 					n, readErr := c.Read(buf)
 					if n > 0 {
 						writeResp(c, buf[:n])
@@ -66,6 +73,7 @@ func startFakeRedisServer(t *testing.T) (host string, port string, shutdown func
 								continue
 							}
 						}
+
 						return
 					}
 				}
@@ -78,7 +86,9 @@ func startFakeRedisServer(t *testing.T) (host string, port string, shutdown func
 
 	shutdown = func() {
 		close(done)
+
 		_ = ln.Close()
+
 		wg.Wait()
 	}
 
@@ -86,6 +96,8 @@ func startFakeRedisServer(t *testing.T) (host string, port string, shutdown func
 }
 
 func TestRedisConstants(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		constant string
@@ -115,12 +127,15 @@ func TestRedisConstants(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			assert.Equal(t, tt.expected, tt.constant)
 		})
 	}
 }
 
 func TestRedisConstants_AllUnique(t *testing.T) {
+	t.Parallel()
+
 	// Verify that all Redis type constants are unique
 	constants := map[string]string{
 		"MasterSlaveType": MasterSlaveType,
@@ -134,6 +149,7 @@ func TestRedisConstants_AllUnique(t *testing.T) {
 		if seen[value] {
 			t.Errorf("Duplicate value found: %s (%s)", value, name)
 		}
+
 		seen[value] = true
 	}
 
@@ -142,6 +158,8 @@ func TestRedisConstants_AllUnique(t *testing.T) {
 }
 
 func TestRedisConstants_NonEmpty(t *testing.T) {
+	t.Parallel()
+
 	assert.NotEmpty(t, MasterSlaveType, "MasterSlaveType should not be empty")
 	assert.NotEmpty(t, StandaloneType, "StandaloneType should not be empty")
 	assert.NotEmpty(t, SentinelType, "SentinelType should not be empty")
@@ -149,9 +167,12 @@ func TestRedisConstants_NonEmpty(t *testing.T) {
 }
 
 func TestStandalone_DefaultsAndOptions(t *testing.T) {
+	t.Parallel()
+
 	conf := &cconf.RedisConf{}
 
 	client := standalone(conf)
+
 	t.Cleanup(func() {
 		_ = client.Close()
 	})
@@ -166,9 +187,12 @@ func TestStandalone_DefaultsAndOptions(t *testing.T) {
 }
 
 func TestMasterSlave_DefaultsAndOptions(t *testing.T) {
+	t.Parallel()
+
 	conf := &cconf.RedisConf{}
 
 	client := masterSlave(conf)
+
 	t.Cleanup(func() {
 		_ = client.Close()
 	})
@@ -183,9 +207,12 @@ func TestMasterSlave_DefaultsAndOptions(t *testing.T) {
 }
 
 func TestSentinel_Defaults(t *testing.T) {
+	t.Parallel()
+
 	conf := &cconf.RedisConf{}
 
 	client := sentinel(conf)
+
 	t.Cleanup(func() {
 		_ = client.Close()
 	})
@@ -201,11 +228,14 @@ func TestSentinel_Defaults(t *testing.T) {
 }
 
 func TestCluster_DefaultsAndOptions(t *testing.T) {
+	t.Parallel()
+
 	conf := &cconf.RedisConf{
 		ClusterHosts: []string{"127.0.0.1:7001", "127.0.0.1:7002"},
 	}
 
 	client := cluster(conf)
+
 	t.Cleanup(func() {
 		_ = client.Close()
 	})
@@ -220,12 +250,17 @@ func TestCluster_DefaultsAndOptions(t *testing.T) {
 }
 
 func TestRedisClient(t *testing.T) {
+	t.Parallel()
+
 	originalClient := redisClient
+
 	t.Cleanup(func() {
 		redisClient = originalClient
 	})
 
 	t.Run("panic when not connected", func(t *testing.T) {
+		t.Parallel()
+
 		redisClient = nil
 
 		assert.Panics(t, func() {
@@ -234,10 +269,14 @@ func TestRedisClient(t *testing.T) {
 	})
 
 	t.Run("return client when connected", func(t *testing.T) {
+		t.Parallel()
+
 		connectedClient := redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379"})
+
 		t.Cleanup(func() {
 			_ = connectedClient.Close()
 		})
+
 		redisClient = connectedClient
 
 		assert.Equal(t, connectedClient, RedisClient())
@@ -245,8 +284,10 @@ func TestRedisClient(t *testing.T) {
 }
 
 func TestConnectRedis_UnsupportedType_ReturnsNil(t *testing.T) {
+	// t.Parallel() - 移除：此测试调用 ConnectRedis 单例函数，在并发环境下会导致 sync.Once 死锁
 	originalOnce := redisOnce
 	originalClient := redisClient
+
 	t.Cleanup(func() {
 		redisOnce = originalOnce
 		redisClient = originalClient
@@ -260,11 +301,13 @@ func TestConnectRedis_UnsupportedType_ReturnsNil(t *testing.T) {
 }
 
 func TestConnectRedis_StandaloneType_Success(t *testing.T) {
+	// t.Parallel() - 移除：此测试调用 ConnectRedis 单例函数，在并发环境下会导致 sync.Once 死锁
 	host, port, shutdown := startFakeRedisServer(t)
 	t.Cleanup(shutdown)
 
 	originalOnce := redisOnce
 	originalClient := redisClient
+
 	t.Cleanup(func() {
 		redisOnce = originalOnce
 		redisClient = originalClient
@@ -284,11 +327,13 @@ func TestConnectRedis_StandaloneType_Success(t *testing.T) {
 }
 
 func TestConnectRedis_MasterSlaveType_Success(t *testing.T) {
+	// t.Parallel() - 移除：此测试调用 ConnectRedis 单例函数，在并发环境下会导致 sync.Once 死锁
 	host, port, shutdown := startFakeRedisServer(t)
 	t.Cleanup(shutdown)
 
 	originalOnce := redisOnce
 	originalClient := redisClient
+
 	t.Cleanup(func() {
 		redisOnce = originalOnce
 		redisClient = originalClient

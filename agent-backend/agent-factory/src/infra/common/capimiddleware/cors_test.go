@@ -9,9 +9,13 @@ import (
 )
 
 func TestCors(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
 
 	t.Run("returns handler function", func(t *testing.T) {
+		t.Parallel()
+
 		handler := Cors()
 		if handler == nil {
 			t.Error("Expected Cors to return a non-nil handler")
@@ -19,6 +23,8 @@ func TestCors(t *testing.T) {
 	})
 
 	t.Run("processes request without panic", func(t *testing.T) {
+		t.Parallel()
+
 		router := gin.New()
 		router.Use(Cors())
 		router.GET("/test", func(c *gin.Context) {
@@ -35,6 +41,8 @@ func TestCors(t *testing.T) {
 	})
 
 	t.Run("handles OPTIONS request", func(t *testing.T) {
+		t.Parallel()
+
 		router := gin.New()
 		router.Use(Cors())
 		router.OPTIONS("/test", func(c *gin.Context) {

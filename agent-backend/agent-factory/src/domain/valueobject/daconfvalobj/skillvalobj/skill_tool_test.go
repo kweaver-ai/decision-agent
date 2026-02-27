@@ -8,6 +8,8 @@ import (
 )
 
 func TestSkillTool_ValObjCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	tool := &SkillTool{
 		ToolID:    "tool-123",
 		ToolBoxID: "toolbox-456",
@@ -19,6 +21,8 @@ func TestSkillTool_ValObjCheck_Valid(t *testing.T) {
 }
 
 func TestSkillTool_ValObjCheck_EmptyToolID(t *testing.T) {
+	t.Parallel()
+
 	tool := &SkillTool{
 		ToolID:    "",
 		ToolBoxID: "toolbox-456",
@@ -31,6 +35,8 @@ func TestSkillTool_ValObjCheck_EmptyToolID(t *testing.T) {
 }
 
 func TestSkillTool_ValObjCheck_EmptyToolBoxID(t *testing.T) {
+	t.Parallel()
+
 	tool := &SkillTool{
 		ToolID:    "tool-123",
 		ToolBoxID: "",
@@ -43,6 +49,8 @@ func TestSkillTool_ValObjCheck_EmptyToolBoxID(t *testing.T) {
 }
 
 func TestSkillTool_ValObjCheck_EmptyBoth(t *testing.T) {
+	t.Parallel()
+
 	tool := &SkillTool{
 		ToolID:    "",
 		ToolBoxID: "",
@@ -55,6 +63,8 @@ func TestSkillTool_ValObjCheck_EmptyBoth(t *testing.T) {
 }
 
 func TestSkillTool_NewSkillTool(t *testing.T) {
+	t.Parallel()
+
 	inputData := json.RawMessage(`{"param": "value"}`)
 	strategies := []ResultProcessStrategy{
 		{
@@ -82,6 +92,8 @@ func TestSkillTool_NewSkillTool(t *testing.T) {
 }
 
 func TestSkillTool_Empty(t *testing.T) {
+	t.Parallel()
+
 	tool := &SkillTool{}
 
 	assert.Empty(t, tool.ToolID)
@@ -93,6 +105,8 @@ func TestSkillTool_Empty(t *testing.T) {
 }
 
 func TestResultProcessStrategy_Fields(t *testing.T) {
+	t.Parallel()
+
 	strategy := ResultProcessStrategy{
 		Category: Category{
 			ID:          "cat-1",
@@ -115,9 +129,11 @@ func TestResultProcessStrategy_Fields(t *testing.T) {
 }
 
 func TestSkillTool_WithEmptyStrategies(t *testing.T) {
+	t.Parallel()
+
 	tool := &SkillTool{
-		ToolID:    "tool-123",
-		ToolBoxID: "toolbox-456",
+		ToolID:                  "tool-123",
+		ToolBoxID:               "toolbox-456",
 		ResultProcessStrategies: []ResultProcessStrategy{},
 	}
 

@@ -8,6 +8,8 @@ import (
 
 // TestSelectBuilder_Simple 简单的select示例
 func TestSelectBuilder_Simple(t *testing.T) {
+	t.Parallel()
+
 	sb := NewSelectBuilder()
 
 	sb.Select([]string{"id", "name"}).From("users").
@@ -29,6 +31,8 @@ func TestSelectBuilder_Simple(t *testing.T) {
 
 // TestSelectBuilder_Complex 复杂的select示例
 func TestSelectBuilder_Complex(t *testing.T) {
+	t.Parallel()
+
 	sb := NewSelectBuilder()
 
 	sb.Select([]string{"id", "name"}).From("users").
@@ -49,6 +53,8 @@ func TestSelectBuilder_Complex(t *testing.T) {
 }
 
 func TestSelectBuilder_SelectFields(t *testing.T) {
+	t.Parallel()
+
 	sb := NewSelectBuilder()
 	sb.Select([]string{"id", "name", "email"})
 
@@ -57,6 +63,8 @@ func TestSelectBuilder_SelectFields(t *testing.T) {
 }
 
 func TestSelectBuilder_GetFromTable(t *testing.T) {
+	t.Parallel()
+
 	sb := NewSelectBuilder()
 	sb.From("users")
 
@@ -65,6 +73,8 @@ func TestSelectBuilder_GetFromTable(t *testing.T) {
 }
 
 func TestSelectBuilder_GetWhereBuilder(t *testing.T) {
+	t.Parallel()
+
 	sb := NewSelectBuilder()
 	wb := sb.GetWhereBuilder()
 
@@ -72,6 +82,8 @@ func TestSelectBuilder_GetWhereBuilder(t *testing.T) {
 }
 
 func TestSelectBuilder_Page(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name          string
 		page          int
@@ -89,6 +101,8 @@ func TestSelectBuilder_Page(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			sb := NewSelectBuilder()
 			sb.Page(tt.page, tt.size)
 			sb.From("users")
@@ -101,6 +115,8 @@ func TestSelectBuilder_Page(t *testing.T) {
 }
 
 func TestSelectBuilder_Order(t *testing.T) {
+	t.Parallel()
+
 	sb := NewSelectBuilder()
 	sb.Select([]string{"*"}).From("users").Order("id desc")
 
@@ -111,6 +127,8 @@ func TestSelectBuilder_Order(t *testing.T) {
 }
 
 func TestSelectBuilder_In(t *testing.T) {
+	t.Parallel()
+
 	sb := NewSelectBuilder()
 	sb.Select([]string{"*"}).From("users").In("id", []int{1, 2, 3})
 
@@ -121,6 +139,8 @@ func TestSelectBuilder_In(t *testing.T) {
 }
 
 func TestSelectBuilder_Like(t *testing.T) {
+	t.Parallel()
+
 	sb := NewSelectBuilder()
 	sb.Select([]string{"*"}).From("users").Like("name", "John")
 
@@ -132,6 +152,8 @@ func TestSelectBuilder_Like(t *testing.T) {
 }
 
 func TestSelectBuilder_NotIn(t *testing.T) {
+	t.Parallel()
+
 	sb := NewSelectBuilder()
 	sb.Select([]string{"*"}).From("users").NotIn("status", []string{"deleted", "banned"})
 
@@ -142,6 +164,8 @@ func TestSelectBuilder_NotIn(t *testing.T) {
 }
 
 func TestSelectBuilder_SetWhereBuilder(t *testing.T) {
+	t.Parallel()
+
 	wb := NewWhereBuilder()
 	wb.Where("id", OperatorEq, 1)
 
@@ -155,6 +179,8 @@ func TestSelectBuilder_SetWhereBuilder(t *testing.T) {
 }
 
 func TestSelectBuilder_WhereRaw(t *testing.T) {
+	t.Parallel()
+
 	sb := NewSelectBuilder()
 	sb.Select([]string{"*"}).From("users").WhereRaw("id > ?", 100)
 
@@ -166,6 +192,8 @@ func TestSelectBuilder_WhereRaw(t *testing.T) {
 }
 
 func TestSelectBuilder_WhereOrRaw(t *testing.T) {
+	t.Parallel()
+
 	sb := NewSelectBuilder()
 	sb.Select([]string{"*"}).From("users").
 		Where("id", OperatorEq, 1).
@@ -178,6 +206,8 @@ func TestSelectBuilder_WhereOrRaw(t *testing.T) {
 }
 
 func TestSelectBuilder_ToSelectSQL_WhereBuilderError(t *testing.T) {
+	t.Parallel()
+
 	sb := NewSelectBuilder()
 	sb.Select([]string{"*"}).From("users")
 

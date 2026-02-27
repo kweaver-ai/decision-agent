@@ -8,10 +8,12 @@ import (
 )
 
 func TestKgSource_ValObjCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name    string
-		kg      *KgSource
-		wantErr bool
+		name     string
+		kg       *KgSource
+		wantErr  bool
 		checkErr func(t *testing.T, err error)
 	}{
 		{
@@ -20,7 +22,7 @@ func TestKgSource_ValObjCheck(t *testing.T) {
 				KgID:   "kg-1",
 				Fields: []string{"field1", "field2"},
 			},
-			wantErr: false,
+			wantErr:  false,
 			checkErr: nil,
 		},
 		{
@@ -71,9 +73,12 @@ func TestKgSource_ValObjCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.kg.ValObjCheck()
 			if tt.wantErr {
 				require.Error(t, err)
+
 				if tt.checkErr != nil {
 					tt.checkErr(t, err)
 				}
@@ -85,6 +90,8 @@ func TestKgSource_ValObjCheck(t *testing.T) {
 }
 
 func TestKgSource_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	kg := &KgSource{}
 
 	msgMap := kg.GetErrMsgMap()

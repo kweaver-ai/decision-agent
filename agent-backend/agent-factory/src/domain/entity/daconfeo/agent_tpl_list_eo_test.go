@@ -8,6 +8,8 @@ import (
 )
 
 func TestDataAgentTplListEo_Fields(t *testing.T) {
+	t.Parallel()
+
 	eo := &DataAgentTplListEo{
 		DataAgentTplPo: dapo.DataAgentTplPo{
 			Name: "Test Template",
@@ -24,6 +26,8 @@ func TestDataAgentTplListEo_Fields(t *testing.T) {
 }
 
 func TestDataAgentTplListEo_Empty(t *testing.T) {
+	t.Parallel()
+
 	eo := &DataAgentTplListEo{}
 
 	assert.Empty(t, eo.Name)

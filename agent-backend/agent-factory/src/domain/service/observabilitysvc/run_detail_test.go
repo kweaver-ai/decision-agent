@@ -19,27 +19,29 @@ func makeRunDetailEntry(agentID, runID, sessionID, convID, userID, callType, sta
 ) map[string]any {
 	return map[string]any{
 		"Attributes": map[string]any{
-			"agent_id":              map[string]any{"Data": agentID},
-			"agent_version":         map[string]any{"Data": "v1"},
-			"run_id":                map[string]any{"Data": runID},
-			"session_id":            map[string]any{"Data": sessionID},
+			"agent_id":               map[string]any{"Data": agentID},
+			"agent_version":          map[string]any{"Data": "v1"},
+			"run_id":                 map[string]any{"Data": runID},
+			"session_id":             map[string]any{"Data": sessionID},
 			"conversation_id":        map[string]any{"Data": convID},
-			"user_id":               map[string]any{"Data": userID},
-			"call_type":             map[string]any{"Data": callType},
-			"status":                map[string]any{"Data": status},
-			"total_time":            map[string]any{"Data": totalTime},
-			"ttft":                  map[string]any{"Data": ttft},
-			"total_tokens":          map[string]any{"Data": totalTokens},
-			"tool_call_count":       map[string]any{"Data": toolCallCount},
+			"user_id":                map[string]any{"Data": userID},
+			"call_type":              map[string]any{"Data": callType},
+			"status":                 map[string]any{"Data": status},
+			"total_time":             map[string]any{"Data": totalTime},
+			"ttft":                   map[string]any{"Data": ttft},
+			"total_tokens":           map[string]any{"Data": totalTokens},
+			"tool_call_count":        map[string]any{"Data": toolCallCount},
 			"tool_call_failed_count": map[string]any{"Data": toolCallFailedCount},
-			"start_time":            map[string]any{"Data": startTime},
-			"end_time":              map[string]any{"Data": endTime},
-			"input_message":         map[string]any{"Data": "hello"},
+			"start_time":             map[string]any{"Data": startTime},
+			"end_time":               map[string]any{"Data": endTime},
+			"input_message":          map[string]any{"Data": "hello"},
 		},
 	}
 }
 
 func TestObservabilitySvc_RunDetail_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -72,6 +74,8 @@ func TestObservabilitySvc_RunDetail_Success(t *testing.T) {
 }
 
 func TestObservabilitySvc_RunDetail_NotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -93,6 +97,8 @@ func TestObservabilitySvc_RunDetail_NotFound(t *testing.T) {
 }
 
 func TestObservabilitySvc_RunDetail_Error(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -113,6 +119,8 @@ func TestObservabilitySvc_RunDetail_Error(t *testing.T) {
 }
 
 func TestObservabilitySvc_RunDetail_WithAgentIDAndSessionID(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -141,6 +149,8 @@ func TestObservabilitySvc_RunDetail_WithAgentIDAndSessionID(t *testing.T) {
 }
 
 func TestObservabilitySvc_RunDetail_WithProgressJSON(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -154,22 +164,22 @@ func TestObservabilitySvc_RunDetail_WithProgressJSON(t *testing.T) {
 
 	entry := map[string]any{
 		"Attributes": map[string]any{
-			"agent_id":              map[string]any{"Data": "agent-1"},
-			"agent_version":         map[string]any{"Data": "v1"},
-			"run_id":                map[string]any{"Data": "run-xyz"},
-			"session_id":            map[string]any{"Data": "session-1"},
+			"agent_id":               map[string]any{"Data": "agent-1"},
+			"agent_version":          map[string]any{"Data": "v1"},
+			"run_id":                 map[string]any{"Data": "run-xyz"},
+			"session_id":             map[string]any{"Data": "session-1"},
 			"conversation_id":        map[string]any{"Data": "conv-1"},
-			"user_id":               map[string]any{"Data": "user-1"},
-			"call_type":             map[string]any{"Data": "chat"},
-			"status":                map[string]any{"Data": "success"},
-			"total_time":            map[string]any{"Data": 1.0},
-			"ttft":                  map[string]any{"Data": 100.0},
-			"total_tokens":          map[string]any{"Data": 300.0},
-			"tool_call_count":       map[string]any{"Data": 0.0},
+			"user_id":                map[string]any{"Data": "user-1"},
+			"call_type":              map[string]any{"Data": "chat"},
+			"status":                 map[string]any{"Data": "success"},
+			"total_time":             map[string]any{"Data": 1.0},
+			"ttft":                   map[string]any{"Data": 100.0},
+			"total_tokens":           map[string]any{"Data": 300.0},
+			"tool_call_count":        map[string]any{"Data": 0.0},
 			"tool_call_failed_count": map[string]any{"Data": 0.0},
-			"start_time":            map[string]any{"Data": 1100000.0},
-			"end_time":              map[string]any{"Data": 1600000.0},
-			"input_message":         map[string]any{"Data": "hello"},
+			"start_time":             map[string]any{"Data": 1100000.0},
+			"end_time":               map[string]any{"Data": 1600000.0},
+			"input_message":          map[string]any{"Data": "hello"},
 			// progress as JSON string
 			"progress": map[string]any{"Data": `[{"id":"prog-1","stage":"llm","status":"completed","answer":"hi","think":""}]`},
 		},
@@ -186,6 +196,8 @@ func TestObservabilitySvc_RunDetail_WithProgressJSON(t *testing.T) {
 }
 
 func TestObservabilitySvc_RunDetail_WithInvalidProgressJSON(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -200,23 +212,23 @@ func TestObservabilitySvc_RunDetail_WithInvalidProgressJSON(t *testing.T) {
 	// progress with invalid JSON string
 	entry := map[string]any{
 		"Attributes": map[string]any{
-			"agent_id":              map[string]any{"Data": "agent-1"},
-			"agent_version":         map[string]any{"Data": "v1"},
-			"run_id":                map[string]any{"Data": "run-xyz"},
-			"session_id":            map[string]any{"Data": "session-1"},
+			"agent_id":               map[string]any{"Data": "agent-1"},
+			"agent_version":          map[string]any{"Data": "v1"},
+			"run_id":                 map[string]any{"Data": "run-xyz"},
+			"session_id":             map[string]any{"Data": "session-1"},
 			"conversation_id":        map[string]any{"Data": "conv-1"},
-			"user_id":               map[string]any{"Data": "user-1"},
-			"call_type":             map[string]any{"Data": "chat"},
-			"status":                map[string]any{"Data": "success"},
-			"total_time":            map[string]any{"Data": 1.0},
-			"ttft":                  map[string]any{"Data": 100.0},
-			"total_tokens":          map[string]any{"Data": 300.0},
-			"tool_call_count":       map[string]any{"Data": 0.0},
+			"user_id":                map[string]any{"Data": "user-1"},
+			"call_type":              map[string]any{"Data": "chat"},
+			"status":                 map[string]any{"Data": "success"},
+			"total_time":             map[string]any{"Data": 1.0},
+			"ttft":                   map[string]any{"Data": 100.0},
+			"total_tokens":           map[string]any{"Data": 300.0},
+			"tool_call_count":        map[string]any{"Data": 0.0},
 			"tool_call_failed_count": map[string]any{"Data": 0.0},
-			"start_time":            map[string]any{"Data": 1100000.0},
-			"end_time":              map[string]any{"Data": 1600000.0},
-			"input_message":         map[string]any{"Data": "hello"},
-			"progress":              map[string]any{"Data": "invalid-json{"},
+			"start_time":             map[string]any{"Data": 1100000.0},
+			"end_time":               map[string]any{"Data": 1600000.0},
+			"input_message":          map[string]any{"Data": "hello"},
+			"progress":               map[string]any{"Data": "invalid-json{"},
 		},
 	}
 
@@ -232,6 +244,8 @@ func TestObservabilitySvc_RunDetail_WithInvalidProgressJSON(t *testing.T) {
 }
 
 func TestObservabilitySvc_RunDetail_WithNonStringProgress(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -246,23 +260,23 @@ func TestObservabilitySvc_RunDetail_WithNonStringProgress(t *testing.T) {
 	// progress data is NOT a string (slice instead) → triggers Warnf "not a string"
 	entry := map[string]any{
 		"Attributes": map[string]any{
-			"agent_id":              map[string]any{"Data": "agent-1"},
-			"agent_version":         map[string]any{"Data": "v1"},
-			"run_id":                map[string]any{"Data": "run-xyz"},
-			"session_id":            map[string]any{"Data": "session-1"},
+			"agent_id":               map[string]any{"Data": "agent-1"},
+			"agent_version":          map[string]any{"Data": "v1"},
+			"run_id":                 map[string]any{"Data": "run-xyz"},
+			"session_id":             map[string]any{"Data": "session-1"},
 			"conversation_id":        map[string]any{"Data": "conv-1"},
-			"user_id":               map[string]any{"Data": "user-1"},
-			"call_type":             map[string]any{"Data": "chat"},
-			"status":                map[string]any{"Data": "success"},
-			"total_time":            map[string]any{"Data": 1.0},
-			"ttft":                  map[string]any{"Data": 100.0},
-			"total_tokens":          map[string]any{"Data": 300.0},
-			"tool_call_count":       map[string]any{"Data": 0.0},
+			"user_id":                map[string]any{"Data": "user-1"},
+			"call_type":              map[string]any{"Data": "chat"},
+			"status":                 map[string]any{"Data": "success"},
+			"total_time":             map[string]any{"Data": 1.0},
+			"ttft":                   map[string]any{"Data": 100.0},
+			"total_tokens":           map[string]any{"Data": 300.0},
+			"tool_call_count":        map[string]any{"Data": 0.0},
 			"tool_call_failed_count": map[string]any{"Data": 0.0},
-			"start_time":            map[string]any{"Data": 1100000.0},
-			"end_time":              map[string]any{"Data": 1600000.0},
-			"input_message":         map[string]any{"Data": "hello"},
-			"progress":              map[string]any{"Data": []any{"item1", "item2"}}, // not a string
+			"start_time":             map[string]any{"Data": 1100000.0},
+			"end_time":               map[string]any{"Data": 1600000.0},
+			"input_message":          map[string]any{"Data": "hello"},
+			"progress":               map[string]any{"Data": []any{"item1", "item2"}}, // not a string
 		},
 	}
 

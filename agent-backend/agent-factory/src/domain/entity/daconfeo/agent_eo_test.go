@@ -12,6 +12,8 @@ import (
 )
 
 func TestDataAgent_GetObjName(t *testing.T) {
+	t.Parallel()
+
 	da := &DataAgent{
 		DataAgentPo: dapo.DataAgentPo{
 			Name: "Test Agent",
@@ -22,12 +24,16 @@ func TestDataAgent_GetObjName(t *testing.T) {
 }
 
 func TestDataAgent_GetObjName_Empty(t *testing.T) {
+	t.Parallel()
+
 	da := &DataAgent{}
 
 	assert.Empty(t, da.GetObjName())
 }
 
 func TestDataAgent_AuditMngLogCreate(t *testing.T) {
+	t.Parallel()
+
 	da := &DataAgent{}
 
 	// This method is a stub, just call it to ensure no panic
@@ -37,6 +43,8 @@ func TestDataAgent_AuditMngLogCreate(t *testing.T) {
 }
 
 func TestDataAgent_AuditMngLogUpdate(t *testing.T) {
+	t.Parallel()
+
 	da := &DataAgent{}
 
 	// This method is a stub, just call it to ensure no panic
@@ -46,6 +54,8 @@ func TestDataAgent_AuditMngLogUpdate(t *testing.T) {
 }
 
 func TestDataAgent_AuditMngLogDelete(t *testing.T) {
+	t.Parallel()
+
 	da := &DataAgent{}
 
 	// This method is a stub, just call it to ensure no panic
@@ -55,6 +65,8 @@ func TestDataAgent_AuditMngLogDelete(t *testing.T) {
 }
 
 func TestDataAgent_SetDatasetId_NilConfig(t *testing.T) {
+	t.Parallel()
+
 	da := &DataAgent{
 		Config: nil,
 	}
@@ -66,6 +78,8 @@ func TestDataAgent_SetDatasetId_NilConfig(t *testing.T) {
 }
 
 func TestDataAgent_SetDatasetId_NilDataSource(t *testing.T) {
+	t.Parallel()
+
 	da := &DataAgent{
 		Config: &daconfvalobj.Config{
 			DataSource: nil,
@@ -79,6 +93,8 @@ func TestDataAgent_SetDatasetId_NilDataSource(t *testing.T) {
 }
 
 func TestDataAgent_SetDatasetId_NilDocSource(t *testing.T) {
+	t.Parallel()
+
 	da := &DataAgent{
 		Config: &daconfvalobj.Config{
 			DataSource: &datasourcevalobj.RetrieverDataSource{
@@ -94,6 +110,8 @@ func TestDataAgent_SetDatasetId_NilDocSource(t *testing.T) {
 }
 
 func TestDataAgent_SetDatasetId_EmptyDocSource(t *testing.T) {
+	t.Parallel()
+
 	da := &DataAgent{
 		Config: &daconfvalobj.Config{
 			DataSource: &datasourcevalobj.RetrieverDataSource{
@@ -109,6 +127,8 @@ func TestDataAgent_SetDatasetId_EmptyDocSource(t *testing.T) {
 }
 
 func TestDataAgent_SetDatasetId_NoBuiltInDataSource(t *testing.T) {
+	t.Parallel()
+
 	da := &DataAgent{
 		Config: &daconfvalobj.Config{
 			DataSource: &datasourcevalobj.RetrieverDataSource{
@@ -136,6 +156,8 @@ func TestDataAgent_SetDatasetId_NoBuiltInDataSource(t *testing.T) {
 }
 
 func TestDataAgent_SetDatasetId_ValidBuiltInDataSource(t *testing.T) {
+	t.Parallel()
+
 	da := &DataAgent{
 		Config: &daconfvalobj.Config{
 			DataSource: &datasourcevalobj.RetrieverDataSource{
@@ -167,12 +189,14 @@ func TestDataAgent_SetDatasetId_ValidBuiltInDataSource(t *testing.T) {
 }
 
 func TestDataAgent_Fields(t *testing.T) {
+	t.Parallel()
+
 	config := &daconfvalobj.Config{}
 	da := &DataAgent{
-		ProductName:     "Test Product",
-		CreatedByName:   "User 1",
-		UpdatedByName:   "User 2",
-		Config:          config,
+		ProductName:   "Test Product",
+		CreatedByName: "User 1",
+		UpdatedByName: "User 2",
+		Config:        config,
 	}
 
 	assert.Equal(t, "Test Product", da.ProductName)
@@ -182,6 +206,8 @@ func TestDataAgent_Fields(t *testing.T) {
 }
 
 func TestDataAgent_Empty(t *testing.T) {
+	t.Parallel()
+
 	da := &DataAgent{}
 
 	assert.Empty(t, da.ProductName)

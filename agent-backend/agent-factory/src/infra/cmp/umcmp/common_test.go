@@ -8,6 +8,8 @@ import (
 )
 
 func TestUm_getPrivateURLPrefix(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		conf     cconf.UserMgntCfg
@@ -32,6 +34,8 @@ func TestUm_getPrivateURLPrefix(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			conf := tt.conf
 			um := NewUmCmp(&conf, nil)
 			result := um.getPrivateURLPrefix()

@@ -20,6 +20,8 @@ import (
 )
 
 func TestAgentSvc_Chat_GetAgentInfoError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -46,6 +48,8 @@ func TestAgentSvc_Chat_GetAgentInfoError(t *testing.T) {
 }
 
 func TestAgentSvc_Chat_APIChat_NotPublished(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -77,6 +81,8 @@ func TestAgentSvc_Chat_APIChat_NotPublished(t *testing.T) {
 }
 
 func TestAgentSvc_Chat_GetHistoryError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -99,7 +105,7 @@ func TestAgentSvc_Chat_GetHistoryError(t *testing.T) {
 
 	ctx := context.Background()
 	req := &agentreq.ChatReq{
-		AgentID: "a1",
+		AgentID:       "a1",
 		InternalParam: agentreq.InternalParam{UserID: "u1"},
 	}
 	_, err := svc.Chat(ctx, req)
@@ -107,6 +113,8 @@ func TestAgentSvc_Chat_GetHistoryError(t *testing.T) {
 }
 
 func TestAgentSvc_Chat_UpsertMsgError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -132,7 +140,7 @@ func TestAgentSvc_Chat_UpsertMsgError(t *testing.T) {
 
 	ctx := context.Background()
 	req := &agentreq.ChatReq{
-		AgentID: "a1",
+		AgentID:       "a1",
 		InternalParam: agentreq.InternalParam{UserID: "u1"},
 	}
 	_, err := svc.Chat(ctx, req)
@@ -140,6 +148,8 @@ func TestAgentSvc_Chat_UpsertMsgError(t *testing.T) {
 }
 
 func TestAgentSvc_Chat_SessionSvcError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -173,7 +183,7 @@ func TestAgentSvc_Chat_SessionSvcError(t *testing.T) {
 
 	ctx := context.Background()
 	req := &agentreq.ChatReq{
-		AgentID: "a1",
+		AgentID:       "a1",
 		InternalParam: agentreq.InternalParam{UserID: "u1"},
 	}
 	_, err := svc.Chat(ctx, req)

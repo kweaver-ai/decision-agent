@@ -10,6 +10,8 @@ import (
 )
 
 func TestDataAgentTpl_GetObjName(t *testing.T) {
+	t.Parallel()
+
 	dat := &DataAgentTpl{
 		DataAgentTplPo: dapo.DataAgentTplPo{
 			Name: "Test Template",
@@ -20,12 +22,16 @@ func TestDataAgentTpl_GetObjName(t *testing.T) {
 }
 
 func TestDataAgentTpl_GetObjName_Empty(t *testing.T) {
+	t.Parallel()
+
 	dat := &DataAgentTpl{}
 
 	assert.Empty(t, dat.GetObjName())
 }
 
 func TestDataAgentTpl_AuditMngLogCreate(t *testing.T) {
+	t.Parallel()
+
 	dat := &DataAgentTpl{}
 
 	// This method is a stub, just call it to ensure no panic
@@ -35,6 +41,8 @@ func TestDataAgentTpl_AuditMngLogCreate(t *testing.T) {
 }
 
 func TestDataAgentTpl_AuditMngLogUpdate(t *testing.T) {
+	t.Parallel()
+
 	dat := &DataAgentTpl{}
 
 	// This method is a stub, just call it to ensure no panic
@@ -44,6 +52,8 @@ func TestDataAgentTpl_AuditMngLogUpdate(t *testing.T) {
 }
 
 func TestDataAgentTpl_AuditMngLogDelete(t *testing.T) {
+	t.Parallel()
+
 	dat := &DataAgentTpl{}
 
 	// This method is a stub, just call it to ensure no panic
@@ -53,6 +63,8 @@ func TestDataAgentTpl_AuditMngLogDelete(t *testing.T) {
 }
 
 func TestDataAgentTpl_Fields(t *testing.T) {
+	t.Parallel()
+
 	config := &daconfvalobj.Config{}
 	dat := &DataAgentTpl{
 		ProductName: "Test Product",
@@ -64,6 +76,8 @@ func TestDataAgentTpl_Fields(t *testing.T) {
 }
 
 func TestDataAgentTpl_Empty(t *testing.T) {
+	t.Parallel()
+
 	dat := &DataAgentTpl{}
 
 	assert.Empty(t, dat.ProductName)

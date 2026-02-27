@@ -8,6 +8,8 @@ import (
 )
 
 func TestPublishedAgentEo_NewPublishedAgentEo(t *testing.T) {
+	t.Parallel()
+
 	config := daconfvalobj.NewConfig()
 	eo := &PublishedAgentEo{
 		Config:          config,
@@ -20,6 +22,8 @@ func TestPublishedAgentEo_NewPublishedAgentEo(t *testing.T) {
 }
 
 func TestPublishedAgentEo_Empty(t *testing.T) {
+	t.Parallel()
+
 	eo := &PublishedAgentEo{}
 
 	assert.NotNil(t, eo)
@@ -28,6 +32,8 @@ func TestPublishedAgentEo_Empty(t *testing.T) {
 }
 
 func TestPublishedAgentEo_WithNilConfig(t *testing.T) {
+	t.Parallel()
+
 	eo := &PublishedAgentEo{
 		Config:          nil,
 		PublishedByName: "Test Publisher",

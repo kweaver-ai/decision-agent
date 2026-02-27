@@ -9,6 +9,8 @@ import (
 )
 
 func TestNewCreateReq(t *testing.T) {
+	t.Parallel()
+
 	req := NewCreateReq()
 
 	assert.NotNil(t, req)
@@ -19,6 +21,8 @@ func TestNewCreateReq(t *testing.T) {
 }
 
 func TestCreateReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	updateReq := NewUpdateReq()
 	updateReq.Name = "Test Space"
 	updateReq.Profile = "Test Profile"
@@ -38,6 +42,8 @@ func TestCreateReq_StructFields(t *testing.T) {
 }
 
 func TestCreateReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := &CreateReq{}
 
 	assert.Empty(t, req.Key)
@@ -46,6 +52,8 @@ func TestCreateReq_Empty(t *testing.T) {
 }
 
 func TestCreateReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := &CreateReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -55,6 +63,8 @@ func TestCreateReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestCreateReq_CustomCheckAndDedupl_NilUpdateReq(t *testing.T) {
+	t.Parallel()
+
 	req := &CreateReq{
 		Key: "test-key",
 	}
@@ -66,6 +76,8 @@ func TestCreateReq_CustomCheckAndDedupl_NilUpdateReq(t *testing.T) {
 }
 
 func TestCreateReq_CustomCheckAndDedupl_Valid(t *testing.T) {
+	t.Parallel()
+
 	req := NewCreateReq()
 	req.Key = "test-key"
 	req.Name = "Test Space"
@@ -96,6 +108,8 @@ func TestCreateReq_CustomCheckAndDedupl_Valid(t *testing.T) {
 }
 
 func TestCreateReq_CustomCheckAndDedupl_DuplicateMembers(t *testing.T) {
+	t.Parallel()
+
 	req := NewCreateReq()
 	req.Name = "Test Space"
 	req.Members = []*SpaceMemberReq{
@@ -118,6 +132,8 @@ func TestCreateReq_CustomCheckAndDedupl_DuplicateMembers(t *testing.T) {
 }
 
 func TestCreateReq_CustomCheckAndDedupl_DuplicateResources(t *testing.T) {
+	t.Parallel()
+
 	req := NewCreateReq()
 	req.Name = "Test Space"
 	req.Resources = []*SpaceResourceReq{
@@ -140,6 +156,8 @@ func TestCreateReq_CustomCheckAndDedupl_DuplicateResources(t *testing.T) {
 }
 
 func TestCreateReq_CustomCheckAndDedupl_InvalidMemberType(t *testing.T) {
+	t.Parallel()
+
 	req := NewCreateReq()
 	req.Name = "Test Space"
 	req.Members = []*SpaceMemberReq{
@@ -156,6 +174,8 @@ func TestCreateReq_CustomCheckAndDedupl_InvalidMemberType(t *testing.T) {
 }
 
 func TestCreateReq_CustomCheckAndDedupl_InvalidResourceType(t *testing.T) {
+	t.Parallel()
+
 	req := NewCreateReq()
 	req.Name = "Test Space"
 	req.Resources = []*SpaceResourceReq{
@@ -172,6 +192,8 @@ func TestCreateReq_CustomCheckAndDedupl_InvalidResourceType(t *testing.T) {
 }
 
 func TestCreateReq_WithKey(t *testing.T) {
+	t.Parallel()
+
 	keys := []string{
 		"space-key-001",
 		"space-xyz",
@@ -188,6 +210,8 @@ func TestCreateReq_WithKey(t *testing.T) {
 }
 
 func TestCreateReq_WithMembers(t *testing.T) {
+	t.Parallel()
+
 	members := []*SpaceMemberReq{
 		{
 			ObjType: cenum.OrgObjTypeUser,
@@ -214,6 +238,8 @@ func TestCreateReq_WithMembers(t *testing.T) {
 }
 
 func TestCreateReq_WithResources(t *testing.T) {
+	t.Parallel()
+
 	resources := []*SpaceResourceReq{
 		{
 			ResourceType: cdaenum.ResourceTypeDataAgent,
@@ -236,6 +262,8 @@ func TestCreateReq_WithResources(t *testing.T) {
 }
 
 func TestCreateReq_EmptyMembersAndResources(t *testing.T) {
+	t.Parallel()
+
 	req := NewCreateReq()
 
 	assert.NotNil(t, req.Members)
@@ -248,6 +276,8 @@ func TestCreateReq_EmptyMembersAndResources(t *testing.T) {
 }
 
 func TestCreateReq_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	req := NewCreateReq()
 	req.Key = "complete-space-key"
 	req.Name = "Complete Space Name"

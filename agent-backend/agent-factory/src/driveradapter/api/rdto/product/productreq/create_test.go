@@ -9,6 +9,8 @@ import (
 )
 
 func TestCreateReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := CreateReq{
 		Name:    "Smart Customer Service",
 		Profile: "This is a smart customer service product",
@@ -21,6 +23,8 @@ func TestCreateReq_StructFields(t *testing.T) {
 }
 
 func TestCreateReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := CreateReq{}
 
 	assert.Empty(t, req.Name)
@@ -29,6 +33,8 @@ func TestCreateReq_Empty(t *testing.T) {
 }
 
 func TestCreateReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := CreateReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -41,6 +47,8 @@ func TestCreateReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestCreateReq_CustomCheck(t *testing.T) {
+	t.Parallel()
+
 	req := CreateReq{
 		Name: "Test Product",
 	}
@@ -51,6 +59,8 @@ func TestCreateReq_CustomCheck(t *testing.T) {
 }
 
 func TestCreateReq_WithName(t *testing.T) {
+	t.Parallel()
+
 	names := []string{
 		"Smart Customer Service",
 		"智能客服产品",
@@ -67,6 +77,8 @@ func TestCreateReq_WithName(t *testing.T) {
 }
 
 func TestCreateReq_WithProfile(t *testing.T) {
+	t.Parallel()
+
 	profiles := []string{
 		"This is a smart customer service product",
 		"这是一个智能客服产品",
@@ -83,6 +95,8 @@ func TestCreateReq_WithProfile(t *testing.T) {
 }
 
 func TestCreateReq_WithKey(t *testing.T) {
+	t.Parallel()
+
 	keys := []string{
 		"smart-customer-service",
 		"product-key-123",
@@ -99,6 +113,8 @@ func TestCreateReq_WithKey(t *testing.T) {
 }
 
 func TestCreateReq_WithMaxLengths(t *testing.T) {
+	t.Parallel()
+
 	req := CreateReq{
 		Name:    strings.Repeat("a", 50),
 		Profile: strings.Repeat("b", 100),
@@ -111,6 +127,8 @@ func TestCreateReq_WithMaxLengths(t *testing.T) {
 }
 
 func TestCreateReq_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	req := CreateReq{
 		Name:    "Complete Product Name",
 		Profile: "Complete product profile with description",
@@ -126,6 +144,8 @@ func TestCreateReq_WithAllFields(t *testing.T) {
 }
 
 func TestCreateReq_WithChineseName(t *testing.T) {
+	t.Parallel()
+
 	req := CreateReq{
 		Name: "智能客服产品",
 	}
@@ -134,6 +154,8 @@ func TestCreateReq_WithChineseName(t *testing.T) {
 }
 
 func TestCreateReq_WithMixedName(t *testing.T) {
+	t.Parallel()
+
 	req := CreateReq{
 		Name: "Smart智能客服Product",
 	}
@@ -142,6 +164,8 @@ func TestCreateReq_WithMixedName(t *testing.T) {
 }
 
 func TestCreateReq_WithEmptyName(t *testing.T) {
+	t.Parallel()
+
 	req := CreateReq{
 		Name: "",
 	}
@@ -150,6 +174,8 @@ func TestCreateReq_WithEmptyName(t *testing.T) {
 }
 
 func TestCreateReq_WithSpecialCharsInKey(t *testing.T) {
+	t.Parallel()
+
 	keys := []string{
 		"smart-customer-service",
 		"smart_customer_service",
@@ -166,7 +192,11 @@ func TestCreateReq_WithSpecialCharsInKey(t *testing.T) {
 }
 
 func TestCreateReq_D2e(t *testing.T) {
+	t.Parallel()
+
 	t.Run("with all fields", func(t *testing.T) {
+		t.Parallel()
+
 		req := CreateReq{
 			Name:    "Smart Customer Service",
 			Profile: "This is a smart customer service product",
@@ -183,6 +213,8 @@ func TestCreateReq_D2e(t *testing.T) {
 	})
 
 	t.Run("with empty key generates ulid", func(t *testing.T) {
+		t.Parallel()
+
 		req := CreateReq{
 			Name:    "Test Product",
 			Profile: "Test profile",
@@ -199,6 +231,8 @@ func TestCreateReq_D2e(t *testing.T) {
 	})
 
 	t.Run("with only name", func(t *testing.T) {
+		t.Parallel()
+
 		req := CreateReq{
 			Name: "Minimal Product",
 		}
@@ -213,6 +247,8 @@ func TestCreateReq_D2e(t *testing.T) {
 	})
 
 	t.Run("with empty profile", func(t *testing.T) {
+		t.Parallel()
+
 		req := CreateReq{
 			Name:    "Product No Profile",
 			Key:     "product-no-profile",
@@ -229,6 +265,8 @@ func TestCreateReq_D2e(t *testing.T) {
 	})
 
 	t.Run("with chinese characters", func(t *testing.T) {
+		t.Parallel()
+
 		req := CreateReq{
 			Name:    "智能客服产品",
 			Profile: "这是一个智能客服产品",
@@ -245,6 +283,8 @@ func TestCreateReq_D2e(t *testing.T) {
 	})
 
 	t.Run("with long values", func(t *testing.T) {
+		t.Parallel()
+
 		req := CreateReq{
 			Name:    strings.Repeat("a", 50),
 			Profile: strings.Repeat("b", 100),
@@ -261,6 +301,8 @@ func TestCreateReq_D2e(t *testing.T) {
 	})
 
 	t.Run("with empty name", func(t *testing.T) {
+		t.Parallel()
+
 		req := CreateReq{
 			Name: "",
 			Key:  "test-key",

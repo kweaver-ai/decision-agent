@@ -9,6 +9,8 @@ import (
 )
 
 func TestNewRequestLogger(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		config  *httprequesthelper.Config
@@ -39,6 +41,8 @@ func TestNewRequestLogger(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			logger, err := NewRequestLogger(tt.config)
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -52,6 +56,8 @@ func TestNewRequestLogger(t *testing.T) {
 }
 
 func TestRequestLogger_Close(t *testing.T) {
+	t.Parallel()
+
 	logger, err := NewRequestLogger(&httprequesthelper.Config{
 		Enabled:    true,
 		OutputMode: httprequesthelper.OutputModeConsole,
@@ -64,6 +70,8 @@ func TestRequestLogger_Close(t *testing.T) {
 }
 
 func TestRequestLogger_Close_Idempotent(t *testing.T) {
+	t.Parallel()
+
 	logger, err := NewRequestLogger(&httprequesthelper.Config{
 		Enabled:    true,
 		OutputMode: httprequesthelper.OutputModeConsole,
@@ -79,14 +87,19 @@ func TestRequestLogger_Close_Idempotent(t *testing.T) {
 }
 
 func TestRequestLogger_Close_NilLogger(t *testing.T) {
+	t.Parallel()
+
 	// This test verifies that closing a nil logger causes a panic
 	var logger *RequestLogger
+
 	assert.Panics(t, func() {
 		logger.Close()
 	})
 }
 
 func TestNewRequestLogger_WithMaxBodySize(t *testing.T) {
+	t.Parallel()
+
 	config := &httprequesthelper.Config{
 		Enabled:     true,
 		OutputMode:  httprequesthelper.OutputModeConsole,
@@ -102,6 +115,8 @@ func TestNewRequestLogger_WithMaxBodySize(t *testing.T) {
 }
 
 func TestNewRequestLogger_WithAllOptions(t *testing.T) {
+	t.Parallel()
+
 	config := &httprequesthelper.Config{
 		Enabled:             true,
 		OutputMode:          httprequesthelper.OutputModeConsole,
@@ -119,6 +134,8 @@ func TestNewRequestLogger_WithAllOptions(t *testing.T) {
 }
 
 func TestNewRequestLogger_InvalidLogDir(t *testing.T) {
+	t.Parallel()
+
 	// Test error path when file output mode is used with invalid log directory
 	config := &httprequesthelper.Config{
 		Enabled:    true,
@@ -126,7 +143,7 @@ func TestNewRequestLogger_InvalidLogDir(t *testing.T) {
 		// Use an invalid path that cannot be created
 		// In Unix-like systems, a path containing null bytes is invalid
 		// Use a path that's likely to fail (e.g., path to a location we can't write to)
-		LogDir:     "/dev/null/invalid/subdir", // Can't create subdirectory under /dev/null
+		LogDir: "/dev/null/invalid/subdir", // Can't create subdirectory under /dev/null
 	}
 
 	logger, err := NewRequestLogger(config)
@@ -135,6 +152,8 @@ func TestNewRequestLogger_InvalidLogDir(t *testing.T) {
 }
 
 func TestNewRequestLogger_InvalidLogDirBothMode(t *testing.T) {
+	t.Parallel()
+
 	// Test error path when both output mode is used with invalid log directory
 	config := &httprequesthelper.Config{
 		Enabled:    true,

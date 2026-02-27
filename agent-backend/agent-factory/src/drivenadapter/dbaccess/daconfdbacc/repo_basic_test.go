@@ -38,6 +38,7 @@ func (daTestLogger) Fatalln(...interface{})        {}
 
 func newDARepoWithMock(t *testing.T) (*DAConfigRepo, *sqlx.DB, sqlmock.Sqlmock) {
 	t.Helper()
+
 	db, mock, err := sqlx.New()
 	require.NoError(t, err)
 
@@ -104,9 +105,12 @@ func userCtx(uid string) context.Context {
 }
 
 func TestNewDataAgentRepo_Singleton(t *testing.T) {
+	t.Parallel()
+
 	oldOnce := agentRepoOnce
 	oldImpl := agentRepoImpl
 	oldGDB := global.GDB
+
 	t.Cleanup(func() {
 		agentRepoOnce = oldOnce
 		agentRepoImpl = oldImpl
@@ -115,18 +119,24 @@ func TestNewDataAgentRepo_Singleton(t *testing.T) {
 
 	db, _, err := sqlx.New()
 	require.NoError(t, err)
+
 	global.GDB = db
 	agentRepoOnce = sync.Once{}
 	agentRepoImpl = nil
 
 	r1 := NewDataAgentRepo()
 	r2 := NewDataAgentRepo()
+
 	assert.NotNil(t, r1)
 	assert.Same(t, r1, r2)
 }
 
 func TestDAConfigRepo_ExistsMethods(t *testing.T) {
+	t.Parallel()
+
 	t.Run("exists by name true", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newDARepoWithMock(t)
 		defer db.Close()
 
@@ -141,6 +151,8 @@ func TestDAConfigRepo_ExistsMethods(t *testing.T) {
 	})
 
 	t.Run("exists by id false", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newDARepoWithMock(t)
 		defer db.Close()
 
@@ -155,6 +167,8 @@ func TestDAConfigRepo_ExistsMethods(t *testing.T) {
 	})
 
 	t.Run("exists by name exclude id error", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newDARepoWithMock(t)
 		defer db.Close()
 
@@ -169,7 +183,11 @@ func TestDAConfigRepo_ExistsMethods(t *testing.T) {
 }
 
 func TestDAConfigRepo_ListForBenchmark(t *testing.T) {
+	t.Parallel()
+
 	t.Run("count error", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newDARepoWithMock(t)
 		defer db.Close()
 
@@ -187,6 +205,8 @@ func TestDAConfigRepo_ListForBenchmark(t *testing.T) {
 	})
 
 	t.Run("count zero", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newDARepoWithMock(t)
 		defer db.Close()
 
@@ -201,6 +221,8 @@ func TestDAConfigRepo_ListForBenchmark(t *testing.T) {
 	})
 
 	t.Run("success with published and unpublished", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newDARepoWithMock(t)
 		defer db.Close()
 
@@ -235,6 +257,8 @@ func TestDAConfigRepo_ListForBenchmark(t *testing.T) {
 	})
 
 	t.Run("list query error", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newDARepoWithMock(t)
 		defer db.Close()
 
@@ -250,7 +274,11 @@ func TestDAConfigRepo_ListForBenchmark(t *testing.T) {
 }
 
 func TestDAConfigRepo_ListForBenchmark2(t *testing.T) {
+	t.Parallel()
+
 	t.Run("count zero", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newDARepoWithMock(t)
 		defer db.Close()
 
@@ -265,6 +293,8 @@ func TestDAConfigRepo_ListForBenchmark2(t *testing.T) {
 	})
 
 	t.Run("success", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newDARepoWithMock(t)
 		defer db.Close()
 
@@ -285,6 +315,8 @@ func TestDAConfigRepo_ListForBenchmark2(t *testing.T) {
 	})
 
 	t.Run("count and list error", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newDARepoWithMock(t)
 		defer db.Close()
 
@@ -306,6 +338,8 @@ func TestDAConfigRepo_ListForBenchmark2(t *testing.T) {
 }
 
 func TestDAConfigRepo_CreateAndCreateBatch(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newDARepoWithMock(t)
 	defer db.Close()
 
@@ -325,6 +359,8 @@ func TestDAConfigRepo_CreateAndCreateBatch(t *testing.T) {
 }
 
 func TestDAConfigRepo_GetAllIDs(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newDARepoWithMock(t)
 	defer db.Close()
 
@@ -339,7 +375,11 @@ func TestDAConfigRepo_GetAllIDs(t *testing.T) {
 }
 
 func TestDAConfigRepo_GetByBasicMethods(t *testing.T) {
+	t.Parallel()
+
 	t.Run("get by id and key", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newDARepoWithMock(t)
 		defer db.Close()
 
@@ -361,6 +401,8 @@ func TestDAConfigRepo_GetByBasicMethods(t *testing.T) {
 	})
 
 	t.Run("get by keys and ids", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newDARepoWithMock(t)
 		defer db.Close()
 
@@ -383,7 +425,11 @@ func TestDAConfigRepo_GetByBasicMethods(t *testing.T) {
 }
 
 func TestDAConfigRepo_GetMapAndNameMapByIDs(t *testing.T) {
+	t.Parallel()
+
 	t.Run("empty ids", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, _ := newDARepoWithMock(t)
 		defer db.Close()
 
@@ -397,6 +443,8 @@ func TestDAConfigRepo_GetMapAndNameMapByIDs(t *testing.T) {
 	})
 
 	t.Run("success", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newDARepoWithMock(t)
 		defer db.Close()
 
@@ -419,7 +467,11 @@ func TestDAConfigRepo_GetMapAndNameMapByIDs(t *testing.T) {
 }
 
 func TestDAConfigRepo_GetByIDsAndCreatedBy(t *testing.T) {
+	t.Parallel()
+
 	t.Run("ids empty", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, _ := newDARepoWithMock(t)
 		defer db.Close()
 
@@ -429,6 +481,8 @@ func TestDAConfigRepo_GetByIDsAndCreatedBy(t *testing.T) {
 	})
 
 	t.Run("success and dedupe", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newDARepoWithMock(t)
 		defer db.Close()
 
@@ -444,6 +498,8 @@ func TestDAConfigRepo_GetByIDsAndCreatedBy(t *testing.T) {
 }
 
 func TestDAConfigRepo_UpdateAndUpdateByKeyAndStatus(t *testing.T) {
+	t.Parallel()
+
 	repo, db, mock := newDARepoWithMock(t)
 	defer db.Close()
 
@@ -471,7 +527,11 @@ func TestDAConfigRepo_UpdateAndUpdateByKeyAndStatus(t *testing.T) {
 }
 
 func TestDAConfigRepo_Delete(t *testing.T) {
+	t.Parallel()
+
 	t.Run("uid empty", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, _ := newDARepoWithMock(t)
 		defer db.Close()
 
@@ -481,6 +541,8 @@ func TestDAConfigRepo_Delete(t *testing.T) {
 	})
 
 	t.Run("success", func(t *testing.T) {
+		t.Parallel()
+
 		repo, db, mock := newDARepoWithMock(t)
 		defer db.Close()
 

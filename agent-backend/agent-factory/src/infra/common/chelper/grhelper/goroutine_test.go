@@ -23,6 +23,7 @@ func (m *mockLogger) Errorf(format string, args ...interface{}) {
 	for _, arg := range args {
 		msg += " " + arg.(string)
 	}
+
 	m.errors = append(m.errors, msg)
 }
 
@@ -45,7 +46,7 @@ func (m *mockLogger) hasError() bool {
 // Implement other required icmp.Logger methods
 func (m *mockLogger) Debug(args ...interface{})                 {}
 func (m *mockLogger) Debugf(format string, args ...interface{}) {}
-func (m *mockLogger) Debugln(args ...interface{})                {}
+func (m *mockLogger) Debugln(args ...interface{})               {}
 func (m *mockLogger) Info(args ...interface{})                  {}
 func (m *mockLogger) Infof(format string, args ...interface{})  {}
 func (m *mockLogger) Infoln(args ...interface{})                {}
@@ -53,14 +54,16 @@ func (m *mockLogger) Warn(args ...interface{})                  {}
 func (m *mockLogger) Warnf(format string, args ...interface{})  {}
 func (m *mockLogger) Warnln(args ...interface{})                {}
 func (m *mockLogger) Panicf(format string, args ...interface{}) {}
-func (m *mockLogger) Panicln(args ...interface{})                {}
+func (m *mockLogger) Panicln(args ...interface{})               {}
 func (m *mockLogger) Fatal(args ...interface{})                 {}
 func (m *mockLogger) Fatalf(format string, args ...interface{}) {}
-func (m *mockLogger) Fatalln(args ...interface{})                {}
+func (m *mockLogger) Fatalln(args ...interface{})               {}
 
 var _ icmp.Logger = (*mockLogger)(nil)
 
 func TestGoSafe_Success(t *testing.T) {
+	t.Parallel()
+
 	logger := newMockLogger()
 	executed := false
 
@@ -75,17 +78,20 @@ func TestGoSafe_Success(t *testing.T) {
 }
 
 func TestGoSafe_WithError(t *testing.T) {
+	t.Parallel()
+
 	logger := newMockLogger()
 
 	GoSafe(logger, func() error {
 		return assert.AnError
 	})
-
 	// Give goroutine time to execute
 	// In a real test, you might use a channel or wait group
 }
 
 func TestGoSafe_WithPanic(t *testing.T) {
+	t.Parallel()
+
 	logger := newMockLogger()
 
 	// This test verifies that panics are caught
@@ -93,12 +99,13 @@ func TestGoSafe_WithPanic(t *testing.T) {
 	GoSafe(logger, func() error {
 		panic("test panic")
 	})
-
 	// Give goroutine time to execute
 	// The panic should be caught by the panic helper
 }
 
 func TestGoSafe_MultipleGoroutines(t *testing.T) {
+	t.Parallel()
+
 	logger := newMockLogger()
 	count := 0
 
@@ -108,12 +115,13 @@ func TestGoSafe_MultipleGoroutines(t *testing.T) {
 			return nil
 		})
 	}
-
 	// In a real test, you'd wait for all goroutines to complete
 	// For now, just verify the function is callable
 }
 
 func TestGoSafe_WithReturnValue(t *testing.T) {
+	t.Parallel()
+
 	logger := newMockLogger()
 
 	GoSafe(logger, func() error {
@@ -126,6 +134,8 @@ func TestGoSafe_WithReturnValue(t *testing.T) {
 }
 
 func TestGoSafe_Constructor(t *testing.T) {
+	t.Parallel()
+
 	// This test verifies GoSafe is a valid function
 	logger := newMockLogger()
 
@@ -138,17 +148,20 @@ func TestGoSafe_Constructor(t *testing.T) {
 }
 
 func TestGoSafe_WithErrorLogging(t *testing.T) {
+	t.Parallel()
+
 	logger := newMockLogger()
 
 	GoSafe(logger, func() error {
 		return assert.AnError
 	})
-
 	// The error should be logged by the goroutine
 	// In a real test, you'd wait and check logger.errors
 }
 
 func TestMockLogger_Implementation(t *testing.T) {
+	t.Parallel()
+
 	logger := newMockLogger()
 
 	// Verify mock implements the interface
@@ -160,6 +173,8 @@ func TestMockLogger_Implementation(t *testing.T) {
 }
 
 func TestMockLogger_ErrorLogging(t *testing.T) {
+	t.Parallel()
+
 	logger := newMockLogger()
 
 	logger.Errorln("test error")
@@ -170,6 +185,8 @@ func TestMockLogger_ErrorLogging(t *testing.T) {
 }
 
 func TestGoSafe_NilFunction(t *testing.T) {
+	t.Parallel()
+
 	logger := newMockLogger()
 
 	// This should not panic

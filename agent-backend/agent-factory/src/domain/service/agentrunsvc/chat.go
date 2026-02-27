@@ -136,9 +136,12 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 
 	// NOTE: 确保 Sandbox Session 存在并就绪（仅在启用沙箱时执行）
 	var sandboxSessionID string
+
 	if agentSvc.sandboxPlatformConf.Enable {
 		sessionID := fmt.Sprintf("sess-%s", req.UserID)
+
 		var sandboxErr error
+
 		sandboxSessionID, sandboxErr = agentSvc.EnsureSandboxSession(newCtx, sessionID, req)
 		if sandboxErr != nil {
 			o11y.Warn(newCtx, fmt.Sprintf("[chat] ensure sandbox session failed: %v", sandboxErr))
@@ -175,6 +178,7 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	}
 
 	var messageChan chan string
+
 	var errChan chan error
 
 	// 统一调用 Call 方法（Resume 信息通过 _options 传递）

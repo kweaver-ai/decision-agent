@@ -10,6 +10,8 @@ import (
 )
 
 func TestDataAgentRes_GetExploreAnswerList_NotExploreType(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	// Not an explore type - answer is a nested object but not an explore array
 	data := []byte(`{
@@ -30,6 +32,8 @@ func TestDataAgentRes_GetExploreAnswerList_NotExploreType(t *testing.T) {
 }
 
 func TestDataAgentRes_IsPromptType_NotPromptType(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	// Not a prompt type - answer is a nested object but not a prompt
 	data := []byte(`{
@@ -51,6 +55,8 @@ func TestDataAgentRes_IsPromptType_NotPromptType(t *testing.T) {
 }
 
 func TestDataAgentRes_GetExploreAnswerList_ExploreType(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	// Valid explore type - an array with required fields
 	// Note: The answer field should contain the array as a nested field under "answer"
@@ -89,6 +95,8 @@ func TestDataAgentRes_GetExploreAnswerList_ExploreType(t *testing.T) {
 }
 
 func TestDataAgentRes_IsPromptType_PromptType(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 	// Valid prompt type - an object with answer and think fields
 	// Note: The answer field should contain the object as a nested field under "answer"

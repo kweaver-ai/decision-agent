@@ -30,6 +30,7 @@ func setupStreamingLoggerDebugEnv(t *testing.T, isDebug bool, logRootDir string)
 			_ = os.Setenv(k, v)
 			return
 		}
+
 		_ = os.Unsetenv(k)
 	}
 
@@ -57,6 +58,8 @@ func setupStreamingLoggerDebugEnv(t *testing.T, isDebug bool, logRootDir string)
 }
 
 func TestNewStreamingResponseLogger_NonDebugMode(t *testing.T) {
+	t.Parallel()
+
 	setupStreamingLoggerDebugEnv(t, false, "")
 
 	logger, err := NewStreamingResponseLogger("conv-123", ExecutorResponse)
@@ -66,6 +69,8 @@ func TestNewStreamingResponseLogger_NonDebugMode(t *testing.T) {
 }
 
 func TestNewStreamingResponseLogger_DebugMode_CreateSuccess(t *testing.T) {
+	t.Parallel()
+
 	logRoot := t.TempDir()
 	setupStreamingLoggerDebugEnv(t, true, logRoot)
 
@@ -87,6 +92,8 @@ func TestNewStreamingResponseLogger_DebugMode_CreateSuccess(t *testing.T) {
 }
 
 func TestNewStreamingResponseLogger_DebugMode_MkdirAllError(t *testing.T) {
+	t.Parallel()
+
 	baseDir := t.TempDir()
 	notDir := filepath.Join(baseDir, "root-file")
 	require.NoError(t, os.WriteFile(notDir, []byte("x"), 0o644))
@@ -98,6 +105,8 @@ func TestNewStreamingResponseLogger_DebugMode_MkdirAllError(t *testing.T) {
 }
 
 func TestStreamingResponseLogger_LogChunk_NilLogger(t *testing.T) {
+	t.Parallel()
+
 	var l *StreamingResponseLogger
 
 	assert.NotPanics(t, func() {
@@ -106,6 +115,8 @@ func TestStreamingResponseLogger_LogChunk_NilLogger(t *testing.T) {
 }
 
 func TestStreamingResponseLogger_Complete_NilLogger(t *testing.T) {
+	t.Parallel()
+
 	var l *StreamingResponseLogger
 
 	assert.NotPanics(t, func() {
@@ -114,6 +125,8 @@ func TestStreamingResponseLogger_Complete_NilLogger(t *testing.T) {
 }
 
 func TestStreamingResponseLogger_LogChunk_NilFile(t *testing.T) {
+	t.Parallel()
+
 	l := &StreamingResponseLogger{
 		file: nil,
 	}
@@ -124,6 +137,8 @@ func TestStreamingResponseLogger_LogChunk_NilFile(t *testing.T) {
 }
 
 func TestStreamingResponseLogger_Complete_NilFile(t *testing.T) {
+	t.Parallel()
+
 	l := &StreamingResponseLogger{
 		file: nil,
 	}
@@ -134,7 +149,10 @@ func TestStreamingResponseLogger_Complete_NilFile(t *testing.T) {
 }
 
 func TestStreamingResponseLogger_LogAndComplete_WithRealFile(t *testing.T) {
+	t.Parallel()
+
 	tmpDir := t.TempDir()
+
 	f, err := os.CreateTemp(tmpDir, "test-*.log")
 	if err != nil {
 		t.Fatal(err)

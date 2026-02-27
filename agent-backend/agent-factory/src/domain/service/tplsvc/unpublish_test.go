@@ -6,15 +6,17 @@ import (
 	"errors"
 	"testing"
 
-	"go.uber.org/mock/gomock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver/v3portdrivermock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 )
 
 func TestDataAgentTplSvc_Unpublish_PanicsWithoutAgentTplRepo(t *testing.T) {
+	t.Parallel()
+
 	svc := &dataAgentTplSvc{
 		SvcBase: service.NewSvcBase(),
 	}
@@ -28,6 +30,8 @@ func TestDataAgentTplSvc_Unpublish_PanicsWithoutAgentTplRepo(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_Unpublish_PermissionDenied(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -56,6 +60,8 @@ func TestDataAgentTplSvc_Unpublish_PermissionDenied(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_Unpublish_TemplateNotFound(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -85,6 +91,8 @@ func TestDataAgentTplSvc_Unpublish_TemplateNotFound(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_Unpublish_GetByIDError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

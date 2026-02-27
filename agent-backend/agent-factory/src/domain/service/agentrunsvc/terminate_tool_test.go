@@ -19,6 +19,8 @@ import (
 // ---- TerminateChat ----
 
 func TestTerminateChat_NoStopChan_NoInterruptedMsg(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -38,6 +40,8 @@ func TestTerminateChat_NoStopChan_NoInterruptedMsg(t *testing.T) {
 }
 
 func TestTerminateChat_NoStopChan_WithInterruptedMsg_GetByIDError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -62,6 +66,8 @@ func TestTerminateChat_NoStopChan_WithInterruptedMsg_GetByIDError(t *testing.T) 
 }
 
 func TestTerminateChat_StopChanFound_NoInterruptedMsg(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -86,6 +92,8 @@ func TestTerminateChat_StopChanFound_NoInterruptedMsg(t *testing.T) {
 }
 
 func TestTerminateChat_WithInterruptedMsgID_GetMsgError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -111,6 +119,8 @@ func TestTerminateChat_WithInterruptedMsgID_GetMsgError(t *testing.T) {
 }
 
 func TestTerminateChat_WithInterruptedMsgID_UpdateError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -126,6 +136,7 @@ func TestTerminateChat_WithInterruptedMsgID_UpdateError(t *testing.T) {
 	stopChanMap.Store("conv-update-err", ch)
 
 	msgPO := &dapo.ConversationMsgPO{ID: "msg-2"}
+
 	mockLogger.EXPECT().Infof(gomock.Any(), gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Errorf(gomock.Any(), gomock.Any(), gomock.Any()).Times(1)
 	mockConvMsgRepo.EXPECT().GetByID(gomock.Any(), "msg-2").Return(msgPO, nil)
@@ -138,6 +149,8 @@ func TestTerminateChat_WithInterruptedMsgID_UpdateError(t *testing.T) {
 }
 
 func TestTerminateChat_WithInterruptedMsgID_Success(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -153,6 +166,7 @@ func TestTerminateChat_WithInterruptedMsgID_Success(t *testing.T) {
 	stopChanMap.Store("conv-success", ch)
 
 	msgPO := &dapo.ConversationMsgPO{ID: "msg-3"}
+
 	mockLogger.EXPECT().Infof(gomock.Any(), gomock.Any()).AnyTimes()
 	mockConvMsgRepo.EXPECT().GetByID(gomock.Any(), "msg-3").Return(msgPO, nil)
 	mockConvMsgRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
@@ -166,6 +180,8 @@ func TestTerminateChat_WithInterruptedMsgID_Success(t *testing.T) {
 // ---- toolHandle ----
 
 func TestToolHandle_NilAnswer(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -185,6 +201,8 @@ func TestToolHandle_NilAnswer(t *testing.T) {
 }
 
 func TestToolHandle_AnswerIsString(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -205,6 +223,8 @@ func TestToolHandle_AnswerIsString(t *testing.T) {
 }
 
 func TestToolHandle_AnswerIsNotString(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -231,6 +251,8 @@ func TestToolHandle_AnswerIsNotString(t *testing.T) {
 // ---- agentToolHandle ----
 
 func TestAgentToolHandle_NilAnswer(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{SvcBase: service.NewSvcBase()}
 
 	dto := &agentToolHandleDto{
@@ -247,6 +269,8 @@ func TestAgentToolHandle_NilAnswer(t *testing.T) {
 }
 
 func TestAgentToolHandle_AnswerIsString(t *testing.T) {
+	t.Parallel()
+
 	svc := &agentSvc{SvcBase: service.NewSvcBase()}
 
 	dto := &agentToolHandleDto{
@@ -264,6 +288,8 @@ func TestAgentToolHandle_AnswerIsString(t *testing.T) {
 }
 
 func TestAgentToolHandle_AnswerIsNotString(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 

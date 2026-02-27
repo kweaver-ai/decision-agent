@@ -159,6 +159,53 @@ func (h *observabilityHandler) RegPubRouter(router *gin.RouterGroup) {
 - Mock 生成：`go generate ./...`（使用 mockgen 和 `//go:generate` 指令）
 - 覆盖率：`make ut` 在 `coverage_report/` 中生成报告
 
+### 本地开发模式测试策略
+**不要在单元测试中测试本地开发模式的代码路径。**
+
+**原因：**
+- 本地开发模式使用 `cenvhelper.IsLocalDev()` 检查环境变量
+- 测试中修改环境变量会导致竞态条件，即使不使用 `t.Parallel()`
+- Go 测试框架内部会并行运行测试包，导致不可预测的测试失败
+
+**最佳实践：**
+- 只编写非本地开发模式（生产代码路径）的测试
+- 在 `TestMain` 中配置为不设置 `AGENT_FACTORY_LOCAL_DEV=true`
+- 使用真实的 mock 对象（如 `mockUmHttp`）而不是 `nil` 参数
+- 这确保了稳定、可靠的测试，没有竞态条件
+
+**示例：**
+```go
+// ✅ 正确：配置 TestMain 在非本地开发模式下运行
+func TestMain(m *testing.M) {
+    os.Setenv("SERVICE_NAME", "AGENT_FACTORY")
+    // 注意：不要设置 AGENT_FACTORY_LOCAL_DEV=true
+    // 我们只测试非本地开发模式（生产模式）以避免环境变量竞态条件
+    os.Setenv("I18N_MODE_UT", "true")
+    
+    cenvhelper.InitEnvForTest()
+    locale.Register()
+    
+    code := m.Run()
+    os.Exit(code)
+}
+
+// ✅ 正确：使用 mock 测试生产模式
+func TestFunction_NonLocalDevMode(t *testing.T) {
+    ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+    
+    ctrl := gomock.NewController(t)
+    defer ctrl.Finish()
+    mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
+    
+    // 设置期望
+    mockUmHttp.EXPECT().GetOsnNames(ctx, gomock.Any()).Return(userMap, nil)
+    
+    result := SomeFunction(ctx, data, mockUmHttp)
+    // 测试生产行为
+}
+
+```
+
 ## 重要说明
 
 - 提交前务必运行 `make all`

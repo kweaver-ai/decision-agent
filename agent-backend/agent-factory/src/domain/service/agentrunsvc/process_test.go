@@ -35,11 +35,14 @@ func newProcessAgent() *squareresp.AgentMarketAgentInfoResp {
 	agent.Config.Output = &daconfvalobj.Output{
 		Variables: &daconfvalobj.VariablesS{AnswerVar: "answer"},
 	}
+
 	return agent
 }
 
 // Process: messageChan closed immediately → isEnd=true, no error
 func TestProcess_MessageChanClosed(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -68,6 +71,7 @@ func TestProcess_MessageChanClosed(t *testing.T) {
 	// Register session so Process can find it
 	session := &Session{ConversationID: "conv-proc-1"}
 	SessionMap.Store("conv-proc-1", session)
+
 	defer SessionMap.Delete("conv-proc-1")
 
 	// Close messageChan immediately
@@ -79,6 +83,8 @@ func TestProcess_MessageChanClosed(t *testing.T) {
 
 // Process: errChan receives EOF → isEnd=true
 func TestProcess_ErrChanEOF(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -107,6 +113,7 @@ func TestProcess_ErrChanEOF(t *testing.T) {
 
 	session := &Session{ConversationID: "conv-proc-2"}
 	SessionMap.Store("conv-proc-2", session)
+
 	defer SessionMap.Delete("conv-proc-2")
 
 	errChan <- errors.New("EOF")
@@ -118,6 +125,8 @@ func TestProcess_ErrChanEOF(t *testing.T) {
 
 // Process: errChan receives non-EOF error (stream mode) → sends err to respChan
 func TestProcess_ErrChanNonEOF(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -146,6 +155,7 @@ func TestProcess_ErrChanNonEOF(t *testing.T) {
 
 	session := &Session{ConversationID: "conv-proc-3"}
 	SessionMap.Store("conv-proc-3", session)
+
 	defer SessionMap.Delete("conv-proc-3")
 
 	// stream=true, non-EOF: sends error to respChan then continues until close
@@ -158,6 +168,8 @@ func TestProcess_ErrChanNonEOF(t *testing.T) {
 
 // Process: messageChan receives a message → AfterProcess errors (AnswerVar empty) → marks msg failed
 func TestProcess_MessageWithAfterProcessError(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -192,6 +204,7 @@ func TestProcess_MessageWithAfterProcessError(t *testing.T) {
 
 	session := &Session{ConversationID: "conv-proc-5"}
 	SessionMap.Store("conv-proc-5", session)
+
 	defer SessionMap.Delete("conv-proc-5")
 
 	// Send a valid SSE-formatted message
@@ -204,6 +217,8 @@ func TestProcess_MessageWithAfterProcessError(t *testing.T) {
 
 // Process: messageChan receives status=True message → AfterProcess success → handleMessageAndTempArea called
 func TestProcess_MessageStatusTrue(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -238,6 +253,7 @@ func TestProcess_MessageStatusTrue(t *testing.T) {
 
 	session := &Session{ConversationID: "conv-proc-6"}
 	SessionMap.Store("conv-proc-6", session)
+
 	defer SessionMap.Delete("conv-proc-6")
 
 	// Send status=True → isEnd=true → handleMessageAndTempArea
@@ -250,6 +266,8 @@ func TestProcess_MessageStatusTrue(t *testing.T) {
 
 // Process: stopChan triggered
 func TestProcess_StopChanTriggered(t *testing.T) {
+	t.Parallel()
+
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
@@ -282,6 +300,7 @@ func TestProcess_StopChanTriggered(t *testing.T) {
 
 	session := &Session{ConversationID: "conv-proc-4"}
 	SessionMap.Store("conv-proc-4", session)
+
 	defer SessionMap.Delete("conv-proc-4")
 
 	// Close stopChan after a brief delay

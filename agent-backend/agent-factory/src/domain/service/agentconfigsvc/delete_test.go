@@ -136,11 +136,11 @@ func TestDataAgentConfigSvc_Delete_NotOwner(t *testing.T) {
 	builtInNo := cdaenum.BuiltInNo
 
 	po := &dapo.DataAgentPo{
-		ID:         id,
-		Name:       "Test Agent",
-		Status:     cdaenum.StatusUnpublished,
-		CreatedBy:  creatorID,
-		IsBuiltIn:  &builtInNo,
+		ID:        id,
+		Name:      "Test Agent",
+		Status:    cdaenum.StatusUnpublished,
+		CreatedBy: creatorID,
+		IsBuiltIn: &builtInNo,
 	}
 
 	mockAgentConfRepo.EXPECT().GetByID(gomock.Any(), id).Return(po, nil)
@@ -163,12 +163,12 @@ func TestDataAgentConfigSvc_Delete_BeginTxError(t *testing.T) {
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 
 	svc := &dataAgentConfigSvc{
-		SvcBase:             service.NewSvcBase(),
-		agentConfRepo:       mockAgentConfRepo,
-		spaceResourceRepo:   mockSpaceResourceRepo,
-		bdAgentRelRepo:      mockBdAgentRelRepo,
-		bizDomainHttp:       mockBizDomainHttp,
-		logger:              mockLogger,
+		SvcBase:           service.NewSvcBase(),
+		agentConfRepo:     mockAgentConfRepo,
+		spaceResourceRepo: mockSpaceResourceRepo,
+		bdAgentRelRepo:    mockBdAgentRelRepo,
+		bizDomainHttp:     mockBizDomainHttp,
+		logger:            mockLogger,
 	}
 
 	ctx := context.Background()
@@ -178,11 +178,11 @@ func TestDataAgentConfigSvc_Delete_BeginTxError(t *testing.T) {
 	builtInNo := cdaenum.BuiltInNo
 
 	po := &dapo.DataAgentPo{
-		ID:         id,
-		Name:       "Test Agent",
-		Status:     cdaenum.StatusUnpublished,
-		CreatedBy:  uid,
-		IsBuiltIn:  &builtInNo,
+		ID:        id,
+		Name:      "Test Agent",
+		Status:    cdaenum.StatusUnpublished,
+		CreatedBy: uid,
+		IsBuiltIn: &builtInNo,
 	}
 
 	txErr := errors.New("transaction begin failed")

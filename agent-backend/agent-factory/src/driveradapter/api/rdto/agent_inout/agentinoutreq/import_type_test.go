@@ -7,30 +7,36 @@ import (
 )
 
 func TestImportType_Constants(t *testing.T) {
+	t.Parallel()
+
 	assert.Equal(t, ImportType("upsert"), ImportTypeUpsert)
 	assert.Equal(t, ImportType("create"), ImportTypeCreate)
 }
 
 func TestImportType_String(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name     string
+		name       string
 		importType ImportType
-		expected string
+		expected   string
 	}{
 		{
-			name:     "upsert type",
+			name:       "upsert type",
 			importType: ImportTypeUpsert,
-			expected: "upsert",
+			expected:   "upsert",
 		},
 		{
-			name:     "create type",
+			name:       "create type",
 			importType: ImportTypeCreate,
-			expected: "create",
+			expected:   "create",
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := tt.importType.String()
 			assert.Equal(t, tt.expected, result)
 		})
@@ -38,25 +44,29 @@ func TestImportType_String(t *testing.T) {
 }
 
 func TestImportType_EnumCheck_Valid(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name     string
+		name       string
 		importType ImportType
-		wantErr  bool
+		wantErr    bool
 	}{
 		{
-			name:     "upsert - valid",
+			name:       "upsert - valid",
 			importType: ImportTypeUpsert,
-			wantErr:  false,
+			wantErr:    false,
 		},
 		{
-			name:     "create - valid",
+			name:       "create - valid",
 			importType: ImportTypeCreate,
-			wantErr:  false,
+			wantErr:    false,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.importType.EnumCheck()
 
 			if tt.wantErr {
@@ -69,6 +79,8 @@ func TestImportType_EnumCheck_Valid(t *testing.T) {
 }
 
 func TestImportType_EnumCheck_Invalid(t *testing.T) {
+	t.Parallel()
+
 	invalidType := ImportType("invalid_type")
 
 	err := invalidType.EnumCheck()
@@ -78,6 +90,8 @@ func TestImportType_EnumCheck_Invalid(t *testing.T) {
 }
 
 func TestImportType_Empty(t *testing.T) {
+	t.Parallel()
+
 	emptyType := ImportType("")
 
 	err := emptyType.EnumCheck()
@@ -87,6 +101,8 @@ func TestImportType_Empty(t *testing.T) {
 }
 
 func TestImportType_CustomValues(t *testing.T) {
+	t.Parallel()
+
 	// Test that custom string values can be created
 	customType := ImportType("custom")
 
@@ -95,6 +111,8 @@ func TestImportType_CustomValues(t *testing.T) {
 }
 
 func TestImportType_Comparison(t *testing.T) {
+	t.Parallel()
+
 	upsert1 := ImportTypeUpsert
 	upsert2 := ImportType("upsert")
 	create := ImportTypeCreate
@@ -106,6 +124,8 @@ func TestImportType_Comparison(t *testing.T) {
 }
 
 func TestImportType_InSlice(t *testing.T) {
+	t.Parallel()
+
 	types := []ImportType{
 		ImportTypeUpsert,
 		ImportTypeCreate,

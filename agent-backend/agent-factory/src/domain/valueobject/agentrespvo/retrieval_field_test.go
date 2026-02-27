@@ -7,6 +7,8 @@ import (
 )
 
 func TestDocRetrievalField_NewInstance(t *testing.T) {
+	t.Parallel()
+
 	field := &DocRetrievalField{}
 
 	assert.NotNil(t, field)
@@ -15,6 +17,8 @@ func TestDocRetrievalField_NewInstance(t *testing.T) {
 }
 
 func TestDocRetrievalField_WithValues(t *testing.T) {
+	t.Parallel()
+
 	cites := []*CiteDoc{
 		{DocID: "doc1", DocName: "Document 1"},
 		{DocID: "doc2", DocName: "Document 2"},
@@ -31,6 +35,8 @@ func TestDocRetrievalField_WithValues(t *testing.T) {
 }
 
 func TestGraphRetrievalField_NewInstance(t *testing.T) {
+	t.Parallel()
+
 	field := &GraphRetrievalField{}
 
 	assert.NotNil(t, field)
@@ -42,6 +48,8 @@ func TestGraphRetrievalField_NewInstance(t *testing.T) {
 }
 
 func TestGraphRetrievalField_WithValues(t *testing.T) {
+	t.Parallel()
+
 	field := &GraphRetrievalField{
 		KGID:     "kg_123",
 		KGName:   "Test Knowledge Graph",
@@ -58,6 +66,8 @@ func TestGraphRetrievalField_WithValues(t *testing.T) {
 }
 
 func TestCiteDoc_NewInstance(t *testing.T) {
+	t.Parallel()
+
 	cite := &CiteDoc{}
 
 	assert.NotNil(t, cite)
@@ -75,6 +85,8 @@ func TestCiteDoc_NewInstance(t *testing.T) {
 }
 
 func TestCiteDoc_WithValues(t *testing.T) {
+	t.Parallel()
+
 	slices := []*V1Slice{
 		{ID: "slice1", No: 1, Content: "Content 1"},
 	}
@@ -107,6 +119,8 @@ func TestCiteDoc_WithValues(t *testing.T) {
 }
 
 func TestV1Slice_NewInstance(t *testing.T) {
+	t.Parallel()
+
 	slice := &V1Slice{}
 
 	assert.NotNil(t, slice)
@@ -117,6 +131,8 @@ func TestV1Slice_NewInstance(t *testing.T) {
 }
 
 func TestV1Slice_WithValues(t *testing.T) {
+	t.Parallel()
+
 	slice := &V1Slice{
 		ID:      "slice_123",
 		No:      5,

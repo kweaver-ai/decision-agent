@@ -7,6 +7,8 @@ import (
 )
 
 func TestUpdateReq_StructFields(t *testing.T) {
+	t.Parallel()
+
 	req := UpdateReq{
 		ID:         "conv-123",
 		Title:      "Test Conversation",
@@ -19,6 +21,8 @@ func TestUpdateReq_StructFields(t *testing.T) {
 }
 
 func TestUpdateReq_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := UpdateReq{}
 
 	assert.Empty(t, req.ID)
@@ -27,6 +31,8 @@ func TestUpdateReq_Empty(t *testing.T) {
 }
 
 func TestUpdateReq_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	req := UpdateReq{}
 
 	errMsgMap := req.GetErrMsgMap()
@@ -37,6 +43,8 @@ func TestUpdateReq_GetErrMsgMap(t *testing.T) {
 }
 
 func TestUpdateReq_ReqCheck(t *testing.T) {
+	t.Parallel()
+
 	req := UpdateReq{
 		ID:    "conv-123",
 		Title: "Test Conversation",
@@ -48,6 +56,8 @@ func TestUpdateReq_ReqCheck(t *testing.T) {
 }
 
 func TestUpdateReq_ReqCheck_Empty(t *testing.T) {
+	t.Parallel()
+
 	req := UpdateReq{}
 
 	err := req.ReqCheck()
@@ -56,6 +66,8 @@ func TestUpdateReq_ReqCheck_Empty(t *testing.T) {
 }
 
 func TestUpdateReq_WithDifferentIDs(t *testing.T) {
+	t.Parallel()
+
 	ids := []string{
 		"conv-001",
 		"conversation-xyz",
@@ -72,6 +84,8 @@ func TestUpdateReq_WithDifferentIDs(t *testing.T) {
 }
 
 func TestUpdateReq_WithDifferentTitles(t *testing.T) {
+	t.Parallel()
+
 	titles := []string{
 		"Test Conversation",
 		"中文标题",
@@ -88,6 +102,8 @@ func TestUpdateReq_WithDifferentTitles(t *testing.T) {
 }
 
 func TestUpdateReq_WithTempareaId(t *testing.T) {
+	t.Parallel()
+
 	tempareaIds := []string{
 		"temp-001",
 		"temp-xyz",
@@ -104,6 +120,8 @@ func TestUpdateReq_WithTempareaId(t *testing.T) {
 }
 
 func TestUpdateReq_WithAllFields(t *testing.T) {
+	t.Parallel()
+
 	req := UpdateReq{
 		ID:         "conv-abc-123",
 		Title:      "Complete Conversation Title",

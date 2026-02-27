@@ -9,6 +9,8 @@ import (
 )
 
 func TestAgentCall_Call_UnsupportedExecutorVersion(t *testing.T) {
+	t.Parallel()
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -30,6 +32,8 @@ func TestAgentCall_Call_UnsupportedExecutorVersion(t *testing.T) {
 }
 
 func TestAgentCall_Cancel_CallsCancelFunc(t *testing.T) {
+	t.Parallel()
+
 	ctx, cancel := context.WithCancel(context.Background())
 
 	req := &agentexecutordto.AgentCallReq{}
@@ -45,6 +49,8 @@ func TestAgentCall_Cancel_CallsCancelFunc(t *testing.T) {
 }
 
 func TestAgentCall_Resume_PanicsWithoutAgentExecutorV2(t *testing.T) {
+	t.Parallel()
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 

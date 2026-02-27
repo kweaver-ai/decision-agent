@@ -10,9 +10,13 @@ import (
 )
 
 func TestRecovery(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
 
 	t.Run("returns handler function", func(t *testing.T) {
+		t.Parallel()
+
 		handler := Recovery()
 		if handler == nil {
 			t.Error("Expected Recovery to return a non-nil handler")
@@ -20,6 +24,8 @@ func TestRecovery(t *testing.T) {
 	})
 
 	t.Run("recovers from panic", func(t *testing.T) {
+		t.Parallel()
+
 		router := gin.New()
 		router.Use(Recovery())
 		router.GET("/panic", func(c *gin.Context) {
@@ -37,6 +43,8 @@ func TestRecovery(t *testing.T) {
 	})
 
 	t.Run("handles normal requests without panic", func(t *testing.T) {
+		t.Parallel()
+
 		router := gin.New()
 		router.Use(Recovery())
 		router.GET("/normal", func(c *gin.Context) {
@@ -53,6 +61,8 @@ func TestRecovery(t *testing.T) {
 	})
 
 	t.Run("recovers from error panic", func(t *testing.T) {
+		t.Parallel()
+
 		router := gin.New()
 		router.Use(Recovery())
 		router.GET("/error-panic", func(c *gin.Context) {
