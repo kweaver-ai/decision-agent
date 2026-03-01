@@ -25,7 +25,6 @@ func TestNewDataAgentConfigService(t *testing.T) {
 			ReleaseRepo:       idbaccessmock.NewMockIReleaseRepo(ctrl),
 			PubedAgentRepo:    idbaccessmock.NewMockIPubedAgentRepo(ctrl),
 			ProductRepo:       idbaccessmock.NewMockIProductRepo(ctrl),
-			SpaceResourceRepo: idbaccessmock.NewMockISpaceResourceRepo(ctrl),
 			BdAgentRelRepo:    idbaccessmock.NewMockIBizDomainAgentRelRepo(ctrl),
 			BdAgentTplRelRepo: idbaccessmock.NewMockIBizDomainAgentTplRelRepo(ctrl),
 		}
@@ -46,7 +45,6 @@ func TestNewDataAgentConfigService(t *testing.T) {
 			ReleaseRepo:       nil,
 			PubedAgentRepo:    nil,
 			ProductRepo:       nil,
-			SpaceResourceRepo: nil,
 			BdAgentRelRepo:    nil,
 			BdAgentTplRelRepo: nil,
 		}

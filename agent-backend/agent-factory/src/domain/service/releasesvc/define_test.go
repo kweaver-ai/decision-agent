@@ -26,7 +26,6 @@ func TestNewReleaseService(t *testing.T) {
 			ReleaseCategoryRepo:   idbaccessmock.NewMockIReleaseCategoryRelRepo(ctrl),
 			ReleasePermissionRepo: idbaccessmock.NewMockIReleasePermissionRepo(ctrl),
 			CategoryRepo:          idbaccessmock.NewMockICategoryRepo(ctrl),
-			SpaceResourceRepo:     idbaccessmock.NewMockISpaceResourceRepo(ctrl),
 		}
 
 		svc := NewReleaseService(dto)
@@ -46,7 +45,6 @@ func TestNewReleaseService(t *testing.T) {
 			ReleaseCategoryRepo:   nil,
 			ReleasePermissionRepo: nil,
 			CategoryRepo:          nil,
-			SpaceResourceRepo:     nil,
 		}
 
 		svc := NewReleaseService(dto)

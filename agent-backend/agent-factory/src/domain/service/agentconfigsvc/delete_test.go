@@ -157,7 +157,6 @@ func TestDataAgentConfigSvc_Delete_BeginTxError(t *testing.T) {
 	defer ctrl.Finish()
 
 	mockAgentConfRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
-	mockSpaceResourceRepo := idbaccessmock.NewMockISpaceResourceRepo(ctrl)
 	mockBdAgentRelRepo := idbaccessmock.NewMockIBizDomainAgentRelRepo(ctrl)
 	mockBizDomainHttp := bizdomainaccmock.NewMockBizDomainHttpAcc(ctrl)
 	mockLogger := cmpmock.NewMockLogger(ctrl)
@@ -165,7 +164,6 @@ func TestDataAgentConfigSvc_Delete_BeginTxError(t *testing.T) {
 	svc := &dataAgentConfigSvc{
 		SvcBase:           service.NewSvcBase(),
 		agentConfRepo:     mockAgentConfRepo,
-		spaceResourceRepo: mockSpaceResourceRepo,
 		bdAgentRelRepo:    mockBdAgentRelRepo,
 		bizDomainHttp:     mockBizDomainHttp,
 		logger:            mockLogger,

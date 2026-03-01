@@ -4,7 +4,6 @@ import (
 	"sync"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/spacedb/spaceresourcedbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess"
@@ -23,8 +22,6 @@ type releaseRepo struct {
 
 	db     *sqlx.DB
 	logger icmp.Logger
-
-	spaceResourceRepo idbaccess.ISpaceResourceRepo
 }
 
 var _ idbaccess.IReleaseRepo = &releaseRepo{}
@@ -35,7 +32,6 @@ func NewReleaseRepo() idbaccess.IReleaseRepo {
 			db:                global.GDB,
 			logger:            logger.GetLogger(),
 			IDBAccBaseRepo:    dbaccess.NewDBAccBase(),
-			spaceResourceRepo: spaceresourcedbacc.NewSpaceResourceRepo(),
 		}
 	})
 

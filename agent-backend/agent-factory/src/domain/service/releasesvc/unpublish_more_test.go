@@ -270,52 +270,7 @@ func TestUnPublish_UpdateStatusError(t *testing.T) {
 	assert.Contains(t, err.Error(), "update agent status to unpublished failed")
 }
 
-// TestUnPublish_SpaceResourceDeleteError 删除空间资源关联失败
-func TestUnPublish_SpaceResourceDeleteError(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
 
-	tx, sqlMock, done := newReleaseTx(t)
-	defer done()
-	sqlMock.ExpectRollback()
-
-	mockAgentConfigRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
-	mockReleaseRepo := idbaccessmock.NewMockIReleaseRepo(ctrl)
-	mockPermissionSvc := v3portdrivermock.NewMockIPermissionSvc(ctrl)
-	mockCategoryRel := idbaccessmock.NewMockIReleaseCategoryRelRepo(ctrl)
-	mockPermRepo := idbaccessmock.NewMockIReleasePermissionRepo(ctrl)
-	mockSpaceRes := idbaccessmock.NewMockISpaceResourceRepo(ctrl)
-
-	agentID := "agent-123"
-	currentUserID := "user-123"
-	agentPo := &dapo.DataAgentPo{ID: agentID, Name: "Test Agent", CreatedBy: currentUserID}
-	releasePo := &dapo.ReleasePO{ID: "release-123", AgentID: agentID}
-
-	mockAgentConfigRepo.EXPECT().GetByID(gomock.Any(), agentID).Return(agentPo, nil)
-	mockPermissionSvc.EXPECT().GetSingleMgmtPermission(gomock.Any(), gomock.Any(), gomock.Any()).Return(true, nil)
-	mockReleaseRepo.EXPECT().GetByAgentID(gomock.Any(), agentID).Return(releasePo, nil)
-	mockReleaseRepo.EXPECT().BeginTx(gomock.Any()).Return(tx, nil)
-	mockReleaseRepo.EXPECT().DeleteByAgentID(gomock.Any(), tx, agentID).Return(nil)
-	mockCategoryRel.EXPECT().DelByReleaseID(gomock.Any(), tx, "release-123").Return(nil)
-	mockPermRepo.EXPECT().DelByReleaseID(gomock.Any(), tx, "release-123").Return(nil)
-	mockAgentConfigRepo.EXPECT().UpdateStatus(gomock.Any(), tx, cdaenum.StatusUnpublished, agentID, "").Return(nil)
-	mockSpaceRes.EXPECT().DeleteByAgentID(gomock.Any(), tx, agentID).Return(errors.New("space resource delete failed"))
-
-	svc := &releaseSvc{
-		SvcBase:                service.NewSvcBase(),
-		agentConfigRepo:        mockAgentConfigRepo,
-		releaseRepo:            mockReleaseRepo,
-		pmsSvc:                 mockPermissionSvc,
-		releaseCategoryRelRepo: mockCategoryRel,
-		releasePermissionRepo:  mockPermRepo,
-		spaceResourceRepo:      mockSpaceRes,
-	}
-
-	ctx := createUnpublishCtx(currentUserID)
-	_, err := svc.UnPublish(ctx, agentID)
-	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "delete space resource by agent id failed")
-}
 
 // TestUnPublish_RemoveUsePmsError 调用 removeUsePmsByHTTPAcc 失败
 func TestUnPublish_RemoveUsePmsError(t *testing.T) {
@@ -332,7 +287,6 @@ func TestUnPublish_RemoveUsePmsError(t *testing.T) {
 	mockPermissionSvc := v3portdrivermock.NewMockIPermissionSvc(ctrl)
 	mockCategoryRel := idbaccessmock.NewMockIReleaseCategoryRelRepo(ctrl)
 	mockPermRepo := idbaccessmock.NewMockIReleasePermissionRepo(ctrl)
-	mockSpaceRes := idbaccessmock.NewMockISpaceResourceRepo(ctrl)
 	mockAuthz := authzaccmock.NewMockAuthZHttpAcc(ctrl)
 
 	agentID := "agent-123"
@@ -348,7 +302,6 @@ func TestUnPublish_RemoveUsePmsError(t *testing.T) {
 	mockCategoryRel.EXPECT().DelByReleaseID(gomock.Any(), tx, "release-123").Return(nil)
 	mockPermRepo.EXPECT().DelByReleaseID(gomock.Any(), tx, "release-123").Return(nil)
 	mockAgentConfigRepo.EXPECT().UpdateStatus(gomock.Any(), tx, cdaenum.StatusUnpublished, agentID, "").Return(nil)
-	mockSpaceRes.EXPECT().DeleteByAgentID(gomock.Any(), tx, agentID).Return(nil)
 	mockAuthz.EXPECT().DeleteAgentPolicy(gomock.Any(), agentID).Return(errors.New("authz delete failed"))
 
 	svc := &releaseSvc{
@@ -358,7 +311,6 @@ func TestUnPublish_RemoveUsePmsError(t *testing.T) {
 		pmsSvc:                 mockPermissionSvc,
 		releaseCategoryRelRepo: mockCategoryRel,
 		releasePermissionRepo:  mockPermRepo,
-		spaceResourceRepo:      mockSpaceRes,
 		authZHttp:              mockAuthz,
 	}
 

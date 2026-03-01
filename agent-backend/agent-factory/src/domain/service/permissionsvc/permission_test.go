@@ -28,7 +28,6 @@ func TestNewPermissionService_WithAllDependencies(t *testing.T) {
 		ReleasePermissionRepo: idbaccessmock.NewMockIReleasePermissionRepo(ctrl),
 		UmHttp:                httpaccmock.NewMockUmHttpAcc(ctrl),
 		AuthZHttp:             authzaccmock.NewMockAuthZHttpAcc(ctrl),
-		SpaceRepo:             idbaccessmock.NewMockISpaceRepo(ctrl),
 	}
 
 	svc := NewPermissionService(dto)
@@ -50,7 +49,6 @@ func TestNewPermissionService_WithMinimalDependencies(t *testing.T) {
 		ReleasePermissionRepo: nil,
 		UmHttp:                nil,
 		AuthZHttp:             nil,
-		SpaceRepo:             nil,
 	}
 
 	svc := NewPermissionService(dto)

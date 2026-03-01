@@ -27,8 +27,6 @@ type dataAgentConfigSvc struct {
 
 	productRepo idbaccess.IProductRepo
 
-	spaceResourceRepo idbaccess.ISpaceResourceRepo
-
 	um2Http iumacc.UmHttpAcc
 
 	tplSvc iv3portdriver.IDataAgentTplSvc
@@ -58,7 +56,6 @@ type NewDaConfSvcDto struct {
 	OpenAICmp         icmp.IOpenAI
 	UmHttp            iusermanagementacc.UserMgnt
 	ProductRepo       idbaccess.IProductRepo
-	SpaceResourceRepo idbaccess.ISpaceResourceRepo
 	Um2Http           iumacc.UmHttpAcc
 	ModelApiAcc       imodelfactoryacc.IModelApiAcc
 
@@ -86,7 +83,6 @@ func NewDataAgentConfigService(dto *NewDaConfSvcDto) iv3portdriver.IDataAgentCon
 		OpenAICmp:         dto.OpenAICmp,
 		umHttp:            dto.UmHttp,
 		productRepo:       dto.ProductRepo,
-		spaceResourceRepo: dto.SpaceResourceRepo,
 		um2Http:           dto.Um2Http,
 		tplSvc:            dto.TplSvc,
 		modelFactoryAcc:   dto.ModelApiAcc,

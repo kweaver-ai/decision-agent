@@ -24,7 +24,6 @@ func TestNewPermissionService(t *testing.T) {
 		ReleasePermissionRepo: idbaccessmock.NewMockIReleasePermissionRepo(ctrl),
 		UmHttp:                httpaccmock.NewMockUmHttpAcc(ctrl),
 		AuthZHttp:             authzaccmock.NewMockAuthZHttpAcc(ctrl),
-		SpaceRepo:             idbaccessmock.NewMockISpaceRepo(ctrl),
 	}
 
 	svc := NewPermissionService(dto)

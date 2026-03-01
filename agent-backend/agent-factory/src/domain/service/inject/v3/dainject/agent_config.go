@@ -12,7 +12,6 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/productdbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/pubedagentdbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/releaseacc"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/spacedb/spaceresourcedbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/chttpinject"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/httpinject"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/usermanagementacc"
@@ -47,7 +46,6 @@ func NewDaConfSvc() iv3portdriver.IDataAgentConfigSvc {
 			OpenAICmp:         openAICmp,
 			UmHttp:            usermanagementacc.NewClient(),
 			ProductRepo:       productdbacc.NewProductRepo(),
-			SpaceResourceRepo: spaceresourcedbacc.NewSpaceResourceRepo(),
 			Um2Http:           chttpinject.NewUmHttpAcc(),
 			TplSvc:            NewDaTplSvc(),
 			ModelApiAcc:       httpinject.NewModelApiAcc(),

@@ -7,7 +7,6 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/permissionsvc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/daconfdbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/releaseacc"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/spacedb/spacedbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/chttpinject"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver"
 )
@@ -27,8 +26,6 @@ func NewPermissionSvc() iv3portdriver.IPermissionSvc {
 			AgentConfigRepo:       daconfdbacc.NewDataAgentRepo(),
 			UmHttp:                chttpinject.NewUmHttpAcc(),
 			AuthZHttp:             chttpinject.NewAuthZHttpAcc(),
-			SpaceRepo:             spacedbacc.NewSpaceRepo(),
-			// SpaceSvc:              NewCustomSpaceSvc(),
 		}
 
 		permissionSvcImpl = permissionsvc.NewPermissionService(dto)

@@ -83,7 +83,6 @@ func TestReleaseSvc_UpdatePublishInfo_SuccessAndSpaceDeleteError(t *testing.T) {
 		mockCategoryRel := idbaccessmock.NewMockIReleaseCategoryRelRepo(ctrl)
 		mockPermRepo := idbaccessmock.NewMockIReleasePermissionRepo(ctrl)
 		mockAuthz := authzaccmock.NewMockAuthZHttpAcc(ctrl)
-		mockSpaceRes := idbaccessmock.NewMockISpaceResourceRepo(ctrl)
 
 		svc := &releaseSvc{
 			SvcBase:                service.NewSvcBase(),
@@ -94,7 +93,6 @@ func TestReleaseSvc_UpdatePublishInfo_SuccessAndSpaceDeleteError(t *testing.T) {
 			releaseCategoryRelRepo: mockCategoryRel,
 			releasePermissionRepo:  mockPermRepo,
 			authZHttp:              mockAuthz,
-			spaceResourceRepo:      mockSpaceRes,
 		}
 
 		builtInNo := cdaenum.BuiltInNo
@@ -127,62 +125,11 @@ func TestReleaseSvc_UpdatePublishInfo_SuccessAndSpaceDeleteError(t *testing.T) {
 		mockPermRepo.EXPECT().DelByReleaseID(gomock.Any(), tx, "r1").Return(nil)
 		mockAgentRepo.EXPECT().GetIDNameMapByID(gomock.Any(), []string{"a1"}).Return(map[string]string{"a1": "agent1"}, nil)
 		mockAuthz.EXPECT().DeleteAgentPolicy(gomock.Any(), "a1").Return(nil)
-		mockSpaceRes.EXPECT().DeleteByAgentID(gomock.Any(), tx, "a1").Return(nil)
 
 		resp, _, err := svc.UpdatePublishInfo(createReleaseCtx("u1"), "a1", req)
 		assert.NoError(t, err)
 		assert.NotNil(t, resp)
 		assert.Equal(t, "r1", resp.ReleaseId)
-	})
-
-	t.Run("delete custom space relation error", func(t *testing.T) {
-		ctrl := gomock.NewController(t)
-		defer ctrl.Finish()
-
-		tx, sqlMock, done := newReleaseTx(t)
-		defer done()
-		sqlMock.ExpectRollback()
-
-		mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
-		mockReleaseRepo := idbaccessmock.NewMockIReleaseRepo(ctrl)
-		mockPms := v3portdrivermock.NewMockIPermissionSvc(ctrl)
-		mockUm := httpaccmock.NewMockUmHttpAcc(ctrl)
-		mockPermRepo := idbaccessmock.NewMockIReleasePermissionRepo(ctrl)
-		mockAuthz := authzaccmock.NewMockAuthZHttpAcc(ctrl)
-		mockSpaceRes := idbaccessmock.NewMockISpaceResourceRepo(ctrl)
-
-		svc := &releaseSvc{
-			SvcBase:               service.NewSvcBase(),
-			agentConfigRepo:       mockAgentRepo,
-			releaseRepo:           mockReleaseRepo,
-			pmsSvc:                mockPms,
-			umHttp:                mockUm,
-			releasePermissionRepo: mockPermRepo,
-			authZHttp:             mockAuthz,
-			spaceResourceRepo:     mockSpaceRes,
-		}
-
-		builtInNo := cdaenum.BuiltInNo
-		agentPo := &dapo.DataAgentPo{ID: "a1", Name: "agent1", CreatedBy: "u1", IsBuiltIn: &builtInNo}
-		releasePo := &dapo.ReleasePO{ID: "r1", AgentID: "a1", AgentVersion: "v2", UpdateBy: "u1", UpdateTime: 123}
-		req := &releasereq.UpdatePublishInfoReq{}
-		req.PublishToWhere = []daenum.PublishToWhere{daenum.PublishToWhereSquare}
-		req.PublishToBes = []cdaenum.PublishToBe{cdaenum.PublishToBeAPIAgent}
-
-		mockAgentRepo.EXPECT().GetByID(gomock.Any(), "a1").Return(agentPo, nil)
-		mockPms.EXPECT().GetSingleMgmtPermission(gomock.Any(), gomock.Any(), gomock.Any()).Return(true, nil)
-		mockReleaseRepo.EXPECT().BeginTx(gomock.Any()).Return(tx, nil)
-		mockReleaseRepo.EXPECT().GetByAgentID(gomock.Any(), "a1").Return(releasePo, nil)
-		mockReleaseRepo.EXPECT().Update(gomock.Any(), tx, gomock.Any()).Return(nil)
-		mockUm.EXPECT().GetSingleUserName(gomock.Any(), "u1").Return("U1", nil)
-		mockPermRepo.EXPECT().DelByReleaseID(gomock.Any(), tx, "r1").Return(nil)
-		mockAgentRepo.EXPECT().GetIDNameMapByID(gomock.Any(), []string{"a1"}).Return(map[string]string{"a1": "agent1"}, nil)
-		mockAuthz.EXPECT().DeleteAgentPolicy(gomock.Any(), "a1").Return(nil)
-		mockSpaceRes.EXPECT().DeleteByAgentID(gomock.Any(), tx, "a1").Return(assert.AnError)
-
-		_, _, err := svc.UpdatePublishInfo(createReleaseCtx("u1"), "a1", req)
-		assert.Error(t, err)
-		assert.Contains(t, err.Error(), "delete custom space relations failed")
 	})
 }
 
@@ -199,7 +146,6 @@ func TestReleaseSvc_UnPublish_Success(t *testing.T) {
 	mockPms := v3portdrivermock.NewMockIPermissionSvc(ctrl)
 	mockCategoryRel := idbaccessmock.NewMockIReleaseCategoryRelRepo(ctrl)
 	mockPermRepo := idbaccessmock.NewMockIReleasePermissionRepo(ctrl)
-	mockSpaceRes := idbaccessmock.NewMockISpaceResourceRepo(ctrl)
 	mockAuthz := authzaccmock.NewMockAuthZHttpAcc(ctrl)
 
 	svc := &releaseSvc{
@@ -209,7 +155,6 @@ func TestReleaseSvc_UnPublish_Success(t *testing.T) {
 		pmsSvc:                 mockPms,
 		releaseCategoryRelRepo: mockCategoryRel,
 		releasePermissionRepo:  mockPermRepo,
-		spaceResourceRepo:      mockSpaceRes,
 		authZHttp:              mockAuthz,
 	}
 
@@ -224,7 +169,6 @@ func TestReleaseSvc_UnPublish_Success(t *testing.T) {
 	mockCategoryRel.EXPECT().DelByReleaseID(gomock.Any(), tx, "r1").Return(nil)
 	mockPermRepo.EXPECT().DelByReleaseID(gomock.Any(), tx, "r1").Return(nil)
 	mockAgentRepo.EXPECT().UpdateStatus(gomock.Any(), tx, cdaenum.StatusUnpublished, "a1", "").Return(nil)
-	mockSpaceRes.EXPECT().DeleteByAgentID(gomock.Any(), tx, "a1").Return(nil)
 	mockAuthz.EXPECT().DeleteAgentPolicy(gomock.Any(), "a1").Return(nil)
 
 	_, err := svc.UnPublish(createReleaseCtx("u1"), "a1")
