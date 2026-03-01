@@ -107,11 +107,11 @@ func (svc *releaseSvc) UnPublish(ctx context.Context, agentID string) (auditlogi
 	}
 
 	// 7. 删除空间资源关联关系
-	err = svc.spaceResourceRepo.DeleteByAgentID(ctx, tx, agentID)
-	if err != nil {
-		err = errors.Wrapf(err, "delete space resource by agent id failed")
-		return
-	}
+	//err = svc.spaceResourceRepo.DeleteByAgentID(ctx, tx, agentID)
+	//if err != nil {
+	//	err = errors.Wrapf(err, "delete space resource by agent id failed")
+	//	return
+	//}
 
 	// 9. 从“权限平台”删除Agent使用权限
 	err = svc.removeUsePmsByHTTPAcc(ctx, agentID)

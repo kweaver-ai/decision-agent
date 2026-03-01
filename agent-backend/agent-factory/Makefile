@@ -36,6 +36,36 @@ goGenerate:
 goTest:
 	go test -v $$(go list ./... | grep -vE '/[^/]*mock[^/]*($$|/)')
 
+# 排除不需要测试的包列表:
+# - *mock*: 自动生成的 mock 代码，无业务逻辑
+# - boot: init() 依赖真实 DB/Redis/MQ，UT 环境无法连接
+# - port/driven/idbaccess$$: 纯 interface 定义，无可执行代码
+# - port/driven/ihttpaccess: 纯 interface 定义
+# - port/driven/imqaccess: 纯 interface 定义
+# - port/driven/iredisaccess: 纯 interface 定义
+# - port/driver: 纯 interface 定义
+# - infra/opentelemetry/(logs|metrics|middleware|trace): 依赖外部 OTLP Collector，UT 环境 panic
+# - infra/interf: 纯 interface 定义
+# - infra/common/cglobal: 纯全局变量定义
+# - infra/common/constant: 纯常量定义
+UT_EXCLUDE_PATTERN := mock|boot|port/driven/idbaccess$$|port/driven/ihttpaccess|port/driven/imqaccess|port/driven/iredisaccess|port/driver|infra/opentelemetry/(logs|metrics|middleware|trace)|infra/interf|infra/common/cglobal|infra/common/constant
+
+utExclude:
+	go test -v -count=1 $$(go list ./... | grep -vE '$(UT_EXCLUDE_PATTERN)')
+
+utCoverage:
+	@mkdir -p .local/ut2
+	go test -count=1 -timeout 30m \
+		-coverprofile=.local/ut2/coverage_full.out \
+		-covermode=atomic \
+		$$(go list ./... | grep -vE '$(UT_EXCLUDE_PATTERN)') \
+		2>&1 | tee .local/ut2/ut_full_output.log
+	@go tool cover -func=.local/ut2/coverage_full.out > .local/ut2/coverage_by_func.txt
+	@go tool cover -func=.local/ut2/coverage_full.out | tail -1 > .local/ut2/coverage_total.txt
+	@grep -E "^(ok|FAIL)" .local/ut2/ut_full_output.log > .local/ut2/ut_timing.log
+	@echo "Coverage report saved to .local/ut2/"
+	@cat .local/ut2/coverage_total.txt
+
 # Swagger 文档生成
 gen-swag:
 	swag init -g main.go -o docs --parseDependency

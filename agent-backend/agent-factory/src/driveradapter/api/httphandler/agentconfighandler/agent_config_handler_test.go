@@ -269,3 +269,216 @@ func TestDAConfHTTPHandler_Delete_Happy(t *testing.T) {
 
 	assert.NotEqual(t, http.StatusInternalServerError, recorder.Code)
 }
+
+// --- SelfConfig handler tests ---
+
+func TestDAConfHTTPHandler_SelfConfig(t *testing.T) {
+	t.Parallel()
+
+	h := &daConfHTTPHandler{logger: acTestLogger{}}
+
+	c, recorder := newACTestCtx(http.MethodGet, "/v3/agent-self-config-fields", "")
+	h.SelfConfig(c)
+
+	assert.Equal(t, http.StatusOK, recorder.Code)
+}
+
+// --- Avatar handler tests ---
+
+func TestDAConfHTTPHandler_GetBuiltInAvatarList(t *testing.T) {
+	t.Parallel()
+
+	h := &daConfHTTPHandler{logger: acTestLogger{}}
+
+	c, recorder := newACTestCtx(http.MethodGet, "/v3/agent/avatar/built-in", "")
+	h.GetBuiltInAvatarList(c)
+
+	assert.Equal(t, http.StatusOK, recorder.Code)
+	assert.Contains(t, recorder.Body.String(), "entries")
+}
+
+func TestDAConfHTTPHandler_GetBuiltInAvatar_EmptyID(t *testing.T) {
+	t.Parallel()
+
+	h := &daConfHTTPHandler{logger: acTestLogger{}}
+
+	c, recorder := newACTestCtx(http.MethodGet, "/v3/agent/avatar/built-in/", "")
+	c.Params = gin.Params{{Key: "avatar_id", Value: ""}}
+	h.GetBuiltInAvatar(c)
+
+	assert.NotEqual(t, http.StatusOK, recorder.Code)
+}
+
+func TestDAConfHTTPHandler_GetBuiltInAvatar_InvalidID(t *testing.T) {
+	t.Parallel()
+
+	h := &daConfHTTPHandler{logger: acTestLogger{}}
+
+	c, recorder := newACTestCtx(http.MethodGet, "/v3/agent/avatar/built-in/99", "")
+	c.Params = gin.Params{{Key: "avatar_id", Value: "99"}}
+	h.GetBuiltInAvatar(c)
+
+	assert.NotEqual(t, http.StatusOK, recorder.Code)
+}
+
+func TestDAConfHTTPHandler_GetBuiltInAvatar_NonNumeric(t *testing.T) {
+	t.Parallel()
+
+	h := &daConfHTTPHandler{logger: acTestLogger{}}
+
+	c, recorder := newACTestCtx(http.MethodGet, "/v3/agent/avatar/built-in/abc", "")
+	c.Params = gin.Params{{Key: "avatar_id", Value: "abc"}}
+	h.GetBuiltInAvatar(c)
+
+	assert.NotEqual(t, http.StatusOK, recorder.Code)
+}
+
+// --- AgentListListForBenchmark handler tests ---
+
+func TestDAConfHTTPHandler_AgentListListForBenchmark_BindError(t *testing.T) {
+	t.Parallel()
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockSvc := v3portdrivermock.NewMockIDataAgentConfigSvc(ctrl)
+	h := &daConfHTTPHandler{daConfSvc: mockSvc, logger: acTestLogger{}}
+
+	// size 值非法
+	c, _ := newACTestCtx(http.MethodGet, "/v3/agent?size=abc", "")
+	h.AgentListListForBenchmark(c)
+	assert.NotEmpty(t, c.Errors)
+}
+
+func TestDAConfHTTPHandler_AgentListListForBenchmark_SvcError(t *testing.T) {
+	t.Parallel()
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockSvc := v3portdrivermock.NewMockIDataAgentConfigSvc(ctrl)
+	mockSvc.EXPECT().ListForBenchmark(gomock.Any(), gomock.Any()).
+		Return(nil, errors.New("svc error"))
+	h := &daConfHTTPHandler{daConfSvc: mockSvc, logger: acTestLogger{}}
+
+	c, _ := newACTestCtx(http.MethodGet, "/v3/agent", "")
+	h.AgentListListForBenchmark(c)
+	assert.NotEmpty(t, c.Errors)
+}
+
+func TestDAConfHTTPHandler_AgentListListForBenchmark_Happy(t *testing.T) {
+	t.Parallel()
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockSvc := v3portdrivermock.NewMockIDataAgentConfigSvc(ctrl)
+	mockSvc.EXPECT().ListForBenchmark(gomock.Any(), gomock.Any()).
+		Return(&agentconfigresp.ListForBenchmarkResp{}, nil)
+	h := &daConfHTTPHandler{daConfSvc: mockSvc, logger: acTestLogger{}}
+
+	c, recorder := newACTestCtx(http.MethodGet, "/v3/agent", "")
+	h.AgentListListForBenchmark(c)
+	assert.Equal(t, http.StatusOK, recorder.Code)
+}
+
+// --- Update handler tests ---
+
+func TestDAConfHTTPHandler_Update_EmptyID(t *testing.T) {
+	t.Parallel()
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockSvc := v3portdrivermock.NewMockIDataAgentConfigSvc(ctrl)
+	h := &daConfHTTPHandler{daConfSvc: mockSvc, logger: acTestLogger{}}
+
+	c, recorder := newACTestCtx(http.MethodPut, "/v3/agent/", "")
+	c.Params = gin.Params{{Key: "agent_id", Value: ""}}
+	setACInternalAPI(c)
+
+	h.Update(c)
+	assert.NotEqual(t, http.StatusNoContent, recorder.Code)
+}
+
+func TestDAConfHTTPHandler_Update_BadJSON(t *testing.T) {
+	t.Parallel()
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockSvc := v3portdrivermock.NewMockIDataAgentConfigSvc(ctrl)
+	h := &daConfHTTPHandler{daConfSvc: mockSvc, logger: acTestLogger{}}
+
+	c, _ := newACTestCtx(http.MethodPut, "/v3/agent/agent-1", "{not-json")
+	c.Params = gin.Params{{Key: "agent_id", Value: "agent-1"}}
+	setACInternalAPI(c)
+
+	h.Update(c)
+	assert.NotEmpty(t, c.Errors)
+}
+
+func TestDAConfHTTPHandler_Update_SvcError(t *testing.T) {
+	t.Skip("需要构造完整的 UpdateReq 以通过 ReqCheckWithCtx 验证，后续补充")
+}
+
+func TestDAConfHTTPHandler_Update_Happy(t *testing.T) {
+	t.Skip("需要构造完整的 UpdateReq 以通过 ReqCheckWithCtx 验证，后续补充")
+}
+
+// --- Copy handler tests ---
+
+func TestDAConfHTTPHandler_Copy_EmptyID(t *testing.T) {
+	t.Parallel()
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockSvc := v3portdrivermock.NewMockIDataAgentConfigSvc(ctrl)
+	h := &daConfHTTPHandler{daConfSvc: mockSvc, logger: acTestLogger{}}
+
+	c, _ := newACTestCtx(http.MethodPost, "/v3/agent//copy", "")
+	c.Params = gin.Params{{Key: "agent_id", Value: ""}}
+	setACInternalAPI(c)
+
+	h.Copy(c)
+	assert.NotEmpty(t, c.Errors)
+}
+
+func TestDAConfHTTPHandler_Copy_SvcError(t *testing.T) {
+	t.Parallel()
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockSvc := v3portdrivermock.NewMockIDataAgentConfigSvc(ctrl)
+	mockSvc.EXPECT().Copy(gomock.Any(), "agent-1", gomock.Any()).
+		Return(nil, auditlogdto.AgentCopyAuditLogInfo{}, errors.New("copy failed"))
+	h := &daConfHTTPHandler{daConfSvc: mockSvc, logger: acTestLogger{}}
+
+	c, _ := newACTestCtx(http.MethodPost, "/v3/agent/agent-1/copy", "")
+	c.Params = gin.Params{{Key: "agent_id", Value: "agent-1"}}
+	setACInternalAPI(c)
+
+	h.Copy(c)
+	assert.NotEmpty(t, c.Errors)
+}
+
+func TestDAConfHTTPHandler_Copy_Happy(t *testing.T) {
+	t.Parallel()
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockSvc := v3portdrivermock.NewMockIDataAgentConfigSvc(ctrl)
+	mockSvc.EXPECT().Copy(gomock.Any(), "agent-1", gomock.Any()).
+		Return(&agentconfigresp.CopyResp{}, auditlogdto.AgentCopyAuditLogInfo{}, nil)
+	h := &daConfHTTPHandler{daConfSvc: mockSvc, logger: acTestLogger{}}
+
+	c, recorder := newACTestCtx(http.MethodPost, "/v3/agent/agent-1/copy", "")
+	c.Params = gin.Params{{Key: "agent_id", Value: "agent-1"}}
+	setACInternalAPI(c)
+
+	h.Copy(c)
+	assert.Equal(t, http.StatusCreated, recorder.Code)
+}

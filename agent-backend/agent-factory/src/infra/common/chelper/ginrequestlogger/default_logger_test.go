@@ -9,7 +9,7 @@ import (
 )
 
 func TestInitDefaultRequestLogger_Success(t *testing.T) {
-	t.Parallel()
+	// 不使用 t.Parallel(): 修改 singleton 全局状态
 
 	// Reset the singleton before testing
 	defaultRequestLogger = nil
@@ -30,7 +30,7 @@ func TestInitDefaultRequestLogger_Success(t *testing.T) {
 }
 
 func TestInitDefaultRequestLogger_Idempotent(t *testing.T) {
-	t.Parallel()
+	// 不使用 t.Parallel(): 修改 singleton 全局状态
 
 	// Reset the singleton before testing
 	defaultRequestLogger = nil
@@ -63,7 +63,7 @@ func TestInitDefaultRequestLogger_Idempotent(t *testing.T) {
 }
 
 func TestGetDefaultRequestLogger_NotInitialized(t *testing.T) {
-	t.Parallel()
+	// 不使用 t.Parallel(): 修改 singleton 全局状态
 
 	// Reset the singleton
 	defaultRequestLogger = nil
@@ -74,7 +74,7 @@ func TestGetDefaultRequestLogger_NotInitialized(t *testing.T) {
 }
 
 func TestInitDefaultRequestLogger_WithNilConfig(t *testing.T) {
-	t.Parallel()
+	// 不使用 t.Parallel(): 修改 singleton 全局状态
 
 	// Reset the singleton
 	defaultRequestLogger = nil
@@ -87,7 +87,7 @@ func TestInitDefaultRequestLogger_WithNilConfig(t *testing.T) {
 }
 
 func TestInitDefaultRequestLogger_WithDefaultConfig(t *testing.T) {
-	t.Parallel()
+	// 不使用 t.Parallel(): 修改 singleton 全局状态
 
 	// Reset the singleton
 	defaultRequestLogger = nil
@@ -103,7 +103,7 @@ func TestInitDefaultRequestLogger_WithDefaultConfig(t *testing.T) {
 }
 
 func TestInitDefaultRequestLogger_InvalidLogDir(t *testing.T) {
-	t.Parallel()
+	// 不使用 t.Parallel(): 修改 singleton 全局状态
 
 	// Reset the singleton before testing
 	defaultRequestLogger = nil

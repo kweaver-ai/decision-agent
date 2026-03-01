@@ -42,7 +42,7 @@ func baseConfig(mockAuthz, mockBizDomain bool) (*conf.Config, *cconf.Config) {
 }
 
 func TestNewAuthZHttpAcc(t *testing.T) {
-	t.Parallel()
+	// 不使用 t.Parallel(): 修改 global.GConfig/cglobal.GConfig 和 singleton once 变量
 
 	oldCfg := global.GConfig
 	oldCCfg := cglobal.GConfig
@@ -55,7 +55,7 @@ func TestNewAuthZHttpAcc(t *testing.T) {
 	})
 
 	t.Run("mock branch", func(t *testing.T) {
-		t.Parallel()
+		// 不使用 t.Parallel(): 修改全局配置
 		resetCHttpInjectGlobals()
 
 		cfg, ccfg := baseConfig(true, false)
@@ -70,7 +70,7 @@ func TestNewAuthZHttpAcc(t *testing.T) {
 	})
 
 	t.Run("real branch", func(t *testing.T) {
-		t.Parallel()
+		// 不使用 t.Parallel(): 修改全局配置
 		resetCHttpInjectGlobals()
 
 		cfg, ccfg := baseConfig(false, false)
@@ -86,7 +86,7 @@ func TestNewAuthZHttpAcc(t *testing.T) {
 }
 
 func TestNewBizDomainHttpAcc(t *testing.T) {
-	t.Parallel()
+	// 不使用 t.Parallel(): 修改 global.GConfig/cglobal.GConfig 和 singleton once 变量
 
 	oldCfg := global.GConfig
 	oldCCfg := cglobal.GConfig
@@ -99,7 +99,7 @@ func TestNewBizDomainHttpAcc(t *testing.T) {
 	})
 
 	t.Run("mock branch", func(t *testing.T) {
-		t.Parallel()
+		// 不使用 t.Parallel(): 修改全局配置
 		resetCHttpInjectGlobals()
 
 		cfg, ccfg := baseConfig(false, true)
@@ -114,7 +114,7 @@ func TestNewBizDomainHttpAcc(t *testing.T) {
 	})
 
 	t.Run("real branch", func(t *testing.T) {
-		t.Parallel()
+		// 不使用 t.Parallel(): 修改全局配置
 		resetCHttpInjectGlobals()
 
 		cfg, ccfg := baseConfig(false, false)
@@ -130,7 +130,7 @@ func TestNewBizDomainHttpAcc(t *testing.T) {
 }
 
 func TestNewUmHttpAcc(t *testing.T) {
-	t.Parallel()
+	// 不使用 t.Parallel(): 修改 global.GConfig/cglobal.GConfig 和 singleton once 变量
 
 	oldCfg := global.GConfig
 	oldCCfg := cglobal.GConfig

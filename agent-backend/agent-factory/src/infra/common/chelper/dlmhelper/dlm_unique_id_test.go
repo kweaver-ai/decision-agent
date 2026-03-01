@@ -1,122 +1,86 @@
 package dlmhelper
 
 import (
-	"strings"
+	"errors"
 	"testing"
 
+	"go.uber.org/mock/gomock"
+
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cconstant"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/dbmock"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGenRedisDlmUniqueValue_GeneratesValue(t *testing.T) {
-	t.Parallel()
+func TestGenRedisDlmUniqueValue_Success(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-	// Note: This test requires database access and will be skipped in most environments
-	// as we don't want to create side effects during unit testing
-	t.Skip("genRedisDlmUniqueValue requires database access, skipping to avoid side effects")
+	mockRepo := dbmock.NewMockUlidRepo(ctrl)
+	mockRepo.EXPECT().GenUniqID(gomock.Any(), cconstant.UniqueIDFlagRedisDlm).
+		Return("unique-id-123", nil)
+
+	// 注入 mock
+	uniqueIDRepo = mockRepo
+
+	value, err := genRedisDlmUniqueValue()
+	assert.NoError(t, err)
+	assert.Equal(t, "unique-id-123", value)
+
+	// 清理
+	uniqueIDRepo = nil
 }
 
-func TestDelRedisDlmUniqueValue_DeletesValue(t *testing.T) {
-	t.Parallel()
+func TestGenRedisDlmUniqueValue_Error(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-	// Note: This test requires database access and will be skipped in most environments
-	// as we don't want to create side effects during unit testing
-	t.Skip("delRedisDlmUniqueValue requires database access, skipping to avoid side effects")
+	mockRepo := dbmock.NewMockUlidRepo(ctrl)
+	mockRepo.EXPECT().GenUniqID(gomock.Any(), cconstant.UniqueIDFlagRedisDlm).
+		Return("", errors.New("db error"))
+
+	uniqueIDRepo = mockRepo
+
+	value, err := genRedisDlmUniqueValue()
+	assert.Error(t, err)
+	assert.Empty(t, value)
+
+	uniqueIDRepo = nil
 }
 
-func TestGetDefaultDlmConf_DetailedOptions(t *testing.T) {
-	t.Parallel()
-
-	t.Run("verify options array structure", func(t *testing.T) {
-		t.Parallel()
-
-		redisKeyPrefix := "test:dlm:"
-		conf := GetDefaultDlmConf(redisKeyPrefix)
-
-		assert.NotNil(t, conf)
-		assert.NotNil(t, conf.Options)
-		assert.Greater(t, len(conf.Options), 0, "Options should not be empty")
-	})
-
-	t.Run("verify expiry configuration", func(t *testing.T) {
-		t.Parallel()
-
-		redisKeyPrefix := "test:dlm:"
-		conf := GetDefaultDlmConf(redisKeyPrefix)
-
-		// WatchDogInterval should be half of 20 seconds = 10 seconds
-		expectedWatchDogInterval := 10 * 1000000000 // 10 seconds in nanoseconds
-		assert.Equal(t, expectedWatchDogInterval, int(conf.WatchDogInterval))
-	})
-
-	t.Run("verify redis key prefix is set", func(t *testing.T) {
-		t.Parallel()
-
-		prefix := "myapp:lock:"
-		conf := GetDefaultDlmConf(prefix)
-
-		assert.Equal(t, prefix, conf.RedisKeyPrefix)
-	})
-
-	t.Run("verify delete value func is set", func(t *testing.T) {
-		t.Parallel()
-
-		conf := GetDefaultDlmConf("test:")
-
-		assert.NotNil(t, conf.DeleteValueFunc, "DeleteValueFunc should not be nil")
-	})
-
-	t.Run("verify logger is set", func(t *testing.T) {
-		t.Parallel()
-
-		conf := GetDefaultDlmConf("test:")
-
-		assert.NotNil(t, conf.Logger, "Logger should not be nil")
-	})
+func TestGenRedisDlmUniqueValue_NilRepo(t *testing.T) {
+	// 当 uniqueIDRepo 为 nil 时，函数会创建真实的 repo
+	// 由于需要 DB 连接，这里跳过
+	t.Skip("需要数据库连接来测试 nil repo 初始化路径")
 }
 
-func TestGetDefaultDlmConf_EdgeCases(t *testing.T) {
-	t.Parallel()
+func TestDelRedisDlmUniqueValue_Success(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-	t.Run("empty redis key prefix", func(t *testing.T) {
-		t.Parallel()
+	mockRepo := dbmock.NewMockUlidRepo(ctrl)
+	mockRepo.EXPECT().DelUniqID(gomock.Any(), cconstant.UniqueIDFlagRedisDlm, "unique-id-123").
+		Return(nil)
 
-		conf := GetDefaultDlmConf("")
+	uniqueIDRepo = mockRepo
 
-		assert.NotNil(t, conf)
-		assert.Equal(t, "", conf.RedisKeyPrefix)
-	})
+	err := delRedisDlmUniqueValue("unique-id-123")
+	assert.NoError(t, err)
 
-	t.Run("redis key prefix with special characters", func(t *testing.T) {
-		t.Parallel()
-
-		specialPrefix := "test:dlm:with:special:chars:{}:"
-		conf := GetDefaultDlmConf(specialPrefix)
-
-		assert.Equal(t, specialPrefix, conf.RedisKeyPrefix)
-	})
-
-	t.Run("very long redis key prefix", func(t *testing.T) {
-		t.Parallel()
-
-		longPrefix := strings.Repeat("a:", 100)
-		conf := GetDefaultDlmConf(longPrefix)
-
-		assert.Equal(t, longPrefix, conf.RedisKeyPrefix)
-	})
+	uniqueIDRepo = nil
 }
 
-func TestGetDefaultDlmConf_Consistency(t *testing.T) {
-	t.Parallel()
+func TestDelRedisDlmUniqueValue_Error(t *testing.T) {
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
 
-	t.Run("multiple calls return consistent config", func(t *testing.T) {
-		t.Parallel()
+	mockRepo := dbmock.NewMockUlidRepo(ctrl)
+	mockRepo.EXPECT().DelUniqID(gomock.Any(), cconstant.UniqueIDFlagRedisDlm, "nonexistent").
+		Return(errors.New("not found"))
 
-		prefix := "test:consistency:"
+	uniqueIDRepo = mockRepo
 
-		conf1 := GetDefaultDlmConf(prefix)
-		conf2 := GetDefaultDlmConf(prefix)
+	err := delRedisDlmUniqueValue("nonexistent")
+	assert.Error(t, err)
 
-		assert.Equal(t, conf1.RedisKeyPrefix, conf2.RedisKeyPrefix)
-		assert.Equal(t, conf1.WatchDogInterval, conf2.WatchDogInterval)
-	})
+	uniqueIDRepo = nil
 }

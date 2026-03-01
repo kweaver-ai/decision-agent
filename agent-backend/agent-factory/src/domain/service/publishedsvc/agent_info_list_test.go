@@ -30,7 +30,7 @@ func initCGlobalConfig(t *testing.T) {
 }
 
 func TestPublishedSvc_GetPubedAgentInfoList_RepoError(t *testing.T) {
-	t.Parallel()
+	// 不使用 t.Parallel(): initCGlobalConfig 修改全局 cglobal.GConfig
 
 	initCGlobalConfig(t)
 
@@ -57,7 +57,7 @@ func TestPublishedSvc_GetPubedAgentInfoList_RepoError(t *testing.T) {
 }
 
 func TestPublishedSvc_GetPubedAgentInfoList_EmptyPos(t *testing.T) {
-	t.Parallel()
+	// 不使用 t.Parallel(): initCGlobalConfig 修改全局 cglobal.GConfig
 
 	initCGlobalConfig(t)
 
@@ -84,7 +84,7 @@ func TestPublishedSvc_GetPubedAgentInfoList_EmptyPos(t *testing.T) {
 }
 
 func TestPublishedSvc_GetPubedAgentInfoList_ConvertError(t *testing.T) {
-	t.Parallel()
+	// 不使用 t.Parallel(): initCGlobalConfig 修改全局 cglobal.GConfig
 
 	initCGlobalConfig(t)
 
@@ -127,7 +127,7 @@ func TestPublishedSvc_GetPubedAgentInfoList_ConvertError(t *testing.T) {
 }
 
 func TestPublishedSvc_GetPubedAgentInfoList_Success(t *testing.T) {
-	t.Parallel()
+	// 不使用 t.Parallel(): initCGlobalConfig 修改全局 cglobal.GConfig
 
 	initCGlobalConfig(t)
 
