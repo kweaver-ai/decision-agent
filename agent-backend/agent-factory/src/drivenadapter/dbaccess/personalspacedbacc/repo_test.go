@@ -43,10 +43,10 @@ func newRepoWithMock(t *testing.T) (*personalSpaceRepo, *sqlx.DB, sqlmock.Sqlmoc
 // ==================== Singleton ====================
 
 func TestNewPersonalSpaceRepo_Singleton(t *testing.T) {
-	old := pubedAgentRepoOnce
+	old := pubedAgentRepoOnce //nolint:govet
 	oldImpl := pubedAgentRepoImpl
 	oldGDB := global.GDB
-	t.Cleanup(func() { pubedAgentRepoOnce = old; pubedAgentRepoImpl = oldImpl; global.GDB = oldGDB })
+	t.Cleanup(func() { pubedAgentRepoOnce = old; pubedAgentRepoImpl = oldImpl; global.GDB = oldGDB }) //nolint:govet
 
 	db, _, err := sqlx.New()
 	require.NoError(t, err)

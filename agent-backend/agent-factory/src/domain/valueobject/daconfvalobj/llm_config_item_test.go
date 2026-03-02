@@ -120,7 +120,7 @@ func TestLlmItem_ValObjCheck_Nil(t *testing.T) {
 	var item *LlmItem
 	// Nil pointer will panic, so we test for that
 	assert.Panics(t, func() {
-		item.ValObjCheck()
+		item.ValObjCheck() //nolint:errcheck
 	})
 }
 

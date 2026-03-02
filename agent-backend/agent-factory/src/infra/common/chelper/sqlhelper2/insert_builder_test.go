@@ -106,7 +106,7 @@ func TestInsertBuilder_InsertStruct_ToInsertSql(t *testing.T) {
 		Key2: true,
 	})
 
-	sql, args, err = ib.ToInsertSQL()
+	sql, args, err = ib.ToInsertSQL() //nolint:staticcheck,ineffassign
 	assert.NotNil(t, err, "ib.ToInsertSQL() failed")
 	assert.Equal(t, err.Error(), "only support string number *string *number, but field Key2 is bool", "ib.ToInsertSQL() failed")
 
@@ -159,7 +159,7 @@ func TestInsertBuilder_InsertStruct_ToInsertSql(t *testing.T) {
 		Key2: new(bool),
 	})
 
-	sql, args, err = ib.ToInsertSQL()
+	sql, args, err = ib.ToInsertSQL() //nolint:staticcheck,ineffassign
 	assert.NotNil(t, err, "ib.ToInsertSQL() failed")
 	assert.Equal(t, "only support string number *string *number, but field Key2 is ptr and underlying type is bool", err.Error(), "ib.ToInsertSQL() failed")
 

@@ -93,12 +93,12 @@ func mockConversationMsgRows() *sqlmock.Rows {
 func TestNewConversationMsgRepo_Singleton(t *testing.T) {
 	t.Parallel()
 
-	oldOnce := conversationMsgRepoOnce
+	oldOnce := conversationMsgRepoOnce //nolint:govet
 	oldImpl := conversationMsgRepoImpl
 	oldGDB := global.GDB
 
 	t.Cleanup(func() {
-		conversationMsgRepoOnce = oldOnce
+		conversationMsgRepoOnce = oldOnce //nolint:govet
 		conversationMsgRepoImpl = oldImpl
 		global.GDB = oldGDB
 	})

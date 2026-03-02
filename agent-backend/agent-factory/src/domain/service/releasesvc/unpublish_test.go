@@ -22,7 +22,7 @@ func createUnpublishCtx(userID string) context.Context {
 		ID: userID,
 	}
 
-	return context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), visitor)
+	return context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck // SA1029
 }
 
 func TestUnPublish_AgentNotFound(t *testing.T) {

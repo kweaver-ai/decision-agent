@@ -10,7 +10,7 @@ func TestCheckName(t *testing.T) {
 	t.Parallel()
 
 	validate := validator.New()
-	validate.RegisterValidation("checkName", CheckName)
+	validate.RegisterValidation("checkName", CheckName) //nolint:errcheck
 
 	type TestStruct struct {
 		Name string `validate:"checkName"`
@@ -81,7 +81,7 @@ func TestCheckCode(t *testing.T) {
 	t.Parallel()
 
 	validate := validator.New()
-	validate.RegisterValidation("checkCode", CheckCode)
+	validate.RegisterValidation("checkCode", CheckCode) //nolint:errcheck
 
 	type TestStruct struct {
 		Code string `validate:"checkCode"`

@@ -66,7 +66,7 @@ func TestPermissionSvc_GetPolicyOfAgentUse(t *testing.T) {
 		mockAuthz.EXPECT().ListPolicyAll(gomock.Any(), gomock.Any(), "token-1").
 			Return(nil, nil)
 
-		ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{
+		ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ //nolint:staticcheck // SA1029
 			TokenID: "token-1",
 		})
 		res, err := svc.GetPolicyOfAgentUse(ctx, "a1")

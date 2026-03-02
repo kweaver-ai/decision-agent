@@ -132,7 +132,7 @@ func TestIsHasPublishPermission(t *testing.T) {
 				visitor := &rest.Visitor{
 					ID: "user-123",
 				}
-				ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor)
+				ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck // SA1029
 
 				pmsSvc.EXPECT().
 					GetSingleMgmtPermission(ctx, cdaenum.ResourceTypeDataAgent, cdapmsenum.AgentPublish).
@@ -163,7 +163,7 @@ func TestIsHasPublishPermission(t *testing.T) {
 				visitor := &rest.Visitor{
 					ID: "user-123",
 				}
-				ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor)
+				ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck // SA1029
 
 				pmsSvc.EXPECT().
 					GetSingleMgmtPermission(ctx, cdaenum.ResourceTypeDataAgent, cdapmsenum.AgentPublish).
@@ -194,7 +194,7 @@ func TestIsHasPublishPermission(t *testing.T) {
 				visitor := &rest.Visitor{
 					ID: "user-123",
 				}
-				ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor)
+				ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck // SA1029
 
 				pmsSvc.EXPECT().
 					GetSingleMgmtPermission(ctx, cdaenum.ResourceTypeDataAgent, cdapmsenum.AgentPublish).
@@ -256,7 +256,7 @@ func TestIsHasUnPublishPermission(t *testing.T) {
 				visitor := &rest.Visitor{
 					ID: "user-123",
 				}
-				ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor)
+				ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck // SA1029
 
 				pmsSvc.EXPECT().
 					GetSingleMgmtPermission(ctx, cdaenum.ResourceTypeDataAgent, cdapmsenum.AgentUnpublish).
@@ -287,7 +287,7 @@ func TestIsHasUnPublishPermission(t *testing.T) {
 				visitor := &rest.Visitor{
 					ID: "user-123",
 				}
-				ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor)
+				ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck // SA1029
 
 				pmsSvc.EXPECT().
 					GetSingleMgmtPermission(ctx, cdaenum.ResourceTypeDataAgent, cdapmsenum.AgentUnpublish).
@@ -318,7 +318,7 @@ func TestIsHasUnPublishPermission(t *testing.T) {
 				visitor := &rest.Visitor{
 					ID: "user-123",
 				}
-				ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor)
+				ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck // SA1029
 
 				pmsSvc.EXPECT().
 					GetSingleMgmtPermission(ctx, cdaenum.ResourceTypeDataAgent, cdapmsenum.AgentUnpublish).
@@ -406,7 +406,7 @@ func TestIsHasPubOrUnPubPms(t *testing.T) {
 				visitor := &rest.Visitor{
 					ID: "user-123",
 				}
-				ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor)
+				ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck // SA1029
 
 				pmsSvc.EXPECT().
 					GetSingleMgmtPermission(ctx, cdaenum.ResourceTypeDataAgent, cdapmsenum.AgentPublish).
@@ -438,7 +438,7 @@ func TestIsHasPubOrUnPubPms(t *testing.T) {
 				visitor := &rest.Visitor{
 					ID: "user-123",
 				}
-				ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor)
+				ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck // SA1029
 
 				pmsSvc.EXPECT().
 					GetSingleMgmtPermission(ctx, cdaenum.ResourceTypeDataAgent, cdapmsenum.AgentPublish).
@@ -474,7 +474,7 @@ func TestIsHasPubOrUnPubPms(t *testing.T) {
 				visitor := &rest.Visitor{
 					ID: "user-123",
 				}
-				ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor)
+				ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck // SA1029
 
 				pmsSvc.EXPECT().
 					GetSingleMgmtPermission(ctx, cdaenum.ResourceTypeDataAgent, cdapmsenum.AgentPublish).

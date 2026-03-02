@@ -97,12 +97,12 @@ func newReleaseCategoryRelRepoWithMock(t *testing.T) (*releaseCategoryRelRepo, *
 func TestNewReleaseRepo_Singleton(t *testing.T) {
 	t.Parallel()
 
-	oldOnce := releaseRepoOnce
+	oldOnce := releaseRepoOnce //nolint:govet
 	oldImpl := releaseRepoImpl
 	oldGDB := global.GDB
 
 	t.Cleanup(func() {
-		releaseRepoOnce = oldOnce
+		releaseRepoOnce = oldOnce //nolint:govet
 		releaseRepoImpl = oldImpl
 		global.GDB = oldGDB
 	})
@@ -268,12 +268,12 @@ func TestReleaseRepo_DeleteByAgentID_Error(t *testing.T) {
 func TestNewReleaseHistoryRepo_Singleton(t *testing.T) {
 	t.Parallel()
 
-	oldOnce := releaseHistoryRepoOnce
+	oldOnce := releaseHistoryRepoOnce //nolint:govet
 	oldImpl := releaseHistoryRepoImpl
 	oldGDB := global.GDB
 
 	t.Cleanup(func() {
-		releaseHistoryRepoOnce = oldOnce
+		releaseHistoryRepoOnce = oldOnce //nolint:govet
 		releaseHistoryRepoImpl = oldImpl
 		global.GDB = oldGDB
 	})
@@ -429,12 +429,12 @@ func TestReleaseHistoryRepo_GetLatestVersionByAgentID_Error(t *testing.T) {
 func TestNewReleasePermissionRepo_Singleton(t *testing.T) {
 	t.Parallel()
 
-	oldOnce := releasePermissionRepoOnce
+	oldOnce := releasePermissionRepoOnce //nolint:govet
 	oldImpl := releasePermissionRepoImpl
 	oldGDB := global.GDB
 
 	t.Cleanup(func() {
-		releasePermissionRepoOnce = oldOnce
+		releasePermissionRepoOnce = oldOnce //nolint:govet
 		releasePermissionRepoImpl = oldImpl
 		global.GDB = oldGDB
 	})
@@ -518,12 +518,12 @@ func TestReleasePermissionRepo_BatchCreate_Happy(t *testing.T) {
 func TestNewReleaseCategoryRelRepo_Singleton(t *testing.T) {
 	t.Parallel()
 
-	oldOnce := releaseCategoryRelRepoOnce
+	oldOnce := releaseCategoryRelRepoOnce //nolint:govet
 	oldImpl := releaseCategoryRelRepoImpl
 	oldGDB := global.GDB
 
 	t.Cleanup(func() {
-		releaseCategoryRelRepoOnce = oldOnce
+		releaseCategoryRelRepoOnce = oldOnce //nolint:govet
 		releaseCategoryRelRepoImpl = oldImpl
 		global.GDB = oldGDB
 	})

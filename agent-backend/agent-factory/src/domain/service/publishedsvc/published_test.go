@@ -19,7 +19,7 @@ import (
 // Helper function to create context with business domain ID
 func createPublishedCtx(bdID string) context.Context {
 	ctx := context.Background()
-	ctx = context.WithValue(ctx, cenum.BizDomainIDCtxKey.String(), bdID)
+	ctx = context.WithValue(ctx, cenum.BizDomainIDCtxKey.String(), bdID) //nolint:staticcheck // SA1029
 
 	return ctx
 }

@@ -323,7 +323,7 @@ func TestConfig_RemoveDataSourceFromPreDolphin(t *testing.T) {
 			// First verify no panic happens by checking DataSource is nil or not set
 			if tt.config.DataSource != nil && !tt.config.DataSource.IsNotSet() {
 				assert.Panics(t, func() {
-					tt.config.RemoveDataSourceFromPreDolphin(tt.contextOrganizeValue)
+					tt.config.RemoveDataSourceFromPreDolphin(tt.contextOrganizeValue) //nolint:errcheck
 				})
 			} else {
 				err := tt.config.RemoveDataSourceFromPreDolphin(tt.contextOrganizeValue)
@@ -356,6 +356,6 @@ func TestConfig_RemoveDataSourceFromPreDolphin_Panics(t *testing.T) {
 	}
 
 	assert.Panics(t, func() {
-		config.RemoveDataSourceFromPreDolphin("new context")
+		config.RemoveDataSourceFromPreDolphin("new context") //nolint:errcheck
 	})
 }

@@ -33,7 +33,7 @@ func makeAgentDetailEntry(sessionID, agentID, status string, totalTime, ttft, to
 	}
 }
 
-func newSvcWithSquare(ctrl *gomock.Controller) (*observabilitySvc, *v3portdrivermock.MockISquareSvc) {
+func newSvcWithSquare(ctrl *gomock.Controller) (*observabilitySvc, *v3portdrivermock.MockISquareSvc) { //nolint:unused
 	mockUniquery := uniquerymock_new(ctrl)
 	mockLogger := cmpmock_new(ctrl)
 	mockSquare := v3portdrivermock.NewMockISquareSvc(ctrl)

@@ -24,6 +24,6 @@ func TestValidJsonSchema(t *testing.T) {
 
 	// 测试无效的 JSON Schema 本身
 	invalidSchemaStr := `{"type": "object", "properties": {"name": {"type": "unknown"}}}`
-	invalidFields, err = ValidJsonSchema(invalidSchemaStr, doc)
+	invalidFields, err = ValidJsonSchema(invalidSchemaStr, doc) //nolint:staticcheck,ineffassign
 	assert.NotNil(t, err)
 }

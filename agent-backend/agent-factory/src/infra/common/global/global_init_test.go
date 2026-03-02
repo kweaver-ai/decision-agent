@@ -14,11 +14,11 @@ func TestInitMetrics_WithNilMeter(t *testing.T) {
 	// 不能 parallel，因为修改全局状态
 	origConfig := GConfig
 	origMetrics := GMetrics
-	origOnce := metricsOnce
+	origOnce := metricsOnce //nolint:govet
 	defer func() {
 		GConfig = origConfig
 		GMetrics = origMetrics
-		metricsOnce = origOnce
+		metricsOnce = origOnce //nolint:govet
 	}()
 
 	GConfig = &conf.Config{
@@ -44,11 +44,11 @@ func TestInitMetrics_WithNilMeter(t *testing.T) {
 func TestInitDependencyInjector_NoLogger_Error(t *testing.T) {
 	origLogger := GLogger
 	origMetrics := GMetrics
-	origOnce := dependencyOnce
+	origOnce := dependencyOnce //nolint:govet
 	defer func() {
 		GLogger = origLogger
 		GMetrics = origMetrics
-		dependencyOnce = origOnce
+		dependencyOnce = origOnce //nolint:govet
 	}()
 
 	GLogger = nil
@@ -63,14 +63,14 @@ func TestInitDependencyInjector_NoMetrics_Error(t *testing.T) {
 	origConfig := GConfig
 	origLogger := GLogger
 	origMetrics := GMetrics
-	origLoggerOnce := loggerOnce
-	origDepOnce := dependencyOnce
+	origLoggerOnce := loggerOnce //nolint:govet
+	origDepOnce := dependencyOnce //nolint:govet
 	defer func() {
 		GConfig = origConfig
 		GLogger = origLogger
 		GMetrics = origMetrics
-		loggerOnce = origLoggerOnce
-		dependencyOnce = origDepOnce
+		loggerOnce = origLoggerOnce //nolint:govet
+		dependencyOnce = origDepOnce //nolint:govet
 	}()
 
 	// 先初始化 Logger（需要 GConfig）
@@ -84,7 +84,7 @@ func TestInitDependencyInjector_NoMetrics_Error(t *testing.T) {
 
 	// 初始化 Metrics，使 GLogger 有值
 	metricsOnce2 := sync.Once{}
-	metricsOnce = metricsOnce2
+	metricsOnce = metricsOnce2 //nolint:govet
 	_ = InitMetrics(nil)
 
 	// GLogger 有值但 GMetrics 置 nil
@@ -102,14 +102,14 @@ func TestInitDependencyInjector_Success_WithMetrics(t *testing.T) {
 	origConfig := GConfig
 	origMetrics := GMetrics
 	origDepInjector := GDependencyInjector
-	origMetricsOnce := metricsOnce
-	origDepOnce := dependencyOnce
+	origMetricsOnce := metricsOnce //nolint:govet
+	origDepOnce := dependencyOnce //nolint:govet
 	defer func() {
 		GConfig = origConfig
 		GMetrics = origMetrics
 		GDependencyInjector = origDepInjector
-		metricsOnce = origMetricsOnce
-		dependencyOnce = origDepOnce
+		metricsOnce = origMetricsOnce //nolint:govet
+		dependencyOnce = origDepOnce //nolint:govet
 	}()
 
 	GConfig = &conf.Config{
@@ -136,11 +136,11 @@ func TestInitDependencyInjector_Success_WithMetrics(t *testing.T) {
 func TestShutdownOpenTelemetry_WithMetrics(t *testing.T) {
 	origConfig := GConfig
 	origMetrics := GMetrics
-	origMetricsOnce := metricsOnce
+	origMetricsOnce := metricsOnce //nolint:govet
 	defer func() {
 		GConfig = origConfig
 		GMetrics = origMetrics
-		metricsOnce = origMetricsOnce
+		metricsOnce = origMetricsOnce //nolint:govet
 	}()
 
 	GConfig = &conf.Config{

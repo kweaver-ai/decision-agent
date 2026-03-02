@@ -59,9 +59,9 @@ func TestRedisCmpStruct(t *testing.T) {
 	t.Run("create redisCmp instance", func(t *testing.T) {
 		t.Parallel()
 
-		redisCmp := &redisCmp{}
+		redisCmp := &redisCmp{} //nolint:staticcheck
 
-		if redisCmp == nil {
+		if redisCmp == nil { //nolint:staticcheck
 			t.Fatal("Expected redisCmp to be created, got nil")
 		}
 	})
@@ -82,7 +82,7 @@ func TestRedisCmpOnce(t *testing.T) {
 		t.Parallel()
 		// Verify that the sync.Once variable exists
 		// This is a compile-time check
-		_ = redisCmpOnce
+		_ = redisCmpOnce //nolint:govet
 	})
 
 	t.Run("redisCmpImpl variable exists", func(t *testing.T) {

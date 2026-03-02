@@ -22,7 +22,7 @@ func createContextWithUserID(userID string) context.Context {
 		ID: userID,
 	}
 
-	return context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), visitor)
+	return context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck
 }
 
 func TestCreate_Success(t *testing.T) {

@@ -189,7 +189,7 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 		// NOTE: 发生错误，将assistantMessage 状态设置为failed
 		conversationAssistantMsgPO, _ := agentSvc.conversationMsgRepo.GetByID(callCtx, req.AssistantMessageID)
 		conversationAssistantMsgPO.Status = cdaenum.MsgStatusFailed
-		agentSvc.conversationMsgRepo.Update(callCtx, conversationAssistantMsgPO)
+		_ = agentSvc.conversationMsgRepo.Update(callCtx, conversationAssistantMsgPO)
 		agentSvc.logger.Errorf("[Chat] call agent executor err: %v", err)
 		o11y.Error(newCtx, fmt.Sprintf("[chat] call agent executor err: %v", err))
 
@@ -200,7 +200,9 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	// NOTE: 8. 流式响应处理
 	channel := make(chan []byte, CHANNEL_SIZE)
 
-	go agentSvc.Process(req, agentInfo, stopChan, channel, messageChan, errChan, agentCall.Cancel)
+	go func() {
+		_ = agentSvc.Process(req, agentInfo, stopChan, channel, messageChan, errChan, agentCall.Cancel)
+	}()
 
 	// NOTE: 9. 异步恢复会话
 	go func() {

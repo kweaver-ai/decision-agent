@@ -10,8 +10,8 @@ import (
 
 // 类型别名，让其他测试文件能引用
 type (
-	uniquerymock_iface = iuniqueryhttp.IUniquery
-	cmpmock_iface      = icmp.Logger
+	uniquerymock_iface = iuniqueryhttp.IUniquery //nolint:unused
+	cmpmock_iface      = icmp.Logger //nolint:unused
 )
 
 // uniquerymock_new creates a new MockIUniquery

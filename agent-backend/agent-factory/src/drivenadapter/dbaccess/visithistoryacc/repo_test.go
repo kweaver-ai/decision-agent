@@ -57,12 +57,12 @@ func visitPO() *dapo.VisitHistoryPO {
 func TestNewVisitHistoryRepo_Singleton(t *testing.T) {
 	t.Parallel()
 
-	oldOnce := visitHistoryRepoOnce
+	oldOnce := visitHistoryRepoOnce //nolint:govet
 	oldImpl := visitHistoryRepoImpl
 	oldGDB := global.GDB
 
 	t.Cleanup(func() {
-		visitHistoryRepoOnce = oldOnce
+		visitHistoryRepoOnce = oldOnce //nolint:govet
 		visitHistoryRepoImpl = oldImpl
 		global.GDB = oldGDB
 	})

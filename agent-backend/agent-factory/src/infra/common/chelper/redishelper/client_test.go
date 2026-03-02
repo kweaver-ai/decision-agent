@@ -285,11 +285,11 @@ func TestRedisClient(t *testing.T) {
 
 func TestConnectRedis_UnsupportedType_ReturnsNil(t *testing.T) {
 	// t.Parallel() - 移除：此测试调用 ConnectRedis 单例函数，在并发环境下会导致 sync.Once 死锁
-	originalOnce := redisOnce
+	originalOnce := redisOnce //nolint:govet
 	originalClient := redisClient
 
 	t.Cleanup(func() {
-		redisOnce = originalOnce
+		redisOnce = originalOnce //nolint:govet
 		redisClient = originalClient
 	})
 
@@ -305,11 +305,11 @@ func TestConnectRedis_StandaloneType_Success(t *testing.T) {
 	host, port, shutdown := startFakeRedisServer(t)
 	t.Cleanup(shutdown)
 
-	originalOnce := redisOnce
+	originalOnce := redisOnce //nolint:govet
 	originalClient := redisClient
 
 	t.Cleanup(func() {
-		redisOnce = originalOnce
+		redisOnce = originalOnce //nolint:govet
 		redisClient = originalClient
 	})
 
@@ -331,11 +331,11 @@ func TestConnectRedis_MasterSlaveType_Success(t *testing.T) {
 	host, port, shutdown := startFakeRedisServer(t)
 	t.Cleanup(shutdown)
 
-	originalOnce := redisOnce
+	originalOnce := redisOnce //nolint:govet
 	originalClient := redisClient
 
 	t.Cleanup(func() {
-		redisOnce = originalOnce
+		redisOnce = originalOnce //nolint:govet
 		redisClient = originalClient
 	})
 

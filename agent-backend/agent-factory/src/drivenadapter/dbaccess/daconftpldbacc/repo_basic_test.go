@@ -102,18 +102,18 @@ func tplRows() *sqlmock.Rows {
 
 func tplUserCtx(uid string) context.Context {
 	visitor := &rest.Visitor{ID: uid}
-	return context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), visitor)
+	return context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck // SA1029
 }
 
 func TestNewDataAgentTplRepo_Singleton(t *testing.T) {
 	t.Parallel()
 
-	oldOnce := agentTplRepoOnce
+	oldOnce := agentTplRepoOnce //nolint:govet
 	oldImpl := agentTplRepoImpl
 	oldGDB := global.GDB
 
 	t.Cleanup(func() {
-		agentTplRepoOnce = oldOnce
+		agentTplRepoOnce = oldOnce //nolint:govet
 		agentTplRepoImpl = oldImpl
 		global.GDB = oldGDB
 	})

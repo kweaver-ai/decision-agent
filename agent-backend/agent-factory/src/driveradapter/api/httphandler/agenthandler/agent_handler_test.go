@@ -54,7 +54,7 @@ func newAgentCtx(method, target, body string) (*gin.Context, *httptest.ResponseR
 func setAgentVisitor(c *gin.Context, id, token string, visitorType rest.VisitorType) {
 	visitor := &rest.Visitor{ID: id, TokenID: token, Type: visitorType}
 	c.Set(cenum.VisitUserInfoCtxKey.String(), visitor)
-	ctx := context.WithValue(c.Request.Context(), cenum.VisitUserInfoCtxKey.String(), visitor)
+	ctx := context.WithValue(c.Request.Context(), cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck // SA1029
 	c.Request = c.Request.WithContext(ctx)
 }
 

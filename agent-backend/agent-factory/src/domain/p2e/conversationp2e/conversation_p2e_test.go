@@ -38,7 +38,7 @@ func TestConversation_WithMessages(t *testing.T) {
 	}
 
 	assert.Panics(t, func() {
-		Conversation(context.Background(), po, nil, true)
+		Conversation(context.Background(), po, nil, true) //nolint:errcheck
 	})
 }
 

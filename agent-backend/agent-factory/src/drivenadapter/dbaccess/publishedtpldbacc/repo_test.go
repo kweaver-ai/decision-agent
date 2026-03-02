@@ -61,12 +61,12 @@ func mockPubedTplRows() *sqlmock.Rows {
 func TestNewPublishedTplRepo_Singleton(t *testing.T) {
 	t.Parallel()
 
-	oldOnce := agentTplRepoOnce
+	oldOnce := agentTplRepoOnce //nolint:govet
 	oldImpl := agentTplRepoImpl
 	oldGDB := global.GDB
 
 	t.Cleanup(func() {
-		agentTplRepoOnce = oldOnce
+		agentTplRepoOnce = oldOnce //nolint:govet
 		agentTplRepoImpl = oldImpl
 		global.GDB = oldGDB
 	})

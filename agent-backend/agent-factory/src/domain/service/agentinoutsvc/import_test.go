@@ -273,7 +273,7 @@ func TestImport_FileTooLarge(t *testing.T) {
 		},
 	}
 
-	ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{
+	ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ //nolint:staticcheck // SA1029
 		ID: "user-123",
 	})
 	resp, err := svc.Import(ctx, req)
@@ -307,7 +307,7 @@ func TestImport_InvalidContentType(t *testing.T) {
 		},
 	}
 
-	ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{
+	ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ //nolint:staticcheck // SA1029
 		ID: "user-123",
 	})
 	resp, err := svc.Import(ctx, req)

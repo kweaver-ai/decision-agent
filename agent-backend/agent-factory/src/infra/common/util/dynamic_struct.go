@@ -78,15 +78,13 @@ func (d *DynamicFieldsHolder) GetFieldSliceStr(key string) []string {
 		return nil
 	}
 
-	switch val.(type) {
+	switch val := val.(type) {
 	case []string:
-		return val.([]string)
+		return val
 	case []interface{}:
-		tmp := val.([]interface{})
-
 		var result []string
 
-		for _, v := range tmp {
+		for _, v := range val {
 			result = append(result, v.(string))
 		}
 

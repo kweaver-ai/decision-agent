@@ -15,7 +15,7 @@ import (
 
 func ctxWithUser(uid string) context.Context {
 	visitor := &rest.Visitor{ID: uid}
-	return context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), visitor)
+	return context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck
 }
 
 // ==================== Delete ====================

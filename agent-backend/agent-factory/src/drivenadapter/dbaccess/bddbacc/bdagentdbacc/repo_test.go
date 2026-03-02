@@ -41,10 +41,10 @@ func newRepoWithMock(t *testing.T) (*BizDomainAgentRelRepo, *sqlx.DB, sqlmock.Sq
 // ==================== Singleton ====================
 
 func TestNewBizDomainAgentRelRepo_Singleton(t *testing.T) {
-	old := bizDomainAgentRelRepoOnce
+	old := bizDomainAgentRelRepoOnce //nolint:govet
 	oldImpl := bizDomainAgentRelRepoImpl
 	oldGDB := global.GDB
-	t.Cleanup(func() { bizDomainAgentRelRepoOnce = old; bizDomainAgentRelRepoImpl = oldImpl; global.GDB = oldGDB })
+	t.Cleanup(func() { bizDomainAgentRelRepoOnce = old; bizDomainAgentRelRepoImpl = oldImpl; global.GDB = oldGDB }) //nolint:govet
 
 	db, _, err := sqlx.New()
 	require.NoError(t, err)

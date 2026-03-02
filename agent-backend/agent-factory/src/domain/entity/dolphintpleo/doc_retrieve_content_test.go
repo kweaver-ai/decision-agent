@@ -12,11 +12,11 @@ func TestNewDocRetrieveContent(t *testing.T) {
 	t.Parallel()
 
 	content := NewDocRetrieveContent()
-	if content == nil {
+	if content == nil { //nolint:staticcheck
 		t.Error("NewDocRetrieveContent() should return non-nil")
 	}
 
-	if content.Content != "" {
+	if content.Content != "" { //nolint:staticcheck
 		t.Errorf("Content should be empty, got %q", content.Content)
 	}
 

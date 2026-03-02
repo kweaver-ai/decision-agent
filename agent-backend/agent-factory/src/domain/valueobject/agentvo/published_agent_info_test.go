@@ -206,7 +206,7 @@ func TestPublishedAgentInfo_LoadFromReleaseAgentPO_WithNilPO(t *testing.T) {
 	info := NewPublishedAgentInfo()
 	// LoadFromReleaseAgentPO with nil po will panic on CopyStructUseJSON
 	assert.Panics(t, func() {
-		info.LoadFromReleaseAgentPO(nil)
+		info.LoadFromReleaseAgentPO(nil) //nolint:errcheck
 	})
 }
 

@@ -10,9 +10,9 @@ func TestMqClientStruct(t *testing.T) {
 	t.Run("create mqClient struct", func(t *testing.T) {
 		t.Parallel()
 		// Test that we can create the struct (without initializing the actual client)
-		client := &mqClient{}
+		client := &mqClient{} //nolint:staticcheck
 
-		if client == nil {
+		if client == nil { //nolint:staticcheck
 			t.Fatal("Expected client to be created, got nil")
 		}
 

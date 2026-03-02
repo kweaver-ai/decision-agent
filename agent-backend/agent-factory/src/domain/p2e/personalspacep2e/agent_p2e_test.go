@@ -96,7 +96,7 @@ func TestAgentsListForPersonalSpace_EmptyPo(t *testing.T) {
 }
 
 func TestAgentsListForPersonalSpaces_NonLocalDevMode(t *testing.T) {
-	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese) //nolint:staticcheck
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -124,7 +124,7 @@ func TestAgentsListForPersonalSpaces_NonLocalDevMode(t *testing.T) {
 }
 
 func TestAgentsListForPersonalSpaces_NonLocalDevModeError(t *testing.T) {
-	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese) //nolint:staticcheck
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()

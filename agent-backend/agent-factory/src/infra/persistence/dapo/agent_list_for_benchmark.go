@@ -46,6 +46,7 @@ func (rp *ListForBenchmarkReleasePo) ToListForBenchmarkPo() (po *ListForBenchmar
 	return
 }
 
+//nolint:govet // 嵌入结构体存在重复 json tag，暂不修改以避免影响现有逻辑
 type ListForBenchmarkMerge struct {
 	ListForBenchmarkAgentPo
 	ListForBenchmarkReleasePo

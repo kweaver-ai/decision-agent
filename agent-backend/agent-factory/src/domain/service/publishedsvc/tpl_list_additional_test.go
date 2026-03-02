@@ -34,7 +34,7 @@ func TestPublishedSvc_GetPubedTplList_LenGreaterThanNeedSize(t *testing.T) {
 		umHttp:           mockUm,
 	}
 
-	ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1")
+	ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1") //nolint:staticcheck // SA1029
 	req := &pubedreq.PubedTplListReq{Size: 1}
 
 	mockBizDomain.EXPECT().GetAllAgentTplIDList(gomock.Any(), []string{"bd-1"}).
@@ -75,7 +75,7 @@ func TestPublishedSvc_GetPubedTplList_ConvertError(t *testing.T) {
 		umHttp:           mockUm,
 	}
 
-	ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1")
+	ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1") //nolint:staticcheck // SA1029
 	req := &pubedreq.PubedTplListReq{Size: 1}
 
 	mockBizDomain.EXPECT().GetAllAgentTplIDList(gomock.Any(), []string{"bd-1"}).
@@ -110,7 +110,7 @@ func TestPublishedSvc_GetPubedTplList_SuccessLastPage(t *testing.T) {
 		umHttp:           mockUm,
 	}
 
-	ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1")
+	ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1") //nolint:staticcheck // SA1029
 	req := &pubedreq.PubedTplListReq{Size: 2}
 
 	mockBizDomain.EXPECT().GetAllAgentTplIDList(gomock.Any(), []string{"bd-1"}).

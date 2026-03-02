@@ -10,7 +10,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
+	// "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper" // reserved for local dev debug
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
@@ -63,9 +63,10 @@ func (h *agentHTTPHandler) Chat(c *gin.Context) {
 		return
 	}
 
-	if cenvhelper.IsLocalDev(cenvhelper.RunScenario_Aaron_Local_Dev) {
-		// req.IncStream = false
-	}
+	// 本地调试：可取消注释以关闭 IncStream
+	// if cenvhelper.IsLocalDev(cenvhelper.RunScenario_Aaron_Local_Dev) {
+	// 	req.IncStream = false
+	// }
 
 	req.AgentAPPKey = agentAPPKey
 	req.ReqStartTime = reqStartTime

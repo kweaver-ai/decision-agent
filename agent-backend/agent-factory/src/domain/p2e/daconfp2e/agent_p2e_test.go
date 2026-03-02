@@ -286,7 +286,7 @@ func strPtr(s string) *string {
 }
 
 func TestDataAgents_NonLocalDevMode(t *testing.T) {
-	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese) //nolint:staticcheck
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()

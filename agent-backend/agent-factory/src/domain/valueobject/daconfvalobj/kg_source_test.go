@@ -96,7 +96,7 @@ func TestKgSource_ValObjCheck_Nil(t *testing.T) {
 	var kg *KgSource
 	// Nil pointer will panic, so we test for that
 	assert.Panics(t, func() {
-		kg.ValObjCheck()
+		kg.ValObjCheck() //nolint:errcheck
 	})
 }
 

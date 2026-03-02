@@ -145,7 +145,7 @@ func TestDolphinTpl_ValObjCheck_Nil(t *testing.T) {
 	var tpl *DolphinTpl
 	// Nil pointer will panic, so we test for that
 	assert.Panics(t, func() {
-		tpl.ValObjCheck()
+		tpl.ValObjCheck() //nolint:errcheck
 	})
 }
 

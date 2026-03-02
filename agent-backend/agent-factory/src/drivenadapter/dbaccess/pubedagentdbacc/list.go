@@ -10,10 +10,10 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/sqlhelper2"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/pkg/errors"
-	"golang.org/x/sync/singleflight"
+	// "golang.org/x/sync/singleflight" // reserved for future sfg optimization
 )
 
-var _pubListSfg singleflight.Group
+// var _pubListSfg singleflight.Group // unused, reserved for future sfg optimization
 
 // GetPubedList 获取已发布智能体列表
 func (repo *pubedAgentRepo) GetPubedList(ctx context.Context, req *pubedreq.PubedAgentListReq) (rt []*dapo.PublishedJoinPo, err error) {

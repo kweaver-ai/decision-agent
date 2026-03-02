@@ -42,7 +42,7 @@ func TestIsUserType(t *testing.T) {
 
 // ==================== VisitorTypeCheck ====================
 
-func newVisitorTypeTestCtx(path string) (*gin.Context, *httptest.ResponseRecorder) {
+func newVisitorTypeTestCtx(path string) (*gin.Context, *httptest.ResponseRecorder) { //nolint:unused
 	gin.SetMode(gin.TestMode)
 
 	recorder := httptest.NewRecorder()
@@ -62,7 +62,7 @@ func setVisitorInCtx(c *gin.Context, id string, visitorType rest.VisitorType) {
 	ctxKey := cenum.VisitUserInfoCtxKey.String()
 	c.Set(ctxKey, visitor)
 
-	_ctx := context.WithValue(c.Request.Context(), ctxKey, visitor)
+	_ctx := context.WithValue(c.Request.Context(), ctxKey, visitor) //nolint:staticcheck
 	c.Request = c.Request.WithContext(_ctx)
 }
 

@@ -72,7 +72,7 @@ func VerifyOAuthMiddleWare() gin.HandlerFunc {
 		c.Set(ctxKey, &visitor)
 
 		// 设置request context
-		_ctx := context.WithValue(c.Request.Context(), ctxKey, &visitor)
+		_ctx := context.WithValue(c.Request.Context(), ctxKey, &visitor) //nolint:staticcheck // SA1029
 		cutil.UpdateGinReqCtx(c, _ctx)
 
 		// 执行后续操作

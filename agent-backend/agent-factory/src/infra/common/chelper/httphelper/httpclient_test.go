@@ -231,8 +231,7 @@ func TestOptionFunction(t *testing.T) {
 	t.Parallel()
 
 	// Test that Option function type works correctly
-	var opt Option
-	opt = func(c *httpClient) {
+	var opt Option = func(c *httpClient) {
 		c.token = "test-token-from-func"
 	}
 
@@ -323,8 +322,7 @@ func TestCommonRespError_TypeAlias(t *testing.T) {
 	}
 
 	// CommonRespError is an alias for CommonResp
-	var errResp *CommonRespError
-	errResp = (*CommonRespError)(&resp)
+	var errResp *CommonRespError = (*CommonRespError)(&resp)
 
 	assert.Equal(t, 500, errResp.Code)
 	assert.Equal(t, "error", errResp.Message)

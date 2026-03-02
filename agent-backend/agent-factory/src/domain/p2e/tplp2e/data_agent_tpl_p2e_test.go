@@ -206,7 +206,7 @@ func TestDataAgentTpl_NoProductKey(t *testing.T) {
 }
 
 func TestAgentTplListEos_NonLocalDevMode(t *testing.T) {
-	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese) //nolint:staticcheck // SA1029
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -234,7 +234,7 @@ func TestAgentTplListEos_NonLocalDevMode(t *testing.T) {
 }
 
 func TestAgentTplListEos_NonLocalDevModeError(t *testing.T) {
-	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese) //nolint:staticcheck // SA1029
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()

@@ -580,7 +580,7 @@ func TestClause_parseInClauseForInterfaceSlice(t *testing.T) {
 		Value:    s14,
 		Operator: OperatorIn,
 	}
-	sqlStr, args, err = clause.Build()
+	sqlStr, args, err = clause.Build() //nolint:staticcheck,ineffassign
 	assert.Equal(t, err.Error(), "[parseInClauseForInterfaceSlice]: unsupported type")
 
 	//	15. []interface{}内的元素不是同一类型
@@ -590,7 +590,7 @@ func TestClause_parseInClauseForInterfaceSlice(t *testing.T) {
 		Value:    s15,
 		Operator: OperatorIn,
 	}
-	sqlStr, args, err = clause.Build()
+	sqlStr, args, err = clause.Build() //nolint:staticcheck,ineffassign
 	assert.Equal(t, err.Error(), "when operator is OperatorIn or OperatorNotIn, all elements should be of the same type")
 
 	// 16. []interface{}为空
@@ -600,7 +600,7 @@ func TestClause_parseInClauseForInterfaceSlice(t *testing.T) {
 		Value:    s16,
 		Operator: OperatorIn,
 	}
-	sqlStr, args, err = clause.Build()
+	sqlStr, args, err = clause.Build() //nolint:staticcheck,ineffassign
 	assert.Equal(t, err.Error(), "[parseInClauseForInterfaceSlice]:OperatorNotIn and OperatorIn must have at least one element")
 
 	// 17. []interface{}元素为interface{}

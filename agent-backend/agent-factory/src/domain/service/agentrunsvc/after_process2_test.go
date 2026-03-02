@@ -25,7 +25,7 @@ func newAfterProcessSvc(ctrl *gomock.Controller, mockMsgRepo *idbaccessmock.Mock
 	}
 }
 
-func newAfterProcessAgent() *squareresp.AgentMarketAgentInfoResp {
+func newAfterProcessAgent() *squareresp.AgentMarketAgentInfoResp { //nolint:unused
 	agent := newTestAgent()
 	agent.Config.Output = &daconfvalobj.Output{
 		Variables: &daconfvalobj.VariablesS{AnswerVar: "answer"},

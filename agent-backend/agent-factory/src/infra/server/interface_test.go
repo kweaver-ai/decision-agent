@@ -75,7 +75,7 @@ func TestMockServer(t *testing.T) {
 
 		mock := &MockServer{}
 		ctx := context.Background()
-		mock.Shutdown(ctx)
+		mock.Shutdown(ctx) //nolint:errcheck
 
 		if !mock.shutdownCalled {
 			t.Error("Expected Shutdown to be called")

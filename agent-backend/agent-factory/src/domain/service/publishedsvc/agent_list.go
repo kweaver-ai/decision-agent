@@ -11,8 +11,6 @@ import (
 
 // GetPublishedAgentList 获取已发布智能体列表
 func (svc *publishedSvc) GetPublishedAgentList(ctx context.Context, req *pubedreq.PubedAgentListReq) (res *pubedresp.PubedAgentListResp, err error) {
-	res = pubedresp.NewPAListResp()
-
 	res, err = svc.getPublishedAgentList(ctx, req)
 	if err != nil {
 		return

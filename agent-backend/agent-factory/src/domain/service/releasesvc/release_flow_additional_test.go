@@ -64,7 +64,7 @@ func newReleaseTx(t *testing.T) (*sql.Tx, sqlmock.Sqlmock, func()) {
 }
 
 func createReleaseCtx(userID string) context.Context {
-	return context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ID: userID})
+	return context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ID: userID}) //nolint:staticcheck
 }
 
 func TestReleaseSvc_UpdatePublishInfo_SuccessAndSpaceDeleteError(t *testing.T) {

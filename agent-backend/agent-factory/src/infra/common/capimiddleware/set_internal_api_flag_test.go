@@ -93,7 +93,7 @@ func TestIsInternalAPI(t *testing.T) {
 
 		router := gin.New()
 		router.GET("/test", func(c *gin.Context) {
-			ctx := context.WithValue(c.Request.Context(), cenum.InternalAPIFlagCtxKey.String(), false)
+			ctx := context.WithValue(c.Request.Context(), cenum.InternalAPIFlagCtxKey.String(), false) //nolint:staticcheck // SA1029
 			c.Request = c.Request.WithContext(ctx)
 			result = IsInternalAPI(c)
 			c.Status(http.StatusOK)

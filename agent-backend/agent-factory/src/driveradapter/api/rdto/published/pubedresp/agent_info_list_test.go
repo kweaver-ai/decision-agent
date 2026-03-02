@@ -110,7 +110,7 @@ func TestPAInfoListResp_LoadFromEos(t *testing.T) {
 		eo := &pubedeo.PublishedAgentEo{}
 
 		assert.Panics(t, func() {
-			resp.LoadFromEos([]*pubedeo.PublishedAgentEo{eo}, []string{"input"})
+			resp.LoadFromEos([]*pubedeo.PublishedAgentEo{eo}, []string{"input"}) //nolint:errcheck
 		})
 	})
 }

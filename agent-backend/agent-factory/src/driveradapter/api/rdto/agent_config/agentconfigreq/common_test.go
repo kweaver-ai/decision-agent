@@ -62,7 +62,7 @@ func TestHandleConfig_NilConfig(t *testing.T) {
 	// Based on implementation, it would panic
 	// In production, nil should never be passed
 	assert.Panics(t, func() {
-		HandleConfig(config)
+		HandleConfig(config) //nolint:errcheck
 	})
 }
 

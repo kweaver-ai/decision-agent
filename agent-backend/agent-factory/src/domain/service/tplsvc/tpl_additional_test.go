@@ -263,7 +263,7 @@ func TestDataAgentTplSvc_Copy_Update_Delete_UpdatePublishInfo(t *testing.T) {
 		}
 
 		ctx := createTplCtxWithUserID("u1")
-		ctx = context.WithValue(ctx, cenum.BizDomainIDCtxKey.String(), "bd-1")
+		ctx = context.WithValue(ctx, cenum.BizDomainIDCtxKey.String(), "bd-1") //nolint:staticcheck // SA1029
 		sourcePo := &dapo.DataAgentTplPo{ID: 7, Name: "tpl_src", Key: "tpl_src_key", CreatedBy: "u1"}
 
 		mockTplRepo.EXPECT().GetByID(gomock.Any(), int64(7)).Return(sourcePo, nil)
@@ -365,7 +365,7 @@ func TestDataAgentTplSvc_Copy_Update_Delete_UpdatePublishInfo(t *testing.T) {
 			bizDomainHttp:     mockBizDomain,
 		}
 
-		ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1")
+		ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1") //nolint:staticcheck // SA1029
 
 		mockTplRepo.EXPECT().ExistsByID(gomock.Any(), int64(10)).Return(true, nil)
 		mockTplRepo.EXPECT().GetByID(gomock.Any(), int64(10)).Return(po, nil)

@@ -177,9 +177,9 @@ func TestProxyInterface(t *testing.T) {
 	t.Run("JSONPostProxy implements Proxy interface", func(t *testing.T) {
 		t.Parallel()
 		// This test verifies that JSONPostProxy correctly implements the Proxy interface
-		var proxy Proxy[TestRequest, TestResponse] = NewJSONPostProxy[TestRequest, TestResponse]("http://example.com/api")
+		var proxy Proxy[TestRequest, TestResponse] = NewJSONPostProxy[TestRequest, TestResponse]("http://example.com/api") //nolint:staticcheck
 
-		if proxy == nil {
+		if proxy == nil { //nolint:staticcheck
 			t.Fatal("Expected proxy to implement Proxy interface")
 		}
 

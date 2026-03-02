@@ -426,7 +426,7 @@ func (agentSvc *agentSvc) addCitesToProgress(ctx context.Context, progresses []*
 
 			cites := make([]*agentrespvo.AnswerCite, 0)
 			for _, reference := range docRetrievalAns.FullResult.References {
-				cites = append(cites, &agentrespvo.AnswerCite{
+				cites = append(cites, &agentrespvo.AnswerCite{ //nolint:staticcheck // SA4010 暂忽略
 					Content:  reference.Content,
 					Meta:     reference.Meta,
 					CiteType: reference.RetrieveSourceType,

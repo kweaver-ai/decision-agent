@@ -101,18 +101,18 @@ func dataAgentRows() *sqlmock.Rows {
 
 func userCtx(uid string) context.Context {
 	visitor := &rest.Visitor{ID: uid}
-	return context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), visitor)
+	return context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck
 }
 
 func TestNewDataAgentRepo_Singleton(t *testing.T) {
 	t.Parallel()
 
-	oldOnce := agentRepoOnce
+	oldOnce := agentRepoOnce //nolint:govet
 	oldImpl := agentRepoImpl
 	oldGDB := global.GDB
 
 	t.Cleanup(func() {
-		agentRepoOnce = oldOnce
+		agentRepoOnce = oldOnce //nolint:govet
 		agentRepoImpl = oldImpl
 		global.GDB = oldGDB
 	})

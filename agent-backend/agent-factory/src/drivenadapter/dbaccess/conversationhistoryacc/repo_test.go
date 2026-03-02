@@ -49,12 +49,12 @@ func newHistoryRepoWithMock(t *testing.T) (*conversationHistoryRepo, *sqlx.DB, s
 func TestNewConversationHistoryRepo_Singleton(t *testing.T) {
 	t.Parallel()
 
-	oldOnce := conversationHistoryRepoOnce
+	oldOnce := conversationHistoryRepoOnce //nolint:govet
 	oldImpl := conversationHistoryRepoImpl
 	oldGDB := global.GDB
 
 	t.Cleanup(func() {
-		conversationHistoryRepoOnce = oldOnce
+		conversationHistoryRepoOnce = oldOnce //nolint:govet
 		conversationHistoryRepoImpl = oldImpl
 		global.GDB = oldGDB
 	})

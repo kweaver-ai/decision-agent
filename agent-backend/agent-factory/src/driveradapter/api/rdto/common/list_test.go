@@ -88,11 +88,11 @@ func TestNewListCommonWithTotal(t *testing.T) {
 
 		listCommon := NewListCommonWithTotal()
 
-		if listCommon == nil {
+		if listCommon == nil { //nolint:staticcheck
 			t.Error("expected non-nil list")
 		}
 
-		if listCommon.Total != 0 {
+		if listCommon.Total != 0 { //nolint:staticcheck
 			t.Errorf("expected total 0, got %d", listCommon.Total)
 		}
 	})

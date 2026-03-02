@@ -53,7 +53,7 @@ func newObsCtx(method, target, body string) (*gin.Context, *httptest.ResponseRec
 func setObsVisitor(c *gin.Context, userID string) {
 	visitor := &rest.Visitor{ID: userID, Type: rest.VisitorType_User}
 	c.Set(cenum.VisitUserInfoCtxKey.String(), visitor)
-	ctx := context.WithValue(c.Request.Context(), cenum.VisitUserInfoCtxKey.String(), visitor)
+	ctx := context.WithValue(c.Request.Context(), cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck // SA1029
 	c.Request = c.Request.WithContext(ctx)
 }
 

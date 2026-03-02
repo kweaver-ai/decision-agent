@@ -103,7 +103,7 @@ func TestAgentInOutSvc_Import_MoreBranches(t *testing.T) {
 			},
 		}
 
-		ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ID: "u1"})
+		ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ID: "u1"}) //nolint:staticcheck // SA1029
 		resp, err := svc.Import(ctx, req)
 		assert.Error(t, err)
 		assert.NotNil(t, resp)
@@ -116,7 +116,7 @@ func TestAgentInOutSvc_Import_MoreBranches(t *testing.T) {
 		req.ImportType = agentinoutreq.ImportTypeCreate
 		req.File = buildJSONFileHeader(t, "bad.json", []byte("{bad-json"))
 
-		ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ID: "u1"})
+		ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ID: "u1"}) //nolint:staticcheck // SA1029
 		resp, err := svc.Import(ctx, req)
 		assert.Error(t, err)
 		assert.NotNil(t, resp)
@@ -131,7 +131,7 @@ func TestAgentInOutSvc_Import_MoreBranches(t *testing.T) {
 		bys, _ := json.Marshal(&agentinoutresp.ExportResp{Agents: []*agentinoutresp.ExportAgentItem{}})
 		req.File = buildJSONFileHeader(t, "empty.json", bys)
 
-		ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ID: "u1"})
+		ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ID: "u1"}) //nolint:staticcheck // SA1029
 		resp, err := svc.Import(ctx, req)
 		assert.Error(t, err)
 		assert.NotNil(t, resp)
@@ -153,7 +153,7 @@ func TestAgentInOutSvc_Import_MoreBranches(t *testing.T) {
 		bys, _ := json.Marshal(&agentinoutresp.ExportResp{Agents: agents})
 		req.File = buildJSONFileHeader(t, "many.json", bys)
 
-		ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ID: "u1"})
+		ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ID: "u1"}) //nolint:staticcheck // SA1029
 		resp, err := svc.Import(ctx, req)
 		assert.Error(t, err)
 		assert.NotNil(t, resp)
@@ -180,7 +180,7 @@ func TestAgentInOutSvc_Import_MoreBranches(t *testing.T) {
 		})
 		req.File = buildJSONFileHeader(t, "invalid_config.json", bys)
 
-		ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ID: "u1"})
+		ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ID: "u1"}) //nolint:staticcheck // SA1029
 		resp, err := svc.Import(ctx, req)
 		assert.NoError(t, err)
 		assert.NotNil(t, resp)
@@ -207,7 +207,7 @@ func TestAgentInOutSvc_Import_MoreBranches(t *testing.T) {
 		mockAgentRepo.EXPECT().GetByKeys(gomock.Any(), []string{"k-valid"}).Return([]*dapo.DataAgentPo{}, nil)
 		mockAgentRepo.EXPECT().BeginTx(gomock.Any()).Return(nil, assert.AnError)
 
-		ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ID: "u1"})
+		ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ID: "u1"}) //nolint:staticcheck // SA1029
 		resp, err := svc.Import(ctx, req)
 		assert.Error(t, err)
 		assert.NotNil(t, resp)
@@ -236,7 +236,7 @@ func TestAgentInOutSvc_Import_MoreBranches(t *testing.T) {
 		mockAgentRepo.EXPECT().GetByKeys(gomock.Any(), []string{"k-valid"}).Return([]*dapo.DataAgentPo{}, nil).Times(2)
 		mockAgentRepo.EXPECT().BeginTx(gomock.Any()).Return(nil, assert.AnError)
 
-		ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ID: "u1"})
+		ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ID: "u1"}) //nolint:staticcheck // SA1029
 		resp, err := svc.Import(ctx, req)
 		assert.Error(t, err)
 		assert.NotNil(t, resp)
@@ -253,7 +253,7 @@ func TestAgentInOutSvc_Import_MoreBranches(t *testing.T) {
 		req.ImportType = "unknown"
 		req.File = buildJSONFileHeader(t, "ok.json", validImportJSON(t))
 
-		ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ID: "u1"})
+		ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ID: "u1"}) //nolint:staticcheck // SA1029
 		resp, err := svc.Import(ctx, req)
 		assert.NoError(t, err)
 		assert.NotNil(t, resp)
@@ -373,7 +373,7 @@ func TestAgentInOutSvc_importByUpsertCheck_More(t *testing.T) {
 		agentConfRepo: mockAgentRepo,
 		bizDomainHttp: mockBiz,
 	}
-	ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1")
+	ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1") //nolint:staticcheck // SA1029
 
 	t.Run("biz domain conflict causes early return", func(t *testing.T) {
 		exportData := &agentinoutresp.ExportResp{
@@ -437,7 +437,7 @@ func TestAgentInOutSvc_Export_Success(t *testing.T) {
 			},
 		}, nil)
 
-	ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ID: "u1"})
+	ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ID: "u1"}) //nolint:staticcheck // SA1029
 	resp, filename, err := svc.Export(ctx, req)
 	assert.NoError(t, err)
 	assert.NotNil(t, resp)

@@ -58,11 +58,11 @@ func mockProductRows() *sqlmock.Rows {
 // ==================== Singleton ====================
 
 func TestNewProductRepo_Singleton(t *testing.T) {
-	old := productRepoOnce
+	old := productRepoOnce //nolint:govet
 	oldImpl := productRepoImpl
 	oldGDB := global.GDB
 	t.Cleanup(func() {
-		productRepoOnce = old
+		productRepoOnce = old //nolint:govet
 		productRepoImpl = oldImpl
 		global.GDB = oldGDB
 	})

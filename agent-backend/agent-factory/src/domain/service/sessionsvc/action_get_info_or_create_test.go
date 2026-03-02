@@ -30,7 +30,7 @@ func TestHandleGetInfoOrCreate(t *testing.T) {
 
 		// This will panic when trying to use sessionRedisAcc
 		assert.Panics(t, func() {
-			svc.HandleGetInfoOrCreate(ctx, req, visitorInfo, false)
+			svc.HandleGetInfoOrCreate(ctx, req, visitorInfo, false) //nolint:errcheck
 		})
 	})
 
@@ -48,7 +48,7 @@ func TestHandleGetInfoOrCreate(t *testing.T) {
 
 		// This will panic when trying to use sessionRedisAcc
 		assert.Panics(t, func() {
-			svc.HandleGetInfoOrCreate(ctx, req, visitorInfo, false)
+			svc.HandleGetInfoOrCreate(ctx, req, visitorInfo, false) //nolint:errcheck
 		})
 	})
 

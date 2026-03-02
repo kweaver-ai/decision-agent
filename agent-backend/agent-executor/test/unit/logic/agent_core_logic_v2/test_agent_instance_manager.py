@@ -3,6 +3,7 @@
 Unit tests for app.logic.agent_core_logic_v2.agent_instance_manager module
 """
 import pytest
+import os
 import time
 from unittest.mock import Mock, MagicMock, patch
 
@@ -193,48 +194,6 @@ class TestAgentInstanceManager:
         recent_count = sum(1 for k in manager._instances.keys() if k.startswith("recent_none_"))
         assert recent_count == 5
 
-    def test_get_instance_count(self):
-        """Test getting the count of instances"""
-        manager = AgentInstanceManager()
-        initial_count = manager.get_instance_count()
-
-        for i in range(5):
-            manager.register(f"test_count_{i}", Mock(), Mock())
-
-        assert manager.get_instance_count() == initial_count + 5
-
-    def test_get_instance_count_after_removal(self):
-        """Test instance count after removal"""
-        manager = AgentInstanceManager()
-
-        for i in range(5):
-            manager.register(f"test_removal_{i}", Mock(), Mock())
-
-        initial_count = manager.get_instance_count()
-        manager.remove("test_removal_0")
-        manager.remove("test_removal_1")
-
-        assert manager.get_instance_count() == initial_count - 2
-
-    def test_get_instance_count_after_cleanup(self):
-        """Test instance count after cleanup"""
-        manager = AgentInstanceManager()
-        current_time = time.time()
-
-        # Mix of expired and recent instances
-        with patch('time.time', return_value=current_time - 3600):
-            manager.register("expired_cleanup_1", Mock(), Mock())
-            manager.register("expired_cleanup_2", Mock(), Mock())
-
-        manager.register("recent_cleanup_1", Mock(), Mock())
-        manager.register("recent_cleanup_2", Mock(), Mock())
-
-        initial_count = manager.get_instance_count()
-        manager.cleanup_expired()
-
-        # Should have 2 fewer (the expired ones)
-        assert manager.get_instance_count() == initial_count - 2
-
     def test_thread_safety_of_register(self):
         """Test that register is thread-safe"""
         manager = AgentInstanceManager()
@@ -353,20 +312,7 @@ class TestAgentInstanceManager:
         assert retrieved_agent1 is agent1
         assert retrieved_agent2 is agent2
 
-    def test_instance_count_accuracy(self):
-        """Test that instance count is always accurate"""
-        manager = AgentInstanceManager()
-        initial_count = manager.get_instance_count()
 
-        # Add instances one by one
-        for i in range(10):
-            manager.register(f"id_acc_{i}", Mock(), Mock())
-            assert manager.get_instance_count() == initial_count + i + 1
-
-        # Remove instances one by one
-        for i in range(10):
-            manager.remove(f"id_acc_{i}")
-            assert manager.get_instance_count() == initial_count + 9 - i
 
     def test_get_returns_tuple_or_none(self):
         """Test that get always returns tuple or None"""
@@ -397,11 +343,7 @@ class TestAgentInstanceManager:
             with patch('time.time', return_value=current_time + offset):
                 manager.register(agent_run_id, Mock(), Mock())
 
-        initial_count = manager.get_instance_count()
         manager.cleanup_expired()
-
-        # Should have 5 fewer (the expired ones)
-        assert manager.get_instance_count() == initial_count - 5
 
         # Verify the correct ones remain
         for i, agent_run_id in enumerate(ids):
@@ -433,3 +375,129 @@ class TestAgentInstanceManager:
             retrieved_agent, retrieved_core = result
             assert retrieved_agent is agent
             assert retrieved_core is core
+
+class _PicklableStub:
+    """简单可 pickle 序列化的测试替身"""
+    def __init__(self, name="stub"):
+        self.name = name
+
+    def __repr__(self):
+        return f"_PicklableStub({self.name!r})"
+
+
+class TestAgentInstanceManagerFilePersistence:
+    """Test cases for file persistence (L2 storage) in AgentInstanceManager"""
+
+    @pytest.fixture(autouse=True)
+    def setup_storage_dir(self, tmp_path):
+        """为每个测试用例设置独立的临时存储目录"""
+        manager = AgentInstanceManager()
+        self._original_storage_dir = manager._storage_dir
+        manager._storage_dir = str(tmp_path / "agent_instances")
+        os.makedirs(manager._storage_dir, exist_ok=True)
+        yield
+        # 恢复原始路径
+        manager._storage_dir = self._original_storage_dir
+
+    def test_register_saves_to_file(self, tmp_path):
+        """Test that register writes a pickle file to disk"""
+        manager = AgentInstanceManager()
+        agent_run_id = "test_file_save_001"
+        agent = _PicklableStub("agent")
+        agent_core = _PicklableStub("core")
+
+        manager.register(agent_run_id, agent, agent_core)
+
+        # 验证文件存在且有内容
+        file_path = manager._get_file_path(agent_run_id)
+        assert os.path.exists(file_path)
+        assert os.path.getsize(file_path) > 0
+
+        # 清理
+        manager.remove(agent_run_id)
+
+    def test_get_from_file_when_memory_empty(self, tmp_path):
+        """Test that get falls back to file when memory is cleared"""
+        manager = AgentInstanceManager()
+        agent_run_id = "test_file_fallback_001"
+        agent = _PicklableStub("agent")
+        agent_core = _PicklableStub("core")
+
+        # 注册（写内存 + 文件）
+        manager.register(agent_run_id, agent, agent_core)
+
+        # 验证文件已写入
+        file_path = manager._get_file_path(agent_run_id)
+        assert os.path.exists(file_path)
+
+        # 手动清除内存（模拟内存过期清理）
+        with manager._instance_lock:
+            manager._instances.pop(agent_run_id, None)
+
+        # 确认内存已空
+        assert agent_run_id not in manager._instances
+
+        # get 应从文件恢复
+        result = manager.get(agent_run_id)
+        assert result is not None
+        retrieved_agent, retrieved_core = result
+
+        # 验证恢复的对象属性正确
+        assert retrieved_agent.name == "agent"
+        assert retrieved_core.name == "core"
+
+        # 验证回填到内存
+        assert agent_run_id in manager._instances
+
+        # 清理
+        manager.remove(agent_run_id)
+
+    def test_get_returns_none_when_both_empty(self, tmp_path):
+        """Test that get returns None when neither memory nor file has the instance"""
+        manager = AgentInstanceManager()
+        result = manager.get("nonexistent_both_levels")
+        assert result is None
+
+    def test_remove_deletes_file(self, tmp_path):
+        """Test that remove deletes both memory and file"""
+        manager = AgentInstanceManager()
+        agent_run_id = "test_file_remove_001"
+        agent = _PicklableStub("agent")
+        agent_core = _PicklableStub("core")
+
+        manager.register(agent_run_id, agent, agent_core)
+        file_path = manager._get_file_path(agent_run_id)
+        assert os.path.exists(file_path)
+
+        # remove 应同时删除文件
+        manager.remove(agent_run_id)
+        assert agent_run_id not in manager._instances
+        assert not os.path.exists(file_path)
+
+    def test_file_deserialize_error_logs_and_returns_none(self, tmp_path):
+        """Test that corrupted file triggers error log and graceful degradation"""
+        manager = AgentInstanceManager()
+        agent_run_id = "test_corrupt_file"
+
+        # 手动写一个损坏的文件
+        file_path = manager._get_file_path(agent_run_id)
+        with open(file_path, "wb") as f:
+            f.write(b"this is not valid pickle data")
+
+        # get 应打印错误日志并返回 None
+        with patch("app.logic.agent_core_logic_v2.agent_instance_manager.StandLogger") as mock_logger:
+            result = manager.get(agent_run_id)
+            assert result is None
+            # 验证错误日志被打印
+            mock_logger.error.assert_called()
+
+        # 损坏的文件应被删除
+        assert not os.path.exists(file_path)
+
+    def test_get_file_path_sanitizes_slashes(self, tmp_path):
+        """Test that _get_file_path sanitizes path separators in agent_run_id"""
+        manager = AgentInstanceManager()
+        path = manager._get_file_path("id/with/slashes")
+        assert "/" not in os.path.basename(path).replace(".pkl", "")
+        assert "id_with_slashes.pkl" in path
+

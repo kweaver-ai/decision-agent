@@ -102,7 +102,7 @@ func TestGetBizDomainIDFromCtx(t *testing.T) {
 		},
 		{
 			name:      "context with biz domain ID",
-			ctx:       context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "domain-456"),
+			ctx:       context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "domain-456"), //nolint:staticcheck
 			wantID:    "domain-456",
 			wantPanic: false,
 		},
@@ -126,7 +126,7 @@ func TestGetBizDomainIDFromCtx(t *testing.T) {
 	t.Run("context with wrong type panics", func(t *testing.T) {
 		t.Parallel()
 
-		ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), 123)
+		ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), 123) //nolint:staticcheck // SA1029
 
 		assert.Panics(t, func() {
 			GetBizDomainIDFromCtx(ctx)
@@ -224,7 +224,7 @@ func TestGetVisitorFromCtx(t *testing.T) {
 		},
 		{
 			name: "context with visitor",
-			ctx: context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{
+			ctx: context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ //nolint:staticcheck
 				ID:      "visitor-123",
 				TokenID: "token-456",
 			}),
@@ -233,7 +233,7 @@ func TestGetVisitorFromCtx(t *testing.T) {
 		},
 		{
 			name:      "context with wrong type panics",
-			ctx:       context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), "not a visitor"),
+			ctx:       context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), "not a visitor"), //nolint:staticcheck
 			wantPanic: true,
 		},
 	}
@@ -274,7 +274,7 @@ func TestGetUserIDFromCtx(t *testing.T) {
 		},
 		{
 			name: "context with visitor",
-			ctx: context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{
+			ctx: context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ //nolint:staticcheck // SA1029
 				ID: "user-789",
 			}),
 			wantID: "user-789",
@@ -306,7 +306,7 @@ func TestGetUserTokenFromCtx(t *testing.T) {
 		},
 		{
 			name: "context with visitor",
-			ctx: context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{
+			ctx: context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), &rest.Visitor{ //nolint:staticcheck // SA1029
 				TokenID: "token-123",
 			}),
 			wantToken: "token-123",
@@ -344,12 +344,12 @@ func TestGetTraceIDFromCtx(t *testing.T) {
 		},
 		{
 			name:        "context with trace ID",
-			ctx:         context.WithValue(context.Background(), cenum.TraceIDCtxKey.String(), "trace-123"),
+			ctx:         context.WithValue(context.Background(), cenum.TraceIDCtxKey.String(), "trace-123"), //nolint:staticcheck // SA1029
 			wantTraceID: "trace-123",
 		},
 		{
 			name:      "context with wrong type panics",
-			ctx:       context.WithValue(context.Background(), cenum.TraceIDCtxKey.String(), 123),
+			ctx:       context.WithValue(context.Background(), cenum.TraceIDCtxKey.String(), 123), //nolint:staticcheck // SA1029
 			wantPanic: true,
 		},
 	}
@@ -391,19 +391,19 @@ func TestGetVisitLanguageCtx(t *testing.T) {
 		},
 		{
 			name:      "context with simplified chinese",
-			ctx:       context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese),
+			ctx:       context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese), //nolint:staticcheck // SA1029
 			wantLang:  rest.SimplifiedChinese,
 			wantPanic: false,
 		},
 		{
 			name:      "context with american english",
-			ctx:       context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.AmericanEnglish),
+			ctx:       context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.AmericanEnglish), //nolint:staticcheck // SA1029
 			wantLang:  rest.AmericanEnglish,
 			wantPanic: false,
 		},
 		{
 			name:      "context with wrong type panics",
-			ctx:       context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), 123),
+			ctx:       context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), 123), //nolint:staticcheck // SA1029
 			wantPanic: true,
 		},
 	}

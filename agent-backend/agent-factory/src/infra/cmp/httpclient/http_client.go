@@ -9,7 +9,6 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"net/http"
 	"sync"
 	"time"
@@ -186,7 +185,7 @@ func (c *httpClient) StreamPost(ctx context.Context, url string, headers map[str
 
 		if resp.StatusCode != http.StatusOK {
 			// 如果HTTP响应状态码不是200，读取响应体并将其作为错误处理
-			body, readErr := ioutil.ReadAll(resp.Body)
+			body, readErr := io.ReadAll(resp.Body)
 			if readErr != nil {
 				err = readErr
 				errs <- err

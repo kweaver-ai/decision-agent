@@ -48,11 +48,11 @@ func newCatRepoWithMock(t *testing.T) (*categoryRepo, *sqlx.DB, sqlmock.Sqlmock)
 // ==================== NewCategoryRepo ====================
 
 func TestNewCategoryRepo_Singleton(t *testing.T) {
-	oldOnce := categoryRepoOnce
+	oldOnce := categoryRepoOnce //nolint:govet
 	oldImpl := categoryRepoImpl
 	oldGDB := global.GDB
 	t.Cleanup(func() {
-		categoryRepoOnce = oldOnce
+		categoryRepoOnce = oldOnce //nolint:govet
 		categoryRepoImpl = oldImpl
 		global.GDB = oldGDB
 	})

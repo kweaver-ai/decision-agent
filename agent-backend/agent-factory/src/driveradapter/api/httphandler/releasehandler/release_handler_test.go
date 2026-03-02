@@ -53,7 +53,7 @@ func newTestContext(method, target, body string) (*gin.Context, *httptest.Respon
 
 func setInternalAPI(c *gin.Context, isInternal bool) {
 	c.Set(cenum.InternalAPIFlagCtxKey.String(), isInternal)
-	ctx := context.WithValue(c.Request.Context(), cenum.InternalAPIFlagCtxKey.String(), isInternal)
+	ctx := context.WithValue(c.Request.Context(), cenum.InternalAPIFlagCtxKey.String(), isInternal) //nolint:staticcheck // SA1029
 	c.Request = c.Request.WithContext(ctx)
 }
 
@@ -62,7 +62,7 @@ func setVisitor(c *gin.Context, userID string, withRequestContext bool) {
 	c.Set(cenum.VisitUserInfoCtxKey.String(), visitor)
 
 	if withRequestContext {
-		ctx := context.WithValue(c.Request.Context(), cenum.VisitUserInfoCtxKey.String(), visitor)
+		ctx := context.WithValue(c.Request.Context(), cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck // SA1029
 		c.Request = c.Request.WithContext(ctx)
 	}
 }

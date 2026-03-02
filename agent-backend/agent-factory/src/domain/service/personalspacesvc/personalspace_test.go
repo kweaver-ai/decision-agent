@@ -21,8 +21,8 @@ func createPersonalSpaceCtx(userID, bdID string) context.Context {
 	visitor := &rest.Visitor{
 		ID: userID,
 	}
-	ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), visitor)
-	ctx = context.WithValue(ctx, cenum.BizDomainIDCtxKey.String(), bdID)
+	ctx := context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck
+	ctx = context.WithValue(ctx, cenum.BizDomainIDCtxKey.String(), bdID) //nolint:staticcheck
 
 	return ctx
 }

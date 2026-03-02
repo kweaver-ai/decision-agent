@@ -309,7 +309,7 @@ func Test_struct2ScanArgsByTag(t *testing.T) {
 
 	type args struct {
 		s    interface{}
-		tags []string
+		tags []string //nolint:unused
 	}
 
 	type UserInfo = struct {

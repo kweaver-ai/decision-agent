@@ -253,7 +253,7 @@ func TestExportReq_CustomCheck_PreservesOrder(t *testing.T) {
 
 	// After deduplication, the order should be maintained
 	originalOrder := req.AgentIDs
-	req.CustomCheckAndDedupl()
+	req.CustomCheckAndDedupl() //nolint:errcheck
 
 	// Check that the first occurrence of each is maintained
 	assert.Contains(t, req.AgentIDs, originalOrder[0])
@@ -269,7 +269,7 @@ func TestExportReq_CustomCheck_NoChangesWhenNoDuplicates(t *testing.T) {
 		AgentIDs: originalIDs,
 	}
 
-	req.CustomCheckAndDedupl()
+	req.CustomCheckAndDedupl() //nolint:errcheck
 
 	assert.Equal(t, originalIDs, req.AgentIDs)
 }

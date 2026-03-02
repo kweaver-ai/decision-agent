@@ -22,7 +22,6 @@ func (u *umHttpAcc) GetUserDeptIDs(ctx context.Context, userID string) (deptIDs 
 }
 
 func (u *umHttpAcc) GetDeptInfoMapByIDs(ctx context.Context, deptIDs []string) (deptInfoMap map[string]*umtypes.DepartmentInfo, err error) {
-	deptInfoMap = make(map[string]*umtypes.DepartmentInfo)
 
 	args := &umarg.GetDeptInfoArgDto{
 		DeptIds: deptIDs,

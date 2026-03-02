@@ -192,7 +192,7 @@ func TestGetPublishInfo_WithPermissionsSuccess(t *testing.T) {
 		umHttp:                 mockUm,
 	}
 
-	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese) //nolint:staticcheck
 	mockAgentRepo.EXPECT().ExistsByID(ctx, "agent-5").Return(true, nil)
 	mockReleaseRepo.EXPECT().GetByAgentID(ctx, "agent-5").Return(&dapo.ReleasePO{
 		ID:        "rel-5",
@@ -290,7 +290,7 @@ func TestGenPmsControlResp_LocalDev_AllTypes(t *testing.T) {
 	mockUm.EXPECT().GetOsnNames(gomock.Any(), gomock.Any()).Return(osnMap, nil).AnyTimes()
 
 	// 本地开发模式：_name 后缀生成或通过 mock 返回
-	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese) //nolint:staticcheck
 	resp, err := svc.genPmsControlResp(ctx, permissions)
 	assert.NoError(t, err)
 	assert.NotNil(t, resp)
@@ -328,7 +328,7 @@ func TestGenPmsControlResp_GetOsnNames_Success(t *testing.T) {
 	osnMap.UserNameMap["u-found"] = "Found User"
 	mockUm.EXPECT().GetOsnNames(gomock.Any(), gomock.Any()).Return(osnMap, nil)
 
-	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese) //nolint:staticcheck
 	resp, err := svc.genPmsControlResp(ctx, permissions)
 	assert.NoError(t, err)
 	assert.NotNil(t, resp)
@@ -369,7 +369,7 @@ func TestGenPmsControlResp_GetOsnNames_Error(t *testing.T) {
 
 	mockUm.EXPECT().GetOsnNames(gomock.Any(), gomock.Any()).Return(nil, errors.New("osn service error"))
 
-	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese) //nolint:staticcheck
 	_, err := svc.genPmsControlResp(ctx, permissions)
 	assert.Error(t, err)
 }

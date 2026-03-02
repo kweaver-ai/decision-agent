@@ -56,11 +56,11 @@ func newACTestCtx(method, target, body string) (*gin.Context, *httptest.Response
 
 func setACInternalAPI(c *gin.Context) {
 	c.Set(cenum.InternalAPIFlagCtxKey.String(), true)
-	ctx := context.WithValue(c.Request.Context(), cenum.InternalAPIFlagCtxKey.String(), true)
+	ctx := context.WithValue(c.Request.Context(), cenum.InternalAPIFlagCtxKey.String(), true) //nolint:staticcheck
 	c.Request = c.Request.WithContext(ctx)
 }
 
-func setACVisitor(c *gin.Context, userID string) {
+func setACVisitor(c *gin.Context, userID string) { //nolint:unused
 	visitor := &rest.Visitor{ID: userID}
 	c.Set(cenum.VisitUserInfoCtxKey.String(), visitor)
 }

@@ -77,7 +77,7 @@ func TestAgentInOutSvc_checkBizDomainConflict(t *testing.T) {
 		bizDomainHttp: mockBiz,
 	}
 
-	ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1")
+	ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1") //nolint:staticcheck // SA1029
 
 	t.Run("biz domain query error", func(t *testing.T) {
 		resp := agentinoutresp.NewImportResp()
@@ -139,7 +139,7 @@ func TestAgentInOutSvc_importByCreate(t *testing.T) {
 		mockAgentRepo.EXPECT().GetByKeys(gomock.Any(), []string{"k1"}).Return([]*dapo.DataAgentPo{}, nil)
 		mockAgentRepo.EXPECT().BeginTx(gomock.Any()).Return(nil, errors.New("tx failed"))
 
-		err := svc.importByCreate(context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1"), exportData, "u1", resp)
+		err := svc.importByCreate(context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1"), exportData, "u1", resp) //nolint:staticcheck // SA1029
 		assert.Error(t, err)
 	})
 
@@ -170,7 +170,7 @@ func TestAgentInOutSvc_importByCreate(t *testing.T) {
 		mockBdRelRepo.EXPECT().BatchCreate(gomock.Any(), tx, gomock.Any()).Return(nil)
 		mockBiz.EXPECT().AssociateResourceBatch(gomock.Any(), gomock.Any()).Return(errors.New("http failed"))
 
-		err := svc.importByCreate(context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1"), exportData, "u1", resp)
+		err := svc.importByCreate(context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1"), exportData, "u1", resp) //nolint:staticcheck // SA1029
 		assert.Error(t, err)
 	})
 
@@ -201,7 +201,7 @@ func TestAgentInOutSvc_importByCreate(t *testing.T) {
 		mockBdRelRepo.EXPECT().BatchCreate(gomock.Any(), tx, gomock.Any()).Return(nil)
 		mockBiz.EXPECT().AssociateResourceBatch(gomock.Any(), gomock.Any()).Return(nil)
 
-		err := svc.importByCreate(context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1"), exportData, "u1", resp)
+		err := svc.importByCreate(context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1"), exportData, "u1", resp) //nolint:staticcheck // SA1029
 		assert.NoError(t, err)
 	})
 }
@@ -223,7 +223,7 @@ func TestAgentInOutSvc_importByUpsert(t *testing.T) {
 
 		exportData := makeExportData("k1")
 		resp := agentinoutresp.NewImportResp()
-		ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1")
+		ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1") //nolint:staticcheck // SA1029
 
 		mockBiz.EXPECT().GetAllAgentIDList(gomock.Any(), []string{"bd-1"}).Return([]string{}, map[string]string{}, nil)
 		mockAgentRepo.EXPECT().GetByKeys(gomock.Any(), []string{"k1"}).Return([]*dapo.DataAgentPo{}, nil).Times(2)
@@ -253,7 +253,7 @@ func TestAgentInOutSvc_importByUpsert(t *testing.T) {
 
 		exportData := makeExportData("k1")
 		resp := agentinoutresp.NewImportResp()
-		ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1")
+		ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1") //nolint:staticcheck // SA1029
 
 		existing := &dapo.DataAgentPo{ID: "a1", Key: "k1", CreatedBy: "u1"}
 
@@ -286,7 +286,7 @@ func TestAgentInOutSvc_importByUpsert(t *testing.T) {
 
 		exportData := makeExportData("k1")
 		resp := agentinoutresp.NewImportResp()
-		ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1")
+		ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-1") //nolint:staticcheck // SA1029
 
 		mockBiz.EXPECT().GetAllAgentIDList(gomock.Any(), []string{"bd-1"}).Return([]string{}, map[string]string{}, nil)
 		mockAgentRepo.EXPECT().GetByKeys(gomock.Any(), []string{"k1"}).Return([]*dapo.DataAgentPo{}, nil).Times(2)

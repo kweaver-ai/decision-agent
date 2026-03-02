@@ -82,7 +82,7 @@ func TestStatusThreeState_StringValues(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			if tt.value != tt.value {
+			if tt.value != tt.value { //nolint:staticcheck
 				t.Errorf("StatusThreeState value = %q, want %q", tt.value, tt.value)
 			}
 		})

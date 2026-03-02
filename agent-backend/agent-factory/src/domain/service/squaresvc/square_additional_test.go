@@ -66,7 +66,7 @@ func TestSquareSvc_NewSquareService_Construct(t *testing.T) {
 
 	oldGlobal := global.GConfig
 	oldCGlobal := cglobal.GConfig
-	oldOnce := squareSvcOnce
+	oldOnce := squareSvcOnce //nolint:govet
 	oldImpl := squareSvcImpl
 
 	global.GConfig = &conf.Config{Config: cconf.BaseDefConfig(), SwitchFields: conf.NewSwitchFields()}
@@ -77,7 +77,7 @@ func TestSquareSvc_NewSquareService_Construct(t *testing.T) {
 	t.Cleanup(func() {
 		global.GConfig = oldGlobal
 		cglobal.GConfig = oldCGlobal
-		squareSvcOnce = oldOnce
+		squareSvcOnce = oldOnce //nolint:govet
 		squareSvcImpl = oldImpl
 	})
 

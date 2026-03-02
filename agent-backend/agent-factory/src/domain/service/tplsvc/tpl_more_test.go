@@ -264,7 +264,7 @@ func TestDataAgentTplSvc_Delete_BdRelDeleteError(t *testing.T) {
 		bdAgentTplRelRepo: mockBdRelRepo,
 	}
 
-	ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-99")
+	ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-99") //nolint:staticcheck
 	po := &dapo.DataAgentTplPo{ID: 14, Name: "Tpl14", Status: cdaenum.StatusUnpublished, CreatedBy: "u1", IsBuiltIn: &builtInNo}
 
 	mockTplRepo.EXPECT().ExistsByID(gomock.Any(), int64(14)).Return(true, nil)
@@ -307,7 +307,7 @@ func TestDataAgentTplSvc_Delete_DisassociateError(t *testing.T) {
 		bizDomainHttp:     mockBizDomain,
 	}
 
-	ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-99")
+	ctx := context.WithValue(context.Background(), cenum.BizDomainIDCtxKey.String(), "bd-99") //nolint:staticcheck // SA1029
 	po := &dapo.DataAgentTplPo{ID: 15, Name: "Tpl15", Status: cdaenum.StatusUnpublished, CreatedBy: "u1", IsBuiltIn: &builtInNo}
 
 	mockTplRepo.EXPECT().ExistsByID(gomock.Any(), int64(15)).Return(true, nil)

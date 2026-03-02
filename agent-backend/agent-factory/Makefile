@@ -48,23 +48,28 @@ goTest:
 # - infra/interf: 纯 interface 定义
 # - infra/common/cglobal: 纯全局变量定义
 # - infra/common/constant: 纯常量定义
-UT_EXCLUDE_PATTERN := mock|boot|port/driven/idbaccess$$|port/driven/ihttpaccess|port/driven/imqaccess|port/driven/iredisaccess|port/driver|infra/opentelemetry/(logs|metrics|middleware|trace)|infra/interf|infra/common/cglobal|infra/common/constant
+# - infra/cmp/opensearchcmp: 依赖 OpenSearch
+# - infra/cmp/efastcmp: 依赖 eFast HTTP
+# - infra/cmp/redisdlmcmp: 依赖 Redis
+# - infra/server/httpserver: 服务器启动代码
+# - infra/common/cconf: 配置加载基础库
+UT_EXCLUDE_PATTERN := mock|boot|port/driven/idbaccess$$|port/driven/ihttpaccess|port/driven/imqaccess|port/driven/iredisaccess|port/driver|infra/opentelemetry/(logs|metrics|middleware|trace)|infra/interf|infra/common/cglobal|infra/common/constant|infra/cmp/opensearchcmp|infra/cmp/efastcmp|infra/cmp/redisdlmcmp|infra/server/httpserver|infra/common/cconf
 
 utExclude:
 	go test -v -count=1 $$(go list ./... | grep -vE '$(UT_EXCLUDE_PATTERN)')
 
 utCoverage:
-	@mkdir -p .local/ut2
+	@mkdir -p test_out
 	go test -count=1 -timeout 30m \
-		-coverprofile=.local/ut2/coverage_full.out \
+		-coverprofile=test_out/coverage_full.out \
 		-covermode=atomic \
 		$$(go list ./... | grep -vE '$(UT_EXCLUDE_PATTERN)') \
-		2>&1 | tee .local/ut2/ut_full_output.log
-	@go tool cover -func=.local/ut2/coverage_full.out > .local/ut2/coverage_by_func.txt
-	@go tool cover -func=.local/ut2/coverage_full.out | tail -1 > .local/ut2/coverage_total.txt
-	@grep -E "^(ok|FAIL)" .local/ut2/ut_full_output.log > .local/ut2/ut_timing.log
-	@echo "Coverage report saved to .local/ut2/"
-	@cat .local/ut2/coverage_total.txt
+		2>&1 | tee test_out/ut_full_output.log
+	@go tool cover -func=test_out/coverage_full.out > test_out/coverage_by_func.txt
+	@go tool cover -func=test_out/coverage_full.out | tail -1 > test_out/coverage_total.txt
+	@grep -E "^(ok|FAIL)" test_out/ut_full_output.log > test_out/ut_timing.log
+	@echo "Coverage report saved to test_out/"
+	@cat test_out/coverage_total.txt
 
 # Swagger 文档生成
 gen-swag:

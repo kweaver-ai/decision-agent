@@ -98,7 +98,7 @@ func TestUpdateBuilder_UpdateByStruct_ToUpdateSql(t *testing.T) {
 		Key2: true,
 	})
 
-	sql, args, err = updateBuilder.ToUpdateSQL()
+	sql, args, err = updateBuilder.ToUpdateSQL() //nolint:staticcheck,ineffassign
 
 	assert.NotNil(t, err, "updateBuilder.ToUpdateSQL() failed")
 	assert.Equal(t, err.Error(), "only support string number *string *number, but field Key2 is bool", "updateBuilder.ToUpdateSQL() failed")
@@ -192,7 +192,7 @@ func TestUpdateBuilder_ToUpdateSqlFullFeatures(t *testing.T) {
 
 	updateBuilder.SetUpdateFields([]string{"key1"})
 
-	sql, args, err = updateBuilder.ToUpdateSQL()
+	sql, args, err = updateBuilder.ToUpdateSQL() //nolint:staticcheck,ineffassign
 
 	assert.Nil(t, err, "updateBuilder.ToUpdateSQL() failed")
 

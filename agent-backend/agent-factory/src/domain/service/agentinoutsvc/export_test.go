@@ -53,7 +53,7 @@ func TestAgentInOutSvc_Export_PanicsWithoutAgentConfRepo(t *testing.T) {
 	visitor := &rest.Visitor{
 		ID: userID,
 	}
-	ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor)
+	ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck // SA1029
 
 	assert.Panics(t, func() {
 		_, _, _ = svc.Export(ctx, req)
@@ -85,7 +85,7 @@ func TestAgentInOutSvc_Export_GetByIDsAndCreatedByError(t *testing.T) {
 	visitor := &rest.Visitor{
 		ID: userID,
 	}
-	ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor)
+	ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck // SA1029
 
 	dbErr := errors.New("database connection failed")
 	mockAgentConfRepo.EXPECT().GetByIDsAndCreatedBy(gomock.Any(), req.AgentIDs, userID).Return(nil, dbErr)
@@ -122,7 +122,7 @@ func TestAgentInOutSvc_Export_AgentNotFound(t *testing.T) {
 	visitor := &rest.Visitor{
 		ID: userID,
 	}
-	ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor)
+	ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck // SA1029
 
 	// Return empty list - agent not found
 	mockAgentConfRepo.EXPECT().GetByIDsAndCreatedBy(gomock.Any(), req.AgentIDs, userID).Return([]*dapo.DataAgentPo{}, nil)

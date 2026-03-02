@@ -99,9 +99,9 @@ func TestRedisDlmMutexStruct(t *testing.T) {
 	t.Run("create redisDlmMutex instance", func(t *testing.T) {
 		t.Parallel()
 
-		mutex := &redisDlmMutex{}
+		mutex := &redisDlmMutex{} //nolint:staticcheck
 
-		if mutex == nil {
+		if mutex == nil { //nolint:staticcheck
 			t.Fatal("Expected mutex to be created, got nil")
 		}
 	})

@@ -112,7 +112,7 @@ func TestDataAgentTplSvc_Update_NameConflict(t *testing.T) {
 	visitor := &rest.Visitor{
 		ID: userID,
 	}
-	ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor)
+	ctx = context.WithValue(ctx, cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck // SA1029
 
 	req := &agenttplreq.UpdateReq{}
 

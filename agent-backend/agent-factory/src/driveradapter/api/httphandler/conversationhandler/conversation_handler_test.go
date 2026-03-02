@@ -55,7 +55,7 @@ func setConversationVisitor(c *gin.Context, userID string, userType rest.Visitor
 	c.Set(cenum.VisitUserInfoCtxKey.String(), visitor)
 
 	if withReqCtx {
-		ctx := context.WithValue(c.Request.Context(), cenum.VisitUserInfoCtxKey.String(), visitor)
+		ctx := context.WithValue(c.Request.Context(), cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck // SA1029
 		c.Request = c.Request.WithContext(ctx)
 	}
 }

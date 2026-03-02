@@ -24,7 +24,7 @@ func createTplCtxWithUserID(userID string) context.Context {
 		ID: userID,
 	}
 
-	return context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), visitor)
+	return context.WithValue(context.Background(), cenum.VisitUserInfoCtxKey.String(), visitor) //nolint:staticcheck // SA1029
 }
 
 func TestDetail_Success(t *testing.T) {

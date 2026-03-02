@@ -290,7 +290,7 @@ func TestPublishedTpl_NoProductKey(t *testing.T) {
 }
 
 func TestPublishedAgents_NonLocalDevMode(t *testing.T) {
-	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese) //nolint:staticcheck // SA1029
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -353,7 +353,7 @@ func TestPublishedTpl_ProductRepoError(t *testing.T) {
 }
 
 func TestPublishedTplListEos_NonLocalDevMode(t *testing.T) {
-	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese) //nolint:staticcheck // SA1029
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -379,7 +379,7 @@ func TestPublishedTplListEos_NonLocalDevMode(t *testing.T) {
 }
 
 func TestPublishedAgents_NonLocalDevModeError(t *testing.T) {
-	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese) //nolint:staticcheck // SA1029
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -413,7 +413,7 @@ func TestPublishedAgents_NonLocalDevModeError(t *testing.T) {
 }
 
 func TestPublishedTplListEos_NonLocalDevModeError(t *testing.T) {
-	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+	ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese) //nolint:staticcheck // SA1029
 
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
