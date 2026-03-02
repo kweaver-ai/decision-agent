@@ -31,6 +31,7 @@ func TestCreate_Happy(t *testing.T) {
 	defer db.Close()
 
 	mock.ExpectBegin()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -47,6 +48,7 @@ func TestCreate_Happy(t *testing.T) {
 	id, err := repo.Create(context.Background(), tx, &mockCreatePo)
 	require.NoError(t, err)
 	assert.Equal(t, int64(1), id)
+
 	_ = tx.Rollback()
 }
 
@@ -57,6 +59,7 @@ func TestCreate_InsertError(t *testing.T) {
 	defer db.Close()
 
 	mock.ExpectBegin()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -66,6 +69,7 @@ func TestCreate_InsertError(t *testing.T) {
 
 	_, err = repo.Create(context.Background(), tx, &mockCreatePo)
 	assert.Error(t, err)
+
 	_ = tx.Rollback()
 }
 
@@ -180,6 +184,7 @@ func TestGetByIDWithTx_Happy(t *testing.T) {
 	defer db.Close()
 
 	mock.ExpectBegin()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -191,6 +196,7 @@ func TestGetByIDWithTx_Happy(t *testing.T) {
 	po, err := repo.GetByIDWithTx(context.Background(), tx, 1)
 	require.NoError(t, err)
 	assert.Equal(t, int64(1), po.ID)
+
 	_ = tx.Rollback()
 }
 
@@ -203,6 +209,7 @@ func TestGetByKeyWithTx_Happy(t *testing.T) {
 	defer db.Close()
 
 	mock.ExpectBegin()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -214,6 +221,7 @@ func TestGetByKeyWithTx_Happy(t *testing.T) {
 	po, err := repo.GetByKeyWithTx(context.Background(), tx, "tpl-key")
 	require.NoError(t, err)
 	assert.Equal(t, "tpl-key", po.Key)
+
 	_ = tx.Rollback()
 }
 

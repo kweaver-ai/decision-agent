@@ -17,7 +17,7 @@ type releaseSvc struct {
 	releaseCategoryRelRepo idbaccess.IReleaseCategoryRelRepo
 	releasePermissionRepo  idbaccess.IReleasePermissionRepo
 
-	categoryRepo      idbaccess.ICategoryRepo
+	categoryRepo idbaccess.ICategoryRepo
 
 	umHttp iumacc.UmHttpAcc
 
@@ -53,7 +53,7 @@ type NewReleaseSvcDto struct {
 	ReleaseCategoryRepo   idbaccess.IReleaseCategoryRelRepo
 	ReleasePermissionRepo idbaccess.IReleasePermissionRepo
 
-	CategoryRepo      idbaccess.ICategoryRepo
+	CategoryRepo idbaccess.ICategoryRepo
 
 	UmHttp iumacc.UmHttpAcc
 

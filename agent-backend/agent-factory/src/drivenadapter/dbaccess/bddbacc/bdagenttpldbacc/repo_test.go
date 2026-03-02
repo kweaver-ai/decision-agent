@@ -33,27 +33,39 @@ func (testLogger) Fatalln(...interface{})        {}
 
 func newRepoWithMock(t *testing.T) (*BizDomainAgentTplRelRepo, *sqlx.DB, sqlmock.Sqlmock) {
 	t.Helper()
+
 	db, mock, err := sqlx.New()
 	require.NoError(t, err)
+
 	return &BizDomainAgentTplRelRepo{db: db, logger: testLogger{}, IDBAccBaseRepo: dbaccess.NewDBAccBase()}, db, mock
 }
 
 // ==================== Singleton ====================
 
 func TestNewBizDomainAgentTplRelRepo_Singleton(t *testing.T) {
-	old := bizDomainAgentTplRelRepoOnce //nolint:govet
 	oldImpl := bizDomainAgentTplRelRepoImpl
 	oldGDB := global.GDB
-	t.Cleanup(func() { bizDomainAgentTplRelRepoOnce = old; bizDomainAgentTplRelRepoImpl = oldImpl; global.GDB = oldGDB }) //nolint:govet
+
+	t.Cleanup(func() {
+		bizDomainAgentTplRelRepoOnce = sync.Once{}
+		if oldImpl != nil {
+			bizDomainAgentTplRelRepoOnce.Do(func() {})
+		}
+
+		bizDomainAgentTplRelRepoImpl = oldImpl
+		global.GDB = oldGDB
+	})
 
 	db, _, err := sqlx.New()
 	require.NoError(t, err)
+
 	global.GDB = db
 	bizDomainAgentTplRelRepoOnce = sync.Once{}
 	bizDomainAgentTplRelRepoImpl = nil
 
 	r1 := NewBizDomainAgentTplRelRepo()
 	r2 := NewBizDomainAgentTplRelRepo()
+
 	assert.NotNil(t, r1)
 	assert.Same(t, r1, r2)
 }
@@ -62,6 +74,7 @@ func TestNewBizDomainAgentTplRelRepo_Singleton(t *testing.T) {
 
 func TestBatchCreate_Empty(t *testing.T) {
 	t.Parallel()
+
 	repo, db, _ := newRepoWithMock(t)
 	defer db.Close()
 	assert.NoError(t, repo.BatchCreate(context.Background(), nil, []*dapo.BizDomainAgentTplRelPo{}))
@@ -69,6 +82,7 @@ func TestBatchCreate_Empty(t *testing.T) {
 
 func TestBatchCreate_Happy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -82,6 +96,7 @@ func TestBatchCreate_Happy(t *testing.T) {
 
 func TestBatchCreate_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -97,6 +112,7 @@ func TestBatchCreate_Error(t *testing.T) {
 
 func TestDeleteByAgentTplID_Happy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -106,6 +122,7 @@ func TestDeleteByAgentTplID_Happy(t *testing.T) {
 
 func TestDeleteByAgentTplID_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -117,6 +134,7 @@ func TestDeleteByAgentTplID_Error(t *testing.T) {
 
 func TestDeleteByBizDomainID_Happy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -126,6 +144,7 @@ func TestDeleteByBizDomainID_Happy(t *testing.T) {
 
 func TestDeleteByBizDomainID_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -137,6 +156,7 @@ func TestDeleteByBizDomainID_Error(t *testing.T) {
 
 func TestGetByAgentTplID_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -150,6 +170,7 @@ func TestGetByAgentTplID_Error(t *testing.T) {
 
 func TestGetByBizDomainID_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 

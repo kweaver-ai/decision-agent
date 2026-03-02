@@ -100,6 +100,7 @@ func TestChat_BindJsonError(t *testing.T) {
 	h.Chat(c)
 	assert.NotEqual(t, http.StatusOK, recorder.Code)
 }
+
 // ==================== Debug — non-stream nil result (previously panic, now fixed) ====================
 
 func TestDebug_NonStream_NilResult(t *testing.T) {
@@ -187,7 +188,6 @@ func TestInternalAPIChat_NonStream_NilResult(t *testing.T) {
 	h.InternalAPIChat(c)
 	assert.Equal(t, http.StatusInternalServerError, recorder.Code)
 }
-
 
 // ==================== InternalChat — additional paths ====================
 

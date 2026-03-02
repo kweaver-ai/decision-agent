@@ -28,8 +28,6 @@ linters-settings:
   staticcheck:
     checks:
       - all
-  govet:
-    # 使用 golangci-lint 默认的 govet 检查器（不额外启用 shadow/unusedwrite 等）
 
 issues:
   # 不限制每个 linter 的最大报告数量（默认为 50）

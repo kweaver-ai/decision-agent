@@ -141,12 +141,15 @@ func TestNewCheckAgentUsePmsReq(t *testing.T) {
 
 func newBizDomainCtx(method, path string, headers map[string]string) (*gin.Context, *httptest.ResponseRecorder) {
 	recorder := httptest.NewRecorder()
+
 	req, _ := http.NewRequest(method, path, nil)
 	for k, v := range headers {
 		req.Header.Set(k, v)
 	}
+
 	c, _ := gin.CreateTestContext(recorder)
 	c.Request = req
+
 	return c, recorder
 }
 

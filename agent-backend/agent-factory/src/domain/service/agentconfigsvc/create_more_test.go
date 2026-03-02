@@ -26,9 +26,11 @@ func TestCreate_CreatePoError(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectRollback()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -67,9 +69,11 @@ func TestCreate_BatchCreateBdRelError(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectRollback()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -111,9 +115,11 @@ func TestCreate_AssociateResourceError(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectRollback()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -158,9 +164,11 @@ func TestCreate_Success(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectCommit()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -205,9 +213,11 @@ func TestCreate_InternalAPI_Success(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectCommit()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 

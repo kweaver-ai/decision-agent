@@ -48,7 +48,6 @@ func TestEnvConstants(t *testing.T) {
 
 func TestIsLocalDev(t *testing.T) {
 	// 不使用 t.Parallel(): 子测试修改共享环境变量和 mockIsLocalDev
-
 	// Save original env value
 	originalValue := os.Getenv(EnvIsLocalDev)
 
@@ -92,6 +91,7 @@ func TestIsLocalDev(t *testing.T) {
 	t.Run("mock is local dev", func(t *testing.T) {
 		os.Unsetenv(EnvIsLocalDev)
 		SetIsLocalDev()
+
 		defer func() { mockIsLocalDev = false }()
 
 		if !IsLocalDev() {
@@ -102,9 +102,9 @@ func TestIsLocalDev(t *testing.T) {
 
 func TestIsAaronLocalDev(t *testing.T) {
 	// 不使用 t.Parallel(): 子测试修改共享环境变量
-
 	envVar := EnvIsLocalDev + "_AARON"
 	originalValue := os.Getenv(envVar)
+
 	defer func() {
 		if originalValue != "" {
 			os.Setenv(envVar, originalValue)
@@ -142,7 +142,6 @@ func TestIsAaronLocalDev(t *testing.T) {
 
 func TestIsDebugMode(t *testing.T) {
 	// 不使用 t.Parallel(): 子测试修改共享环境变量
-
 	originalValue := os.Getenv(isDebugMode)
 	defer func() {
 		if originalValue != "" {
@@ -193,7 +192,6 @@ func TestIsOprLogShowLogForDebug(t *testing.T) {
 
 func TestIsSQLPrint(t *testing.T) {
 	// 不使用 t.Parallel(): 子测试修改共享环境变量
-
 	originalValue := os.Getenv(isSQLPrint)
 	defer func() {
 		if originalValue != "" {
@@ -232,7 +230,6 @@ func TestIsSQLPrint(t *testing.T) {
 
 func TestProjectPathByEnv(t *testing.T) {
 	// 不使用 t.Parallel(): 子测试修改共享环境变量
-
 	originalValue := os.Getenv(projPath)
 	defer func() {
 		if originalValue != "" {
@@ -245,6 +242,7 @@ func TestProjectPathByEnv(t *testing.T) {
 	t.Run("env var set", func(t *testing.T) {
 		expectedPath := "/custom/path"
 		os.Setenv(projPath, expectedPath)
+
 		defer os.Unsetenv(projPath)
 
 		result := ProjectPathByEnv()
@@ -265,7 +263,6 @@ func TestProjectPathByEnv(t *testing.T) {
 
 func TestIsSkipOauthVerify(t *testing.T) {
 	// 不使用 t.Parallel(): 子测试修改共享环境变量
-
 	originalValue := os.Getenv(skipOauthVerify)
 	defer func() {
 		if originalValue != "" {

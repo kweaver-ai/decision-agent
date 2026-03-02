@@ -51,6 +51,7 @@ func TestNewCategoryRepo_Singleton(t *testing.T) {
 	oldOnce := categoryRepoOnce //nolint:govet
 	oldImpl := categoryRepoImpl
 	oldGDB := global.GDB
+
 	t.Cleanup(func() {
 		categoryRepoOnce = oldOnce //nolint:govet
 		categoryRepoImpl = oldImpl
@@ -66,6 +67,7 @@ func TestNewCategoryRepo_Singleton(t *testing.T) {
 
 	r1 := NewCategoryRepo()
 	r2 := NewCategoryRepo()
+
 	assert.NotNil(t, r1)
 	assert.Same(t, r1, r2)
 }

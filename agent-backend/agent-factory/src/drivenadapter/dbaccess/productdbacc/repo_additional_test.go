@@ -22,6 +22,7 @@ func ctxWithUser(uid string) context.Context {
 
 func TestDelete_Happy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -34,6 +35,7 @@ func TestDelete_Happy(t *testing.T) {
 
 func TestDelete_ExecError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -48,6 +50,7 @@ func TestDelete_ExecError(t *testing.T) {
 
 func TestGetByKeys_EmptyKeys(t *testing.T) {
 	t.Parallel()
+
 	repo, db, _ := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -58,6 +61,7 @@ func TestGetByKeys_EmptyKeys(t *testing.T) {
 
 func TestGetByKeys_Happy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -72,6 +76,7 @@ func TestGetByKeys_Happy(t *testing.T) {
 
 func TestGetByKeys_QueryError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -87,6 +92,7 @@ func TestGetByKeys_QueryError(t *testing.T) {
 
 func TestGetByNameMapByKeys_EmptyKeys(t *testing.T) {
 	t.Parallel()
+
 	repo, db, _ := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -97,6 +103,7 @@ func TestGetByNameMapByKeys_EmptyKeys(t *testing.T) {
 
 func TestGetByNameMapByKeys_Happy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -110,6 +117,7 @@ func TestGetByNameMapByKeys_Happy(t *testing.T) {
 
 func TestGetByNameMapByKeys_QueryError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -125,6 +133,7 @@ func TestGetByNameMapByKeys_QueryError(t *testing.T) {
 
 func TestList_CountError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -137,6 +146,7 @@ func TestList_CountError(t *testing.T) {
 
 func TestList_CountZero(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -151,6 +161,7 @@ func TestList_CountZero(t *testing.T) {
 
 func TestList_Happy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -170,6 +181,7 @@ func TestList_Happy(t *testing.T) {
 
 func TestList_FindError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -187,6 +199,7 @@ func TestList_FindError(t *testing.T) {
 
 func TestExistsByName_Happy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -200,6 +213,7 @@ func TestExistsByName_Happy(t *testing.T) {
 
 func TestExistsByName_NotExists(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -215,6 +229,7 @@ func TestExistsByName_NotExists(t *testing.T) {
 
 func TestExistsByKey_Happy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -230,6 +245,7 @@ func TestExistsByKey_Happy(t *testing.T) {
 
 func TestExistsByID_Happy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -245,6 +261,7 @@ func TestExistsByID_Happy(t *testing.T) {
 
 func TestExistsByNameExcludeID_Happy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -260,6 +277,7 @@ func TestExistsByNameExcludeID_Happy(t *testing.T) {
 
 func TestExistsByKeyExcludeID_Happy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -275,6 +293,7 @@ func TestExistsByKeyExcludeID_Happy(t *testing.T) {
 
 func TestGetByKey_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 

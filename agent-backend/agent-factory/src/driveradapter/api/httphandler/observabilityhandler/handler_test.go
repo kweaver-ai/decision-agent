@@ -88,6 +88,7 @@ func TestObservabilityHandler_AgentDetail(t *testing.T) {
 
 	t.Run("agent_id empty", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -100,6 +101,7 @@ func TestObservabilityHandler_AgentDetail(t *testing.T) {
 
 	t.Run("bind json error", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -113,6 +115,7 @@ func TestObservabilityHandler_AgentDetail(t *testing.T) {
 
 	t.Run("time range missing", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -126,6 +129,7 @@ func TestObservabilityHandler_AgentDetail(t *testing.T) {
 
 	t.Run("start_time > end_time", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -139,6 +143,7 @@ func TestObservabilityHandler_AgentDetail(t *testing.T) {
 
 	t.Run("user not found", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -153,6 +158,7 @@ func TestObservabilityHandler_AgentDetail(t *testing.T) {
 
 	t.Run("service error", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -169,6 +175,7 @@ func TestObservabilityHandler_AgentDetail(t *testing.T) {
 
 	t.Run("success", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -191,6 +198,7 @@ func TestObservabilityHandler_ConversationList(t *testing.T) {
 
 	t.Run("agent_id empty", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -204,6 +212,7 @@ func TestObservabilityHandler_ConversationList(t *testing.T) {
 
 	t.Run("bind json error", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -218,6 +227,7 @@ func TestObservabilityHandler_ConversationList(t *testing.T) {
 
 	t.Run("start_time > end_time", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -232,6 +242,7 @@ func TestObservabilityHandler_ConversationList(t *testing.T) {
 
 	t.Run("user not found", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -246,6 +257,7 @@ func TestObservabilityHandler_ConversationList(t *testing.T) {
 
 	t.Run("conversation svc error", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -264,6 +276,7 @@ func TestObservabilityHandler_ConversationList(t *testing.T) {
 
 	t.Run("success empty list", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -282,6 +295,7 @@ func TestObservabilityHandler_ConversationList(t *testing.T) {
 
 	t.Run("success default params", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -307,6 +321,7 @@ func TestObservabilityHandler_SessionList(t *testing.T) {
 
 	t.Run("agent_id empty", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -319,6 +334,7 @@ func TestObservabilityHandler_SessionList(t *testing.T) {
 
 	t.Run("conversation_id empty", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -332,6 +348,7 @@ func TestObservabilityHandler_SessionList(t *testing.T) {
 
 	t.Run("time range missing", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -345,6 +362,7 @@ func TestObservabilityHandler_SessionList(t *testing.T) {
 
 	t.Run("success", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -367,6 +385,7 @@ func TestObservabilityHandler_SessionDetail(t *testing.T) {
 
 	t.Run("agent_id empty", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -379,6 +398,7 @@ func TestObservabilityHandler_SessionDetail(t *testing.T) {
 
 	t.Run("session_id empty", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -392,6 +412,7 @@ func TestObservabilityHandler_SessionDetail(t *testing.T) {
 
 	t.Run("success", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -414,6 +435,7 @@ func TestObservabilityHandler_RunList(t *testing.T) {
 
 	t.Run("agent_id empty", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -426,6 +448,7 @@ func TestObservabilityHandler_RunList(t *testing.T) {
 
 	t.Run("session_id empty", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -439,6 +462,7 @@ func TestObservabilityHandler_RunList(t *testing.T) {
 
 	t.Run("success", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -461,6 +485,7 @@ func TestObservabilityHandler_RunDetail(t *testing.T) {
 
 	t.Run("agent_id empty", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -473,6 +498,7 @@ func TestObservabilityHandler_RunDetail(t *testing.T) {
 
 	t.Run("run_id empty", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -486,6 +512,7 @@ func TestObservabilityHandler_RunDetail(t *testing.T) {
 
 	t.Run("success", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -508,6 +535,7 @@ func TestObservabilityHandler_AnalyticsQuery(t *testing.T) {
 
 	t.Run("bind json error", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -520,6 +548,7 @@ func TestObservabilityHandler_AnalyticsQuery(t *testing.T) {
 
 	t.Run("analysis_level empty", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -532,6 +561,7 @@ func TestObservabilityHandler_AnalyticsQuery(t *testing.T) {
 
 	t.Run("id empty", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -544,6 +574,7 @@ func TestObservabilityHandler_AnalyticsQuery(t *testing.T) {
 
 	t.Run("time range missing", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -556,6 +587,7 @@ func TestObservabilityHandler_AnalyticsQuery(t *testing.T) {
 
 	t.Run("start_time > end_time", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -568,6 +600,7 @@ func TestObservabilityHandler_AnalyticsQuery(t *testing.T) {
 
 	t.Run("service error", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)
@@ -582,6 +615,7 @@ func TestObservabilityHandler_AnalyticsQuery(t *testing.T) {
 
 	t.Run("success", func(t *testing.T) {
 		t.Parallel()
+
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
 		mockObsSvc := iportdrivermock.NewMockIObservability(ctrl)

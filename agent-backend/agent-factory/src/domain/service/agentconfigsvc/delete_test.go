@@ -162,11 +162,11 @@ func TestDataAgentConfigSvc_Delete_BeginTxError(t *testing.T) {
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 
 	svc := &dataAgentConfigSvc{
-		SvcBase:           service.NewSvcBase(),
-		agentConfRepo:     mockAgentConfRepo,
-		bdAgentRelRepo:    mockBdAgentRelRepo,
-		bizDomainHttp:     mockBizDomainHttp,
-		logger:            mockLogger,
+		SvcBase:        service.NewSvcBase(),
+		agentConfRepo:  mockAgentConfRepo,
+		bdAgentRelRepo: mockBdAgentRelRepo,
+		bizDomainHttp:  mockBizDomainHttp,
+		logger:         mockLogger,
 	}
 
 	ctx := context.Background()

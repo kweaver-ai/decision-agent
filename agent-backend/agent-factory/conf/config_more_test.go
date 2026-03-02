@@ -92,6 +92,7 @@ func TestSetOtelDefaults_InvalidSamplingRate(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			config := &OtelConfig{
 				Trace: TraceConfig{SamplingRate: tt.rate},
 			}

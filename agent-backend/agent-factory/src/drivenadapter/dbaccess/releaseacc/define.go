@@ -29,9 +29,9 @@ var _ idbaccess.IReleaseRepo = &releaseRepo{}
 func NewReleaseRepo() idbaccess.IReleaseRepo {
 	releaseRepoOnce.Do(func() {
 		releaseRepoImpl = &releaseRepo{
-			db:                global.GDB,
-			logger:            logger.GetLogger(),
-			IDBAccBaseRepo:    dbaccess.NewDBAccBase(),
+			db:             global.GDB,
+			logger:         logger.GetLogger(),
+			IDBAccBaseRepo: dbaccess.NewDBAccBase(),
 		}
 	})
 

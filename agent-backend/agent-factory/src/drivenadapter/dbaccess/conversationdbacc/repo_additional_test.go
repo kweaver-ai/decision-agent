@@ -14,6 +14,7 @@ import (
 
 func TestList_WithTitle_FindError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -33,6 +34,7 @@ func TestList_WithTitle_FindError(t *testing.T) {
 
 func TestList_WithTitle_CountError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -56,6 +58,7 @@ func TestList_WithTitle_CountError(t *testing.T) {
 
 func TestListByAgentID_WithTitle_FindError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -68,6 +71,7 @@ func TestListByAgentID_WithTitle_FindError(t *testing.T) {
 
 func TestListByAgentID_NoPagination_FindError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -80,6 +84,7 @@ func TestListByAgentID_NoPagination_FindError(t *testing.T) {
 
 func TestListByAgentID_WithTitle_CountError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 

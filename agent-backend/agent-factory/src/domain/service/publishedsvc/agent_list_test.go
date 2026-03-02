@@ -97,7 +97,6 @@ func TestPublishedSvc_getPos(t *testing.T) {
 
 func TestPublishedSvc_getPmsAgentPos(t *testing.T) {
 	// 不使用 t.Parallel(): 子测试通过 setDisablePmsCheck 修改全局 global.GConfig/cglobal.GConfig
-
 	t.Run("biz domain http error", func(t *testing.T) {
 		// 不使用 t.Parallel(): setDisablePmsCheck 修改全局配置
 		setDisablePmsCheck(t, false)
@@ -305,7 +304,6 @@ func TestPublishedSvc_getPmsAgentPos(t *testing.T) {
 
 func TestPublishedSvc_GetPublishedAgentList(t *testing.T) {
 	// 不使用 t.Parallel(): 子测试通过 setDisablePmsCheck 修改全局配置
-
 	t.Run("get pms agent pos error", func(t *testing.T) {
 		// 不使用 t.Parallel(): setDisablePmsCheck 修改全局配置
 		setDisablePmsCheck(t, false)
@@ -403,7 +401,6 @@ func TestPublishedSvc_GetPublishedAgentList(t *testing.T) {
 
 func TestPublishedSvc_getPmsAgentPos_SizeCapAt10000(t *testing.T) {
 	// 不使用 t.Parallel(): setDisablePmsCheck 修改全局 global.GConfig/cglobal.GConfig
-
 	setDisablePmsCheck(t, false)
 
 	ctrl := gomock.NewController(t)
@@ -454,7 +451,6 @@ func TestPublishedSvc_getPmsAgentPos_SizeCapAt10000(t *testing.T) {
 
 func TestPublishedSvc_GetPublishedAgentList_EmptyPos(t *testing.T) {
 	// 不使用 t.Parallel(): setDisablePmsCheck 修改全局 global.GConfig/cglobal.GConfig
-
 	setDisablePmsCheck(t, true)
 
 	ctrl := gomock.NewController(t)

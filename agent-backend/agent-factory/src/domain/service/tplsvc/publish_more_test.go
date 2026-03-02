@@ -27,9 +27,11 @@ func TestPublish_TplNotFound(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectRollback()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -59,9 +61,11 @@ func TestPublish_GetByIDWithTxError(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectRollback()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -90,9 +94,11 @@ func TestPublish_NotOwner(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectRollback()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -124,9 +130,11 @@ func TestPublish_GenPublishedPoDeleteError(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectRollback()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -161,9 +169,11 @@ func TestPublish_GenPublishedPoCreateError(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectRollback()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -198,9 +208,11 @@ func TestPublish_HandleCategoryError(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectRollback()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -240,9 +252,11 @@ func TestPublish_HandleCategoryNotFound(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectRollback()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -283,9 +297,11 @@ func TestPublish_UpdateStatusError(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectRollback()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -317,15 +333,16 @@ func TestPublish_UpdateStatusError(t *testing.T) {
 	require.NoError(t, sqlMk.ExpectationsWereMet())
 }
 
-
 func TestPublish_FromCopy2TplAndPublish_SkipsPmsCheck(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 

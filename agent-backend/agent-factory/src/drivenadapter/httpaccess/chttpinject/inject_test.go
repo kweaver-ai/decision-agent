@@ -43,7 +43,6 @@ func baseConfig(mockAuthz, mockBizDomain bool) (*conf.Config, *cconf.Config) {
 
 func TestNewAuthZHttpAcc(t *testing.T) {
 	// 不使用 t.Parallel(): 修改 global.GConfig/cglobal.GConfig 和 singleton once 变量
-
 	oldCfg := global.GConfig
 	oldCCfg := cglobal.GConfig
 
@@ -87,7 +86,6 @@ func TestNewAuthZHttpAcc(t *testing.T) {
 
 func TestNewBizDomainHttpAcc(t *testing.T) {
 	// 不使用 t.Parallel(): 修改 global.GConfig/cglobal.GConfig 和 singleton once 变量
-
 	oldCfg := global.GConfig
 	oldCCfg := cglobal.GConfig
 
@@ -131,7 +129,6 @@ func TestNewBizDomainHttpAcc(t *testing.T) {
 
 func TestNewUmHttpAcc(t *testing.T) {
 	// 不使用 t.Parallel(): 修改 global.GConfig/cglobal.GConfig 和 singleton once 变量
-
 	oldCfg := global.GConfig
 	oldCCfg := cglobal.GConfig
 

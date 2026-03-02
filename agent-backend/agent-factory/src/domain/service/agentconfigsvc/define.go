@@ -46,18 +46,18 @@ type dataAgentConfigSvc struct {
 var _ iv3portdriver.IDataAgentConfigSvc = &dataAgentConfigSvc{}
 
 type NewDaConfSvcDto struct {
-	RedisCmp          icmp.RedisCmp
-	SvcBase           *service.SvcBase
-	AgentConfRepo     idbaccess.IDataAgentConfigRepo
-	AgentTplRepo      idbaccess.IDataAgentTplRepo
-	ReleaseRepo       idbaccess.IReleaseRepo
-	PubedAgentRepo    idbaccess.IPubedAgentRepo
-	Logger            icmp.Logger
-	OpenAICmp         icmp.IOpenAI
-	UmHttp            iusermanagementacc.UserMgnt
-	ProductRepo       idbaccess.IProductRepo
-	Um2Http           iumacc.UmHttpAcc
-	ModelApiAcc       imodelfactoryacc.IModelApiAcc
+	RedisCmp       icmp.RedisCmp
+	SvcBase        *service.SvcBase
+	AgentConfRepo  idbaccess.IDataAgentConfigRepo
+	AgentTplRepo   idbaccess.IDataAgentTplRepo
+	ReleaseRepo    idbaccess.IReleaseRepo
+	PubedAgentRepo idbaccess.IPubedAgentRepo
+	Logger         icmp.Logger
+	OpenAICmp      icmp.IOpenAI
+	UmHttp         iusermanagementacc.UserMgnt
+	ProductRepo    idbaccess.IProductRepo
+	Um2Http        iumacc.UmHttpAcc
+	ModelApiAcc    imodelfactoryacc.IModelApiAcc
 
 	TplSvc   iv3portdriver.IDataAgentTplSvc
 	MqAccess imqaccess.IMqAccess

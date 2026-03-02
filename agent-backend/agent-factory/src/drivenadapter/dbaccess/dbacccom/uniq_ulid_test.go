@@ -77,6 +77,7 @@ func TestNewUniqUlidHelper_WithTx(t *testing.T) {
 	defer db.Close()
 
 	mock.ExpectBegin()
+
 	tx, txErr := db.Begin()
 	require.NoError(t, txErr)
 
@@ -156,6 +157,7 @@ func TestGenDBID_Success_WithTx(t *testing.T) {
 	defer db.Close()
 
 	mock.ExpectBegin()
+
 	tx, txErr := db.Begin()
 	require.NoError(t, txErr)
 

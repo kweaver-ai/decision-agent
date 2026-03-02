@@ -21,6 +21,7 @@ func TestForward_InvalidJSONResponse(t *testing.T) {
 	type Req struct {
 		Key string `json:"key"`
 	}
+
 	type Res struct {
 		Val string `json:"val"`
 	}
@@ -45,6 +46,7 @@ func TestForward_NonOKStatusCode(t *testing.T) {
 	type Req struct {
 		Key string `json:"key"`
 	}
+
 	type Res struct {
 		Val string `json:"val"`
 	}

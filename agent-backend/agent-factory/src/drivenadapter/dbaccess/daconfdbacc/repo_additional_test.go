@@ -16,6 +16,7 @@ import (
 
 func TestCreate_InsertError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newDARepoWithMock(t)
 	defer db.Close()
 
@@ -25,6 +26,7 @@ func TestCreate_InsertError(t *testing.T) {
 
 func TestCreateBatch_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newDARepoWithMock(t)
 	defer db.Close()
 
@@ -36,6 +38,7 @@ func TestCreateBatch_Error(t *testing.T) {
 
 func TestUpdate_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newDARepoWithMock(t)
 	defer db.Close()
 
@@ -45,6 +48,7 @@ func TestUpdate_Error(t *testing.T) {
 
 func TestUpdateByKey_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newDARepoWithMock(t)
 	defer db.Close()
 
@@ -56,6 +60,7 @@ func TestUpdateByKey_Error(t *testing.T) {
 
 func TestDelete_ExecError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newDARepoWithMock(t)
 	defer db.Close()
 
@@ -67,10 +72,12 @@ func TestDelete_ExecError(t *testing.T) {
 
 func TestGetAllIDs_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newDARepoWithMock(t)
 	defer db.Close()
 
 	mock.ExpectQuery(`(?i)select .* from t_data_agent_config`).WillReturnError(errors.New("query err"))
+
 	_, err := repo.GetAllIDs(context.Background())
 	assert.Error(t, err)
 }
@@ -79,20 +86,24 @@ func TestGetAllIDs_Error(t *testing.T) {
 
 func TestGetByKeys_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newDARepoWithMock(t)
 	defer db.Close()
 
 	mock.ExpectQuery(`(?i)select .* from t_data_agent_config`).WillReturnError(errors.New("query err"))
+
 	_, err := repo.GetByKeys(context.Background(), []string{"k1"})
 	assert.Error(t, err)
 }
 
 func TestGetByIDS_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newDARepoWithMock(t)
 	defer db.Close()
 
 	mock.ExpectQuery(`(?i)select .* from t_data_agent_config`).WillReturnError(errors.New("query err"))
+
 	_, err := repo.GetByIDS(context.Background(), []string{"a1"})
 	assert.Error(t, err)
 }
@@ -101,10 +112,12 @@ func TestGetByIDS_Error(t *testing.T) {
 
 func TestGetMapByIDs_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newDARepoWithMock(t)
 	defer db.Close()
 
 	mock.ExpectQuery(`(?i)select .* from t_data_agent_config`).WillReturnError(errors.New("query err"))
+
 	_, err := repo.GetMapByIDs(context.Background(), []string{"a1"})
 	assert.Error(t, err)
 }
@@ -113,10 +126,12 @@ func TestGetMapByIDs_Error(t *testing.T) {
 
 func TestGetIDNameMapByID_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newDARepoWithMock(t)
 	defer db.Close()
 
 	mock.ExpectQuery(`(?i)select .* from t_data_agent_config`).WillReturnError(errors.New("query err"))
+
 	_, err := repo.GetIDNameMapByID(context.Background(), []string{"a1"})
 	assert.Error(t, err)
 }
@@ -125,10 +140,12 @@ func TestGetIDNameMapByID_Error(t *testing.T) {
 
 func TestGetByIDsAndCreatedBy_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newDARepoWithMock(t)
 	defer db.Close()
 
 	mock.ExpectQuery(`(?i)select .* from t_data_agent_config`).WillReturnError(errors.New("query err"))
+
 	_, err := repo.GetByIDsAndCreatedBy(context.Background(), []string{"a1"}, "u1")
 	assert.Error(t, err)
 }
@@ -137,6 +154,7 @@ func TestGetByIDsAndCreatedBy_Error(t *testing.T) {
 
 func TestUpdateStatus_ExecError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newDARepoWithMock(t)
 	defer db.Close()
 
@@ -148,20 +166,24 @@ func TestUpdateStatus_ExecError(t *testing.T) {
 
 func TestExistsByName_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newDARepoWithMock(t)
 	defer db.Close()
 
 	mock.ExpectQuery(`(?i)select .* from t_data_agent_config`).WillReturnError(errors.New("query err"))
+
 	_, err := repo.ExistsByName(context.Background(), "n1")
 	assert.Error(t, err)
 }
 
 func TestExistsByID_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newDARepoWithMock(t)
 	defer db.Close()
 
 	mock.ExpectQuery(`(?i)select .* from t_data_agent_config`).WillReturnError(errors.New("query err"))
+
 	_, err := repo.ExistsByID(context.Background(), "a1")
 	assert.Error(t, err)
 }
@@ -170,37 +192,40 @@ func TestExistsByID_Error(t *testing.T) {
 
 func TestExistsByNameExcludeID_True(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newDARepoWithMock(t)
 	defer db.Close()
 
 	mock.ExpectQuery(`(?i)select .* from t_data_agent_config`).
 		WillReturnRows(sqlmock.NewRows([]string{"1"}).AddRow(1))
+
 	exists, err := repo.ExistsByNameExcludeID(context.Background(), "n1", "a1")
 	assert.NoError(t, err)
 	assert.True(t, exists)
 }
 
-
-
-
 // ==================== GetByID / GetByKey error ====================
 
 func TestGetByID_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newDARepoWithMock(t)
 	defer db.Close()
 
 	mock.ExpectQuery(`(?i)select .* from t_data_agent_config`).WillReturnError(errors.New("query err"))
+
 	_, err := repo.GetByID(context.Background(), "a1")
 	assert.Error(t, err)
 }
 
 func TestGetByKey_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newDARepoWithMock(t)
 	defer db.Close()
 
 	mock.ExpectQuery(`(?i)select .* from t_data_agent_config`).WillReturnError(errors.New("query err"))
+
 	_, err := repo.GetByKey(context.Background(), "k1")
 	assert.Error(t, err)
 }

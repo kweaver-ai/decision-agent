@@ -14,6 +14,7 @@ import (
 
 func TestGetPubTplList_PanicOnEmptyTplIDs(t *testing.T) {
 	t.Parallel()
+
 	repo, db, _ := newPubedTplRepoWithMock(t)
 	defer db.Close()
 
@@ -24,6 +25,7 @@ func TestGetPubTplList_PanicOnEmptyTplIDs(t *testing.T) {
 
 func TestGetPubTplList_FindError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newPubedTplRepoWithMock(t)
 	defer db.Close()
 
@@ -41,6 +43,7 @@ func TestGetPubTplList_FindError(t *testing.T) {
 
 func TestGetPubTplList_WithNameFilter_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newPubedTplRepoWithMock(t)
 	defer db.Close()
 
@@ -59,6 +62,7 @@ func TestGetPubTplList_WithNameFilter_Error(t *testing.T) {
 
 func TestGetPubTplList_WithCategoryFilter_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newPubedTplRepoWithMock(t)
 	defer db.Close()
 
@@ -75,11 +79,11 @@ func TestGetPubTplList_WithCategoryFilter_Error(t *testing.T) {
 	assert.Error(t, err)
 }
 
-
 // ==================== GetCategoryJoinPosByTplID ====================
 
 func TestGetCategoryJoinPosByTplID_QueryError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newPubedTplRepoWithMock(t)
 	defer db.Close()
 

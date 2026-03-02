@@ -101,4 +101,3 @@ func (mr *MockISquareSvcMockRecorder) IsAgentExists(ctx, agentID any) *gomock.Ca
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsAgentExists", reflect.TypeOf((*MockISquareSvc)(nil).IsAgentExists), ctx, agentID)
 }
-

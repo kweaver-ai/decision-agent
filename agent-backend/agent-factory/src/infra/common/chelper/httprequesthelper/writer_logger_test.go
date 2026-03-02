@@ -47,6 +47,7 @@ func TestNewFileWriter(t *testing.T) {
 	fw, err := NewFileWriter(cfg)
 	require.NoError(t, err)
 	assert.NotNil(t, fw)
+
 	defer fw.Close()
 }
 
@@ -126,6 +127,7 @@ func TestNewLogger_NilConfig(t *testing.T) {
 	l, err := NewLogger(nil)
 	require.NoError(t, err)
 	assert.NotNil(t, l)
+
 	defer l.Close()
 }
 
@@ -138,6 +140,7 @@ func TestNewLogger_ConsoleMode(t *testing.T) {
 	l, err := NewLogger(cfg)
 	require.NoError(t, err)
 	assert.NotNil(t, l)
+
 	defer l.Close()
 }
 
@@ -152,6 +155,7 @@ func TestNewLogger_FileMode(t *testing.T) {
 	l, err := NewLogger(cfg)
 	require.NoError(t, err)
 	assert.NotNil(t, l)
+
 	defer l.Close()
 }
 
@@ -166,6 +170,7 @@ func TestNewLogger_BothMode(t *testing.T) {
 	l, err := NewLogger(cfg)
 	require.NoError(t, err)
 	assert.NotNil(t, l)
+
 	defer l.Close()
 }
 

@@ -35,8 +35,10 @@ func (testLogger) Fatalln(...interface{})        {}
 
 func newRepoWithMock(t *testing.T) (*personalSpaceRepo, *sqlx.DB, sqlmock.Sqlmock) {
 	t.Helper()
+
 	db, mock, err := sqlx.New()
 	require.NoError(t, err)
+
 	return &personalSpaceRepo{db: db, logger: testLogger{}, IDBAccBaseRepo: dbaccess.NewDBAccBase()}, db, mock
 }
 
@@ -46,16 +48,19 @@ func TestNewPersonalSpaceRepo_Singleton(t *testing.T) {
 	old := pubedAgentRepoOnce //nolint:govet
 	oldImpl := pubedAgentRepoImpl
 	oldGDB := global.GDB
+
 	t.Cleanup(func() { pubedAgentRepoOnce = old; pubedAgentRepoImpl = oldImpl; global.GDB = oldGDB }) //nolint:govet
 
 	db, _, err := sqlx.New()
 	require.NoError(t, err)
+
 	global.GDB = db
 	pubedAgentRepoOnce = sync.Once{}
 	pubedAgentRepoImpl = nil
 
 	r1 := NewPersonalSpaceRepo()
 	r2 := NewPersonalSpaceRepo()
+
 	assert.NotNil(t, r1)
 	assert.Same(t, r1, r2)
 }
@@ -64,6 +69,7 @@ func TestNewPersonalSpaceRepo_Singleton(t *testing.T) {
 
 func TestListPersonalSpaceAgent_PanicEmptyCreatedBy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, _ := newRepoWithMock(t)
 	defer db.Close()
 
@@ -77,6 +83,7 @@ func TestListPersonalSpaceAgent_PanicEmptyCreatedBy(t *testing.T) {
 
 func TestListPersonalSpaceAgent_FindError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -91,6 +98,7 @@ func TestListPersonalSpaceAgent_FindError(t *testing.T) {
 
 func TestListPersonalSpaceAgent_WithNameFilter_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -105,6 +113,7 @@ func TestListPersonalSpaceAgent_WithNameFilter_Error(t *testing.T) {
 
 func TestListPersonalSpaceAgent_WithBuiltInPermission_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -120,6 +129,7 @@ func TestListPersonalSpaceAgent_WithBuiltInPermission_Error(t *testing.T) {
 
 func TestListPersonalSpaceAgent_WithPublishStatus_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -134,6 +144,7 @@ func TestListPersonalSpaceAgent_WithPublishStatus_Error(t *testing.T) {
 
 func TestListPersonalSpaceAgent_WithPublishStatusPublished_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -148,6 +159,7 @@ func TestListPersonalSpaceAgent_WithPublishStatusPublished_Error(t *testing.T) {
 
 func TestListPersonalSpaceAgent_WithPublishStatusEdited_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -162,6 +174,7 @@ func TestListPersonalSpaceAgent_WithPublishStatusEdited_Error(t *testing.T) {
 
 func TestListPersonalSpaceAgent_WithPublishToBe_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -176,6 +189,7 @@ func TestListPersonalSpaceAgent_WithPublishToBe_Error(t *testing.T) {
 
 func TestListPersonalSpaceAgent_WithBizDomainIDs_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -193,6 +207,7 @@ func TestListPersonalSpaceAgent_WithBizDomainIDs_Error(t *testing.T) {
 
 func TestListPersonalSpaceTpl_PanicEmptyTplIDs(t *testing.T) {
 	t.Parallel()
+
 	repo, db, _ := newRepoWithMock(t)
 	defer db.Close()
 
@@ -206,6 +221,7 @@ func TestListPersonalSpaceTpl_PanicEmptyTplIDs(t *testing.T) {
 
 func TestListPersonalSpaceTpl_FindError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -221,6 +237,7 @@ func TestListPersonalSpaceTpl_FindError(t *testing.T) {
 
 func TestListPersonalSpaceTpl_WithNameFilter_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 

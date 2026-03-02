@@ -16,6 +16,7 @@ import (
 
 func TestCreate_InsertError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newTplRepoWithMock(t)
 	defer db.Close()
 
@@ -28,6 +29,7 @@ func TestCreate_InsertError(t *testing.T) {
 
 func TestUpdate_ExecError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newTplRepoWithMock(t)
 	defer db.Close()
 
@@ -42,6 +44,7 @@ func TestUpdate_ExecError(t *testing.T) {
 
 func TestExistsByName_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newTplRepoWithMock(t)
 	defer db.Close()
 
@@ -54,6 +57,7 @@ func TestExistsByName_Error(t *testing.T) {
 
 func TestExistsByKey_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newTplRepoWithMock(t)
 	defer db.Close()
 
@@ -66,6 +70,7 @@ func TestExistsByKey_Error(t *testing.T) {
 
 func TestExistsByID_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newTplRepoWithMock(t)
 	defer db.Close()
 
@@ -78,6 +83,7 @@ func TestExistsByID_Error(t *testing.T) {
 
 func TestExistsByNameExcludeID_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newTplRepoWithMock(t)
 	defer db.Close()
 
@@ -90,6 +96,7 @@ func TestExistsByNameExcludeID_Error(t *testing.T) {
 
 func TestExistsByNameExcludeID_True(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newTplRepoWithMock(t)
 	defer db.Close()
 
@@ -103,6 +110,7 @@ func TestExistsByNameExcludeID_True(t *testing.T) {
 
 func TestExistsByKeyExcludeID_True(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newTplRepoWithMock(t)
 	defer db.Close()
 
@@ -118,6 +126,7 @@ func TestExistsByKeyExcludeID_True(t *testing.T) {
 
 func TestGetByKeys_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newTplRepoWithMock(t)
 	defer db.Close()
 
@@ -130,6 +139,7 @@ func TestGetByKeys_Error(t *testing.T) {
 
 func TestGetByIDS_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newTplRepoWithMock(t)
 	defer db.Close()
 
@@ -144,6 +154,7 @@ func TestGetByIDS_Error(t *testing.T) {
 
 func TestGetAllIDs_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newTplRepoWithMock(t)
 	defer db.Close()
 
@@ -158,6 +169,7 @@ func TestGetAllIDs_Error(t *testing.T) {
 
 func TestGetByCategoryID_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newTplRepoWithMock(t)
 	defer db.Close()
 
@@ -172,6 +184,7 @@ func TestGetByCategoryID_Error(t *testing.T) {
 
 func TestGetMapByIDs_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newTplRepoWithMock(t)
 	defer db.Close()
 
@@ -186,6 +199,7 @@ func TestGetMapByIDs_Error(t *testing.T) {
 
 func TestDelete_ExecError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newTplRepoWithMock(t)
 	defer db.Close()
 
@@ -200,6 +214,7 @@ func TestDelete_ExecError(t *testing.T) {
 
 func TestUpdateStatus_ExecError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newTplRepoWithMock(t)
 	defer db.Close()
 
@@ -214,10 +229,12 @@ func TestUpdateStatus_ExecError(t *testing.T) {
 
 func TestGetByKeyWithTx_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newTplRepoWithMock(t)
 	defer db.Close()
 
 	mock.ExpectBegin()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -227,6 +244,7 @@ func TestGetByKeyWithTx_Error(t *testing.T) {
 
 	_, err = repo.GetByKeyWithTx(context.Background(), tx, "k1")
 	assert.Error(t, err)
+
 	_ = tx.Rollback()
 }
 
@@ -234,6 +252,7 @@ func TestGetByKeyWithTx_Error(t *testing.T) {
 
 func TestGetByID_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newTplRepoWithMock(t)
 	defer db.Close()
 
@@ -246,6 +265,7 @@ func TestGetByID_Error(t *testing.T) {
 
 func TestGetByKey_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newTplRepoWithMock(t)
 	defer db.Close()
 

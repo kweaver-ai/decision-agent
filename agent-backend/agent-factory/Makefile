@@ -1,4 +1,4 @@
-.DEFAULT_GOAL := all
+.DEFAULT_GOAL := format_and_lint
 
 ciLint:
 	golangci-lint run --out-format=colored-line-number ./...
@@ -17,10 +17,10 @@ fmt:
 	@goimports -w ./**/*.go
 	@echo "fmt done"
 
-all:
+format_and_lint:
 	$(MAKE) wsl
 	$(MAKE) fmt
-	#$(MAKE) ciLintFix
+	$(MAKE) ciLintFix
 
 ut:
 	rm -rf coverage_report
@@ -71,6 +71,27 @@ utCoverage:
 	@echo "Coverage report saved to test_out/"
 	@cat test_out/coverage_total.txt
 
+serviceUtAndCoverage:
+	@mkdir -p test_out
+	@echo "========================================="
+	@echo "Running Service UT: ./src/domain/service/..."
+	@echo "========================================="
+	go test -timeout 30m \
+		-coverprofile=test_out/coverage_service.out \
+		-covermode=atomic \
+		./src/domain/service/... \
+		2>&1 | tee test_out/ut_service_output.log || true
+	@echo ""
+	@echo "========================================="
+	@echo "Coverage by function:"
+	@echo "========================================="
+	@go tool cover -func=test_out/coverage_service.out 2>/dev/null || true
+	@echo ""
+	@echo "========================================="
+	@echo "Total coverage:"
+	@echo "========================================="
+	@go tool cover -func=test_out/coverage_service.out 2>/dev/null | tail -1 || true
+	@echo "========================================="
 # Swagger 文档生成
 gen-swag:
 	swag init -g main.go -o docs --parseDependency
@@ -94,5 +115,4 @@ pull:
 push:
 	git pull origin $(shell git rev-parse --abbrev-ref HEAD)
 	git push origin $(shell git rev-parse --abbrev-ref HEAD)
-
 

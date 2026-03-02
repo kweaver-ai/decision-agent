@@ -35,8 +35,10 @@ func (testLogger) Fatalln(...interface{})        {}
 
 func newRepoWithMock(t *testing.T) (*pubedAgentRepo, *sqlx.DB, sqlmock.Sqlmock) {
 	t.Helper()
+
 	db, mock, err := sqlx.New()
 	require.NoError(t, err)
+
 	return &pubedAgentRepo{db: db, logger: testLogger{}, IDBAccBaseRepo: dbaccess.NewDBAccBase()}, db, mock
 }
 
@@ -46,16 +48,19 @@ func TestNewPubedAgentRepo_Singleton(t *testing.T) {
 	old := pubedAgentRepoOnce //nolint:govet
 	oldImpl := pubedAgentRepoImpl
 	oldGDB := global.GDB
+
 	t.Cleanup(func() { pubedAgentRepoOnce = old; pubedAgentRepoImpl = oldImpl; global.GDB = oldGDB }) //nolint:govet
 
 	db, _, err := sqlx.New()
 	require.NoError(t, err)
+
 	global.GDB = db
 	pubedAgentRepoOnce = sync.Once{}
 	pubedAgentRepoImpl = nil
 
 	r1 := NewPubedAgentRepo()
 	r2 := NewPubedAgentRepo()
+
 	assert.NotNil(t, r1)
 	assert.Same(t, r1, r2)
 }
@@ -64,6 +69,7 @@ func TestNewPubedAgentRepo_Singleton(t *testing.T) {
 
 func TestGetPubedList_FindError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -77,6 +83,7 @@ func TestGetPubedList_FindError(t *testing.T) {
 
 func TestGetPubedList_WithNameFilter_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -90,6 +97,7 @@ func TestGetPubedList_WithNameFilter_Error(t *testing.T) {
 
 func TestGetPubedList_WithCategoryFilter_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -103,6 +111,7 @@ func TestGetPubedList_WithCategoryFilter_Error(t *testing.T) {
 
 func TestGetPubedList_WithToBeFlag_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -116,6 +125,7 @@ func TestGetPubedList_WithToBeFlag_Error(t *testing.T) {
 
 func TestGetPubedList_WithToBeWebSDK_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -129,6 +139,7 @@ func TestGetPubedList_WithToBeWebSDK_Error(t *testing.T) {
 
 func TestGetPubedList_WithToBeSkill_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -142,6 +153,7 @@ func TestGetPubedList_WithToBeSkill_Error(t *testing.T) {
 
 func TestGetPubedList_WithToBeDataFlow_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -155,6 +167,7 @@ func TestGetPubedList_WithToBeDataFlow_Error(t *testing.T) {
 
 func TestGetPubedList_WithIsToCustomSpace_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -168,6 +181,7 @@ func TestGetPubedList_WithIsToCustomSpace_Error(t *testing.T) {
 
 func TestGetPubedList_WithIsToSquare_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -181,6 +195,7 @@ func TestGetPubedList_WithIsToSquare_Error(t *testing.T) {
 
 func TestGetPubedList_WithIDs_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -194,6 +209,7 @@ func TestGetPubedList_WithIDs_Error(t *testing.T) {
 
 func TestGetPubedList_WithAgentKeys_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -207,6 +223,7 @@ func TestGetPubedList_WithAgentKeys_Error(t *testing.T) {
 
 func TestGetPubedList_WithExcludeAgentKeys_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -222,6 +239,7 @@ func TestGetPubedList_WithExcludeAgentKeys_Error(t *testing.T) {
 
 func TestGetPubedListByXx_EmptyKeysAndIDs(t *testing.T) {
 	t.Parallel()
+
 	repo, db, _ := newRepoWithMock(t)
 	defer db.Close()
 
@@ -233,6 +251,7 @@ func TestGetPubedListByXx_EmptyKeysAndIDs(t *testing.T) {
 
 func TestGetPubedListByXx_WithKeys_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -247,6 +266,7 @@ func TestGetPubedListByXx_WithKeys_Error(t *testing.T) {
 
 func TestGetPubedListByXx_WithIDs_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -261,6 +281,7 @@ func TestGetPubedListByXx_WithIDs_Error(t *testing.T) {
 
 func TestGetPubedListByXx_WithPubToCond_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
@@ -281,6 +302,7 @@ func TestGetPubedListByXx_WithPubToCond_Error(t *testing.T) {
 
 func TestGetPubedPoMapByXx_EmptyKeysAndIDs(t *testing.T) {
 	t.Parallel()
+
 	repo, db, _ := newRepoWithMock(t)
 	defer db.Close()
 
@@ -291,6 +313,7 @@ func TestGetPubedPoMapByXx_EmptyKeysAndIDs(t *testing.T) {
 
 func TestGetPubedPoMapByXx_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 

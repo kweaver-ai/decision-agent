@@ -73,4 +73,3 @@ func TestIsAgentExists(t *testing.T) {
 		assert.Contains(t, err.Error(), "[squareSvc.IsAgentExists]")
 	})
 }
-

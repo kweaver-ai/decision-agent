@@ -270,8 +270,6 @@ func TestUnPublish_UpdateStatusError(t *testing.T) {
 	assert.Contains(t, err.Error(), "update agent status to unpublished failed")
 }
 
-
-
 // TestUnPublish_RemoveUsePmsError 调用 removeUsePmsByHTTPAcc 失败
 func TestUnPublish_RemoveUsePmsError(t *testing.T) {
 	ctrl := gomock.NewController(t)

@@ -39,6 +39,7 @@ func AgentsListForPersonalSpaces(ctx context.Context, _pos []*dapo.DataAgentPo, 
 		if umHttp == nil {
 			panic("umHttp cannot be nil in non-local dev environment")
 		}
+
 		ret, err = umHttp.GetOsnNames(ctx, arg)
 		if err != nil {
 			return

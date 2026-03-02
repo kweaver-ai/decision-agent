@@ -41,6 +41,7 @@ func TestHttpClient_Get_Success(t *testing.T) {
 	resp, err := c.Get(ctx, server.URL)
 	require.NoError(t, err)
 	require.NotNil(t, resp)
+
 	defer resp.Close()
 
 	body := resp.ReadAllString()
@@ -67,6 +68,7 @@ func TestHttpClient_GetExpect2xx_ServerError(t *testing.T) {
 
 	server, c := newTestClient(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
+
 		resp := CommonResp{Code: 500, Message: "server error"}
 		_ = json.NewEncoder(w).Encode(resp)
 	})
@@ -122,6 +124,7 @@ func TestHttpClient_Post_Success(t *testing.T) {
 	resp, err := c.Post(ctx, server.URL, `{"name":"test"}`)
 	require.NoError(t, err)
 	require.NotNil(t, resp)
+
 	defer resp.Close()
 }
 
@@ -175,6 +178,7 @@ func TestHttpClient_PostExpect2xx_ServerError(t *testing.T) {
 
 	server, c := newTestClient(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusInternalServerError)
+
 		resp := CommonResp{Code: 500, Message: "error"}
 		_ = json.NewEncoder(w).Encode(resp)
 	})
@@ -201,6 +205,7 @@ func TestHttpClient_Put_Success(t *testing.T) {
 	resp, err := c.Put(ctx, server.URL, `{"name":"test"}`)
 	require.NoError(t, err)
 	require.NotNil(t, resp)
+
 	defer resp.Close()
 }
 
@@ -224,6 +229,7 @@ func TestHttpClient_PutExpect2xx_ServerError(t *testing.T) {
 
 	server, c := newTestClient(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadGateway)
+
 		resp := CommonResp{Code: 502, Message: "bad gateway"}
 		_ = json.NewEncoder(w).Encode(resp)
 	})
@@ -249,6 +255,7 @@ func TestHttpClient_Delete_Success(t *testing.T) {
 	resp, err := c.Delete(ctx, server.URL)
 	require.NoError(t, err)
 	require.NotNil(t, resp)
+
 	defer resp.Close()
 }
 
@@ -272,6 +279,7 @@ func TestHttpClient_DeleteExpect2xx_ServerError(t *testing.T) {
 
 	server, c := newTestClient(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusForbidden)
+
 		resp := CommonResp{Code: 403, Message: "forbidden"}
 		_ = json.NewEncoder(w).Encode(resp)
 	})

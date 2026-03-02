@@ -46,8 +46,10 @@ func TestRunDetail_BindJsonError(t *testing.T) {
 
 	c, recorder := newObsCtx(http.MethodPost, "/", "{")
 	c.Params = gin.Params{
-		{Key: "agent_id", Value: "a1"}, {Key: "conversation_id", Value: "c1"},
-		{Key: "session_id", Value: "s1"}, {Key: "run_id", Value: "r1"},
+		{Key: "agent_id", Value: "a1"},
+		{Key: "conversation_id", Value: "c1"},
+		{Key: "session_id", Value: "s1"},
+		{Key: "run_id", Value: "r1"},
 	}
 	h.RunDetail(c)
 	assert.NotEqual(t, http.StatusOK, recorder.Code)
@@ -61,8 +63,10 @@ func TestRunDetail_TimeRangeMissing(t *testing.T) {
 
 	c, recorder := newObsCtx(http.MethodPost, "/", `{}`)
 	c.Params = gin.Params{
-		{Key: "agent_id", Value: "a1"}, {Key: "conversation_id", Value: "c1"},
-		{Key: "session_id", Value: "s1"}, {Key: "run_id", Value: "r1"},
+		{Key: "agent_id", Value: "a1"},
+		{Key: "conversation_id", Value: "c1"},
+		{Key: "session_id", Value: "s1"},
+		{Key: "run_id", Value: "r1"},
 	}
 	h.RunDetail(c)
 	assert.NotEqual(t, http.StatusOK, recorder.Code)
@@ -76,8 +80,10 @@ func TestRunDetail_StartTimeGtEndTime(t *testing.T) {
 
 	c, recorder := newObsCtx(http.MethodPost, "/", `{"start_time":100,"end_time":50}`)
 	c.Params = gin.Params{
-		{Key: "agent_id", Value: "a1"}, {Key: "conversation_id", Value: "c1"},
-		{Key: "session_id", Value: "s1"}, {Key: "run_id", Value: "r1"},
+		{Key: "agent_id", Value: "a1"},
+		{Key: "conversation_id", Value: "c1"},
+		{Key: "session_id", Value: "s1"},
+		{Key: "run_id", Value: "r1"},
 	}
 	h.RunDetail(c)
 	assert.NotEqual(t, http.StatusOK, recorder.Code)
@@ -91,8 +97,10 @@ func TestRunDetail_UserNotFound(t *testing.T) {
 
 	c, recorder := newObsCtx(http.MethodPost, "/", `{"start_time":1,"end_time":100}`)
 	c.Params = gin.Params{
-		{Key: "agent_id", Value: "a1"}, {Key: "conversation_id", Value: "c1"},
-		{Key: "session_id", Value: "s1"}, {Key: "run_id", Value: "r1"},
+		{Key: "agent_id", Value: "a1"},
+		{Key: "conversation_id", Value: "c1"},
+		{Key: "session_id", Value: "s1"},
+		{Key: "run_id", Value: "r1"},
 	}
 	h.RunDetail(c)
 	assert.NotEqual(t, http.StatusOK, recorder.Code)
@@ -108,8 +116,10 @@ func TestRunDetail_ServiceError(t *testing.T) {
 
 	c, recorder := newObsCtx(http.MethodPost, "/", `{"start_time":1,"end_time":100}`)
 	c.Params = gin.Params{
-		{Key: "agent_id", Value: "a1"}, {Key: "conversation_id", Value: "c1"},
-		{Key: "session_id", Value: "s1"}, {Key: "run_id", Value: "r1"},
+		{Key: "agent_id", Value: "a1"},
+		{Key: "conversation_id", Value: "c1"},
+		{Key: "session_id", Value: "s1"},
+		{Key: "run_id", Value: "r1"},
 	}
 	setObsVisitor(c, "u1")
 	h.RunDetail(c)
@@ -126,7 +136,8 @@ func TestSessionDetail_BindJsonError(t *testing.T) {
 
 	c, recorder := newObsCtx(http.MethodPost, "/", "{")
 	c.Params = gin.Params{
-		{Key: "agent_id", Value: "a1"}, {Key: "conversation_id", Value: "c1"},
+		{Key: "agent_id", Value: "a1"},
+		{Key: "conversation_id", Value: "c1"},
 		{Key: "session_id", Value: "s1"},
 	}
 	h.SessionDetail(c)
@@ -141,7 +152,8 @@ func TestSessionDetail_TimeRangeMissing(t *testing.T) {
 
 	c, recorder := newObsCtx(http.MethodPost, "/", `{}`)
 	c.Params = gin.Params{
-		{Key: "agent_id", Value: "a1"}, {Key: "conversation_id", Value: "c1"},
+		{Key: "agent_id", Value: "a1"},
+		{Key: "conversation_id", Value: "c1"},
 		{Key: "session_id", Value: "s1"},
 	}
 	h.SessionDetail(c)
@@ -156,7 +168,8 @@ func TestSessionDetail_StartTimeGtEndTime(t *testing.T) {
 
 	c, recorder := newObsCtx(http.MethodPost, "/", `{"start_time":100,"end_time":50}`)
 	c.Params = gin.Params{
-		{Key: "agent_id", Value: "a1"}, {Key: "conversation_id", Value: "c1"},
+		{Key: "agent_id", Value: "a1"},
+		{Key: "conversation_id", Value: "c1"},
 		{Key: "session_id", Value: "s1"},
 	}
 	h.SessionDetail(c)
@@ -171,7 +184,8 @@ func TestSessionDetail_UserNotFound(t *testing.T) {
 
 	c, recorder := newObsCtx(http.MethodPost, "/", `{"start_time":1,"end_time":100}`)
 	c.Params = gin.Params{
-		{Key: "agent_id", Value: "a1"}, {Key: "conversation_id", Value: "c1"},
+		{Key: "agent_id", Value: "a1"},
+		{Key: "conversation_id", Value: "c1"},
 		{Key: "session_id", Value: "s1"},
 	}
 	h.SessionDetail(c)
@@ -188,7 +202,8 @@ func TestSessionDetail_ServiceError(t *testing.T) {
 
 	c, recorder := newObsCtx(http.MethodPost, "/", `{"start_time":1,"end_time":100}`)
 	c.Params = gin.Params{
-		{Key: "agent_id", Value: "a1"}, {Key: "conversation_id", Value: "c1"},
+		{Key: "agent_id", Value: "a1"},
+		{Key: "conversation_id", Value: "c1"},
 		{Key: "session_id", Value: "s1"},
 	}
 	setObsVisitor(c, "u1")
@@ -218,7 +233,8 @@ func TestRunList_BindJsonError(t *testing.T) {
 
 	c, recorder := newObsCtx(http.MethodPost, "/", "{")
 	c.Params = gin.Params{
-		{Key: "agent_id", Value: "a1"}, {Key: "conversation_id", Value: "c1"},
+		{Key: "agent_id", Value: "a1"},
+		{Key: "conversation_id", Value: "c1"},
 		{Key: "session_id", Value: "s1"},
 	}
 	h.RunList(c)
@@ -233,7 +249,8 @@ func TestRunList_TimeRangeMissing(t *testing.T) {
 
 	c, recorder := newObsCtx(http.MethodPost, "/", `{}`)
 	c.Params = gin.Params{
-		{Key: "agent_id", Value: "a1"}, {Key: "conversation_id", Value: "c1"},
+		{Key: "agent_id", Value: "a1"},
+		{Key: "conversation_id", Value: "c1"},
 		{Key: "session_id", Value: "s1"},
 	}
 	h.RunList(c)
@@ -248,7 +265,8 @@ func TestRunList_UserNotFound(t *testing.T) {
 
 	c, recorder := newObsCtx(http.MethodPost, "/", `{"start_time":1,"end_time":100}`)
 	c.Params = gin.Params{
-		{Key: "agent_id", Value: "a1"}, {Key: "conversation_id", Value: "c1"},
+		{Key: "agent_id", Value: "a1"},
+		{Key: "conversation_id", Value: "c1"},
 		{Key: "session_id", Value: "s1"},
 	}
 	h.RunList(c)
@@ -265,7 +283,8 @@ func TestRunList_ServiceError(t *testing.T) {
 
 	c, recorder := newObsCtx(http.MethodPost, "/", `{"start_time":1,"end_time":100}`)
 	c.Params = gin.Params{
-		{Key: "agent_id", Value: "a1"}, {Key: "conversation_id", Value: "c1"},
+		{Key: "agent_id", Value: "a1"},
+		{Key: "conversation_id", Value: "c1"},
 		{Key: "session_id", Value: "s1"},
 	}
 	setObsVisitor(c, "u1")
@@ -325,9 +344,6 @@ func TestSessionList_ServiceError(t *testing.T) {
 	h.SessionList(c)
 	assert.NotEqual(t, http.StatusOK, recorder.Code)
 }
-
-
-
 
 // ==================== ConversationList — time range zero ====================
 

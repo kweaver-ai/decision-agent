@@ -75,6 +75,7 @@ func TestVisitorTypeCheck_AllowedPath(t *testing.T) {
 	router := gin.New()
 	router.POST("/api/agent-factory/v3/agent-permission/execute", VisitorTypeCheck(), func(c *gin.Context) {
 		nextCalled = true
+
 		c.Status(http.StatusOK)
 	})
 
@@ -100,6 +101,7 @@ func TestVisitorTypeCheck_UserType_Allowed(t *testing.T) {
 	})
 	router.POST("/test", VisitorTypeCheck(), func(c *gin.Context) {
 		nextCalled = true
+
 		c.Status(http.StatusOK)
 	})
 
@@ -141,6 +143,7 @@ func TestVisitorTypeCheck_NilVisitor_Allowed(t *testing.T) {
 	router := gin.New()
 	router.POST("/test", VisitorTypeCheck(), func(c *gin.Context) {
 		nextCalled = true
+
 		c.Status(http.StatusOK)
 	})
 

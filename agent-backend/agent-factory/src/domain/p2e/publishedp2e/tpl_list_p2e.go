@@ -49,6 +49,7 @@ func PublishedTplListEos(ctx context.Context, _pos []*dapo.PublishedTplPo, umHtt
 		if umHttp == nil {
 			panic("umHttp cannot be nil in non-local dev environment")
 		}
+
 		ret, err = umHttp.GetOsnNames(ctx, arg)
 		if err != nil {
 			return

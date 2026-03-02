@@ -108,7 +108,6 @@ func TestRequestLogger_Middleware_WithRequestBody(t *testing.T) {
 
 func TestDefaultMiddleware(t *testing.T) {
 	// 不使用 t.Parallel(): 修改 singleton defaultRequestLogger
-
 	gin.SetMode(gin.TestMode)
 
 	// Reset and initialize default logger
@@ -139,7 +138,6 @@ func TestDefaultMiddleware(t *testing.T) {
 
 func TestDefaultMiddleware_NotInitialized(t *testing.T) {
 	// 不使用 t.Parallel(): 修改 singleton defaultRequestLogger
-
 	gin.SetMode(gin.TestMode)
 
 	// Reset default logger

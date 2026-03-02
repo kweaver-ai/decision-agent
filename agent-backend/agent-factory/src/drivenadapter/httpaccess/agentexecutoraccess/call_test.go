@@ -74,6 +74,7 @@ func TestCall_NormalChat(t *testing.T) {
 
 	msgCh := make(chan string)
 	errCh := make(chan error)
+
 	close(msgCh)
 	close(errCh)
 
@@ -140,6 +141,7 @@ func TestCall_WithToken(t *testing.T) {
 
 	msgCh := make(chan string)
 	errCh := make(chan error)
+
 	close(msgCh)
 	close(errCh)
 
@@ -147,6 +149,7 @@ func TestCall_WithToken(t *testing.T) {
 		DoAndReturn(func(ctx context.Context, url string, headers map[string]string, req interface{}) (chan string, chan error, error) {
 			assert.Equal(t, "test-token", headers["token"])
 			assert.Equal(t, "Bearer test-token", headers["Authorization"])
+
 			return msgCh, errCh, nil
 		})
 

@@ -26,6 +26,7 @@ func mockReleaseHistoryListRows() *sqlmock.Rows {
 
 func TestListByAgentID_Happy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newReleaseHistoryRepoWithMock(t)
 	defer db.Close()
 
@@ -44,6 +45,7 @@ func TestListByAgentID_Happy(t *testing.T) {
 
 func TestListByAgentID_FindError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newReleaseHistoryRepoWithMock(t)
 	defer db.Close()
 
@@ -56,6 +58,7 @@ func TestListByAgentID_FindError(t *testing.T) {
 
 func TestListByAgentID_CountError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newReleaseHistoryRepoWithMock(t)
 	defer db.Close()
 
@@ -72,6 +75,7 @@ func TestListByAgentID_CountError(t *testing.T) {
 
 func TestGetMapByAgentIDs_Happy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newReleaseRepoWithMock(t)
 	defer db.Close()
 
@@ -85,6 +89,7 @@ func TestGetMapByAgentIDs_Happy(t *testing.T) {
 
 func TestGetMapByAgentIDs_QueryError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newReleaseRepoWithMock(t)
 	defer db.Close()
 
@@ -99,6 +104,7 @@ func TestGetMapByAgentIDs_QueryError(t *testing.T) {
 
 func TestGetMapByUniqFlags_EmptyFlags(t *testing.T) {
 	t.Parallel()
+
 	repo, db, _ := newReleaseRepoWithMock(t)
 	defer db.Close()
 
@@ -109,6 +115,7 @@ func TestGetMapByUniqFlags_EmptyFlags(t *testing.T) {
 
 func TestGetMapByUniqFlags_Happy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newReleaseRepoWithMock(t)
 	defer db.Close()
 
@@ -126,6 +133,7 @@ func TestGetMapByUniqFlags_Happy(t *testing.T) {
 
 func TestGetMapByUniqFlags_FindError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newReleaseRepoWithMock(t)
 	defer db.Close()
 
@@ -144,6 +152,7 @@ func TestGetMapByUniqFlags_FindError(t *testing.T) {
 
 func TestListRecentAgentForMarket_UnpublishedError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newReleaseRepoWithMock(t)
 	defer db.Close()
 
@@ -174,6 +183,7 @@ func mockReleaseCategoryRelRows() *sqlmock.Rows {
 
 func TestGetByReleaseID_Happy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newReleaseCategoryRelRepoWithMock(t)
 	defer db.Close()
 
@@ -187,6 +197,7 @@ func TestGetByReleaseID_Happy(t *testing.T) {
 
 func TestGetByReleaseID_QueryError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newReleaseCategoryRelRepoWithMock(t)
 	defer db.Close()
 
@@ -201,6 +212,7 @@ func TestGetByReleaseID_QueryError(t *testing.T) {
 
 func TestGetByCategoryID_Happy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newReleaseCategoryRelRepoWithMock(t)
 	defer db.Close()
 
@@ -214,6 +226,7 @@ func TestGetByCategoryID_Happy(t *testing.T) {
 
 func TestGetByCategoryID_QueryError(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newReleaseCategoryRelRepoWithMock(t)
 	defer db.Close()
 

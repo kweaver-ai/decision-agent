@@ -359,6 +359,7 @@ func TestDAConfHTTPHandler_AgentListListForBenchmark_SvcError(t *testing.T) {
 	mockSvc := v3portdrivermock.NewMockIDataAgentConfigSvc(ctrl)
 	mockSvc.EXPECT().ListForBenchmark(gomock.Any(), gomock.Any()).
 		Return(nil, errors.New("svc error"))
+
 	h := &daConfHTTPHandler{daConfSvc: mockSvc, logger: acTestLogger{}}
 
 	c, _ := newACTestCtx(http.MethodGet, "/v3/agent", "")
@@ -375,6 +376,7 @@ func TestDAConfHTTPHandler_AgentListListForBenchmark_Happy(t *testing.T) {
 	mockSvc := v3portdrivermock.NewMockIDataAgentConfigSvc(ctrl)
 	mockSvc.EXPECT().ListForBenchmark(gomock.Any(), gomock.Any()).
 		Return(&agentconfigresp.ListForBenchmarkResp{}, nil)
+
 	h := &daConfHTTPHandler{daConfSvc: mockSvc, logger: acTestLogger{}}
 
 	c, recorder := newACTestCtx(http.MethodGet, "/v3/agent", "")
@@ -454,6 +456,7 @@ func TestDAConfHTTPHandler_Copy_SvcError(t *testing.T) {
 	mockSvc := v3portdrivermock.NewMockIDataAgentConfigSvc(ctrl)
 	mockSvc.EXPECT().Copy(gomock.Any(), "agent-1", gomock.Any()).
 		Return(nil, auditlogdto.AgentCopyAuditLogInfo{}, errors.New("copy failed"))
+
 	h := &daConfHTTPHandler{daConfSvc: mockSvc, logger: acTestLogger{}}
 
 	c, _ := newACTestCtx(http.MethodPost, "/v3/agent/agent-1/copy", "")
@@ -473,6 +476,7 @@ func TestDAConfHTTPHandler_Copy_Happy(t *testing.T) {
 	mockSvc := v3portdrivermock.NewMockIDataAgentConfigSvc(ctrl)
 	mockSvc.EXPECT().Copy(gomock.Any(), "agent-1", gomock.Any()).
 		Return(&agentconfigresp.CopyResp{}, auditlogdto.AgentCopyAuditLogInfo{}, nil)
+
 	h := &daConfHTTPHandler{daConfSvc: mockSvc, logger: acTestLogger{}}
 
 	c, recorder := newACTestCtx(http.MethodPost, "/v3/agent/agent-1/copy", "")

@@ -140,4 +140,3 @@ func TestReleaseRepo_GetMapByAgentIDs_Error(t *testing.T) {
 	_, err := repo.GetMapByAgentIDs(context.Background(), []string{"agent-1"})
 	assert.Error(t, err)
 }
-

@@ -26,6 +26,7 @@ func TestSetInternalAPIUserInfo_NoAccountID(t *testing.T) {
 	router.Use(SetInternalAPIUserInfo(true))
 	router.GET("/test", func(c *gin.Context) {
 		nextCalled = true
+
 		c.Status(http.StatusOK)
 	})
 
@@ -74,6 +75,7 @@ func TestSetInternalAPIUserInfo_UnsupportedAccountType(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/test", nil)
 	req.Header.Set("x-account-id", "user-1")
 	req.Header.Set("x-account-type", "app")
+
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -86,6 +88,7 @@ func TestSetInternalAPIUserInfo_SupportedAccountType(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	var capturedVisitorExists bool
+
 	router := gin.New()
 	router.Use(SetInternalAPIFlag())
 	router.Use(SetInternalAPIUserInfo(false))
@@ -97,6 +100,7 @@ func TestSetInternalAPIUserInfo_SupportedAccountType(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/test", nil)
 	req.Header.Set("x-account-id", "user-1")
 	req.Header.Set("x-account-type", string(cenum.AccountTypeUser))
+
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 
@@ -119,6 +123,7 @@ func TestSetInternalAPIUserInfo_NoCheckAccountType(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/test", nil)
 	req.Header.Set("x-account-id", "user-1")
 	req.Header.Set("x-account-type", "app")
+
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 

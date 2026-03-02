@@ -13,6 +13,7 @@ import (
 func testConfig(t *testing.T) *Config {
 	t.Helper()
 	dir := t.TempDir()
+
 	return &Config{
 		Enabled:              true,
 		OutputMode:           OutputModeFile,
@@ -41,6 +42,7 @@ func TestNewSingleFileWriter_ExistingFile(t *testing.T) {
 	require.NoError(t, os.MkdirAll(singleDir, 0o755))
 	f, err := os.Create(filepath.Join(singleDir, "all_requests.log"))
 	require.NoError(t, err)
+
 	_, _ = f.WriteString("line1\nline2\nline3\n")
 	_ = f.Close()
 
@@ -90,6 +92,7 @@ func TestSingleFileWriter_Write_TriggersTruncate(t *testing.T) {
 	// Verify file has 3 lines
 	data, err := os.ReadFile(cfg.GetSingleFilePath())
 	require.NoError(t, err)
+
 	lines := strings.Split(strings.TrimSpace(string(data)), "\n")
 	assert.Equal(t, 3, len(lines))
 }

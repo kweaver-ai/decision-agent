@@ -324,7 +324,6 @@ func TestConfigPathFromEnv(t *testing.T) {
 
 func TestConfigPathFromEnv_PanicWhenNotInited(t *testing.T) {
 	// 不使用 t.Parallel(): 此测试修改包级别共享变量 isEnvInited，不能与其他测试并行
-
 	// Save and restore isEnvInited
 	oldInited := isEnvInited
 	defer func() {
@@ -344,7 +343,6 @@ func TestConfigPathFromEnv_PanicWhenNotInited(t *testing.T) {
 
 func TestProjectPathByEnv_PanicWhenNotInited(t *testing.T) {
 	// 不使用 t.Parallel(): 此测试修改包级别共享变量 isEnvInited，不能与其他测试并行
-
 	// Save and restore isEnvInited
 	oldInited := isEnvInited
 	defer func() {
@@ -364,7 +362,6 @@ func TestProjectPathByEnv_PanicWhenNotInited(t *testing.T) {
 
 func TestIsDebugMode_PanicWhenNotInited(t *testing.T) {
 	// 不使用 t.Parallel(): 此测试修改包级别共享变量 isEnvInited，不能与其他测试并行
-
 	// Save and restore isEnvInited
 	oldInited := isEnvInited
 	defer func() {
@@ -384,7 +381,6 @@ func TestIsDebugMode_PanicWhenNotInited(t *testing.T) {
 
 func TestIsSQLPrint_PanicWhenNotInited(t *testing.T) {
 	// 不使用 t.Parallel(): 此测试修改包级别共享变量 isEnvInited，不能与其他测试并行
-
 	// Save and restore isEnvInited
 	oldInited := isEnvInited
 	defer func() {
@@ -404,7 +400,6 @@ func TestIsSQLPrint_PanicWhenNotInited(t *testing.T) {
 
 func TestIsLocalDev_PanicWhenNotInited(t *testing.T) {
 	// 不使用 t.Parallel(): 此测试修改包级别共享变量 isEnvInited，不能与其他测试并行
-
 	// Save and restore isEnvInited
 	oldInited := isEnvInited
 	defer func() {

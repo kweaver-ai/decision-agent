@@ -31,7 +31,6 @@ func initCGlobalConfig(t *testing.T) {
 
 func TestPublishedSvc_GetPubedAgentInfoList_RepoError(t *testing.T) {
 	// 不使用 t.Parallel(): initCGlobalConfig 修改全局 cglobal.GConfig
-
 	initCGlobalConfig(t)
 
 	ctrl := gomock.NewController(t)
@@ -58,7 +57,6 @@ func TestPublishedSvc_GetPubedAgentInfoList_RepoError(t *testing.T) {
 
 func TestPublishedSvc_GetPubedAgentInfoList_EmptyPos(t *testing.T) {
 	// 不使用 t.Parallel(): initCGlobalConfig 修改全局 cglobal.GConfig
-
 	initCGlobalConfig(t)
 
 	ctrl := gomock.NewController(t)
@@ -85,7 +83,6 @@ func TestPublishedSvc_GetPubedAgentInfoList_EmptyPos(t *testing.T) {
 
 func TestPublishedSvc_GetPubedAgentInfoList_ConvertError(t *testing.T) {
 	// 不使用 t.Parallel(): initCGlobalConfig 修改全局 cglobal.GConfig
-
 	initCGlobalConfig(t)
 
 	ctrl := gomock.NewController(t)
@@ -128,7 +125,6 @@ func TestPublishedSvc_GetPubedAgentInfoList_ConvertError(t *testing.T) {
 
 func TestPublishedSvc_GetPubedAgentInfoList_Success(t *testing.T) {
 	// 不使用 t.Parallel(): initCGlobalConfig 修改全局 cglobal.GConfig
-
 	initCGlobalConfig(t)
 
 	ctrl := gomock.NewController(t)

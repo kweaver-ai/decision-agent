@@ -38,6 +38,7 @@ func TestUnpublish_PubedTplNotFound(t *testing.T) {
 	}
 
 	tplPo := &dapo.DataAgentTplPo{ID: 1, Name: "Tpl", CreatedBy: "u1"}
+
 	mockPmsSvc.EXPECT().GetSingleMgmtPermission(gomock.Any(), gomock.Any(), gomock.Any()).Return(true, nil)
 	mockAgentTplRepo.EXPECT().GetByID(gomock.Any(), int64(1)).Return(tplPo, nil)
 	mockPubTplRepo.EXPECT().GetByTplID(gomock.Any(), int64(1)).Return(nil, sql.ErrNoRows)
@@ -65,6 +66,7 @@ func TestUnpublish_PubedTplGetError(t *testing.T) {
 	}
 
 	tplPo := &dapo.DataAgentTplPo{ID: 1, Name: "Tpl", CreatedBy: "u1"}
+
 	mockPmsSvc.EXPECT().GetSingleMgmtPermission(gomock.Any(), gomock.Any(), gomock.Any()).Return(true, nil)
 	mockAgentTplRepo.EXPECT().GetByID(gomock.Any(), int64(1)).Return(tplPo, nil)
 	mockPubTplRepo.EXPECT().GetByTplID(gomock.Any(), int64(1)).Return(nil, errors.New("db err"))
@@ -123,6 +125,7 @@ func TestUnpublish_NotOwner_PmsCheckError(t *testing.T) {
 
 	tplPo := &dapo.DataAgentTplPo{ID: 1, Name: "Tpl", CreatedBy: "other-user"}
 	pubedPo := &dapo.PublishedTplPo{ID: 100, TplID: 1}
+
 	mockPmsSvc.EXPECT().GetSingleMgmtPermission(gomock.Any(), gomock.Any(), gomock.Any()).Return(true, nil)
 	mockAgentTplRepo.EXPECT().GetByID(gomock.Any(), int64(1)).Return(tplPo, nil)
 	mockPubTplRepo.EXPECT().GetByTplID(gomock.Any(), int64(1)).Return(pubedPo, nil)
@@ -138,9 +141,11 @@ func TestUnpublish_DelCategoryError(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectRollback()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -178,9 +183,11 @@ func TestUnpublish_UpdateStatusError(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectRollback()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -218,9 +225,11 @@ func TestUnpublish_DeletePubedError(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectRollback()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 
@@ -259,9 +268,11 @@ func TestUnpublish_Success(t *testing.T) {
 
 	db, sqlMk, err := sqlmock.New()
 	require.NoError(t, err)
+
 	defer db.Close()
 	sqlMk.ExpectBegin()
 	sqlMk.ExpectCommit()
+
 	tx, err := db.Begin()
 	require.NoError(t, err)
 

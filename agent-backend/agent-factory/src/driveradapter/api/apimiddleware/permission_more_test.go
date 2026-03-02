@@ -136,5 +136,3 @@ func TestCheckAgentUsePmsInternal_BadAccountType(t *testing.T) {
 	router.ServeHTTP(w, req)
 	assert.NotEqual(t, http.StatusOK, w.Code)
 }
-
-

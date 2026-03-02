@@ -33,7 +33,6 @@ func setReleaseSvcTestConfig(t *testing.T) {
 
 func TestReleaseSvc_handlePmsCtrl_MoreBranches(t *testing.T) {
 	// 不使用 t.Parallel(): setReleaseSvcTestConfig 修改全局 cglobal.GConfig
-
 	setReleaseSvcTestConfig(t)
 
 	t.Run("delete permissions failed", func(t *testing.T) {
@@ -129,7 +128,6 @@ func TestReleaseSvc_handlePmsCtrl_MoreBranches(t *testing.T) {
 
 func TestReleaseSvc_handlePmsCtrlRange_And_genPmsControlResp(t *testing.T) {
 	// 不使用 t.Parallel(): setReleaseSvcTestConfig 修改全局 cglobal.GConfig
-
 	setReleaseSvcTestConfig(t)
 
 	t.Run("handlePmsCtrlRange role batch create failed", func(t *testing.T) {

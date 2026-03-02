@@ -61,7 +61,7 @@ func TestNewAgentSvc_WithFullDto(t *testing.T) {
 	assert.NotNil(t, concreteSvc)
 	assert.NotNil(t, concreteSvc.SvcBase)
 	assert.Equal(t, 200, concreteSvc.streamDiffFrequency)
-	assert.NotNil(t, concreteSvc.SessionMap) //nolint:govet
+	assert.NotNil(t, concreteSvc.SessionMap)  //nolint:govet
 	assert.NotNil(t, concreteSvc.progressMap) //nolint:govet
 	assert.NotNil(t, concreteSvc.progressSet) //nolint:govet
 }
@@ -84,7 +84,7 @@ func TestNewAgentSvc_SyncMapsInitialized(t *testing.T) {
 	concreteSvc, ok := svc.(*agentSvc)
 	assert.True(t, ok)
 
-	assert.NotNil(t, concreteSvc.SessionMap) //nolint:govet
+	assert.NotNil(t, concreteSvc.SessionMap)  //nolint:govet
 	assert.NotNil(t, concreteSvc.progressMap) //nolint:govet
 	assert.NotNil(t, concreteSvc.progressSet) //nolint:govet
 

@@ -33,13 +33,16 @@ func (prodTestLogger) Fatalln(...interface{})        {}
 
 func newProductRepoWithMock(t *testing.T) (*ProductRepo, *sqlx.DB, sqlmock.Sqlmock) {
 	t.Helper()
+
 	db, mock, err := sqlx.New()
 	require.NoError(t, err)
+
 	repo := &ProductRepo{
 		db:             db,
 		logger:         prodTestLogger{},
 		IDBAccBaseRepo: dbaccess.NewDBAccBase(),
 	}
+
 	return repo, db, mock
 }
 
@@ -61,6 +64,7 @@ func TestNewProductRepo_Singleton(t *testing.T) {
 	old := productRepoOnce //nolint:govet
 	oldImpl := productRepoImpl
 	oldGDB := global.GDB
+
 	t.Cleanup(func() {
 		productRepoOnce = old //nolint:govet
 		productRepoImpl = oldImpl
@@ -69,12 +73,14 @@ func TestNewProductRepo_Singleton(t *testing.T) {
 
 	db, _, err := sqlx.New()
 	require.NoError(t, err)
+
 	global.GDB = db
 	productRepoOnce = sync.Once{}
 	productRepoImpl = nil
 
 	r1 := NewProductRepo()
 	r2 := NewProductRepo()
+
 	assert.NotNil(t, r1)
 	assert.Same(t, r1, r2)
 }
@@ -83,6 +89,7 @@ func TestNewProductRepo_Singleton(t *testing.T) {
 
 func TestCreate_Happy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -96,6 +103,7 @@ func TestCreate_Happy(t *testing.T) {
 
 func TestCreate_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -110,6 +118,7 @@ func TestCreate_Error(t *testing.T) {
 
 func TestDelete_EmptyUID(t *testing.T) {
 	t.Parallel()
+
 	repo, db, _ := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -123,6 +132,7 @@ func TestDelete_EmptyUID(t *testing.T) {
 
 func TestExistsByName_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -137,6 +147,7 @@ func TestExistsByName_Error(t *testing.T) {
 
 func TestExistsByKey_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -151,6 +162,7 @@ func TestExistsByKey_Error(t *testing.T) {
 
 func TestExistsByID_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -165,6 +177,7 @@ func TestExistsByID_Error(t *testing.T) {
 
 func TestExistsByNameExcludeID_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -179,6 +192,7 @@ func TestExistsByNameExcludeID_Error(t *testing.T) {
 
 func TestExistsByKeyExcludeID_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -193,6 +207,7 @@ func TestExistsByKeyExcludeID_Error(t *testing.T) {
 
 func TestGetByID_Happy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -206,6 +221,7 @@ func TestGetByID_Happy(t *testing.T) {
 
 func TestGetByID_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -220,6 +236,7 @@ func TestGetByID_Error(t *testing.T) {
 
 func TestGetByKey_Happy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -235,6 +252,7 @@ func TestGetByKey_Happy(t *testing.T) {
 
 func TestUpdate_Happy(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
@@ -247,6 +265,7 @@ func TestUpdate_Happy(t *testing.T) {
 
 func TestUpdate_Error(t *testing.T) {
 	t.Parallel()
+
 	repo, db, mock := newProductRepoWithMock(t)
 	defer db.Close()
 
