@@ -1,7 +1,7 @@
 """单元测试 - agent_controller_pkg/common 模块"""
 
 import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 
 class TestRunAgentParam:

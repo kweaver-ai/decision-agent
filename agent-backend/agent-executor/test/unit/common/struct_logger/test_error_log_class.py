@@ -4,8 +4,6 @@ Unit tests for app/common/struct_logger/error_log_class module
 """
 
 from unittest.mock import MagicMock
-import sys
-import traceback
 
 import pytest
 

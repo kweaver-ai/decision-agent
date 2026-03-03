@@ -1,7 +1,5 @@
 """单元测试 - domain/vo/agentvo/agent_config_vos/config_metadata_vo 模块"""
 
-import pytest
-
 
 class TestConfigMetadataVo:
     """测试 ConfigMetadataVo 类"""

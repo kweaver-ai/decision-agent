@@ -1,5 +1,4 @@
 import json
-from typing import Optional, Any
 
 from fastapi import APIRouter, Header
 from sse_starlette import EventSourceResponse

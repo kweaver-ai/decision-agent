@@ -2,7 +2,6 @@
 
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
-from http import HTTPStatus
 
 from app.driven.dip.agent_factory_service import AgentFactoryService
 from app.common.errors import CodeException

@@ -3,7 +3,6 @@
 验证修复后的 is_dolphin_var 函数与原始 VarOutput.is_serialized_dict 实现保持一致。
 """
 
-import pytest
 from app.utils.common import is_dolphin_var
 
 

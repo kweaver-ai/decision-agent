@@ -3,10 +3,6 @@
 Unit tests for app/common/exception_logger/constants.py module
 """
 
-import os
-import sys
-from unittest.mock import MagicMock, patch
-
 import pytest
 
 

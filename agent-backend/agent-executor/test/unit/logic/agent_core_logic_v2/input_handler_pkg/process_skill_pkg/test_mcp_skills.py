@@ -2,7 +2,7 @@
 """单元测试 - process_skill_pkg/mcp_skills 模块"""
 
 import pytest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 
 class TestProcessSkillsMcps:

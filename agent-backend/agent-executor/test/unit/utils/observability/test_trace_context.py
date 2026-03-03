@@ -1,7 +1,7 @@
 """单元测试 - utils/observability/trace_context 模块"""
 
 import pytest
-from opentelemetry.trace import SpanKind, StatusCode
+from opentelemetry.trace import SpanKind
 
 
 class TestTraceContext:

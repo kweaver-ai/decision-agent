@@ -3,8 +3,6 @@
 Unit tests for app/common/exception_logger/formatter_pkg/request_info.py
 """
 
-import pytest
-
 from app.common.exception_logger.formatter_pkg.request_info import format_request_info
 
 

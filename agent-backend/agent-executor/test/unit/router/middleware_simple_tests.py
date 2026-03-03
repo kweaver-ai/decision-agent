@@ -42,7 +42,7 @@ class TestLogRequestsMiddleware:
 
         call_next = AsyncMock(return_value=Mock(status_code=200))
 
-        with patch('app.router.middleware_pkg.log_requests.uuid') as mock_uuid:
+        with patch("app.router.middleware_pkg.log_requests.uuid") as mock_uuid:
             mock_uuid.uuid4 = Mock(return_value="test-uuid-123")
 
             response = await log_requests(request, call_next)
@@ -68,7 +68,9 @@ class TestStreamingRateLimiter:
 
     def test_rate_limits_first_10_chunks(self):
         """测试前10个块不限制"""
-        from app.router.middleware_pkg.streaming_rate_limiter import RateLimitedStreamingIterator
+        from app.router.middleware_pkg.streaming_rate_limiter import (
+            RateLimitedStreamingIterator,
+        )
         import asyncio
 
         async def mock_iterator():
@@ -79,9 +81,11 @@ class TestStreamingRateLimiter:
 
         chunks = []
         # Simulate iteration
-        asyncio.run(asyncio.get_event_loop().run_until_complete(
-            asyncio.gather(*[rate_limited.__anext__() for _ in range(15)]
-        ))
+        asyncio.run(
+            asyncio.get_event_loop().run_until_complete(
+                asyncio.gather(*[rate_limited.__anext__() for _ in range(15)])
+            )
+        )
 
         assert len(chunks) == 15
 
@@ -104,7 +108,9 @@ class TestO11yTrace:
         response = Mock(status_code=200)
         call_next = AsyncMock(return_value=response)
 
-        with patch('app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE', False):
+        with patch(
+            "app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE", False
+        ):
             result = await o11y_trace(request, call_next)
 
         call_next.assert_called_once_with(request)

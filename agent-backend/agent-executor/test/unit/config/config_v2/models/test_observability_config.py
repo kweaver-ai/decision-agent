@@ -1,7 +1,5 @@
 """单元测试 - config/config_v2/models/observability_config 模块"""
 
-import pytest
-
 
 class TestO11yConfig:
     """测试 O11yConfig 数据类"""

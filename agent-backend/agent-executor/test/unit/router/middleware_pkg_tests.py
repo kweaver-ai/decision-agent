@@ -31,7 +31,6 @@ class TestLogRequests:
     async def test_logs_request_info(self):
         """测试记录请求信息"""
         from app.router.middleware_pkg.log_requests import log_requests
-        from app.common.config import Config
 
         request = MagicMock()
         request.url.path = "/api/test"
@@ -140,7 +139,6 @@ class TestO11yTrace:
     async def test_sdk_unavailable_passes_through(self):
         """测试SDK不可用时直接通过"""
         from app.router.middleware_pkg.o11y_trace import o11y_trace
-        from app.common.config import Config
 
         request = MagicMock()
         request.url.path = "/api/test"
@@ -161,7 +159,6 @@ class TestO11yTrace:
     async def test_with_tracing_enabled(self):
         """测试启用追踪时创建span"""
         from app.router.middleware_pkg.o11y_trace import o11y_trace
-        from app.common.config import Config
 
         request = MagicMock()
         request.url.path = "/api/test"

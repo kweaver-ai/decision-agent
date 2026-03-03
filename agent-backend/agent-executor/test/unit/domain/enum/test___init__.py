@@ -1,7 +1,5 @@
 """单元测试 - domain/enum/__init__ 模块"""
 
-import pytest
-
 
 class TestDomainEnumInit:
     """测试 domain/enum/__init__ 模块存在性"""

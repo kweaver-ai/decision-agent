@@ -1,6 +1,5 @@
 """单元测试 - logic/agent_core_logic_v2/cache_handler 模块"""
 
-import pytest
 from unittest.mock import MagicMock
 
 
@@ -136,7 +135,6 @@ class TestCacheHandler:
     def test_cache_data_isolation(self):
         """测试缓存数据隔离"""
         from app.logic.agent_core_logic_v2.cache_handler import CacheHandler
-        from app.domain.vo.agent_cache.cache_data_vo import CacheDataVo
 
         mock_agent_core = MagicMock()
         mock_agent_core.run_options_vo.enable_dependency_cache = True

@@ -3,7 +3,6 @@
 
 from typing import Dict, Any, AsyncGenerator
 
-from dolphin.core.coroutine.resume_handle import ResumeHandle
 from dolphin.sdk.agent.dolphin_agent import DolphinAgent
 
 

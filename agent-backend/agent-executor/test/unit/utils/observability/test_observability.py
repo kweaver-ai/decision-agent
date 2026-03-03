@@ -1,7 +1,6 @@
 """单元测试 - utils/observability/observability 模块"""
 
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 
 class TestInitObservability:

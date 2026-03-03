@@ -1,11 +1,9 @@
 """扩展单元测试 - utils/json 模块 - 增加边界情况测试"""
 
 import pytest
-import asyncio
 from datetime import datetime, date, time
 from decimal import Decimal
 from enum import Enum
-from uuid import UUID
 
 
 class TestCustomSerializerExtended:

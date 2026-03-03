@@ -242,8 +242,8 @@ func (svc *releaseSvc) Publish(ctx context.Context, req *releasereq.PublishReq) 
 		UpdateTime: currentTs,
 		UpdateBy:   entity.UserID,
 	}
-	_, err = svc.releaseHistoryRepo.Create(ctx, tx, historyPo)
 
+	_, err = svc.releaseHistoryRepo.Create(ctx, tx, historyPo)
 	if err != nil {
 		err = errors.Wrapf(err, "create release history failed")
 		return

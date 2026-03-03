@@ -1,7 +1,5 @@
 """单元测试 - domain/enum/common/user_account_header_key 模块"""
 
-import pytest
-
 
 class TestUserAccountHeaderKey:
     """测试 UserAccountHeaderKey 枚举"""

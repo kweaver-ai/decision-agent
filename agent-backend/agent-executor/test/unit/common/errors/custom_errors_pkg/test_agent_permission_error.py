@@ -1,7 +1,5 @@
 """单元测试 - common/errors/custom_errors_pkg/agent_permission_error 模块"""
 
-import pytest
-
 
 class TestAgentPermissionError:
     """测试 AgentPermissionError 函数"""

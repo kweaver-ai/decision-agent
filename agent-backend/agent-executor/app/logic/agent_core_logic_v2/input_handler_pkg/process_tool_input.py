@@ -1,6 +1,5 @@
 from typing import Any, Dict, Optional
 
-from app.common.stand_log import StandLogger
 from app.domain.vo.agentvo import AgentInputVo
 from app.utils.observability.trace_wrapper import internal_span
 from opentelemetry.trace import Span

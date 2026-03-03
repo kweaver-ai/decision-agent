@@ -1,7 +1,5 @@
 """单元测试 - common/errors/custom_errors_pkg 模块"""
 
-import pytest
-
 
 class TestParamError:
     """测试ParamError函数"""

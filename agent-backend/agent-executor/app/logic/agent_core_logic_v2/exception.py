@@ -32,7 +32,7 @@ class ExceptionHandler:
             datetime.now(),
         )
 
-        message = "agent run failed: {}".format(repr(exc))
+        _message = "agent run failed: {}".format(repr(exc))
 
         # 打印到控制台
         error_log = log_oper.get_error_log(

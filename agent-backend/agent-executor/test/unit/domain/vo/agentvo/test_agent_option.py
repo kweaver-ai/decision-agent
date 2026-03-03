@@ -1,7 +1,5 @@
 """单元测试 - domain/vo/agentvo/agent_option 模块"""
 
-import pytest
-
 
 class TestAgentRunOptionsVo:
     """测试 AgentRunOptionsVo 类"""

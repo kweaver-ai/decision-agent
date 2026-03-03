@@ -1,8 +1,7 @@
 """集成测试 - app/router/tool_controller.py"""
 
 import pytest
-import json
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import patch
 from fastapi.testclient import TestClient
 from fastapi import FastAPI
 

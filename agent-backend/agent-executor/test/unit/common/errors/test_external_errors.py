@@ -1,7 +1,5 @@
 """单元测试 - common/errors/external_errors 模块"""
 
-import pytest
-
 
 class TestExternalServiceError:
     """测试 ExternalServiceError 函数"""

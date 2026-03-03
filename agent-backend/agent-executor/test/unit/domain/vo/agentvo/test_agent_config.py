@@ -1,7 +1,5 @@
 """单元测试 - domain/vo/agentvo/agent_config 模块"""
 
-import pytest
-
 from app.domain.vo.agentvo.agent_config import AgentConfigVo
 
 

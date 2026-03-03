@@ -26,7 +26,6 @@ class TestZhipuSearchRequest:
     def test_query_is_required(self):
         """测试query是必填项"""
         from app.models.tool_requests import ZhipuSearchRequest
-        from pydantic import ValidationError
 
         with pytest.raises(ValidationError):
             ZhipuSearchRequest()
@@ -72,7 +71,6 @@ class TestGetSchemaRequest:
     def test_database_is_required(self):
         """测试database是必填项"""
         from app.models.tool_requests import GetSchemaRequest
-        from pydantic import ValidationError
 
         with pytest.raises(ValidationError):
             GetSchemaRequest()
@@ -127,7 +125,6 @@ class TestOnlineSearchCiteRequest:
     def test_all_fields_required(self):
         """测试所有必填字段"""
         from app.models.tool_requests import OnlineSearchCiteRequest
-        from pydantic import ValidationError
 
         with pytest.raises(ValidationError):
             OnlineSearchCiteRequest()
@@ -174,7 +171,6 @@ class TestOnlineSearchCiteRequest:
     def test_empty_string_query(self):
         """测试空字符串查询"""
         from app.models.tool_requests import OnlineSearchCiteRequest
-        from pydantic import ValidationError
 
         # Empty string should be valid for query field (it's just str type, not min_length)
         request = OnlineSearchCiteRequest(

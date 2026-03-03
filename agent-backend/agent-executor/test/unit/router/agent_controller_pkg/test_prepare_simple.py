@@ -48,7 +48,6 @@ class TestPrepare:
         req.options = None
 
         from app.router.agent_controller_pkg.run_agent_v2.prepare import prepare
-        from app.domain.vo.agentvo import AgentConfigVo
 
         config_json = '{"agent_id": "agent-456", "llms": []}'
 

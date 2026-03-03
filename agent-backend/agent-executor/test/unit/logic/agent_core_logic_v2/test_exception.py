@@ -1,8 +1,7 @@
 """单元测试 - logic/agent_core_logic_v2/exception 模块"""
 
 import pytest
-from unittest.mock import MagicMock, AsyncMock, patch
-import sys
+from unittest.mock import patch
 
 
 @pytest.mark.asyncio

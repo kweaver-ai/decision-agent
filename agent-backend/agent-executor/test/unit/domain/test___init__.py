@@ -1,7 +1,5 @@
 """单元测试 - domain/__init__ 模块"""
 
-import pytest
-
 
 class TestDomainInit:
     """测试 domain/__init__ 模块存在性"""

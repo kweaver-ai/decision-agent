@@ -1,6 +1,5 @@
 """单元测试 - logic/agent_core_logic_v2/trace 模块"""
 
-import pytest
 from unittest.mock import MagicMock
 
 

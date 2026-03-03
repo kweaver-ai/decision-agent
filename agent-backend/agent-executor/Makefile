@@ -84,8 +84,8 @@ test-verbose:
 
 # 代码质量检查
 lint:
-	@echo "🔍 检查代码质量..."
-	uv run pre-commit run -a
+	@echo "🔍 Running pre-commit checks..."
+	uv run pre-commit run -a --config .pre-commit-config.yaml
 
 # 代码格式化
 format:

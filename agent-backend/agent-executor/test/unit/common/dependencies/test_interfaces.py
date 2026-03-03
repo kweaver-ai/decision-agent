@@ -3,11 +3,8 @@
 Unit tests for app/common/dependencies/interfaces.py module
 """
 
-import sys
 from abc import ABC
-from typing import Dict, Any, Tuple
-from unittest.mock import MagicMock
-from enum import Enum
+from typing import Dict, Any
 
 import pytest
 
@@ -281,7 +278,7 @@ class TestICacheService:
     @pytest.mark.asyncio
     async def test_set_method_signature(self):
         """Test set method has correct signature with SerializationType"""
-        from app.common.dependencies.interfaces import ICacheService, SerializationType
+        from app.common.dependencies.interfaces import ICacheService
 
         # Check that set has serialization_type parameter with correct type
         assert "set" in ICacheService.__abstractmethods__

@@ -2,7 +2,7 @@
 """单元测试 - 参数异常处理器"""
 
 import pytest
-from unittest.mock import patch, Mock, MagicMock
+from unittest.mock import patch, Mock
 from fastapi import Request
 from app.common.errors import ParamException, AgentPermissionException
 from fastapi.exceptions import RequestValidationError

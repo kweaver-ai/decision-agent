@@ -1,7 +1,5 @@
 """单元测试 - domain/vo/agentvo/agent_config_vos/agent_skill_vo 模块"""
 
-import pytest
-
 
 class TestDataSourceTypeEnum:
     """测试 DataSourceTypeEnum 枚举"""

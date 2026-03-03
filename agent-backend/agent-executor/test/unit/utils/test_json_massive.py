@@ -6,7 +6,6 @@ import decimal
 import uuid
 import enum
 import json
-from unittest.mock import Mock, MagicMock
 from app.utils.json import (
     custom_serializer,
     json_serialize_async,

@@ -1,7 +1,5 @@
 """单元测试 - domain/vo/agent_cache/__init__ 模块"""
 
-import pytest
-
 
 class TestAgentCacheInit:
     """测试 domain/vo/agent_cache/__init__ 导出"""

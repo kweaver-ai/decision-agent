@@ -3,7 +3,6 @@ from typing import Any, AsyncGenerator, Dict, Optional, TYPE_CHECKING
 from dolphin.sdk.agent.dolphin_agent import DolphinAgent
 from dolphin.core.config.global_config import GlobalConfig
 from dolphin.sdk.skill.traditional_toolkit import TriditionalToolkit
-from dolphin.core.utils.tools import ToolInterrupt
 
 from app.common.config import Config
 from app.common.stand_log import StandLogger
@@ -11,9 +10,6 @@ from app.common.struct_logger import struct_logger
 from app.domain.vo.agentvo import AgentConfigVo
 from app.logic.agent_core_logic_v2.output_variables import get_output_variables
 from app.logic.agent_core_logic_v2.prompt_builder import PromptBuilder
-from app.utils.common import (
-    get_dolphin_var_value,
-)
 from app.common.tool_v2.tool import build_tools
 from app.utils.observability.trace_wrapper import internal_span
 from opentelemetry.trace import Span

@@ -1,7 +1,5 @@
 """单元测试 - common/errors/custom_errors_pkg/conversation_running_error 模块"""
 
-import pytest
-
 
 class TestConversationRunningError:
     """测试 ConversationRunningError 函数"""

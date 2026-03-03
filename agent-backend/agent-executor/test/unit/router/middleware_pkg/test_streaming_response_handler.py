@@ -2,8 +2,7 @@
 """单元测试 - streaming_response_handler 模块"""
 
 import pytest
-from unittest.mock import MagicMock, AsyncMock, patch, mock_open
-import os
+from unittest.mock import MagicMock, patch, mock_open
 
 
 class AsyncIterator:

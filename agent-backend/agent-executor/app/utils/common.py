@@ -2,14 +2,12 @@
 import asyncio
 import gettext
 import inspect
-import math
 import os
 import sys
 import traceback
 from concurrent.futures import ThreadPoolExecutor
 from enum import Enum
-from gettext import gettext as _l
-from typing import Any, Callable, Dict, Optional, Tuple
+from typing import Any, Callable, Dict, Tuple
 from urllib.parse import urlparse
 
 from fastapi import Request

@@ -1,7 +1,5 @@
 """单元测试 - domain/constant 模块"""
 
-import pytest
-
 
 class TestDomainConstantModule:
     """测试 domain/constant 模块"""

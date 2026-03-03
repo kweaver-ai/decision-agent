@@ -3,8 +3,7 @@
 单元测试 - common/structs 模块 - Pydantic模型测试
 """
 
-import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 from app.common.structs import (
     AgentConfig,

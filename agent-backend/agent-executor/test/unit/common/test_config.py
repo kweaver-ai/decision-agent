@@ -7,7 +7,6 @@ because mocking them would pollute the global Config object and affect other tes
 The tests here verify the structure of the config module without mocking dependencies.
 """
 
-import os
 import sys
 import pytest
 

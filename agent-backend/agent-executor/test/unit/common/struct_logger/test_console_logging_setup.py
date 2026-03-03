@@ -3,7 +3,7 @@
 Unit tests for app/common/struct_logger/console_logging_setup module
 """
 
-from unittest.mock import MagicMock, patch, Mock
+from unittest.mock import patch
 import logging
 
 import pytest

@@ -4,7 +4,6 @@ Unit tests for app/common/struct_logger/logger module
 """
 
 from unittest.mock import MagicMock, patch
-import importlib
 
 import pytest
 

@@ -2,8 +2,6 @@
 Massive unit tests for Interrupt VOs to boost coverage
 """
 
-import pytest
-from datetime import datetime
 from app.domain.vo.interrupt.interrupt_data import (
     ToolArg,
     InterruptConfig,

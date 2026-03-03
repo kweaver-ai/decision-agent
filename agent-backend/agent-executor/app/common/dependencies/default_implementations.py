@@ -14,7 +14,6 @@ from app.common.dependencies.interfaces import (
     IEnvironmentDetector,
 )
 from app.common.dependencies.dolphin_lazy_import import (
-    _dolphin_importer,
     get_dolphin_var_output_class,
     get_dolphin_exception,
     is_dolphin_available,

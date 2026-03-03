@@ -1,7 +1,5 @@
 """单元测试 - domain/vo 模块"""
 
-import pytest
-
 
 class TestDomainVoModule:
     """测试 domain/vo 模块"""

@@ -1,8 +1,5 @@
 """单元测试 - models/tool_responses 模块"""
 
-import pytest
-from pydantic import ValidationError
-
 
 class TestZhipuSearchResponse:
     """测试 ZhipuSearchResponse 模型"""

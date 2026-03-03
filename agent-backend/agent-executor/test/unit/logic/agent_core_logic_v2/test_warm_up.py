@@ -1,7 +1,7 @@
 """Tests for app.logic.agent_core_logic_v2.warm_up module."""
 
 import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import MagicMock, patch
 from typing import Dict
 
 

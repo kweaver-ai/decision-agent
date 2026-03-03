@@ -17,7 +17,7 @@ fmt:
 	@goimports -w ./**/*.go
 	@echo "fmt done"
 
-format_and_lint:
+lint:
 	$(MAKE) wsl
 	$(MAKE) fmt
 	$(MAKE) ciLintFix

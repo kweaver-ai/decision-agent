@@ -1,6 +1,5 @@
 """单元测试 - domain/entity/agent_cache/agent_cache_entity 模块"""
 
-import pytest
 from datetime import datetime
 
 

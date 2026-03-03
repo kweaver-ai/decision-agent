@@ -6,7 +6,7 @@
 import os
 import sys
 import pytest
-from unittest.mock import MagicMock, Mock
+from unittest.mock import MagicMock
 
 # ============================================================
 # 1. 在导入任何 app 模块之前，预先 mock dolphin SDK
@@ -195,7 +195,6 @@ def reset_global_state():
     这解决了测试隔离问题，确保每个测试都有干净的状态。
     """
     # 重置 MockVarOutput 的存储
-    from app.utils.common import cur_pwd  # 导入以触发模块初始化
 
     try:
         if "dolphin.core.context.var_output" in sys.modules:

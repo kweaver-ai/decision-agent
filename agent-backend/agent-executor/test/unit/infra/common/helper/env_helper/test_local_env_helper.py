@@ -2,7 +2,7 @@
 """Unit tests for local_env_helper module"""
 
 import pytest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 
 class TestRunScenario:
@@ -76,7 +76,7 @@ class TestLocalEnvHelper:
 
     def test_init_with_single_scenario(self):
         """Test initialization with single scenario"""
-        from app.infra.common.helper.env_helper import LocalEnvHelper, RunScenario
+        from app.infra.common.helper.env_helper import LocalEnvHelper
 
         with patch.dict(
             "os.environ",
@@ -385,7 +385,7 @@ class TestEnvHelperEdgeCases:
 
     def test_scenario_check_with_multiple_scenarios_in_list(self):
         """Test scenario checking with multiple scenarios in check list"""
-        from app.infra.common.helper.env_helper import LocalEnvHelper, RunScenario
+        from app.infra.common.helper.env_helper import LocalEnvHelper
 
         with patch.dict(
             "os.environ",

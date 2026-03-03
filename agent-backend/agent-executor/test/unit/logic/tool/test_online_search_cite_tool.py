@@ -1,9 +1,7 @@
 """Tests for app.logictool.online_search_cite_tool module."""
 
-import json
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
-import aiohttp
 
 
 @pytest.mark.asyncio

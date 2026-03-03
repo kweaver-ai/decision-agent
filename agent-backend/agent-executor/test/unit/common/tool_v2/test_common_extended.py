@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """单元测试 - app/common/tool_v2/common.py 补充测试"""
 
-import pytest
-
 
 class TestParseKwargsExtended:
     """测试 parse_kwargs 函数扩展"""

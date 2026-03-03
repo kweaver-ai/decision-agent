@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """单元测试 - app/common/tool_v2/api_tool_pkg/process_fixed_value.py"""
 
-import pytest
 from unittest.mock import patch
 
 

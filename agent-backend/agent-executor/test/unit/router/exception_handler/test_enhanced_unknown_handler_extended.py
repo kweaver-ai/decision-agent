@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """单元测试 - enhanced_unknown_handler 模块"""
 
-import pytest
 from unittest.mock import MagicMock, patch
 
 

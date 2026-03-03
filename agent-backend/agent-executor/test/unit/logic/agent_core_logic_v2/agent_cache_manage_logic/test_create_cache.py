@@ -3,7 +3,6 @@
 
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
-from datetime import datetime
 
 
 class TestCreateCache:

@@ -1,8 +1,5 @@
 """单元测试 - utils/interrupt_converter 模块"""
 
-import pytest
-from unittest.mock import patch, MagicMock
-
 
 class TestInterruptHandleToResumeHandle:
     """测试 interrupt_handle_to_resume_handle 函数"""

@@ -1,7 +1,5 @@
 """单元测试 - domain/constant/agent_version 模块"""
 
-import pytest
-
 from app.domain.constant.agent_version import AGENT_VERSION_V0, AGENT_VERSION_LATEST
 
 

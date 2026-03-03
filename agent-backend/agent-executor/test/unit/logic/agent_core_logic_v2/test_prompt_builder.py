@@ -1,7 +1,7 @@
 """单元测试 - logic/agent_core_logic_v2/prompt_builder 模块"""
 
 import pytest
-from unittest.mock import Mock, MagicMock, patch
+from unittest.mock import Mock, patch
 
 
 class TestPromptBuilder:

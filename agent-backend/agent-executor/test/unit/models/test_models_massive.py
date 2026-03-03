@@ -2,8 +2,6 @@
 Massive unit tests for Models to boost coverage
 """
 
-import pytest
-from pydantic import ValidationError
 from app.models.tool_responses import (
     ZhipuSearchResponse,
     ReferenceResult,

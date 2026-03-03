@@ -4,12 +4,7 @@
 Dolphin延迟导入管理器提供 Dolphin SDK 的延迟导入功能。
 """
 
-from unittest.mock import MagicMock, AsyncMock, patch, Mock
 import pytest
-import sys
-import importlib
-import importlib.util
-import types
 
 
 class TestLazyDolphinImporterSingleton:
@@ -103,7 +98,7 @@ class TestLazyDolphinImporterGetExceptionClass:
         from app.common.dependencies.dolphin_lazy_import import LazyDolphinImporter
 
         importer = LazyDolphinImporter()
-        exception_class = importer.get_exception_class("ModelException")
+        _exception_class = importer.get_exception_class("ModelException")
 
         # 应该是一个异常类（可调用且是 Exception 的子类）
         assert callable(exception_class)
@@ -114,7 +109,7 @@ class TestLazyDolphinImporterGetExceptionClass:
         from app.common.dependencies.dolphin_lazy_import import LazyDolphinImporter
 
         importer = LazyDolphinImporter()
-        exception_class = importer.get_exception_class("TestException")
+        _exception_class = importer.get_exception_class("TestException")
 
         assert exception_class.__name__ == "TestException"
 
@@ -134,7 +129,7 @@ class TestLazyDolphinImporterGetExceptionClass:
         from app.common.dependencies.dolphin_lazy_import import LazyDolphinImporter
 
         importer = LazyDolphinImporter()
-        exception_class = importer.get_exception_class("ModelException")
+        _exception_class = importer.get_exception_class("ModelException")
 
         # 应该能创建异常实例
         exception = exception_class("Test message")
@@ -453,7 +448,7 @@ class TestLazyDolphinImporterEdgeCases:
         from app.common.dependencies.dolphin_lazy_import import LazyDolphinImporter
 
         importer = LazyDolphinImporter()
-        exception_class = importer.get_exception_class("")
+        _exception_class = importer.get_exception_class("")
 
         # 即使名称为空，也应该返回一个有效的异常类
         assert issubclass(exception_class, Exception)
@@ -463,7 +458,7 @@ class TestLazyDolphinImporterEdgeCases:
         from app.common.dependencies.dolphin_lazy_import import LazyDolphinImporter
 
         importer = LazyDolphinImporter()
-        exception_class = importer.get_exception_class("MyCustom_Exception_123")
+        _exception_class = importer.get_exception_class("MyCustom_Exception_123")
 
         assert issubclass(exception_class, Exception)
         assert exception_class.__name__ == "MyCustom_Exception_123"
@@ -473,7 +468,7 @@ class TestLazyDolphinImporterEdgeCases:
         from app.common.dependencies.dolphin_lazy_import import LazyDolphinImporter
 
         importer = LazyDolphinImporter()
-        exception_class = importer.get_exception_class("异常类")
+        _exception_class = importer.get_exception_class("异常类")
 
         assert issubclass(exception_class, Exception)
         assert exception_class.__name__ == "异常类"
@@ -530,8 +525,8 @@ class TestImportCacheIsolation:
         importer = LazyDolphinImporter()
 
         # 获取模块和异常类
-        module = importer.get_module("dolphin.core.common.exceptions")
-        exception_class = importer.get_exception_class("ModelException")
+        _module = importer.get_module("dolphin.core.common.exceptions")
+        _exception_class = importer.get_exception_class("ModelException")
 
         # 检查缓存中有不同的键
         assert "dolphin.core.common.exceptions" in importer._import_cache

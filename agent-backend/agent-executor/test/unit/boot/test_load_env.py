@@ -1,8 +1,6 @@
 """单元测试 - boot/load_env 模块"""
 
-import pytest
 from unittest.mock import patch
-import os
 
 from app.boot.load_env import load_env
 

@@ -1,6 +1,5 @@
 """单元测试 - infra/common/util/redis_cache/pickle_serializer 模块"""
 
-import pytest
 import sys
 import pickle
 from datetime import datetime

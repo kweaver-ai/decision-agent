@@ -1,7 +1,5 @@
 """单元测试 - common/structs 模块 - Dataclass测试"""
 
-import pytest
-
 from app.common.structs import (
     LogicBlock,
     AugmentBlock,

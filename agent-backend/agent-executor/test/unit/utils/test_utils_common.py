@@ -1,8 +1,7 @@
 """单元测试 - utils/common 模块"""
 
 import pytest
-import asyncio
-from unittest.mock import Mock, MagicMock, patch
+from unittest.mock import Mock, patch
 from enum import Enum
 
 
@@ -391,8 +390,6 @@ class TestMakeJsonSerializable:
         """测试NaN浮点数转为None"""
         from app.utils.common import make_json_serializable
 
-        import math
-
         result = make_json_serializable(float("nan"))
         assert result is None
 
@@ -575,7 +572,6 @@ class TestGetUserIdByRequest:
     def test_get_user_id_by_request_with_mock(self):
         """测试从请求获取用户ID"""
         from app.utils.common import get_user_id_by_request
-        from unittest.mock import Mock
 
         mock_request = Mock()
         # Need to mock the headers dict properly
@@ -673,7 +669,6 @@ class TestGetRequestLangFunc:
     def test_get_request_lang_func_returns_callable(self):
         """测试返回可调用对象"""
         from app.utils.common import get_request_lang_func
-        from unittest.mock import Mock
 
         mock_request = Mock()
         mock_request.headers = {}
@@ -934,7 +929,6 @@ class TestMakeJsonSerializableExtended:
     def test_inf_float(self):
         """测试无穷大浮点数"""
         from app.utils.common import make_json_serializable
-        import math
 
         result = make_json_serializable(float("inf"))
         assert result == float("inf")
@@ -942,7 +936,6 @@ class TestMakeJsonSerializableExtended:
     def test_negative_inf_float(self):
         """测试负无穷大浮点数"""
         from app.utils.common import make_json_serializable
-        import math
 
         result = make_json_serializable(float("-inf"))
         assert result == float("-inf")

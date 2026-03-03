@@ -2,7 +2,6 @@
 
 import pytest
 from unittest.mock import MagicMock, patch
-from opentelemetry import context
 
 
 class TestNullLogger:

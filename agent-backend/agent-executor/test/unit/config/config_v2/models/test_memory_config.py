@@ -1,7 +1,5 @@
 """单元测试 - config/config_v2/models/memory_config 模块"""
 
-import pytest
-
 
 class TestMemoryConfig:
     """测试 MemoryConfig 数据类"""

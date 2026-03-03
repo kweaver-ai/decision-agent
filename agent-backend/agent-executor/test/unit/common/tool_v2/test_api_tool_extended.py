@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 """单元测试 - app/common/tool_v2/api_tool.py 补充测试"""
 
-import pytest
-from unittest.mock import MagicMock, AsyncMock, patch
-
 
 class TestAPIToolInit:
     """测试 APITool 初始化"""

@@ -14,7 +14,7 @@ data:
     # 1. 请勿将包含敏感信息的配置文件提交到版本控制系统
     # 2. 生产环境请使用强密码并定期更换
     # 3. 建议使用密钥管理系统（Kubernetes Secrets, Vault等）存储敏感信息
-    
+
     # 1. app相关
     app:
       debug: {{ .Values.agentExecutor.debugMode }}
@@ -28,7 +28,7 @@ data:
       enable_dolphin_agent_verbose: {{ .Values.agentExecutor.enableDolphinAgentVerbose }}
       log_conversation_session_init: {{ .Values.agentExecutor.logConversationSessionInit }}
       is_write_exception_log_to_file: {{ .Values.agentExecutor.isWriteExceptionLogToFile }}
-    
+
     # 2. 结构化数据库相关
     rds:
       host: {{ .Values.depServices.rds.host | quote }}
@@ -37,7 +37,7 @@ data:
       user: {{ .Values.depServices.rds.user | quote }}
       password: {{ .Values.depServices.rds.password | quote }}
       db_type: {{ .Values.depServices.rds.type | quote }}
-    
+
     # 3. redis数据库相关
     redis:
       # 连接类型: standalone, sentinel, master-slave
@@ -68,7 +68,7 @@ data:
       write_user: {{ .Values.depServices.redis.connectInfo.username | quote }}
       write_password: {{ .Values.depServices.redis.connectInfo.password | quote }}
       {{- end }}
-    
+
     # 4. 图数据库相关
     graphdb:
       host: {{ .Values.depServices.graphDatabase.host | quote }}
@@ -78,14 +78,14 @@ data:
       read_only_user: {{ .Values.depServices.graphDatabase.readonlyuser | quote }}
       read_only_password: {{ .Values.depServices.graphDatabase.readonlypassword | quote }}
       {{- end }}
-    
+
     # 5. opensearch
     opensearch:
       host: {{ .Values.depServices.opensearch.host | quote }}
       port: {{ .Values.depServices.opensearch.port | quote }}
       user: {{ .Values.depServices.opensearch.user | quote }}
       password: {{ .Values.depServices.opensearch.password | quote }}
-    
+
     # 6. 依赖的服务地址
     services:
       mf_model_api:
@@ -130,25 +130,25 @@ data:
       datahub:
         host: "datahubcentral-private"
         port: ""
-    
+
     # 7. 记忆相关
     memory:
       limit: 50
       threshold: 0.5
       rerank_threshold: 0.1
-    
+
     # 9. 一些特性控制
     features:
       use_explore_block_v2: {{ not .Values.agentExecutor.doNotUseExploreBlockV2 }}
       disable_dolphin_sdk_llm_cache: {{ .Values.agentExecutor.disableDolphinSdkLLMCache }}
       enable_dolphin_agent_output_variables_ctrl: {{ .Values.agentExecutor.enableDolphinAgentOutputVariablesCtrl }}
       is_skill_agent_need_progress: {{ .Values.agentExecutor.isSkillAgentNeedProgress }}
-    
+
     # 10. o11y 相关
     o11y:
       log_enabled: {{ .Values.agentExecutor.telemetry.log.enabled }}
       trace_enabled: {{ .Values.agentExecutor.telemetry.trace.enabled }}
-    
+
     # 11. 对话日志相关配置
     dialog_logging:
       enable_dialog_logging: false

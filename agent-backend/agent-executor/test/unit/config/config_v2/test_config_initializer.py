@@ -1,8 +1,6 @@
 """单元测试 - config/config_v2/config_initializer 模块"""
 
-import pytest
-from unittest.mock import MagicMock, patch
-import sys
+from unittest.mock import patch
 
 
 class TestConfigState:
@@ -92,7 +90,6 @@ class TestConfigInitializer:
 
         from app.config.config_v2.config_initializer import (
             ConfigInitializer,
-            ConfigState,
             AppConfig,
         )
 
@@ -113,7 +110,6 @@ class TestConfigInitializer:
 
         from app.config.config_v2.config_initializer import (
             ConfigInitializer,
-            ConfigState,
             AppConfig,
         )
 
@@ -130,7 +126,6 @@ class TestConfigInitializer:
 
         from app.config.config_v2.config_initializer import (
             ConfigInitializer,
-            ConfigState,
             AppConfig,
         )
 
@@ -144,10 +139,8 @@ class TestConfigInitializer:
         """测试IPv6地址后处理"""
         m_loader.load_config_file.return_value = {}
 
-        import ipaddress
         from app.config.config_v2.config_initializer import (
             ConfigInitializer,
-            ConfigState,
             AppConfig,
         )
 
@@ -163,7 +156,6 @@ class TestConfigInitializer:
 
         from app.config.config_v2.config_initializer import (
             ConfigInitializer,
-            ConfigState,
             AppConfig,
         )
 
@@ -179,7 +171,6 @@ class TestConfigInitializer:
 
         from app.config.config_v2.config_initializer import (
             ConfigInitializer,
-            ConfigState,
             AppConfig,
         )
 

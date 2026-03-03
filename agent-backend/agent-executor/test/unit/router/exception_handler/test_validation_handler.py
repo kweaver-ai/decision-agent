@@ -18,7 +18,6 @@ class TestHandleParamError:
 
     def test_handle_missing_param(self, mock_request):
         """测试缺少参数错误"""
-        from fastapi.exceptions import RequestValidationError
 
         exc = MagicMock()
         exc.errors.return_value = [

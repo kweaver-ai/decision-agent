@@ -1,8 +1,7 @@
 """扩展单元测试 - utils/regex_rules 模块 - 增加边界情况测试"""
 
-import pytest
 from jsonschema import ValidationError
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock
 
 
 class TestRegexPatternsEdgeCasesExtended:

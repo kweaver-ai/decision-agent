@@ -4,7 +4,6 @@
 import pytest
 import asyncio
 import time
-from collections.abc import AsyncIterator as ABCAsyncIterator
 
 
 class TestStreamingRateLimiter_Initial:
@@ -266,7 +265,6 @@ class TestCreateRateLimitedIterator:
         """测试保留原始迭代器"""
         from app.router.middleware_pkg.streaming_rate_limiter import (
             create_rate_limited_iterator,
-            RateLimitedStreamingIterator,
         )
 
         async def mock_iterator():

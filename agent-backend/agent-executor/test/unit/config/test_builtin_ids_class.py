@@ -1,7 +1,5 @@
 """单元测试 - config/builtin_ids_class 模块"""
 
-import pytest
-
 
 class TestBuiltinIdsConfig:
     """测试 BuiltinIdsConfig 类"""

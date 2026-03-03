@@ -3,9 +3,7 @@
 Unit tests for app/common/exception_logger/formatter_pkg module
 """
 
-import pytest
 from datetime import datetime
-from unittest.mock import patch, MagicMock
 
 from app.common.exception_logger.formatter_pkg.error_formatters import (
     format_error_console,

@@ -142,7 +142,6 @@ func (svc *publishedSvc) getPmsAgentPos(ctx context.Context, req *pubedreq.Pubed
 
 func (svc *publishedSvc) getPos(ctx context.Context, req *pubedreq.PubedAgentListReq, agentIdsByBdIds []string) (pos []*dapo.PublishedJoinPo, err error) {
 	pos, err = svc.pubedAgentRepo.GetPubedList(ctx, req)
-
 	if err != nil {
 		err = errors.Wrapf(err, "[publishedSvc][GetPublishedAgentList]: get published agent list failed")
 		return

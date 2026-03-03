@@ -3,9 +3,8 @@
 Unit tests for app.logic.agent_core_logic_v2.agent_instance_manager module
 """
 
-import pytest
 import time
-from unittest.mock import Mock, MagicMock, patch
+from unittest.mock import Mock, patch
 
 from app.logic.agent_core_logic_v2.agent_instance_manager import (
     AgentInstanceManager,
@@ -252,9 +251,6 @@ class TestAgentInstanceManager:
 
     def test_global_singleton_instance(self):
         """Test the global agent_instance_manager singleton"""
-        from app.logic.agent_core_logic_v2.agent_instance_manager import (
-            agent_instance_manager,
-        )
 
         assert isinstance(agent_instance_manager, AgentInstanceManager)
 

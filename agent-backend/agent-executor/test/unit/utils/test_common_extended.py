@@ -1,9 +1,7 @@
 """扩展单元测试 - utils/common.py 模块"""
 
-import pytest
 import os
-from unittest.mock import Mock, patch, MagicMock
-from urllib.parse import urlparse
+from unittest.mock import patch
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum
@@ -550,7 +548,6 @@ class TestMakeJsonSerializable:
 
     def test_serialize_float_nan(self):
         """测试NaN浮点数"""
-        import math
         from app.utils.common import make_json_serializable
 
         result = make_json_serializable(float("nan"))
@@ -558,7 +555,6 @@ class TestMakeJsonSerializable:
 
     def test_serialize_float_inf(self):
         """测试无穷大"""
-        import math
         from app.utils.common import make_json_serializable
 
         result = make_json_serializable(float("inf"))

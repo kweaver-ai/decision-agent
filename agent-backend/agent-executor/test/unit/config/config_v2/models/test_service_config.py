@@ -1,7 +1,5 @@
 """单元测试 - config/config_v2/models/service_config 模块"""
 
-import pytest
-
 
 class TestServiceEndpoint:
     """测试 ServiceEndpoint 数据类"""

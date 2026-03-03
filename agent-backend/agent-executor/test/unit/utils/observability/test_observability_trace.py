@@ -1,6 +1,5 @@
 """单元测试 - utils/observability/observability_trace 模块"""
 
-import pytest
 from unittest.mock import MagicMock, patch
 import sys
 

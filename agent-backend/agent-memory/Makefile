@@ -17,7 +17,8 @@ test:
 	uv run pytest tests/ -v --cov=src --cov-report=term-missing --cov-report=html
 
 lint:
-	uv run ruff check src --max-line-length=120 --exclude=mem0
+	@echo "🔍 Running pre-commit checks..."
+	uv run pre-commit run -a --config .pre-commit-config.yaml
 
 format:
 	uv run ruff format src tests

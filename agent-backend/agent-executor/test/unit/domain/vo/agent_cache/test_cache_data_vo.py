@@ -1,7 +1,5 @@
 """单元测试 - domain/vo/agent_cache/cache_data_vo 模块"""
 
-import pytest
-
 
 class TestCacheDataVo:
     """测试 CacheDataVo 类"""

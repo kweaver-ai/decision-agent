@@ -39,6 +39,8 @@ dev = [
     "pytest-asyncio==0.21.0",
     "pytest-cov==4.1.0",
     "mock==5.1.0",
+    "pre-commit>=3.0.0",
+    "ruff>=0.1.0",
 ]
 
 [tool.pytest.ini_options]
@@ -89,3 +91,29 @@ precision = 2
 [tool.uv]
 # 使用清华大学 PyPI 镜像源加速依赖下载
 index-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+
+[tool.ruff]
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = [
+    "E501",  # line too long
+    "E722",  # bare except
+    "W605",  # invalid escape sequence (regex patterns)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+    "F401",  # unused import
+    "F811",  # redefinition of unused
+    "F821",  # undefined name
+    "F841",  # unused variable
+    "E721",  # type comparison
+    "E731",  # lambda assignment
+    "E741",  # ambiguous variable name
+    "E402",  # import not at top
+]
+"src/main.py" = [
+    "E402",  # import not at top (entry point script needs sys.path manipulation)
+]

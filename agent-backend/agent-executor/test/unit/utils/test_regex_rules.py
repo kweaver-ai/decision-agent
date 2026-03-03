@@ -1,8 +1,7 @@
 """单元测试 - utils/regex_rules 模块"""
 
-import pytest
 from jsonschema import ValidationError
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock
 
 
 class TestRegexPatterns:

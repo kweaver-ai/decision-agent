@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """单元测试 - app/common/tool_v2/api_tool_pkg/output.py"""
 
-import pytest
-
 
 class TestAPIToolOutputHandler:
     """测试 APIToolOutputHandler 类"""

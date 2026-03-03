@@ -77,3 +77,26 @@ omit = [
     ".venv/*",              # 跳过虚拟环境
     "*/__pycache__/*",
 ]
+
+[tool.ruff]
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = [
+    "E501",  # line too long
+    "E722",  # bare except
+    "W605",  # invalid escape sequence (regex patterns)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"test/*" = [
+    "F401",  # unused import
+    "F811",  # redefinition of unused
+    "F821",  # undefined name
+    "F841",  # unused variable
+    "E721",  # type comparison
+    "E731",  # lambda assignment
+    "E741",  # ambiguous variable name
+    "E402",  # import not at top
+]

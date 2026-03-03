@@ -1,6 +1,7 @@
 import sys
-import os
 from pathlib import Path
+
+from fastapi import FastAPI
 
 # 获取项目根目录（src 的父目录）
 if hasattr(sys, "_MEIPASS"):
@@ -12,11 +13,9 @@ sys.path.append(str(ROOT_DIR))
 print(sys.path)
 print(ROOT_DIR)
 
-from fastapi import FastAPI
 from src.config import config
-from src.interfaces.api.routes import internal_router, external_router
 from src.interfaces.api.middleware import error_handler_middleware
-
+from src.interfaces.api.routes import external_router, internal_router
 
 app = FastAPI(
     title=config.get("app.name"),

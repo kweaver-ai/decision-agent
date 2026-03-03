@@ -1,7 +1,7 @@
 """Unit test configuration - mock missing external dependencies"""
 
 import sys
-from unittest.mock import MagicMock, Mock
+from unittest.mock import MagicMock
 from types import ModuleType
 
 

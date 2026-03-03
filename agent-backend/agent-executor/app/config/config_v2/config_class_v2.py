@@ -60,7 +60,7 @@ class ConfigClassV2(ConfigState):
                     try:
                         # 尝试使用dataclasses.asdict
                         config_dict[attr_name] = dataclasses.asdict(attr_value)
-                    except:
+                    except (TypeError, ValueError):
                         # 如果不是dataclass，使用__dict__
                         config_dict[attr_name] = (
                             attr_value.__dict__

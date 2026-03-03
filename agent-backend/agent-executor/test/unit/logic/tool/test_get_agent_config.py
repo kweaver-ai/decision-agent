@@ -1,7 +1,7 @@
 """单元测试 - logic/tool/get_agent_config 模块"""
 
 import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
+from unittest.mock import AsyncMock, patch
 
 
 @pytest.mark.asyncio

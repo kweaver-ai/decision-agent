@@ -1,7 +1,6 @@
 """单元测试 - utils/increment_json 模块"""
 
 import pytest
-import asyncio
 
 from app.utils.increment_json import (
     compare_values,

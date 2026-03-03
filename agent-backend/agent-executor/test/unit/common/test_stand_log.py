@@ -1,8 +1,7 @@
 """单元测试 - common/stand_log 模块"""
 
-import pytest
 import logging
-from unittest.mock import MagicMock, patch, Mock
+from unittest.mock import MagicMock, patch
 import sys
 
 
@@ -316,7 +315,6 @@ class TestGetErrorLog:
 
     def test_get_error_log_basic(self):
         """测试基本错误日志获取"""
-        import sys
         from app.common.stand_log import get_error_log
 
         frame = sys._getframe()
@@ -332,7 +330,6 @@ class TestGetErrorLog:
 
     def test_get_error_log_with_traceback(self):
         """测试带追踪的错误日志获取"""
-        import sys
         from app.common.stand_log import get_error_log
 
         frame = sys._getframe()

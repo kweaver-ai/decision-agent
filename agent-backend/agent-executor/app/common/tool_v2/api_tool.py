@@ -4,7 +4,6 @@ import json
 import asyncio
 import aiohttp
 
-from dolphin.core.utils.tools import ToolInterrupt
 from dolphin.core.context.context import Context
 from app.common.stand_log import StandLogger
 

@@ -284,7 +284,6 @@ class TestGetMockToolInfo:
 
     def test_get_mock_tool_info(self, agent_operator_service):
         """测试获取mock工具信息"""
-        import json
 
         # 预期返回的工具信息
         tool_info = {"name": "mock_tool", "version": "1.0"}

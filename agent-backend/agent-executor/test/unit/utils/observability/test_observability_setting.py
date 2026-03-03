@@ -3,7 +3,6 @@ Unit tests for app/utils/observability/observability_setting.py
 50+ tests for observability settings and configuration
 """
 
-import pytest
 from unittest.mock import MagicMock, patch
 from app.utils.observability.observability_setting import (
     LogSetting,

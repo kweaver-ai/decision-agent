@@ -1,6 +1,5 @@
 """单元测试 - config/config_v2/models/app_config 模块"""
 
-import pytest
 import logging
 
 

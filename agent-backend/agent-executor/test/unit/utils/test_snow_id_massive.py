@@ -2,7 +2,7 @@
 
 import pytest
 import time
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 from app.utils.snow_id import (
     IdWorker,
     snow_id,

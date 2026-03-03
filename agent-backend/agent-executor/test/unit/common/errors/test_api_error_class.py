@@ -1,9 +1,5 @@
 """单元测试 - common/errors/api_error_class 模块"""
 
-import pytest
-import traceback
-from unittest.mock import patch, MagicMock
-
 
 class TestAPIErrorInit:
     """测试APIError初始化"""

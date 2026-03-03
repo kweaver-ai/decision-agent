@@ -4,7 +4,6 @@
 import pytest
 import asyncio
 from unittest.mock import AsyncMock, MagicMock, patch
-from anyio import CancelScope
 
 
 @pytest.mark.asyncio

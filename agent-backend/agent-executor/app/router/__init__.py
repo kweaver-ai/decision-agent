@@ -1,7 +1,4 @@
 # -*- coding:utf-8 -*-
-import asyncio
-import os
-from typing import Any, Callable
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, Response
@@ -11,13 +8,10 @@ from opentelemetry.instrumentation.aiohttp_client import AioHttpClientInstrument
 from pydantic import BaseModel, Field
 
 from app.common.config import Config, observability_config, server_info
-from app.common.stand_log import StandLogger
-from app.common.struct_logger import struct_logger
 from app.utils.observability.observability import (
     init_observability,
     shutdown_observability,
 )
-from app.utils.observability.observability_log import get_logger as o11y_logger
 
 # 导入中间件
 from .middleware_pkg import o11y_trace, log_requests
@@ -66,14 +60,14 @@ async def ready():
 
 
 # 导入路由
-from app.router.agent_controller_pkg.common_v2 import router_v2 as agent_router_v2
-from app.router.agent_controller_pkg import (
-    run_agent_v2,
-    run_agent_debug_v2,
-    agent_cache_manage,
+from app.router.agent_controller_pkg.common_v2 import router_v2 as agent_router_v2  # noqa: E402
+from app.router.agent_controller_pkg import (  # noqa: E402
+    run_agent_v2,  # noqa: F401
+    run_agent_debug_v2,  # noqa: F401
+    agent_cache_manage,  # noqa: F401
 )
-from app.router.exception_handler import register_exception_handlers
-from app.router.tool_controller import router as tool_router
+from app.router.exception_handler import register_exception_handlers  # noqa: E402
+from app.router.tool_controller import router as tool_router  # noqa: E402
 
 # 注册异常处理器
 register_exception_handlers(app)

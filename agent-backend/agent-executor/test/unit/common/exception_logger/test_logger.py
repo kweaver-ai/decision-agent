@@ -3,10 +3,7 @@
 Unit tests for app/common/exception_logger/logger.py module
 """
 
-import os
-import sys
 import tempfile
-from pathlib import Path
 from unittest.mock import MagicMock, patch
 from datetime import datetime
 

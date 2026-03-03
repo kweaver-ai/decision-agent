@@ -1,7 +1,7 @@
 """单元测试 - logic/agent_core_logic_v2/interrupt 模块"""
 
 import pytest
-from unittest.mock import MagicMock, AsyncMock, patch
+from unittest.mock import MagicMock, patch
 import sys
 
 

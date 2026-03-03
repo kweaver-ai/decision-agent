@@ -1,18 +1,26 @@
 repos:
   - repo: local
     hooks:
-      # Hook 1: agent-factory format & lint
-      - id: agent-factory-format-lint
-        name: agent-factory format and lint
-        entry: bash -c 'cd agent-backend/agent-factory && make format_and_lint'
+      # ==================== agent-executor ====================
+      - id: agent-executor-lint
+        name: agent-executor lint
+        entry: bash -c 'cd agent-backend/agent-executor && make lint'
         language: system
-        files: '^agent-backend/agent-factory/.*\.go$'
+        files: ^agent-backend/agent-executor/
         pass_filenames: false
 
-      # Hook 2: agent-factory service UT（仅 service 目录变更时触发）
-      - id: agent-factory-service-ut
-        name: agent-factory service unit tests
-        entry: bash -c 'cd agent-backend/agent-factory && make serviceUtAndCoverage'
+      # ==================== agent-factory ====================
+      - id: agent-factory-lint
+        name: agent-factory lint
+        entry: bash -c 'cd agent-backend/agent-factory && make lint'
         language: system
-        files: '^agent-backend/agent-factory/src/domain/service/.*\.go$'
+        files: ^agent-backend/agent-factory/.*\.go$
+        pass_filenames: false
+
+      # ==================== agent-memory ====================
+      - id: agent-memory-lint
+        name: agent-memory lint
+        entry: bash -c 'cd agent-backend/agent-memory && make lint'
+        language: system
+        files: ^agent-backend/agent-memory/
         pass_filenames: false

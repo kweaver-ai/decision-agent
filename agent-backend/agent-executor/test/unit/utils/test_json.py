@@ -1,7 +1,6 @@
 """单元测试 - utils/json 模块"""
 
 import pytest
-import asyncio
 from datetime import datetime
 from decimal import Decimal
 from enum import Enum

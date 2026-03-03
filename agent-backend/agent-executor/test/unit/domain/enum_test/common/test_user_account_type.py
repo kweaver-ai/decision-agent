@@ -1,7 +1,5 @@
 """单元测试 - domain/enum/common/user_account_type 模块"""
 
-import pytest
-
 from app.domain.enum.common.user_account_type import (
     UserAccountType,
     check_user_account_type,

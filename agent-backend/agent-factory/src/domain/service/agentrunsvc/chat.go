@@ -184,7 +184,6 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	// 统一调用 Call 方法（Resume 信息通过 _options 传递）
 	// 原有逻辑分两个分支调用 Resume/Call，现统一为 Call
 	messageChan, errChan, err = agentCall.Call()
-
 	if err != nil {
 		// NOTE: 发生错误，将assistantMessage 状态设置为failed
 		conversationAssistantMsgPO, _ := agentSvc.conversationMsgRepo.GetByID(callCtx, req.AssistantMessageID)

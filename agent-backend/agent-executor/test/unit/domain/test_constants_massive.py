@@ -1,6 +1,5 @@
 """Massive unit tests for app/domain/constant/ - 100+ tests"""
 
-import pytest
 from app.domain.constant.agent_cache_constants import (
     AGENT_CACHE_TTL,
     AGENT_CACHE_DATA_UPDATE_PASS_SECOND,

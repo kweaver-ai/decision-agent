@@ -1,6 +1,5 @@
 """单元测试 - infra/common/util/redis_cache/redis_cache 模块 - 简化版"""
 
-import pytest
 from enum import Enum
 
 

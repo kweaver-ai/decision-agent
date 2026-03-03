@@ -1,9 +1,7 @@
 """单元测试 - logic/agent_core_logic_v2/dialog_log 模块"""
 
 import pytest
-from unittest.mock import Mock, MagicMock, patch, mock_open
-import datetime
-import os
+from unittest.mock import Mock, patch, mock_open
 
 
 class TestDialogLogHandler:

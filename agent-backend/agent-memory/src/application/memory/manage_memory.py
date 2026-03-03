@@ -1,8 +1,10 @@
 from typing import List, Dict, Any, Optional
 from src.domain.memory.mem0_adapter import Mem0MemoryAdapter
 
+
 class ManageMemoryUseCase:
     """记忆管理用例"""
+
     def __init__(self):
         self.memory_adapter = None
 
@@ -24,7 +26,7 @@ class ManageMemoryUseCase:
         agent_id: Optional[str] = None,
         run_id: Optional[str] = None,
         filters: Optional[Dict[str, Any]] = None,
-        limit: int = 100
+        limit: int = 100,
     ) -> List[Dict[str, Any]]:
         """获取所有记忆"""
         if self.memory_adapter is None:
@@ -34,7 +36,7 @@ class ManageMemoryUseCase:
             agent_id=agent_id,
             run_id=run_id,
             filters=filters,
-            limit=limit
+            limit=limit,
         )
 
     async def update_memory(self, memory_id: str, data: str) -> Dict[str, Any]:
@@ -53,4 +55,4 @@ class ManageMemoryUseCase:
         """获取记忆历史"""
         if self.memory_adapter is None:
             await self.initialize()
-        return await self.memory_adapter.history(memory_id) 
+        return await self.memory_adapter.history(memory_id)

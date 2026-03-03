@@ -2,8 +2,7 @@
 """单元测试 - tool_controller 流式部分"""
 
 import pytest
-import json
-from unittest.mock import MagicMock, AsyncMock, patch
+from unittest.mock import AsyncMock, patch
 
 
 class AsyncIterator:
@@ -88,7 +87,6 @@ class TestOnlineSearchCiteToolStreaming:
                     from app.logic.tool.online_search_cite_tool import (
                         get_search_results,
                         get_answer,
-                        get_completion_stream,
                     )
 
                     # 验证搜索结果获取
@@ -161,7 +159,6 @@ class TestToolControllerStreaming:
                     from app.logic.tool.online_search_cite_tool import (
                         get_search_results,
                         get_answer,
-                        get_completion_stream,
                     )
 
                     # 测试搜索

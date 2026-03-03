@@ -2,7 +2,6 @@
 
 import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
-import asyncio
 
 from app.driven.infrastructure.redis import RedisPool, RedisLock
 

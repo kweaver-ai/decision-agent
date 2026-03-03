@@ -2,7 +2,6 @@
 """单元测试 - app/router/__init__ 模块"""
 
 import pytest
-from unittest.mock import MagicMock, patch, AsyncMock
 
 
 class TestRouterInit:
@@ -90,7 +89,7 @@ class TestRouterInit:
 
     def test_middleware_registration(self):
         """测试中间件注册"""
-        from fastapi import FastAPI, Request, Response
+        from fastapi import FastAPI, Request
 
         app = FastAPI()
 

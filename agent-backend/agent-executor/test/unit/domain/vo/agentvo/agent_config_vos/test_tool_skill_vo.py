@@ -1,7 +1,5 @@
 """单元测试 - domain/vo/agentvo/agent_config_vos/tool_skill_vo 模块"""
 
-import pytest
-
 
 class TestResultProcessCategoryVo:
     """测试 ResultProcessCategoryVo 类"""
@@ -102,7 +100,7 @@ class TestToolSkillVo:
 
     def test_init_with_all_fields(self):
         """测试使用所有字段初始化"""
-        from app.domain.vo.agentvo.agent_config_vos import ToolSkillVo, SkillInputVo
+        from app.domain.vo.agentvo.agent_config_vos import ToolSkillVo
 
         vo = ToolSkillVo(
             tool_id="tool_123",

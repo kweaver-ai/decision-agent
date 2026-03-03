@@ -2,7 +2,6 @@
 Massive unit tests for CacheDataVo to boost coverage
 """
 
-import pytest
 from app.domain.vo.agent_cache.cache_data_vo import CacheDataVo
 
 

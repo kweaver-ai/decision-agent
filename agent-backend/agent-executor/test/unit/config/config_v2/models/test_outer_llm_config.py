@@ -1,7 +1,5 @@
 """单元测试 - config/config_v2/models/outer_llm_config 模块"""
 
-import pytest
-
 
 class TestOuterLLMConfig:
     """测试 OuterLLMConfig 数据类"""

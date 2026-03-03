@@ -1,7 +1,5 @@
 """单元测试 - common/errors/file_errors 模块"""
 
-import pytest
-
 
 class TestAgentExecutorFileParseError:
     """测试 AgentExecutor_File_ParseError 函数"""

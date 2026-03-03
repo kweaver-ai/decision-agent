@@ -3,7 +3,6 @@
 Unit tests for app/common/exceptions/base_exception.py
 """
 
-import pytest
 from unittest.mock import patch
 
 

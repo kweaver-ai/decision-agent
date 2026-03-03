@@ -1,7 +1,5 @@
 """单元测试 - logic/plan_mode_logic 模块"""
 
-import pytest
-
 
 class TestGetSystemPromptWithPlan:
     """测试 get_system_prompt_with_plan 函数"""

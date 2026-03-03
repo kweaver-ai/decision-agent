@@ -2,12 +2,10 @@
 """单元测试 - driven/dip/model_api_service 模块"""
 
 import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
-import json
+from unittest.mock import MagicMock, patch
 
 from aioresponses import aioresponses
 from app.driven.dip.model_api_service import ModelApiService, model_api_service
-from app.common.errors.api_error_class import APIError
 from app.common.errors import CodeException
 
 
@@ -465,7 +463,6 @@ class TestModelApiServiceSingleton:
 
     def test_singleton_instance(self):
         """测试全局单例"""
-        from app.driven.dip.model_api_service import model_api_service
 
         assert model_api_service is not None
         assert isinstance(model_api_service, ModelApiService)

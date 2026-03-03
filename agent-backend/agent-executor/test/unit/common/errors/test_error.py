@@ -2,8 +2,6 @@
 测试错误基类 Error
 """
 
-import sys
-import pytest
 from app.common.errors.api_error_class import APIError
 
 

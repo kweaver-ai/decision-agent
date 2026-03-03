@@ -1,7 +1,5 @@
 """单元测试 - domain/vo/agentvo/agent_config_vos/skill_input_vo 模块"""
 
-import pytest
-
 
 class TestSkillInputVo:
     """测试 SkillInputVo 类"""

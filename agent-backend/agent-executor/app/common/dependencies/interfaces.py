@@ -4,7 +4,7 @@
 """
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Dict, List, Tuple
+from typing import Any, Optional, Dict, Tuple
 from enum import Enum
 
 

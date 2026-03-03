@@ -3,7 +3,6 @@
 
 import pytest
 from unittest.mock import MagicMock, AsyncMock, patch
-from typing import AsyncGenerator
 
 
 class TestAgentCoreV2:

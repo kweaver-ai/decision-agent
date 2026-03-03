@@ -1,7 +1,5 @@
 """单元测试 - domain/constant/__init__ 模块"""
 
-import pytest
-
 
 class TestDomainConstantInit:
     """测试 domain/constant/__init__ 导出"""

@@ -14,7 +14,6 @@ from app.common.exceptions import (
     DolphinSDKException,
     ConversationRunningException,
 )
-from app.common.errors.custom_errors_pkg import ParamError
 from app.common.errors.api_error_class import APIError
 from app.common.dependencies import create_dolphin_exception
 

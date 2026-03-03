@@ -1,7 +1,5 @@
 """单元测试 - common/errors/function_errors 模块"""
 
-import pytest
-
 
 class TestAgentExecutorFunctionCodeError:
     """测试 AgentExecutor_Function_CodeError 函数"""

@@ -2,7 +2,7 @@
 """单元测试 - app/common/tool_v2/tool.py"""
 
 import pytest
-from unittest.mock import MagicMock, AsyncMock, patch
+from unittest.mock import MagicMock, patch
 
 
 class TestBuildTools:

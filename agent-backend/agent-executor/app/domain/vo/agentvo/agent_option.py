@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, TYPE_CHECKING
 from pydantic import BaseModel
 
 if TYPE_CHECKING:
-    from app.router.agent_controller_pkg.rdto.v2.req.resume_agent import ResumeInfo
+    pass
 
 
 class AgentRunOptionsVo(BaseModel):

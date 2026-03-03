@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 """Extended unit tests for observability utilities"""
 
-import pytest
-from unittest.mock import MagicMock, patch, mock_open
+from unittest.mock import MagicMock
 import json
 
 

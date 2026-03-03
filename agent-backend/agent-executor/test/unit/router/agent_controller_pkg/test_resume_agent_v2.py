@@ -2,7 +2,7 @@
 """单元测试 - resume_agent_v2 模块"""
 
 import pytest
-from unittest.mock import MagicMock, AsyncMock, patch
+from unittest.mock import MagicMock, patch
 
 
 class TestResumeAgent:

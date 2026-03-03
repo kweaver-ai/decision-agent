@@ -1,7 +1,5 @@
 """单元测试 - config/config_v2/models/database_config 模块"""
 
-import pytest
-
 
 class TestRdsConfig:
     """测试 RdsConfig 数据类"""

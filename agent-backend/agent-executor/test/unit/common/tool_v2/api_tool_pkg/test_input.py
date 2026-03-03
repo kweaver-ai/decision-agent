@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """单元测试 - app/common/tool_v2/api_tool_pkg/input.py"""
 
-import pytest
-
 
 class TestAPIToolInputHandler:
     """测试 APIToolInputHandler 类"""

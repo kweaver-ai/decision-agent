@@ -3,7 +3,6 @@
 提供对 Dolphin SDK 的延迟导入功能，避免在模块加载时强制依赖 Dolphin SDK。
 """
 
-import os
 import sys
 from typing import Any, Optional, Type, Dict
 from functools import wraps
@@ -36,7 +35,6 @@ class LazyDolphinImporter:
         if self._available is None:
             try:
                 import importlib.util
-                import os
 
                 # 尝试检查是否是真实的 dolphin SDK（不是 mock）
                 try:

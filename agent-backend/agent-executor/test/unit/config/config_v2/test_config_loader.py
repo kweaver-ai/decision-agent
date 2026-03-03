@@ -1,9 +1,8 @@
 """单元测试 - config/config_v2/config_loader 模块"""
 
-import pytest
 import os
 import yaml
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 import tempfile
 
 

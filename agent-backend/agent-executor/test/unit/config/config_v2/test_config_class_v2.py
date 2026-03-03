@@ -1,6 +1,5 @@
 """单元测试 - config/config_v2/config_class_v2 模块"""
 
-import pytest
 from unittest.mock import MagicMock, patch
 
 

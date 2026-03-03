@@ -1,7 +1,5 @@
 """单元测试 - domain/vo/agentvo/agent_config_vos/output_config_vo 模块"""
 
-import pytest
-
 
 class TestDefaultFormatEnum:
     """测试 DefaultFormatEnum 枚举"""

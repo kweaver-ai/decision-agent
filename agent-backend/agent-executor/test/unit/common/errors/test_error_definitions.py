@@ -3,7 +3,6 @@
 """
 
 import pytest
-from unittest.mock import patch
 
 from app.common.errors.custom_errors_pkg import (
     ParamError,

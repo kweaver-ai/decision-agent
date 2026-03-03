@@ -1,7 +1,5 @@
 """单元测试 - domain/enum/common/user_account_type 模块"""
 
-import pytest
-
 
 class TestUserAccountType:
     """测试 UserAccountType 枚举"""

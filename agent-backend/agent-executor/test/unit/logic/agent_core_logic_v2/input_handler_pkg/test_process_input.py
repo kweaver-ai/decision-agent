@@ -1,7 +1,7 @@
 """Tests for app.logic.agent_core_logic_v2.input_handler_pkg.process_input module."""
 
 import pytest
-from unittest.mock import MagicMock, AsyncMock, patch
+from unittest.mock import MagicMock, patch
 
 
 @pytest.mark.asyncio

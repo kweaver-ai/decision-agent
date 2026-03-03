@@ -3,7 +3,6 @@
 Unit tests for app/common/exception_logger/formatter_pkg/error_header.py
 """
 
-import pytest
 from datetime import datetime
 from unittest.mock import patch
 

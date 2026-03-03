@@ -1,10 +1,9 @@
 import os
 from typing import Optional
 
+
 def getenv_int(
-    name: str,
-    default: Optional[int] = None,
-    raise_error: bool = False
+    name: str, default: Optional[int] = None, raise_error: bool = False
 ) -> Optional[int]:
     """
     获取环境变量并转换为整数
@@ -30,5 +29,7 @@ def getenv_int(
         return int(value)
     except ValueError:
         if raise_error:
-            raise ValueError(f"Environment variable '{name}' is not a valid integer: '{value}'")
+            raise ValueError(
+                f"Environment variable '{name}' is not a valid integer: '{value}'"
+            )
         return default

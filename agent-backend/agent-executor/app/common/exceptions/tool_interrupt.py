@@ -19,8 +19,6 @@ def _get_resume_handle_class():
         ResumeHandle 类或 Mock 类
     """
     try:
-        from app.common.dependencies import get_dolphin_var_output_class
-
         # 尝试从 dolphin 导入
         from dolphin.core.coroutine.resume_handle import ResumeHandle
 

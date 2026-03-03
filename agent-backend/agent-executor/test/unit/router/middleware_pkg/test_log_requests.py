@@ -141,7 +141,6 @@ class TestLogRequests:
         """测试JSON请求体被缓存"""
         from app.router.middleware_pkg.log_requests import (
             log_requests,
-            cache_request_body,
         )
 
         request = MagicMock(spec=Request)
@@ -326,10 +325,8 @@ class TestLogRequests:
     async def test_process_time_calculation(self):
         """测试处理时间计算"""
         from app.router.middleware_pkg.log_requests import (
-            log_requests,
             _handle_non_streaming_response,
         )
-        import time
 
         # 直接测试 _handle_non_streaming_response 函数
         response = MagicMock()

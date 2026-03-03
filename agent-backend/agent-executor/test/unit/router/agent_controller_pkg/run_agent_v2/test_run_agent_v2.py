@@ -27,7 +27,7 @@ class TestProcessOptions:
         from app.router.agent_controller_pkg.run_agent_v2.process_options import (
             process_options,
         )
-        from app.domain.vo.agentvo import AgentConfigVo, AgentInputVo
+        from app.domain.vo.agentvo import AgentConfigVo
 
         agent_config = MagicMock(spec=AgentConfigVo)
         agent_config.llms = []

@@ -1,8 +1,6 @@
 """单元测试 - utils/observability/sdk_available 模块"""
 
-import pytest
-from unittest.mock import patch, Mock
-import sys
+from unittest.mock import patch
 
 
 class TestTelemetrySdkAvailable:

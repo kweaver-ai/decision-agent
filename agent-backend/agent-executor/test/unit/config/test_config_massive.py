@@ -2,10 +2,7 @@
 Massive unit tests for Config to boost coverage
 """
 
-import pytest
-import os
 from app.config.config_v2.config_loader import ConfigLoader
-from app.config.config_v2.config_class_v2 import ConfigClassV2
 from app.config.config_v2.models.app_config import AppConfig
 from app.config.config_v2.models.observability_config import (
     O11yConfig,

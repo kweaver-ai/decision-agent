@@ -103,7 +103,6 @@ func (repo *releaseRepo) listRecentUnpublishedAgent(ctx context.Context, req squ
 	rawSql = fmt.Sprintf("%s LIMIT %d OFFSET %d", rawSql, req.Size, 0)
 
 	err = sr.Raw(rawSql, whereArgs...).Find(&unpublishedAgentPOList)
-
 	if err != nil {
 		return nil, errors.Wrapf(err, "find release agent")
 	}
@@ -152,7 +151,6 @@ func (repo *releaseRepo) listRecentPublishedAgent(ctx context.Context, req squar
 	rawSql = fmt.Sprintf("%s LIMIT %d OFFSET %d", rawSql, req.Size, 0)
 
 	err = sr.Raw(rawSql, whereArgs...).Find(&publishedAgentPOList)
-
 	if err != nil {
 		return nil, errors.Wrapf(err, "find release agent")
 	}

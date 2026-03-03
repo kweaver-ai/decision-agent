@@ -7,7 +7,6 @@ from app.common.config import Config
 from app.logic import plan_mode_logic
 from app.utils.observability.trace_wrapper import internal_span
 
-from app.common.structs import DEFAULT_INPUTS
 from app.domain.vo.agentvo import AgentConfigVo
 
 

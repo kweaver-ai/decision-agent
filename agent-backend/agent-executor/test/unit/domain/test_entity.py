@@ -1,7 +1,5 @@
 """单元测试 - domain/entity 模块"""
 
-import pytest
-
 
 class TestAgentCacheEntity:
     """测试 domain/entity 模块导出"""

@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 """单元测试 - app/common/tool_v2/mcp_tool.py 补充测试"""
 
-import pytest
-from unittest.mock import MagicMock, AsyncMock, patch
-
 
 class TestMCPToolInit:
     """测试 MCPTool 初始化"""

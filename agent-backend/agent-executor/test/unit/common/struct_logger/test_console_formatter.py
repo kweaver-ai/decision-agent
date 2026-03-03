@@ -3,7 +3,7 @@
 Unit tests for app/common/struct_logger/console_formatter module
 """
 
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
 
 import pytest
 

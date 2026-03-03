@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 """单元测试 - agent_cache_manage_logic/__init__ 模块"""
 
-import pytest
-from unittest.mock import MagicMock, patch
-
 
 class TestAgentCacheManageLogicInit:
     """测试 agent_cache_manage_logic 模块导入"""

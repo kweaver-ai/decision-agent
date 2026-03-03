@@ -2,7 +2,6 @@
 Massive unit tests for AgentCacheEntity to boost coverage
 """
 
-import pytest
 from datetime import datetime
 from app.domain.entity.agent_cache.agent_cache_entity import AgentCacheEntity
 from app.domain.vo.agent_cache.agent_cache_id_vo import AgentCacheIdVO
