@@ -48,8 +48,8 @@ import mq_sdk.bmq_moudle  # ❌ 立即报错
 
 **错误信息**：
 ```
-OSError: dlopen(libbesmq-c.so, 0x0006): tried: 
-  'libbesmq-c.so' (no such file), 
+OSError: dlopen(libbesmq-c.so, 0x0006): tried:
+  'libbesmq-c.so' (no such file),
   '/usr/lib/libbesmq-c.so' (no such file, not in dyld cache)
 ```
 
@@ -100,14 +100,14 @@ def get_available_mq_modules():
         'kafka': 'mq_sdk.kafka_module',
         'bmq': 'mq_sdk.bmq_moudle',
     }
-    
+
     for name, module in modules.items():
         try:
             exec(f'import {module}')
             available.append(name)
         except ImportError:
             pass
-    
+
     return available
 
 # 使用示例
@@ -149,7 +149,7 @@ from mq_sdk import kafka_module  # ✅ 可用
 
 def check_mq_modules():
     print("检查 MQ 模块可用性...")
-    
+
     modules = {
         'NSQ': 'mq_sdk.nsq_moudle',
         'Kafka': 'mq_sdk.kafka_module',
@@ -158,10 +158,10 @@ def check_mq_modules():
         'TLQ HTTP2': 'mq_sdk.tlqhtp2_moudle',
         'TLQ HTTP202': 'mq_sdk.tlqhtp202_module',
     }
-    
+
     available = []
     unavailable = []
-    
+
     for name, module in modules.items():
         try:
             exec(f'import {module}')
@@ -170,11 +170,11 @@ def check_mq_modules():
         except ImportError as e:
             unavailable.append((name, str(e)))
             print(f"❌ {name} - 不可用")
-    
+
     print(f"\n总结：")
     print(f"可用模块 ({len(available)}): {', '.join(available)}")
     print(f"不可用模块 ({len(unavailable)}): {', '.join([n for n, _ in unavailable])}")
-    
+
     if unavailable:
         print("\n不可用模块原因：")
         for name, error in unavailable:
@@ -210,7 +210,7 @@ A: 这些模块在顶层代码中就加载了本地库（.so 文件），如果�
 A: 可以。直接导入对应模块，不要通过 `proton_mq`。
 
 ### Q: 如何解决本地库问题？
-A: 
+A:
 1. 安装对应的客户端库
 2. 或使用纯 Python 的替代方案
 3. 或使用条件导入

@@ -12,7 +12,9 @@ class TestTerminateAgent:
     async def test_terminate_agent_success(self):
         """测试成功终止 Agent"""
         from app.router.agent_controller_pkg.terminate_agent_v2 import terminate_agent
-        from app.router.agent_controller_pkg.rdto.v2.req.terminate_agent import TerminateAgentRequest
+        from app.router.agent_controller_pkg.rdto.v2.req.terminate_agent import (
+            TerminateAgentRequest,
+        )
 
         request = MagicMock(spec=Request)
         req = TerminateAgentRequest(agent_run_id="test-run-123")
@@ -21,11 +23,15 @@ class TestTerminateAgent:
         mock_agent_core = MagicMock()
         mock_agent_core.cleanup = MagicMock()
 
-        with patch('app.router.agent_controller_pkg.terminate_agent_v2.agent_instance_manager') as mock_manager:
+        with patch(
+            "app.router.agent_controller_pkg.terminate_agent_v2.agent_instance_manager"
+        ) as mock_manager:
             mock_manager.get = MagicMock(return_value=(mock_agent, mock_agent_core))
             mock_manager.remove = MagicMock()
 
-            with patch('app.router.agent_controller_pkg.terminate_agent_v2.StandLogger') as mock_logger:
+            with patch(
+                "app.router.agent_controller_pkg.terminate_agent_v2.StandLogger"
+            ) as mock_logger:
                 response = await terminate_agent(request, req)
 
         assert response.status_code == 204
@@ -36,15 +42,21 @@ class TestTerminateAgent:
     async def test_terminate_agent_not_found(self):
         """测试 Agent 实例不存在"""
         from app.router.agent_controller_pkg.terminate_agent_v2 import terminate_agent
-        from app.router.agent_controller_pkg.rdto.v2.req.terminate_agent import TerminateAgentRequest
+        from app.router.agent_controller_pkg.rdto.v2.req.terminate_agent import (
+            TerminateAgentRequest,
+        )
 
         request = MagicMock(spec=Request)
         req = TerminateAgentRequest(agent_run_id="nonexistent-run")
 
-        with patch('app.router.agent_controller_pkg.terminate_agent_v2.agent_instance_manager') as mock_manager:
+        with patch(
+            "app.router.agent_controller_pkg.terminate_agent_v2.agent_instance_manager"
+        ) as mock_manager:
             mock_manager.get = MagicMock(return_value=None)
 
-            with patch('app.router.agent_controller_pkg.terminate_agent_v2.StandLogger'):
+            with patch(
+                "app.router.agent_controller_pkg.terminate_agent_v2.StandLogger"
+            ):
                 response = await terminate_agent(request, req)
 
         assert response.status_code == 404
@@ -52,7 +64,9 @@ class TestTerminateAgent:
     async def test_terminate_agent_with_exception(self):
         """测试终止 Agent 时发生异常"""
         from app.router.agent_controller_pkg.terminate_agent_v2 import terminate_agent
-        from app.router.agent_controller_pkg.rdto.v2.req.terminate_agent import TerminateAgentRequest
+        from app.router.agent_controller_pkg.rdto.v2.req.terminate_agent import (
+            TerminateAgentRequest,
+        )
 
         request = MagicMock(spec=Request)
         req = TerminateAgentRequest(agent_run_id="test-run-123")
@@ -62,11 +76,15 @@ class TestTerminateAgent:
         mock_agent_core = MagicMock()
         mock_agent_core.cleanup = MagicMock()
 
-        with patch('app.router.agent_controller_pkg.terminate_agent_v2.agent_instance_manager') as mock_manager:
+        with patch(
+            "app.router.agent_controller_pkg.terminate_agent_v2.agent_instance_manager"
+        ) as mock_manager:
             mock_manager.get = MagicMock(return_value=(mock_agent, mock_agent_core))
             mock_manager.remove = MagicMock()
 
-            with patch('app.router.agent_controller_pkg.terminate_agent_v2.StandLogger'):
+            with patch(
+                "app.router.agent_controller_pkg.terminate_agent_v2.StandLogger"
+            ):
                 response = await terminate_agent(request, req)
 
         # Should still return 204 and clean up even if terminate fails

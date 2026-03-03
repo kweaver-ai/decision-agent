@@ -96,7 +96,6 @@ class ConfigInitializer:
         if getattr(sys, "frozen", False):
             print(f"[CONFIG] _MEIPASS: {sys._MEIPASS}", flush=True)
 
-
     @staticmethod
     def _post_process_host_ip(app_config: AppConfig):
         """后处理HOST_IP - 根据IP类型设置绑定地址"""
@@ -109,4 +108,3 @@ class ConfigInitializer:
                 app_config.host_ip = "0.0.0.0"
         except ValueError:
             app_config.host_ip = "0.0.0.0"
-

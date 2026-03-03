@@ -26,12 +26,16 @@ class TestPromptBuilder:
         self.temp_files = {}
 
         # Import after setup
-        from app.logic.agent_core_logic_v2.prompt_builder import PromptBuilder, has_temp_files
+        from app.logic.agent_core_logic_v2.prompt_builder import (
+            PromptBuilder,
+            has_temp_files,
+        )
+
         self.PromptBuilder = PromptBuilder
         self.has_temp_files = has_temp_files
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_build_dolphin_mode(self, mock_plan_mode_logic):
         """测试构建Dolphin模式提示词"""
         self.mock_config.is_dolphin_mode = True
@@ -66,10 +70,12 @@ class TestPromptBuilder:
         assert "test dolphin prompt" in result
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_build_standard_mode(self, mock_plan_mode_logic):
         """测试构建标准模式提示词"""
-        mock_plan_mode_logic.get_system_prompt_with_plan.return_value = "Plan mode prompt"
+        mock_plan_mode_logic.get_system_prompt_with_plan.return_value = (
+            "Plan mode prompt"
+        )
 
         builder = self.PromptBuilder(self.mock_config, self.temp_files)
         result = await builder.build()
@@ -79,7 +85,7 @@ class TestPromptBuilder:
         assert "header" in result
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_build_with_memory_enabled(self, mock_plan_mode_logic):
         """测试启用记忆时构建提示词"""
         self.mock_config.memory = {"is_enabled": True}
@@ -91,7 +97,7 @@ class TestPromptBuilder:
         assert "relevant_memories" in result
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_build_with_memory_disabled(self, mock_plan_mode_logic):
         """测试禁用记忆时构建提示词"""
         self.mock_config.memory = {"is_enabled": False}
@@ -102,11 +108,13 @@ class TestPromptBuilder:
         assert "@search_memory" not in result
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_build_with_plan_mode(self, mock_plan_mode_logic):
         """测试计划模式"""
         self.mock_config.plan_mode = {"is_enabled": True}
-        mock_plan_mode_logic.get_system_prompt_with_plan.return_value = "Plan mode system prompt"
+        mock_plan_mode_logic.get_system_prompt_with_plan.return_value = (
+            "Plan mode system prompt"
+        )
 
         builder = self.PromptBuilder(self.mock_config, self.temp_files)
         result = await builder.build()
@@ -115,7 +123,7 @@ class TestPromptBuilder:
         self.mock_config.append_task_plan_agent.assert_called_once()
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_build_without_plan_mode(self, mock_plan_mode_logic):
         """测试非计划模式"""
         self.mock_config.plan_mode = None
@@ -129,7 +137,7 @@ class TestPromptBuilder:
         self.mock_config.append_task_plan_agent.assert_not_called()
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_build_with_related_questions(self, mock_plan_mode_logic):
         """测试启用相关问题"""
         self.mock_config.related_question = {"is_enabled": True}
@@ -141,7 +149,7 @@ class TestPromptBuilder:
         assert "3个问题和答案对" in result
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_build_with_temp_files(self, mock_plan_mode_logic):
         """测试带临时文件"""
         self.mock_config.is_dolphin_mode = True
@@ -157,8 +165,10 @@ class TestPromptBuilder:
         assert "Process temp files" in result
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
-    async def test_build_without_temp_files_for_temp_process(self, mock_plan_mode_logic):
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
+    async def test_build_without_temp_files_for_temp_process(
+        self, mock_plan_mode_logic
+    ):
         """测试无临时文件时跳过temp_file_process"""
         self.mock_config.is_dolphin_mode = True
         self.temp_files = {}
@@ -173,7 +183,7 @@ class TestPromptBuilder:
         assert "Process temp files" not in result
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_get_doc_retrieval_prompt(self, mock_plan_mode_logic):
         """测试获取文档召回提示词"""
         builder = self.PromptBuilder(self.mock_config, self.temp_files)
@@ -182,7 +192,7 @@ class TestPromptBuilder:
         assert result == ""
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_get_graph_retrieval_prompt(self, mock_plan_mode_logic):
         """测试获取图谱召回提示词"""
         builder = self.PromptBuilder(self.mock_config, self.temp_files)
@@ -191,7 +201,7 @@ class TestPromptBuilder:
         assert result == ""
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_search_memory_prompt_enabled(self, mock_plan_mode_logic):
         """测试搜索记忆提示词 - 启用"""
         self.mock_config.memory = {"is_enabled": True}
@@ -205,7 +215,7 @@ class TestPromptBuilder:
         assert "threshold=" in result
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_search_memory_prompt_disabled(self, mock_plan_mode_logic):
         """测试搜索记忆提示词 - 禁用"""
         self.mock_config.memory = {"is_enabled": False}
@@ -216,7 +226,7 @@ class TestPromptBuilder:
         assert result == ""
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_search_memory_prompt_none(self, mock_plan_mode_logic):
         """测试搜索记忆提示词 - memory为None"""
         self.mock_config.memory = None
@@ -227,13 +237,10 @@ class TestPromptBuilder:
         assert result == ""
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_temp_file_prompt_with_files(self, mock_plan_mode_logic):
         """测试临时文件提示词 - 有文件"""
-        self.temp_files = {
-            "file1.txt": ["content1"],
-            "file2.pdf": ["content2"]
-        }
+        self.temp_files = {"file1.txt": ["content1"], "file2.pdf": ["content2"]}
 
         builder = self.PromptBuilder(self.mock_config, self.temp_files)
         result = builder.temp_file_prompt()
@@ -243,7 +250,7 @@ class TestPromptBuilder:
         assert "file2.pdf" in result
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_temp_file_prompt_empty(self, mock_plan_mode_logic):
         """测试临时文件提示词 - 空文件"""
         self.temp_files = {}
@@ -254,7 +261,7 @@ class TestPromptBuilder:
         assert result == ""
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_temp_file_prompt_empty_list(self, mock_plan_mode_logic):
         """测试临时文件提示词 - 空列表"""
         self.temp_files = {"file1.txt": []}
@@ -265,7 +272,7 @@ class TestPromptBuilder:
         assert result == ""
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_get_context_prompt(self, mock_plan_mode_logic):
         """测试获取上下文提示词"""
         builder = self.PromptBuilder(self.mock_config, self.temp_files)
@@ -279,7 +286,7 @@ class TestPromptBuilder:
         assert "query" in result
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_get_related_questions_prompt_enabled(self, mock_plan_mode_logic):
         """测试获取相关问题提示词 - 启用"""
         self.mock_config.related_question = {"is_enabled": True}
@@ -291,7 +298,7 @@ class TestPromptBuilder:
         assert "3个问题和答案对" in result
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_get_related_questions_prompt_disabled(self, mock_plan_mode_logic):
         """测试获取相关问题提示词 - 禁用"""
         self.mock_config.related_question = {"is_enabled": False}
@@ -302,7 +309,7 @@ class TestPromptBuilder:
         assert result == ""
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_get_related_questions_prompt_none(self, mock_plan_mode_logic):
         """测试获取相关问题提示词 - None"""
         self.mock_config.related_question = None
@@ -314,10 +321,7 @@ class TestPromptBuilder:
 
     def test_has_temp_files_true(self):
         """测试has_temp_files - 有文件"""
-        temp_files = {
-            "file1.txt": ["content1"],
-            "file2.pdf": ["content2"]
-        }
+        temp_files = {"file1.txt": ["content1"], "file2.pdf": ["content2"]}
 
         result = self.has_temp_files(temp_files)
         assert result is True
@@ -331,26 +335,20 @@ class TestPromptBuilder:
 
     def test_has_temp_files_false_empty_lists(self):
         """测试has_temp_files - 空列表"""
-        temp_files = {
-            "file1.txt": [],
-            "file2.pdf": []
-        }
+        temp_files = {"file1.txt": [], "file2.pdf": []}
 
         result = self.has_temp_files(temp_files)
         assert result is False
 
     def test_has_temp_files_mixed(self):
         """测试has_temp_files - 混合"""
-        temp_files = {
-            "file1.txt": [],
-            "file2.pdf": ["content2"]
-        }
+        temp_files = {"file1.txt": [], "file2.pdf": ["content2"]}
 
         result = self.has_temp_files(temp_files)
         assert result is True
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_build_with_none_agent_run_id(self, mock_plan_mode_logic):
         """测试agent_run_id为None时构建提示词"""
         self.mock_config.agent_run_id = None
@@ -362,7 +360,7 @@ class TestPromptBuilder:
         assert isinstance(result, str)
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_build_with_none_agent_id(self, mock_plan_mode_logic):
         """测试agent_id为None时构建提示词"""
         self.mock_config.agent_id = None
@@ -374,7 +372,7 @@ class TestPromptBuilder:
         assert isinstance(result, str)
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_build_with_span_recording(self, mock_plan_mode_logic):
         """测试span录制时的构建"""
         mock_span = Mock()
@@ -387,12 +385,10 @@ class TestPromptBuilder:
         assert mock_span.set_attribute.called
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_get_context_prompt_with_temp_files(self, mock_plan_mode_logic):
         """测试带临时文件的上下文提示词"""
-        self.temp_files = {
-            "file1.txt": ["content1"]
-        }
+        self.temp_files = {"file1.txt": ["content1"]}
 
         builder = self.PromptBuilder(self.mock_config, self.temp_files)
         # Set the attributes that build() would set
@@ -405,7 +401,7 @@ class TestPromptBuilder:
         assert "用户上传的文件内容" in result
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_get_context_prompt_with_doc_retrieval(self, mock_plan_mode_logic):
         """测试带文档召回的上下文提示词"""
         builder = self.PromptBuilder(self.mock_config, self.temp_files)
@@ -420,7 +416,7 @@ class TestPromptBuilder:
         assert "文档召回的内容" in result
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_get_context_prompt_with_graph_retrieval(self, mock_plan_mode_logic):
         """测试带图谱召回的上下文提示词"""
         builder = self.PromptBuilder(self.mock_config, self.temp_files)
@@ -435,7 +431,7 @@ class TestPromptBuilder:
         assert "业务知识网络召回的内容" in result
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_build_standard_mode_full_prompt(self, mock_plan_mode_logic):
         """测试标准模式完整提示词构建"""
         self.mock_config.memory = {"is_enabled": True}
@@ -452,7 +448,7 @@ class TestPromptBuilder:
         assert "/explore/" in result
 
     @pytest.mark.asyncio
-    @patch('app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic')
+    @patch("app.logic.agent_core_logic_v2.prompt_builder.plan_mode_logic")
     async def test_build_dolphin_mode_empty_pre_post(self, mock_plan_mode_logic):
         """测试Dolphin模式下空的pre/post dolphin"""
         self.mock_config.is_dolphin_mode = True

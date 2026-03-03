@@ -167,7 +167,7 @@ class TestAgentRunOptionsVo(TestCase):
         options = AgentRunOptionsVo(
             incremental_output=False,
             is_need_progress=False,
-            enable_dependency_cache=False
+            enable_dependency_cache=False,
         )
         self.assertFalse(options.incremental_output)
         self.assertFalse(options.is_need_progress)
@@ -179,9 +179,9 @@ class TestAgentRunOptionsVo(TestCase):
             "type": "multi",
             "sources": [
                 {"type": "database", "connection": "postgres://..."},
-                {"type": "file", "path": "/data/file.json"}
+                {"type": "file", "path": "/data/file.json"},
             ],
-            "merge_strategy": "concat"
+            "merge_strategy": "concat",
         }
         options = AgentRunOptionsVo(data_source=data_source)
         self.assertEqual(options.data_source, data_source)
@@ -195,7 +195,7 @@ class TestAgentRunOptionsVo(TestCase):
             "top_p": 0.9,
             "frequency_penalty": 0.5,
             "presence_penalty": 0.5,
-            "stop_sequences": ["\n", "END"]
+            "stop_sequences": ["\n", "END"],
         }
         options = AgentRunOptionsVo(llm_config=llm_config)
         self.assertEqual(options.llm_config, llm_config)
@@ -203,9 +203,7 @@ class TestAgentRunOptionsVo(TestCase):
     def test_init_with_unicode_ids(self):
         """测试 Unicode 字符 ID"""
         options = AgentRunOptionsVo(
-            agent_id="代理_123",
-            conversation_id="对话_456",
-            agent_run_id="运行_789"
+            agent_id="代理_123", conversation_id="对话_456", agent_run_id="运行_789"
         )
         self.assertEqual(options.agent_id, "代理_123")
         self.assertEqual(options.conversation_id, "对话_456")
@@ -216,7 +214,7 @@ class TestAgentRunOptionsVo(TestCase):
         options = AgentRunOptionsVo(
             agent_id="agent.with.dots-and_dashes/slashes",
             conversation_id="conv@domain#tag",
-            agent_run_id="run:123|version:2"
+            agent_run_id="run:123|version:2",
         )
         self.assertEqual(options.agent_id, "agent.with.dots-and_dashes/slashes")
         self.assertEqual(options.conversation_id, "conv@domain#tag")
@@ -230,19 +228,22 @@ class TestAgentRunOptionsVo(TestCase):
             "interrupt_data": {
                 "type": "user_confirmation",
                 "block_index": 5,
-                "context": {"key": "value"}
-            }
+                "context": {"key": "value"},
+            },
         }
         options = AgentRunOptionsVo(resume_info=resume_info)
-        self.assertEqual(options.resume_info["interrupt_data"]["context"]["key"], "value")
+        self.assertEqual(
+            options.resume_info["interrupt_data"]["context"]["key"], "value"
+        )
 
     def test_model_dump_json_serializable(self):
         """测试序列化结果为 JSON 可序列化"""
         import json
+
         options = AgentRunOptionsVo(
             output_vars=["var1", "var2"],
             agent_id="agent_123",
-            llm_config={"model": "gpt-4"}
+            llm_config={"model": "gpt-4"},
         )
         data = options.model_dump()
         # 应该可以序列化为 JSON
@@ -251,20 +252,15 @@ class TestAgentRunOptionsVo(TestCase):
 
     def test_model_dump_mode_python(self):
         """测试 Python 模式序列化"""
-        options = AgentRunOptionsVo(
-            output_vars=["var1"],
-            incremental_output=True
-        )
-        data = options.model_dump(mode='python')
+        options = AgentRunOptionsVo(output_vars=["var1"], incremental_output=True)
+        data = options.model_dump(mode="python")
         self.assertEqual(data["output_vars"], ["var1"])
         self.assertTrue(data["incremental_output"])
 
     def test_model_dump_exclude_fields(self):
         """测试排除特定字段"""
         options = AgentRunOptionsVo(
-            output_vars=["var1"],
-            agent_id="agent_123",
-            llm_config={"model": "gpt-4"}
+            output_vars=["var1"], agent_id="agent_123", llm_config={"model": "gpt-4"}
         )
         data = options.model_dump(exclude={"llm_config", "agent_id"})
         self.assertIn("output_vars", data)
@@ -274,9 +270,7 @@ class TestAgentRunOptionsVo(TestCase):
     def test_model_dump_include_fields(self):
         """测试仅包含特定字段"""
         options = AgentRunOptionsVo(
-            output_vars=["var1"],
-            agent_id="agent_123",
-            llm_config={"model": "gpt-4"}
+            output_vars=["var1"], agent_id="agent_123", llm_config={"model": "gpt-4"}
         )
         data = options.model_dump(include={"output_vars", "agent_id"})
         self.assertIn("output_vars", data)
@@ -315,20 +309,14 @@ class TestAgentRunOptionsVo(TestCase):
 
     def test_model_validate(self):
         """测试模型验证"""
-        data = {
-            "agent_id": "agent_123",
-            "output_vars": ["var1", "var2"]
-        }
+        data = {"agent_id": "agent_123", "output_vars": ["var1", "var2"]}
         options = AgentRunOptionsVo.model_validate(data)
         self.assertEqual(options.agent_id, "agent_123")
         self.assertEqual(options.output_vars, ["var1", "var2"])
 
     def test_model_validate_with_extra_fields(self):
         """测试带额外字段的验证"""
-        data = {
-            "agent_id": "agent_123",
-            "extra_field": "extra_value"
-        }
+        data = {"agent_id": "agent_123", "extra_field": "extra_value"}
         options = AgentRunOptionsVo.model_validate(data)
         self.assertEqual(options.agent_id, "agent_123")
 
@@ -351,8 +339,7 @@ class TestAgentRunOptionsVo(TestCase):
     def test_model_construct(self):
         """测试 model_construct 方法"""
         options = AgentRunOptionsVo.model_construct(
-            agent_id="agent_123",
-            output_vars=["var1"]
+            agent_id="agent_123", output_vars=["var1"]
         )
         self.assertEqual(options.agent_id, "agent_123")
         self.assertEqual(options.output_vars, ["var1"])

@@ -41,6 +41,7 @@ class TestProcessSkillsTools:
     @pytest.mark.asyncio
     async def test_process_skills_tools_with_tool(self, mock_agent_core, mock_skills):
         """测试处理tool"""
+
         # 创建一个简单的工具对象
         class MockTool:
             def __init__(self):
@@ -90,8 +91,11 @@ class TestProcessSkillsTools:
                                     )
 
     @pytest.mark.asyncio
-    async def test_process_skills_tools_with_cached_tool(self, mock_agent_core, mock_skills):
+    async def test_process_skills_tools_with_cached_tool(
+        self, mock_agent_core, mock_skills
+    ):
         """测试从缓存获取tool信息"""
+
         class MockTool:
             def __init__(self):
                 self.tool_id = "tool123"
@@ -137,8 +141,11 @@ class TestProcessSkillsTools:
                                 )
 
     @pytest.mark.asyncio
-    async def test_process_skills_tools_with_tool_rules(self, mock_agent_core, mock_skills):
+    async def test_process_skills_tools_with_tool_rules(
+        self, mock_agent_core, mock_skills
+    ):
         """测试设置tool_rules"""
+
         class MockTool:
             def __init__(self):
                 self.tool_id = "tool123"

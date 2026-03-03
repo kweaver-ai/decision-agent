@@ -15,7 +15,9 @@ class TestSpanSetAttrs:
         mock_span = MagicMock(spec=Span)
         mock_span.is_recording.return_value = True
 
-        span_set_attrs(mock_span, agent_run_id="run123", agent_id="agent456", user_id="user789")
+        span_set_attrs(
+            mock_span, agent_run_id="run123", agent_id="agent456", user_id="user789"
+        )
 
         mock_span.set_attribute.assert_any_call("agent_run_id", "run123")
         mock_span.set_attribute.assert_any_call("agent_id", "agent456")

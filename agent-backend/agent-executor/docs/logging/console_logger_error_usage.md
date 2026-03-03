@@ -28,21 +28,21 @@ class ExceptionHandler:
         cls, e: Exception, res: Dict[str, Any], headers: Dict[str, str]
     ) -> None:
         """处理异常
-        
+
         Args:
             e: 异常对象
             res: 结果字典
             headers: HTTP请求头
         """
-        
+
         message = "agent run failed: {}".format(repr(e))
-        
+
         # 打印到控制台
         struct_logger.console_logger.error(message, exc_info=e)
-        
+
         if not isinstance(res, dict):
             res = {}
-        
+
         res["error"] = await get_format_error_info(headers, e)
         res["status"] = "Error"
 ```
@@ -55,15 +55,15 @@ class ExceptionHandler:
 def handle_unknown_exception(request: Request, exc: Exception):
     """
     处理未知异常
-    
+
     Args:
         request: FastAPI 请求对象
         exc: 未知异常（可能是 ExceptionGroup）
-    
+
     Returns:
         JSONResponse: 错误响应
     """
-    
+
     # 处理 ExceptionGroup（Python 3.11+）
     actual_exc = exc
     if hasattr(exc, "__class__") and exc.__class__.__name__ == "ExceptionGroup":
@@ -74,12 +74,12 @@ def handle_unknown_exception(request: Request, exc: Exception):
                 f"ExceptionGroup contains {len(exc.exceptions)} exceptions, using first one",
                 exception_count=len(exc.exceptions),
             )
-    
+
     message = "handle_unknown_exception: {}".format(repr(actual_exc))
-    
+
     # 记录异常日志
     struct_logger.console_logger.error(message, exc_info=actual_exc)
-    
+
     # ... 后续处理
 ```
 

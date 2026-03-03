@@ -31,7 +31,9 @@ class TestIdWorker:
         """测试使用最大ID初始化"""
         from app.utils.snow_id import IdWorker, MAX_WORKER_ID, MAX_DATACENTER_ID
 
-        worker = IdWorker(datacenter_id=MAX_DATACENTER_ID, worker_id=MAX_WORKER_ID, sequence=0)
+        worker = IdWorker(
+            datacenter_id=MAX_DATACENTER_ID, worker_id=MAX_WORKER_ID, sequence=0
+        )
 
         assert worker.worker_id == MAX_WORKER_ID
         assert worker.datacenter_id == MAX_DATACENTER_ID
@@ -209,7 +211,7 @@ class TestModuleWorker:
         from app.utils.snow_id import worker
 
         assert worker is not None
-        assert hasattr(worker, 'get_id')
+        assert hasattr(worker, "get_id")
 
     def test_worker_can_generate_id(self):
         """测试模块级别的worker可以生成ID"""

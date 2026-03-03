@@ -60,7 +60,7 @@ class TestAgentConfig:
             conversation_id="conv_456",
             session_id="session_789",
             output_vars=["var1", "var2"],
-            incremental_output=True
+            incremental_output=True,
         )
 
         assert config.input == {"key": "value"}
@@ -88,8 +88,8 @@ class TestAgentConfig:
 
         # Should be converted to SkillVo object
         assert config.skills is not None
-        assert hasattr(config.skills, 'tools')
-        assert hasattr(config.skills, 'agents')
+        assert hasattr(config.skills, "tools")
+        assert hasattr(config.skills, "agents")
 
     def test_validate_skills_with_dict(self):
         """测试 validate_skills 验证器 - 字典转换"""
@@ -97,7 +97,7 @@ class TestAgentConfig:
 
         # Should be converted to SkillVo object
         assert config.skills is not None
-        assert hasattr(config.skills, 'tools')
+        assert hasattr(config.skills, "tools")
 
     def test_validate_skills_with_skillvo_instance(self):
         """测试 validate_skills 验证器 - 已是 SkillVo 实例"""
@@ -111,7 +111,7 @@ class TestAgentConfig:
 
     def test_set_conversation_id_auto_generate(self):
         """测试 set_conversation_id 验证器 - 自动生成ID"""
-        with patch('app.common.structs.snow_id') as mock_snow_id:
+        with patch("app.common.structs.snow_id") as mock_snow_id:
             mock_snow_id.return_value = "test_snow_id_123"
 
             config = AgentConfig(conversation_id=None)
@@ -126,7 +126,7 @@ class TestAgentConfig:
 
     def test_set_conversation_id_with_empty_string(self):
         """测试 set_conversation_id 验证器 - 空字符串时自动生成"""
-        with patch('app.common.structs.snow_id') as mock_snow_id:
+        with patch("app.common.structs.snow_id") as mock_snow_id:
             mock_snow_id.return_value = "test_snow_id_456"
 
             config = AgentConfig(conversation_id="")
@@ -187,7 +187,7 @@ class TestAgentConfig:
         # Find the Task_Plan_Agent
         task_plan_agent = None
         for agent in config.skills.agents:
-            if hasattr(agent, 'agent_key') and agent.agent_key == "Task_Plan_Agent":
+            if hasattr(agent, "agent_key") and agent.agent_key == "Task_Plan_Agent":
                 task_plan_agent = agent
                 break
 
@@ -206,10 +206,7 @@ class TestAgentConfig:
 
     def test_append_task_plan_agent_creates_skills_if_none(self):
         """测试 append_task_plan_agent 方法 - skills 为 None 时创建"""
-        config = AgentConfig(
-            plan_mode={"is_enabled": True},
-            skills=None
-        )
+        config = AgentConfig(plan_mode={"is_enabled": True}, skills=None)
 
         config.append_task_plan_agent()
 
@@ -223,7 +220,7 @@ class TestAgentConfig:
 
         config = AgentConfig(
             plan_mode={"is_enabled": True},
-            skills=SkillVo()  # Already a SkillVo instance
+            skills=SkillVo(),  # Already a SkillVo instance
         )
 
         config.append_task_plan_agent()
@@ -253,7 +250,7 @@ class TestAgentOptions:
             incremental_output=True,
             data_source={"type": "test"},
             llm_config={"model": "gpt-4"},
-            tmp_files=["file1", "file2"]
+            tmp_files=["file1", "file2"],
         )
 
         assert options.output_vars == ["var1", "var2"]
@@ -283,7 +280,7 @@ class TestAgentInput:
             history=[{"role": "user", "content": "hello"}],
             tool={"name": "test_tool"},
             header={"auth": "token"},
-            self_config={"key": "value"}
+            self_config={"key": "value"},
         )
 
         assert agent_input.query == "test query"
@@ -318,10 +315,7 @@ class TestAgentInput:
 
     def test_get_value_extra_field(self):
         """测试 get_value 方法 - 获取额外字段"""
-        agent_input = AgentInput(
-            query="test",
-            custom_field="custom_value"
-        )
+        agent_input = AgentInput(query="test", custom_field="custom_value")
 
         value = agent_input.get_value("custom_field")
 
@@ -364,10 +358,7 @@ class TestAgentInput:
 
     def test_model_dump_with_extra_fields(self):
         """测试 model_dump 方法 - 包含额外字段"""
-        agent_input = AgentInput(
-            query="test",
-            custom_field="custom_value"
-        )
+        agent_input = AgentInput(query="test", custom_field="custom_value")
 
         dumped = agent_input.model_dump()
 
@@ -378,9 +369,7 @@ class TestAgentInput:
         """测试允许额外字段"""
         # Should not raise validation error
         agent_input = AgentInput(
-            query="test",
-            custom_field1="value1",
-            custom_field2="value2"
+            query="test", custom_field1="value1", custom_field2="value2"
         )
 
         assert agent_input.custom_field1 == "value1"

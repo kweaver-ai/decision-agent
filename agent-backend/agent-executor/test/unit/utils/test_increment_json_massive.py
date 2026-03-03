@@ -1,4 +1,5 @@
 """Massive unit tests for app/utils/increment_json.py - 200+ tests"""
+
 import pytest
 import asyncio
 import json
@@ -204,6 +205,7 @@ class TestIncrementalAsyncGenerator:
     async def test_yields_on_first_dict(self):
         async def source():
             yield {"a": 1}
+
         gen = incremental_async_generator(source())
         results = []
         async for item in gen:
@@ -214,6 +216,7 @@ class TestIncrementalAsyncGenerator:
     async def test_yields_on_first_non_dict(self):
         async def source():
             yield "string"
+
         gen = incremental_async_generator(source())
         results = []
         async for item in gen:
@@ -225,6 +228,7 @@ class TestIncrementalAsyncGenerator:
         async def source():
             yield {"a": 1}
             yield {"a": 2}
+
         gen = incremental_async_generator(source())
         results = []
         async for item in gen:
@@ -235,6 +239,7 @@ class TestIncrementalAsyncGenerator:
     async def test_ends_with_end_action(self):
         async def source():
             yield {"a": 1}
+
         gen = incremental_async_generator(source())
         results = []
         async for item in gen:
@@ -246,6 +251,7 @@ class TestIncrementalAsyncGenerator:
         async def source():
             yield {"a": 1}
             yield {"b": 2}
+
         gen = incremental_async_generator(source())
         results = []
         async for item in gen:
@@ -258,6 +264,7 @@ class TestIncrementalAsyncGenerator:
         async def source():
             yield {"a": 1}
             yield {"a": 1}
+
         gen = incremental_async_generator(source())
         results = []
         async for item in gen:
@@ -270,6 +277,7 @@ class TestIncrementalAsyncGenerator:
         async def source():
             yield {"a": 1}
             yield {"a": 1, "b": 2}
+
         gen = incremental_async_generator(source())
         results = []
         async for item in gen:
@@ -282,6 +290,7 @@ class TestIncrementalAsyncGenerator:
         async def source():
             yield {"a": 1, "b": 2}
             yield {"a": 1}
+
         gen = incremental_async_generator(source())
         results = []
         async for item in gen:
@@ -294,6 +303,7 @@ class TestIncrementalAsyncGenerator:
         async def source():
             yield {"a": 1}
             yield {"a": 2}
+
         gen = incremental_async_generator(source())
         results = []
         async for item in gen:
@@ -306,6 +316,7 @@ class TestIncrementalAsyncGenerator:
         async def source():
             return
             yield
+
         gen = incremental_async_generator(source())
         results = []
         async for item in gen:
@@ -317,6 +328,7 @@ class TestIncrementalAsyncGenerator:
     async def test_single_item(self):
         async def source():
             yield {"a": 1}
+
         gen = incremental_async_generator(source())
         results = []
         async for item in gen:
@@ -328,6 +340,7 @@ class TestIncrementalAsyncGenerator:
         async def source():
             yield {"a": {"b": 1}}
             yield {"a": {"b": 2}}
+
         gen = incremental_async_generator(source())
         results = []
         async for item in gen:
@@ -339,6 +352,7 @@ class TestIncrementalAsyncGenerator:
         async def source():
             yield {"a": [1]}
             yield {"a": [2]}
+
         gen = incremental_async_generator(source())
         results = []
         async for item in gen:
@@ -349,6 +363,7 @@ class TestIncrementalAsyncGenerator:
     async def test_has_seq_id(self):
         async def source():
             yield {"a": 1}
+
         gen = incremental_async_generator(source())
         results = []
         async for item in gen:
@@ -359,6 +374,7 @@ class TestIncrementalAsyncGenerator:
     async def test_has_key(self):
         async def source():
             yield {"a": 1}
+
         gen = incremental_async_generator(source())
         results = []
         async for item in gen:
@@ -370,6 +386,7 @@ class TestIncrementalAsyncGenerator:
     async def test_has_content(self):
         async def source():
             yield {"a": 1}
+
         gen = incremental_async_generator(source())
         results = []
         async for item in gen:
@@ -381,6 +398,7 @@ class TestIncrementalAsyncGenerator:
     async def test_has_action(self):
         async def source():
             yield {"a": 1}
+
         gen = incremental_async_generator(source())
         results = []
         async for item in gen:
@@ -395,6 +413,7 @@ class TestRestoreFullJson:
     async def test_restores_empty(self):
         async def source():
             yield {"action": "end", "key": [], "content": None, "seq_id": 0}
+
         result = await restore_full_json(source())
         assert result == {}
 
@@ -403,6 +422,7 @@ class TestRestoreFullJson:
         async def source():
             yield {"action": "upsert", "key": ["a"], "content": 1, "seq_id": 0}
             yield {"action": "end", "key": [], "content": None, "seq_id": 1}
+
         result = await restore_full_json(source())
         assert result == {"a": 1}
 
@@ -411,6 +431,7 @@ class TestRestoreFullJson:
         async def source():
             yield {"action": "upsert", "key": ["a", "b"], "content": 1, "seq_id": 0}
             yield {"action": "end", "key": [], "content": None, "seq_id": 1}
+
         result = await restore_full_json(source())
         assert result["a"]["b"] == 1
 
@@ -420,6 +441,7 @@ class TestRestoreFullJson:
             yield {"action": "upsert", "key": ["a"], "content": 1, "seq_id": 0}
             yield {"action": "upsert", "key": ["b"], "content": 2, "seq_id": 1}
             yield {"action": "end", "key": [], "content": None, "seq_id": 2}
+
         result = await restore_full_json(source())
         assert result == {"a": 1, "b": 2}
 
@@ -429,6 +451,7 @@ class TestRestoreFullJson:
             yield {"action": "upsert", "key": ["a"], "content": 1, "seq_id": 0}
             yield {"action": "remove", "key": ["a"], "content": None, "seq_id": 1}
             yield {"action": "end", "key": [], "content": None, "seq_id": 2}
+
         result = await restore_full_json(source())
         assert "a" not in result
 
@@ -438,6 +461,7 @@ class TestRestoreFullJson:
             yield {"action": "upsert", "key": ["a"], "content": "hello", "seq_id": 0}
             yield {"action": "append", "key": ["a"], "content": " world", "seq_id": 1}
             yield {"action": "end", "key": [], "content": None, "seq_id": 2}
+
         result = await restore_full_json(source())
         assert result["a"] == "hello world"
 
@@ -447,6 +471,7 @@ class TestRestoreFullJson:
             yield {"action": "upsert", "key": ["a"], "content": [], "seq_id": 0}
             yield {"action": "append", "key": ["a"], "content": 1, "seq_id": 1}
             yield {"action": "end", "key": [], "content": None, "seq_id": 2}
+
         result = await restore_full_json(source())
         assert result["a"] == [1]
 
@@ -455,7 +480,13 @@ class TestRestoreFullJson:
         async def source():
             yield {"action": "upsert", "key": ["a"], "content": 1, "seq_id": 0}
             yield {"action": "end", "key": [], "content": None, "seq_id": 1}
-            yield {"action": "upsert", "key": ["b"], "content": 2, "seq_id": 2}  # Should not be processed
+            yield {
+                "action": "upsert",
+                "key": ["b"],
+                "content": 2,
+                "seq_id": 2,
+            }  # Should not be processed
+
         result = await restore_full_json(source())
         assert "a" in result
         assert "b" not in result
@@ -463,8 +494,14 @@ class TestRestoreFullJson:
     @pytest.mark.asyncio
     async def test_creates_nested_dicts(self):
         async def source():
-            yield {"action": "upsert", "key": ["a", "b", "c"], "content": 1, "seq_id": 0}
+            yield {
+                "action": "upsert",
+                "key": ["a", "b", "c"],
+                "content": 1,
+                "seq_id": 0,
+            }
             yield {"action": "end", "key": [], "content": None, "seq_id": 1}
+
         result = await restore_full_json(source())
         assert result["a"]["b"]["c"] == 1
 
@@ -473,6 +510,7 @@ class TestRestoreFullJson:
         async def source():
             yield {"action": "upsert", "key": ["a", 0], "content": 1, "seq_id": 0}
             yield {"action": "end", "key": [], "content": None, "seq_id": 1}
+
         result = await restore_full_json(source())
         assert result["a"][0] == 1
 
@@ -481,6 +519,7 @@ class TestRestoreFullJson:
         async def source():
             yield {"action": "upsert", "key": [], "content": "value", "seq_id": 0}
             yield {"action": "end", "key": [], "content": None, "seq_id": 1}
+
         result = await restore_full_json(source())
         assert result == "value"
 
@@ -490,14 +529,21 @@ class TestRestoreFullJson:
             yield {"action": "upsert", "key": ["a"], "content": 1, "seq_id": 0}
             yield {"action": "upsert", "key": ["a"], "content": 2, "seq_id": 1}
             yield {"action": "end", "key": [], "content": None, "seq_id": 2}
+
         result = await restore_full_json(source())
         assert result["a"] == 2
 
     @pytest.mark.asyncio
     async def test_complex_nested_structure(self):
         async def source():
-            yield {"action": "upsert", "key": ["a", "b", 0, "c"], "content": 1, "seq_id": 0}
+            yield {
+                "action": "upsert",
+                "key": ["a", "b", 0, "c"],
+                "content": 1,
+                "seq_id": 0,
+            }
             yield {"action": "end", "key": [], "content": None, "seq_id": 1}
+
         result = await restore_full_json(source())
         assert result["a"]["b"][0]["c"] == 1
 
@@ -507,6 +553,7 @@ class TestRestoreFullJson:
             yield {"action": "upsert", "key": ["a", 0], "content": 1, "seq_id": 0}
             yield {"action": "upsert", "key": ["a", 1], "content": 2, "seq_id": 1}
             yield {"action": "end", "key": [], "content": None, "seq_id": 2}
+
         result = await restore_full_json(source())
         assert result["a"] == [1, 2]
 
@@ -517,6 +564,7 @@ class TestRestoreFullJson:
             yield {"action": "append", "key": ["a"], "content": 1, "seq_id": 1}
             yield {"action": "append", "key": ["a"], "content": 2, "seq_id": 2}
             yield {"action": "end", "key": [], "content": None, "seq_id": 3}
+
         result = await restore_full_json(source())
         assert result["a"] == [1, 2]
 
@@ -527,6 +575,7 @@ class TestRestoreFullJson:
             yield {"action": "append", "key": ["a"], "content": "y", "seq_id": 1}
             yield {"action": "append", "key": ["a"], "content": "z", "seq_id": 2}
             yield {"action": "end", "key": [], "content": None, "seq_id": 3}
+
         result = await restore_full_json(source())
         assert result["a"] == "xyz"
 
@@ -536,6 +585,7 @@ class TestRestoreFullJson:
             yield {"action": "upsert", "key": ["a", "b"], "content": 1, "seq_id": 0}
             yield {"action": "remove", "key": ["a", "b"], "content": None, "seq_id": 1}
             yield {"action": "end", "key": [], "content": None, "seq_id": 2}
+
         result = await restore_full_json(source())
         assert "b" not in result["a"]
 
@@ -543,6 +593,7 @@ class TestRestoreFullJson:
     async def test_returns_dict(self):
         async def source():
             yield {"action": "end", "key": [], "content": None, "seq_id": 0}
+
         result = await restore_full_json(source())
         assert isinstance(result, dict)
 
@@ -551,6 +602,7 @@ class TestRestoreFullJson:
         async def source():
             yield {"action": "upsert", "key": ["a"], "content": "", "seq_id": 0}
             yield {"action": "end", "key": [], "content": None, "seq_id": 1}
+
         result = await restore_full_json(source())
         assert result["a"] == ""
 
@@ -559,6 +611,7 @@ class TestRestoreFullJson:
         async def source():
             yield {"action": "upsert", "key": ["a"], "content": None, "seq_id": 0}
             yield {"action": "end", "key": [], "content": None, "seq_id": 1}
+
         result = await restore_full_json(source())
         assert result["a"] is None
 
@@ -567,6 +620,7 @@ class TestRestoreFullJson:
         async def source():
             yield {"action": "upsert", "key": ["a"], "content": 0, "seq_id": 0}
             yield {"action": "end", "key": [], "content": None, "seq_id": 1}
+
         result = await restore_full_json(source())
         assert result["a"] == 0
 
@@ -575,6 +629,7 @@ class TestRestoreFullJson:
         async def source():
             yield {"action": "upsert", "key": ["a"], "content": False, "seq_id": 0}
             yield {"action": "end", "key": [], "content": None, "seq_id": 1}
+
         result = await restore_full_json(source())
         assert result["a"] is False
 
@@ -583,6 +638,7 @@ class TestRestoreFullJson:
         async def source():
             yield {"action": "upsert", "key": ["a"], "content": [1, 2, 3], "seq_id": 0}
             yield {"action": "end", "key": [], "content": None, "seq_id": 1}
+
         result = await restore_full_json(source())
         assert result["a"] == [1, 2, 3]
 
@@ -591,6 +647,7 @@ class TestRestoreFullJson:
         async def source():
             yield {"action": "upsert", "key": ["a"], "content": {"b": 1}, "seq_id": 0}
             yield {"action": "end", "key": [], "content": None, "seq_id": 1}
+
         result = await restore_full_json(source())
         assert result["a"]["b"] == 1
 
@@ -599,21 +656,34 @@ class TestRestoreFullJson:
         async def source():
             yield {"action": "upsert", "key": ["a"], "content": "你好", "seq_id": 0}
             yield {"action": "end", "key": [], "content": None, "seq_id": 1}
+
         result = await restore_full_json(source())
         assert result["a"] == "你好"
 
     @pytest.mark.asyncio
     async def test_special_chars_content(self):
         async def source():
-            yield {"action": "upsert", "key": ["a"], "content": "hello\nworld", "seq_id": 0}
+            yield {
+                "action": "upsert",
+                "key": ["a"],
+                "content": "hello\nworld",
+                "seq_id": 0,
+            }
             yield {"action": "end", "key": [], "content": None, "seq_id": 1}
+
         result = await restore_full_json(source())
         assert result["a"] == "hello\nworld"
 
     @pytest.mark.asyncio
     async def test_very_long_key_path(self):
         async def source():
-            yield {"action": "upsert", "key": ["a", "b", "c", "d", "e", "f"], "content": 1, "seq_id": 0}
+            yield {
+                "action": "upsert",
+                "key": ["a", "b", "c", "d", "e", "f"],
+                "content": 1,
+                "seq_id": 0,
+            }
             yield {"action": "end", "key": [], "content": None, "seq_id": 1}
+
         result = await restore_full_json(source())
         assert result["a"]["b"]["c"]["d"]["e"]["f"] == 1

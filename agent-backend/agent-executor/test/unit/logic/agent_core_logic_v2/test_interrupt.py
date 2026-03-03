@@ -23,7 +23,9 @@ class TestInterruptHandler:
     @patch("app.logic.agent_core_logic_v2.interrupt.json.dumps")
     @patch("app.logic.agent_core_logic_v2.interrupt.StandLogger")
     @patch("app.logic.agent_core_logic_v2.interrupt.span_set_attrs")
-    async def test_handle_tool_interrupt_basic(self, m_span_set_attrs, m_logger, m_json_dumps):
+    async def test_handle_tool_interrupt_basic(
+        self, m_span_set_attrs, m_logger, m_json_dumps
+    ):
         """测试基本工具中断处理"""
         m_json_dumps.return_value = '{"test": "data"}'
 
@@ -36,10 +38,7 @@ class TestInterruptHandler:
         mock_tool_interrupt.interrupt_info = mock_interrupt_info
 
         res = {}
-        context_variables = {
-            "session_id": "session123",
-            "agent_id": "agent456"
-        }
+        context_variables = {"session_id": "session123", "agent_id": "agent456"}
 
         await InterruptHandler.handle_tool_interrupt(
             mock_tool_interrupt, res, context_variables
@@ -52,7 +51,9 @@ class TestInterruptHandler:
     @patch("app.logic.agent_core_logic_v2.interrupt.json.dumps")
     @patch("app.logic.agent_core_logic_v2.interrupt.StandLogger")
     @patch("app.logic.agent_core_logic_v2.interrupt.span_set_attrs")
-    async def test_handle_tool_interrupt_with_span(self, m_span_set_attrs, m_logger, m_json_dumps):
+    async def test_handle_tool_interrupt_with_span(
+        self, m_span_set_attrs, m_logger, m_json_dumps
+    ):
         """测试带 span 的工具中断处理"""
         m_json_dumps.return_value = '{"test": "data"}'
 
@@ -79,7 +80,9 @@ class TestInterruptHandler:
     @patch("app.logic.agent_core_logic_v2.interrupt.json.dumps")
     @patch("app.logic.agent_core_logic_v2.interrupt.StandLogger")
     @patch("app.logic.agent_core_logic_v2.interrupt.span_set_attrs")
-    async def test_handle_tool_interrupt_empty_context(self, m_span_set_attrs, m_logger, m_json_dumps):
+    async def test_handle_tool_interrupt_empty_context(
+        self, m_span_set_attrs, m_logger, m_json_dumps
+    ):
         """测试空上下文变量的工具中断处理"""
         m_json_dumps.return_value = '{"test": "data"}'
 

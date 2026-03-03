@@ -89,7 +89,9 @@ class TestRedisPoolGetPool:
             # Mock the get_pool method to return a mock pool
             mock_pool_instance = MagicMock()
 
-            with patch.object(pool, 'get_pool', new=AsyncMock(return_value=mock_pool_instance)):
+            with patch.object(
+                pool, "get_pool", new=AsyncMock(return_value=mock_pool_instance)
+            ):
                 connection_pool = await pool.get_pool(0, "read")
 
                 assert connection_pool is not None
@@ -104,7 +106,9 @@ class TestRedisPoolGetPool:
             # Mock the get_pool method to return a mock pool
             mock_pool_instance = MagicMock()
 
-            with patch.object(pool, 'get_pool', new=AsyncMock(return_value=mock_pool_instance)):
+            with patch.object(
+                pool, "get_pool", new=AsyncMock(return_value=mock_pool_instance)
+            ):
                 connection_pool = await pool.get_pool(0, "write")
 
                 assert connection_pool is not None
@@ -143,12 +147,14 @@ class TestRedisPoolAcquire:
             async def mock_acquire(db, model):
                 return mock_redis
 
-            with patch.object(pool, 'acquire', new=mock_acquire):
+            with patch.object(pool, "acquire", new=mock_acquire):
                 conn = await pool.acquire(0, "read")
                 assert conn is not None
 
     @pytest.mark.asyncio
-    async def test_acquire_connection_close_on_exit(self, reset_redis_pool, mock_config):
+    async def test_acquire_connection_close_on_exit(
+        self, reset_redis_pool, mock_config
+    ):
         """测试退出时关闭连接"""
         mock_config.redis.cluster_mode = "master-slave"
 
@@ -165,7 +171,7 @@ class TestRedisPoolAcquire:
             async def mock_acquire_cm(db, model):
                 yield mock_redis
 
-            with patch.object(pool, 'acquire', new=mock_acquire_cm):
+            with patch.object(pool, "acquire", new=mock_acquire_cm):
                 async with pool.acquire(0, "read") as conn:
                     pass
 
@@ -229,7 +235,7 @@ class TestRedisLockAcquire:
         with patch("app.driven.infrastructure.redis.Config", mock_config):
             lock = RedisLock("test_lock")
             # Mock the acquire method to return True
-            with patch.object(lock, 'acquire', new=AsyncMock(return_value=True)):
+            with patch.object(lock, "acquire", new=AsyncMock(return_value=True)):
                 result = await lock.acquire()
                 assert result is True
 
@@ -241,7 +247,7 @@ class TestRedisLockAcquire:
         with patch("app.driven.infrastructure.redis.Config", mock_config):
             lock = RedisLock("test_lock")
             # Mock the acquire method to return True
-            with patch.object(lock, 'acquire', new=AsyncMock(return_value=True)):
+            with patch.object(lock, "acquire", new=AsyncMock(return_value=True)):
                 with patch("asyncio.sleep"):
                     result = await lock.acquire()
                     assert result is True
@@ -259,7 +265,7 @@ class TestRedisLockRelease:
             lock = RedisLock("test_lock")
             # Mock the release method
             mock_release = AsyncMock()
-            with patch.object(lock, 'release', new=mock_release):
+            with patch.object(lock, "release", new=mock_release):
                 await lock.release()
                 mock_release.assert_called_once()
 
@@ -278,8 +284,8 @@ class TestRedisLockContextManager:
             mock_acquire = AsyncMock(return_value=True)
             mock_release = AsyncMock()
 
-            with patch.object(lock, 'acquire', new=mock_acquire):
-                with patch.object(lock, 'release', new=mock_release):
+            with patch.object(lock, "acquire", new=mock_acquire):
+                with patch.object(lock, "release", new=mock_release):
                     async with lock as acquired_lock:
                         assert acquired_lock is lock
 
@@ -308,7 +314,9 @@ class TestRedisPoolSentinelMode:
             # Mock the sentinel and pool creation
             mock_pool_instance = MagicMock()
 
-            with patch.object(pool, 'get_pool', new=AsyncMock(return_value=mock_pool_instance)):
+            with patch.object(
+                pool, "get_pool", new=AsyncMock(return_value=mock_pool_instance)
+            ):
                 connection_pool = await pool.get_pool(0, "write")
                 # Verify get_pool was called
                 assert connection_pool is not None
@@ -331,10 +339,9 @@ class TestRedisPoolSentinelMode:
             # Mock the sentinel and pool creation
             mock_pool_instance = MagicMock()
 
-            with patch.object(pool, 'get_pool', new=AsyncMock(return_value=mock_pool_instance)):
+            with patch.object(
+                pool, "get_pool", new=AsyncMock(return_value=mock_pool_instance)
+            ):
                 connection_pool = await pool.get_pool(0, "read")
                 # Verify get_pool was called
                 assert connection_pool is not None
-
-
-

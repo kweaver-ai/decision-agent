@@ -30,22 +30,34 @@ class TestWarmUpHandler:
 
         handler = WarmUpHandler(mock_agent_core)
 
-        headers = {
-            "x-user-id": "test_user",
-            "x-account-type": "standard"
-        }
+        headers = {"x-user-id": "test_user", "x-account-type": "standard"}
 
         async def mock_generator():
             yield {"data": "chunk1"}
             yield {"data": "chunk2"}
 
-        with patch("app.logic.agent_core_logic_v2.warm_up.span_set_attrs") as mock_span_attrs, \
-             patch("app.logic.agent_core_logic_v2.warm_up.run_dolphin") as mock_run_dolphin, \
-             patch("app.logic.agent_core_logic_v2.warm_up.get_user_account_id", return_value="test_user"), \
-             patch("app.logic.agent_core_logic_v2.warm_up.get_user_account_type", return_value="standard"), \
-             patch("app.logic.agent_core_logic_v2.warm_up.set_user_account_id") as mock_set_id, \
-             patch("app.logic.agent_core_logic_v2.warm_up.set_user_account_type") as mock_set_type:
-
+        with (
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.span_set_attrs"
+            ) as mock_span_attrs,
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.run_dolphin"
+            ) as mock_run_dolphin,
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.get_user_account_id",
+                return_value="test_user",
+            ),
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.get_user_account_type",
+                return_value="standard",
+            ),
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.set_user_account_id"
+            ) as mock_set_id,
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.set_user_account_type"
+            ) as mock_set_type,
+        ):
             mock_run_dolphin.return_value = mock_generator()
 
             await handler.warnup(headers)
@@ -72,12 +84,21 @@ class TestWarmUpHandler:
             raise Exception("Test exception")
             yield
 
-        with patch("app.logic.agent_core_logic_v2.warm_up.span_set_attrs"), \
-             patch("app.logic.agent_core_logic_v2.warm_up.run_dolphin") as mock_run_dolphin, \
-             patch("app.logic.agent_core_logic_v2.warm_up.get_user_account_id", return_value=None), \
-             patch("app.logic.agent_core_logic_v2.warm_up.get_user_account_type", return_value=None), \
-             patch("app.logic.agent_core_logic_v2.warm_up.o11y_logger") as mock_logger:
-
+        with (
+            patch("app.logic.agent_core_logic_v2.warm_up.span_set_attrs"),
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.run_dolphin"
+            ) as mock_run_dolphin,
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.get_user_account_id",
+                return_value=None,
+            ),
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.get_user_account_type",
+                return_value=None,
+            ),
+            patch("app.logic.agent_core_logic_v2.warm_up.o11y_logger") as mock_logger,
+        ):
             mock_run_dolphin.return_value = failing_generator()
 
             # Should not raise exception, should log error
@@ -103,13 +124,25 @@ class TestWarmUpHandler:
         async def mock_generator():
             yield {"data": "test"}
 
-        with patch("app.logic.agent_core_logic_v2.warm_up.span_set_attrs") as mock_span_attrs, \
-             patch("app.logic.agent_core_logic_v2.warm_up.run_dolphin", return_value=mock_generator()), \
-             patch("app.logic.agent_core_logic_v2.warm_up.get_user_account_id", return_value="user123"), \
-             patch("app.logic.agent_core_logic_v2.warm_up.get_user_account_type", return_value="premium"), \
-             patch("app.logic.agent_core_logic_v2.warm_up.set_user_account_id"), \
-             patch("app.logic.agent_core_logic_v2.warm_up.set_user_account_type"):
-
+        with (
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.span_set_attrs"
+            ) as mock_span_attrs,
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.run_dolphin",
+                return_value=mock_generator(),
+            ),
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.get_user_account_id",
+                return_value="user123",
+            ),
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.get_user_account_type",
+                return_value="premium",
+            ),
+            patch("app.logic.agent_core_logic_v2.warm_up.set_user_account_id"),
+            patch("app.logic.agent_core_logic_v2.warm_up.set_user_account_type"),
+        ):
             await handler.warnup(headers, span=mock_span)
 
             mock_span_attrs.assert_called_once()
@@ -131,13 +164,29 @@ class TestWarmUpHandler:
         async def mock_generator():
             yield {}
 
-        with patch("app.logic.agent_core_logic_v2.warm_up.span_set_attrs") as mock_span_attrs, \
-             patch("app.logic.agent_core_logic_v2.warm_up.run_dolphin", return_value=mock_generator()), \
-             patch("app.logic.agent_core_logic_v2.warm_up.get_user_account_id", return_value=None), \
-             patch("app.logic.agent_core_logic_v2.warm_up.get_user_account_type", return_value=None), \
-             patch("app.logic.agent_core_logic_v2.warm_up.set_user_account_id") as mock_set_id, \
-             patch("app.logic.agent_core_logic_v2.warm_up.set_user_account_type") as mock_set_type:
-
+        with (
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.span_set_attrs"
+            ) as mock_span_attrs,
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.run_dolphin",
+                return_value=mock_generator(),
+            ),
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.get_user_account_id",
+                return_value=None,
+            ),
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.get_user_account_type",
+                return_value=None,
+            ),
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.set_user_account_id"
+            ) as mock_set_id,
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.set_user_account_type"
+            ) as mock_set_type,
+        ):
             await handler.warnup(headers)
 
             # Should still call span_set_attrs with empty user_id
@@ -166,13 +215,23 @@ class TestWarmUpHandler:
                 call_count[0] += 1
                 yield {"chunk": i}
 
-        with patch("app.logic.agent_core_logic_v2.warm_up.span_set_attrs"), \
-             patch("app.logic.agent_core_logic_v2.warm_up.run_dolphin", return_value=mock_generator()), \
-             patch("app.logic.agent_core_logic_v2.warm_up.get_user_account_id", return_value="user1"), \
-             patch("app.logic.agent_core_logic_v2.warm_up.get_user_account_type", return_value="standard"), \
-             patch("app.logic.agent_core_logic_v2.warm_up.set_user_account_id"), \
-             patch("app.logic.agent_core_logic_v2.warm_up.set_user_account_type"):
-
+        with (
+            patch("app.logic.agent_core_logic_v2.warm_up.span_set_attrs"),
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.run_dolphin",
+                return_value=mock_generator(),
+            ),
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.get_user_account_id",
+                return_value="user1",
+            ),
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.get_user_account_type",
+                return_value="standard",
+            ),
+            patch("app.logic.agent_core_logic_v2.warm_up.set_user_account_id"),
+            patch("app.logic.agent_core_logic_v2.warm_up.set_user_account_type"),
+        ):
             await handler.warnup(headers)
 
             # Generator should be fully consumed
@@ -195,28 +254,41 @@ class TestWarmUpIntegration:
 
         handler = WarmUpHandler(mock_agent_core)
 
-        headers = {
-            "x-user-id": "user_123",
-            "x-account-type": "enterprise"
-        }
+        headers = {"x-user-id": "user_123", "x-account-type": "enterprise"}
 
         captured_context = {}
 
         async def mock_generator():
             yield {}
 
-        def capture_run_dolphin(agent_core, agent_config, context_vars, hdr, is_debug, temp_files):
+        def capture_run_dolphin(
+            agent_core, agent_config, context_vars, hdr, is_debug, temp_files
+        ):
             captured_context["variables"] = context_vars
             captured_context["headers"] = hdr
             return mock_generator()
 
-        with patch("app.logic.agent_core_logic_v2.warm_up.span_set_attrs"), \
-             patch("app.logic.agent_core_logic_v2.warm_up.run_dolphin", side_effect=capture_run_dolphin), \
-             patch("app.logic.agent_core_logic_v2.warm_up.get_user_account_id", return_value="user_123"), \
-             patch("app.logic.agent_core_logic_v2.warm_up.get_user_account_type", return_value="enterprise"), \
-             patch("app.logic.agent_core_logic_v2.warm_up.set_user_account_id") as mock_set_id, \
-             patch("app.logic.agent_core_logic_v2.warm_up.set_user_account_type") as mock_set_type:
-
+        with (
+            patch("app.logic.agent_core_logic_v2.warm_up.span_set_attrs"),
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.run_dolphin",
+                side_effect=capture_run_dolphin,
+            ),
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.get_user_account_id",
+                return_value="user_123",
+            ),
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.get_user_account_type",
+                return_value="enterprise",
+            ),
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.set_user_account_id"
+            ) as mock_set_id,
+            patch(
+                "app.logic.agent_core_logic_v2.warm_up.set_user_account_type"
+            ) as mock_set_type,
+        ):
             await handler.warnup(headers)
 
             # Verify context variables were set

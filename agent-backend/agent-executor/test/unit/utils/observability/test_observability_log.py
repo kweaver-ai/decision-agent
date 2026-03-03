@@ -212,7 +212,9 @@ class TestInitLogProvider:
     @patch("app.utils.observability.observability_log.SamplerLogger")
     @patch("app.utils.observability.observability_log.log_resource")
     @patch("app.common.config.Config")
-    def test_console_exporter_initialization(self, m_config, m_log_resource, m_sampler_logger, m_set_service):
+    def test_console_exporter_initialization(
+        self, m_config, m_log_resource, m_sampler_logger, m_set_service
+    ):
         """测试使用console导出器初始化"""
         m_config.is_o11y_log_enabled.return_value = True
         m_log_resource.return_value = MagicMock()
@@ -253,12 +255,15 @@ class TestInitLogProvider:
     @patch("app.utils.observability.observability_log.SamplerLogger")
     @patch("app.utils.observability.observability_log.log_resource")
     @patch("app.common.config.Config")
-    def test_http_exporter_initialization(self, m_config, m_log_resource, m_sampler_logger, m_set_service):
+    def test_http_exporter_initialization(
+        self, m_config, m_log_resource, m_sampler_logger, m_set_service
+    ):
         """测试使用HTTP导出器初始化"""
         m_config.is_o11y_log_enabled.return_value = True
         m_log_resource.return_value = MagicMock()
 
         import sys
+
         sys.modules["exporter.ar_log.log_exporter"] = MagicMock(
             ARLogExporter=MagicMock(return_value=MagicMock())
         )
@@ -274,10 +279,17 @@ class TestInitLogProvider:
             m_sampler_logger.return_value = mock_logger
 
             from app.utils.observability.observability_log import init_log_provider
-            from app.utils.observability.observability_setting import ServerInfo, LogSetting
+            from app.utils.observability.observability_setting import (
+                ServerInfo,
+                LogSetting,
+            )
 
             server_info = ServerInfo(server_name="test_service", server_version="1.0")
-            setting = LogSetting(log_enabled=True, log_exporter="http", http_log_feed_ingester_url="http://test.url")
+            setting = LogSetting(
+                log_enabled=True,
+                log_exporter="http",
+                http_log_feed_ingester_url="http://test.url",
+            )
 
             init_log_provider(server_info, setting)
 

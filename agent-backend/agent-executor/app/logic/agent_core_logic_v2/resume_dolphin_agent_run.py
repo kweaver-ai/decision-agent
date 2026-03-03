@@ -54,7 +54,6 @@ async def resume_dolphin_agent_run(
     context_variables: Dict[str, Any],
     headers: Dict[str, str],
     is_debug: bool = False,
-
 ) -> AsyncGenerator[Dict[str, Any], None]:
     """运行Dolphin引擎处理请求
 
@@ -102,13 +101,12 @@ async def resume_dolphin_agent_run(
     resume_handle = interrupt_handle_to_resume_handle(resume_info.resume_handle)
     await agent.resume(updates=updates, resume_handle=resume_handle)
 
-    
     # 12. 执行agent
     output = {}
-    
+
     # 使用公共的 arun 循环处理方法
     from .interrupt_utils import process_arun_loop
-    
+
     async for output in process_arun_loop(agent, is_debug):
         yield output
 

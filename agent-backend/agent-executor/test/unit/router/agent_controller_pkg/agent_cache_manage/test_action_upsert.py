@@ -39,7 +39,9 @@ class TestHandleUpsert:
             with patch(
                 "app.router.agent_controller_pkg.agent_cache_manage.action_upsert.cache_manager"
             ) as mock_manager:
-                mock_manager.cache_service.load = AsyncMock(return_value=mock_cache_entity)
+                mock_manager.cache_service.load = AsyncMock(
+                    return_value=mock_cache_entity
+                )
                 mock_manager.cache_service.get_ttl = AsyncMock(return_value=3600)
                 mock_manager.update_cache_data = AsyncMock()
 
@@ -65,7 +67,9 @@ class TestHandleUpsert:
                     mock_manager.update_cache_data.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_handle_upsert_cache_not_exists(self, mock_request, mock_agent_config):
+    async def test_handle_upsert_cache_not_exists(
+        self, mock_request, mock_agent_config
+    ):
         """测试缓存不存在时创建"""
         mock_cache_id_vo = MagicMock()
         mock_cache_id_vo.get_cache_id.return_value = "test_cache_id"
@@ -111,7 +115,9 @@ class TestHandleUpsert:
                     mock_create.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_handle_upsert_cache_expired_during_update(self, mock_request, mock_agent_config):
+    async def test_handle_upsert_cache_expired_during_update(
+        self, mock_request, mock_agent_config
+    ):
         """测试缓存更新过程中过期"""
         mock_cache_id_vo = MagicMock()
         mock_cache_id_vo.get_cache_id.return_value = "test_cache_id"
@@ -129,7 +135,9 @@ class TestHandleUpsert:
                 # 第一次 load 返回缓存存在
                 # 第二次 load 返回 None（更新后过期）
                 load_side_effects = [mock_cache_entity, None]
-                mock_manager.cache_service.load = AsyncMock(side_effect=load_side_effects)
+                mock_manager.cache_service.load = AsyncMock(
+                    side_effect=load_side_effects
+                )
                 mock_manager.update_cache_data = AsyncMock()
 
                 with patch(

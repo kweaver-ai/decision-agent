@@ -11,9 +11,9 @@ class TestHandleBuiltIn:
     def setup_method(self):
         """在每次测试前设置 mock"""
         # Mock the problematic import before it gets loaded
-        sys.modules['data_migrations'] = MagicMock()
-        sys.modules['data_migrations.init'] = MagicMock()
-        sys.modules['data_migrations.init.manage_built_in_agent_and_tool'] = MagicMock()
+        sys.modules["data_migrations"] = MagicMock()
+        sys.modules["data_migrations.init"] = MagicMock()
+        sys.modules["data_migrations.init.manage_built_in_agent_and_tool"] = MagicMock()
 
     @patch("app.boot.built_in.init_built_in_agent_and_tool")
     @patch("app.boot.built_in.Config")
@@ -24,6 +24,7 @@ class TestHandleBuiltIn:
 
         # Execute
         from app.boot.built_in import handle_built_in
+
         handle_built_in()
 
         # Verify
@@ -38,6 +39,7 @@ class TestHandleBuiltIn:
 
         # Execute
         from app.boot.built_in import handle_built_in
+
         handle_built_in()
 
         # Verify
@@ -52,6 +54,7 @@ class TestHandleBuiltIn:
 
         # Execute multiple times
         from app.boot.built_in import handle_built_in
+
         handle_built_in()
         handle_built_in()
         handle_built_in()
@@ -68,6 +71,7 @@ class TestHandleBuiltIn:
 
         # Execute multiple times
         from app.boot.built_in import handle_built_in
+
         handle_built_in()
         handle_built_in()
 
@@ -81,6 +85,7 @@ class TestHandleBuiltIn:
         mock_config.local_dev.do_not_init_built_in_agent_and_tool = False
 
         from app.boot.built_in import handle_built_in
+
         result = handle_built_in()
 
         # Verify returns None
@@ -96,6 +101,7 @@ class TestHandleBuiltIn:
 
         # Execute and verify exception propagates
         from app.boot.built_in import handle_built_in
+
         with pytest.raises(RuntimeError, match="Initialization failed"):
             handle_built_in()
 
@@ -106,6 +112,7 @@ class TestHandleBuiltIn:
         mock_config.local_dev.do_not_init_built_in_agent_and_tool = False
 
         from app.boot.built_in import handle_built_in
+
         handle_built_in()
 
         # Verify Config.local_dev was accessed
@@ -120,6 +127,7 @@ class TestHandleBuiltIn:
         mock_config.local_dev.do_not_init_built_in_agent_and_tool = False
 
         from app.boot.built_in import handle_built_in
+
         handle_built_in()
 
         mock_init.assert_called_once()
@@ -132,6 +140,7 @@ class TestHandleBuiltIn:
         mock_config.local_dev.do_not_init_built_in_agent_and_tool = True
 
         from app.boot.built_in import handle_built_in
+
         handle_built_in()
 
         mock_init.assert_not_called()

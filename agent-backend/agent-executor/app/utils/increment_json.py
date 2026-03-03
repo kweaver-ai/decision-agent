@@ -264,11 +264,17 @@ async def restore_full_json(
                 while len(current_level) <= key:
                     current_level.append({})
                 # Check if we need to convert dict to list at this index
-                if isinstance(next_key, int) and not isinstance(current_level[key], list):
+                if isinstance(next_key, int) and not isinstance(
+                    current_level[key], list
+                ):
                     current_level[key] = []
-                elif not isinstance(next_key, int) and isinstance(current_level[key], list):
+                elif not isinstance(next_key, int) and isinstance(
+                    current_level[key], list
+                ):
                     # Convert list to dict if needed
-                    current_level[key] = {i: v for i, v in enumerate(current_level[key])}
+                    current_level[key] = {
+                        i: v for i, v in enumerate(current_level[key])
+                    }
                 current_level = current_level[key]
             else:
                 # Current level is a dict, key is a string key
@@ -279,12 +285,18 @@ async def restore_full_json(
                         current_level[key] = []
                     else:
                         current_level[key] = {}
-                elif isinstance(next_key, int) and not isinstance(current_level[key], list):
+                elif isinstance(next_key, int) and not isinstance(
+                    current_level[key], list
+                ):
                     # Convert dict to list if needed
                     current_level[key] = []
-                elif not isinstance(next_key, int) and isinstance(current_level[key], list):
+                elif not isinstance(next_key, int) and isinstance(
+                    current_level[key], list
+                ):
                     # Convert list to dict if needed
-                    current_level[key] = {i: v for i, v in enumerate(current_level[key])}
+                    current_level[key] = {
+                        i: v for i, v in enumerate(current_level[key])
+                    }
                 current_level = current_level[key]
 
         last_key = keys[-1]

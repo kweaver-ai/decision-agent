@@ -23,11 +23,15 @@ class TestRedisCacheSetFallback:
 
         # Mock JSON serializer to raise TypeError
         with patch.object(
-            cache.json_serializer, 'serialize', side_effect=TypeError("Not JSON serializable")
+            cache.json_serializer,
+            "serialize",
+            side_effect=TypeError("Not JSON serializable"),
         ):
             # Mock pickle serializer to succeed
             with patch.object(
-                cache.pickle_serializer, 'serialize', return_value=b'\x80\x04\x95\x05\x00\x00\x00\x00\x00\x00\x00\x8c\x05test\x94.'
+                cache.pickle_serializer,
+                "serialize",
+                return_value=b"\x80\x04\x95\x05\x00\x00\x00\x00\x00\x00\x00\x8c\x05test\x94.",
             ):
                 result = await cache.set("test_key", {"data": "value"})
 
@@ -46,7 +50,7 @@ class TestRedisCacheSetFallback:
 
         # Mock JSON serializer to raise ValueError
         with patch.object(
-            cache.json_serializer, 'serialize', side_effect=ValueError("Invalid value")
+            cache.json_serializer, "serialize", side_effect=ValueError("Invalid value")
         ):
             result = await cache.set("test_key", {"data": "value"})
 

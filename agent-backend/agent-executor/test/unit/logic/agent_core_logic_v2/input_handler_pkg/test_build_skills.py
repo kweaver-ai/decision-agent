@@ -75,7 +75,9 @@ class TestBuildSkills:
                                 "app.logic.agent_core_logic_v2.input_handler_pkg.build_skills.BuiltinIds"
                             ) as mock_builtin_ids:
                                 mock_builtin_ids.get_tool_id.return_value = "tool123"
-                                mock_builtin_ids.get_tool_box_id.return_value = "toolbox123"
+                                mock_builtin_ids.get_tool_box_id.return_value = (
+                                    "toolbox123"
+                                )
 
                                 from app.logic.agent_core_logic_v2.input_handler_pkg.build_skills import (
                                     build_skills,
@@ -118,7 +120,9 @@ class TestBuildSkills:
                                 "app.logic.agent_core_logic_v2.input_handler_pkg.build_skills.BuiltinIds"
                             ) as mock_builtin_ids:
                                 mock_builtin_ids.get_tool_id.return_value = "tool123"
-                                mock_builtin_ids.get_tool_box_id.return_value = "toolbox123"
+                                mock_builtin_ids.get_tool_box_id.return_value = (
+                                    "toolbox123"
+                                )
 
                                 from app.logic.agent_core_logic_v2.input_handler_pkg.build_skills import (
                                     build_skills,
@@ -133,7 +137,9 @@ class TestBuildSkills:
                                 )
 
                                 # 验证内存工具被添加
-                                assert len(mock_agent_core.agent_config.skills.tools) > 0
+                                assert (
+                                    len(mock_agent_core.agent_config.skills.tools) > 0
+                                )
 
     @pytest.mark.asyncio
     async def test_build_skills_with_none_skills(self, mock_agent_core):

@@ -21,7 +21,7 @@ class TestFormatFileLog:
         event_dict = {
             "timestamp": "2024-01-01 12:00:00",
             "level": "info",
-            "event": "Test message"
+            "event": "Test message",
         }
 
         result = format_file_log(logger, "info", event_dict)
@@ -42,7 +42,7 @@ class TestFormatFileLog:
             "level": "info",
             "event": "Test message",
             "user_id": "123",
-            "action": "login"
+            "action": "login",
         }
 
         result = format_file_log(logger, "info", event_dict)
@@ -64,7 +64,7 @@ class TestFormatFileLog:
             "level": "info",
             "z_key": "last",
             "a_key": "first",
-            "m_key": "middle"
+            "m_key": "middle",
         }
 
         result = format_file_log(logger, "info", event_dict)
@@ -86,7 +86,7 @@ class TestFormatFileLog:
         event_dict = {
             "timestamp": "2024-01-01 12:00:00",
             "level": "error",
-            "event": "Error occurred"
+            "event": "Error occurred",
         }
 
         result = format_file_log(logger, "error", event_dict)
@@ -105,7 +105,7 @@ class TestFormatFileLog:
             "timestamp": "2024-01-01 12:00:00",
             "level": "info",
             "event": "Test",
-            "metadata": {"key1": "value1", "key2": "value2"}
+            "metadata": {"key1": "value1", "key2": "value2"},
         }
 
         result = format_file_log(logger, "info", event_dict)
@@ -124,7 +124,7 @@ class TestFormatFileLog:
             "timestamp": "2024-01-01 12:00:00",
             "level": "info",
             "event": "Test",
-            "items": ["item1", "item2", "item3"]
+            "items": ["item1", "item2", "item3"],
         }
 
         result = format_file_log(logger, "info", event_dict)
@@ -147,7 +147,7 @@ class TestFormatFileLog:
             "timestamp": "2024-01-01 12:00:00",
             "level": "info",
             "event": "Test",
-            "custom": CustomObject()
+            "custom": CustomObject(),
         }
 
         result = format_file_log(logger, "info", event_dict)
@@ -165,7 +165,7 @@ class TestFormatFileLog:
         event_dict = {
             "timestamp": "2024-01-01 12:00:00",
             "level": "info",
-            "event": "Test message"
+            "event": "Test message",
         }
 
         result = format_file_log(logger, "info", event_dict)
@@ -184,10 +184,7 @@ class TestFormatFileLog:
         from app.common.struct_logger.file_formatter import format_file_log
 
         logger = MagicMock()
-        event_dict = {
-            "timestamp": "2024-01-01 12:00:00",
-            "level": "info"
-        }
+        event_dict = {"timestamp": "2024-01-01 12:00:00", "level": "info"}
 
         result = format_file_log(logger, "info", event_dict)
 
@@ -205,7 +202,7 @@ class TestFormatFileLog:
             "timestamp": "2024-01-01 12:00:00",
             "level": "info",
             "event": "测试消息",
-            "user": "用户123"
+            "user": "用户123",
         }
 
         result = format_file_log(logger, "info", event_dict)
@@ -224,4 +221,4 @@ class TestModuleImports:
         from app.common.struct_logger import file_formatter
 
         assert file_formatter is not None
-        assert hasattr(file_formatter, 'format_file_log')
+        assert hasattr(file_formatter, "format_file_log")

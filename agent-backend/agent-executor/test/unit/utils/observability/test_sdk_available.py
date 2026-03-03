@@ -20,7 +20,7 @@ class TestTelemetrySdkAvailable:
         from app.utils.observability.sdk_available import tlogging_module
 
         # Should be None or a module
-        assert tlogging_module is None or hasattr(tlogging_module, '__name__')
+        assert tlogging_module is None or hasattr(tlogging_module, "__name__")
 
     def test_sampler_logger_is_none_or_callable(self):
         """测试SamplerLogger是否为None或可调用"""
@@ -55,7 +55,7 @@ class TestTelemetrySdkAvailable:
         from app.utils.observability.sdk_available import sdk_tracer
 
         # Should be None or a module/object
-        assert sdk_tracer is None or hasattr(sdk_tracer, '__class__')
+        assert sdk_tracer is None or hasattr(sdk_tracer, "__class__")
 
     @patch("app.utils.observability.sdk_available.is_aaron_local_dev")
     def test_skips_import_when_aaron_local_dev(self, mock_is_aaron):

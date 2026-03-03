@@ -28,7 +28,9 @@ def mock_connection():
 @pytest.fixture
 def redis_cache(mock_redis_pool, mock_connection):
     """创建 RedisCache 实例"""
-    with patch("app.infra.common.util.redis_cache.redis_cache.redis_pool", mock_redis_pool):
+    with patch(
+        "app.infra.common.util.redis_cache.redis_cache.redis_pool", mock_redis_pool
+    ):
         cache = RedisCache(db=3)
         return cache
 
@@ -97,7 +99,7 @@ class TestRedisCacheSet:
         result = await cache.set(
             "test_key",
             {"complex": "object"},
-            serialization_type=SerializationType.PICKLE
+            serialization_type=SerializationType.PICKLE,
         )
 
         assert result is True
@@ -115,6 +117,7 @@ class TestRedisCacheSet:
 
         # 使用 datetime 对象（JSON 序列化会特殊处理，但可以作为示例）
         from datetime import datetime
+
         test_data = {"timestamp": datetime.now()}
 
         result = await cache.set("test_key", test_data)
@@ -175,7 +178,7 @@ class TestRedisCacheGet:
     async def test_get_pickle_serialized_data(self, mock_pool):
         """测试获取 Pickle 序列化的数据"""
         test_data = {"complex": "data"}
-        serialized = b'PICKLE:' + pickle.dumps(test_data)
+        serialized = b"PICKLE:" + pickle.dumps(test_data)
 
         mock_conn = AsyncMock()
         mock_conn.get = AsyncMock(return_value=serialized)

@@ -7,6 +7,7 @@ from enum import Enum
 # Define the enum locally for testing
 class SerializationType(Enum):
     """序列化类型枚举"""
+
     JSON = "json"
     PICKLE = "pickle"
 
@@ -24,11 +25,11 @@ class TestSerializationType:
 
     def test_serialization_type_json_exists(self):
         """测试JSON类型存在"""
-        assert hasattr(SerializationType, 'JSON')
+        assert hasattr(SerializationType, "JSON")
 
     def test_serialization_type_pickle_exists(self):
         """测试Pickle类型存在"""
-        assert hasattr(SerializationType, 'PICKLE')
+        assert hasattr(SerializationType, "PICKLE")
 
     def test_serialization_type_json_enum(self):
         """测试JSON枚举"""
@@ -66,8 +67,8 @@ class TestSerializationType:
 
     def test_serialization_type_getitem(self):
         """测试获取项"""
-        assert SerializationType['JSON'] == SerializationType.JSON
-        assert SerializationType['PICKLE'] == SerializationType.PICKLE
+        assert SerializationType["JSON"] == SerializationType.JSON
+        assert SerializationType["PICKLE"] == SerializationType.PICKLE
 
     def test_serialization_type_values(self):
         """测试值"""

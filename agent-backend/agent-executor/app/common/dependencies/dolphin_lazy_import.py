@@ -16,7 +16,7 @@ class LazyDolphinImporter:
     只有在实际需要 Dolphin SDK 功能时才会尝试导入。
     """
 
-    _instance: Optional['LazyDolphinImporter'] = None
+    _instance: Optional["LazyDolphinImporter"] = None
 
     def __new__(cls):
         if cls._instance is None:
@@ -40,11 +40,16 @@ class LazyDolphinImporter:
 
                 # 尝试检查是否是真实的 dolphin SDK（不是 mock）
                 try:
-                    dolphin_spec = importlib.util.find_spec("dolphin.core.common.exceptions")
+                    dolphin_spec = importlib.util.find_spec(
+                        "dolphin.core.common.exceptions"
+                    )
                     # 如果找到的是真实模块（有 __file__ 属性指向实际文件）
                     if dolphin_spec and dolphin_spec.origin:
                         # 检查是否是真实的安装包，不是 mock
-                        self._available = 'site-packages' in dolphin_spec.origin or 'dist-packages' in dolphin_spec.origin
+                        self._available = (
+                            "site-packages" in dolphin_spec.origin
+                            or "dist-packages" in dolphin_spec.origin
+                        )
                     else:
                         self._available = False
                 except (ImportError, ModuleNotFoundError):
@@ -66,7 +71,7 @@ class LazyDolphinImporter:
             return self._import_cache[module_path]
 
         try:
-            module = __import__(module_path, fromlist=[''])
+            module = __import__(module_path, fromlist=[""])
             self._import_cache[module_path] = module
             return module
         except ImportError:
@@ -74,6 +79,7 @@ class LazyDolphinImporter:
             if not self.available:
                 # 创建 Mock 模块
                 import types
+
                 mock_module = types.ModuleType(module_path)
                 sys.modules[module_path] = mock_module
                 self._import_cache[module_path] = mock_module
@@ -105,7 +111,7 @@ class LazyDolphinImporter:
             return GenericDolphinException
 
         try:
-            exceptions_module = self.get_module('dolphin.core.common.exceptions')
+            exceptions_module = self.get_module("dolphin.core.common.exceptions")
             exception_class = getattr(exceptions_module, exception_name)
             self._import_cache[cache_key] = exception_class
             return exception_class
@@ -113,6 +119,7 @@ class LazyDolphinImporter:
             # 回退到通用异常
             class GenericDolphinException(Exception):
                 pass
+
             GenericDolphinException.__name__ = exception_name
             self._import_cache[cache_key] = GenericDolphinException
             return GenericDolphinException
@@ -123,7 +130,7 @@ class LazyDolphinImporter:
         Returns:
             VarOutput 类或 Mock 类
         """
-        cache_key = 'var_output_class'
+        cache_key = "var_output_class"
         if cache_key in self._import_cache:
             return self._import_cache[cache_key]
 
@@ -146,8 +153,8 @@ class LazyDolphinImporter:
             return MockVarOutput
 
         try:
-            context_module = self.get_module('dolphin.core.context.var_output')
-            VarOutput = getattr(context_module, 'VarOutput')
+            context_module = self.get_module("dolphin.core.context.var_output")
+            VarOutput = getattr(context_module, "VarOutput")
             self._import_cache[cache_key] = VarOutput
             return VarOutput
         except (ImportError, AttributeError):
@@ -210,15 +217,17 @@ def lazy_import_dolphin(func):
             from dolphin.core.context.var_output import VarOutput
             # 使用 VarOutput
     """
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         # 在函数调用前预先检查并缓存导入
         _dolphin_importer.available
         return func(*args, **kwargs)
+
     return wrapper
 
 
 # 预加载常用异常类到模块级别，提供向后兼容的导入路径
-ModelException = get_dolphin_exception('ModelException')
-SkillException = get_dolphin_exception('SkillException')
-DolphinException = get_dolphin_exception('DolphinException')
+ModelException = get_dolphin_exception("ModelException")
+SkillException = get_dolphin_exception("SkillException")
+DolphinException = get_dolphin_exception("DolphinException")

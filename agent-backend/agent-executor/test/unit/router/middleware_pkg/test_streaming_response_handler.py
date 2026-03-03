@@ -8,6 +8,7 @@ import os
 
 class AsyncIterator:
     """异步迭代器辅助类"""
+
     def __init__(self, chunks):
         self.chunks = chunks
 
@@ -25,8 +26,8 @@ class TestEnsureStreamingLogDir:
 
     def test_ensure_dir_not_exists(self):
         """测试目录不存在时创建"""
-        with patch('os.path.exists', return_value=False):
-            with patch('os.makedirs') as mock_makedirs:
+        with patch("os.path.exists", return_value=False):
+            with patch("os.makedirs") as mock_makedirs:
                 from app.router.middleware_pkg.streaming_response_handler import (
                     _ensure_streaming_log_dir,
                 )
@@ -37,8 +38,8 @@ class TestEnsureStreamingLogDir:
 
     def test_ensure_dir_exists(self):
         """测试目录已存在"""
-        with patch('os.path.exists', return_value=True):
-            with patch('os.makedirs') as mock_makedirs:
+        with patch("os.path.exists", return_value=True):
+            with patch("os.makedirs") as mock_makedirs:
                 from app.router.middleware_pkg.streaming_response_handler import (
                     _ensure_streaming_log_dir,
                 )
@@ -53,7 +54,9 @@ class TestGetStreamingLogFilePath:
 
     def test_get_log_file_path(self):
         """测试获取日志文件路径"""
-        with patch('app.router.middleware_pkg.streaming_response_handler.datetime') as mock_datetime:
+        with patch(
+            "app.router.middleware_pkg.streaming_response_handler.datetime"
+        ) as mock_datetime:
             mock_datetime.now.return_value.strftime.return_value = "20240101_120000"
 
             from app.router.middleware_pkg.streaming_response_handler import (
@@ -71,9 +74,13 @@ class TestWriteChunkToFile:
 
     def test_write_chunk_success(self):
         """测试成功写入块"""
-        with patch('builtins.open', mock_open()) as mock_file:
-            with patch('app.router.middleware_pkg.streaming_response_handler.datetime') as mock_datetime:
-                mock_datetime.now.return_value.isoformat.return_value = "2024-01-01T12:00:00"
+        with patch("builtins.open", mock_open()) as mock_file:
+            with patch(
+                "app.router.middleware_pkg.streaming_response_handler.datetime"
+            ) as mock_datetime:
+                mock_datetime.now.return_value.isoformat.return_value = (
+                    "2024-01-01T12:00:00"
+                )
 
                 from app.router.middleware_pkg.streaming_response_handler import (
                     _write_chunk_to_file,
@@ -81,11 +88,13 @@ class TestWriteChunkToFile:
 
                 _write_chunk_to_file("/test/path.log", "test content", 1, 12)
 
-                mock_file.assert_called_once_with("/test/path.log", "a", encoding="utf-8")
+                mock_file.assert_called_once_with(
+                    "/test/path.log", "a", encoding="utf-8"
+                )
 
     def test_write_chunk_exception(self):
         """测试写入失败"""
-        with patch('builtins.open', side_effect=Exception("Write error")):
+        with patch("builtins.open", side_effect=Exception("Write error")):
             from app.router.middleware_pkg.streaming_response_handler import (
                 _write_chunk_to_file,
             )
@@ -99,9 +108,13 @@ class TestWriteStreamCompletionInfo:
 
     def test_write_completion_info_success(self):
         """测试成功写入完成信息"""
-        with patch('builtins.open', mock_open()) as mock_file:
-            with patch('app.router.middleware_pkg.streaming_response_handler.datetime') as mock_datetime:
-                mock_datetime.now.return_value.isoformat.return_value = "2024-01-01T12:00:00"
+        with patch("builtins.open", mock_open()) as mock_file:
+            with patch(
+                "app.router.middleware_pkg.streaming_response_handler.datetime"
+            ) as mock_datetime:
+                mock_datetime.now.return_value.isoformat.return_value = (
+                    "2024-01-01T12:00:00"
+                )
 
                 from app.router.middleware_pkg.streaming_response_handler import (
                     _write_stream_completion_info,
@@ -113,7 +126,7 @@ class TestWriteStreamCompletionInfo:
 
     def test_write_completion_info_exception(self):
         """测试写入失败"""
-        with patch('builtins.open', side_effect=Exception("Write error")):
+        with patch("builtins.open", side_effect=Exception("Write error")):
             from app.router.middleware_pkg.streaming_response_handler import (
                 _write_stream_completion_info,
             )

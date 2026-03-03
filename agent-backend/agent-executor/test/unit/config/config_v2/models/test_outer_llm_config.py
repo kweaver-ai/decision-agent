@@ -25,7 +25,7 @@ class TestOuterLLMConfig:
             api="https://api.example.com",
             api_key="sk-test-key",
             model="gpt-4",
-            model_list={"gpt-4": {"type": "chat"}}
+            model_list={"gpt-4": {"type": "chat"}},
         )
 
         assert config.api == "https://api.example.com"
@@ -41,7 +41,7 @@ class TestOuterLLMConfig:
             "api": "https://api.example.com",
             "api_key": "sk-test-key",
             "model": "gpt-4",
-            "model_list": {"gpt-4": {"type": "chat"}, "gpt-3.5": {"type": "chat"}}
+            "model_list": {"gpt-4": {"type": "chat"}, "gpt-3.5": {"type": "chat"}},
         }
 
         config = OuterLLMConfig.from_dict(data)
@@ -67,10 +67,7 @@ class TestOuterLLMConfig:
         """测试从字典创建（部分字段）"""
         from app.config.config_v2.models.outer_llm_config import OuterLLMConfig
 
-        data = {
-            "api": "https://api.example.com",
-            "model": "gpt-4"
-        }
+        data = {"api": "https://api.example.com", "model": "gpt-4"}
 
         config = OuterLLMConfig.from_dict(data)
 
@@ -84,9 +81,7 @@ class TestOuterLLMConfig:
         from app.config.config_v2.models.outer_llm_config import OuterLLMConfig
 
         # If model_list is not a dict, it should be converted to empty dict
-        data = {
-            "model_list": ["gpt-4", "gpt-3.5"]
-        }
+        data = {"model_list": ["gpt-4", "gpt-3.5"]}
 
         config = OuterLLMConfig.from_dict(data)
 
@@ -96,9 +91,7 @@ class TestOuterLLMConfig:
         """测试model_list为None"""
         from app.config.config_v2.models.outer_llm_config import OuterLLMConfig
 
-        data = {
-            "model_list": None
-        }
+        data = {"model_list": None}
 
         config = OuterLLMConfig.from_dict(data)
 
@@ -121,7 +114,7 @@ class TestOuterLLMConfig:
                 "gpt-4": {
                     "type": "chat",
                     "max_tokens": 8192,
-                    "supports_streaming": True
+                    "supports_streaming": True,
                 }
             }
         }

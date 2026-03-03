@@ -13,6 +13,7 @@ class TestConfigLoader:
     def setup_method(self):
         """每个测试前重置ConfigLoader"""
         from app.config.config_v2.config_loader import ConfigLoader
+
         ConfigLoader.reset()
 
     def test_get_config_path_from_env(self):

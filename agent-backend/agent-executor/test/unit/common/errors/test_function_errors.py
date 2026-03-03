@@ -105,7 +105,10 @@ class TestAgentExecutorFunctionRunError:
 
         result = AgentExecutor_Function_RunError()
 
-        assert "execution" in result.description.lower() or "failure" in result.description.lower()
+        assert (
+            "execution" in result.description.lower()
+            or "failure" in result.description.lower()
+        )
 
     def test_solution(self):
         """测试解决方案"""
@@ -143,7 +146,10 @@ class TestAgentExecutorFunctionOutputError:
 
         result = AgentExecutor_Function_OutputError()
 
-        assert "json" in result.description.lower() or "output" in result.description.lower()
+        assert (
+            "json" in result.description.lower()
+            or "output" in result.description.lower()
+        )
 
     def test_solution(self):
         """测试解决方案"""

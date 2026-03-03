@@ -28,7 +28,7 @@ class TestLogicBlock:
             name="Test Block",
             type="llm_block",
             output="result",
-            llm_config={"model": "gpt-4"}
+            llm_config={"model": "gpt-4"},
         )
         assert block.id == "block_1"
         assert block.name == "Test Block"
@@ -82,7 +82,7 @@ class TestAugmentBlock:
             input=["test"],
             augment_data_source={"type": "test"},
             need_augment_content=True,
-            augment_entities={"key": "value"}
+            augment_entities={"key": "value"},
         )
         assert len(block.input) == 1
         assert block.need_augment_content is True
@@ -126,7 +126,7 @@ class TestRetrieverBlock:
             id="retriever_1",
             name="Test Retriever",
             type="retriever_block",
-            output="search_result"
+            output="search_result",
         )
         assert block.id == "retriever_1"
         assert block.name == "Test Retriever"
@@ -165,7 +165,7 @@ class TestRetrieverBlock:
             faq_retrival_qas=[("q1", "a1")],
             faq_rank_qas=[("q2", "a2")],
             faq_find_answer=True,
-            faq_format_out_qas={"result": "data"}
+            faq_format_out_qas={"result": "data"},
         )
         assert len(block.faq_retrival_qas) == 1
         assert len(block.faq_rank_qas) == 1

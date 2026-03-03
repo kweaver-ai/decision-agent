@@ -15,7 +15,7 @@ class TestAgentCacheIdVO:
             account_type="user",
             agent_id="agent456",
             agent_version="v0",
-            agent_config_version_flag="123456"
+            agent_config_version_flag="123456",
         )
 
         assert vo.account_id == "acc123"
@@ -33,7 +33,7 @@ class TestAgentCacheIdVO:
             account_type="user",
             agent_id="agent456",
             agent_version="v0",
-            agent_config_version_flag="123456"
+            agent_config_version_flag="123456",
         )
 
         # Properties should be accessible
@@ -48,7 +48,7 @@ class TestAgentCacheIdVO:
             account_type="user",
             agent_id="agent456",
             agent_version="v0",
-            agent_config_version_flag="123456"
+            agent_config_version_flag="123456",
         )
 
         redis_key = vo.to_redis_key()
@@ -64,7 +64,7 @@ class TestAgentCacheIdVO:
             account_type="user",
             agent_id="agent456",
             agent_version="v0",
-            agent_config_version_flag="123456"
+            agent_config_version_flag="123456",
         )
 
         cache_id = vo.get_cache_id()
@@ -80,7 +80,7 @@ class TestAgentCacheIdVO:
             account_type="user",
             agent_id="agent456",
             agent_version="v0",
-            agent_config_version_flag="123456"
+            agent_config_version_flag="123456",
         )
 
         str_repr = str(vo)
@@ -96,11 +96,11 @@ class TestAgentCacheIdVO:
             account_type="user",
             agent_id="agent456",
             agent_version="v0",
-            agent_config_version_flag="123456"
+            agent_config_version_flag="123456",
         )
 
         # Should have __slots__ defined
-        assert hasattr(AgentCacheIdVO, '__slots__')
+        assert hasattr(AgentCacheIdVO, "__slots__")
 
         # Should not be able to add new attributes
         with pytest.raises(AttributeError):
@@ -115,7 +115,7 @@ class TestAgentCacheIdVO:
             account_type="",
             agent_id="",
             agent_version="",
-            agent_config_version_flag=""
+            agent_config_version_flag="",
         )
 
         assert vo.account_id == ""
@@ -130,7 +130,7 @@ class TestAgentCacheIdVO:
             account_type="user",
             agent_id="agent/456",
             agent_version="v0",
-            agent_config_version_flag="123-456"
+            agent_config_version_flag="123-456",
         )
 
         cache_id = vo.get_cache_id()

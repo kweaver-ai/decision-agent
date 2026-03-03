@@ -4,7 +4,9 @@ import pytest
 from unittest.mock import AsyncMock, MagicMock, patch
 from http import HTTPStatus
 
-from app.driven.dip.agent_operator_integration_service import AgentOperatorIntegrationService
+from app.driven.dip.agent_operator_integration_service import (
+    AgentOperatorIntegrationService,
+)
 from app.common.errors import CodeException
 
 
@@ -29,7 +31,9 @@ class TestAgentOperatorIntegrationServiceInit:
 
     def test_init(self, mock_config):
         """测试初始化"""
-        with patch("app.driven.dip.agent_operator_integration_service.Config", mock_config):
+        with patch(
+            "app.driven.dip.agent_operator_integration_service.Config", mock_config
+        ):
             service = AgentOperatorIntegrationService()
             assert service._host == "localhost"
             assert service._port == 8081
@@ -62,7 +66,9 @@ class TestGetToolBoxList:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.get = MagicMock(return_value=mock_get_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -84,7 +90,9 @@ class TestGetToolBoxList:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.get = MagicMock(return_value=mock_get_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -112,7 +120,9 @@ class TestGetToolList:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.get = MagicMock(return_value=mock_get_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -136,7 +146,9 @@ class TestGetToolList:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.get = MagicMock(return_value=mock_get_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -152,7 +164,11 @@ class TestGetToolInfo:
         """测试获取工具详情成功"""
         box_id = "box123"
         tool_id = "tool456"
-        expected_response = {"id": tool_id, "name": "Test Tool", "description": "A test tool"}
+        expected_response = {
+            "id": tool_id,
+            "name": "Test Tool",
+            "description": "A test tool",
+        }
 
         mock_response = AsyncMock()
         mock_response.status = HTTPStatus.OK
@@ -165,7 +181,9 @@ class TestGetToolInfo:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.get = MagicMock(return_value=mock_get_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -190,7 +208,9 @@ class TestGetToolInfo:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.get = MagicMock(return_value=mock_get_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -208,7 +228,7 @@ class TestGetMcpTools:
         expected_response = {
             "tools": [
                 {"name": "tool1", "description": "Tool 1"},
-                {"name": "tool2", "description": "Tool 2"}
+                {"name": "tool2", "description": "Tool 2"},
             ]
         }
 
@@ -223,7 +243,9 @@ class TestGetMcpTools:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.get = MagicMock(return_value=mock_get_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -247,7 +269,9 @@ class TestGetMcpTools:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.get = MagicMock(return_value=mock_get_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 

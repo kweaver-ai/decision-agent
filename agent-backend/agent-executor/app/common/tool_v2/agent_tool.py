@@ -51,8 +51,8 @@ class AgentTool(Tool):
         if self.intervention:
             intervention_message = getattr(
                 agent_skill,
-                'intervention_confirmation_message',
-                f"Agent工具 {self.name} 需要确认执行"  # 默认值
+                "intervention_confirmation_message",
+                f"Agent工具 {self.name} 需要确认执行",  # 默认值
             )
             self.interrupt_config = {
                 "requires_confirmation": True,
@@ -73,7 +73,7 @@ class AgentTool(Tool):
                     "required": True,
                 }
         return inputs
-    
+
     def _is_enable_dependency_cache(self):
         return self.ac.run_options_vo.enable_dependency_cache
 

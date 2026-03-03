@@ -46,7 +46,6 @@ token_consume_limit = 2
 limiter = Limiter(rate=token_rate, capacity=token_capacity, consume=token_consume_limit)
 
 
-
 @app.middleware("http")
 async def o11y_trace_middleware(request: Request, call_next) -> Response:
     """HTTP请求追踪中间件"""

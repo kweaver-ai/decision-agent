@@ -45,7 +45,7 @@ class TestLogRequests:
 
         call_next = AsyncMock(return_value=Mock(status_code=200))
 
-        with patch('app.router.middleware_pkg.log_requests.StandLogger') as mock_logger:
+        with patch("app.router.middleware_pkg.log_requests.StandLogger") as mock_logger:
             response = await log_requests(request, call_next)
 
         mock_logger.console_request_log.assert_called_once()
@@ -69,7 +69,9 @@ class TestStreamingRateLimiter:
 
     def test_init_with_custom_rate(self):
         """测试自定义速率初始化"""
-        from app.router.middleware_pkg.streaming_rate_limiter import StreamingRateLimiter
+        from app.router.middleware_pkg.streaming_rate_limiter import (
+            StreamingRateLimiter,
+        )
 
         limiter = StreamingRateLimiter(rate_limit=5)
 
@@ -78,7 +80,9 @@ class TestStreamingRateLimiter:
 
     def test_init_with_rate_zero_clamps(self):
         """测试速率为0时限制为1"""
-        from app.router.middleware_pkg.streaming_rate_limiter import StreamingRateLimiter
+        from app.router.middleware_pkg.streaming_rate_limiter import (
+            StreamingRateLimiter,
+        )
 
         limiter = StreamingRateLimiter(rate_limit=0)
 
@@ -107,17 +111,19 @@ class TestStreamingResponseHandler:
 
     async def test_write_chunk_to_file(self):
         """测试写入块到文件"""
-        from app.router.middleware_pkg.streaming_response_handler import _write_chunk_to_file
+        from app.router.middleware_pkg.streaming_response_handler import (
+            _write_chunk_to_file,
+        )
 
         import tempfile
         import os
 
-        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.log') as f:
+        with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".log") as f:
             file_path = f.name
 
         _write_chunk_to_file(file_path, "test content", 1, 12)
 
-        with open(file_path, 'r', encoding='utf-8') as f:
+        with open(file_path, "r", encoding="utf-8") as f:
             content = f.read()
 
         assert "test content" in content
@@ -145,7 +151,9 @@ class TestO11yTrace:
 
         call_next = AsyncMock(return_value=Mock(status_code=200))
 
-        with patch('app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE', False):
+        with patch(
+            "app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE", False
+        ):
             response = await o11y_trace(request, call_next)
 
         call_next.assert_called_once_with(request)
@@ -172,10 +180,14 @@ class TestO11yTrace:
 
         mock_tracer.start_as_current_span = Mock(return_value=mock_span)
 
-        with patch('app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE', True):
-            with patch('app.router.middleware_pkg.o11y_trace.Config') as MockConfig:
-                with patch.object(MockConfig.o11y, 'trace_enabled', True):
-                    with patch('app.router.middleware_pkg.o11y_trace.tracer', mock_tracer):
+        with patch(
+            "app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE", True
+        ):
+            with patch("app.router.middleware_pkg.o11y_trace.Config") as MockConfig:
+                with patch.object(MockConfig.o11y, "trace_enabled", True):
+                    with patch(
+                        "app.router.middleware_pkg.o11y_trace.tracer", mock_tracer
+                    ):
                         result = await o11y_trace(request, call_next)
 
         mock_tracer.start_as_current_span.assert_called_once()
@@ -194,14 +206,16 @@ class TestExceptionHandlers:
 
         exc = ParamException("Test param error")
 
-        with patch('app.router.exception_handler.param_handler.struct_logger.error'):
+        with patch("app.router.exception_handler.param_handler.struct_logger.error"):
             response = handle_param_exception(request, exc)
 
         assert response.status_code == 400
 
     async def test_handle_permission_exception(self):
         """测试权限异常处理"""
-        from app.router.exception_handler.permission_handler import handle_permission_exception
+        from app.router.exception_handler.permission_handler import (
+            handle_permission_exception,
+        )
         from app.common.errors import AgentPermissionException
 
         request = MagicMock(spec=Request)
@@ -209,7 +223,9 @@ class TestExceptionHandlers:
 
         exc = AgentPermissionException("agent123", "user456")
 
-        with patch('app.router.exception_handler.permission_handler.struct_logger.error'):
+        with patch(
+            "app.router.exception_handler.permission_handler.struct_logger.error"
+        ):
             response = handle_permission_exception(request, exc)
 
         assert response.status_code == 403

@@ -13,9 +13,14 @@ class TestExceptionHandler:
     @patch("app.logic.agent_core_logic_v2.exception.struct_logger")
     @patch("app.logic.agent_core_logic_v2.exception.log_oper")
     @patch("app.logic.agent_core_logic_v2.exception.exception_logger")
-    async def test_handle_exception_basic(self, m_exception_logger, m_log_oper, m_struct_logger, m_format_error):
+    async def test_handle_exception_basic(
+        self, m_exception_logger, m_log_oper, m_struct_logger, m_format_error
+    ):
         """测试基本异常处理"""
-        m_format_error.return_value = {"error_code": "TEST_ERROR", "message": "Test error"}
+        m_format_error.return_value = {
+            "error_code": "TEST_ERROR",
+            "message": "Test error",
+        }
 
         from app.logic.agent_core_logic_v2.exception import ExceptionHandler
 
@@ -34,9 +39,14 @@ class TestExceptionHandler:
     @patch("app.logic.agent_core_logic_v2.exception.struct_logger")
     @patch("app.logic.agent_core_logic_v2.exception.log_oper")
     @patch("app.logic.agent_core_logic_v2.exception.exception_logger")
-    async def test_handle_exception_with_dict_res(self, m_exception_logger, m_log_oper, m_struct_logger, m_format_error):
+    async def test_handle_exception_with_dict_res(
+        self, m_exception_logger, m_log_oper, m_struct_logger, m_format_error
+    ):
         """测试字典结果的异常处理"""
-        m_format_error.return_value = {"error_code": "TEST_ERROR", "message": "Test error"}
+        m_format_error.return_value = {
+            "error_code": "TEST_ERROR",
+            "message": "Test error",
+        }
         m_log_oper.get_error_log.return_value = "Error log"
 
         from app.logic.agent_core_logic_v2.exception import ExceptionHandler
@@ -55,12 +65,14 @@ class TestExceptionHandler:
     @patch("app.logic.agent_core_logic_v2.exception.struct_logger")
     @patch("app.logic.agent_core_logic_v2.exception.log_oper")
     @patch("app.logic.agent_core_logic_v2.exception.exception_logger")
-    async def test_handle_exception_with_custom_error(self, m_exception_logger, m_log_oper, m_struct_logger, m_format_error):
+    async def test_handle_exception_with_custom_error(
+        self, m_exception_logger, m_log_oper, m_struct_logger, m_format_error
+    ):
         """测试自定义错误异常处理"""
         m_format_error.return_value = {
             "error_code": "CUSTOM_ERROR",
             "message": "Custom error message",
-            "details": "Error details"
+            "details": "Error details",
         }
         m_log_oper.get_error_log.return_value = "Custom error log"
 
@@ -80,7 +92,9 @@ class TestExceptionHandler:
     @patch("app.logic.agent_core_logic_v2.exception.struct_logger")
     @patch("app.logic.agent_core_logic_v2.exception.log_oper")
     @patch("app.logic.agent_core_logic_v2.exception.exception_logger")
-    async def test_handle_exception_logs_to_console(self, m_exception_logger, m_log_oper, m_struct_logger, m_format_error):
+    async def test_handle_exception_logs_to_console(
+        self, m_exception_logger, m_log_oper, m_struct_logger, m_format_error
+    ):
         """测试异常被记录到控制台"""
         m_format_error.return_value = {"error_code": "TEST_ERROR"}
         m_log_oper.get_error_log.return_value = "Formatted error log"

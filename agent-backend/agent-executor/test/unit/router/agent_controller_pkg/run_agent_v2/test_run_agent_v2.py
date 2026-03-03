@@ -11,7 +11,9 @@ class TestProcessOptions:
 
     async def test_with_none_options(self):
         """测试options为None时提前返回"""
-        from app.router.agent_controller_pkg.run_agent_v2.process_options import process_options
+        from app.router.agent_controller_pkg.run_agent_v2.process_options import (
+            process_options,
+        )
         from app.domain.vo.agentvo import AgentConfigVo, AgentInputVo
 
         agent_config = MagicMock(spec=AgentConfigVo)
@@ -22,7 +24,9 @@ class TestProcessOptions:
 
     async def test_with_output_vars(self):
         """测试output_vars选项"""
-        from app.router.agent_controller_pkg.run_agent_v2.process_options import process_options
+        from app.router.agent_controller_pkg.run_agent_v2.process_options import (
+            process_options,
+        )
         from app.domain.vo.agentvo import AgentConfigVo, AgentInputVo
 
         agent_config = MagicMock(spec=AgentConfigVo)
@@ -44,7 +48,9 @@ class TestProcessOptions:
 
     async def test_with_llm_config_existing(self):
         """测试存在的LLM配置"""
-        from app.router.agent_controller_pkg.run_agent_v2.process_options import process_options
+        from app.router.agent_controller_pkg.run_agent_v2.process_options import (
+            process_options,
+        )
         from app.domain.vo.agentvo import AgentConfigVo
 
         agent_config = MagicMock(spec=AgentConfigVo)
@@ -70,7 +76,9 @@ class TestProcessOptions:
 
     async def test_with_agent_id(self):
         """测试agent_id选项"""
-        from app.router.agent_controller_pkg.run_agent_v2.process_options import process_options
+        from app.router.agent_controller_pkg.run_agent_v2.process_options import (
+            process_options,
+        )
         from app.domain.vo.agentvo import AgentConfigVo
 
         agent_config = MagicMock(spec=AgentConfigVo)
@@ -98,17 +106,24 @@ class TestHandleCache:
 
     async def test_cache_enabled(self):
         """测试启用缓存"""
-        from app.router.agent_controller_pkg.run_agent_v2.handle_cache import handle_cache, cache_manager
+        from app.router.agent_controller_pkg.run_agent_v2.handle_cache import (
+            handle_cache,
+            cache_manager,
+        )
 
         agent_core_v2 = MagicMock()
         agent_core_v2.agent_config = MagicMock()
         agent_core_v2.agent_config.agent_version = "1.0"
-        agent_core_v2.agent_config.get_config_last_set_timestamp = MagicMock(return_value=123456)
+        agent_core_v2.agent_config.get_config_last_set_timestamp = MagicMock(
+            return_value=123456
+        )
         agent_core_v2.cache_handler = MagicMock()
 
         # Mock the cache manager methods
         cache_manager.cache_service = MagicMock()
-        cache_manager.cache_service.load = AsyncMock(return_value=None)  # No existing cache
+        cache_manager.cache_service.load = AsyncMock(
+            return_value=None
+        )  # No existing cache
         cache_manager.create_cache = AsyncMock(return_value=MagicMock(cache_data={}))
         cache_manager.cache_service.get_ttl = AsyncMock(return_value=3600)
 
@@ -118,14 +133,16 @@ class TestHandleCache:
             is_debug_run=False,
             headers={},
             account_id="acc456",
-            account_type="premium"
+            account_type="premium",
         )
 
         assert result is not None
 
     async def test_cache_disabled(self):
         """测试禁用缓存 - 调试模式"""
-        from app.router.agent_controller_pkg.run_agent_v2.handle_cache import handle_cache
+        from app.router.agent_controller_pkg.run_agent_v2.handle_cache import (
+            handle_cache,
+        )
 
         agent_core_v2 = MagicMock()
 
@@ -136,7 +153,7 @@ class TestHandleCache:
             is_debug_run=True,  # Debug mode
             headers={},
             account_id="acc456",
-            account_type="premium"
+            account_type="premium",
         )
 
         assert result is None
@@ -149,7 +166,9 @@ class TestSafeOutputGenerator:
     @pytest.mark.asyncio
     async def test_basic_call(self):
         """测试基本调用"""
-        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import create_safe_output_generator
+        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import (
+            create_safe_output_generator,
+        )
 
         agent_core_v2 = MagicMock()
         agent_config = MagicMock()
@@ -164,7 +183,9 @@ class TestSafeOutputGenerator:
             yield "result1"
             yield "result2"
 
-        agent_core_v2.output_handler.result_output = MagicMock(return_value=mock_output_generator())
+        agent_core_v2.output_handler.result_output = MagicMock(
+            return_value=mock_output_generator()
+        )
 
         result = create_safe_output_generator(
             agent_core_v2=agent_core_v2,
@@ -175,7 +196,7 @@ class TestSafeOutputGenerator:
             start_time=start_time,
             cache_id_vo=cache_id_vo,
             account_id="acc123",
-            account_type="premium"
+            account_type="premium",
         )
 
         # Verify it returns an async generator
@@ -229,7 +250,9 @@ class TestInputHandler:
         req.agent_version = None
 
         # Mock the agent_factory_service
-        with patch('app.router.agent_controller_pkg.run_agent_v2.prepare.agent_factory_service') as mock_service:
+        with patch(
+            "app.router.agent_controller_pkg.run_agent_v2.prepare.agent_factory_service"
+        ) as mock_service:
             mock_service.check_agent_permission = AsyncMock(return_value=True)
 
             result = await prepare(request, req, "acc123", "premium")

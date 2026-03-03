@@ -10,6 +10,7 @@ class TestConfigClassV2:
     def setup_method(self):
         """每个测试前重置单例"""
         from app.config.config_v2.config_class_v2 import ConfigClassV2
+
         ConfigClassV2._instance = None
 
     @patch("app.config.config_v2.config_class_v2.ConfigInitializer")
@@ -47,7 +48,7 @@ class TestConfigClassV2:
         config.outer_llm = MagicMock()
         config.outer_llm.model_list = {
             "model1": {"param": "value1"},
-            "model2": {"param": "value2"}
+            "model2": {"param": "value2"},
         }
 
         result = config.get_local_dev_model_config("model1")

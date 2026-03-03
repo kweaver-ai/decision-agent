@@ -20,20 +20,30 @@ def _get_resume_handle_class():
     """
     try:
         from app.common.dependencies import get_dolphin_var_output_class
+
         # 尝试从 dolphin 导入
         from dolphin.core.coroutine.resume_handle import ResumeHandle
+
         return ResumeHandle
     except ImportError:
         # 创建 Mock 类
         class MockResumeHandle:
-            def __init__(self, frame_id="", snapshot_id="", resume_token="",
-                         interrupt_type="", current_block="", restart_block=""):
+            def __init__(
+                self,
+                frame_id="",
+                snapshot_id="",
+                resume_token="",
+                interrupt_type="",
+                current_block="",
+                restart_block="",
+            ):
                 self.frame_id = frame_id
                 self.snapshot_id = snapshot_id
                 self.resume_token = resume_token
                 self.interrupt_type = interrupt_type
                 self.current_block = current_block
                 self.restart_block = restart_block
+
         return MockResumeHandle
 
 
@@ -51,6 +61,7 @@ class ToolInterruptInfo:
         handle: 恢复句柄（ResumeHandle 对象或 Mock 对象）
         data: 中断详情（tool_name, tool_description, tool_args, interrupt_config）
     """
+
     handle: Any  # 使用 Any 类型以兼容 Mock 对象
     data: Dict[str, Any]  # 中断详情
 
@@ -63,5 +74,9 @@ class ToolInterruptException(Exception):
 
     def __init__(self, interrupt_info: ToolInterruptInfo):
         self.interrupt_info = interrupt_info
-        tool_name = interrupt_info.data.get('tool_name', 'unknown') if interrupt_info.data else 'unknown'
+        tool_name = (
+            interrupt_info.data.get("tool_name", "unknown")
+            if interrupt_info.data
+            else "unknown"
+        )
         super().__init__(f"Tool interrupt: {tool_name}")

@@ -36,8 +36,8 @@ class TestObservabilityConfig:
         from app.common.config import observability_config
 
         assert observability_config is not None
-        assert hasattr(observability_config, 'log')
-        assert hasattr(observability_config, 'trace')
+        assert hasattr(observability_config, "log")
+        assert hasattr(observability_config, "trace")
 
     @pytest.mark.asyncio
     async def test_log_config_has_required_attributes(self):
@@ -45,10 +45,10 @@ class TestObservabilityConfig:
         from app.common.config import observability_config
 
         log_config = observability_config.log
-        assert hasattr(log_config, 'log_enabled')
-        assert hasattr(log_config, 'log_exporter')
-        assert hasattr(log_config, 'log_load_interval')
-        assert hasattr(log_config, 'log_load_max_log')
+        assert hasattr(log_config, "log_enabled")
+        assert hasattr(log_config, "log_exporter")
+        assert hasattr(log_config, "log_load_interval")
+        assert hasattr(log_config, "log_load_max_log")
 
     @pytest.mark.asyncio
     async def test_trace_config_has_required_attributes(self):
@@ -56,10 +56,10 @@ class TestObservabilityConfig:
         from app.common.config import observability_config
 
         trace_config = observability_config.trace
-        assert hasattr(trace_config, 'trace_enabled')
-        assert hasattr(trace_config, 'trace_provider')
-        assert hasattr(trace_config, 'trace_max_queue_size')
-        assert hasattr(trace_config, 'max_export_batch_size')
+        assert hasattr(trace_config, "trace_enabled")
+        assert hasattr(trace_config, "trace_provider")
+        assert hasattr(trace_config, "trace_max_queue_size")
+        assert hasattr(trace_config, "max_export_batch_size")
 
 
 class TestConfigInstance:
@@ -77,14 +77,14 @@ class TestConfigInstance:
         """Test that Config has app attribute"""
         from app.common.config import Config
 
-        assert hasattr(Config, 'app')
+        assert hasattr(Config, "app")
 
     @pytest.mark.asyncio
     async def test_config_has_local_dev_attribute(self):
         """Test that Config has local_dev attribute"""
         from app.common.config import Config
 
-        assert hasattr(Config, 'local_dev')
+        assert hasattr(Config, "local_dev")
 
 
 class TestBuiltinIdsInstance:
@@ -102,7 +102,7 @@ class TestBuiltinIdsInstance:
         """Test that BuiltinIds has agent_ids"""
         from app.common.config import BuiltinIds
 
-        assert hasattr(BuiltinIds, 'agent_ids')
+        assert hasattr(BuiltinIds, "agent_ids")
         assert isinstance(BuiltinIds.agent_ids, dict)
 
     @pytest.mark.asyncio
@@ -110,5 +110,5 @@ class TestBuiltinIdsInstance:
         """Test that BuiltinIds has tool_ids"""
         from app.common.config import BuiltinIds
 
-        assert hasattr(BuiltinIds, 'tool_ids')
+        assert hasattr(BuiltinIds, "tool_ids")
         assert isinstance(BuiltinIds.tool_ids, dict)

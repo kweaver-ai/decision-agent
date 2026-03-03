@@ -2,6 +2,7 @@
 """
 Unit tests for app.logic.agent_core_logic_v2.agent_instance_manager module
 """
+
 import pytest
 import time
 from unittest.mock import Mock, MagicMock, patch
@@ -29,7 +30,7 @@ class TestAgentInstanceManager:
 
     def test_init_method_called_once(self):
         """Test _init method is called only once"""
-        with patch.object(AgentInstanceManager, '_start_cleanup_thread'):
+        with patch.object(AgentInstanceManager, "_start_cleanup_thread"):
             manager1 = AgentInstanceManager()
             initial_instances = manager1._instances.copy()
 
@@ -110,7 +111,7 @@ class TestAgentInstanceManager:
         agent_core = Mock()
 
         # Register with old timestamp
-        with patch('time.time', return_value=time.time() - 3600):
+        with patch("time.time", return_value=time.time() - 3600):
             manager.register(agent_run_id, agent, agent_core)
 
         # Try to get - should return None and remove the instance
@@ -146,10 +147,10 @@ class TestAgentInstanceManager:
         old_id = "old_instance"
         recent_id = "recent_instance"
 
-        with patch('time.time', return_value=current_time - 3600):
+        with patch("time.time", return_value=current_time - 3600):
             manager.register(old_id, Mock(), Mock())
 
-        with patch('time.time', return_value=current_time - 100):
+        with patch("time.time", return_value=current_time - 100):
             manager.register(recent_id, Mock(), Mock())
 
         # Cleanup should remove old instance but keep recent one
@@ -166,7 +167,7 @@ class TestAgentInstanceManager:
         # Register instances that are all expired
         initial_count = len(manager._instances)
         for i in range(5):
-            with patch('time.time', return_value=current_time - 3600):
+            with patch("time.time", return_value=current_time - 3600):
                 manager.register(f"expired_all_{i}", Mock(), Mock())
 
         assert len(manager._instances) == initial_count + 5
@@ -174,7 +175,9 @@ class TestAgentInstanceManager:
         manager.cleanup_expired()
 
         # All expired instances should be removed
-        remaining_expired = sum(1 for k in manager._instances.keys() if k.startswith("expired_all_"))
+        remaining_expired = sum(
+            1 for k in manager._instances.keys() if k.startswith("expired_all_")
+        )
         assert remaining_expired == 0
 
     def test_cleanup_expired_with_none_expired(self):
@@ -190,7 +193,9 @@ class TestAgentInstanceManager:
         manager.cleanup_expired()
 
         # Recent instances should remain
-        recent_count = sum(1 for k in manager._instances.keys() if k.startswith("recent_none_"))
+        recent_count = sum(
+            1 for k in manager._instances.keys() if k.startswith("recent_none_")
+        )
         assert recent_count == 5
 
     def test_thread_safety_of_register(self):
@@ -199,7 +204,7 @@ class TestAgentInstanceManager:
 
         # This test verifies the lock is used, actual concurrent testing
         # would require threading which is complex for unit tests
-        assert hasattr(manager, '_instance_lock')
+        assert hasattr(manager, "_instance_lock")
         assert manager._instance_lock is not None
 
     def test_expire_seconds_default_value(self):
@@ -247,12 +252,17 @@ class TestAgentInstanceManager:
 
     def test_global_singleton_instance(self):
         """Test the global agent_instance_manager singleton"""
-        from app.logic.agent_core_logic_v2.agent_instance_manager import agent_instance_manager
+        from app.logic.agent_core_logic_v2.agent_instance_manager import (
+            agent_instance_manager,
+        )
 
         assert isinstance(agent_instance_manager, AgentInstanceManager)
 
         # Get it again and verify it's the same instance
-        from app.logic.agent_core_logic_v2.agent_instance_manager import agent_instance_manager as aim2
+        from app.logic.agent_core_logic_v2.agent_instance_manager import (
+            agent_instance_manager as aim2,
+        )
+
         assert agent_instance_manager is aim2
 
     def test_start_cleanup_thread_creates_daemon(self):
@@ -261,7 +271,7 @@ class TestAgentInstanceManager:
         # The cleanup thread should be started during initialization
         # We can't easily test the thread itself, but we can verify
         # the method exists and doesn't crash
-        assert hasattr(manager, '_start_cleanup_thread')
+        assert hasattr(manager, "_start_cleanup_thread")
 
     def test_cleanup_loop_exception_handling(self):
         """Test that cleanup loop handles exceptions gracefully"""
@@ -311,8 +321,6 @@ class TestAgentInstanceManager:
         assert retrieved_agent1 is agent1
         assert retrieved_agent2 is agent2
 
-
-
     def test_get_returns_tuple_or_none(self):
         """Test that get always returns tuple or None"""
         manager = AgentInstanceManager()
@@ -339,7 +347,7 @@ class TestAgentInstanceManager:
             ids.append(agent_run_id)
             # Make every other one expired
             offset = -3600 if i % 2 == 0 else -100
-            with patch('time.time', return_value=current_time + offset):
+            with patch("time.time", return_value=current_time + offset):
                 manager.register(agent_run_id, Mock(), Mock())
 
         manager.cleanup_expired()
@@ -350,7 +358,9 @@ class TestAgentInstanceManager:
             # Even indices (0, 2, 4, ...) should be expired
             # Odd indices (1, 3, 5, ...) should remain
             if i % 2 == 0:
-                assert not exists, f"Instance {agent_run_id} should have been cleaned up"
+                assert not exists, (
+                    f"Instance {agent_run_id} should have been cleaned up"
+                )
             else:
                 assert exists, f"Instance {agent_run_id} should still exist"
 

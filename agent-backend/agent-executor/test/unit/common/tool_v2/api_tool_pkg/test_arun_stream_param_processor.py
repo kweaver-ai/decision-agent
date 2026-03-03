@@ -10,7 +10,9 @@ class TestProcessRequestBody:
 
     def test_process_request_body_empty(self):
         """测试空请求体"""
-        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import _process_request_body
+        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import (
+            _process_request_body,
+        )
 
         body = {}
         _process_request_body(None, {}, {}, body)
@@ -18,7 +20,9 @@ class TestProcessRequestBody:
 
     def test_process_request_body_no_content(self):
         """测试无 content 的请求体"""
-        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import _process_request_body
+        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import (
+            _process_request_body,
+        )
 
         request_body = {"description": "No content"}
         body = {}
@@ -27,7 +31,9 @@ class TestProcessRequestBody:
 
     def test_process_request_body_simple(self):
         """测试简单请求体"""
-        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import _process_request_body
+        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import (
+            _process_request_body,
+        )
 
         request_body = {
             "content": {
@@ -36,8 +42,8 @@ class TestProcessRequestBody:
                         "type": "object",
                         "properties": {
                             "name": {"type": "string"},
-                            "age": {"type": "integer"}
-                        }
+                            "age": {"type": "integer"},
+                        },
                     }
                 }
             }
@@ -53,14 +59,14 @@ class TestProcessRequestBody:
 
     def test_process_request_body_with_ref(self):
         """测试带 $ref 的请求体"""
-        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import _process_request_body
+        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import (
+            _process_request_body,
+        )
 
         request_body = {
             "content": {
                 "application/json": {
-                    "schema": {
-                        "$ref": "#/components/schemas/UserRequest"
-                    }
+                    "schema": {"$ref": "#/components/schemas/UserRequest"}
                 }
             }
         }
@@ -71,8 +77,8 @@ class TestProcessRequestBody:
                         "type": "object",
                         "properties": {
                             "username": {"type": "string"},
-                            "email": {"type": "string"}
-                        }
+                            "email": {"type": "string"},
+                        },
                     }
                 }
             }
@@ -91,7 +97,9 @@ class TestProcessParams:
 
     def test_process_params_empty(self):
         """测试空参数"""
-        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import process_params
+        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import (
+            process_params,
+        )
 
         mock_gvp = MagicMock()
         mock_gvp.get_var_value.return_value = {}
@@ -108,14 +116,12 @@ class TestProcessParams:
 
     def test_process_params_path_params(self):
         """测试路径参数"""
-        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import process_params
+        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import (
+            process_params,
+        )
 
         tool_input = {"id": "123", "name": "test"}
-        api_spec = {
-            "parameters": [
-                {"name": "id", "in": "path"}
-            ]
-        }
+        api_spec = {"parameters": [{"name": "id", "in": "path"}]}
         mock_gvp = MagicMock()
         mock_gvp.get_var_value.return_value = {}
         mock_gvp.get_all_variables.return_value = {}
@@ -128,13 +134,15 @@ class TestProcessParams:
 
     def test_process_params_query_params(self):
         """测试查询参数"""
-        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import process_params
+        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import (
+            process_params,
+        )
 
         tool_input = {"filter": "active", "page": 1}
         api_spec = {
             "parameters": [
                 {"name": "filter", "in": "query"},
-                {"name": "page", "in": "query"}
+                {"name": "page", "in": "query"},
             ]
         }
         mock_gvp = MagicMock()
@@ -150,7 +158,9 @@ class TestProcessParams:
 
     def test_process_params_header_params(self):
         """测试头部参数"""
-        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import process_params
+        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import (
+            process_params,
+        )
 
         tool_input = {"Authorization": "Bearer token"}
         api_spec = {
@@ -170,7 +180,9 @@ class TestProcessParams:
 
     def test_process_params_with_request_body(self):
         """测试带请求体参数"""
-        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import process_params
+        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import (
+            process_params,
+        )
 
         tool_input = {"username": "user1", "password": "pass123"}
         api_spec = {
@@ -181,8 +193,8 @@ class TestProcessParams:
                             "type": "object",
                             "properties": {
                                 "username": {"type": "string"},
-                                "password": {"type": "string"}
-                            }
+                                "password": {"type": "string"},
+                            },
                         }
                     }
                 }
@@ -201,57 +213,69 @@ class TestProcessParams:
 
     def test_process_params_with_user_account_headers(self):
         """测试用户账号头部"""
-        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import process_params
+        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import (
+            process_params,
+        )
 
         tool_input = {}
         api_spec = {}
         mock_gvp = MagicMock()
         mock_gvp.get_var_value.return_value = {
             "X-User-Account-Id": "user123",
-            "X-User-Account-Type": "user"
+            "X-User-Account-Type": "user",
         }
         mock_gvp.get_all_variables.return_value = {}
 
-        with patch("app.common.tool_v2.api_tool_pkg.arun_stream_param_processor.has_user_account") as mock_has:
+        with patch(
+            "app.common.tool_v2.api_tool_pkg.arun_stream_param_processor.has_user_account"
+        ) as mock_has:
             mock_has.return_value = True
-            with patch("app.common.tool_v2.api_tool_pkg.arun_stream_param_processor.get_user_account_id") as mock_get_id:
+            with patch(
+                "app.common.tool_v2.api_tool_pkg.arun_stream_param_processor.get_user_account_id"
+            ) as mock_get_id:
                 mock_get_id.return_value = "user123"
-                with patch("app.common.tool_v2.api_tool_pkg.arun_stream_param_processor.set_user_account_id") as mock_set_id:
-                    with patch("app.common.tool_v2.api_tool_pkg.arun_stream_param_processor.has_user_account_type") as mock_has_type:
+                with patch(
+                    "app.common.tool_v2.api_tool_pkg.arun_stream_param_processor.set_user_account_id"
+                ) as mock_set_id:
+                    with patch(
+                        "app.common.tool_v2.api_tool_pkg.arun_stream_param_processor.has_user_account_type"
+                    ) as mock_has_type:
                         mock_has_type.return_value = True
-                        with patch("app.common.tool_v2.api_tool_pkg.arun_stream_param_processor.get_user_account_type") as mock_get_type:
+                        with patch(
+                            "app.common.tool_v2.api_tool_pkg.arun_stream_param_processor.get_user_account_type"
+                        ) as mock_get_type:
                             mock_get_type.return_value = "user"
-                            with patch("app.common.tool_v2.api_tool_pkg.arun_stream_param_processor.set_user_account_type") as mock_set_type:
-                                path_params, query_params, body, headers = process_params(
-                                    tool_input, api_spec, mock_gvp, [], {}
+                            with patch(
+                                "app.common.tool_v2.api_tool_pkg.arun_stream_param_processor.set_user_account_type"
+                            ) as mock_set_type:
+                                path_params, query_params, body, headers = (
+                                    process_params(
+                                        tool_input, api_spec, mock_gvp, [], {}
+                                    )
                                 )
 
     def test_process_params_mixed_params(self):
         """测试混合参数"""
-        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import process_params
+        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import (
+            process_params,
+        )
 
-        tool_input = {
-            "id": "path123",
-            "filter": "active",
-            "data": {"key": "value"}
-        }
+        tool_input = {"id": "path123", "filter": "active", "data": {"key": "value"}}
         api_spec = {
             "parameters": [
                 {"name": "id", "in": "path"},
-                {"name": "filter", "in": "query"}
+                {"name": "filter", "in": "query"},
             ],
             "request_body": {
                 "content": {
                     "application/json": {
                         "schema": {
                             "type": "object",
-                            "properties": {
-                                "data": {"type": "object"}
-                            }
+                            "properties": {"data": {"type": "object"}},
                         }
                     }
                 }
-            }
+            },
         }
         mock_gvp = MagicMock()
         mock_gvp.get_var_value.return_value = {}
@@ -271,12 +295,16 @@ class TestModuleImports:
 
     def test_import_process_params(self):
         """测试导入 process_params"""
-        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import process_params
+        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import (
+            process_params,
+        )
 
         assert callable(process_params)
 
     def test_import_process_request_body(self):
         """测试导入 _process_request_body"""
-        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import _process_request_body
+        from app.common.tool_v2.api_tool_pkg.arun_stream_param_processor import (
+            _process_request_body,
+        )
 
         assert callable(_process_request_body)

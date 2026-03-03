@@ -72,9 +72,7 @@ class TestAgentRunOptionsVo:
         from app.domain.vo.agentvo import AgentRunOptionsVo
 
         options = AgentRunOptionsVo(
-            agent_id="agent123",
-            conversation_id="conv456",
-            agent_run_id="run789"
+            agent_id="agent123", conversation_id="conv456", agent_run_id="run789"
         )
 
         assert options.agent_id == "agent123"
@@ -86,8 +84,7 @@ class TestAgentRunOptionsVo:
         from app.domain.vo.agentvo import AgentRunOptionsVo
 
         options = AgentRunOptionsVo(
-            is_need_progress=True,
-            enable_dependency_cache=False
+            is_need_progress=True, enable_dependency_cache=False
         )
 
         assert options.is_need_progress is True
@@ -117,7 +114,7 @@ class TestAgentRunOptionsVo:
             agent_run_id="run789",
             is_need_progress=True,
             enable_dependency_cache=False,
-            resume_info={"frame_id": "frame123"}
+            resume_info={"frame_id": "frame123"},
         )
 
         assert options.output_vars == ["var1"]
@@ -143,10 +140,7 @@ class TestAgentRunOptionsVo:
         """测试模型序列化"""
         from app.domain.vo.agentvo import AgentRunOptionsVo
 
-        options = AgentRunOptionsVo(
-            output_vars=["var1"],
-            agent_id="agent123"
-        )
+        options = AgentRunOptionsVo(output_vars=["var1"], agent_id="agent123")
 
         data = options.model_dump()
 

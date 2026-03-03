@@ -29,7 +29,10 @@ class TestAgentExecutorFileParseError:
 
         result = AgentExecutor_File_ParseError()
 
-        assert "parse" in result.description.lower() or "file" in result.description.lower()
+        assert (
+            "parse" in result.description.lower()
+            or "file" in result.description.lower()
+        )
 
     def test_solution(self):
         """测试解决方案"""

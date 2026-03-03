@@ -42,11 +42,13 @@ class TestSafeJsonSerialize:
     @pytest.mark.asyncio
     async def test_serialize_nested_structures(self):
         """Test serializing nested structures"""
-        result = safe_json_serialize({
-            "list": [1, 2, 3],
-            "dict": {"nested": "value"},
-            "mixed": [{"a": 1}, {"b": 2}]
-        })
+        result = safe_json_serialize(
+            {
+                "list": [1, 2, 3],
+                "dict": {"nested": "value"},
+                "mixed": [{"a": 1}, {"b": 2}],
+            }
+        )
         assert "list" in result
         assert "dict" in result
         assert "mixed" in result
@@ -85,6 +87,7 @@ class TestSafeJsonSerialize:
     @pytest.mark.asyncio
     async def test_serialize_custom_object(self):
         """Test serializing custom objects (converts to string)"""
+
         class CustomObject:
             def __str__(self):
                 return "CustomObject()"
@@ -97,6 +100,7 @@ class TestSafeJsonSerialize:
     @pytest.mark.asyncio
     async def test_serialize_object_with_str_error(self):
         """Test serializing object that raises exception in __str__"""
+
         class BadObject:
             def __str__(self):
                 raise RuntimeError("Cannot convert to string")
@@ -111,15 +115,9 @@ class TestSafeJsonSerialize:
     async def test_serialize_complex_nested(self):
         """Test serializing complex nested structures with mixed types"""
         data = {
-            "users": [
-                {"name": "Alice", "age": 30},
-                {"name": "Bob", "age": 25}
-            ],
-            "metadata": {
-                "count": 2,
-                "active": True
-            },
-            "errors": None
+            "users": [{"name": "Alice", "age": 30}, {"name": "Bob", "age": 25}],
+            "metadata": {"count": 2, "active": True},
+            "errors": None,
         }
         result = safe_json_serialize(data)
 
@@ -149,5 +147,5 @@ class TestModuleImports:
         from app.common.struct_logger import utils
 
         assert utils is not None
-        assert hasattr(utils, 'safe_json_serialize')
-        assert hasattr(utils, '_safe_json_serialize')
+        assert hasattr(utils, "safe_json_serialize")
+        assert hasattr(utils, "_safe_json_serialize")

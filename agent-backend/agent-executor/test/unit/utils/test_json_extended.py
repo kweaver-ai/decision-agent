@@ -120,7 +120,7 @@ class TestCustomSerializerExtended:
 
         # Object without __dict__ will raise TypeError
         class NoDictObject:
-            __slots__ = ['value']
+            __slots__ = ["value"]
 
         obj = NoDictObject()
 
@@ -212,13 +212,7 @@ class TestJsonSerializeAsyncExtended:
         """测试序列化嵌套结构"""
         from app.utils.json import json_serialize_async
 
-        data = {
-            "level1": {
-                "level2": {
-                    "level3": "deep"
-                }
-            }
-        }
+        data = {"level1": {"level2": {"level3": "deep"}}}
         result = await json_serialize_async(data)
 
         assert "deep" in result
@@ -339,7 +333,7 @@ class TestJsonSerializeAsyncExtended:
 
         data = {
             "created": datetime(2025, 1, 1, 10, 0),
-            "updated": datetime(2025, 1, 2, 12, 0)
+            "updated": datetime(2025, 1, 2, 12, 0),
         }
         result = await json_serialize_async(data)
 
@@ -386,7 +380,7 @@ class TestJsonSerializeAsyncExtended:
             "japanese": "日本語",
             "korean": "한국어",
             "arabic": "العربية",
-            "russian": "Русский"
+            "russian": "Русский",
         }
         result = await json_serialize_async(data)
 
@@ -400,14 +394,8 @@ class TestJsonSerializeAsyncExtended:
         from app.utils.json import json_serialize_async
 
         data = {
-            "users": [
-                {"name": "Alice", "age": 30},
-                {"name": "Bob", "age": 25}
-            ],
-            "metadata": {
-                "version": "1.0",
-                "tags": ["tag1", "tag2"]
-            }
+            "users": [{"name": "Alice", "age": 30}, {"name": "Bob", "age": 25}],
+            "metadata": {"version": "1.0", "tags": ["tag1", "tag2"]},
         }
         result = await json_serialize_async(data)
 

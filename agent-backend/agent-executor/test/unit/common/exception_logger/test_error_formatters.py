@@ -66,7 +66,9 @@ class TestFormatErrorConsole:
         timestamp = datetime(2024, 6, 15, 14, 30, 0)
         request_info = {"user_id": "12345", "action": "test_action"}
 
-        result = format_error_console(exc, timestamp=timestamp, request_info=request_info)
+        result = format_error_console(
+            exc, timestamp=timestamp, request_info=request_info
+        )
 
         assert isinstance(result, str)
         assert "KeyError" in result

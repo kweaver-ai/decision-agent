@@ -189,7 +189,7 @@ async def run_dolphin(
 
     # 12. 执行agent
     output = {}
-    
+
     # 使用公共的 arun 循环处理方法
     from .interrupt_utils import process_arun_loop
 

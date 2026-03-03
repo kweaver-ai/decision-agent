@@ -14,7 +14,7 @@ class TestTraceContext:
         ctx = TraceContext()
 
         assert ctx.tracer is not None
-        assert hasattr(ctx.tracer, 'start_as_current_span')
+        assert hasattr(ctx.tracer, "start_as_current_span")
 
     def test_tracer_has_required_methods(self):
         """测试tracer有必需的方法"""
@@ -23,7 +23,7 @@ class TestTraceContext:
         ctx = TraceContext()
 
         # Tracer should have start_as_current_span method
-        assert hasattr(ctx.tracer, 'start_as_current_span')
+        assert hasattr(ctx.tracer, "start_as_current_span")
 
     def test_start_span_returns_context_manager(self):
         """测试start_span返回上下文管理器"""
@@ -35,8 +35,8 @@ class TestTraceContext:
         span_ctx = ctx.start_span("test_span")
 
         # Should have __enter__ and __exit__ methods
-        assert hasattr(span_ctx, '__enter__')
-        assert hasattr(span_ctx, '__exit__')
+        assert hasattr(span_ctx, "__enter__")
+        assert hasattr(span_ctx, "__exit__")
 
     def test_start_span_with_default_parameters(self):
         """测试使用默认参数的start_span"""
@@ -89,8 +89,8 @@ class TestTraceContext:
         span_ctx = ctx.start_async_span("test_span")
 
         # Should have __aenter__ and __aexit__ methods
-        assert hasattr(span_ctx, '__aenter__')
-        assert hasattr(span_ctx, '__aexit__')
+        assert hasattr(span_ctx, "__aenter__")
+        assert hasattr(span_ctx, "__aexit__")
 
     @pytest.mark.asyncio
     async def test_start_async_span_with_default_parameters(self):
@@ -147,7 +147,7 @@ class TestTraceContext:
         span_ctx = ctx.start_async_span(name=None)
 
         # Should have __aenter__ method
-        assert hasattr(span_ctx, '__aenter__')
+        assert hasattr(span_ctx, "__aenter__")
 
     def test_multiple_contexts_independently(self):
         """测试多个上下文独立工作"""

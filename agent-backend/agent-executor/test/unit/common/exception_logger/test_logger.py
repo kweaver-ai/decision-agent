@@ -32,8 +32,10 @@ class TestExceptionLogger:
     @pytest.mark.asyncio
     async def test_singleton_pattern(self, mock_config, temp_log_dir):
         """Test ExceptionLogger implements singleton pattern"""
-        with patch('app.common.exception_logger.logger.Config', mock_config):
-            with patch('app.common.exception_logger.constants.EXCEPTION_LOG_DIR', temp_log_dir):
+        with patch("app.common.exception_logger.logger.Config", mock_config):
+            with patch(
+                "app.common.exception_logger.constants.EXCEPTION_LOG_DIR", temp_log_dir
+            ):
                 from app.common.exception_logger.logger import ExceptionLogger
 
                 logger1 = ExceptionLogger()
@@ -44,28 +46,34 @@ class TestExceptionLogger:
     @pytest.mark.asyncio
     async def test_initialization(self, mock_config, temp_log_dir):
         """Test ExceptionLogger initialization"""
-        with patch('app.common.exception_logger.logger.Config', mock_config):
-            with patch('app.common.exception_logger.constants.EXCEPTION_LOG_DIR', temp_log_dir):
+        with patch("app.common.exception_logger.logger.Config", mock_config):
+            with patch(
+                "app.common.exception_logger.constants.EXCEPTION_LOG_DIR", temp_log_dir
+            ):
                 from app.common.exception_logger.logger import ExceptionLogger
 
                 logger = ExceptionLogger()
 
                 assert logger._initialized is True
-                assert hasattr(logger, '_logger')
-                assert hasattr(logger, '_simple_logger')
-                assert hasattr(logger, '_detailed_logger')
+                assert hasattr(logger, "_logger")
+                assert hasattr(logger, "_simple_logger")
+                assert hasattr(logger, "_detailed_logger")
 
     @pytest.mark.asyncio
     async def test_log_error_basic(self, mock_config, temp_log_dir):
         """Test log_error with basic exception"""
-        with patch('app.common.exception_logger.logger.Config', mock_config):
-            with patch('app.common.exception_logger.constants.EXCEPTION_LOG_DIR', temp_log_dir):
+        with patch("app.common.exception_logger.logger.Config", mock_config):
+            with patch(
+                "app.common.exception_logger.constants.EXCEPTION_LOG_DIR", temp_log_dir
+            ):
                 from app.common.exception_logger.logger import ExceptionLogger
 
                 logger = ExceptionLogger()
 
                 # Mock the formatters
-                with patch('app.common.exception_logger.logger.format_error_console') as mock_console:
+                with patch(
+                    "app.common.exception_logger.logger.format_error_console"
+                ) as mock_console:
                     mock_console.return_value = "Console error message"
 
                     exc = ValueError("Test error")
@@ -76,13 +84,17 @@ class TestExceptionLogger:
     @pytest.mark.asyncio
     async def test_log_error_with_request_info(self, mock_config, temp_log_dir):
         """Test log_error with request information"""
-        with patch('app.common.exception_logger.logger.Config', mock_config):
-            with patch('app.common.exception_logger.constants.EXCEPTION_LOG_DIR', temp_log_dir):
+        with patch("app.common.exception_logger.logger.Config", mock_config):
+            with patch(
+                "app.common.exception_logger.constants.EXCEPTION_LOG_DIR", temp_log_dir
+            ):
                 from app.common.exception_logger.logger import ExceptionLogger
 
                 logger = ExceptionLogger()
 
-                with patch('app.common.exception_logger.logger.format_error_console') as mock_console:
+                with patch(
+                    "app.common.exception_logger.logger.format_error_console"
+                ) as mock_console:
                     mock_console.return_value = "Console error message"
 
                     exc = ValueError("Test error")
@@ -97,13 +109,17 @@ class TestExceptionLogger:
     @pytest.mark.asyncio
     async def test_log_error_with_timestamp(self, mock_config, temp_log_dir):
         """Test log_error with custom timestamp"""
-        with patch('app.common.exception_logger.logger.Config', mock_config):
-            with patch('app.common.exception_logger.constants.EXCEPTION_LOG_DIR', temp_log_dir):
+        with patch("app.common.exception_logger.logger.Config", mock_config):
+            with patch(
+                "app.common.exception_logger.constants.EXCEPTION_LOG_DIR", temp_log_dir
+            ):
                 from app.common.exception_logger.logger import ExceptionLogger
 
                 logger = ExceptionLogger()
 
-                with patch('app.common.exception_logger.logger.format_error_console') as mock_console:
+                with patch(
+                    "app.common.exception_logger.logger.format_error_console"
+                ) as mock_console:
                     mock_console.return_value = "Console error message"
 
                     exc = ValueError("Test error")
@@ -122,15 +138,23 @@ class TestExceptionLogger:
         mock_config = MagicMock()
         mock_config.app.is_write_exception_log_to_file = True
 
-        with patch('app.common.exception_logger.logger.Config', mock_config):
-            with patch('app.common.exception_logger.constants.EXCEPTION_LOG_DIR', temp_log_dir):
+        with patch("app.common.exception_logger.logger.Config", mock_config):
+            with patch(
+                "app.common.exception_logger.constants.EXCEPTION_LOG_DIR", temp_log_dir
+            ):
                 from app.common.exception_logger.logger import ExceptionLogger
 
                 logger = ExceptionLogger()
 
-                with patch('app.common.exception_logger.logger.format_error_console') as mock_console:
-                    with patch('app.common.exception_logger.logger.format_error_file_simple') as mock_simple:
-                        with patch('app.common.exception_logger.logger.format_error_file_detailed') as mock_detailed:
+                with patch(
+                    "app.common.exception_logger.logger.format_error_console"
+                ) as mock_console:
+                    with patch(
+                        "app.common.exception_logger.logger.format_error_file_simple"
+                    ) as mock_simple:
+                        with patch(
+                            "app.common.exception_logger.logger.format_error_file_detailed"
+                        ) as mock_detailed:
                             mock_console.return_value = "Console"
                             mock_simple.return_value = "Simple"
                             mock_detailed.return_value = "Detailed"
@@ -144,14 +168,20 @@ class TestExceptionLogger:
     @pytest.mark.asyncio
     async def test_log_exception_group(self, mock_config, temp_log_dir):
         """Test log_exception_group with multiple exceptions"""
-        with patch('app.common.exception_logger.logger.Config', mock_config):
-            with patch('app.common.exception_logger.constants.EXCEPTION_LOG_DIR', temp_log_dir):
+        with patch("app.common.exception_logger.logger.Config", mock_config):
+            with patch(
+                "app.common.exception_logger.constants.EXCEPTION_LOG_DIR", temp_log_dir
+            ):
                 from app.common.exception_logger.logger import ExceptionLogger
 
                 logger = ExceptionLogger()
 
-                with patch('app.common.exception_logger.logger.format_error_console') as mock_console:
-                    with patch('app.common.exception_logger.logger.format_multiple_errors_separator') as mock_sep:
+                with patch(
+                    "app.common.exception_logger.logger.format_error_console"
+                ) as mock_console:
+                    with patch(
+                        "app.common.exception_logger.logger.format_multiple_errors_separator"
+                    ) as mock_sep:
                         mock_console.return_value = "Error message"
                         mock_sep.return_value = "Separator"
 
@@ -164,34 +194,42 @@ class TestExceptionLogger:
     @pytest.mark.asyncio
     async def test_log_exception_with_exception_group(self, mock_config, temp_log_dir):
         """Test log_exception handles ExceptionGroup"""
-        with patch('app.common.exception_logger.logger.Config', mock_config):
-            with patch('app.common.exception_logger.constants.EXCEPTION_LOG_DIR', temp_log_dir):
+        with patch("app.common.exception_logger.logger.Config", mock_config):
+            with patch(
+                "app.common.exception_logger.constants.EXCEPTION_LOG_DIR", temp_log_dir
+            ):
                 from app.common.exception_logger.logger import ExceptionLogger
 
                 logger = ExceptionLogger()
 
-                with patch.object(logger, 'log_exception_group') as mock_group:
-                    with patch.object(logger, 'log_error') as mock_error:
-
+                with patch.object(logger, "log_exception_group") as mock_group:
+                    with patch.object(logger, "log_error") as mock_error:
                         # Create a mock ExceptionGroup
                         mock_exception_group = MagicMock()
                         mock_exception_group.__class__.__name__ = "ExceptionGroup"
-                        mock_exception_group.exceptions = [ValueError("Error 1"), TypeError("Error 2")]
+                        mock_exception_group.exceptions = [
+                            ValueError("Error 1"),
+                            TypeError("Error 2"),
+                        ]
 
                         logger.log_exception(mock_exception_group)
 
                         mock_group.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_log_exception_with_regular_exception(self, mock_config, temp_log_dir):
+    async def test_log_exception_with_regular_exception(
+        self, mock_config, temp_log_dir
+    ):
         """Test log_exception handles regular exceptions"""
-        with patch('app.common.exception_logger.logger.Config', mock_config):
-            with patch('app.common.exception_logger.constants.EXCEPTION_LOG_DIR', temp_log_dir):
+        with patch("app.common.exception_logger.logger.Config", mock_config):
+            with patch(
+                "app.common.exception_logger.constants.EXCEPTION_LOG_DIR", temp_log_dir
+            ):
                 from app.common.exception_logger.logger import ExceptionLogger
 
                 logger = ExceptionLogger()
 
-                with patch.object(logger, 'log_error') as mock_error:
+                with patch.object(logger, "log_error") as mock_error:
                     exc = ValueError("Regular error")
                     logger.log_exception(exc)
 
@@ -200,16 +238,22 @@ class TestExceptionLogger:
     @pytest.mark.asyncio
     async def test_log_exception_defaults_to_now(self, mock_config, temp_log_dir):
         """Test log_error uses current time when no timestamp provided"""
-        with patch('app.common.exception_logger.logger.Config', mock_config):
-            with patch('app.common.exception_logger.constants.EXCEPTION_LOG_DIR', temp_log_dir):
+        with patch("app.common.exception_logger.logger.Config", mock_config):
+            with patch(
+                "app.common.exception_logger.constants.EXCEPTION_LOG_DIR", temp_log_dir
+            ):
                 from app.common.exception_logger.logger import ExceptionLogger
 
                 logger = ExceptionLogger()
 
-                with patch('app.common.exception_logger.logger.format_error_console') as mock_console:
+                with patch(
+                    "app.common.exception_logger.logger.format_error_console"
+                ) as mock_console:
                     mock_console.return_value = "Error message"
 
-                    with patch('app.common.exception_logger.logger.datetime') as mock_datetime:
+                    with patch(
+                        "app.common.exception_logger.logger.datetime"
+                    ) as mock_datetime:
                         mock_now = datetime(2024, 12, 25, 10, 30, 0)
                         mock_datetime.now.return_value = mock_now
 
@@ -226,13 +270,17 @@ class TestGlobalExceptionLogger:
     @pytest.mark.asyncio
     async def test_global_exception_logger_exists(self):
         """Test that global exception_logger instance exists"""
-        with patch('app.common.exception_logger.logger.Config') as mock_config:
+        with patch("app.common.exception_logger.logger.Config") as mock_config:
             mock_config.return_value.app.is_write_exception_log_to_file = False
 
-            with patch('app.common.exception_logger.constants.EXCEPTION_LOG_DIR', '/tmp/test_logs'):
+            with patch(
+                "app.common.exception_logger.constants.EXCEPTION_LOG_DIR",
+                "/tmp/test_logs",
+            ):
                 # Force reimport to get a fresh instance
                 import importlib
                 from app.common.exception_logger import logger
+
                 importlib.reload(logger)
 
                 from app.common.exception_logger.logger import exception_logger

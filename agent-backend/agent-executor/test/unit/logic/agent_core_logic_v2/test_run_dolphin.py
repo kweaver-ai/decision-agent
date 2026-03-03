@@ -34,9 +34,7 @@ class TestRunDolphin:
         """测试预热模式"""
         mock_agent_core.is_warmup = True
 
-        with patch(
-            "app.logic.agent_core_logic_v2.run_dolphin.span_set_attrs"
-        ):
+        with patch("app.logic.agent_core_logic_v2.run_dolphin.span_set_attrs"):
             with patch(
                 "app.logic.agent_core_logic_v2.run_dolphin.get_user_account_id",
                 return_value="user123",
@@ -84,9 +82,7 @@ class TestRunDolphin:
         mock_agent.initialize = AsyncMock()
         mock_agent.executor = MagicMock()
 
-        with patch(
-            "app.logic.agent_core_logic_v2.run_dolphin.span_set_attrs"
-        ):
+        with patch("app.logic.agent_core_logic_v2.run_dolphin.span_set_attrs"):
             with patch(
                 "app.logic.agent_core_logic_v2.run_dolphin.get_user_account_id",
                 return_value="user123",
@@ -119,8 +115,8 @@ class TestRunDolphin:
                                     with patch(
                                         "app.logic.agent_core_logic_v2.run_dolphin.TriditionalToolkit"
                                     ) as mock_toolkit:
-                                        mock_toolkit.buildFromTooldict.return_value = MagicMock(
-                                            tools=[]
+                                        mock_toolkit.buildFromTooldict.return_value = (
+                                            MagicMock(tools=[])
                                         )
 
                                         with patch(
@@ -146,10 +142,13 @@ class TestRunDolphin:
                                                     with patch(
                                                         "app.logic.agent_core_logic_v2.interrupt_utils.process_arun_loop"
                                                     ) as mock_process:
+
                                                         async def mock_gen():
                                                             yield {"status": "success"}
 
-                                                        mock_process.return_value = mock_gen()
+                                                        mock_process.return_value = (
+                                                            mock_gen()
+                                                        )
 
                                                         with patch(
                                                             "app.logic.agent_core_logic_v2.run_dolphin.DialogLogHandler"
@@ -162,26 +161,30 @@ class TestRunDolphin:
                                                                 )
 
                                                                 results = []
-                                                                async for res in run_dolphin(
+                                                                async for (
+                                                                    res
+                                                                ) in run_dolphin(
                                                                     mock_agent_core,
                                                                     mock_config,
                                                                     {},
-                                                                    {"x-user-id": "user123"},
+                                                                    {
+                                                                        "x-user-id": "user123"
+                                                                    },
                                                                 ):
                                                                     results.append(res)
 
                                                                 assert len(results) > 0
 
     @pytest.mark.asyncio
-    async def test_run_dolphin_with_output_variables(self, mock_agent_core, mock_config):
+    async def test_run_dolphin_with_output_variables(
+        self, mock_agent_core, mock_config
+    ):
         """测试启用输出变量"""
         mock_agent = MagicMock()
         mock_agent.initialize = AsyncMock()
         mock_agent.executor = MagicMock()
 
-        with patch(
-            "app.logic.agent_core_logic_v2.run_dolphin.span_set_attrs"
-        ):
+        with patch("app.logic.agent_core_logic_v2.run_dolphin.span_set_attrs"):
             with patch(
                 "app.logic.agent_core_logic_v2.run_dolphin.get_user_account_id",
                 return_value="user123",
@@ -214,8 +217,8 @@ class TestRunDolphin:
                                     with patch(
                                         "app.logic.agent_core_logic_v2.run_dolphin.TriditionalToolkit"
                                     ) as mock_toolkit:
-                                        mock_toolkit.buildFromTooldict.return_value = MagicMock(
-                                            tools=[]
+                                        mock_toolkit.buildFromTooldict.return_value = (
+                                            MagicMock(tools=[])
                                         )
 
                                         with patch(
@@ -246,8 +249,11 @@ class TestRunDolphin:
                                                         with patch(
                                                             "app.logic.agent_core_logic_v2.interrupt_utils.process_arun_loop"
                                                         ) as mock_process:
+
                                                             async def mock_gen():
-                                                                yield {"status": "success"}
+                                                                yield {
+                                                                    "status": "success"
+                                                                }
 
                                                             mock_process.return_value = mock_gen()
 
@@ -262,12 +268,20 @@ class TestRunDolphin:
                                                                     )
 
                                                                     results = []
-                                                                    async for res in run_dolphin(
+                                                                    async for (
+                                                                        res
+                                                                    ) in run_dolphin(
                                                                         mock_agent_core,
                                                                         mock_config,
                                                                         {},
-                                                                        {"x-user-id": "user123"},
+                                                                        {
+                                                                            "x-user-id": "user123"
+                                                                        },
                                                                     ):
-                                                                        results.append(res)
+                                                                        results.append(
+                                                                            res
+                                                                        )
 
-                                                                    assert len(results) > 0
+                                                                    assert (
+                                                                        len(results) > 0
+                                                                    )

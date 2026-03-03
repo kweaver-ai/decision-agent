@@ -35,7 +35,7 @@ class TestDictPathParserAdvanced:
         data = {
             "users": [
                 {"name": "Alice", "pets": [{"name": "Fluffy"}, {"name": "Rex"}]},
-                {"name": "Bob", "pets": [{"name": "Whiskers"}]}
+                {"name": "Bob", "pets": [{"name": "Whiskers"}]},
             ]
         }
         parser = DictPathParser(data)
@@ -105,14 +105,8 @@ class TestDictPathParserAdvanced:
 
         data = {
             "results": [
-                {
-                    "id": 1,
-                    "data": {"value": 100}
-                },
-                {
-                    "id": 2,
-                    "data": {"value": 200}
-                }
+                {"id": 1, "data": {"value": 100}},
+                {"id": 2, "data": {"value": 200}},
             ]
         }
         parser = DictPathParser(data)
@@ -125,14 +119,7 @@ class TestDictPathParserAdvanced:
         """测试获取嵌套结构的所有路径"""
         from app.utils.dict_util import DictPathParser
 
-        data = {
-            "a": {
-                "b": {
-                    "c": 1,
-                    "d": [1, 2]
-                }
-            }
-        }
+        data = {"a": {"b": {"c": 1, "d": [1, 2]}}}
         parser = DictPathParser(data)
 
         paths = parser.get_all_paths()

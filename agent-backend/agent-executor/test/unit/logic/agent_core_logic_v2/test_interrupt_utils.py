@@ -9,7 +9,9 @@ class TestCheckAndRaiseInterrupt:
 
     def test_returns_early_for_non_dict(self):
         """测试非字典输入时提前返回"""
-        from app.logic.agent_core_logic_v2.interrupt_utils import check_and_raise_interrupt
+        from app.logic.agent_core_logic_v2.interrupt_utils import (
+            check_and_raise_interrupt,
+        )
 
         # Should not raise
         check_and_raise_interrupt("not a dict")
@@ -18,7 +20,9 @@ class TestCheckAndRaiseInterrupt:
 
     def test_returns_early_for_non_interrupted_status(self):
         """测试非中断状态时提前返回"""
-        from app.logic.agent_core_logic_v2.interrupt_utils import check_and_raise_interrupt
+        from app.logic.agent_core_logic_v2.interrupt_utils import (
+            check_and_raise_interrupt,
+        )
 
         check_and_raise_interrupt({"status": "running"})
         check_and_raise_interrupt({"status": "completed"})
@@ -27,7 +31,9 @@ class TestCheckAndRaiseInterrupt:
 
     def test_returns_early_for_non_tool_confirmation_interrupt(self):
         """测试非工具确认中断时提前返回"""
-        from app.logic.agent_core_logic_v2.interrupt_utils import check_and_raise_interrupt
+        from app.logic.agent_core_logic_v2.interrupt_utils import (
+            check_and_raise_interrupt,
+        )
 
         check_and_raise_interrupt({"status": "interrupted", "interrupt_type": "other"})
         check_and_raise_interrupt({"status": "interrupted", "interrupt_type": ""})
@@ -35,14 +41,16 @@ class TestCheckAndRaiseInterrupt:
 
     def test_raises_tool_interrupt_exception(self):
         """测试抛出工具中断异常"""
-        from app.logic.agent_core_logic_v2.interrupt_utils import check_and_raise_interrupt
+        from app.logic.agent_core_logic_v2.interrupt_utils import (
+            check_and_raise_interrupt,
+        )
         from app.common.exceptions.tool_interrupt import ToolInterruptException
 
         item = {
             "status": "interrupted",
             "interrupt_type": "tool_confirmation",
             "handle": "handle123",
-            "data": {"key": "value"}
+            "data": {"key": "value"},
         }
 
         with pytest.raises(ToolInterruptException) as exc_info:
@@ -53,13 +61,15 @@ class TestCheckAndRaiseInterrupt:
 
     def test_raises_with_empty_data(self):
         """测试抛出异常时使用空数据作为默认值"""
-        from app.logic.agent_core_logic_v2.interrupt_utils import check_and_raise_interrupt
+        from app.logic.agent_core_logic_v2.interrupt_utils import (
+            check_and_raise_interrupt,
+        )
         from app.common.exceptions.tool_interrupt import ToolInterruptException
 
         item = {
             "status": "interrupted",
             "interrupt_type": "tool_confirmation",
-            "handle": "handle456"
+            "handle": "handle456",
         }
 
         with pytest.raises(ToolInterruptException) as exc_info:
@@ -112,7 +122,7 @@ class TestProcessArunLoop:
             yield {
                 "_progress": [
                     {"stage": "assign", "value": "1"},
-                    {"stage": "execute", "value": "2"}
+                    {"stage": "execute", "value": "2"},
                 ]
             }
 
@@ -141,7 +151,7 @@ class TestProcessArunLoop:
             yield {
                 "_progress": [
                     {"stage": "assign", "value": "1"},
-                    {"stage": "execute", "value": "2"}
+                    {"stage": "execute", "value": "2"},
                 ]
             }
 
@@ -168,7 +178,7 @@ class TestProcessArunLoop:
             yield {
                 "status": "interrupted",
                 "interrupt_type": "tool_confirmation",
-                "handle": "handle123"
+                "handle": "handle123",
             }
 
         mock_agent.arun = mock_arun

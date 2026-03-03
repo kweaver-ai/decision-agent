@@ -1,4 +1,5 @@
 """Massive unit tests for app/utils/snow_id.py - 100+ tests"""
+
 import pytest
 import time
 from unittest.mock import patch, MagicMock
@@ -21,6 +22,7 @@ from app.utils.snow_id import (
 
 class TestConstants:
     """Test snow_id constants"""
+
     def test_worker_id_bits(self):
         assert WORKER_ID_BITS == 5
 
@@ -54,6 +56,7 @@ class TestConstants:
 
 class TestIdWorkerInit:
     """Test IdWorker initialization"""
+
     def test_init_default_params(self):
         worker = IdWorker(1, 1, 0)
         assert worker.worker_id == 1
@@ -101,6 +104,7 @@ class TestIdWorkerInit:
 
 class TestIdWorkerGenTimestamp:
     """Test _gen_timestamp method"""
+
     def test_returns_int(self):
         worker = IdWorker(1, 1, 0)
         result = worker._gen_timestamp()
@@ -120,6 +124,7 @@ class TestIdWorkerGenTimestamp:
 
 class TestIdWorkerGetId:
     """Test get_id method"""
+
     def test_returns_int(self):
         worker = IdWorker(1, 1, 0)
         result = worker.get_id()
@@ -178,18 +183,22 @@ class TestIdWorkerGetId:
 
 class TestIdWorkerClockBackwards:
     """Test clock backwards handling"""
+
     def test_clock_backwards_raises(self):
         worker = IdWorker(1, 1, 0)
         # Get initial timestamp
         worker.get_id()
         # Mock timestamp to go backwards
-        with patch.object(worker, '_gen_timestamp', return_value=worker.last_timestamp - 1):
+        with patch.object(
+            worker, "_gen_timestamp", return_value=worker.last_timestamp - 1
+        ):
             with pytest.raises(Exception):
                 worker.get_id()
 
 
 class TestSnowIdFunction:
     """Test snow_id function"""
+
     def test_returns_int(self):
         result = snow_id()
         assert isinstance(result, int)
@@ -216,6 +225,7 @@ class TestSnowIdFunction:
 
 class TestGlobalWorker:
     """Test global worker instance"""
+
     def test_worker_exists(self):
         assert worker is not None
 
@@ -231,9 +241,10 @@ class TestGlobalWorker:
 
 class TestIdWorkerSequence:
     """Test sequence handling"""
+
     def test_sequence_increments(self):
         worker = IdWorker(1, 1, 0)
-        with patch.object(worker, '_gen_timestamp', return_value=1000000000000):
+        with patch.object(worker, "_gen_timestamp", return_value=1000000000000):
             worker.get_id()
             assert worker.sequence == 1
             worker.get_id()
@@ -241,19 +252,22 @@ class TestIdWorkerSequence:
 
     def test_sequence_resets_on_new_timestamp(self):
         worker = IdWorker(1, 1, 100)
-        with patch.object(worker, '_gen_timestamp', side_effect=[1000000000000, 1000000000001]):
+        with patch.object(
+            worker, "_gen_timestamp", side_effect=[1000000000000, 1000000000001]
+        ):
             worker.get_id()
             assert worker.sequence == 101
 
     def test_sequence_max_value(self):
         worker = IdWorker(1, 1, 4094)
-        with patch.object(worker, '_gen_timestamp', return_value=1000000000000):
+        with patch.object(worker, "_gen_timestamp", return_value=1000000000000):
             worker.get_id()
             assert worker.sequence == 4095
 
 
 class TestIdWorkerTilNextMillis:
     """Test _til_next_millis method"""
+
     def test_waits_for_next_millis(self):
         worker = IdWorker(1, 1, 0)
         result = worker._til_next_millis(int(time.time() * 1000))
@@ -268,6 +282,7 @@ class TestIdWorkerTilNextMillis:
 
 class TestIdWorkerCombinations:
     """Test various ID combinations"""
+
     def test_min_worker_min_datacenter(self):
         worker = IdWorker(0, 0, 0)
         result = worker.get_id()
@@ -296,6 +311,7 @@ class TestIdWorkerCombinations:
 
 class TestIdWorkerUniqueIdGeneration:
     """Test unique ID generation scenarios"""
+
     def test_1000_unique_ids(self):
         worker = IdWorker(1, 1, 0)
         ids = set()
@@ -317,6 +333,7 @@ class TestIdWorkerUniqueIdGeneration:
 
 class TestSnowIdEdgeCases:
     """Test edge cases"""
+
     def test_snow_id_always_positive(self):
         for _ in range(100):
             result = snow_id()
@@ -335,26 +352,28 @@ class TestSnowIdEdgeCases:
 
 class TestIdWorkerTimestampHandling:
     """Test timestamp handling in various scenarios"""
+
     def test_same_timestamp_sequence_increments(self):
         worker = IdWorker(1, 1, 0)
         fixed_timestamp = int(time.time() * 1000)
-        with patch.object(worker, '_gen_timestamp', return_value=fixed_timestamp):
+        with patch.object(worker, "_gen_timestamp", return_value=fixed_timestamp):
             id1 = worker.get_id()
             id2 = worker.get_id()
             assert id2 > id1
 
     def test_different_timestamp_sequence_resets(self):
         worker = IdWorker(1, 1, 100)
-        with patch.object(worker, '_gen_timestamp', side_effect=[1000, 2000]):
+        with patch.object(worker, "_gen_timestamp", side_effect=[1000, 2000]):
             worker.get_id()
             assert worker.sequence == 101  # First call increments from initial sequence
 
 
 class TestIdWorkerStructure:
     """Test ID structure components"""
+
     def test_id_contains_timestamp(self):
         worker = IdWorker(1, 1, 0)
-        with patch.object(worker, '_gen_timestamp', return_value=1500000000000):
+        with patch.object(worker, "_gen_timestamp", return_value=1500000000000):
             result = worker.get_id()
             # ID should be different from timestamp
             assert result != 1500000000000
@@ -362,30 +381,31 @@ class TestIdWorkerStructure:
     def test_id_contains_worker_id(self):
         worker1 = IdWorker(5, 1, 0)
         worker2 = IdWorker(10, 1, 0)
-        with patch.object(worker1, '_gen_timestamp', return_value=1500000000000):
+        with patch.object(worker1, "_gen_timestamp", return_value=1500000000000):
             id1 = worker1.get_id()
-        with patch.object(worker2, '_gen_timestamp', return_value=1500000000000):
+        with patch.object(worker2, "_gen_timestamp", return_value=1500000000000):
             id2 = worker2.get_id()
         assert id1 != id2
 
     def test_id_contains_datacenter_id(self):
         worker1 = IdWorker(1, 5, 0)
         worker2 = IdWorker(1, 10, 0)
-        with patch.object(worker1, '_gen_timestamp', return_value=1500000000000):
+        with patch.object(worker1, "_gen_timestamp", return_value=1500000000000):
             id1 = worker1.get_id()
-        with patch.object(worker2, '_gen_timestamp', return_value=1500000000000):
+        with patch.object(worker2, "_gen_timestamp", return_value=1500000000000):
             id2 = worker2.get_id()
         assert id1 != id2
 
 
 class TestIdWorkerSequenceMask:
     """Test sequence masking behavior"""
+
     def test_sequence_mask_value(self):
         assert SEQUENCE_MASK == 4095
 
     def test_sequence_wraps_at_mask(self):
         worker = IdWorker(1, 1, 4095)
-        with patch.object(worker, '_gen_timestamp', return_value=1000000000000):
+        with patch.object(worker, "_gen_timestamp", return_value=1000000000000):
             id1 = worker.get_id()
             # After max sequence, should wait for next millisecond
             assert worker.last_timestamp == 1000000000000
@@ -393,8 +413,10 @@ class TestIdWorkerSequenceMask:
 
 class TestSnowIdPerformance:
     """Test performance-related aspects"""
+
     def test_fast_generation(self):
         import time
+
         start = time.time()
         for _ in range(1000):
             snow_id()

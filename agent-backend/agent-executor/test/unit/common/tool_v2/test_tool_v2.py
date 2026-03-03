@@ -40,4 +40,4 @@ class TestModuleImports:
         from app.common.tool_v2 import tool
 
         assert tool is not None
-        assert hasattr(tool, 'build_tools')
+        assert hasattr(tool, "build_tools")

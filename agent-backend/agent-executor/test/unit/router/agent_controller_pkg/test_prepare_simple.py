@@ -26,7 +26,9 @@ class TestPrepare:
         agent_config_dict = {"agent_id": "test123", "name": "Test", "llms": []}
         req.agent_config = AgentConfigVo(**agent_config_dict)
 
-        with patch('app.router.agent_controller_pkg.run_agent_v2.prepare.agent_factory_service') as mock_service:
+        with patch(
+            "app.router.agent_controller_pkg.run_agent_v2.prepare.agent_factory_service"
+        ) as mock_service:
             mock_service.set_headers = MagicMock()
             mock_service.check_agent_permission = AsyncMock(return_value=True)
 
@@ -50,15 +52,21 @@ class TestPrepare:
 
         config_json = '{"agent_id": "agent-456", "llms": []}'
 
-        with patch('app.router.agent_controller_pkg.run_agent_v2.prepare.agent_factory_service') as mock_service:
+        with patch(
+            "app.router.agent_controller_pkg.run_agent_v2.prepare.agent_factory_service"
+        ) as mock_service:
             mock_service.set_headers = MagicMock()
-            mock_service.get_agent_config_by_agent_id_and_version = AsyncMock(return_value={"config": config_json})
+            mock_service.get_agent_config_by_agent_id_and_version = AsyncMock(
+                return_value={"config": config_json}
+            )
             mock_service.check_agent_permission = AsyncMock(return_value=True)
 
             result = await prepare(request, req, "acc123", "premium", "dom456")
 
         # Verify get_agent_config_by_agent_id_and_version was called
-        mock_service.get_agent_config_by_agent_id_and_version.assert_called_once_with("agent-456", "1.0")
+        mock_service.get_agent_config_by_agent_id_and_version.assert_called_once_with(
+            "agent-456", "1.0"
+        )
 
     async def test_processes_options(self):
         """测试处理选项"""
@@ -73,9 +81,13 @@ class TestPrepare:
 
         from app.router.agent_controller_pkg.run_agent_v2.prepare import prepare
 
-        with patch('app.router.agent_controller_pkg.run_agent_v2.prepare.agent_factory_service') as mock_service:
+        with patch(
+            "app.router.agent_controller_pkg.run_agent_v2.prepare.agent_factory_service"
+        ) as mock_service:
             mock_service.set_headers = MagicMock()
-            mock_service.get_agent_config_by_agent_id_and_version = AsyncMock(return_value={"config": '{"llms": []}'})
+            mock_service.get_agent_config_by_agent_id_and_version = AsyncMock(
+                return_value={"config": '{"llms": []}'}
+            )
             mock_service.check_agent_permission = AsyncMock(return_value=True)
 
             result = await prepare(request, req, "acc123", "premium", "dom456")
@@ -99,9 +111,13 @@ class TestPrepare:
         from app.router.agent_controller_pkg.run_agent_v2.prepare import prepare
         from app.common.errors import AgentPermissionException
 
-        with patch('app.router.agent_controller_pkg.run_agent_v2.prepare.agent_factory_service') as mock_service:
+        with patch(
+            "app.router.agent_controller_pkg.run_agent_v2.prepare.agent_factory_service"
+        ) as mock_service:
             mock_service.set_headers = MagicMock()
-            mock_service.get_agent_config_by_agent_id_and_version = AsyncMock(return_value={"config": '{}'})
+            mock_service.get_agent_config_by_agent_id_and_version = AsyncMock(
+                return_value={"config": "{}"}
+            )
             mock_service.check_agent_permission = AsyncMock(return_value=False)
 
             with pytest.raises(AgentPermissionException):
@@ -120,9 +136,13 @@ class TestPrepare:
 
         from app.router.agent_controller_pkg.run_agent_v2.prepare import prepare
 
-        with patch('app.router.agent_controller_pkg.run_agent_v2.prepare.agent_factory_service') as mock_service:
+        with patch(
+            "app.router.agent_controller_pkg.run_agent_v2.prepare.agent_factory_service"
+        ) as mock_service:
             mock_service.set_headers = MagicMock()
-            mock_service.get_agent_config_by_agent_id_and_version = AsyncMock(return_value={"config": '{}'})
+            mock_service.get_agent_config_by_agent_id_and_version = AsyncMock(
+                return_value={"config": "{}"}
+            )
             mock_service.check_agent_permission = AsyncMock(return_value=True)
 
             result = await prepare(request, req, "acc123", "premium", "dom456")

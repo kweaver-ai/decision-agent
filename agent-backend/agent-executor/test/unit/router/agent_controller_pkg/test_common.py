@@ -13,9 +13,7 @@ class TestRunAgentParam:
         from app.common.structs import AgentConfig, AgentInput
 
         param = RunAgentParam(
-            id="test-id",
-            config=AgentConfig(),
-            input=AgentInput(query="test query")
+            id="test-id", config=AgentConfig(), input=AgentInput(query="test query")
         )
 
         assert param.id == "test-id"
@@ -27,9 +25,7 @@ class TestRunAgentParam:
         from app.router.agent_controller_pkg.common import RunAgentParam
         from app.common.structs import AgentInput
 
-        param = RunAgentParam(
-            input=AgentInput(query="test query")
-        )
+        param = RunAgentParam(input=AgentInput(query="test query"))
 
         assert param.id is None
         assert param.config is None
@@ -43,10 +39,7 @@ class TestRunAgentResponse:
         """测试创建 RunAgentResponse"""
         from app.router.agent_controller_pkg.common import RunAgentResponse
 
-        response = RunAgentResponse(
-            answer={"result": "test"},
-            status="True"
-        )
+        response = RunAgentResponse(answer={"result": "test"}, status="True")
 
         assert response.answer == {"result": "test"}
         assert response.status == "True"
@@ -197,7 +190,9 @@ class TestProcessOptions:
 
         process_options(options, agent_config, agent_input, span)
 
-        agent_input.set_value.assert_called_once_with("file", ["file1.txt", "file2.txt"])
+        agent_input.set_value.assert_called_once_with(
+            "file", ["file1.txt", "file2.txt"]
+        )
 
     async def test_process_with_recording_span(self):
         """测试处理带有 recording span"""

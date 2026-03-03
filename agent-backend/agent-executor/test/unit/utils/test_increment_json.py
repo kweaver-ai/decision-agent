@@ -141,6 +141,7 @@ class TestIncrementalAsyncGenerator:
     @pytest.mark.asyncio
     async def test_single_dict(self):
         """测试单个字典"""
+
         async def gen():
             yield {"a": 1, "b": 2}
 
@@ -158,6 +159,7 @@ class TestIncrementalAsyncGenerator:
     @pytest.mark.asyncio
     async def test_dict_changes(self):
         """测试字典变化"""
+
         async def gen():
             yield {"a": 1}
             yield {"a": 1, "b": 2}
@@ -178,6 +180,7 @@ class TestIncrementalAsyncGenerator:
     @pytest.mark.asyncio
     async def test_non_dict_first_yield(self):
         """测试首次yield非字典"""
+
         async def gen():
             yield "string value"
             yield {"a": 1}
@@ -200,6 +203,7 @@ class TestIncrementalAsyncGenerator:
     @pytest.mark.asyncio
     async def test_string_append(self):
         """测试字符串追加"""
+
         async def gen():
             yield "hello"
             yield "hello world"
@@ -227,6 +231,7 @@ class TestRestoreFullJson:
     @pytest.mark.asyncio
     async def test_simple_restore(self):
         """测试简单恢复"""
+
         async def gen():
             yield {"seq_id": 0, "key": ["a"], "content": 1, "action": "upsert"}
             yield {"seq_id": 1, "key": ["b"], "content": 2, "action": "upsert"}
@@ -238,9 +243,15 @@ class TestRestoreFullJson:
     @pytest.mark.asyncio
     async def test_nested_restore(self):
         """测试嵌套恢复"""
+
         async def gen():
             yield {"seq_id": 0, "key": ["outer"], "content": {}, "action": "upsert"}
-            yield {"seq_id": 1, "key": ["outer", "inner"], "content": "value", "action": "upsert"}
+            yield {
+                "seq_id": 1,
+                "key": ["outer", "inner"],
+                "content": "value",
+                "action": "upsert",
+            }
             yield {"seq_id": 2, "key": [], "content": None, "action": "end"}
 
         result = await restore_full_json(gen())
@@ -249,9 +260,15 @@ class TestRestoreFullJson:
     @pytest.mark.asyncio
     async def test_list_append_restore(self):
         """测试列表追加恢复"""
+
         async def gen():
             yield {"seq_id": 0, "key": ["text"], "content": "hello", "action": "upsert"}
-            yield {"seq_id": 1, "key": ["text"], "content": " world", "action": "append"}
+            yield {
+                "seq_id": 1,
+                "key": ["text"],
+                "content": " world",
+                "action": "append",
+            }
             yield {"seq_id": 2, "key": [], "content": None, "action": "end"}
 
         result = await restore_full_json(gen())
@@ -260,9 +277,15 @@ class TestRestoreFullJson:
     @pytest.mark.asyncio
     async def test_list_append_array(self):
         """测试数组元素更新恢复"""
+
         async def gen():
             # Create array with 3 elements
-            yield {"seq_id": 0, "key": ["arr"], "content": [1, 2, 3], "action": "upsert"}
+            yield {
+                "seq_id": 0,
+                "key": ["arr"],
+                "content": [1, 2, 3],
+                "action": "upsert",
+            }
             # Update element at index 1 (change 2 to 5)
             yield {"seq_id": 1, "key": ["arr", 1], "content": 5, "action": "upsert"}
             yield {"seq_id": 2, "key": [], "content": None, "action": "end"}
@@ -273,6 +296,7 @@ class TestRestoreFullJson:
     @pytest.mark.asyncio
     async def test_remove_restore(self):
         """测试删除恢复"""
+
         async def gen():
             yield {"seq_id": 0, "key": ["a"], "content": 1, "action": "upsert"}
             yield {"seq_id": 1, "key": ["b"], "content": 2, "action": "upsert"}
@@ -286,6 +310,7 @@ class TestRestoreFullJson:
     @pytest.mark.asyncio
     async def test_empty_restore(self):
         """测试空恢复"""
+
         async def gen():
             yield {"seq_id": 0, "key": [], "content": None, "action": "end"}
 

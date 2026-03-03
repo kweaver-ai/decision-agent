@@ -93,4 +93,4 @@ class TestModuleImports:
         from app.common.struct_logger import processors
 
         assert processors is not None
-        assert hasattr(processors, 'add_caller_info')
+        assert hasattr(processors, "add_caller_info")

@@ -19,7 +19,7 @@ class TestHandleParamException:
         request = Mock(spec=Request)
         exc = ParamException("Test param error")
 
-        with patch('app.router.exception_handler.param_handler.struct_logger'):
+        with patch("app.router.exception_handler.param_handler.struct_logger"):
             response = handle_param_exception(request, exc)
 
         assert response.status_code == 400
@@ -31,7 +31,7 @@ class TestHandleParamException:
         request = Mock(spec=Request)
         exc = ParamException("Test error")
 
-        with patch('app.router.exception_handler.param_handler.struct_logger'):
+        with patch("app.router.exception_handler.param_handler.struct_logger"):
             response = handle_param_exception(request, exc)
 
         # Response should be JSON
@@ -47,7 +47,9 @@ class TestHandleParamException:
         request.method = "POST"
         exc = ParamException("Test error")
 
-        with patch('app.router.exception_handler.param_handler.struct_logger') as mock_logger:
+        with patch(
+            "app.router.exception_handler.param_handler.struct_logger"
+        ) as mock_logger:
             handle_param_exception(request, exc)
 
             # Check that error was logged
@@ -60,38 +62,46 @@ class TestHandlePermissionException:
 
     async def test_handles_permission_exception(self):
         """测试处理权限异常"""
-        from app.router.exception_handler.permission_handler import handle_permission_exception
+        from app.router.exception_handler.permission_handler import (
+            handle_permission_exception,
+        )
 
         request = Mock(spec=Request)
         exc = AgentPermissionException(agent_id="agent123", user_id="user456")
 
-        with patch('app.router.exception_handler.permission_handler.struct_logger'):
+        with patch("app.router.exception_handler.permission_handler.struct_logger"):
             response = handle_permission_exception(request, exc)
 
         assert response.status_code == 403
 
     async def test_returns_forbidden(self):
         """测试返回403禁止访问"""
-        from app.router.exception_handler.permission_handler import handle_permission_exception
+        from app.router.exception_handler.permission_handler import (
+            handle_permission_exception,
+        )
 
         request = Mock(spec=Request)
         exc = AgentPermissionException(agent_id="agent123", user_id="user456")
 
-        with patch('app.router.exception_handler.permission_handler.struct_logger'):
+        with patch("app.router.exception_handler.permission_handler.struct_logger"):
             response = handle_permission_exception(request, exc)
 
         assert response.status_code == 403
 
     async def test_logs_permission_error(self):
         """测试权限错误日志记录"""
-        from app.router.exception_handler.permission_handler import handle_permission_exception
+        from app.router.exception_handler.permission_handler import (
+            handle_permission_exception,
+        )
 
         request = Mock(spec=Request)
         request.url.path = "/api/protected"
         request.method = "GET"
         exc = AgentPermissionException(agent_id="agent123", user_id="user456")
 
-        with patch('app.router.exception_handler.permission_handler.struct_logger') as mock_logger:
+        with patch(
+            "app.router.exception_handler.permission_handler.struct_logger"
+        ) as mock_logger:
             handle_permission_exception(request, exc)
 
             # Check that error was logged
@@ -116,7 +126,7 @@ class TestHandleValidationException:
             {"loc": ("body", "field1"), "type": "missing", "msg": "Field1 is required"},
         ]
 
-        with patch('app.router.exception_handler.validation_handler.struct_logger'):
+        with patch("app.router.exception_handler.validation_handler.struct_logger"):
             response = handle_param_error(request, exc)
 
         assert response.status_code == 400
@@ -138,7 +148,7 @@ class TestHandleValidationException:
             }
         ]
 
-        with patch('app.router.exception_handler.validation_handler.struct_logger'):
+        with patch("app.router.exception_handler.validation_handler.struct_logger"):
             response = handle_param_error(request, exc)
 
         assert response.status_code == 400
@@ -153,11 +163,19 @@ class TestHandleValidationException:
 
         exc = Mock(spec=RequestValidationError)
         exc.errors.return_value = [
-            {"loc": ("body", "email"), "type": "value_error.email", "msg": "Invalid email"},
-            {"loc": ("body", "age"), "type": "type_error.integer", "msg": "Not an integer"},
+            {
+                "loc": ("body", "email"),
+                "type": "value_error.email",
+                "msg": "Invalid email",
+            },
+            {
+                "loc": ("body", "age"),
+                "type": "type_error.integer",
+                "msg": "Not an integer",
+            },
         ]
 
-        with patch('app.router.exception_handler.validation_handler.struct_logger'):
+        with patch("app.router.exception_handler.validation_handler.struct_logger"):
             response = handle_param_error(request, exc)
 
         assert response.status_code == 400
@@ -172,10 +190,16 @@ class TestHandleValidationException:
 
         exc = Mock(spec=RequestValidationError)
         exc.errors.return_value = [
-            {"loc": ("body", "username"), "type": "string_too_short", "ctx": {"min_length": 3}}
+            {
+                "loc": ("body", "username"),
+                "type": "string_too_short",
+                "ctx": {"min_length": 3},
+            }
         ]
 
-        with patch('app.router.exception_handler.validation_handler.struct_logger') as mock_logger:
+        with patch(
+            "app.router.exception_handler.validation_handler.struct_logger"
+        ) as mock_logger:
             handle_param_error(request, exc)
 
             # Check that error was logged

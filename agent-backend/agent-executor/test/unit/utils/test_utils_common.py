@@ -21,7 +21,7 @@ class TestGetCallerInfo:
         assert isinstance(result, tuple)
         assert len(result) == 2
         assert isinstance(result[0], str)  # filename
-        assert isinstance(result[1], int)   # line number
+        assert isinstance(result[1], int)  # line number
 
 
 class TestIsInPod:
@@ -31,21 +31,26 @@ class TestIsInPod:
         """测试在Pod中（有环境变量）"""
         from app.utils.common import is_in_pod
 
-        with patch.dict('os.environ', {'KUBERNETES_SERVICE_HOST': '10.0.0.1', 'KUBERNETES_SERVICE_PORT': '443'}):
+        with patch.dict(
+            "os.environ",
+            {"KUBERNETES_SERVICE_HOST": "10.0.0.1", "KUBERNETES_SERVICE_PORT": "443"},
+        ):
             assert is_in_pod() is True
 
     def test_is_in_pod_false_without_env_vars(self):
         """测试不在Pod中（无环境变量）"""
         from app.utils.common import is_in_pod
 
-        with patch.dict('os.environ', {}, clear=True):
+        with patch.dict("os.environ", {}, clear=True):
             assert is_in_pod() is False
 
     def test_is_in_pod_false_with_only_host(self):
         """测试只有HOST环境变量"""
         from app.utils.common import is_in_pod
 
-        with patch.dict('os.environ', {'KUBERNETES_SERVICE_HOST': '10.0.0.1'}, clear=True):
+        with patch.dict(
+            "os.environ", {"KUBERNETES_SERVICE_HOST": "10.0.0.1"}, clear=True
+        ):
             assert is_in_pod() is False
 
 
@@ -235,7 +240,9 @@ class TestCreateSubclass:
         class BaseClass:
             pass
 
-        SubClass = create_subclass(BaseClass, "SubClass", {"custom_attr": "custom_value"})
+        SubClass = create_subclass(
+            BaseClass, "SubClass", {"custom_attr": "custom_value"}
+        )
         instance = SubClass()
 
         assert instance.custom_attr == "custom_value"
@@ -250,7 +257,9 @@ class TestCreateSubclass:
         def custom_method(self):
             return "result"
 
-        SubClass = create_subclass(BaseClass, "SubClass", {"custom_method": custom_method})
+        SubClass = create_subclass(
+            BaseClass, "SubClass", {"custom_method": custom_method}
+        )
         instance = SubClass()
 
         assert instance.custom_method() == "result"
@@ -383,7 +392,8 @@ class TestMakeJsonSerializable:
         from app.utils.common import make_json_serializable
 
         import math
-        result = make_json_serializable(float('nan'))
+
+        result = make_json_serializable(float("nan"))
         assert result is None
 
     def test_regular_float_unchanged(self):
@@ -534,7 +544,9 @@ class TestGetUnknownError:
         from app.utils.common import get_unknown_error
 
         mock_lang_func = lambda x: x
-        result = get_unknown_error("test_file", "test_func", "error details", mock_lang_func)
+        result = get_unknown_error(
+            "test_file", "test_func", "error details", mock_lang_func
+        )
 
         assert isinstance(result, dict)
         assert "description" in result
@@ -548,7 +560,9 @@ class TestGetUnknownError:
         from app.utils.common import get_unknown_error
 
         mock_lang_func = lambda x: x
-        result = get_unknown_error("test_file", "test_func", "error details", mock_lang_func)
+        result = get_unknown_error(
+            "test_file", "test_func", "error details", mock_lang_func
+        )
 
         assert result["error_code"] == "AgentExecutor.InternalServerError.UnknownError"
         assert result["error_details"] == "error details"
@@ -800,7 +814,7 @@ class TestConvertToValidClassNameExtended:
         from app.utils.common import convert_to_valid_class_name
 
         result = convert_to_valid_class_name("!@#$%^&*()")
-        assert all(c.isalnum() or c == '_' for c in result)
+        assert all(c.isalnum() or c == "_" for c in result)
 
     def test_convert_spaces(self):
         """测试空格转换"""
@@ -922,16 +936,16 @@ class TestMakeJsonSerializableExtended:
         from app.utils.common import make_json_serializable
         import math
 
-        result = make_json_serializable(float('inf'))
-        assert result == float('inf')
+        result = make_json_serializable(float("inf"))
+        assert result == float("inf")
 
     def test_negative_inf_float(self):
         """测试负无穷大浮点数"""
         from app.utils.common import make_json_serializable
         import math
 
-        result = make_json_serializable(float('-inf'))
-        assert result == float('-inf')
+        result = make_json_serializable(float("-inf"))
+        assert result == float("-inf")
 
     def test_none_value(self):
         """测试None值"""

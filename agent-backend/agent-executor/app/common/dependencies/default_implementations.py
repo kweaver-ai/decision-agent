@@ -40,7 +40,7 @@ class DefaultContextVarManager(IContextVarManager):
             return var_output.get(key, default)
         except AttributeError:
             # Mock VarOutput 可能没有 get 方法，使用备用实现
-            if not hasattr(self, '_fallback_storage'):
+            if not hasattr(self, "_fallback_storage"):
                 self._fallback_storage = {}
             return self._fallback_storage.get(key, default)
 
@@ -49,7 +49,7 @@ class DefaultContextVarManager(IContextVarManager):
             var_output = self._get_var_output()
             var_output.set(key, value)
         except AttributeError:
-            if not hasattr(self, '_fallback_storage'):
+            if not hasattr(self, "_fallback_storage"):
                 self._fallback_storage = {}
             self._fallback_storage[key] = value
 
@@ -58,7 +58,7 @@ class DefaultContextVarManager(IContextVarManager):
             var_output = self._get_var_output()
             var_output.delete(key)
         except AttributeError:
-            if hasattr(self, '_fallback_storage') and key in self._fallback_storage:
+            if hasattr(self, "_fallback_storage") and key in self._fallback_storage:
                 del self._fallback_storage[key]
 
     def exists(self, key: str) -> bool:
@@ -68,12 +68,12 @@ class DefaultContextVarManager(IContextVarManager):
             value = var_output.get(key)
             return value is not None
         except AttributeError:
-            if hasattr(self, '_fallback_storage'):
+            if hasattr(self, "_fallback_storage"):
                 return key in self._fallback_storage
             return False
 
     def get_all(self) -> Dict[str, Any]:
-        if hasattr(self, '_fallback_storage'):
+        if hasattr(self, "_fallback_storage"):
             return self._fallback_storage.copy()
         return {}
 
@@ -82,13 +82,13 @@ class DefaultExceptionHandler(IExceptionHandler):
     """默认异常处理器"""
 
     def create_model_exception(self, message: str) -> Exception:
-        return get_dolphin_exception('ModelException')(message)
+        return get_dolphin_exception("ModelException")(message)
 
     def create_skill_exception(self, message: str) -> Exception:
-        return get_dolphin_exception('SkillException')(message)
+        return get_dolphin_exception("SkillException")(message)
 
     def create_dolphin_exception(self, message: str) -> Exception:
-        return get_dolphin_exception('DolphinException')(message)
+        return get_dolphin_exception("DolphinException")(message)
 
     def is_available(self) -> bool:
         return is_dolphin_available()

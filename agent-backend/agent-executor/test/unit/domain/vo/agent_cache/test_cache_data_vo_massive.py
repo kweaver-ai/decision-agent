@@ -207,7 +207,13 @@ class TestCacheDataVoMassive:
 
     def test_tools_info_values_can_be_any(self):
         vo = CacheDataVo()
-        vo.tools_info_dict = {"str": "s", "int": 1, "float": 1.1, "bool": True, "none": None}
+        vo.tools_info_dict = {
+            "str": "s",
+            "int": 1,
+            "float": 1.1,
+            "bool": True,
+            "none": None,
+        }
         assert len(vo.tools_info_dict) == 5
 
     def test_skill_agent_with_list_value(self):
@@ -242,6 +248,7 @@ class TestCacheDataVoMassive:
 
     def test_dataclass_is_dataclass(self):
         from dataclasses import is_dataclass
+
         assert is_dataclass(CacheDataVo)
 
     def test_agent_config_assignment(self):
@@ -335,4 +342,5 @@ class TestCacheDataVoMassive:
 
     def test_dataclass_fields_count(self):
         from dataclasses import fields
+
         assert len(fields(CacheDataVo)) == 4

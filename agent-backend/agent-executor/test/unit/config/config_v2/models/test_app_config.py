@@ -35,7 +35,7 @@ class TestAppConfig:
             host_ip="127.0.0.1",
             port=8080,
             host_prefix="/api/v1",
-            rps_limit=200
+            rps_limit=200,
         )
 
         assert config.debug is True
@@ -101,7 +101,7 @@ class TestAppConfig:
             "app_root": "/app",
             "enable_dolphin_agent_verbose": True,
             "log_conversation_session_init": True,
-            "is_write_exception_log_to_file": True
+            "is_write_exception_log_to_file": True,
         }
 
         config = AppConfig.from_dict(data)
@@ -175,7 +175,7 @@ class TestLocalDevConfig:
             do_not_init_built_in_agent_and_tool=True,
             dolphin_agent_output_variables=["var1", "var2"],
             enable_streaming_response_rate_limit=True,
-            is_show_config_on_boot=True
+            is_show_config_on_boot=True,
         )
 
         assert config.is_skip_pms_check is True
@@ -201,7 +201,7 @@ class TestLocalDevConfig:
             "do_not_init_built_in_agent_and_tool": True,
             "dolphin_agent_output_variables": ["var1", "var2"],
             "enable_streaming_response_rate_limit": True,
-            "is_show_config_on_boot": True
+            "is_show_config_on_boot": True,
         }
 
         config = LocalDevConfig.from_dict(data)
@@ -232,7 +232,7 @@ class TestFeaturesConfig:
             use_explore_block_v2=False,
             disable_dolphin_sdk_llm_cache=True,
             enable_dolphin_agent_output_variables_ctrl=False,
-            is_skill_agent_need_progress=True
+            is_skill_agent_need_progress=True,
         )
 
         assert config.use_explore_block_v2 is False
@@ -257,7 +257,7 @@ class TestFeaturesConfig:
             "use_explore_block_v2": False,
             "disable_dolphin_sdk_llm_cache": True,
             "enable_dolphin_agent_output_variables_ctrl": False,
-            "is_skill_agent_need_progress": True
+            "is_skill_agent_need_progress": True,
         }
 
         config = FeaturesConfig.from_dict(data)

@@ -12,7 +12,9 @@ class TestDefaultContextVarManager:
 
     async def test_init(self):
         """测试初始化"""
-        from app.common.dependencies.default_implementations import DefaultContextVarManager
+        from app.common.dependencies.default_implementations import (
+            DefaultContextVarManager,
+        )
 
         manager = DefaultContextVarManager()
 
@@ -20,7 +22,9 @@ class TestDefaultContextVarManager:
 
     async def test_get_with_fallback_storage(self):
         """测试使用fallback storage获取值"""
-        from app.common.dependencies.default_implementations import DefaultContextVarManager
+        from app.common.dependencies.default_implementations import (
+            DefaultContextVarManager,
+        )
 
         manager = DefaultContextVarManager()
 
@@ -32,7 +36,9 @@ class TestDefaultContextVarManager:
 
     async def test_set_and_get(self):
         """测试设置和获取值"""
-        from app.common.dependencies.default_implementations import DefaultContextVarManager
+        from app.common.dependencies.default_implementations import (
+            DefaultContextVarManager,
+        )
 
         manager = DefaultContextVarManager()
 
@@ -46,7 +52,9 @@ class TestDefaultContextVarManager:
 
     async def test_get_default_value(self):
         """测试获取默认值"""
-        from app.common.dependencies.default_implementations import DefaultContextVarManager
+        from app.common.dependencies.default_implementations import (
+            DefaultContextVarManager,
+        )
 
         manager = DefaultContextVarManager()
 
@@ -55,7 +63,9 @@ class TestDefaultContextVarManager:
 
     async def test_delete_key(self):
         """测试删除键"""
-        from app.common.dependencies.default_implementations import DefaultContextVarManager
+        from app.common.dependencies.default_implementations import (
+            DefaultContextVarManager,
+        )
 
         manager = DefaultContextVarManager()
 
@@ -67,7 +77,9 @@ class TestDefaultContextVarManager:
 
     async def test_delete_nonexistent_key(self):
         """测试删除不存在的键（不应报错）"""
-        from app.common.dependencies.default_implementations import DefaultContextVarManager
+        from app.common.dependencies.default_implementations import (
+            DefaultContextVarManager,
+        )
 
         manager = DefaultContextVarManager()
 
@@ -76,7 +88,9 @@ class TestDefaultContextVarManager:
 
     async def test_exists(self):
         """测试检查键是否存在"""
-        from app.common.dependencies.default_implementations import DefaultContextVarManager
+        from app.common.dependencies.default_implementations import (
+            DefaultContextVarManager,
+        )
 
         manager = DefaultContextVarManager()
 
@@ -87,7 +101,9 @@ class TestDefaultContextVarManager:
 
     async def test_get_all(self):
         """测试获取所有值"""
-        from app.common.dependencies.default_implementations import DefaultContextVarManager
+        from app.common.dependencies.default_implementations import (
+            DefaultContextVarManager,
+        )
 
         manager = DefaultContextVarManager()
 
@@ -97,7 +113,9 @@ class TestDefaultContextVarManager:
 
     async def test_get_with_var_output(self):
         """测试使用真正的 VarOutput 获取值"""
-        from app.common.dependencies.default_implementations import DefaultContextVarManager
+        from app.common.dependencies.default_implementations import (
+            DefaultContextVarManager,
+        )
 
         manager = DefaultContextVarManager()
 
@@ -110,7 +128,9 @@ class TestDefaultContextVarManager:
 
     async def test_delete_from_fallback_storage(self):
         """测试从 fallback storage 删除"""
-        from app.common.dependencies.default_implementations import DefaultContextVarManager
+        from app.common.dependencies.default_implementations import (
+            DefaultContextVarManager,
+        )
 
         manager = DefaultContextVarManager()
 
@@ -128,7 +148,9 @@ class TestDefaultContextVarManager:
 
     async def test_delete_from_nonexistent_fallback(self):
         """测试从不存在的 fallback storage 删除（不报错）"""
-        from app.common.dependencies.default_implementations import DefaultContextVarManager
+        from app.common.dependencies.default_implementations import (
+            DefaultContextVarManager,
+        )
 
         manager = DefaultContextVarManager()
 
@@ -149,7 +171,9 @@ class TestDefaultExceptionHandler:
 
     async def test_create_model_exception(self):
         """测试创建模型异常"""
-        from app.common.dependencies.default_implementations import DefaultExceptionHandler
+        from app.common.dependencies.default_implementations import (
+            DefaultExceptionHandler,
+        )
 
         handler = DefaultExceptionHandler()
 
@@ -160,7 +184,9 @@ class TestDefaultExceptionHandler:
 
     async def test_create_skill_exception(self):
         """测试创建技能异常"""
-        from app.common.dependencies.default_implementations import DefaultExceptionHandler
+        from app.common.dependencies.default_implementations import (
+            DefaultExceptionHandler,
+        )
 
         handler = DefaultExceptionHandler()
 
@@ -171,7 +197,9 @@ class TestDefaultExceptionHandler:
 
     async def test_create_dolphin_exception(self):
         """测试创建Dolphin异常"""
-        from app.common.dependencies.default_implementations import DefaultExceptionHandler
+        from app.common.dependencies.default_implementations import (
+            DefaultExceptionHandler,
+        )
 
         handler = DefaultExceptionHandler()
 
@@ -182,7 +210,9 @@ class TestDefaultExceptionHandler:
 
     async def test_is_available(self):
         """测试检查Dolphin是否可用"""
-        from app.common.dependencies.default_implementations import DefaultExceptionHandler
+        from app.common.dependencies.default_implementations import (
+            DefaultExceptionHandler,
+        )
 
         handler = DefaultExceptionHandler()
 
@@ -197,7 +227,9 @@ class TestDefaultCallerInfoProvider:
 
     async def test_get_caller_info(self):
         """测试获取调用者信息"""
-        from app.common.dependencies.default_implementations import DefaultCallerInfoProvider
+        from app.common.dependencies.default_implementations import (
+            DefaultCallerInfoProvider,
+        )
 
         provider = DefaultCallerInfoProvider()
 
@@ -218,7 +250,9 @@ class TestDefaultEnvironmentDetector:
 
     async def test_is_in_pod(self):
         """测试检查是否在Pod中"""
-        from app.common.dependencies.default_implementations import DefaultEnvironmentDetector
+        from app.common.dependencies.default_implementations import (
+            DefaultEnvironmentDetector,
+        )
 
         detector = DefaultEnvironmentDetector()
 
@@ -226,21 +260,31 @@ class TestDefaultEnvironmentDetector:
         assert detector.is_in_pod() is False
 
         # With pod environment vars
-        with patch.dict(os.environ, {"KUBERNETES_SERVICE_HOST": "localhost", "KUBERNETES_SERVICE_PORT": "8080"}):
+        with patch.dict(
+            os.environ,
+            {"KUBERNETES_SERVICE_HOST": "localhost", "KUBERNETES_SERVICE_PORT": "8080"},
+        ):
             new_detector = DefaultEnvironmentDetector()
             assert new_detector.is_in_pod() is True
 
     async def test_get_environment_type_pod(self):
         """测试获取Pod环境类型"""
-        from app.common.dependencies.default_implementations import DefaultEnvironmentDetector
+        from app.common.dependencies.default_implementations import (
+            DefaultEnvironmentDetector,
+        )
 
-        with patch.dict(os.environ, {"KUBERNETES_SERVICE_HOST": "localhost", "KUBERNETES_SERVICE_PORT": "8080"}):
+        with patch.dict(
+            os.environ,
+            {"KUBERNETES_SERVICE_HOST": "localhost", "KUBERNETES_SERVICE_PORT": "8080"},
+        ):
             detector = DefaultEnvironmentDetector()
             assert detector.get_environment_type() == "pod"
 
     async def test_get_environment_type_test(self):
         """测试获取测试环境类型"""
-        from app.common.dependencies.default_implementations import DefaultEnvironmentDetector
+        from app.common.dependencies.default_implementations import (
+            DefaultEnvironmentDetector,
+        )
 
         with patch.dict(os.environ, {"ENVIRONMENT": "test"}):
             detector = DefaultEnvironmentDetector()
@@ -248,7 +292,9 @@ class TestDefaultEnvironmentDetector:
 
     async def test_get_environment_type_development(self):
         """测试获取开发环境类型"""
-        from app.common.dependencies.default_implementations import DefaultEnvironmentDetector
+        from app.common.dependencies.default_implementations import (
+            DefaultEnvironmentDetector,
+        )
 
         with patch.dict(os.environ, {"ENVIRONMENT": "development"}):
             detector = DefaultEnvironmentDetector()
@@ -256,7 +302,9 @@ class TestDefaultEnvironmentDetector:
 
     async def test_get_environment_type_unknown(self):
         """测试获取未知环境类型"""
-        from app.common.dependencies.default_implementations import DefaultEnvironmentDetector
+        from app.common.dependencies.default_implementations import (
+            DefaultEnvironmentDetector,
+        )
 
         # Clear env vars
         env_copy = os.environ.copy()
@@ -275,7 +323,9 @@ class TestDefaultInstanceFunctions:
 
     async def test_get_default_context_var_manager_singleton(self):
         """测试获取单例上下文变量管理器"""
-        from app.common.dependencies.default_implementations import get_default_context_var_manager
+        from app.common.dependencies.default_implementations import (
+            get_default_context_var_manager,
+        )
 
         manager1 = get_default_context_var_manager()
         manager2 = get_default_context_var_manager()
@@ -285,7 +335,9 @@ class TestDefaultInstanceFunctions:
 
     async def test_get_default_exception_handler_singleton(self):
         """测试获取单例异常处理器"""
-        from app.common.dependencies.default_implementations import get_default_exception_handler
+        from app.common.dependencies.default_implementations import (
+            get_default_exception_handler,
+        )
 
         handler1 = get_default_exception_handler()
         handler2 = get_default_exception_handler()
@@ -295,7 +347,9 @@ class TestDefaultInstanceFunctions:
 
     async def test_get_default_caller_info_provider_singleton(self):
         """测试获取单例调用者信息提供者"""
-        from app.common.dependencies.default_implementations import get_default_caller_info_provider
+        from app.common.dependencies.default_implementations import (
+            get_default_caller_info_provider,
+        )
 
         provider1 = get_default_caller_info_provider()
         provider2 = get_default_caller_info_provider()
@@ -305,7 +359,9 @@ class TestDefaultInstanceFunctions:
 
     async def test_get_default_environment_detector_singleton(self):
         """测试获取单例环境检测器"""
-        from app.common.dependencies.default_implementations import get_default_environment_detector
+        from app.common.dependencies.default_implementations import (
+            get_default_environment_detector,
+        )
 
         detector1 = get_default_environment_detector()
         detector2 = get_default_environment_detector()

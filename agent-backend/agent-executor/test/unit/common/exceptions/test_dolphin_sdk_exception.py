@@ -25,14 +25,15 @@ class TestGetDolphinExceptionClasses:
         """测试导入错误时返回空字典"""
         # Mock get_dolphin_exception to raise ImportError
         import builtins
+
         original_import = builtins.__import__
 
         def mock_import(name, *args, **kwargs):
-            if name == 'app.common.dependencies':
+            if name == "app.common.dependencies":
                 raise ImportError("Mocked import error")
             return original_import(name, *args, **kwargs)
 
-        with patch('builtins.__import__', side_effect=mock_import):
+        with patch("builtins.__import__", side_effect=mock_import):
             result = _get_dolphin_exception_classes()
 
             # Should return empty dict when import fails
@@ -47,9 +48,7 @@ class TestDolphinSDKExceptionInit:
         exc = ValueError("test error")
 
         exception = DolphinSDKException(
-            raw_exception=exc,
-            agent_id="test_agent",
-            session_id="test_session"
+            raw_exception=exc, agent_id="test_agent", session_id="test_session"
         )
 
         assert exception is not None
@@ -62,7 +61,7 @@ class TestDolphinSDKExceptionInit:
             raw_exception=exc,
             agent_id="agent123",
             session_id="session456",
-            user_id="user789"
+            user_id="user789",
         )
 
         assert exception is not None

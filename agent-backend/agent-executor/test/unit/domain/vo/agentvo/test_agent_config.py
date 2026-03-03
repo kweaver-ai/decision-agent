@@ -97,7 +97,7 @@ class TestAgentConfigVo:
             agent_run_id="run_789",
             output_vars=["result"],
             incremental_output=True,
-            agent_version="v1.0"
+            agent_version="v1.0",
         )
         assert config.input == {"query": "test"}
         assert config.agent_id == "agent_123"
@@ -127,7 +127,9 @@ class TestAgentConfigVo:
 
     def test_get_config_last_set_timestamp_with_value(self):
         """测试获取config_last_set_timestamp有值"""
-        from app.domain.vo.agentvo.agent_config_vos.config_metadata_vo import ConfigMetadataVo
+        from app.domain.vo.agentvo.agent_config_vos.config_metadata_vo import (
+            ConfigMetadataVo,
+        )
 
         metadata = ConfigMetadataVo(config_last_set_timestamp=1234567890)
         config = AgentConfigVo(metadata=metadata)

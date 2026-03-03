@@ -29,9 +29,9 @@ def _get_dolphin_exception_classes() -> Dict[Type[Exception], Any]:
         from app.common.dependencies import get_dolphin_exception
 
         return {
-            get_dolphin_exception('ModelException'): DolphinSDKModelError,
-            get_dolphin_exception('SkillException'): DolphinSDKSkillError,
-            get_dolphin_exception('DolphinException'): DolphinSDKBaseError,
+            get_dolphin_exception("ModelException"): DolphinSDKModelError,
+            get_dolphin_exception("SkillException"): DolphinSDKSkillError,
+            get_dolphin_exception("DolphinException"): DolphinSDKBaseError,
         }
     except ImportError:
         # 如果依赖不可用，返回空映射

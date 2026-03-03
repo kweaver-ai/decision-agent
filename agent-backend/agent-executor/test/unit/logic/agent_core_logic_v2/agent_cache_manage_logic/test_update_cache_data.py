@@ -50,7 +50,12 @@ class TestUpdateCacheData:
 
     @pytest.mark.asyncio
     async def test_update_cache_data_with_existing_cache(
-        self, mock_manager, mock_cache_id_vo, mock_agent_config, mock_cache_entity, mock_agent_core_v2
+        self,
+        mock_manager,
+        mock_cache_id_vo,
+        mock_agent_config,
+        mock_cache_entity,
+        mock_agent_core_v2,
     ):
         """测试更新已存在的缓存数据"""
         mock_manager.cache_service.load.return_value = mock_cache_entity

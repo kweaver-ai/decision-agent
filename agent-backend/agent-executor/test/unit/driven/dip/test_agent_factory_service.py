@@ -57,7 +57,9 @@ class TestGetAgentConfig:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.get = MagicMock(return_value=mock_get_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -81,7 +83,9 @@ class TestGetAgentConfig:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.get = MagicMock(return_value=mock_get_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -110,7 +114,9 @@ class TestGetAgentConfigByKey:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.get = MagicMock(return_value=mock_get_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -134,7 +140,9 @@ class TestGetAgentConfigByKey:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.get = MagicMock(return_value=mock_get_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -165,7 +173,9 @@ class TestCheckAgentPermission:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.post = MagicMock(return_value=mock_post_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -195,7 +205,9 @@ class TestCheckAgentPermission:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.post = MagicMock(return_value=mock_post_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -225,7 +237,9 @@ class TestCheckAgentPermission:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.post = MagicMock(return_value=mock_post_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -255,7 +269,9 @@ class TestCheckAgentPermission:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.post = MagicMock(return_value=mock_post_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -287,7 +303,9 @@ class TestCheckAgentPermission:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.post = MagicMock(return_value=mock_post_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -301,7 +319,9 @@ class TestGetAgentConfigByAgentIdAndVersion:
     """测试 get_agent_config_by_agent_id_and_version 方法"""
 
     @pytest.mark.asyncio
-    async def test_get_agent_config_by_agent_id_and_version_success(self, agent_factory_service):
+    async def test_get_agent_config_by_agent_id_and_version_success(
+        self, agent_factory_service
+    ):
         """测试成功获取 agent 配置"""
         agent_id = "agent123"
         version = "v1.0"
@@ -319,18 +339,24 @@ class TestGetAgentConfigByAgentIdAndVersion:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.get = MagicMock(return_value=mock_get_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
-            result = await agent_factory_service.get_agent_config_by_agent_id_and_version(
-                agent_id, version
+            result = (
+                await agent_factory_service.get_agent_config_by_agent_id_and_version(
+                    agent_id, version
+                )
             )
 
             assert result == expected_response
 
     @pytest.mark.asyncio
-    async def test_get_agent_config_by_agent_id_and_version_404_error(self, agent_factory_service):
+    async def test_get_agent_config_by_agent_id_and_version_404_error(
+        self, agent_factory_service
+    ):
         """测试 404 错误响应"""
         agent_id = "agent123"
         version = "v1.0"
@@ -346,7 +372,9 @@ class TestGetAgentConfigByAgentIdAndVersion:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.get = MagicMock(return_value=mock_get_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 

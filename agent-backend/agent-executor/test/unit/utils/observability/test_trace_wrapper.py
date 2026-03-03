@@ -10,7 +10,9 @@ class TestInternalSpan:
 
     def test_returns_original_function_when_sdk_unavailable(self):
         """测试SDK不可用时返回原函数"""
-        with patch("app.utils.observability.trace_wrapper.TELEMETRY_SDK_AVAILABLE", False):
+        with patch(
+            "app.utils.observability.trace_wrapper.TELEMETRY_SDK_AVAILABLE", False
+        ):
             from app.utils.observability.trace_wrapper import internal_span
 
             @internal_span()
@@ -369,7 +371,9 @@ class TestInternalSpan:
     @patch("app.utils.observability.trace_wrapper.TELEMETRY_SDK_AVAILABLE", True)
     @patch("app.common.config.Config")
     @patch("app.utils.observability.trace_wrapper.func_judgment")
-    async def test_async_function_with_empty_attributes(self, m_func_judgment, m_config):
+    async def test_async_function_with_empty_attributes(
+        self, m_func_judgment, m_config
+    ):
         """测试空属性字典的异步函数"""
         m_config.is_o11y_trace_enabled.return_value = True
         m_func_judgment.return_value = (True, False)
@@ -399,7 +403,9 @@ class TestInternalSpan:
     @patch("app.utils.observability.trace_wrapper.TELEMETRY_SDK_AVAILABLE", True)
     @patch("app.common.config.Config")
     @patch("app.utils.observability.trace_wrapper.func_judgment")
-    async def test_async_function_when_span_not_recording(self, m_func_judgment, m_config):
+    async def test_async_function_when_span_not_recording(
+        self, m_func_judgment, m_config
+    ):
         """测试span不记录时异步函数异常处理"""
         m_config.is_o11y_trace_enabled.return_value = True
         m_func_judgment.return_value = (True, False)

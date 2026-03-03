@@ -33,7 +33,10 @@ class TestStringOutput:
         async def mock_generator():
             yield {"key": "value"}
 
-        with patch("app.logic.agent_core_logic_v2.output.json_serialize_async", new_callable=AsyncMock) as mock_serialize:
+        with patch(
+            "app.logic.agent_core_logic_v2.output.json_serialize_async",
+            new_callable=AsyncMock,
+        ) as mock_serialize:
             mock_serialize.return_value = '{"key": "value"}'
 
             results = []
@@ -55,8 +58,15 @@ class TestStringOutput:
             yield {"chunk": 2}
             yield {"chunk": 3}
 
-        with patch("app.logic.agent_core_logic_v2.output.json_serialize_async", new_callable=AsyncMock) as mock_serialize:
-            mock_serialize.side_effect = ['{"chunk": 1}', '{"chunk": 2}', '{"chunk": 3}']
+        with patch(
+            "app.logic.agent_core_logic_v2.output.json_serialize_async",
+            new_callable=AsyncMock,
+        ) as mock_serialize:
+            mock_serialize.side_effect = [
+                '{"chunk": 1}',
+                '{"chunk": 2}',
+                '{"chunk": 3}',
+            ]
 
             results = []
             async for result in handler.string_output(mock_generator()):
@@ -159,7 +169,9 @@ class TestAddTtft:
             yield {"chunk": 1}
             yield {"chunk": 2}
 
-        with patch("app.logic.agent_core_logic_v2.output.time.time", return_value=101.0):
+        with patch(
+            "app.logic.agent_core_logic_v2.output.time.time", return_value=101.0
+        ):
             start_time = 100.0
 
             results = []
@@ -184,7 +196,9 @@ class TestAddDatetime:
             yield {"data": "test"}
 
         with patch("app.logic.agent_core_logic_v2.output.datetime") as mock_datetime:
-            mock_datetime.now.return_value.strftime.return_value[:-3] = "2025-01-01 12:00:00.000"
+            mock_datetime.now.return_value.strftime.return_value[:-3] = (
+                "2025-01-01 12:00:00.000"
+            )
 
             results = []
             async for result in handler.add_datetime(mock_generator()):
@@ -233,12 +247,22 @@ class TestResultOutput:
         mock_agent_input = MagicMock()
         headers = {"x-user-id": "user123"}
 
-        with patch("app.logic.agent_core_logic_v2.output.span_set_attrs"), \
-             patch("app.logic.agent_core_logic_v2.output.get_user_account_id", return_value="user123"), \
-             patch("app.logic.agent_core_logic_v2.output.json_serialize_async", new_callable=AsyncMock, return_value='{"data": "test"}'):
-
+        with (
+            patch("app.logic.agent_core_logic_v2.output.span_set_attrs"),
+            patch(
+                "app.logic.agent_core_logic_v2.output.get_user_account_id",
+                return_value="user123",
+            ),
+            patch(
+                "app.logic.agent_core_logic_v2.output.json_serialize_async",
+                new_callable=AsyncMock,
+                return_value='{"data": "test"}',
+            ),
+        ):
             results = []
-            async for result in handler.result_output(mock_agent_config, mock_agent_input, headers):
+            async for result in handler.result_output(
+                mock_agent_config, mock_agent_input, headers
+            ):
                 results.append(result)
 
             # Verify cleanup was called
@@ -262,15 +286,27 @@ class TestResultOutput:
         mock_agent_input = MagicMock()
         headers = {}
 
-        with patch("app.logic.agent_core_logic_v2.output.span_set_attrs"), \
-             patch("app.logic.agent_core_logic_v2.output.get_user_account_id", return_value="user123"), \
-             patch("app.logic.agent_core_logic_v2.output.incremental_async_generator") as mock_incremental, \
-             patch("app.logic.agent_core_logic_v2.output.json_serialize_async", new_callable=AsyncMock, return_value='{"data": "test"}'):
-
+        with (
+            patch("app.logic.agent_core_logic_v2.output.span_set_attrs"),
+            patch(
+                "app.logic.agent_core_logic_v2.output.get_user_account_id",
+                return_value="user123",
+            ),
+            patch(
+                "app.logic.agent_core_logic_v2.output.incremental_async_generator"
+            ) as mock_incremental,
+            patch(
+                "app.logic.agent_core_logic_v2.output.json_serialize_async",
+                new_callable=AsyncMock,
+                return_value='{"data": "test"}',
+            ),
+        ):
             mock_incremental.return_value = self._mock_output_generator()
 
             results = []
-            async for result in handler.result_output(mock_agent_config, mock_agent_input, headers):
+            async for result in handler.result_output(
+                mock_agent_config, mock_agent_input, headers
+            ):
                 results.append(result)
 
             # Verify incremental generator was used
@@ -295,12 +331,22 @@ class TestResultOutput:
         headers = {}
         start_time = 100.0
 
-        with patch("app.logic.agent_core_logic_v2.output.span_set_attrs"), \
-             patch("app.logic.agent_core_logic_v2.output.get_user_account_id", return_value="user123"), \
-             patch("app.logic.agent_core_logic_v2.output.json_serialize_async", new_callable=AsyncMock, return_value='{"data": "test"}'):
-
+        with (
+            patch("app.logic.agent_core_logic_v2.output.span_set_attrs"),
+            patch(
+                "app.logic.agent_core_logic_v2.output.get_user_account_id",
+                return_value="user123",
+            ),
+            patch(
+                "app.logic.agent_core_logic_v2.output.json_serialize_async",
+                new_callable=AsyncMock,
+                return_value='{"data": "test"}',
+            ),
+        ):
             results = []
-            async for result in handler.result_output(mock_agent_config, mock_agent_input, headers, start_time=start_time):
+            async for result in handler.result_output(
+                mock_agent_config, mock_agent_input, headers, start_time=start_time
+            ):
                 results.append(result)
 
             assert len(results) > 0
@@ -323,11 +369,17 @@ class TestResultOutput:
         mock_agent_input = MagicMock()
         headers = {}
 
-        with patch("app.logic.agent_core_logic_v2.output.span_set_attrs"), \
-             patch("app.logic.agent_core_logic_v2.output.get_user_account_id", return_value="user123"):
-
+        with (
+            patch("app.logic.agent_core_logic_v2.output.span_set_attrs"),
+            patch(
+                "app.logic.agent_core_logic_v2.output.get_user_account_id",
+                return_value="user123",
+            ),
+        ):
             with pytest.raises(Exception, match="Run failed"):
-                async for _ in handler.result_output(mock_agent_config, mock_agent_input, headers):
+                async for _ in handler.result_output(
+                    mock_agent_config, mock_agent_input, headers
+                ):
                     pass
 
             # Cleanup should still be called
@@ -409,7 +461,9 @@ class TestPartialOutput:
 
         output_vars = ["field1"]
 
-        with patch("app.logic.agent_core_logic_v2.output.is_dolphin_var", return_value=True):
+        with patch(
+            "app.logic.agent_core_logic_v2.output.is_dolphin_var", return_value=True
+        ):
             results = []
             async for result in handler.partial_output(mock_generator(), output_vars):
                 results.append(result)

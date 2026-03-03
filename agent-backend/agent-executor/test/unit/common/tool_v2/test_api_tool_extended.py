@@ -12,14 +12,8 @@ class TestAPIToolInit:
         """测试基本初始化"""
         from app.common.tool_v2.api_tool import APITool
 
-        tool_info = {
-            "name": "test_tool",
-            "description": "Test description"
-        }
-        tool_config = {
-            "tool_input": [],
-            "intervention": False
-        }
+        tool_info = {"name": "test_tool", "description": "Test description"}
+        tool_config = {"tool_input": [], "intervention": False}
 
         tool = APITool(tool_info, tool_config)
 
@@ -34,11 +28,9 @@ class TestAPIToolInit:
         tool_info = {
             "name": "test_tool",
             "description": "Test description",
-            "use_rule": "Use this tool for testing"
+            "use_rule": "Use this tool for testing",
         }
-        tool_config = {
-            "tool_input": []
-        }
+        tool_config = {"tool_input": []}
 
         tool = APITool(tool_info, tool_config)
 
@@ -49,14 +41,11 @@ class TestAPIToolInit:
         """测试带干预配置的初始化"""
         from app.common.tool_v2.api_tool import APITool
 
-        tool_info = {
-            "name": "test_tool",
-            "description": "Test"
-        }
+        tool_info = {"name": "test_tool", "description": "Test"}
         tool_config = {
             "tool_input": [],
             "intervention": True,
-            "intervention_confirmation_message": "Confirm execution?"
+            "intervention_confirmation_message": "Confirm execution?",
         }
 
         tool = APITool(tool_info, tool_config)
@@ -72,15 +61,11 @@ class TestAPIToolInit:
         tool_info = {
             "name": "test_tool",
             "description": "Test",
-            "metadata": {"api_spec": {}}
+            "metadata": {"api_spec": {}},
         }
         tool_config = {
             "tool_input": [
-                {
-                    "input_name": "param1",
-                    "input_type": "string",
-                    "map_type": "auto"
-                }
+                {"input_name": "param1", "input_type": "string", "map_type": "auto"}
             ]
         }
 
@@ -93,18 +78,12 @@ class TestAPIToolInit:
         """测试带结果处理策略的初始化"""
         from app.common.tool_v2.api_tool import APITool
 
-        tool_info = {
-            "name": "test_tool",
-            "metadata": {"api_spec": {}}
-        }
+        tool_info = {"name": "test_tool", "metadata": {"api_spec": {}}}
         tool_config = {
             "tool_input": [],
             "result_process_strategies": [
-                {
-                    "category": {"id": "category1"},
-                    "strategy": {"id": "strategy1"}
-                }
-            ]
+                {"category": {"id": "category1"}, "strategy": {"id": "strategy1"}}
+            ],
         }
 
         tool = APITool(tool_info, tool_config)
@@ -118,24 +97,20 @@ class TestAPIToolInit:
         from app.common.tool_v2.api_tool import APITool
 
         tool_info = {"name": "my_tool"}
-        tool_config = {
-            "tool_input": [],
-            "intervention": True
-        }
+        tool_config = {"tool_input": [], "intervention": True}
 
         tool = APITool(tool_info, tool_config)
 
-        assert tool.interrupt_config["confirmation_message"] == "工具 my_tool 需要确认执行"
+        assert (
+            tool.interrupt_config["confirmation_message"] == "工具 my_tool 需要确认执行"
+        )
 
     def test_init_no_intervention_config(self):
         """测试无干预配置"""
         from app.common.tool_v2.api_tool import APITool
 
         tool_info = {"name": "test_tool"}
-        tool_config = {
-            "tool_input": [],
-            "intervention": False
-        }
+        tool_config = {"tool_input": [], "intervention": False}
 
         tool = APITool(tool_info, tool_config)
 
@@ -146,20 +121,13 @@ class TestAPIToolInit:
         from app.common.tool_v2.api_tool import APITool
         from app.common.tool_v2.common import ToolMapInfo
 
-        tool_info = {
-            "name": "test_tool",
-            "metadata": {"api_spec": {}}
-        }
+        tool_info = {"name": "test_tool", "metadata": {"api_spec": {}}}
 
         # 使用 Pydantic 模型
         tool_map = ToolMapInfo(
-            input_name="param1",
-            input_type="string",
-            map_type="auto"
+            input_name="param1", input_type="string", map_type="auto"
         )
-        tool_config = {
-            "tool_input": [tool_map]
-        }
+        tool_config = {"tool_input": [tool_map]}
 
         tool = APITool(tool_info, tool_config)
 
@@ -169,12 +137,8 @@ class TestAPIToolInit:
         """测试 tool_info 无名称时使用 tool_id"""
         from app.common.tool_v2.api_tool import APITool
 
-        tool_info = {
-            "tool_id": "tool_123"
-        }
-        tool_config = {
-            "tool_input": []
-        }
+        tool_info = {"tool_id": "tool_123"}
+        tool_config = {"tool_input": []}
 
         tool = APITool(tool_info, tool_config)
 
@@ -193,7 +157,7 @@ class TestAPIToolInit:
                             "name": "id",
                             "in": "path",
                             "required": True,
-                            "schema": {"type": "string"}
+                            "schema": {"type": "string"},
                         }
                     ],
                     "responses": [
@@ -203,20 +167,16 @@ class TestAPIToolInit:
                                 "application/json": {
                                     "schema": {
                                         "type": "object",
-                                        "properties": {
-                                            "result": {"type": "string"}
-                                        }
+                                        "properties": {"result": {"type": "string"}},
                                     }
                                 }
-                            }
+                            },
                         }
-                    ]
+                    ],
                 }
-            }
+            },
         }
-        tool_config = {
-            "tool_input": []
-        }
+        tool_config = {"tool_input": []}
 
         tool = APITool(tool_info, tool_config)
 

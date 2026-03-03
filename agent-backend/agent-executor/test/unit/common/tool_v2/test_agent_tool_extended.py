@@ -19,7 +19,7 @@ class TestAgentToolInit:
                 self.inner_dto = MagicMock()
                 self.inner_dto.agent_info = {
                     "name": "test_agent",
-                    "profile": "Test agent profile"
+                    "profile": "Test agent profile",
                 }
                 self.agent_input = []
                 self.intervention = False
@@ -50,7 +50,9 @@ class TestAgentToolInit:
 
         assert tool.intervention is True
         assert tool.interrupt_config["requires_confirmation"] is True
-        assert tool.interrupt_config["confirmation_message"] == "Confirm agent execution?"
+        assert (
+            tool.interrupt_config["confirmation_message"] == "Confirm agent execution?"
+        )
 
     def test_init_default_name(self):
         """测试默认名称 - 当 agent_info 为空时，名称为空字符串"""
@@ -88,7 +90,10 @@ class TestAgentToolInit:
 
         tool = AgentTool(mock_ac, MockAgentSkill())
 
-        assert tool.interrupt_config["confirmation_message"] == "Agent工具 my_agent 需要确认执行"
+        assert (
+            tool.interrupt_config["confirmation_message"]
+            == "Agent工具 my_agent 需要确认执行"
+        )
 
     def test_init_with_agent_options(self):
         """测试带 agent_options 的初始化"""
@@ -214,7 +219,7 @@ class TestAgentToolHelperMethods:
                 "skill_info": {},
                 "block_answer": "",
                 "input_message": "",
-                "interrupted": False
+                "interrupted": False,
             }
         ]
 
@@ -311,7 +316,7 @@ class TestAgentToolHelperMethods:
                 "skill_info": {},
                 "block_answer": "",
                 "input_message": "",
-                "interrupted": False
+                "interrupted": False,
             }
         ]
 

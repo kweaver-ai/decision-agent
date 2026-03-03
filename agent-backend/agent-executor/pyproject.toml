@@ -51,9 +51,10 @@ dev = [
      "pylint-junit==0.3.3",
  ]
 
-
-
-
+lint = [
+    "pre-commit>=4.5.1",
+    "ruff>=0.15.0",
+]
 [tool.uv]
 index-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 
@@ -71,7 +72,7 @@ asyncio_mode = "auto"
 omit = [
     "main.py",
     "*/test/*",           # 不统计测试文件本身
-    "*/test_*",            
+    "*/test_*",
     "test/unit/common/tool_v2",
     ".venv/*",              # 跳过虚拟环境
     "*/__pycache__/*",

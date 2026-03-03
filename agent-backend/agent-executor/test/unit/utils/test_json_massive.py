@@ -1,4 +1,5 @@
 """Massive unit tests for app/utils/json.py - 150+ tests"""
+
 import pytest
 import datetime
 import decimal
@@ -6,7 +7,11 @@ import uuid
 import enum
 import json
 from unittest.mock import Mock, MagicMock
-from app.utils.json import custom_serializer, json_serialize_async, thread_pool_for_json_encode
+from app.utils.json import (
+    custom_serializer,
+    json_serialize_async,
+    thread_pool_for_json_encode,
+)
 
 
 class TestCustomSerializer:
@@ -122,6 +127,7 @@ class TestCustomSerializer:
         class TestEnum(enum.Enum):
             A = 1
             B = 2
+
         result = custom_serializer(TestEnum.A)
         assert result == 1
 
@@ -129,6 +135,7 @@ class TestCustomSerializer:
         class TestEnum(enum.Enum):
             A = "a"
             B = "b"
+
         result = custom_serializer(TestEnum.A)
         assert result == "a"
 
@@ -150,6 +157,7 @@ class TestCustomSerializer:
             def __init__(self):
                 self.a = 1
                 self.b = 2
+
         result = custom_serializer(TestObj())
         assert isinstance(result, dict)
         assert "a" in result
@@ -181,6 +189,7 @@ class TestCustomSerializer:
     def test_raises_type_error_for_unsupported(self):
         class Unsupported:
             pass
+
         with pytest.raises(TypeError):
             custom_serializer(Unsupported())
 
@@ -209,12 +218,12 @@ class TestCustomSerializer:
         assert result == 1.23e-10
 
     def test_serializes_inf(self):
-        result = custom_serializer(float('inf'))
-        assert result == float('inf')
+        result = custom_serializer(float("inf"))
+        assert result == float("inf")
 
     def test_serializes_neg_inf(self):
-        result = custom_serializer(float('-inf'))
-        assert result == float('-inf')
+        result = custom_serializer(float("-inf"))
+        assert result == float("-inf")
 
     def test_serializes_datetime_microseconds(self):
         dt = datetime.datetime(2024, 1, 1, 12, 0, 0, 123456)
@@ -245,12 +254,14 @@ class TestCustomSerializer:
         class AutoEnum(enum.Enum):
             A = enum.auto()
             B = enum.auto()
+
         result = custom_serializer(AutoEnum.A)
         assert isinstance(result, int)
 
     def test_serializes_enum_complex_value(self):
         class ComplexEnum(enum.Enum):
             A = {"key": "value"}
+
         result = custom_serializer(ComplexEnum.A)
         assert isinstance(result, dict)
 
@@ -460,6 +471,7 @@ class TestJsonSerializeAsync:
     async def test_enum_in_dict(self):
         class TestEnum(enum.Enum):
             A = 1
+
         data = {"value": TestEnum.A}
         result = await json_serialize_async(data)
         parsed = json.loads(result)
@@ -470,6 +482,7 @@ class TestJsonSerializeAsync:
         class TestObj:
             def __init__(self):
                 self.value = 42
+
         data = {"obj": TestObj()}
         result = await json_serialize_async(data)
         assert isinstance(result, str)
@@ -477,6 +490,7 @@ class TestJsonSerializeAsync:
     @pytest.mark.asyncio
     async def test_concurrent_calls(self):
         import asyncio
+
         tasks = [json_serialize_async({"i": i}) for i in range(10)]
         results = await asyncio.gather(*tasks)
         assert len(results) == 10
@@ -517,4 +531,5 @@ class TestThreadPoolForJsonEncode:
 
     def test_thread_pool_is_executor(self):
         from concurrent.futures import ThreadPoolExecutor
+
         assert isinstance(thread_pool_for_json_encode, ThreadPoolExecutor)

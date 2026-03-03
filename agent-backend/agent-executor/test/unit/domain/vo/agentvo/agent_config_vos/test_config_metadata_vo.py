@@ -38,8 +38,7 @@ class TestConfigMetadataVo:
         from app.domain.vo.agentvo.agent_config_vos import ConfigMetadataVo
 
         vo = ConfigMetadataVo(
-            config_tpl_version="v2.0",
-            config_last_set_timestamp=9876543210
+            config_tpl_version="v2.0", config_last_set_timestamp=9876543210
         )
 
         assert vo.config_tpl_version == "v2.0"
@@ -73,8 +72,7 @@ class TestConfigMetadataVo:
         from app.domain.vo.agentvo.agent_config_vos import ConfigMetadataVo
 
         vo = ConfigMetadataVo(
-            config_tpl_version="v1.0",
-            config_last_set_timestamp=1234567890
+            config_tpl_version="v1.0", config_last_set_timestamp=1234567890
         )
 
         data = vo.model_dump()

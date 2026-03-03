@@ -1,4 +1,5 @@
 """Massive unit tests for app/domain/constant/ - 100+ tests"""
+
 import pytest
 from app.domain.constant.agent_cache_constants import (
     AGENT_CACHE_TTL,
@@ -253,7 +254,7 @@ class TestConstantsArithmetic:
         assert isinstance(result, int)
 
     def test_cache_ttl_power(self):
-        result = AGENT_CACHE_TTL ** 2
+        result = AGENT_CACHE_TTL**2
         assert result == 3600
 
 
@@ -332,7 +333,10 @@ class TestConstantsAbs:
         assert abs(AGENT_CACHE_TTL) == AGENT_CACHE_TTL
 
     def test_cache_update_second_abs(self):
-        assert abs(AGENT_CACHE_DATA_UPDATE_PASS_SECOND) == AGENT_CACHE_DATA_UPDATE_PASS_SECOND
+        assert (
+            abs(AGENT_CACHE_DATA_UPDATE_PASS_SECOND)
+            == AGENT_CACHE_DATA_UPDATE_PASS_SECOND
+        )
 
 
 class TestConstantsRound:
@@ -342,7 +346,10 @@ class TestConstantsRound:
         assert round(AGENT_CACHE_TTL) == AGENT_CACHE_TTL
 
     def test_cache_update_second_round(self):
-        assert round(AGENT_CACHE_DATA_UPDATE_PASS_SECOND) == AGENT_CACHE_DATA_UPDATE_PASS_SECOND
+        assert (
+            round(AGENT_CACHE_DATA_UPDATE_PASS_SECOND)
+            == AGENT_CACHE_DATA_UPDATE_PASS_SECOND
+        )
 
 
 class TestConstantsMathOperations:
@@ -462,7 +469,9 @@ class TestConstantsSum:
         assert result == 70
 
     def test_constants_sum_multiple(self):
-        result = sum([AGENT_CACHE_TTL, AGENT_CACHE_DATA_UPDATE_PASS_SECOND, AGENT_CACHE_TTL])
+        result = sum(
+            [AGENT_CACHE_TTL, AGENT_CACHE_DATA_UPDATE_PASS_SECOND, AGENT_CACHE_TTL]
+        )
         assert result == 130
 
 

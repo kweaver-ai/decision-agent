@@ -7,13 +7,16 @@ from decimal import Decimal
 from enum import Enum
 
 # Add app directory to path
-sys.path.insert(0, "/Users/guochenguang/project/decision-agent/agent-backend/agent-executor/app")
+sys.path.insert(
+    0, "/Users/guochenguang/project/decision-agent/agent-backend/agent-executor/app"
+)
 
 # Direct import to avoid __init__.py issues
 import importlib.util
+
 spec = importlib.util.spec_from_file_location(
     "json_serializer",
-    "/Users/guochenguang/project/decision-agent/agent-backend/agent-executor/app/infra/common/util/redis_cache/json_serializer.py"
+    "/Users/guochenguang/project/decision-agent/agent-backend/agent-executor/app/infra/common/util/redis_cache/json_serializer.py",
 )
 json_serializer_module = importlib.util.module_from_spec(spec)
 sys.modules["json_serializer"] = json_serializer_module
@@ -52,6 +55,7 @@ class TestJSONSerializer:
 
     def test_serialize_enum(self):
         """测试序列化Enum"""
+
         class TestEnum(Enum):
             VALUE1 = "value1"
             VALUE2 = "value2"
@@ -102,6 +106,7 @@ class TestJSONSerializer:
 
     def test_serialize_unsupported_type_raises_error(self):
         """测试序列化不支持类型抛出异常"""
+
         class CustomClass:
             pass
 
@@ -140,7 +145,7 @@ class TestJSONSerializer:
             "bool": True,
             "none": None,
             "list": [1, 2, 3],
-            "dict": {"nested": "value"}
+            "dict": {"nested": "value"},
         }
 
         serialized = JSONSerializer.serialize(original)
@@ -161,6 +166,7 @@ class TestJSONSerializer:
 
     def test_serialize_enum_roundtrip(self):
         """测试Enum序列化反序列化往返"""
+
         class TestEnum(Enum):
             VALUE1 = "value1"
 

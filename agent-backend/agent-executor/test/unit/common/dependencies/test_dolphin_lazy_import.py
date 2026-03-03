@@ -30,9 +30,9 @@ class TestLazyDolphinImporterSingleton:
 
         instance = LazyDolphinImporter()
 
-        assert hasattr(instance, '_import_cache')
-        assert hasattr(instance, '_available')
-        assert hasattr(instance, '_initialized')
+        assert hasattr(instance, "_import_cache")
+        assert hasattr(instance, "_available")
+        assert hasattr(instance, "_initialized")
         assert instance._initialized is True
 
 
@@ -68,7 +68,7 @@ class TestLazyDolphinImporterGetModule:
         from app.common.dependencies.dolphin_lazy_import import LazyDolphinImporter
 
         importer = LazyDolphinImporter()
-        result = importer.get_module('dolphin.core.common.exceptions')
+        result = importer.get_module("dolphin.core.common.exceptions")
 
         assert result is not None
 
@@ -77,8 +77,8 @@ class TestLazyDolphinImporterGetModule:
         from app.common.dependencies.dolphin_lazy_import import LazyDolphinImporter
 
         importer = LazyDolphinImporter()
-        result1 = importer.get_module('dolphin.core.common.exceptions')
-        result2 = importer.get_module('dolphin.core.common.exceptions')
+        result1 = importer.get_module("dolphin.core.common.exceptions")
+        result2 = importer.get_module("dolphin.core.common.exceptions")
 
         # 结果应该相同（被缓存）
         assert result1 is result2
@@ -88,8 +88,8 @@ class TestLazyDolphinImporterGetModule:
         from app.common.dependencies.dolphin_lazy_import import LazyDolphinImporter
 
         importer = LazyDolphinImporter()
-        module1 = importer.get_module('dolphin.core.common.exceptions')
-        module2 = importer.get_module('dolphin.core.context.var_output')
+        module1 = importer.get_module("dolphin.core.common.exceptions")
+        module2 = importer.get_module("dolphin.core.context.var_output")
 
         assert module1 is not None
         assert module2 is not None
@@ -103,7 +103,7 @@ class TestLazyDolphinImporterGetExceptionClass:
         from app.common.dependencies.dolphin_lazy_import import LazyDolphinImporter
 
         importer = LazyDolphinImporter()
-        exception_class = importer.get_exception_class('ModelException')
+        exception_class = importer.get_exception_class("ModelException")
 
         # 应该是一个异常类（可调用且是 Exception 的子类）
         assert callable(exception_class)
@@ -114,17 +114,17 @@ class TestLazyDolphinImporterGetExceptionClass:
         from app.common.dependencies.dolphin_lazy_import import LazyDolphinImporter
 
         importer = LazyDolphinImporter()
-        exception_class = importer.get_exception_class('TestException')
+        exception_class = importer.get_exception_class("TestException")
 
-        assert exception_class.__name__ == 'TestException'
+        assert exception_class.__name__ == "TestException"
 
     def test_get_exception_class_caches_result(self):
         """测试 get_exception_class 缓存结果"""
         from app.common.dependencies.dolphin_lazy_import import LazyDolphinImporter
 
         importer = LazyDolphinImporter()
-        result1 = importer.get_exception_class('ModelException')
-        result2 = importer.get_exception_class('ModelException')
+        result1 = importer.get_exception_class("ModelException")
+        result2 = importer.get_exception_class("ModelException")
 
         # 结果应该相同（被缓存）
         assert result1 is result2
@@ -134,7 +134,7 @@ class TestLazyDolphinImporterGetExceptionClass:
         from app.common.dependencies.dolphin_lazy_import import LazyDolphinImporter
 
         importer = LazyDolphinImporter()
-        exception_class = importer.get_exception_class('ModelException')
+        exception_class = importer.get_exception_class("ModelException")
 
         # 应该能创建异常实例
         exception = exception_class("Test message")
@@ -146,9 +146,9 @@ class TestLazyDolphinImporterGetExceptionClass:
 
         importer = LazyDolphinImporter()
 
-        model_exc = importer.get_exception_class('ModelException')
-        skill_exc = importer.get_exception_class('SkillException')
-        dolphin_exc = importer.get_exception_class('DolphinException')
+        model_exc = importer.get_exception_class("ModelException")
+        skill_exc = importer.get_exception_class("SkillException")
+        dolphin_exc = importer.get_exception_class("DolphinException")
 
         assert issubclass(model_exc, Exception)
         assert issubclass(skill_exc, Exception)
@@ -202,7 +202,7 @@ class TestVarOutputMockImplementation:
         instance = var_output_class()
 
         # 应该有 set 方法
-        assert hasattr(instance, 'set')
+        assert hasattr(instance, "set")
         assert callable(instance.set)
 
     def test_var_output_has_get_method(self):
@@ -214,7 +214,7 @@ class TestVarOutputMockImplementation:
         instance = var_output_class()
 
         # 应该有 get 方法
-        assert hasattr(instance, 'get')
+        assert hasattr(instance, "get")
         assert callable(instance.get)
 
     def test_var_output_has_delete_method(self):
@@ -226,7 +226,7 @@ class TestVarOutputMockImplementation:
         instance = var_output_class()
 
         # 应该有 delete 方法
-        assert hasattr(instance, 'delete')
+        assert hasattr(instance, "delete")
         assert callable(instance.delete)
 
     def test_var_output_set_get(self):
@@ -238,10 +238,10 @@ class TestVarOutputMockImplementation:
         instance = var_output_class()
 
         # 设置值
-        instance.set('test_key', 'test_value')
-        result = instance.get('test_key')
+        instance.set("test_key", "test_value")
+        result = instance.get("test_key")
 
-        assert result == 'test_value'
+        assert result == "test_value"
 
     def test_var_output_get_default(self):
         """测试 VarOutput get 默认值"""
@@ -251,8 +251,8 @@ class TestVarOutputMockImplementation:
         var_output_class = importer.get_var_output_class()
         instance = var_output_class()
 
-        result = instance.get('nonexistent_key', 'default_value')
-        assert result == 'default_value'
+        result = instance.get("nonexistent_key", "default_value")
+        assert result == "default_value"
 
     def test_var_output_delete(self):
         """测试 VarOutput delete 功能"""
@@ -263,11 +263,11 @@ class TestVarOutputMockImplementation:
         instance = var_output_class()
 
         # 设置值然后删除
-        instance.set('test_key', 'test_value')
-        instance.delete('test_key')
-        result = instance.get('test_key', 'default')
+        instance.set("test_key", "test_value")
+        instance.delete("test_key")
+        result = instance.get("test_key", "default")
 
-        assert result == 'default'
+        assert result == "default"
 
 
 class TestGlobalFunctions:
@@ -284,16 +284,16 @@ class TestGlobalFunctions:
         """测试 get_dolphin_exception 返回异常类"""
         from app.common.dependencies.dolphin_lazy_import import get_dolphin_exception
 
-        exception_class = get_dolphin_exception('ModelException')
+        exception_class = get_dolphin_exception("ModelException")
         assert issubclass(exception_class, Exception)
 
     def test_get_dolphin_exception_different_names(self):
         """测试 get_dolphin_exception 处理不同名称"""
         from app.common.dependencies.dolphin_lazy_import import get_dolphin_exception
 
-        exc1 = get_dolphin_exception('ModelException')
-        exc2 = get_dolphin_exception('SkillException')
-        exc3 = get_dolphin_exception('CustomException')
+        exc1 = get_dolphin_exception("ModelException")
+        exc2 = get_dolphin_exception("SkillException")
+        exc3 = get_dolphin_exception("CustomException")
 
         assert issubclass(exc1, Exception)
         assert issubclass(exc2, Exception)
@@ -301,7 +301,9 @@ class TestGlobalFunctions:
 
     def test_get_dolphin_var_output_class_returns_class(self):
         """测试 get_dolphin_var_output_class 返回类"""
-        from app.common.dependencies.dolphin_lazy_import import get_dolphin_var_output_class
+        from app.common.dependencies.dolphin_lazy_import import (
+            get_dolphin_var_output_class,
+        )
 
         var_output_class = get_dolphin_var_output_class()
         assert callable(var_output_class)
@@ -310,22 +312,22 @@ class TestGlobalFunctions:
         """测试 create_dolphin_exception 创建异常实例"""
         from app.common.dependencies.dolphin_lazy_import import create_dolphin_exception
 
-        exception = create_dolphin_exception('ModelException', 'Test error message')
+        exception = create_dolphin_exception("ModelException", "Test error message")
 
         assert isinstance(exception, Exception)
-        assert str(exception) == 'Test error message'
+        assert str(exception) == "Test error message"
 
     def test_create_dolphin_exception_different_types(self):
         """测试 create_dolphin_exception 创建不同类型异常"""
         from app.common.dependencies.dolphin_lazy_import import create_dolphin_exception
 
-        exc1 = create_dolphin_exception('ModelException', 'Model error')
-        exc2 = create_dolphin_exception('SkillException', 'Skill error')
+        exc1 = create_dolphin_exception("ModelException", "Model error")
+        exc2 = create_dolphin_exception("SkillException", "Skill error")
 
         assert isinstance(exc1, Exception)
         assert isinstance(exc2, Exception)
-        assert str(exc1) == 'Model error'
-        assert str(exc2) == 'Skill error'
+        assert str(exc1) == "Model error"
+        assert str(exc2) == "Skill error"
 
 
 class TestLazyImportDolphinDecorator:
@@ -350,7 +352,7 @@ class TestLazyImportDolphinDecorator:
         def my_function():
             return "result"
 
-        assert my_function.__name__ == 'my_function'
+        assert my_function.__name__ == "my_function"
 
     def test_decorator_with_arguments(self):
         """测试装饰器处理带参数的函数"""
@@ -428,19 +430,19 @@ class TestModuleLevelExceptions:
         """测试 ModelException 有正确的名称"""
         from app.common.dependencies.dolphin_lazy_import import ModelException
 
-        assert ModelException.__name__ == 'ModelException'
+        assert ModelException.__name__ == "ModelException"
 
     def test_skill_exception_has_correct_name(self):
         """测试 SkillException 有正确的名称"""
         from app.common.dependencies.dolphin_lazy_import import SkillException
 
-        assert SkillException.__name__ == 'SkillException'
+        assert SkillException.__name__ == "SkillException"
 
     def test_dolphin_exception_has_correct_name(self):
         """测试 DolphinException 有正确的名称"""
         from app.common.dependencies.dolphin_lazy_import import DolphinException
 
-        assert DolphinException.__name__ == 'DolphinException'
+        assert DolphinException.__name__ == "DolphinException"
 
 
 class TestLazyDolphinImporterEdgeCases:
@@ -451,7 +453,7 @@ class TestLazyDolphinImporterEdgeCases:
         from app.common.dependencies.dolphin_lazy_import import LazyDolphinImporter
 
         importer = LazyDolphinImporter()
-        exception_class = importer.get_exception_class('')
+        exception_class = importer.get_exception_class("")
 
         # 即使名称为空，也应该返回一个有效的异常类
         assert issubclass(exception_class, Exception)
@@ -461,20 +463,20 @@ class TestLazyDolphinImporterEdgeCases:
         from app.common.dependencies.dolphin_lazy_import import LazyDolphinImporter
 
         importer = LazyDolphinImporter()
-        exception_class = importer.get_exception_class('MyCustom_Exception_123')
+        exception_class = importer.get_exception_class("MyCustom_Exception_123")
 
         assert issubclass(exception_class, Exception)
-        assert exception_class.__name__ == 'MyCustom_Exception_123'
+        assert exception_class.__name__ == "MyCustom_Exception_123"
 
     def test_unicode_exception_name(self):
         """测试 Unicode 异常名称"""
         from app.common.dependencies.dolphin_lazy_import import LazyDolphinImporter
 
         importer = LazyDolphinImporter()
-        exception_class = importer.get_exception_class('异常类')
+        exception_class = importer.get_exception_class("异常类")
 
         assert issubclass(exception_class, Exception)
-        assert exception_class.__name__ == '异常类'
+        assert exception_class.__name__ == "异常类"
 
     def test_var_output_multiple_instances(self):
         """测试 VarOutput 多个实例独立"""
@@ -487,11 +489,11 @@ class TestLazyDolphinImporterEdgeCases:
         instance2 = var_output_class()
 
         # 两个实例应该独立
-        instance1.set('key', 'value1')
-        instance2.set('key', 'value2')
+        instance1.set("key", "value1")
+        instance2.set("key", "value2")
 
-        assert instance1.get('key') == 'value1'
-        assert instance2.get('key') == 'value2'
+        assert instance1.get("key") == "value1"
+        assert instance2.get("key") == "value2"
 
     def test_var_output_overwrite_key(self):
         """测试 VarOutput 覆盖键值"""
@@ -501,10 +503,10 @@ class TestLazyDolphinImporterEdgeCases:
         var_output_class = importer.get_var_output_class()
         instance = var_output_class()
 
-        instance.set('key', 'value1')
-        instance.set('key', 'value2')
+        instance.set("key", "value1")
+        instance.set("key", "value2")
 
-        assert instance.get('key') == 'value2'
+        assert instance.get("key") == "value2"
 
     def test_var_output_get_none_default(self):
         """测试 VarOutput get 返回 None 作为默认值"""
@@ -514,7 +516,7 @@ class TestLazyDolphinImporterEdgeCases:
         var_output_class = importer.get_var_output_class()
         instance = var_output_class()
 
-        result = instance.get('nonexistent_key')
+        result = instance.get("nonexistent_key")
         assert result is None
 
 
@@ -528,12 +530,12 @@ class TestImportCacheIsolation:
         importer = LazyDolphinImporter()
 
         # 获取模块和异常类
-        module = importer.get_module('dolphin.core.common.exceptions')
-        exception_class = importer.get_exception_class('ModelException')
+        module = importer.get_module("dolphin.core.common.exceptions")
+        exception_class = importer.get_exception_class("ModelException")
 
         # 检查缓存中有不同的键
-        assert 'dolphin.core.common.exceptions' in importer._import_cache
-        assert 'exception_ModelException' in importer._import_cache
+        assert "dolphin.core.common.exceptions" in importer._import_cache
+        assert "exception_ModelException" in importer._import_cache
 
     def test_cache_keys_unique(self):
         """测试缓存键唯一性"""
@@ -541,8 +543,8 @@ class TestImportCacheIsolation:
 
         importer = LazyDolphinImporter()
 
-        importer.get_exception_class('ModelException')
-        importer.get_module('dolphin.core.common.exceptions')
+        importer.get_exception_class("ModelException")
+        importer.get_module("dolphin.core.common.exceptions")
         importer.get_var_output_class()
 
         # 验证三个不同的缓存项
@@ -556,39 +558,41 @@ class TestLazyDolphinImporterIntegration:
         """测试完整的异常创建工作流"""
         from app.common.dependencies.dolphin_lazy_import import (
             get_dolphin_exception,
-            create_dolphin_exception
+            create_dolphin_exception,
         )
 
         # 获取异常类
-        exception_class = get_dolphin_exception('TestException')
+        exception_class = get_dolphin_exception("TestException")
 
         # 创建异常实例
-        exception = create_dolphin_exception('TestException', 'Test message')
+        exception = create_dolphin_exception("TestException", "Test message")
 
         assert isinstance(exception, exception_class)
-        assert str(exception) == 'Test message'
+        assert str(exception) == "Test message"
 
     def test_full_workflow_var_output(self):
         """测试完整的 VarOutput 工作流"""
-        from app.common.dependencies.dolphin_lazy_import import get_dolphin_var_output_class
+        from app.common.dependencies.dolphin_lazy_import import (
+            get_dolphin_var_output_class,
+        )
 
         var_output_class = get_dolphin_var_output_class()
         instance = var_output_class()
 
         # 设置多个值
-        instance.set('key1', 'value1')
-        instance.set('key2', 'value2')
-        instance.set('key3', 'value3')
+        instance.set("key1", "value1")
+        instance.set("key2", "value2")
+        instance.set("key3", "value3")
 
         # 获取值
-        assert instance.get('key1') == 'value1'
-        assert instance.get('key2') == 'value2'
-        assert instance.get('key3') == 'value3'
+        assert instance.get("key1") == "value1"
+        assert instance.get("key2") == "value2"
+        assert instance.get("key3") == "value3"
 
         # 删除一个值
-        instance.delete('key2')
-        assert instance.get('key2', 'default') == 'default'
+        instance.delete("key2")
+        assert instance.get("key2", "default") == "default"
 
         # 其他值仍然存在
-        assert instance.get('key1') == 'value1'
-        assert instance.get('key3') == 'value3'
+        assert instance.get("key1") == "value1"
+        assert instance.get("key3") == "value3"

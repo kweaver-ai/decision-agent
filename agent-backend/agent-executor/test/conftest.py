@@ -20,24 +20,27 @@ def setup_dolphin_mocks():
     """
 
     # 如果 dolphin 模块已经被真实模块加载，跳过
-    if 'dolphin' in sys.modules and hasattr(sys.modules['dolphin'], '__file__'):
+    if "dolphin" in sys.modules and hasattr(sys.modules["dolphin"], "__file__"):
         return
 
     # 创建 Mock 异常类
     def create_exception_class(name: str):
         """创建一个模拟的异常类"""
+
         class MockException(Exception):
             def __init__(self, message: str = ""):
                 super().__init__(message)
+
             def __str__(self):
                 return str(self.args[0]) if self.args else ""
+
         MockException.__name__ = name
         MockException.__qualname__ = name
         return MockException
 
-    ModelException = create_exception_class('ModelException')
-    SkillException = create_exception_class('SkillException')
-    DolphinException = create_exception_class('DolphinException')
+    ModelException = create_exception_class("ModelException")
+    SkillException = create_exception_class("SkillException")
+    DolphinException = create_exception_class("DolphinException")
 
     # 设置 VarOutput Mock 类
     class MockVarOutput:
@@ -85,8 +88,15 @@ def setup_dolphin_mocks():
     class MockResumeHandle:
         """模拟的 ResumeHandle 类"""
 
-        def __init__(self, frame_id="", snapshot_id="", resume_token="",
-                     interrupt_type="", current_block="", restart_block=""):
+        def __init__(
+            self,
+            frame_id="",
+            snapshot_id="",
+            resume_token="",
+            interrupt_type="",
+            current_block="",
+            restart_block="",
+        ):
             self.frame_id = frame_id
             self.snapshot_id = snapshot_id
             self.resume_token = resume_token
@@ -97,36 +107,37 @@ def setup_dolphin_mocks():
     # 设置 Tool Mock 类
     class MockTool:
         """模拟的 Tool 类"""
+
         pass
 
     # 创建所有需要的模块
     modules_to_create = {
-        'dolphin': None,
-        'dolphin.core': None,
-        'dolphin.core.common': {
-            'constants': {
-                'KEY_SESSION_ID': 'session_id',
-                'KEY_USER_ID': 'user_id',
-                'KEY_AGENT_ID': 'agent_id',
+        "dolphin": None,
+        "dolphin.core": None,
+        "dolphin.core.common": {
+            "constants": {
+                "KEY_SESSION_ID": "session_id",
+                "KEY_USER_ID": "user_id",
+                "KEY_AGENT_ID": "agent_id",
             },
-            'exceptions': {
-                'ModelException': ModelException,
-                'SkillException': SkillException,
-                'DolphinException': DolphinException,
+            "exceptions": {
+                "ModelException": ModelException,
+                "SkillException": SkillException,
+                "DolphinException": DolphinException,
             },
         },
-        'dolphin.core.context': None,
-        'dolphin.core.context.context': None,
-        'dolphin.core.context.var_output': {
-            'VarOutput': MockVarOutput,
+        "dolphin.core.context": None,
+        "dolphin.core.context.context": None,
+        "dolphin.core.context.var_output": {
+            "VarOutput": MockVarOutput,
         },
-        'dolphin.core.coroutine': None,
-        'dolphin.core.coroutine.resume_handle': {
-            'ResumeHandle': MockResumeHandle,
+        "dolphin.core.coroutine": None,
+        "dolphin.core.coroutine.resume_handle": {
+            "ResumeHandle": MockResumeHandle,
         },
-        'dolphin.core.utils': None,
-        'dolphin.core.utils.tools': {
-            'Tool': MockTool,
+        "dolphin.core.utils": None,
+        "dolphin.core.utils.tools": {
+            "Tool": MockTool,
         },
     }
 
@@ -137,7 +148,7 @@ def setup_dolphin_mocks():
 
         mock_module = MagicMock()
         mock_module.__name__ = fullname
-        mock_module.__file__ = f'{fullname.replace(".", "/")}/__init__.py'
+        mock_module.__file__ = f"{fullname.replace('.', '/')}/__init__.py"
         mock_module.__path__ = []  # 使其成为包
 
         # 添加 __spec__ 属性，避免 AttributeError
@@ -185,10 +196,11 @@ def reset_global_state():
     """
     # 重置 MockVarOutput 的存储
     from app.utils.common import cur_pwd  # 导入以触发模块初始化
+
     try:
-        if 'dolphin.core.context.var_output' in sys.modules:
-            var_output_module = sys.modules['dolphin.core.context.var_output']
-            if hasattr(var_output_module, 'VarOutput'):
+        if "dolphin.core.context.var_output" in sys.modules:
+            var_output_module = sys.modules["dolphin.core.context.var_output"]
+            if hasattr(var_output_module, "VarOutput"):
                 var_output_module.VarOutput.reset()
     except Exception:
         pass
@@ -196,6 +208,7 @@ def reset_global_state():
     # 重置依赖管理的默认实例
     try:
         from app.common.dependencies import reset_default_instances
+
         reset_default_instances()
     except ImportError:
         pass
@@ -204,9 +217,9 @@ def reset_global_state():
 
     # 测试后清理
     try:
-        if 'dolphin.core.context.var_output' in sys.modules:
-            var_output_module = sys.modules['dolphin.core.context.var_output']
-            if hasattr(var_output_module, 'VarOutput'):
+        if "dolphin.core.context.var_output" in sys.modules:
+            var_output_module = sys.modules["dolphin.core.context.var_output"]
+            if hasattr(var_output_module, "VarOutput"):
                 var_output_module.VarOutput.reset()
     except Exception:
         pass
@@ -215,6 +228,7 @@ def reset_global_state():
 @pytest.fixture
 def mock_context_var_manager():
     """提供 Mock 的上下文变量管理器"""
+
     class SimpleMockContextVarManager:
         def __init__(self):
             self._storage = {}
@@ -241,6 +255,7 @@ def mock_context_var_manager():
 @pytest.fixture
 def mock_exception_handler():
     """提供 Mock 的异常处理器"""
+
     class SimpleMockExceptionHandler:
         def create_model_exception(self, message: str) -> Exception:
             return Exception(f"[Model] {message}")
@@ -260,6 +275,7 @@ def mock_exception_handler():
 @pytest.fixture
 def mock_caller_info_provider():
     """提供 Mock 的调用者信息提供者"""
+
     class SimpleMockCallerInfoProvider:
         def get_caller_info(self):
             return ("test_file.py", 42)
@@ -270,6 +286,7 @@ def mock_caller_info_provider():
 @pytest.fixture
 def mock_environment_detector():
     """提供 Mock 的环境检测器"""
+
     class SimpleMockEnvironmentDetector:
         def is_in_pod(self) -> bool:
             return False
@@ -291,22 +308,17 @@ def pytest_configure(config):
     config.addinivalue_line(
         "markers", "slow: marks tests as slow (deselect with '-m \"not slow\"')"
     )
-    config.addinivalue_line(
-        "markers", "integration: marks tests as integration tests"
-    )
-    config.addinivalue_line(
-        "markers", "unit: marks tests as unit tests"
-    )
+    config.addinivalue_line("markers", "integration: marks tests as integration tests")
+    config.addinivalue_line("markers", "unit: marks tests as unit tests")
 
     # 过滤 Pydantic V2 迁移警告
     config.addinivalue_line(
-        "filterwarnings",
-        "ignore::pydantic.warnings.PydanticDeprecatedSince20"
+        "filterwarnings", "ignore::pydantic.warnings.PydanticDeprecatedSince20"
     )
     # 过滤 AsyncMock 协程未等待的警告（来自未被使用的 mock）
     config.addinivalue_line(
         "filterwarnings",
-        "ignore:coroutine 'AsyncMockMixin._execute_mock_call' was never awaited:RuntimeWarning"
+        "ignore:coroutine 'AsyncMockMixin._execute_mock_call' was never awaited:RuntimeWarning",
     )
 
 

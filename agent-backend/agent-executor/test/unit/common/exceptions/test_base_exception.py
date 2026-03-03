@@ -15,11 +15,11 @@ class TestBaseExceptionInit:
         from app.common.exceptions.base_exception import BaseException
         from app.common.errors.api_error_class import APIError
 
-        with patch('app.common.config.Config.is_debug_mode', return_value=False):
+        with patch("app.common.config.Config.is_debug_mode", return_value=False):
             error = APIError(
                 error_code="TEST_ERROR",
                 description="Test description",
-                solution="Test solution"
+                solution="Test solution",
             )
 
         exc = BaseException(error=error)
@@ -32,11 +32,11 @@ class TestBaseExceptionInit:
         from app.common.exceptions.base_exception import BaseException
         from app.common.errors.api_error_class import APIError
 
-        with patch('app.common.config.Config.is_debug_mode', return_value=False):
+        with patch("app.common.config.Config.is_debug_mode", return_value=False):
             error = APIError(
                 error_code="TEST_ERROR",
                 description="Test description",
-                solution="Test solution"
+                solution="Test solution",
             )
 
         exc = BaseException(error=error, error_details="Additional details")
@@ -49,11 +49,11 @@ class TestBaseExceptionInit:
         from app.common.exceptions.base_exception import BaseException
         from app.common.errors.api_error_class import APIError
 
-        with patch('app.common.config.Config.is_debug_mode', return_value=False):
+        with patch("app.common.config.Config.is_debug_mode", return_value=False):
             error = APIError(
                 error_code="TEST_ERROR",
                 description="Test description",
-                solution="Test solution"
+                solution="Test solution",
             )
 
         exc = BaseException(error=error, error_details="Test details")
@@ -66,11 +66,11 @@ class TestBaseExceptionInit:
         from app.common.exceptions.base_exception import BaseException
         from app.common.errors.api_error_class import APIError
 
-        with patch('app.common.config.Config.is_debug_mode', return_value=False):
+        with patch("app.common.config.Config.is_debug_mode", return_value=False):
             error = APIError(
                 error_code="TEST_ERROR",
                 description="Test description",
-                solution="Test solution"
+                solution="Test solution",
             )
 
         exc = BaseException(error=error)
@@ -83,11 +83,11 @@ class TestBaseExceptionInit:
         from app.common.exceptions.base_exception import BaseException
         from app.common.errors.api_error_class import APIError
 
-        with patch('app.common.config.Config.is_debug_mode', return_value=False):
+        with patch("app.common.config.Config.is_debug_mode", return_value=False):
             error = APIError(
                 error_code="TEST_ERROR",
                 description="Test description",
-                solution="Test solution"
+                solution="Test solution",
             )
 
         exc = BaseException(error=error, error_details="Additional details")
@@ -104,11 +104,11 @@ class TestBaseExceptionInit:
         from app.common.exceptions.base_exception import BaseException
         from app.common.errors.api_error_class import APIError
 
-        with patch('app.common.config.Config.is_debug_mode', return_value=False):
+        with patch("app.common.config.Config.is_debug_mode", return_value=False):
             error = APIError(
                 error_code="TEST_ERROR",
                 description="Test description",
-                solution="Test solution"
+                solution="Test solution",
             )
 
         exc = BaseException(error=error, error_details="Additional details")
@@ -125,18 +125,18 @@ class TestBaseExceptionInit:
         from app.common.exceptions.base_exception import BaseException
         from app.common.errors.api_error_class import APIError
 
-        with patch('app.common.config.Config.is_debug_mode', return_value=False):
+        with patch("app.common.config.Config.is_debug_mode", return_value=False):
             error = APIError(
                 error_code="TEST_ERROR",
                 description="Test description",
-                solution="Test solution"
+                solution="Test solution",
             )
 
         exc = BaseException(
             error=error,
             error_details="Additional details",
             error_link="https://example.com/error",
-            description="Custom description"
+            description="Custom description",
         )
 
         assert exc.error == error

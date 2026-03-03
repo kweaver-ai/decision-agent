@@ -19,7 +19,7 @@ class TestInterruptHandleToResumeHandle:
             resume_token="token789",
             interrupt_type="user_confirmation",
             current_block=1,
-            restart_block=False
+            restart_block=False,
         )
 
         # Execute conversion
@@ -44,7 +44,7 @@ class TestInterruptHandleToResumeHandle:
             resume_token="token789",
             interrupt_type="tool_interrupt",
             current_block=2,
-            restart_block=True
+            restart_block=True,
         )
 
         result = interrupt_handle_to_resume_handle(interrupt_handle)
@@ -64,7 +64,7 @@ class TestInterruptHandleToResumeHandle:
             resume_token="token_777",
             interrupt_type="async_interrupt",
             current_block=9999,
-            restart_block=False
+            restart_block=False,
         )
 
         result = interrupt_handle_to_resume_handle(interrupt_handle)
@@ -81,7 +81,7 @@ class TestInterruptHandleToResumeHandle:
             "user_confirmation",
             "async_interrupt",
             "custom_interrupt",
-            "timeout_interrupt"
+            "timeout_interrupt",
         ]
 
         for interrupt_type in interrupt_types:
@@ -91,7 +91,7 @@ class TestInterruptHandleToResumeHandle:
                 resume_token="token789",
                 interrupt_type=interrupt_type,
                 current_block=0,
-                restart_block=False
+                restart_block=False,
             )
 
             result = interrupt_handle_to_resume_handle(interrupt_handle)
@@ -109,7 +109,7 @@ class TestInterruptHandleToResumeHandle:
             resume_token="test_token",
             interrupt_type="test_type",
             current_block=42,
-            restart_block=True
+            restart_block=True,
         )
 
         result = interrupt_handle_to_resume_handle(interrupt_handle)
@@ -133,7 +133,7 @@ class TestInterruptHandleToResumeHandle:
             resume_token="token/with/slashes",
             interrupt_type="special_interrupt",
             current_block=1,
-            restart_block=False
+            restart_block=False,
         )
 
         result = interrupt_handle_to_resume_handle(interrupt_handle)
@@ -153,7 +153,7 @@ class TestInterruptHandleToResumeHandle:
             resume_token="令牌789",
             interrupt_type="中断类型",
             current_block=1,
-            restart_block=False
+            restart_block=False,
         )
 
         result = interrupt_handle_to_resume_handle(interrupt_handle)
@@ -173,7 +173,7 @@ class TestInterruptHandleToResumeHandle:
             resume_token="token789",
             interrupt_type="test",
             current_block=1,
-            restart_block=False
+            restart_block=False,
         )
 
         result1 = interrupt_handle_to_resume_handle(interrupt_handle)

@@ -4,7 +4,11 @@ import pytest
 from pydantic import ValidationError
 
 from app.domain.vo.interrupt.interrupt_handle import InterruptHandle
-from app.domain.vo.interrupt.interrupt_data import ToolArg, InterruptConfig, InterruptData
+from app.domain.vo.interrupt.interrupt_data import (
+    ToolArg,
+    InterruptConfig,
+    InterruptData,
+)
 from app.domain.vo.interrupt.tool_interrupt_info import ToolInterruptInfo
 
 
@@ -19,7 +23,7 @@ class TestInterruptHandle:
             resume_token="token_789",
             interrupt_type="tool_interrupt",
             current_block=5,
-            restart_block=True
+            restart_block=True,
         )
 
         assert handle.frame_id == "frame_123"
@@ -45,7 +49,7 @@ class TestInterruptHandle:
             resume_token="token_789",
             interrupt_type="tool_interrupt",
             current_block=5,
-            restart_block=False
+            restart_block=False,
         )
 
         data = handle.model_dump()
@@ -66,11 +70,7 @@ class TestToolArg:
 
     def test_tool_arg_creation(self):
         """测试创建 ToolArg"""
-        arg = ToolArg(
-            key="param1",
-            value="value1",
-            type="string"
-        )
+        arg = ToolArg(key="param1", value="value1", type="string")
 
         assert arg.key == "param1"
         assert arg.value == "value1"
@@ -94,7 +94,7 @@ class TestInterruptConfig:
         """测试创建 InterruptConfig"""
         config = InterruptConfig(
             requires_confirmation=True,
-            confirmation_message="Please confirm this action"
+            confirmation_message="Please confirm this action",
         )
 
         assert config.requires_confirmation is True
@@ -103,8 +103,7 @@ class TestInterruptConfig:
     def test_interrupt_config_false_confirmation(self):
         """测试不需要确认的情况"""
         config = InterruptConfig(
-            requires_confirmation=False,
-            confirmation_message="No confirmation needed"
+            requires_confirmation=False, confirmation_message="No confirmation needed"
         )
 
         assert config.requires_confirmation is False
@@ -115,9 +114,7 @@ class TestInterruptData:
 
     def test_interrupt_data_minimal(self):
         """测试最小 InterruptData"""
-        data = InterruptData(
-            tool_name="search_tool"
-        )
+        data = InterruptData(tool_name="search_tool")
 
         assert data.tool_name == "search_tool"
         assert data.tool_description is None
@@ -128,18 +125,17 @@ class TestInterruptData:
         """测试完整 InterruptData"""
         args = [
             ToolArg(key="query", value="test", type="string"),
-            ToolArg(key="limit", value=10, type="integer")
+            ToolArg(key="limit", value=10, type="integer"),
         ]
         config = InterruptConfig(
-            requires_confirmation=True,
-            confirmation_message="Run search?"
+            requires_confirmation=True, confirmation_message="Run search?"
         )
 
         data = InterruptData(
             tool_name="search_tool",
             tool_description="Search the web",
             tool_args=args,
-            interrupt_config=config
+            interrupt_config=config,
         )
 
         assert data.tool_name == "search_tool"
@@ -152,13 +148,10 @@ class TestInterruptData:
         args = [
             ToolArg(key="param1", value="value1", type="string"),
             ToolArg(key="param2", value=123, type="integer"),
-            ToolArg(key="param3", value=True, type="boolean")
+            ToolArg(key="param3", value=True, type="boolean"),
         ]
 
-        data = InterruptData(
-            tool_name="test_tool",
-            tool_args=args
-        )
+        data = InterruptData(tool_name="test_tool", tool_args=args)
 
         assert len(data.tool_args) == 3
         assert data.tool_args[0].key == "param1"
@@ -183,7 +176,7 @@ class TestToolInterruptInfo:
             resume_token="token_789",
             interrupt_type="tool_interrupt",
             current_block=5,
-            restart_block=True
+            restart_block=True,
         )
 
         info = ToolInterruptInfo(handle=handle)
@@ -194,10 +187,7 @@ class TestToolInterruptInfo:
 
     def test_tool_interrupt_info_with_data(self):
         """测试带 data 的 ToolInterruptInfo"""
-        data = InterruptData(
-            tool_name="test_tool",
-            tool_description="Test tool"
-        )
+        data = InterruptData(tool_name="test_tool", tool_description="Test tool")
 
         info = ToolInterruptInfo(data=data)
 
@@ -213,12 +203,12 @@ class TestToolInterruptInfo:
             resume_token="token_789",
             interrupt_type="tool_interrupt",
             current_block=5,
-            restart_block=True
+            restart_block=True,
         )
 
         data = InterruptData(
             tool_name="test_tool",
-            tool_args=[ToolArg(key="key1", value="value1", type="string")]
+            tool_args=[ToolArg(key="key1", value="value1", type="string")],
         )
 
         info = ToolInterruptInfo(handle=handle, data=data)
@@ -236,7 +226,7 @@ class TestToolInterruptInfo:
             resume_token="token_789",
             interrupt_type="tool",
             current_block=1,
-            restart_block=False
+            restart_block=False,
         )
 
         info = ToolInterruptInfo(handle=handle)

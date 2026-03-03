@@ -6,13 +6,16 @@ import pickle
 from datetime import datetime
 
 # Add app directory to path
-sys.path.insert(0, "/Users/guochenguang/project/decision-agent/agent-backend/agent-executor/app")
+sys.path.insert(
+    0, "/Users/guochenguang/project/decision-agent/agent-backend/agent-executor/app"
+)
 
 # Direct import to avoid __init__.py issues
 import importlib.util
+
 spec = importlib.util.spec_from_file_location(
     "pickle_serializer",
-    "/Users/guochenguang/project/decision-agent/agent-backend/agent-executor/app/infra/common/util/redis_cache/pickle_serializer.py"
+    "/Users/guochenguang/project/decision-agent/agent-backend/agent-executor/app/infra/common/util/redis_cache/pickle_serializer.py",
 )
 pickle_serializer_module = importlib.util.module_from_spec(spec)
 sys.modules["pickle_serializer"] = pickle_serializer_module
@@ -64,14 +67,7 @@ class TestPickleSerializer:
 
     def test_serialize_nested_structures(self):
         """测试序列化嵌套结构"""
-        data = {
-            "level1": {
-                "level2": {
-                    "level3": "deep_value"
-                },
-                "list": [1, 2, 3]
-            }
-        }
+        data = {"level1": {"level2": {"level3": "deep_value"}, "list": [1, 2, 3]}}
         serialized = PickleSerializer.serialize(data)
 
         assert isinstance(serialized, bytes)
@@ -109,7 +105,7 @@ class TestPickleSerializer:
             "bool": True,
             "none": None,
             "list": [1, 2, 3],
-            "dict": {"nested": "value"}
+            "dict": {"nested": "value"},
         }
 
         serialized = PickleSerializer.serialize(original)

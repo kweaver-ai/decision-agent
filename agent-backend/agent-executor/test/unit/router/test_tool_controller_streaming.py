@@ -8,6 +8,7 @@ from unittest.mock import MagicMock, AsyncMock, patch
 
 class AsyncIterator:
     """异步迭代器辅助类"""
+
     def __init__(self, chunks):
         self.chunks = chunks
 
@@ -34,10 +35,18 @@ class TestOnlineSearchCiteToolStreaming:
                             {},
                             {
                                 "search_result": [
-                                    {"title": "参考1", "content": "内容1", "link": "http://example.com/1"},
-                                    {"title": "参考2", "content": "内容2", "link": "http://example.com/2"},
+                                    {
+                                        "title": "参考1",
+                                        "content": "内容1",
+                                        "link": "http://example.com/1",
+                                    },
+                                    {
+                                        "title": "参考2",
+                                        "content": "内容2",
+                                        "link": "http://example.com/2",
+                                    },
                                 ]
-                            }
+                            },
                         ]
                     }
                 }
@@ -57,6 +66,7 @@ class TestOnlineSearchCiteToolStreaming:
                 with patch(
                     "app.logic.tool.online_search_cite_tool.get_completion_stream"
                 ) as mock_stream:
+
                     async def mock_gen():
                         yield "这"
                         yield "是"
@@ -71,7 +81,7 @@ class TestOnlineSearchCiteToolStreaming:
                         "search_tool": "zhipu_search_tool",
                         "api_key": "test_key",
                         "user_id": "user123",
-                        "stream": True
+                        "stream": True,
                     }
                     headers = {"x-account-id": "user123"}
 
@@ -104,9 +114,13 @@ class TestToolControllerStreaming:
                             {},
                             {
                                 "search_result": [
-                                    {"title": "标题1", "content": "内容1", "link": "url1"},
+                                    {
+                                        "title": "标题1",
+                                        "content": "内容1",
+                                        "link": "url1",
+                                    },
                                 ]
-                            }
+                            },
                         ]
                     }
                 }
@@ -119,7 +133,7 @@ class TestToolControllerStreaming:
             "search_tool": "tool",
             "api_key": "key",
             "user_id": "user",
-            "stream": True
+            "stream": True,
         }
         headers = {"x-account-id": "user"}
 
@@ -136,6 +150,7 @@ class TestToolControllerStreaming:
                 with patch(
                     "app.logic.tool.online_search_cite_tool.get_completion_stream"
                 ) as mock_stream:
+
                     async def mock_gen():
                         yield "完"
                         yield "整"
@@ -151,7 +166,9 @@ class TestToolControllerStreaming:
 
                     # 测试搜索
                     results = await get_search_results(param, headers)
-                    ref_list = results["choices"][0]["message"]["tool_calls"][1]["search_result"]
+                    ref_list = results["choices"][0]["message"]["tool_calls"][1][
+                        "search_result"
+                    ]
 
                     final_references = []
                     for index, ref in enumerate(ref_list):

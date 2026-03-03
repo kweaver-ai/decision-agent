@@ -179,7 +179,12 @@ class TestFormatContextFields:
         """Test that reserved keys are skipped"""
         from app.common.struct_logger.console_formatter import _format_context_fields
 
-        event_dict = {"logger": "test", "level": "INFO", "timestamp": "2024-01-01", "stack": "test_stack"}
+        event_dict = {
+            "logger": "test",
+            "level": "INFO",
+            "timestamp": "2024-01-01",
+            "stack": "test_stack",
+        }
         lines = _format_context_fields(event_dict)
 
         # Reserved keys should not appear in output
@@ -219,7 +224,7 @@ class TestFormatConsoleLogMain:
         event_dict = {
             "timestamp": "2024-01-01 12:00:00",
             "level": "info",
-            "event": "Test message"
+            "event": "Test message",
         }
 
         result = format_console_log(logger, "info", event_dict)
@@ -239,7 +244,7 @@ class TestFormatConsoleLogMain:
             "level": "info",
             "event": "Test message",
             "user_id": "123",
-            "action": "login"
+            "action": "login",
         }
 
         result = format_console_log(logger, "info", event_dict)
@@ -257,7 +262,7 @@ class TestFormatConsoleLogMain:
         event_dict = {
             "timestamp": "2024-01-01 12:00:00",
             "level": "error",
-            "event": "Error occurred"
+            "event": "Error occurred",
         }
 
         result = format_console_log(logger, "error", event_dict)
@@ -278,8 +283,8 @@ class TestModuleImports:
         from app.common.struct_logger import console_formatter
 
         assert console_formatter is not None
-        assert hasattr(console_formatter, 'format_console_log')
-        assert hasattr(console_formatter, '_parse_event_content')
+        assert hasattr(console_formatter, "format_console_log")
+        assert hasattr(console_formatter, "_parse_event_content")
 
 
 class TestParseEventContentExtended:
@@ -341,10 +346,10 @@ class TestFormatCallStack:
         """Test formatting call stack in string format"""
         from app.common.struct_logger.console_formatter import _format_call_stack
 
-        stack_str = '''Traceback (most recent call last):
+        stack_str = """Traceback (most recent call last):
   File "test.py", line 10, in <module>
     raise ValueError("test")
-ValueError: test'''
+ValueError: test"""
 
         lines = _format_call_stack(stack_str)
 
@@ -359,7 +364,7 @@ ValueError: test'''
 
         stack_list = [
             {"file": "/path/to/file.py", "line": 42, "function": "test_func"},
-            {"file": "/path/to/other.py", "line": 10, "function": "another_func"}
+            {"file": "/path/to/other.py", "line": 10, "function": "another_func"},
         ]
 
         lines = _format_call_stack(stack_list)
@@ -376,7 +381,7 @@ ValueError: test'''
 
         stack_list = [
             {"file": "/path/to/file.py"},  # Missing line and function
-            {"line": 10, "function": "test"}  # Missing file
+            {"line": 10, "function": "test"},  # Missing file
         ]
 
         lines = _format_call_stack(stack_list)
@@ -481,9 +486,13 @@ class TestFormatExceptionTraceback:
     @pytest.mark.asyncio
     async def test_format_exception_traceback_with_exc_info_string(self):
         """Test formatting exception traceback with exc_info string"""
-        from app.common.struct_logger.console_formatter import _format_exception_traceback
+        from app.common.struct_logger.console_formatter import (
+            _format_exception_traceback,
+        )
 
-        exc_info = "Traceback (most recent call last):\n  File test.py\nValueError: test"
+        exc_info = (
+            "Traceback (most recent call last):\n  File test.py\nValueError: test"
+        )
         lines = _format_exception_traceback(exc_info, None, None)
 
         assert len(lines) > 0
@@ -492,7 +501,9 @@ class TestFormatExceptionTraceback:
     @pytest.mark.asyncio
     async def test_format_exception_traceback_with_exc_str(self):
         """Test formatting exception traceback with exc_str"""
-        from app.common.struct_logger.console_formatter import _format_exception_traceback
+        from app.common.struct_logger.console_formatter import (
+            _format_exception_traceback,
+        )
 
         exc_str = "Error: test error"
         lines = _format_exception_traceback(None, exc_str, None)
@@ -503,7 +514,9 @@ class TestFormatExceptionTraceback:
     @pytest.mark.asyncio
     async def test_format_exception_traceback_with_stack_str(self):
         """Test formatting exception traceback with stack_str"""
-        from app.common.struct_logger.console_formatter import _format_exception_traceback
+        from app.common.struct_logger.console_formatter import (
+            _format_exception_traceback,
+        )
 
         stack_str = "Stack line 1\nStack line 2"
         lines = _format_exception_traceback(None, None, stack_str)
@@ -514,7 +527,9 @@ class TestFormatExceptionTraceback:
     @pytest.mark.asyncio
     async def test_format_exception_traceback_with_exception_object(self):
         """Test formatting exception traceback with exception object"""
-        from app.common.struct_logger.console_formatter import _format_exception_traceback
+        from app.common.struct_logger.console_formatter import (
+            _format_exception_traceback,
+        )
 
         exc = ValueError("Test error")
         lines = _format_exception_traceback(exc, None, None)
@@ -525,7 +540,9 @@ class TestFormatExceptionTraceback:
     @pytest.mark.asyncio
     async def test_format_exception_traceback_no_info(self):
         """Test formatting exception traceback with no info"""
-        from app.common.struct_logger.console_formatter import _format_exception_traceback
+        from app.common.struct_logger.console_formatter import (
+            _format_exception_traceback,
+        )
 
         lines = _format_exception_traceback(None, None, None)
 
@@ -543,7 +560,7 @@ class TestFormatContextFieldsExtended:
         event_dict = {
             "validation_errors": [
                 {"field": "email", "message": "Invalid email"},
-                {"field": "age", "message": "Must be positive"}
+                {"field": "age", "message": "Must be positive"},
             ]
         }
         lines = _format_context_fields(event_dict)
@@ -560,7 +577,7 @@ class TestFormatContextFieldsExtended:
             "error": "Some error",
             "error_code": "E001",
             "error_details": {"info": "details"},
-            "normal_field": "normal_value"
+            "normal_field": "normal_value",
         }
         lines = _format_context_fields(event_dict)
 
@@ -589,7 +606,9 @@ class TestFormatContextFieldsExtended:
         """Test formatting dict value with multiple lines"""
         from app.common.struct_logger.console_formatter import _format_context_fields
 
-        event_dict = {"config": {"key1": "value1", "key2": "value2", "nested": {"a": 1}}}
+        event_dict = {
+            "config": {"key1": "value1", "key2": "value2", "nested": {"a": 1}}
+        }
         lines = _format_context_fields(event_dict)
 
         assert len(lines) > 0
@@ -610,7 +629,7 @@ class TestFormatConsoleLogExtended:
             "timestamp": "2024-01-01 12:00:00",
             "level": "error",
             "event": "Error with stack",
-            "stack": "Stack trace line 1\nStack trace line 2"
+            "stack": "Stack trace line 1\nStack trace line 2",
         }
 
         result = format_console_log(logger, "error", event_dict)
@@ -630,7 +649,7 @@ class TestFormatConsoleLogExtended:
             "timestamp": "2024-01-01 12:00:00",
             "level": "error",
             "event": "Exception occurred",
-            "exception": exc
+            "exception": exc,
         }
 
         result = format_console_log(logger, "error", event_dict)
@@ -648,7 +667,7 @@ class TestFormatConsoleLogExtended:
             "timestamp": "2024-01-01 12:00:00",
             "level": "error",
             "event": "Error with details",
-            "error_details": {"code": "E001", "message": "Detailed error"}
+            "error_details": {"code": "E001", "message": "Detailed error"},
         }
 
         result = format_console_log(logger, "error", event_dict)
@@ -668,7 +687,7 @@ class TestFormatConsoleLogExtended:
             "level": "info",
             "event": "Test message",
             "caller": "module.py:42",
-            "log_type": "BusinessLog"
+            "log_type": "BusinessLog",
         }
 
         result = format_console_log(logger, "info", event_dict)
@@ -688,7 +707,7 @@ class TestFormatConsoleLogExtended:
         event_dict = {
             "timestamp": "2024-01-01 12:00:00",
             "level": "info",
-            "event": {"description": "Main message", "extra": "data"}
+            "event": {"description": "Main message", "extra": "data"},
         }
 
         result = format_console_log(logger, "info", event_dict)
@@ -714,7 +733,7 @@ class TestFormatConsoleLogExtended:
             "action": "test_action",
             "error_details": {"info": "details"},
             "exception": exc,
-            "extra_field": "extra_value"
+            "extra_field": "extra_value",
         }
 
         result = format_console_log(logger, "error", event_dict)
@@ -735,7 +754,7 @@ class TestFormatConsoleLogExtended:
         event_dict = {
             "timestamp": "2024-01-01 12:00:00",
             "level": "critical",
-            "event": "Critical error"
+            "event": "Critical error",
         }
 
         result = format_console_log(logger, "critical", event_dict)

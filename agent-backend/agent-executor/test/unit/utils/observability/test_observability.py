@@ -11,13 +11,17 @@ class TestInitObservability:
     @patch("app.utils.observability.observability.init_trace_provider")
     def test_init_with_log_enabled(self, mock_init_trace, mock_init_log):
         """测试启用日志时初始化"""
-        from app.utils.observability.observability_setting import ObservabilitySetting, LogSetting, TraceSetting, ServerInfo
+        from app.utils.observability.observability_setting import (
+            ObservabilitySetting,
+            LogSetting,
+            TraceSetting,
+            ServerInfo,
+        )
         from app.utils.observability.observability import init_observability
 
         server_info = ServerInfo(server_name="test", server_version="1.0")
         setting = ObservabilitySetting(
-            log=LogSetting(log_enabled=True),
-            trace=TraceSetting(trace_enabled=False)
+            log=LogSetting(log_enabled=True), trace=TraceSetting(trace_enabled=False)
         )
 
         init_observability(server_info, setting)
@@ -29,13 +33,17 @@ class TestInitObservability:
     @patch("app.utils.observability.observability.init_trace_provider")
     def test_init_with_trace_enabled(self, mock_init_trace, mock_init_log):
         """测试启用追踪时初始化"""
-        from app.utils.observability.observability_setting import ObservabilitySetting, LogSetting, TraceSetting, ServerInfo
+        from app.utils.observability.observability_setting import (
+            ObservabilitySetting,
+            LogSetting,
+            TraceSetting,
+            ServerInfo,
+        )
         from app.utils.observability.observability import init_observability
 
         server_info = ServerInfo(server_name="test", server_version="1.0")
         setting = ObservabilitySetting(
-            log=LogSetting(log_enabled=False),
-            trace=TraceSetting(trace_enabled=True)
+            log=LogSetting(log_enabled=False), trace=TraceSetting(trace_enabled=True)
         )
 
         init_observability(server_info, setting)
@@ -47,13 +55,17 @@ class TestInitObservability:
     @patch("app.utils.observability.observability.init_trace_provider")
     def test_init_with_both_enabled(self, mock_init_trace, mock_init_log):
         """测试同时启用日志和追踪"""
-        from app.utils.observability.observability_setting import ObservabilitySetting, LogSetting, TraceSetting, ServerInfo
+        from app.utils.observability.observability_setting import (
+            ObservabilitySetting,
+            LogSetting,
+            TraceSetting,
+            ServerInfo,
+        )
         from app.utils.observability.observability import init_observability
 
         server_info = ServerInfo(server_name="test", server_version="1.0")
         setting = ObservabilitySetting(
-            log=LogSetting(log_enabled=True),
-            trace=TraceSetting(trace_enabled=True)
+            log=LogSetting(log_enabled=True), trace=TraceSetting(trace_enabled=True)
         )
 
         init_observability(server_info, setting)
@@ -65,13 +77,17 @@ class TestInitObservability:
     @patch("app.utils.observability.observability.init_trace_provider")
     def test_init_with_none_enabled(self, mock_init_trace, mock_init_log):
         """测试都禁用时不初始化"""
-        from app.utils.observability.observability_setting import ObservabilitySetting, LogSetting, TraceSetting, ServerInfo
+        from app.utils.observability.observability_setting import (
+            ObservabilitySetting,
+            LogSetting,
+            TraceSetting,
+            ServerInfo,
+        )
         from app.utils.observability.observability import init_observability
 
         server_info = ServerInfo(server_name="test", server_version="1.0")
         setting = ObservabilitySetting(
-            log=LogSetting(log_enabled=False),
-            trace=TraceSetting(trace_enabled=False)
+            log=LogSetting(log_enabled=False), trace=TraceSetting(trace_enabled=False)
         )
 
         init_observability(server_info, setting)

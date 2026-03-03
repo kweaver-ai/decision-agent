@@ -41,12 +41,12 @@ class TestAPIToolOutputHandler:
                                 "properties": {
                                     "result": {
                                         "type": "string",
-                                        "description": "Result value"
+                                        "description": "Result value",
                                     }
-                                }
+                                },
                             }
                         }
-                    }
+                    },
                 }
             ]
         }
@@ -68,11 +68,9 @@ class TestAPIToolOutputHandler:
                     "status_code": "200",
                     "content": {
                         "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ResultSchema"
-                            }
+                            "schema": {"$ref": "#/components/schemas/ResultSchema"}
                         }
-                    }
+                    },
                 }
             ],
             "components": {
@@ -81,11 +79,11 @@ class TestAPIToolOutputHandler:
                         "type": "object",
                         "properties": {
                             "id": {"type": "string", "description": "ID"},
-                            "name": {"type": "string", "description": "Name"}
-                        }
+                            "name": {"type": "string", "description": "Name"},
+                        },
                     }
                 }
-            }
+            },
         }
 
         result = handler._parse_outputs(api_spec)
@@ -109,11 +107,11 @@ class TestAPIToolOutputHandler:
                                 "required": ["id"],
                                 "properties": {
                                     "id": {"type": "string"},
-                                    "optional": {"type": "string"}
-                                }
+                                    "optional": {"type": "string"},
+                                },
                             }
                         }
-                    }
+                    },
                 }
             ]
         }
@@ -137,14 +135,11 @@ class TestAPIToolOutputHandler:
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "status": {
-                                        "type": "string",
-                                        "example": "success"
-                                    }
-                                }
+                                    "status": {"type": "string", "example": "success"}
+                                },
                             }
                         }
-                    }
+                    },
                 }
             ]
         }
@@ -166,12 +161,10 @@ class TestAPIToolOutputHandler:
                         "application/json": {
                             "schema": {
                                 "type": "object",
-                                "properties": {
-                                    "error": {"type": "string"}
-                                }
+                                "properties": {"error": {"type": "string"}},
                             }
                         }
-                    }
+                    },
                 },
                 {
                     "status_code": "500",
@@ -179,13 +172,11 @@ class TestAPIToolOutputHandler:
                         "application/json": {
                             "schema": {
                                 "type": "object",
-                                "properties": {
-                                    "error": {"type": "string"}
-                                }
+                                "properties": {"error": {"type": "string"}},
                             }
                         }
-                    }
-                }
+                    },
+                },
             ]
         }
 
@@ -206,20 +197,16 @@ class TestAPIToolOutputHandler:
                         "application/json": {
                             "schema": {
                                 "type": "object",
-                                "properties": {
-                                    "json_field": {"type": "string"}
-                                }
+                                "properties": {"json_field": {"type": "string"}},
                             }
                         },
                         "application/xml": {
                             "schema": {
                                 "type": "object",
-                                "properties": {
-                                    "xml_field": {"type": "string"}
-                                }
+                                "properties": {"xml_field": {"type": "string"}},
                             }
-                        }
-                    }
+                        },
+                    },
                 }
             ]
         }
@@ -234,14 +221,7 @@ class TestAPIToolOutputHandler:
         from app.common.tool_v2.api_tool_pkg.output import APIToolOutputHandler
 
         handler = APIToolOutputHandler()
-        api_spec = {
-            "responses": [
-                {
-                    "status_code": "200",
-                    "description": "Success"
-                }
-            ]
-        }
+        api_spec = {"responses": [{"status_code": "200", "description": "Success"}]}
 
         result = handler._parse_outputs(api_spec)
 
@@ -253,14 +233,7 @@ class TestAPIToolOutputHandler:
 
         handler = APIToolOutputHandler()
         api_spec = {
-            "responses": [
-                {
-                    "status_code": "200",
-                    "content": {
-                        "application/json": {}
-                    }
-                }
-            ]
+            "responses": [{"status_code": "200", "content": {"application/json": {}}}]
         }
 
         result = handler._parse_outputs(api_spec)

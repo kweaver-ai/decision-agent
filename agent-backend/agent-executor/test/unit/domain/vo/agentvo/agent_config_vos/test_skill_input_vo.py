@@ -10,10 +10,7 @@ class TestSkillInputVo:
         """测试使用必填字段初始化"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo = SkillInputVo(
-            input_name="test_input",
-            input_type="string"
-        )
+        vo = SkillInputVo(input_name="test_input", input_type="string")
 
         assert vo.input_name == "test_input"
         assert vo.input_type == "string"
@@ -34,7 +31,7 @@ class TestSkillInputVo:
             input_desc="Test input description",
             map_type="fixedValue",
             map_value="fixed_value_123",
-            children=None
+            children=None,
         )
 
         assert vo.enable is True
@@ -48,15 +45,10 @@ class TestSkillInputVo:
         """测试带children初始化"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        child = SkillInputVo(
-            input_name="child_input",
-            input_type="int"
-        )
+        child = SkillInputVo(input_name="child_input", input_type="int")
 
         vo = SkillInputVo(
-            input_name="parent_input",
-            input_type="object",
-            children=[child]
+            input_name="parent_input", input_type="object", children=[child]
         )
 
         assert vo.children is not None
@@ -67,10 +59,7 @@ class TestSkillInputVo:
         """测试enable是可选的"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo = SkillInputVo(
-            input_name="test_input",
-            input_type="string"
-        )
+        vo = SkillInputVo(input_name="test_input", input_type="string")
 
         assert vo.enable is None
 
@@ -78,10 +67,7 @@ class TestSkillInputVo:
         """测试input_desc是可选的"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo = SkillInputVo(
-            input_name="test_input",
-            input_type="string"
-        )
+        vo = SkillInputVo(input_name="test_input", input_type="string")
 
         assert vo.input_desc is None
 
@@ -89,10 +75,7 @@ class TestSkillInputVo:
         """测试map_type是可选的"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo = SkillInputVo(
-            input_name="test_input",
-            input_type="string"
-        )
+        vo = SkillInputVo(input_name="test_input", input_type="string")
 
         assert vo.map_type is None
 
@@ -100,10 +83,7 @@ class TestSkillInputVo:
         """测试map_value是可选的"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo = SkillInputVo(
-            input_name="test_input",
-            input_type="string"
-        )
+        vo = SkillInputVo(input_name="test_input", input_type="string")
 
         assert vo.map_value is None
 
@@ -118,10 +98,7 @@ class TestSkillInputVo:
         """测试模型序列化"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo = SkillInputVo(
-            input_name="test_input",
-            input_type="string"
-        )
+        vo = SkillInputVo(input_name="test_input", input_type="string")
 
         data = vo.model_dump()
 
@@ -137,11 +114,7 @@ class TestSkillInputVoExtended:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         vo = SkillInputVo(
-            input_name="",
-            input_type="",
-            input_desc="",
-            map_type="",
-            map_value=""
+            input_name="", input_type="", input_desc="", map_type="", map_value=""
         )
 
         assert vo.input_name == ""
@@ -155,11 +128,7 @@ class TestSkillInputVoExtended:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         for map_type in ["fixedValue", "var", "model", "auto"]:
-            vo = SkillInputVo(
-                input_name="test",
-                input_type="string",
-                map_type=map_type
-            )
+            vo = SkillInputVo(input_name="test", input_type="string", map_type=map_type)
             assert vo.map_type == map_type
 
     def test_init_with_various_map_values(self):
@@ -168,55 +137,36 @@ class TestSkillInputVoExtended:
 
         # String value
         vo1 = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value="string_value"
+            input_name="test", input_type="string", map_value="string_value"
         )
         assert vo1.map_value == "string_value"
 
         # Integer value
-        vo2 = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=123
-        )
+        vo2 = SkillInputVo(input_name="test", input_type="string", map_value=123)
         assert vo2.map_value == 123
 
         # Dict value
         vo3 = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value={"key": "value"}
+            input_name="test", input_type="string", map_value={"key": "value"}
         )
         assert vo3.map_value == {"key": "value"}
 
         # List value
-        vo4 = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=[1, 2, 3]
-        )
+        vo4 = SkillInputVo(input_name="test", input_type="string", map_value=[1, 2, 3])
         assert vo4.map_value == [1, 2, 3]
 
     def test_init_with_nested_children(self):
         """Test initialization with nested children"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        grandchild = SkillInputVo(
-            input_name="grandchild",
-            input_type="int"
-        )
+        grandchild = SkillInputVo(input_name="grandchild", input_type="int")
 
         child = SkillInputVo(
-            input_name="child",
-            input_type="object",
-            children=[grandchild]
+            input_name="child", input_type="object", children=[grandchild]
         )
 
         parent = SkillInputVo(
-            input_name="parent",
-            input_type="object",
-            children=[child]
+            input_name="parent", input_type="object", children=[child]
         )
 
         assert parent.children[0].children[0].input_name == "grandchild"
@@ -225,25 +175,14 @@ class TestSkillInputVoExtended:
         """Test initialization with multiple children"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        child1 = SkillInputVo(
-            input_name="child1",
-            input_type="string"
-        )
+        child1 = SkillInputVo(input_name="child1", input_type="string")
 
-        child2 = SkillInputVo(
-            input_name="child2",
-            input_type="int"
-        )
+        child2 = SkillInputVo(input_name="child2", input_type="int")
 
-        child3 = SkillInputVo(
-            input_name="child3",
-            input_type="bool"
-        )
+        child3 = SkillInputVo(input_name="child3", input_type="bool")
 
         vo = SkillInputVo(
-            input_name="parent",
-            input_type="object",
-            children=[child1, child2, child3]
+            input_name="parent", input_type="object", children=[child1, child2, child3]
         )
 
         assert len(vo.children) == 3
@@ -255,11 +194,7 @@ class TestSkillInputVoExtended:
         """Test initialization with enable=True"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo = SkillInputVo(
-            enable=True,
-            input_name="test",
-            input_type="string"
-        )
+        vo = SkillInputVo(enable=True, input_name="test", input_type="string")
 
         assert vo.enable is True
 
@@ -267,11 +202,7 @@ class TestSkillInputVoExtended:
         """Test initialization with enable=False"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo = SkillInputVo(
-            enable=False,
-            input_name="test",
-            input_type="string"
-        )
+        vo = SkillInputVo(enable=False, input_name="test", input_type="string")
 
         assert vo.enable is False
 
@@ -286,7 +217,7 @@ class TestSkillInputVoExtended:
             input_desc="Test description",
             map_type="fixedValue",
             map_value="test_value",
-            children=None
+            children=None,
         )
 
         data = vo.model_dump()
@@ -303,16 +234,9 @@ class TestSkillInputVoExtended:
         """Test model_dump with children"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        child = SkillInputVo(
-            input_name="child",
-            input_type="string"
-        )
+        child = SkillInputVo(input_name="child", input_type="string")
 
-        vo = SkillInputVo(
-            input_name="parent",
-            input_type="object",
-            children=[child]
-        )
+        vo = SkillInputVo(input_name="parent", input_type="object", children=[child])
 
         data = vo.model_dump()
 
@@ -323,10 +247,7 @@ class TestSkillInputVoExtended:
         """Test model_dump_json method"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string"
-        )
+        vo = SkillInputVo(input_name="test", input_type="string")
 
         json_str = vo.model_dump_json()
 
@@ -337,11 +258,7 @@ class TestSkillInputVoExtended:
         """Test copying the VO"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo1 = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value="value"
-        )
+        vo1 = SkillInputVo(input_name="test", input_type="string", map_value="value")
 
         vo2 = vo1.copy()
 
@@ -353,20 +270,11 @@ class TestSkillInputVoExtended:
         """Test equality comparison"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo1 = SkillInputVo(
-            input_name="test",
-            input_type="string"
-        )
+        vo1 = SkillInputVo(input_name="test", input_type="string")
 
-        vo2 = SkillInputVo(
-            input_name="test",
-            input_type="string"
-        )
+        vo2 = SkillInputVo(input_name="test", input_type="string")
 
-        vo3 = SkillInputVo(
-            input_name="other",
-            input_type="int"
-        )
+        vo3 = SkillInputVo(input_name="other", input_type="int")
 
         assert vo1 == vo2
         assert vo1 != vo3
@@ -379,7 +287,7 @@ class TestSkillInputVoExtended:
             "input_name": "test",
             "input_type": "string",
             "map_type": "var",
-            "map_value": "$var"
+            "map_value": "$var",
         }
 
         vo = SkillInputVo(**data)
@@ -396,7 +304,7 @@ class TestSkillInputVoExtended:
         vo = SkillInputVo(
             input_name="test",
             input_type="string",
-            input_desc="Test with special chars: @#$%^&*()"
+            input_desc="Test with special chars: @#$%^&*()",
         )
 
         assert "@" in vo.input_desc
@@ -407,9 +315,7 @@ class TestSkillInputVoExtended:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         vo = SkillInputVo(
-            input_name="测试输入",
-            input_type="字符串",
-            input_desc="这是一个测试描述"
+            input_name="测试输入", input_type="字符串", input_desc="这是一个测试描述"
         )
 
         assert vo.input_name == "测试输入"
@@ -424,11 +330,7 @@ class TestSkillInputVoEdgeCases:
         """Test with None enable value"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            enable=None
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", enable=None)
 
         assert vo.enable is None
 
@@ -437,10 +339,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         long_name = "a" * 1000
-        vo = SkillInputVo(
-            input_name=long_name,
-            input_type="string"
-        )
+        vo = SkillInputVo(input_name=long_name, input_type="string")
 
         assert vo.input_name == long_name
 
@@ -449,11 +348,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         long_desc = "a" * 5000
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            input_desc=long_desc
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", input_desc=long_desc)
 
         assert vo.input_desc == long_desc
 
@@ -462,23 +357,33 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         level5 = SkillInputVo(input_name="level5", input_type="string")
-        level4 = SkillInputVo(input_name="level4", input_type="object", children=[level5])
-        level3 = SkillInputVo(input_name="level3", input_type="object", children=[level4])
-        level2 = SkillInputVo(input_name="level2", input_type="object", children=[level3])
-        level1 = SkillInputVo(input_name="level1", input_type="object", children=[level2])
+        level4 = SkillInputVo(
+            input_name="level4", input_type="object", children=[level5]
+        )
+        level3 = SkillInputVo(
+            input_name="level3", input_type="object", children=[level4]
+        )
+        level2 = SkillInputVo(
+            input_name="level2", input_type="object", children=[level3]
+        )
+        level1 = SkillInputVo(
+            input_name="level1", input_type="object", children=[level2]
+        )
 
-        assert level1.children[0].children[0].children[0].children[0].input_name == "level5"
+        assert (
+            level1.children[0].children[0].children[0].children[0].input_name
+            == "level5"
+        )
 
     def test_with_many_children(self):
         """Test with many children (100 items)"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        children = [SkillInputVo(input_name=f"child_{i}", input_type="string") for i in range(100)]
-        vo = SkillInputVo(
-            input_name="parent",
-            input_type="object",
-            children=children
-        )
+        children = [
+            SkillInputVo(input_name=f"child_{i}", input_type="string")
+            for i in range(100)
+        ]
+        vo = SkillInputVo(input_name="parent", input_type="object", children=children)
 
         assert len(vo.children) == 100
 
@@ -486,18 +391,10 @@ class TestSkillInputVoEdgeCases:
         """Test with complex map value (nested dict)"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        complex_value = {
-            "level1": {
-                "level2": {
-                    "level3": "value"
-                }
-            }
-        }
+        complex_value = {"level1": {"level2": {"level3": "value"}}}
 
         vo = SkillInputVo(
-            input_name="test",
-            input_type="object",
-            map_value=complex_value
+            input_name="test", input_type="object", map_value=complex_value
         )
 
         assert vo.map_value == complex_value
@@ -509,14 +406,10 @@ class TestSkillInputVoEdgeCases:
         list_value = [
             {"id": 1, "name": "item1"},
             {"id": 2, "name": "item2"},
-            {"id": 3, "name": "item3"}
+            {"id": 3, "name": "item3"},
         ]
 
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="array",
-            map_value=list_value
-        )
+        vo = SkillInputVo(input_name="test", input_type="array", map_value=list_value)
 
         assert vo.map_value == list_value
 
@@ -524,11 +417,7 @@ class TestSkillInputVoEdgeCases:
         """Test with boolean map value"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="boolean",
-            map_value=True
-        )
+        vo = SkillInputVo(input_name="test", input_type="boolean", map_value=True)
 
         assert vo.map_value is True
 
@@ -536,11 +425,7 @@ class TestSkillInputVoEdgeCases:
         """Test with float map value"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="float",
-            map_value=3.14159
-        )
+        vo = SkillInputVo(input_name="test", input_type="float", map_value=3.14159)
 
         assert vo.map_value == 3.14159
 
@@ -548,11 +433,7 @@ class TestSkillInputVoEdgeCases:
         """Test with negative map value"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="int",
-            map_value=-100
-        )
+        vo = SkillInputVo(input_name="test", input_type="int", map_value=-100)
 
         assert vo.map_value == -100
 
@@ -560,11 +441,7 @@ class TestSkillInputVoEdgeCases:
         """Test with zero map value"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="int",
-            map_value=0
-        )
+        vo = SkillInputVo(input_name="test", input_type="int", map_value=0)
 
         assert vo.map_value == 0
 
@@ -572,11 +449,7 @@ class TestSkillInputVoEdgeCases:
         """Test with null map value"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=None
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=None)
 
         assert vo.map_value is None
 
@@ -603,7 +476,7 @@ class TestSkillInputVoEdgeCases:
             "test=name",
             "test[name]",
             "test{name}",
-            "test<name>"
+            "test<name>",
         ]
 
         for name in special_names:
@@ -634,7 +507,7 @@ class TestSkillInputVoEdgeCases:
             "str=ing",
             "str[ing]",
             "str{ing}",
-            "str<ing>"
+            "str<ing>",
         ]
 
         for input_type in special_types:
@@ -648,22 +521,14 @@ class TestSkillInputVoEdgeCases:
         map_types = ["fixedValue", "var", "model", "auto"]
 
         for map_type in map_types:
-            vo = SkillInputVo(
-                input_name="test",
-                input_type="string",
-                map_type=map_type
-            )
+            vo = SkillInputVo(input_name="test", input_type="string", map_type=map_type)
             assert vo.map_type == map_type
 
     def test_with_custom_map_type(self):
         """Test with custom map type"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_type="customType"
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_type="customType")
 
         assert vo.map_type == "customType"
 
@@ -672,25 +537,13 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         child1 = SkillInputVo(
-            input_name="child1",
-            input_type="string",
-            map_type="fixedValue"
+            input_name="child1", input_type="string", map_type="fixedValue"
         )
-        child2 = SkillInputVo(
-            input_name="child2",
-            input_type="string",
-            map_type="var"
-        )
-        child3 = SkillInputVo(
-            input_name="child3",
-            input_type="string",
-            map_type="auto"
-        )
+        child2 = SkillInputVo(input_name="child2", input_type="string", map_type="var")
+        child3 = SkillInputVo(input_name="child3", input_type="string", map_type="auto")
 
         vo = SkillInputVo(
-            input_name="parent",
-            input_type="object",
-            children=[child1, child2, child3]
+            input_name="parent", input_type="object", children=[child1, child2, child3]
         )
 
         assert vo.children[0].map_type == "fixedValue"
@@ -701,11 +554,7 @@ class TestSkillInputVoEdgeCases:
         """Test with empty children list"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo = SkillInputVo(
-            input_name="parent",
-            input_type="object",
-            children=[]
-        )
+        vo = SkillInputVo(input_name="parent", input_type="object", children=[])
 
         assert vo.children == []
 
@@ -713,11 +562,7 @@ class TestSkillInputVoEdgeCases:
         """Test with explicit None for enable"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            enable=None
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", enable=None)
 
         assert vo.enable is None
 
@@ -731,7 +576,7 @@ class TestSkillInputVoEdgeCases:
             enable=None,
             input_desc=None,
             map_type=None,
-            map_value=None
+            map_value=None,
         )
 
         data = vo.model_dump()
@@ -745,10 +590,7 @@ class TestSkillInputVoEdgeCases:
         """Test model_dump with exclude_unset=True"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string"
-        )
+        vo = SkillInputVo(input_name="test", input_type="string")
 
         data = vo.model_dump(exclude_unset=True)
 
@@ -761,10 +603,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            enable=None,
-            input_desc=None
+            input_name="test", input_type="string", enable=None, input_desc=None
         )
 
         data = vo.model_dump(exclude_none=True)
@@ -777,13 +616,9 @@ class TestSkillInputVoEdgeCases:
         """Test model_dump with mode='json'"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=123
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=123)
 
-        data = vo.model_dump(mode='json')
+        data = vo.model_dump(mode="json")
 
         assert data["map_value"] == 123
 
@@ -794,7 +629,7 @@ class TestSkillInputVoEdgeCases:
         data = {
             "input_name": "test",
             "input_type": "string",
-            "extra_field": "extra_value"
+            "extra_field": "extra_value",
         }
 
         vo = SkillInputVo(**data)
@@ -807,9 +642,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            input_desc="Line 1\nLine 2\nLine 3"
+            input_name="test", input_type="string", input_desc="Line 1\nLine 2\nLine 3"
         )
 
         assert "\n" in vo.input_desc
@@ -819,9 +652,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            input_desc="Col1\tCol2\tCol3"
+            input_name="test", input_type="string", input_desc="Col1\tCol2\tCol3"
         )
 
         assert "\t" in vo.input_desc
@@ -833,7 +664,7 @@ class TestSkillInputVoEdgeCases:
         vo = SkillInputVo(
             input_name="test",
             input_type="string",
-            input_desc="Test with emoji: 😀 🎉 🚀"
+            input_desc="Test with emoji: 😀 🎉 🚀",
         )
 
         assert "😀" in vo.input_desc
@@ -845,7 +676,7 @@ class TestSkillInputVoEdgeCases:
         vo = SkillInputVo(
             input_name="test",
             input_type="string",
-            map_value="https://example.com/path?query=value"
+            map_value="https://example.com/path?query=value",
         )
 
         assert vo.map_value == "https://example.com/path?query=value"
@@ -855,9 +686,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value="user@example.com"
+            input_name="test", input_type="string", map_value="user@example.com"
         )
 
         assert vo.map_value == "user@example.com"
@@ -867,11 +696,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         json_str = '{"key": "value", "number": 123}'
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=json_str
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=json_str)
 
         assert vo.map_value == json_str
 
@@ -879,12 +704,8 @@ class TestSkillInputVoEdgeCases:
         """Test with XML in map value"""
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
-        xml = '<root><item>value</item></root>'
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=xml
-        )
+        xml = "<root><item>value</item></root>"
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=xml)
 
         assert vo.map_value == xml
 
@@ -893,11 +714,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         sql = "SELECT * FROM users WHERE id = 123"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=sql
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=sql)
 
         assert vo.map_value == sql
 
@@ -906,11 +723,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         html = "<div class='test'><span>value</span></div>"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=html
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=html)
 
         assert vo.map_value == html
 
@@ -919,11 +732,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         css = ".test { color: red; font-size: 14px; }"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=css
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=css)
 
         assert vo.map_value == css
 
@@ -932,11 +741,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         js = "function test() { return 'value'; }"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=js
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=js)
 
         assert vo.map_value == js
 
@@ -945,11 +750,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         code = "def test():\n    return 'value'"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=code
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=code)
 
         assert vo.map_value == code
 
@@ -958,11 +759,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         base64 = "SGVsbG8gV29ybGQ="
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=base64
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=base64)
 
         assert vo.map_value == base64
 
@@ -971,11 +768,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         hex = "48656c6c6f20576f726c64"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=hex
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=hex)
 
         assert vo.map_value == hex
 
@@ -984,11 +777,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         uuid = "550e8400-e29b-41d4-a716-446655440000"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=uuid
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=uuid)
 
         assert vo.map_value == uuid
 
@@ -997,11 +786,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         ip = "192.168.1.1"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=ip
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=ip)
 
         assert vo.map_value == ip
 
@@ -1010,11 +795,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         mac = "00:1A:2B:3C:4D:5E"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=mac
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=mac)
 
         assert vo.map_value == mac
 
@@ -1023,11 +804,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         date = "2024-01-01"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=date
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=date)
 
         assert vo.map_value == date
 
@@ -1036,11 +813,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         time = "12:34:56"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=time
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=time)
 
         assert vo.map_value == time
 
@@ -1049,11 +822,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         datetime = "2024-01-01T12:34:56Z"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=datetime
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=datetime)
 
         assert vo.map_value == datetime
 
@@ -1062,11 +831,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         timestamp = "1704107696"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=timestamp
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=timestamp)
 
         assert vo.map_value == timestamp
 
@@ -1075,11 +840,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         lat = 40.7128
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="float",
-            map_value=lat
-        )
+        vo = SkillInputVo(input_name="test", input_type="float", map_value=lat)
 
         assert vo.map_value == lat
 
@@ -1088,11 +849,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         lon = -74.0060
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="float",
-            map_value=lon
-        )
+        vo = SkillInputVo(input_name="test", input_type="float", map_value=lon)
 
         assert vo.map_value == lon
 
@@ -1101,11 +858,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         coords = {"lat": 40.7128, "lon": -74.0060}
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="object",
-            map_value=coords
-        )
+        vo = SkillInputVo(input_name="test", input_type="object", map_value=coords)
 
         assert vo.map_value == coords
 
@@ -1114,11 +867,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         color = "#FF5733"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=color
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=color)
 
         assert vo.map_value == color
 
@@ -1127,11 +876,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         rgb = "rgb(255, 87, 51)"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=rgb
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=rgb)
 
         assert vo.map_value == rgb
 
@@ -1140,11 +885,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         phone = "+1-555-123-4567"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=phone
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=phone)
 
         assert vo.map_value == phone
 
@@ -1153,11 +894,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         cc = "4111-1111-1111-1111"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=cc
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=cc)
 
         assert vo.map_value == cc
 
@@ -1166,11 +903,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         ssn = "123-45-6789"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=ssn
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=ssn)
 
         assert vo.map_value == ssn
 
@@ -1179,11 +912,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         zip = "12345-6789"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=zip
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=zip)
 
         assert vo.map_value == zip
 
@@ -1192,11 +921,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         country = "US"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=country
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=country)
 
         assert vo.map_value == country
 
@@ -1205,11 +930,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         currency = "USD"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=currency
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=currency)
 
         assert vo.map_value == currency
 
@@ -1218,11 +939,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         lang = "en-US"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=lang
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=lang)
 
         assert vo.map_value == lang
 
@@ -1231,11 +948,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         locale = "en_US.UTF-8"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=locale
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=locale)
 
         assert vo.map_value == locale
 
@@ -1244,11 +957,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         tz = "America/New_York"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=tz
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=tz)
 
         assert vo.map_value == tz
 
@@ -1257,11 +966,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         version = "1.2.3-beta+build.123"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=version
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=version)
 
         assert vo.map_value == version
 
@@ -1270,11 +975,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         commit = "a1b2c3d4e5f6g7h8i9j0"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=commit
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=commit)
 
         assert vo.map_value == commit
 
@@ -1283,11 +984,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         path = "/usr/local/bin/test"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=path
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=path)
 
         assert vo.map_value == path
 
@@ -1296,11 +993,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         path = "C:\\Users\\test\\file.txt"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=path
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=path)
 
         assert vo.map_value == path
 
@@ -1309,11 +1002,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         path = "\\\\server\\share\\file.txt"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=path
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=path)
 
         assert vo.map_value == path
 
@@ -1322,11 +1011,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=regex
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=regex)
 
         assert vo.map_value == regex
 
@@ -1335,11 +1020,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         md = "# Heading\n\n**Bold** and *italic* text."
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=md
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=md)
 
         assert vo.map_value == md
 
@@ -1348,11 +1029,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         yaml = "key:\n  nested: value\n  list:\n    - item1\n    - item2"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=yaml
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=yaml)
 
         assert vo.map_value == yaml
 
@@ -1361,11 +1038,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         cron = "0 0 12 * * ?"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=cron
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=cron)
 
         assert vo.map_value == cron
 
@@ -1374,11 +1047,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=ua
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=ua)
 
         assert vo.map_value == ua
 
@@ -1387,11 +1056,7 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         mime = "application/json; charset=utf-8"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=mime
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=mime)
 
         assert vo.map_value == mime
 
@@ -1400,10 +1065,6 @@ class TestSkillInputVoEdgeCases:
         from app.domain.vo.agentvo.agent_config_vos import SkillInputVo
 
         jwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ"
-        vo = SkillInputVo(
-            input_name="test",
-            input_type="string",
-            map_value=jwt
-        )
+        vo = SkillInputVo(input_name="test", input_type="string", map_value=jwt)
 
         assert vo.map_value == jwt

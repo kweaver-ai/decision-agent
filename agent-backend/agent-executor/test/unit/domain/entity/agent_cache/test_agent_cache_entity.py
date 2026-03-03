@@ -17,7 +17,7 @@ class TestAgentCacheEntity:
             account_type="user",
             agent_id="agent456",
             agent_version="v0",
-            agent_config_version_flag="123456"
+            agent_config_version_flag="123456",
         )
         cache_data = CacheDataVo()
         now = datetime.now()
@@ -28,7 +28,7 @@ class TestAgentCacheEntity:
             agent_version="v0",
             cache_data=cache_data,
             cache_data_last_set_timestamp=1234567890,
-            created_at=now
+            created_at=now,
         )
 
         assert entity.cache_id_vo == cache_id_vo
@@ -44,6 +44,7 @@ class TestAgentCacheEntity:
 
         # Should be a dataclass
         from dataclasses import is_dataclass
+
         assert is_dataclass(AgentCacheEntity)
 
     def test_default_values(self):
@@ -56,7 +57,7 @@ class TestAgentCacheEntity:
             account_type="user",
             agent_id="agent456",
             agent_version="v0",
-            agent_config_version_flag="123456"
+            agent_config_version_flag="123456",
         )
         cache_data = CacheDataVo()
 
@@ -66,7 +67,7 @@ class TestAgentCacheEntity:
             agent_version="v0",
             cache_data=cache_data,
             cache_data_last_set_timestamp=1234567890,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
 
         # All fields should be set

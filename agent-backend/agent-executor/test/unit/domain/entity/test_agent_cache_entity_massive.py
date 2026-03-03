@@ -18,7 +18,7 @@ class TestAgentCacheEntityMassive:
             account_type="user",
             agent_id="agent1",
             agent_version="v1",
-            agent_config_version_flag="flag1"
+            agent_config_version_flag="flag1",
         )
         cache_data = CacheDataVo()
         entity = AgentCacheEntity(
@@ -27,7 +27,7 @@ class TestAgentCacheEntityMassive:
             agent_version="v1",
             cache_data=cache_data,
             cache_data_last_set_timestamp=123456,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         assert entity.agent_id == "agent1"
 
@@ -37,7 +37,7 @@ class TestAgentCacheEntityMassive:
             account_type="user",
             agent_id="agent1",
             agent_version="v2",
-            agent_config_version_flag="flag1"
+            agent_config_version_flag="flag1",
         )
         cache_data = CacheDataVo()
         entity = AgentCacheEntity(
@@ -46,7 +46,7 @@ class TestAgentCacheEntityMassive:
             agent_version="v2",
             cache_data=cache_data,
             cache_data_last_set_timestamp=123456,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         assert entity.agent_version == "v2"
 
@@ -56,7 +56,7 @@ class TestAgentCacheEntityMassive:
             account_type="user",
             agent_id="agent1",
             agent_version="v1",
-            agent_config_version_flag="flag1"
+            agent_config_version_flag="flag1",
         )
         cache_data = CacheDataVo()
         entity = AgentCacheEntity(
@@ -65,7 +65,7 @@ class TestAgentCacheEntityMassive:
             agent_version="v1",
             cache_data=cache_data,
             cache_data_last_set_timestamp=123456,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         assert entity.cache_id_vo is not None
 
@@ -75,7 +75,7 @@ class TestAgentCacheEntityMassive:
             account_type="user",
             agent_id="agent1",
             agent_version="v1",
-            agent_config_version_flag="flag1"
+            agent_config_version_flag="flag1",
         )
         cache_data = CacheDataVo()
         entity = AgentCacheEntity(
@@ -84,7 +84,7 @@ class TestAgentCacheEntityMassive:
             agent_version="v1",
             cache_data=cache_data,
             cache_data_last_set_timestamp=123456,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         assert entity.cache_data is not None
 
@@ -94,7 +94,7 @@ class TestAgentCacheEntityMassive:
             account_type="user",
             agent_id="agent1",
             agent_version="v1",
-            agent_config_version_flag="flag1"
+            agent_config_version_flag="flag1",
         )
         cache_data = CacheDataVo()
         entity = AgentCacheEntity(
@@ -103,7 +103,7 @@ class TestAgentCacheEntityMassive:
             agent_version="v1",
             cache_data=cache_data,
             cache_data_last_set_timestamp=999999,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         assert entity.cache_data_last_set_timestamp == 999999
 
@@ -113,7 +113,7 @@ class TestAgentCacheEntityMassive:
             account_type="user",
             agent_id="agent1",
             agent_version="v1",
-            agent_config_version_flag="flag1"
+            agent_config_version_flag="flag1",
         )
         cache_data = CacheDataVo()
         entity = AgentCacheEntity(
@@ -122,7 +122,7 @@ class TestAgentCacheEntityMassive:
             agent_version="v1",
             cache_data=cache_data,
             cache_data_last_set_timestamp=0,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         assert entity.cache_data_last_set_timestamp == 0
 
@@ -132,7 +132,7 @@ class TestAgentCacheEntityMassive:
             account_type="user",
             agent_id="agent1",
             agent_version="v1",
-            agent_config_version_flag="flag1"
+            agent_config_version_flag="flag1",
         )
         cache_data = CacheDataVo()
         now = datetime.now()
@@ -142,12 +142,13 @@ class TestAgentCacheEntityMassive:
             agent_version="v1",
             cache_data=cache_data,
             cache_data_last_set_timestamp=123456,
-            created_at=now
+            created_at=now,
         )
         assert entity.created_at == now
 
     def test_entity_is_dataclass(self):
         from dataclasses import is_dataclass
+
         assert is_dataclass(AgentCacheEntity)
 
     def test_entity_cache_id_vo_account_id(self):
@@ -156,7 +157,7 @@ class TestAgentCacheEntityMassive:
             account_type="user",
             agent_id="agent1",
             agent_version="v1",
-            agent_config_version_flag="flag1"
+            agent_config_version_flag="flag1",
         )
         cache_data = CacheDataVo()
         entity = AgentCacheEntity(
@@ -165,7 +166,7 @@ class TestAgentCacheEntityMassive:
             agent_version="v1",
             cache_data=cache_data,
             cache_data_last_set_timestamp=123456,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         assert entity.cache_id_vo.account_id == "test_account"
 
@@ -175,7 +176,7 @@ class TestAgentCacheEntityMassive:
             account_type="user",
             agent_id="test_agent",
             agent_version="v1",
-            agent_config_version_flag="flag1"
+            agent_config_version_flag="flag1",
         )
         cache_data = CacheDataVo()
         entity = AgentCacheEntity(
@@ -184,7 +185,7 @@ class TestAgentCacheEntityMassive:
             agent_version="v1",
             cache_data=cache_data,
             cache_data_last_set_timestamp=123456,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         assert entity.cache_id_vo.agent_id == "test_agent"
 
@@ -194,7 +195,7 @@ class TestAgentCacheEntityMassive:
             account_type="user",
             agent_id="agent1",
             agent_version="v1",
-            agent_config_version_flag="flag1"
+            agent_config_version_flag="flag1",
         )
         cache_data = CacheDataVo()
         cache_data.agent_config = {"test": "config"}
@@ -204,7 +205,7 @@ class TestAgentCacheEntityMassive:
             agent_version="v1",
             cache_data=cache_data,
             cache_data_last_set_timestamp=123456,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         assert entity.cache_data.agent_config == {"test": "config"}
 
@@ -214,7 +215,7 @@ class TestAgentCacheEntityMassive:
             account_type="user",
             agent_id="agent1",
             agent_version="v1",
-            agent_config_version_flag="flag1"
+            agent_config_version_flag="flag1",
         )
         cache_data = CacheDataVo()
         cache_data.tools_info_dict = {"tool": "info"}
@@ -224,7 +225,7 @@ class TestAgentCacheEntityMassive:
             agent_version="v1",
             cache_data=cache_data,
             cache_data_last_set_timestamp=123456,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         assert entity.cache_data.tools_info_dict == {"tool": "info"}
 
@@ -234,7 +235,7 @@ class TestAgentCacheEntityMassive:
             account_type="user",
             agent_id="agent1",
             agent_version="v1",
-            agent_config_version_flag="flag1"
+            agent_config_version_flag="flag1",
         )
         cache_data = CacheDataVo()
         cache_data.skill_agent_info_dict = {"skill": "data"}
@@ -244,7 +245,7 @@ class TestAgentCacheEntityMassive:
             agent_version="v1",
             cache_data=cache_data,
             cache_data_last_set_timestamp=123456,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         assert entity.cache_data.skill_agent_info_dict == {"skill": "data"}
 
@@ -254,7 +255,7 @@ class TestAgentCacheEntityMassive:
             account_type="user",
             agent_id="agent1",
             agent_version="v1",
-            agent_config_version_flag="flag1"
+            agent_config_version_flag="flag1",
         )
         cache_data = CacheDataVo()
         cache_data.llm_config_dict = {"llm": "config"}
@@ -264,7 +265,7 @@ class TestAgentCacheEntityMassive:
             agent_version="v1",
             cache_data=cache_data,
             cache_data_last_set_timestamp=123456,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         assert entity.cache_data.llm_config_dict == {"llm": "config"}
 
@@ -274,14 +275,14 @@ class TestAgentCacheEntityMassive:
             account_type="user",
             agent_id="agent1",
             agent_version="v1",
-            agent_config_version_flag="flag1"
+            agent_config_version_flag="flag1",
         )
         cache_id2 = AgentCacheIdVO(
             account_id="acc2",
             account_type="user",
             agent_id="agent2",
             agent_version="v2",
-            agent_config_version_flag="flag2"
+            agent_config_version_flag="flag2",
         )
         cache_data = CacheDataVo()
         entity1 = AgentCacheEntity(
@@ -290,7 +291,7 @@ class TestAgentCacheEntityMassive:
             agent_version="v1",
             cache_data=cache_data,
             cache_data_last_set_timestamp=123456,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         entity2 = AgentCacheEntity(
             cache_id_vo=cache_id2,
@@ -298,12 +299,13 @@ class TestAgentCacheEntityMassive:
             agent_version="v2",
             cache_data=cache_data,
             cache_data_last_set_timestamp=789012,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         assert entity1.agent_id != entity2.agent_id
 
     def test_entity_fields_count(self):
         from dataclasses import fields
+
         assert len(fields(AgentCacheEntity)) == 6
 
     def test_entity_field_names(self):
@@ -312,7 +314,7 @@ class TestAgentCacheEntityMassive:
             account_type="user",
             agent_id="agent1",
             agent_version="v1",
-            agent_config_version_flag="flag1"
+            agent_config_version_flag="flag1",
         )
         cache_data = CacheDataVo()
         entity = AgentCacheEntity(
@@ -321,7 +323,7 @@ class TestAgentCacheEntityMassive:
             agent_version="v1",
             cache_data=cache_data,
             cache_data_last_set_timestamp=123456,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         assert hasattr(entity, "cache_id_vo")
         assert hasattr(entity, "agent_id")
@@ -336,7 +338,7 @@ class TestAgentCacheEntityMassive:
             account_type="user",
             agent_id="agent1",
             agent_version="v1",
-            agent_config_version_flag="flag1"
+            agent_config_version_flag="flag1",
         )
         cache_data = CacheDataVo()
         entity = AgentCacheEntity(
@@ -345,7 +347,7 @@ class TestAgentCacheEntityMassive:
             agent_version="v1",
             cache_data=cache_data,
             cache_data_last_set_timestamp=123456,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         assert isinstance(entity.created_at, datetime)
 
@@ -355,7 +357,7 @@ class TestAgentCacheEntityMassive:
             account_type="user",
             agent_id="agent1",
             agent_version="v1",
-            agent_config_version_flag="flag1"
+            agent_config_version_flag="flag1",
         )
         cache_data = CacheDataVo()
         entity = AgentCacheEntity(
@@ -364,7 +366,7 @@ class TestAgentCacheEntityMassive:
             agent_version="v1",
             cache_data=cache_data,
             cache_data_last_set_timestamp=123456,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         assert isinstance(entity.cache_data_last_set_timestamp, int)
 
@@ -374,7 +376,7 @@ class TestAgentCacheEntityMassive:
             account_type="user",
             agent_id="agent1",
             agent_version="v1",
-            agent_config_version_flag="flag1"
+            agent_config_version_flag="flag1",
         )
         cache_data = CacheDataVo()
         entity = AgentCacheEntity(
@@ -383,7 +385,7 @@ class TestAgentCacheEntityMassive:
             agent_version="v1",
             cache_data=cache_data,
             cache_data_last_set_timestamp=123456,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         assert isinstance(entity.agent_id, str)
 
@@ -393,7 +395,7 @@ class TestAgentCacheEntityMassive:
             account_type="user",
             agent_id="agent1",
             agent_version="v1",
-            agent_config_version_flag="flag1"
+            agent_config_version_flag="flag1",
         )
         cache_data = CacheDataVo()
         entity = AgentCacheEntity(
@@ -402,7 +404,7 @@ class TestAgentCacheEntityMassive:
             agent_version="v1",
             cache_data=cache_data,
             cache_data_last_set_timestamp=123456,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         assert isinstance(entity.agent_version, str)
 
@@ -412,7 +414,7 @@ class TestAgentCacheEntityMassive:
             account_type="user",
             agent_id="agent1",
             agent_version="v1",
-            agent_config_version_flag="flag1"
+            agent_config_version_flag="flag1",
         )
         cache_data = CacheDataVo()
         entity = AgentCacheEntity(
@@ -421,7 +423,7 @@ class TestAgentCacheEntityMassive:
             agent_version="v1",
             cache_data=cache_data,
             cache_data_last_set_timestamp=-1,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         assert entity.cache_data_last_set_timestamp == -1
 
@@ -431,7 +433,7 @@ class TestAgentCacheEntityMassive:
             account_type="user",
             agent_id="agent1",
             agent_version="v1",
-            agent_config_version_flag="flag1"
+            agent_config_version_flag="flag1",
         )
         cache_data = CacheDataVo()
         large_ts = 9999999999999
@@ -441,6 +443,6 @@ class TestAgentCacheEntityMassive:
             agent_version="v1",
             cache_data=cache_data,
             cache_data_last_set_timestamp=large_ts,
-            created_at=datetime.now()
+            created_at=datetime.now(),
         )
         assert entity.cache_data_last_set_timestamp == large_ts

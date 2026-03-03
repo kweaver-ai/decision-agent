@@ -15,7 +15,9 @@ if TYPE_CHECKING:
 
 
 class DialogLogHandler:
-    def __init__(self, agent: "DolphinAgent",config: AgentConfigVo, headers: Dict[str, str]):
+    def __init__(
+        self, agent: "DolphinAgent", config: AgentConfigVo, headers: Dict[str, str]
+    ):
         self.agent = agent
         self.config = config
         self.headers = headers
@@ -32,7 +34,6 @@ class DialogLogHandler:
         # 1. 检查是否启用日志生成
         if not Config.dialog_logging.enable_dialog_logging:
             return
-
 
         # 2. 使用单文件模式还是多目录模式
         if Config.dialog_logging.use_single_log_file:
@@ -53,7 +54,6 @@ class DialogLogHandler:
             current_time: 当前时间戳
         """
 
-
         _config = self.config
         _user_id = self.user_id
         _current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S_%f")
@@ -67,7 +67,9 @@ class DialogLogHandler:
 
         # 先保存到临时文件，然后读取内容追加到单一文件
         self.agent.save_trajectory(
-            agent_name=_config.agent_id, trajectory_path=trajectory_file, force_save=True
+            agent_name=_config.agent_id,
+            trajectory_path=trajectory_file,
+            force_save=True,
         )
 
         # 读取trajectory文件内容并追加到单一文件
@@ -97,7 +99,6 @@ class DialogLogHandler:
         _user_id = self.user_id
         _current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S_%f")
 
-        
         # 1. 获取profile
         profile_content = self.agent.get_profile(
             f"Dolphin Runtime Profile - {_config.agent_id}"
@@ -157,7 +158,7 @@ class DialogLogHandler:
         _config = self.config
         _user_id = self.user_id
         _current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S_%f")
-        
+
         # 1. 创建trajectory目录
         trajectory_dir = f"./data/dialog/{_config.agent_id}/user_{_user_id}/conversation_{_config.conversation_id}"
         os.makedirs(trajectory_dir, exist_ok=True)
@@ -166,7 +167,9 @@ class DialogLogHandler:
         trajectory_filename = f"dialog_{_config.agent_run_id}_{_current_time}.jsonl"
         trajectory_file = os.path.join(trajectory_dir, trajectory_filename)
         self.agent.save_trajectory(
-            agent_name=_config.agent_id, trajectory_path=trajectory_file, force_save=True
+            agent_name=_config.agent_id,
+            trajectory_path=trajectory_file,
+            force_save=True,
         )
 
         return trajectory_file
@@ -184,7 +187,7 @@ class DialogLogHandler:
         _config = self.config
         _user_id = self.user_id
         _current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S_%f")
-        
+
         # 1. 获取profile
         profile_content = self.agent.get_profile(
             f"Dolphin Runtime Profile - {_config.agent_id}"
@@ -214,7 +217,7 @@ class DialogLogHandler:
         _config = self.config
         _user_id = self.user_id
         _current_time = datetime.datetime.now().strftime("%Y%m%d_%H%M%S_%f")
-        
+
         # 1. 保存trajectory
         trajectory_file = self._save_trajectory_to_multi_directories()
 

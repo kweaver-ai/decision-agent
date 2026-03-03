@@ -13,7 +13,9 @@ class TestCheckAndUpdateCache:
 
     async def test_cache_expired_creates_new_cache(self):
         """测试缓存过期时创建新缓存"""
-        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import check_and_update_cache
+        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import (
+            check_and_update_cache,
+        )
         from app.domain.vo.agentvo import AgentConfigVo
         from app.domain.vo.agent_cache import AgentCacheIdVO
 
@@ -25,9 +27,12 @@ class TestCheckAndUpdateCache:
         headers = {"Authorization": "Bearer token"}
 
         # Mock cache_manager
-        with patch('app.router.agent_controller_pkg.run_agent_v2.safe_output_generator.cache_manager') as mock_mgr:
+        with patch(
+            "app.router.agent_controller_pkg.run_agent_v2.safe_output_generator.cache_manager"
+        ) as mock_mgr:
             # First call returns 0 (expired), second call returns new TTL after creation
             call_count = [0]
+
             async def get_ttl_side_effect(cache_id):
                 call_count[0] += 1
                 if call_count[0] == 1:
@@ -43,7 +48,7 @@ class TestCheckAndUpdateCache:
                 agent_config=agent_config,
                 headers=headers,
                 account_id="acc123",
-                account_type="premium"
+                account_type="premium",
             )
 
             # Should create new cache
@@ -51,7 +56,9 @@ class TestCheckAndUpdateCache:
 
     async def test_cache_valid_no_update_needed(self):
         """测试缓存有效且未到更新阈值"""
-        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import check_and_update_cache
+        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import (
+            check_and_update_cache,
+        )
         from app.domain.vo.agentvo import AgentConfigVo
         from app.domain.vo.agent_cache import AgentCacheIdVO
 
@@ -59,7 +66,9 @@ class TestCheckAndUpdateCache:
         agent_config = MagicMock(spec=AgentConfigVo)
         headers = {}
 
-        with patch('app.router.agent_controller_pkg.run_agent_v2.safe_output_generator.cache_manager') as mock_mgr:
+        with patch(
+            "app.router.agent_controller_pkg.run_agent_v2.safe_output_generator.cache_manager"
+        ) as mock_mgr:
             # Return high TTL (cache is fresh)
             mock_mgr.cache_service.get_ttl = AsyncMock(return_value=3000)
             mock_mgr.update_cache_data = AsyncMock()
@@ -69,7 +78,7 @@ class TestCheckAndUpdateCache:
                 agent_config=agent_config,
                 headers=headers,
                 account_id="acc123",
-                account_type="premium"
+                account_type="premium",
             )
 
             # Should NOT update cache (still fresh)
@@ -77,10 +86,15 @@ class TestCheckAndUpdateCache:
 
     async def test_cache_update_threshold_exceeded(self):
         """测试缓存超过更新阈值"""
-        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import check_and_update_cache
+        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import (
+            check_and_update_cache,
+        )
         from app.domain.vo.agentvo import AgentConfigVo
         from app.domain.vo.agent_cache import AgentCacheIdVO
-        from app.domain.constant import AGENT_CACHE_TTL, AGENT_CACHE_DATA_UPDATE_PASS_SECOND
+        from app.domain.constant import (
+            AGENT_CACHE_TTL,
+            AGENT_CACHE_DATA_UPDATE_PASS_SECOND,
+        )
 
         cache_id_vo = MagicMock(spec=AgentCacheIdVO)
         agent_config = MagicMock(spec=AgentConfigVo)
@@ -89,7 +103,9 @@ class TestCheckAndUpdateCache:
         # Calculate TTL that exceeds threshold
         low_ttl = AGENT_CACHE_TTL - AGENT_CACHE_DATA_UPDATE_PASS_SECOND - 10
 
-        with patch('app.router.agent_controller_pkg.run_agent_v2.safe_output_generator.cache_manager') as mock_mgr:
+        with patch(
+            "app.router.agent_controller_pkg.run_agent_v2.safe_output_generator.cache_manager"
+        ) as mock_mgr:
             mock_mgr.cache_service.get_ttl = AsyncMock(return_value=low_ttl)
             mock_mgr.update_cache_data = AsyncMock()
 
@@ -98,7 +114,7 @@ class TestCheckAndUpdateCache:
                 agent_config=agent_config,
                 headers=headers,
                 account_id="acc123",
-                account_type="premium"
+                account_type="premium",
             )
 
             # Should update cache data
@@ -106,7 +122,9 @@ class TestCheckAndUpdateCache:
 
     async def test_cache_error_handling(self):
         """测试缓存异常处理"""
-        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import check_and_update_cache
+        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import (
+            check_and_update_cache,
+        )
         from app.domain.vo.agentvo import AgentConfigVo
         from app.domain.vo.agent_cache import AgentCacheIdVO
 
@@ -114,9 +132,13 @@ class TestCheckAndUpdateCache:
         agent_config = MagicMock(spec=AgentConfigVo)
         headers = {}
 
-        with patch('app.router.agent_controller_pkg.run_agent_v2.safe_output_generator.cache_manager') as mock_mgr:
+        with patch(
+            "app.router.agent_controller_pkg.run_agent_v2.safe_output_generator.cache_manager"
+        ) as mock_mgr:
             # Raise exception
-            mock_mgr.cache_service.get_ttl = AsyncMock(side_effect=Exception("Cache error"))
+            mock_mgr.cache_service.get_ttl = AsyncMock(
+                side_effect=Exception("Cache error")
+            )
 
             # Should not raise, just log error
             await check_and_update_cache(
@@ -124,7 +146,7 @@ class TestCheckAndUpdateCache:
                 agent_config=agent_config,
                 headers=headers,
                 account_id="acc123",
-                account_type="premium"
+                account_type="premium",
             )
 
 
@@ -134,7 +156,9 @@ class TestCreateSafeOutputGeneratorExtended:
 
     async def test_generator_exit_handling(self):
         """测试 GeneratorExit 处理"""
-        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import create_safe_output_generator
+        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import (
+            create_safe_output_generator,
+        )
 
         agent_core_v2 = MagicMock()
         agent_config = MagicMock()
@@ -146,7 +170,9 @@ class TestCreateSafeOutputGeneratorExtended:
             yield "chunk1"
             raise GeneratorExit()
 
-        agent_core_v2.output_handler.result_output = MagicMock(return_value=generator_that_exits())
+        agent_core_v2.output_handler.result_output = MagicMock(
+            return_value=generator_that_exits()
+        )
 
         gen = create_safe_output_generator(
             agent_core_v2=agent_core_v2,
@@ -154,7 +180,7 @@ class TestCreateSafeOutputGeneratorExtended:
             agent_input=agent_input,
             headers=headers,
             is_debug_run=False,
-            start_time=start_time
+            start_time=start_time,
         )
 
         results = []
@@ -169,7 +195,9 @@ class TestCreateSafeOutputGeneratorExtended:
 
     async def test_cancelled_error_handling(self):
         """测试 asyncio.CancelledError 处理"""
-        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import create_safe_output_generator
+        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import (
+            create_safe_output_generator,
+        )
 
         agent_core_v2 = MagicMock()
         agent_config = MagicMock()
@@ -181,7 +209,9 @@ class TestCreateSafeOutputGeneratorExtended:
             yield "chunk1"
             raise asyncio.CancelledError()
 
-        agent_core_v2.output_handler.result_output = MagicMock(return_value=generator_that_cancels())
+        agent_core_v2.output_handler.result_output = MagicMock(
+            return_value=generator_that_cancels()
+        )
 
         gen = create_safe_output_generator(
             agent_core_v2=agent_core_v2,
@@ -189,7 +219,7 @@ class TestCreateSafeOutputGeneratorExtended:
             agent_input=agent_input,
             headers=headers,
             is_debug_run=False,
-            start_time=start_time
+            start_time=start_time,
         )
 
         results = []
@@ -202,7 +232,9 @@ class TestCreateSafeOutputGeneratorExtended:
 
     async def test_generic_exception_handling(self):
         """测试通用异常处理"""
-        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import create_safe_output_generator
+        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import (
+            create_safe_output_generator,
+        )
 
         agent_core_v2 = MagicMock()
         agent_config = MagicMock()
@@ -214,7 +246,9 @@ class TestCreateSafeOutputGeneratorExtended:
             yield "chunk1"
             raise ValueError("Test error")
 
-        agent_core_v2.output_handler.result_output = MagicMock(return_value=generator_with_error())
+        agent_core_v2.output_handler.result_output = MagicMock(
+            return_value=generator_with_error()
+        )
 
         gen = create_safe_output_generator(
             agent_core_v2=agent_core_v2,
@@ -222,7 +256,7 @@ class TestCreateSafeOutputGeneratorExtended:
             agent_input=agent_input,
             headers=headers,
             is_debug_run=False,
-            start_time=start_time
+            start_time=start_time,
         )
 
         results = []
@@ -235,7 +269,9 @@ class TestCreateSafeOutputGeneratorExtended:
 
     async def test_normal_completion_closes_generator(self):
         """测试正常完成时关闭生成器"""
-        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import create_safe_output_generator
+        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import (
+            create_safe_output_generator,
+        )
 
         agent_core_v2 = MagicMock()
         agent_config = MagicMock()
@@ -248,7 +284,9 @@ class TestCreateSafeOutputGeneratorExtended:
             yield "chunk1"
             yield "chunk2"
 
-        agent_core_v2.output_handler.result_output = MagicMock(return_value=mock_generator())
+        agent_core_v2.output_handler.result_output = MagicMock(
+            return_value=mock_generator()
+        )
 
         gen = create_safe_output_generator(
             agent_core_v2=agent_core_v2,
@@ -256,7 +294,7 @@ class TestCreateSafeOutputGeneratorExtended:
             agent_input=agent_input,
             headers=headers,
             is_debug_run=False,
-            start_time=start_time
+            start_time=start_time,
         )
 
         results = []
@@ -268,7 +306,9 @@ class TestCreateSafeOutputGeneratorExtended:
 
     async def test_with_cache_id_triggers_update(self):
         """测试提供cache_id时触发缓存检查更新"""
-        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import create_safe_output_generator
+        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import (
+            create_safe_output_generator,
+        )
         from app.domain.vo.agent_cache import AgentCacheIdVO
 
         agent_core_v2 = MagicMock()
@@ -281,9 +321,13 @@ class TestCreateSafeOutputGeneratorExtended:
         async def simple_generator():
             yield "result"
 
-        agent_core_v2.output_handler.result_output = MagicMock(return_value=simple_generator())
+        agent_core_v2.output_handler.result_output = MagicMock(
+            return_value=simple_generator()
+        )
 
-        with patch('app.router.agent_controller_pkg.run_agent_v2.safe_output_generator.check_and_update_cache') as mock_check:
+        with patch(
+            "app.router.agent_controller_pkg.run_agent_v2.safe_output_generator.check_and_update_cache"
+        ) as mock_check:
             mock_check = AsyncMock()
 
             gen = create_safe_output_generator(
@@ -295,7 +339,7 @@ class TestCreateSafeOutputGeneratorExtended:
                 start_time=start_time,
                 cache_id_vo=cache_id_vo,
                 account_id="acc123",
-                account_type="premium"
+                account_type="premium",
             )
 
             # Consume the generator
@@ -307,7 +351,9 @@ class TestCreateSafeOutputGeneratorExtended:
 
     async def test_without_cache_id_skips_update(self):
         """测试不提供cache_id时跳过缓存检查"""
-        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import create_safe_output_generator
+        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import (
+            create_safe_output_generator,
+        )
 
         agent_core_v2 = MagicMock()
         agent_config = MagicMock()
@@ -318,9 +364,13 @@ class TestCreateSafeOutputGeneratorExtended:
         async def simple_generator():
             yield "result"
 
-        agent_core_v2.output_handler.result_output = MagicMock(return_value=simple_generator())
+        agent_core_v2.output_handler.result_output = MagicMock(
+            return_value=simple_generator()
+        )
 
-        with patch('app.router.agent_controller_pkg.run_agent_v2.safe_output_generator.check_and_update_cache') as mock_check:
+        with patch(
+            "app.router.agent_controller_pkg.run_agent_v2.safe_output_generator.check_and_update_cache"
+        ) as mock_check:
             mock_check = AsyncMock()
 
             gen = create_safe_output_generator(
@@ -330,7 +380,7 @@ class TestCreateSafeOutputGeneratorExtended:
                 headers=headers,
                 is_debug_run=False,
                 start_time=start_time,
-                cache_id_vo=None  # No cache_id
+                cache_id_vo=None,  # No cache_id
             )
 
             # Consume the generator
@@ -342,7 +392,9 @@ class TestCreateSafeOutputGeneratorExtended:
 
     async def test_incomplete_stream_closes_gracefully(self):
         """测试不完整的流优雅关闭"""
-        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import create_safe_output_generator
+        from app.router.agent_controller_pkg.run_agent_v2.safe_output_generator import (
+            create_safe_output_generator,
+        )
 
         agent_core_v2 = MagicMock()
         agent_config = MagicMock()
@@ -356,7 +408,9 @@ class TestCreateSafeOutputGeneratorExtended:
             # Simulate mid-stream interruption
             raise asyncio.CancelledError()
 
-        agent_core_v2.output_handler.result_output = MagicMock(return_value=incomplete_generator())
+        agent_core_v2.output_handler.result_output = MagicMock(
+            return_value=incomplete_generator()
+        )
 
         gen = create_safe_output_generator(
             agent_core_v2=agent_core_v2,
@@ -364,7 +418,7 @@ class TestCreateSafeOutputGeneratorExtended:
             agent_input=agent_input,
             headers=headers,
             is_debug_run=False,
-            start_time=start_time
+            start_time=start_time,
         )
 
         results = []

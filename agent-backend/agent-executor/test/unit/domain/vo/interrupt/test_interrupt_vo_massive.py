@@ -4,7 +4,11 @@ Massive unit tests for Interrupt VOs to boost coverage
 
 import pytest
 from datetime import datetime
-from app.domain.vo.interrupt.interrupt_data import ToolArg, InterruptConfig, InterruptData
+from app.domain.vo.interrupt.interrupt_data import (
+    ToolArg,
+    InterruptConfig,
+    InterruptData,
+)
 from app.domain.vo.interrupt.interrupt_handle import InterruptHandle
 from app.domain.vo.interrupt.tool_interrupt_info import ToolInterruptInfo
 
@@ -67,6 +71,7 @@ class TestToolArgMassive:
 
     def test_tool_arg_is_pydantic(self):
         from pydantic import BaseModel
+
         arg = ToolArg(key="key", value="value", type="string")
         assert isinstance(arg, BaseModel)
 
@@ -75,15 +80,21 @@ class TestInterruptConfigMassive:
     """Massive tests for InterruptConfig"""
 
     def test_interrupt_config_init(self):
-        config = InterruptConfig(requires_confirmation=True, confirmation_message="Confirm?")
+        config = InterruptConfig(
+            requires_confirmation=True, confirmation_message="Confirm?"
+        )
         assert config.requires_confirmation is True
 
     def test_interrupt_config_message(self):
-        config = InterruptConfig(requires_confirmation=True, confirmation_message="Please confirm")
+        config = InterruptConfig(
+            requires_confirmation=True, confirmation_message="Please confirm"
+        )
         assert config.confirmation_message == "Please confirm"
 
     def test_interrupt_config_false_confirmation(self):
-        config = InterruptConfig(requires_confirmation=False, confirmation_message="No confirm")
+        config = InterruptConfig(
+            requires_confirmation=False, confirmation_message="No confirm"
+        )
         assert config.requires_confirmation is False
 
     def test_interrupt_config_empty_message(self):
@@ -92,28 +103,41 @@ class TestInterruptConfigMassive:
 
     def test_interrupt_config_long_message(self):
         long_msg = "a" * 500
-        config = InterruptConfig(requires_confirmation=True, confirmation_message=long_msg)
+        config = InterruptConfig(
+            requires_confirmation=True, confirmation_message=long_msg
+        )
         assert len(config.confirmation_message) == 500
 
     def test_interrupt_config_unicode_message(self):
-        config = InterruptConfig(requires_confirmation=True, confirmation_message="请确认")
+        config = InterruptConfig(
+            requires_confirmation=True, confirmation_message="请确认"
+        )
         assert "确认" in config.confirmation_message
 
     def test_interrupt_config_special_chars_message(self):
-        config = InterruptConfig(requires_confirmation=True, confirmation_message="Confirm: @#$%")
+        config = InterruptConfig(
+            requires_confirmation=True, confirmation_message="Confirm: @#$%"
+        )
         assert "@" in config.confirmation_message
 
     def test_interrupt_config_multiline_message(self):
-        config = InterruptConfig(requires_confirmation=True, confirmation_message="Line1\nLine2")
+        config = InterruptConfig(
+            requires_confirmation=True, confirmation_message="Line1\nLine2"
+        )
         assert "\n" in config.confirmation_message
 
     def test_interrupt_config_is_pydantic(self):
         from pydantic import BaseModel
-        config = InterruptConfig(requires_confirmation=True, confirmation_message="test")
+
+        config = InterruptConfig(
+            requires_confirmation=True, confirmation_message="test"
+        )
         assert isinstance(config, BaseModel)
 
     def test_interrupt_config_message_with_placeholder(self):
-        config = InterruptConfig(requires_confirmation=True, confirmation_message="Confirm {action}")
+        config = InterruptConfig(
+            requires_confirmation=True, confirmation_message="Confirm {action}"
+        )
         assert "{action}" in config.confirmation_message
 
 
@@ -138,7 +162,9 @@ class TestInterruptDataMassive:
         assert len(data.tool_args) == 1
 
     def test_interrupt_data_with_config(self):
-        config = InterruptConfig(requires_confirmation=True, confirmation_message="Confirm")
+        config = InterruptConfig(
+            requires_confirmation=True, confirmation_message="Confirm"
+        )
         data = InterruptData(tool_name="tool", interrupt_config=config)
         assert data.interrupt_config is not None
 
@@ -154,7 +180,7 @@ class TestInterruptDataMassive:
         args = [
             ToolArg(key="k1", value="v1", type="string"),
             ToolArg(key="k2", value="v2", type="string"),
-            ToolArg(key="k3", value="v3", type="string")
+            ToolArg(key="k3", value="v3", type="string"),
         ]
         data = InterruptData(tool_name="tool", tool_args=args)
         assert len(data.tool_args) == 3
@@ -182,6 +208,7 @@ class TestInterruptDataMassive:
 
     def test_interrupt_data_is_pydantic(self):
         from pydantic import BaseModel
+
         data = InterruptData(tool_name="tool")
         assert isinstance(data, BaseModel)
 
@@ -189,19 +216,21 @@ class TestInterruptDataMassive:
         args = [
             ToolArg(key="str", value="s", type="string"),
             ToolArg(key="int", value=1, type="integer"),
-            ToolArg(key="bool", value=True, type="boolean")
+            ToolArg(key="bool", value=True, type="boolean"),
         ]
         data = InterruptData(tool_name="tool", tool_args=args)
         assert data.tool_args[0].type == "string"
 
     def test_interrupt_data_full(self):
-        config = InterruptConfig(requires_confirmation=True, confirmation_message="Confirm")
+        config = InterruptConfig(
+            requires_confirmation=True, confirmation_message="Confirm"
+        )
         args = [ToolArg(key="key", value="value", type="string")]
         data = InterruptData(
             tool_name="tool",
             tool_description="description",
             tool_args=args,
-            interrupt_config=config
+            interrupt_config=config,
         )
         assert data.tool_name == "tool"
         assert data.interrupt_config is not None
@@ -217,7 +246,7 @@ class TestInterruptHandleMassive:
             resume_token="token1",
             interrupt_type="user_confirmation",
             current_block=0,
-            restart_block=False
+            restart_block=False,
         )
         assert handle.frame_id == "frame1"
 
@@ -228,7 +257,7 @@ class TestInterruptHandleMassive:
             resume_token="token1",
             interrupt_type="user_confirmation",
             current_block=0,
-            restart_block=False
+            restart_block=False,
         )
         assert handle.snapshot_id == "snap123"
 
@@ -239,7 +268,7 @@ class TestInterruptHandleMassive:
             resume_token="token123",
             interrupt_type="user_confirmation",
             current_block=0,
-            restart_block=False
+            restart_block=False,
         )
         assert handle.resume_token == "token123"
 
@@ -250,7 +279,7 @@ class TestInterruptHandleMassive:
             resume_token="token1",
             interrupt_type="tool_call",
             current_block=0,
-            restart_block=False
+            restart_block=False,
         )
         assert handle.interrupt_type == "tool_call"
 
@@ -261,7 +290,7 @@ class TestInterruptHandleMassive:
             resume_token="token1",
             interrupt_type="user_confirmation",
             current_block=0,
-            restart_block=False
+            restart_block=False,
         )
         assert handle.current_block == 0
 
@@ -272,7 +301,7 @@ class TestInterruptHandleMassive:
             resume_token="token1",
             interrupt_type="user_confirmation",
             current_block=5,
-            restart_block=False
+            restart_block=False,
         )
         assert handle.current_block == 5
 
@@ -283,7 +312,7 @@ class TestInterruptHandleMassive:
             resume_token="token1",
             interrupt_type="user_confirmation",
             current_block=0,
-            restart_block=True
+            restart_block=True,
         )
         assert handle.restart_block is True
 
@@ -294,7 +323,7 @@ class TestInterruptHandleMassive:
             resume_token="token1",
             interrupt_type="user_confirmation",
             current_block=0,
-            restart_block=False
+            restart_block=False,
         )
         assert handle.restart_block is False
 
@@ -305,7 +334,7 @@ class TestInterruptHandleMassive:
             resume_token="token1",
             interrupt_type="user_confirmation",
             current_block=0,
-            restart_block=False
+            restart_block=False,
         )
         assert handle.frame_id == ""
 
@@ -316,7 +345,7 @@ class TestInterruptHandleMassive:
             resume_token="token1",
             interrupt_type="user_confirmation",
             current_block=0,
-            restart_block=False
+            restart_block=False,
         )
         assert handle.snapshot_id == ""
 
@@ -327,7 +356,7 @@ class TestInterruptHandleMassive:
             resume_token="",
             interrupt_type="user_confirmation",
             current_block=0,
-            restart_block=False
+            restart_block=False,
         )
         assert handle.resume_token == ""
 
@@ -338,19 +367,20 @@ class TestInterruptHandleMassive:
             resume_token="token1",
             interrupt_type="user_confirmation",
             current_block=99999,
-            restart_block=False
+            restart_block=False,
         )
         assert handle.current_block == 99999
 
     def test_interrupt_handle_is_pydantic(self):
         from pydantic import BaseModel
+
         handle = InterruptHandle(
             frame_id="frame1",
             snapshot_id="snap1",
             resume_token="token1",
             interrupt_type="user_confirmation",
             current_block=0,
-            restart_block=False
+            restart_block=False,
         )
         assert isinstance(handle, BaseModel)
 
@@ -370,7 +400,7 @@ class TestToolInterruptInfoMassive:
             resume_token="token1",
             interrupt_type="user_confirmation",
             current_block=0,
-            restart_block=False
+            restart_block=False,
         )
         info = ToolInterruptInfo(handle=handle)
         assert info.handle is not None
@@ -387,7 +417,7 @@ class TestToolInterruptInfoMassive:
             resume_token="token1",
             interrupt_type="user_confirmation",
             current_block=0,
-            restart_block=False
+            restart_block=False,
         )
         data = InterruptData(tool_name="tool")
         info = ToolInterruptInfo(handle=handle, data=data)
@@ -401,7 +431,7 @@ class TestToolInterruptInfoMassive:
             resume_token="token1",
             interrupt_type="user_confirmation",
             current_block=0,
-            restart_block=False
+            restart_block=False,
         )
         info = ToolInterruptInfo(handle=handle)
         assert info.handle.frame_id == "test_frame"
@@ -413,6 +443,7 @@ class TestToolInterruptInfoMassive:
 
     def test_tool_interrupt_info_is_pydantic(self):
         from pydantic import BaseModel
+
         info = ToolInterruptInfo()
         assert isinstance(info, BaseModel)
 

@@ -116,7 +116,7 @@ def test_append_task_plan_agent():
 def test_agent_config_vo_with_output():
     """测试AgentConfigVo中的output字段"""
     config = AgentConfigVo(input={}, llms=[])
-    
+
     # 默认情况下output应该有默认值
     assert config.output is not None
     assert config.output.default_format == "markdown"
@@ -133,40 +133,51 @@ def test_agent_config_vo_with_dict_output():
             "variables": {
                 "answer_var": "custom_answer",
                 "doc_retrieval_var": "custom_doc",
-                "other_vars": ["var1", "var2"]
-            }
-        }
+                "other_vars": ["var1", "var2"],
+            },
+        },
     )
-    
+
     # validator应该将字典转换为OutputConfigVo对象
     assert isinstance(config.output, OutputConfigVo)
     assert config.output.default_format == DefaultFormatEnum.JSON
     assert config.output.variables.answer_var == "custom_answer"
     assert config.output.variables.doc_retrieval_var == "custom_doc"
     assert config.output.variables.other_vars == ["var1", "var2"]
-    
+
     # 测试get_all_vars方法
     all_vars = config.output.get_all_vars()
-    expected_vars = ["custom_answer", "custom_doc", "graph_retrieval_res", "related_questions", "var1", "var2"]
+    expected_vars = [
+        "custom_answer",
+        "custom_doc",
+        "graph_retrieval_res",
+        "related_questions",
+        "var1",
+        "var2",
+    ]
     assert all_vars == expected_vars
 
 
 def test_agent_config_vo_with_output_object():
     """测试AgentConfigVo接受OutputConfigVo对象"""
     output_config = OutputConfigVo(
-        default_format="markdown",
-        variables=OutputVariablesVo()
+        default_format="markdown", variables=OutputVariablesVo()
     )
-    
+
     config = AgentConfigVo(input={}, llms=[], output=output_config)
-    
+
     # 应该直接返回传入的对象
     assert config.output is output_config
     assert config.output.default_format == DefaultFormatEnum.MARKDOWN
-    
+
     # 测试get_all_vars方法（使用默认值）
     all_vars = config.output.get_all_vars()
-    expected_vars = ["answer", "doc_retrieval_res", "graph_retrieval_res", "related_questions"]
+    expected_vars = [
+        "answer",
+        "doc_retrieval_res",
+        "graph_retrieval_res",
+        "related_questions",
+    ]
     assert all_vars == expected_vars
 
 

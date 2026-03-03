@@ -17,7 +17,7 @@ class TestZhipuSearchResponse:
             id="test_id",
             model="test_model",
             request_id="req_id",
-            usage={"tokens": 100}
+            usage={"tokens": 100},
         )
 
         assert response.choices == [{"result": "test"}]
@@ -37,7 +37,7 @@ class TestZhipuSearchResponse:
             id="test_id",
             model="test_model",
             request_id="req_id",
-            usage={}
+            usage={},
         )
 
         assert response.choices == []
@@ -52,7 +52,7 @@ class TestZhipuSearchResponse:
             id="test_id",
             model="test_model",
             request_id="req_id",
-            usage={}
+            usage={},
         )
         data = response.model_dump()
 
@@ -71,7 +71,7 @@ class TestReferenceResult:
             title="Test Title",
             content="Test Content",
             index=0,
-            link="https://example.com"
+            link="https://example.com",
         )
 
         assert ref.title == "Test Title"
@@ -84,17 +84,11 @@ class TestReferenceResult:
         from app.models.tool_responses import ReferenceResult
 
         ref1 = ReferenceResult(
-            title="Title 1",
-            content="Content 1",
-            index=0,
-            link="https://example.com/1"
+            title="Title 1", content="Content 1", index=0, link="https://example.com/1"
         )
 
         ref2 = ReferenceResult(
-            title="Title 2",
-            content="Content 2",
-            index=1,
-            link="https://example.com/2"
+            title="Title 2", content="Content 2", index=1, link="https://example.com/2"
         )
 
         assert ref1.index == 0
@@ -105,10 +99,7 @@ class TestReferenceResult:
         from app.models.tool_responses import ReferenceResult
 
         ref = ReferenceResult(
-            title="Test",
-            content="Content",
-            index=0,
-            link="https://test.com"
+            title="Test", content="Content", index=0, link="https://test.com"
         )
         data = ref.model_dump()
 
@@ -125,17 +116,11 @@ class TestOnlineSearchCiteResponse:
 
         refs = [
             ReferenceResult(
-                title="Test",
-                content="Content",
-                index=0,
-                link="https://test.com"
+                title="Test", content="Content", index=0, link="https://test.com"
             )
         ]
 
-        response = OnlineSearchCiteResponse(
-            references=refs,
-            answer="Test answer"
-        )
+        response = OnlineSearchCiteResponse(references=refs, answer="Test answer")
 
         assert len(response.references) == 1
         assert response.answer == "Test answer"
@@ -149,14 +134,13 @@ class TestOnlineSearchCiteResponse:
                 title=f"Title {i}",
                 content=f"Content {i}",
                 index=i,
-                link=f"https://test.com/{i}"
+                link=f"https://test.com/{i}",
             )
             for i in range(3)
         ]
 
         response = OnlineSearchCiteResponse(
-            references=refs,
-            answer="Answer with multiple references"
+            references=refs, answer="Answer with multiple references"
         )
 
         assert len(response.references) == 3
@@ -166,8 +150,7 @@ class TestOnlineSearchCiteResponse:
         from app.models.tool_responses import OnlineSearchCiteResponse
 
         response = OnlineSearchCiteResponse(
-            references=[],
-            answer="Answer without references"
+            references=[], answer="Answer without references"
         )
 
         assert response.references == []
@@ -178,17 +161,11 @@ class TestOnlineSearchCiteResponse:
 
         refs = [
             ReferenceResult(
-                title="Test",
-                content="Content",
-                index=0,
-                link="https://test.com"
+                title="Test", content="Content", index=0, link="https://test.com"
             )
         ]
 
-        response = OnlineSearchCiteResponse(
-            references=refs,
-            answer="Answer"
-        )
+        response = OnlineSearchCiteResponse(references=refs, answer="Answer")
         data = response.model_dump()
 
         assert data["answer"] == "Answer"
@@ -202,9 +179,7 @@ class TestNL2NGQLResponse:
         """测试默认初始化"""
         from app.models.tool_responses import NL2NGQLResponse
 
-        response = NL2NGQLResponse(
-            outputs=[{"query": "MATCH (n) RETURN n"}]
-        )
+        response = NL2NGQLResponse(outputs=[{"query": "MATCH (n) RETURN n"}])
 
         assert response.outputs == [{"query": "MATCH (n) RETURN n"}]
 
@@ -215,7 +190,7 @@ class TestNL2NGQLResponse:
         response = NL2NGQLResponse(
             outputs=[
                 {"query": "MATCH (n) RETURN n"},
-                {"query": "MATCH (n:Person) RETURN n"}
+                {"query": "MATCH (n:Person) RETURN n"},
             ]
         )
 
@@ -233,9 +208,7 @@ class TestNL2NGQLResponse:
         """测试模型序列化"""
         from app.models.tool_responses import NL2NGQLResponse
 
-        response = NL2NGQLResponse(
-            outputs=[{"result": "test"}]
-        )
+        response = NL2NGQLResponse(outputs=[{"result": "test"}])
         data = response.model_dump()
 
         assert data["outputs"] == [{"result": "test"}]
@@ -257,14 +230,16 @@ class TestSchemaInfo:
         """测试复杂模式"""
         from app.models.tool_responses import SchemaInfo
 
-        schema = SchemaInfo(schema={
-            "nodes": ["Person", "Company"],
-            "edges": ["WORKS_AT", "KNOWS"],
-            "properties": {
-                "Person": ["name", "age"],
-                "Company": ["name", "founded"]
+        schema = SchemaInfo(
+            schema={
+                "nodes": ["Person", "Company"],
+                "edges": ["WORKS_AT", "KNOWS"],
+                "properties": {
+                    "Person": ["name", "age"],
+                    "Company": ["name", "founded"],
+                },
             }
-        })
+        )
 
         assert "Person" in schema.schema_data["nodes"]
         assert "WORKS_AT" in schema.schema_data["edges"]
@@ -324,7 +299,7 @@ class TestZhipuSearchResponseExtended:
             id="test_id",
             model="test_model",
             request_id="req_id",
-            usage={}
+            usage={},
         )
         assert "测试结果" in str(response.choices[0]["result"])
 
@@ -333,16 +308,18 @@ class TestZhipuSearchResponseExtended:
         from app.models.tool_responses import ZhipuSearchResponse
 
         response = ZhipuSearchResponse(
-            choices=[{
-                "result": "test",
-                "metadata": {"key": "value", "nested": {"deep": "value"}},
-                "items": [1, 2, 3]
-            }],
+            choices=[
+                {
+                    "result": "test",
+                    "metadata": {"key": "value", "nested": {"deep": "value"}},
+                    "items": [1, 2, 3],
+                }
+            ],
             created=1234567890,
             id="test_id",
             model="test_model",
             request_id="req_id",
-            usage={}
+            usage={},
         )
         assert response.choices[0]["metadata"]["nested"]["deep"] == "value"
 
@@ -356,7 +333,7 @@ class TestZhipuSearchResponseExtended:
             id="test_id",
             model="test_model",
             request_id="req_id",
-            usage={}
+            usage={},
         )
         assert response.usage == {}
 
@@ -372,7 +349,7 @@ class TestReferenceResultExtended:
             title="测试标题",
             content="测试内容",
             index=0,
-            link="https://example.com/测试"
+            link="https://example.com/测试",
         )
         assert ref.title == "测试标题"
         assert ref.content == "测试内容"
@@ -385,7 +362,7 @@ class TestReferenceResultExtended:
             title="Title <script>alert('xss')</script>",
             content="Content",
             index=0,
-            link="https://example.com"
+            link="https://example.com",
         )
         assert "<script>" in ref.title
 
@@ -394,10 +371,7 @@ class TestReferenceResultExtended:
         from app.models.tool_responses import ReferenceResult
 
         ref = ReferenceResult(
-            title="Test",
-            content="Content",
-            index=-1,
-            link="https://example.com"
+            title="Test", content="Content", index=-1, link="https://example.com"
         )
         assert ref.index == -1
 
@@ -409,7 +383,7 @@ class TestReferenceResultExtended:
             title="Test",
             content="Content",
             index=0,
-            link="https://example.com/path?query=value&other=123#fragment"
+            link="https://example.com/path?query=value&other=123#fragment",
         )
         assert "?" in ref.link
         assert "#" in ref.link
@@ -423,8 +397,7 @@ class TestOnlineSearchCiteResponseExtended:
         from app.models.tool_responses import OnlineSearchCiteResponse
 
         response = OnlineSearchCiteResponse(
-            references=[],
-            answer="这是中文答案，带有测试内容。"
+            references=[], answer="这是中文答案，带有测试内容。"
         )
         assert "中文答案" in response.answer
 
@@ -433,8 +406,7 @@ class TestOnlineSearchCiteResponseExtended:
         from app.models.tool_responses import OnlineSearchCiteResponse
 
         response = OnlineSearchCiteResponse(
-            references=[],
-            answer="Line 1\nLine 2\nLine 3"
+            references=[], answer="Line 1\nLine 2\nLine 3"
         )
         assert "\n" in response.answer
 
@@ -443,8 +415,7 @@ class TestOnlineSearchCiteResponseExtended:
         from app.models.tool_responses import OnlineSearchCiteResponse
 
         response = OnlineSearchCiteResponse(
-            references=[],
-            answer="Answer with <tags> & \"quotes\" and 'apostrophes'"
+            references=[], answer="Answer with <tags> & \"quotes\" and 'apostrophes'"
         )
         assert "<tags>" in response.answer
 
@@ -456,9 +427,7 @@ class TestNL2NGQLResponseExtended:
         """测试outputs中的Unicode内容"""
         from app.models.tool_responses import NL2NGQLResponse
 
-        response = NL2NGQLResponse(
-            outputs=[{"query": "MATCH (n:人名) RETURN n"}]
-        )
+        response = NL2NGQLResponse(outputs=[{"query": "MATCH (n:人名) RETURN n"}])
         assert "人名" in response.outputs[0]["query"]
 
     def test_nested_dict_outputs(self):
@@ -466,11 +435,13 @@ class TestNL2NGQLResponseExtended:
         from app.models.tool_responses import NL2NGQLResponse
 
         response = NL2NGQLResponse(
-            outputs=[{
-                "query": "MATCH (n) RETURN n",
-                "params": {"name": "测试", "count": 123},
-                "nested": {"key": {"deep": "value"}}
-            }]
+            outputs=[
+                {
+                    "query": "MATCH (n) RETURN n",
+                    "params": {"name": "测试", "count": 123},
+                    "nested": {"key": {"deep": "value"}},
+                }
+            ]
         )
         assert response.outputs[0]["params"]["name"] == "测试"
 
@@ -478,9 +449,7 @@ class TestNL2NGQLResponseExtended:
         """测试空字典在outputs中"""
         from app.models.tool_responses import NL2NGQLResponse
 
-        response = NL2NGQLResponse(
-            outputs=[{}]
-        )
+        response = NL2NGQLResponse(outputs=[{}])
         assert response.outputs == [{}]
 
 
@@ -491,30 +460,24 @@ class TestSchemaInfoExtended:
         """测试schema中的Unicode内容"""
         from app.models.tool_responses import SchemaInfo
 
-        schema = SchemaInfo(schema={
-            "节点类型": ["人", "公司"],
-            "属性": {"姓名": "string", "年龄": "int"}
-        })
+        schema = SchemaInfo(
+            schema={
+                "节点类型": ["人", "公司"],
+                "属性": {"姓名": "string", "年龄": "int"},
+            }
+        )
         assert "节点类型" in schema.schema_data
 
     def test_nested_structure(self):
         """测试嵌套结构"""
         from app.models.tool_responses import SchemaInfo
 
-        schema = SchemaInfo(schema={
-            "level1": {
-                "level2": {
-                    "level3": "deep value"
-                }
-            }
-        })
+        schema = SchemaInfo(schema={"level1": {"level2": {"level3": "deep value"}}})
         assert schema.schema_data["level1"]["level2"]["level3"] == "deep value"
 
     def test_list_values_in_schema(self):
         """测试schema中的列表值"""
         from app.models.tool_responses import SchemaInfo
 
-        schema = SchemaInfo(schema={
-            "items": [1, 2, 3, "four", {"five": 5}]
-        })
+        schema = SchemaInfo(schema={"items": [1, 2, 3, "four", {"five": 5}]})
         assert len(schema.schema_data["items"]) == 5

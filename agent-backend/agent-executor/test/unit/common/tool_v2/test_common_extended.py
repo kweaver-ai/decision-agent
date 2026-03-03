@@ -11,7 +11,9 @@ class TestParseKwargsExtended:
         """测试传入 tool_input 和 props 参数"""
         from app.common.tool_v2.common import parse_kwargs
 
-        result, props = parse_kwargs(tool_input={"key": "value"}, props={"prop": "data"})
+        result, props = parse_kwargs(
+            tool_input={"key": "value"}, props={"prop": "data"}
+        )
 
         assert result == {"key": "value"}
         assert props == {"prop": "data"}
@@ -89,7 +91,7 @@ class TestAPIToolResponse:
 
         response = APIToolResponse(
             answer={"result": "success", "data": [1, 2, 3]},
-            block_answer={"partial": True}
+            block_answer={"partial": True},
         )
 
         assert response.answer["result"] == "success"
@@ -122,7 +124,7 @@ class TestToolMapInfo:
             map_type="fixedValue",
             map_value="test_value",
             enable=True,
-            children=[]
+            children=[],
         )
 
         assert info.input_name == "test_input"
@@ -190,9 +192,7 @@ class TestToolMapInfo:
         from app.common.tool_v2.common import ToolMapInfo
 
         child = ToolMapInfo(input_name="child", input_type="string")
-        parent = ToolMapInfo(
-            input_name="parent", input_type="object", children=[child]
-        )
+        parent = ToolMapInfo(input_name="parent", input_type="object", children=[child])
 
         assert len(parent.children) == 1
         assert parent.children[0].input_name == "child"
@@ -215,7 +215,7 @@ class TestToolMapInfo:
             input_name="test",
             input_type="string",
             map_type="fixedValue",
-            map_value="value"
+            map_value="value",
         )
 
         data = info.model_dump()
@@ -229,9 +229,7 @@ class TestToolMapInfo:
         from app.common.tool_v2.common import ToolMapInfo
 
         info = ToolMapInfo(
-            input_name="test",
-            input_type="string",
-            extra_field="extra_value"
+            input_name="test", input_type="string", extra_field="extra_value"
         )
 
         # 额外字段应该被保留

@@ -21,9 +21,7 @@ class TestResultProcessCategoryVo:
         from app.domain.vo.agentvo.agent_config_vos import ResultProcessCategoryVo
 
         vo = ResultProcessCategoryVo(
-            id="category_123",
-            name="Test Category",
-            description="Test description"
+            id="category_123", name="Test Category", description="Test description"
         )
 
         assert vo.id == "category_123"
@@ -49,9 +47,7 @@ class TestResultProcessStrategyDetailVo:
         from app.domain.vo.agentvo.agent_config_vos import ResultProcessStrategyDetailVo
 
         vo = ResultProcessStrategyDetailVo(
-            id="strategy_123",
-            name="Test Strategy",
-            description="Test description"
+            id="strategy_123", name="Test Strategy", description="Test description"
         )
 
         assert vo.id == "strategy_123"
@@ -76,7 +72,7 @@ class TestResultProcessStrategyVo:
         from app.domain.vo.agentvo.agent_config_vos import (
             ResultProcessStrategyVo,
             ResultProcessCategoryVo,
-            ResultProcessStrategyDetailVo
+            ResultProcessStrategyDetailVo,
         )
 
         category = ResultProcessCategoryVo(id="cat_123", name="Category")
@@ -95,10 +91,7 @@ class TestToolSkillVo:
         """测试使用必填字段初始化"""
         from app.domain.vo.agentvo.agent_config_vos import ToolSkillVo
 
-        vo = ToolSkillVo(
-            tool_id="tool_123",
-            tool_box_id="toolbox_123"
-        )
+        vo = ToolSkillVo(tool_id="tool_123", tool_box_id="toolbox_123")
 
         assert vo.tool_id == "tool_123"
         assert vo.tool_box_id == "toolbox_123"
@@ -116,7 +109,7 @@ class TestToolSkillVo:
             tool_box_id="toolbox_123",
             tool_timeout=600,
             intervention=True,
-            intervention_confirmation_message="Please confirm"
+            intervention_confirmation_message="Please confirm",
         )
 
         assert vo.tool_timeout == 600
@@ -224,7 +217,7 @@ class TestResultProcessStrategyVoExtended:
         from app.domain.vo.agentvo.agent_config_vos import (
             ResultProcessStrategyVo,
             ResultProcessCategoryVo,
-            ResultProcessStrategyDetailVo
+            ResultProcessStrategyDetailVo,
         )
 
         category = ResultProcessCategoryVo(id="cat1")
@@ -242,7 +235,7 @@ class TestResultProcessStrategyVoExtended:
 
         data = {
             "category": {"id": "cat1", "name": "Category"},
-            "strategy": {"id": "strat1", "name": "Strategy"}
+            "strategy": {"id": "strat1", "name": "Strategy"},
         }
         vo = ResultProcessStrategyVo(**data)
 
@@ -257,15 +250,10 @@ class TestToolSkillVoExtended:
         """Test initialization with tool_input"""
         from app.domain.vo.agentvo.agent_config_vos import ToolSkillVo, SkillInputVo
 
-        tool_input = SkillInputVo(
-            input_name="param1",
-            input_type="string"
-        )
+        tool_input = SkillInputVo(input_name="param1", input_type="string")
 
         vo = ToolSkillVo(
-            tool_id="tool1",
-            tool_box_id="toolbox1",
-            tool_input=[tool_input]
+            tool_id="tool1", tool_box_id="toolbox1", tool_input=[tool_input]
         )
 
         assert len(vo.tool_input) == 1
@@ -282,7 +270,7 @@ class TestToolSkillVoExtended:
         vo = ToolSkillVo(
             tool_id="tool1",
             tool_box_id="toolbox1",
-            tool_input=[tool_input1, tool_input2, tool_input3]
+            tool_input=[tool_input1, tool_input2, tool_input3],
         )
 
         assert len(vo.tool_input) == 3
@@ -296,20 +284,17 @@ class TestToolSkillVoExtended:
             ToolSkillVo,
             ResultProcessStrategyVo,
             ResultProcessCategoryVo,
-            ResultProcessStrategyDetailVo
+            ResultProcessStrategyDetailVo,
         )
 
         category = ResultProcessCategoryVo(id="cat1", name="Category")
         strategy = ResultProcessStrategyDetailVo(id="strat1", name="Strategy")
-        result_strategy = ResultProcessStrategyVo(
-            category=category,
-            strategy=strategy
-        )
+        result_strategy = ResultProcessStrategyVo(category=category, strategy=strategy)
 
         vo = ToolSkillVo(
             tool_id="tool1",
             tool_box_id="toolbox1",
-            result_process_strategies=[result_strategy]
+            result_process_strategies=[result_strategy],
         )
 
         assert len(vo.result_process_strategies) == 1
@@ -321,27 +306,25 @@ class TestToolSkillVoExtended:
             ToolSkillVo,
             ResultProcessStrategyVo,
             ResultProcessCategoryVo,
-            ResultProcessStrategyDetailVo
+            ResultProcessStrategyDetailVo,
         )
 
         category1 = ResultProcessCategoryVo(id="cat1", name="Category1")
         strategy1 = ResultProcessStrategyDetailVo(id="strat1", name="Strategy1")
         result_strategy1 = ResultProcessStrategyVo(
-            category=category1,
-            strategy=strategy1
+            category=category1, strategy=strategy1
         )
 
         category2 = ResultProcessCategoryVo(id="cat2", name="Category2")
         strategy2 = ResultProcessStrategyDetailVo(id="strat2", name="Strategy2")
         result_strategy2 = ResultProcessStrategyVo(
-            category=category2,
-            strategy=strategy2
+            category=category2, strategy=strategy2
         )
 
         vo = ToolSkillVo(
             tool_id="tool1",
             tool_box_id="toolbox1",
-            result_process_strategies=[result_strategy1, result_strategy2]
+            result_process_strategies=[result_strategy1, result_strategy2],
         )
 
         assert len(vo.result_process_strategies) == 2
@@ -350,11 +333,7 @@ class TestToolSkillVoExtended:
         """Test initialization with intervention=False"""
         from app.domain.vo.agentvo.agent_config_vos import ToolSkillVo
 
-        vo = ToolSkillVo(
-            tool_id="tool1",
-            tool_box_id="toolbox1",
-            intervention=False
-        )
+        vo = ToolSkillVo(tool_id="tool1", tool_box_id="toolbox1", intervention=False)
 
         assert vo.intervention is False
 
@@ -362,11 +341,7 @@ class TestToolSkillVoExtended:
         """Test initialization with intervention=True"""
         from app.domain.vo.agentvo.agent_config_vos import ToolSkillVo
 
-        vo = ToolSkillVo(
-            tool_id="tool1",
-            tool_box_id="toolbox1",
-            intervention=True
-        )
+        vo = ToolSkillVo(tool_id="tool1", tool_box_id="toolbox1", intervention=True)
 
         assert vo.intervention is True
 
@@ -377,7 +352,7 @@ class TestToolSkillVoExtended:
         vo = ToolSkillVo(
             tool_id="tool1",
             tool_box_id="toolbox1",
-            intervention_confirmation_message="Please confirm this action"
+            intervention_confirmation_message="Please confirm this action",
         )
 
         assert vo.intervention_confirmation_message == "Please confirm this action"
@@ -386,11 +361,7 @@ class TestToolSkillVoExtended:
         """Test with custom tool_timeout value"""
         from app.domain.vo.agentvo.agent_config_vos import ToolSkillVo
 
-        vo = ToolSkillVo(
-            tool_id="tool1",
-            tool_box_id="toolbox1",
-            tool_timeout=120
-        )
+        vo = ToolSkillVo(tool_id="tool1", tool_box_id="toolbox1", tool_timeout=120)
 
         assert vo.tool_timeout == 120
 
@@ -398,11 +369,7 @@ class TestToolSkillVoExtended:
         """Test with tool_timeout=0"""
         from app.domain.vo.agentvo.agent_config_vos import ToolSkillVo
 
-        vo = ToolSkillVo(
-            tool_id="tool1",
-            tool_box_id="toolbox1",
-            tool_timeout=0
-        )
+        vo = ToolSkillVo(tool_id="tool1", tool_box_id="toolbox1", tool_timeout=0)
 
         assert vo.tool_timeout == 0
 
@@ -415,7 +382,7 @@ class TestToolSkillVoExtended:
             tool_box_id="toolbox1",
             tool_timeout=600,
             intervention=True,
-            intervention_confirmation_message="Confirm"
+            intervention_confirmation_message="Confirm",
         )
 
         data = vo.model_dump()
@@ -462,11 +429,7 @@ class TestToolSkillVoExtended:
         """Test creating from dictionary"""
         from app.domain.vo.agentvo.agent_config_vos import ToolSkillVo
 
-        data = {
-            "tool_id": "tool1",
-            "tool_box_id": "toolbox1",
-            "tool_timeout": 600
-        }
+        data = {"tool_id": "tool1", "tool_box_id": "toolbox1", "tool_timeout": 600}
 
         vo = ToolSkillVo(**data)
 
@@ -481,7 +444,7 @@ class TestToolSkillVoExtended:
         vo = ToolSkillVo(
             tool_id="工具1",
             tool_box_id="工具箱1",
-            intervention_confirmation_message="请确认此操作"
+            intervention_confirmation_message="请确认此操作",
         )
 
         assert vo.tool_id == "工具1"

@@ -12,10 +12,7 @@ class TestMCPToolInit:
         """测试基本初始化"""
         from app.common.tool_v2.mcp_tool import MCPTool
 
-        mcp_tool_info = {
-            "name": "test_tool",
-            "description": "Test description"
-        }
+        mcp_tool_info = {"name": "test_tool", "description": "Test description"}
         mcp_config = {"mcp_server_id": "test_server"}
 
         tool = MCPTool(mcp_tool_info, mcp_config)
@@ -33,17 +30,11 @@ class TestMCPToolInit:
             "inputSchema": {
                 "type": "object",
                 "properties": {
-                    "param1": {
-                        "type": "string",
-                        "description": "Parameter 1"
-                    },
-                    "param2": {
-                        "type": "number",
-                        "description": "Parameter 2"
-                    }
+                    "param1": {"type": "string", "description": "Parameter 1"},
+                    "param2": {"type": "number", "description": "Parameter 2"},
                 },
-                "required": ["param1"]
-            }
+                "required": ["param1"],
+            },
         }
         mcp_config = {}
 
@@ -103,15 +94,9 @@ class TestMCPToolParseMCPInputs:
         input_schema = {
             "type": "object",
             "properties": {
-                "str_prop": {
-                    "type": "string",
-                    "description": "String prop"
-                },
-                "num_prop": {
-                    "type": "number",
-                    "description": "Number prop"
-                }
-            }
+                "str_prop": {"type": "string", "description": "String prop"},
+                "num_prop": {"type": "number", "description": "Number prop"},
+            },
         }
 
         result = tool._parse_mcp_inputs(input_schema)
@@ -132,14 +117,10 @@ class TestMCPToolParseMCPInputs:
         input_schema = {
             "type": "object",
             "properties": {
-                "required_field": {
-                    "type": "string"
-                },
-                "optional_field": {
-                    "type": "string"
-                }
+                "required_field": {"type": "string"},
+                "optional_field": {"type": "string"},
             },
-            "required": ["required_field"]
+            "required": ["required_field"],
         }
 
         result = tool._parse_mcp_inputs(input_schema)
@@ -157,11 +138,7 @@ class TestMCPToolParseMCPInputs:
 
         input_schema = {
             "type": "object",
-            "properties": {
-                "no_type": {
-                    "description": "No type specified"
-                }
-            }
+            "properties": {"no_type": {"description": "No type specified"}},
         }
 
         result = tool._parse_mcp_inputs(input_schema)
@@ -176,14 +153,7 @@ class TestMCPToolParseMCPInputs:
         mcp_config = {}
         tool = MCPTool(mcp_tool_info, mcp_config)
 
-        input_schema = {
-            "type": "object",
-            "properties": {
-                "no_desc": {
-                    "type": "number"
-                }
-            }
-        }
+        input_schema = {"type": "object", "properties": {"no_desc": {"type": "number"}}}
 
         result = tool._parse_mcp_inputs(input_schema)
 
@@ -230,12 +200,7 @@ class TestMCPToolResolveMCPRefs:
 
         schema = {"$ref": "#/$defs/MyDef"}
         input_schema = {
-            "$defs": {
-                "MyDef": {
-                    "type": "string",
-                    "description": "Defined type"
-                }
-            }
+            "$defs": {"MyDef": {"type": "string", "description": "Defined type"}}
         }
 
         result = tool._resolve_mcp_refs_recursively(schema, input_schema)
@@ -256,11 +221,9 @@ class TestMCPToolResolveMCPRefs:
             "properties": {
                 "nested": {
                     "type": "object",
-                    "properties": {
-                        "inner": {"type": "string"}
-                    }
+                    "properties": {"inner": {"type": "string"}},
                 }
-            }
+            },
         }
 
         result = tool._resolve_mcp_refs_recursively(schema, {})
@@ -276,13 +239,7 @@ class TestMCPToolResolveMCPRefs:
         mcp_config = {}
         tool = MCPTool(mcp_tool_info, mcp_config)
 
-        schema = {
-            "type": "array",
-            "items": [
-                {"type": "string"},
-                {"type": "number"}
-            ]
-        }
+        schema = {"type": "array", "items": [{"type": "string"}, {"type": "number"}]}
 
         result = tool._resolve_mcp_refs_recursively(schema, {})
 

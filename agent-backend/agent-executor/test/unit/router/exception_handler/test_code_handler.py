@@ -20,11 +20,11 @@ class TestHandleCodeException:
         error = APIError(
             error_code="AgentExecutor.InternalServerError.CodeError",
             description="Test code error",
-            solution="Please check your code."
+            solution="Please check your code.",
         )
         exc = CodeException(error)
 
-        with patch('app.router.exception_handler.code_handler.struct_logger'):
+        with patch("app.router.exception_handler.code_handler.struct_logger"):
             response = handle_code_exception(request, exc)
 
         assert response.status_code == 500
@@ -39,11 +39,13 @@ class TestHandleCodeException:
         error = APIError(
             error_code="AgentExecutor.InternalServerError.CodeError",
             description="Test error",
-            solution="Please check your code."
+            solution="Please check your code.",
         )
         exc = CodeException(error)
 
-        with patch('app.router.exception_handler.code_handler.struct_logger') as mock_logger:
+        with patch(
+            "app.router.exception_handler.code_handler.struct_logger"
+        ) as mock_logger:
             handle_code_exception(request, exc)
 
             # Check that error was logged
@@ -57,11 +59,11 @@ class TestHandleCodeException:
         error = APIError(
             error_code="AgentExecutor.InternalServerError.CodeError",
             description="Test error",
-            solution="Please check your code."
+            solution="Please check your code.",
         )
         exc = CodeException(error)
 
-        with patch('app.router.exception_handler.code_handler.struct_logger'):
+        with patch("app.router.exception_handler.code_handler.struct_logger"):
             response = handle_code_exception(request, exc)
 
         # Response should be JSON

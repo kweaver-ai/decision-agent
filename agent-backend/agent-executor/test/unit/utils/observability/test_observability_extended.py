@@ -5,9 +5,11 @@ import pytest
 from unittest.mock import MagicMock, patch, mock_open
 import json
 
+
 # Mock imports for observability modules
 class MockSpan:
     """Mock Span class"""
+
     def __init__(self):
         self.attributes = {}
         self.events = []
@@ -89,12 +91,15 @@ class TestTraceWrapper:
 
     def test_internal_span_decorator(self):
         """Test internal_span decorator"""
+
         # Mock decorator
         def internal_span(**kwargs):
             def decorator(func):
                 def wrapper(*args, **kwargs):
                     return func(*args, **kwargs)
+
                 return wrapper
+
             return decorator
 
         @internal_span(name="test_span")
@@ -106,11 +111,14 @@ class TestTraceWrapper:
 
     def test_internal_span_with_args(self):
         """Test internal_span with arguments"""
+
         def internal_span(**kwargs):
             def decorator(func):
                 def wrapper(*args, **kwargs):
                     return func(*args, **kwargs)
+
                 return wrapper
+
             return decorator
 
         @internal_span(name="test", kind="internal")
@@ -391,6 +399,7 @@ class TestPerformanceMetrics:
     def test_duration_measurement(self):
         """Test duration measurement"""
         import time
+
         start = time.time()
         time.sleep(0.01)
         end = time.time()
@@ -400,6 +409,7 @@ class TestPerformanceMetrics:
     def test_memory_usage(self):
         """Test memory usage tracking"""
         import sys
+
         obj = {"data": "x" * 1000}
         size = sys.getsizeof(obj)
         assert size > 0
@@ -414,7 +424,7 @@ class TestStructuredLogging:
             "level": "info",
             "message": "test message",
             "timestamp": "2024-01-01T00:00:00Z",
-            "trace_id": "trace_123"
+            "trace_id": "trace_123",
         }
         json_str = json.dumps(log_entry)
         assert "test message" in json_str
@@ -424,10 +434,7 @@ class TestStructuredLogging:
         """Test logging with context"""
         log = {
             "message": "test",
-            "context": {
-                "user_id": "user_123",
-                "request_id": "req_456"
-            }
+            "context": {"user_id": "user_123", "request_id": "req_456"},
         }
         assert log["context"]["user_id"] == "user_123"
 
@@ -437,9 +444,7 @@ class TestBatchExporting:
 
     def test_batch_spans(self):
         """Test batching multiple spans"""
-        spans = [
-            MockSpan() for _ in range(10)
-        ]
+        spans = [MockSpan() for _ in range(10)]
         assert len(spans) == 10
 
     def test_export_spans(self):

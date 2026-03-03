@@ -39,7 +39,9 @@ class TestHandleGetInfo:
             with patch(
                 "app.router.agent_controller_pkg.agent_cache_manage.action_get_info.cache_manager"
             ) as mock_manager:
-                mock_manager.cache_service.load = AsyncMock(return_value=mock_cache_entity)
+                mock_manager.cache_service.load = AsyncMock(
+                    return_value=mock_cache_entity
+                )
                 mock_manager.cache_service.get_ttl = AsyncMock(return_value=3600)
 
                 with patch(
@@ -64,7 +66,9 @@ class TestHandleGetInfo:
                     assert result.ttl == 3600
 
     @pytest.mark.asyncio
-    async def test_handle_get_info_cache_not_exists(self, mock_request, mock_agent_config):
+    async def test_handle_get_info_cache_not_exists(
+        self, mock_request, mock_agent_config
+    ):
         """测试缓存不存在的情况"""
         mock_cache_id_vo = MagicMock()
 

@@ -56,13 +56,12 @@ class TestCallStreamObj:
                     "http://localhost:8080/api/private/mf-model-api/v1/chat/completions",
                     status=200,
                     body=sse_data,
-                    headers={"Content-Type": "text/event-stream"}
+                    headers={"Content-Type": "text/event-stream"},
                 )
 
                 results = []
                 async for item in service.call_stream_obj(
-                    model="test-model",
-                    messages=[{"role": "user", "content": "hello"}]
+                    model="test-model", messages=[{"role": "user", "content": "hello"}]
                 ):
                     results.append(item)
 
@@ -81,7 +80,7 @@ class TestCallStreamObj:
                 m.post(
                     "http://localhost:8080/api/private/mf-model-api/v1/chat/completions",
                     status=200,
-                    body=b'data: {"choices": [{"delta": {"content": "response"}}]}\n'
+                    body=b'data: {"choices": [{"delta": {"content": "response"}}]}\n',
                 )
 
                 results = []
@@ -94,7 +93,7 @@ class TestCallStreamObj:
                     frequency_penalty=0.3,
                     max_tokens=2000,
                     top_k=50,
-                    userid="test-user"
+                    userid="test-user",
                 ):
                     results.append(item)
 
@@ -110,14 +109,14 @@ class TestCallStreamObj:
                 m.post(
                     "http://localhost:8080/api/private/mf-model-api/v1/chat/completions",
                     status=500,
-                    body=b'Internal Server Error'
+                    body=b"Internal Server Error",
                 )
 
                 with pytest.raises(CodeException):
                     results = []
                     async for item in service.call_stream_obj(
                         model="test-model",
-                        messages=[{"role": "user", "content": "hello"}]
+                        messages=[{"role": "user", "content": "hello"}],
                     ):
                         results.append(item)
 
@@ -131,14 +130,14 @@ class TestCallStreamObj:
                 m.post(
                     "http://localhost:8080/api/private/mf-model-api/v1/chat/completions",
                     status=200,
-                    body=b''
+                    body=b"",
                 )
 
                 results = []
                 async for item in service.call_stream_obj(
                     model="test-model",
                     messages=[{"role": "user", "content": "hello"}],
-                    top_k=None  # Should default to 100
+                    top_k=None,  # Should default to 100
                 ):
                     results.append(item)
 
@@ -154,20 +153,21 @@ class TestCallStreamObj:
                 m.post(
                     "http://localhost:8080/api/private/mf-model-api/v1/chat/completions",
                     status=200,
-                    body=b''
+                    body=b"",
                 )
 
                 results = []
                 async for item in service.call_stream_obj(
-                    model="test-model",
-                    messages=[{"role": "user", "content": "hello"}]
+                    model="test-model", messages=[{"role": "user", "content": "hello"}]
                 ):
                     results.append(item)
 
                 assert len(results) == 0
 
     @pytest.mark.asyncio
-    async def test_call_stream_obj_malformed_json_skipped(self, model_service, mock_config):
+    async def test_call_stream_obj_malformed_json_skipped(
+        self, model_service, mock_config
+    ):
         """测试格式错误的 JSON 被跳过"""
         with patch("app.driven.dip.model_api_service.Config", mock_config):
             service = ModelApiService()
@@ -175,22 +175,21 @@ class TestCallStreamObj:
             # Mix of valid and invalid JSON
             sse_data = (
                 b'data: {"choices": [{"delta": {"content": "valid"}}]}\n'
-                b'data: invalid json\n'
+                b"data: invalid json\n"
                 b'data: {"choices": [{"delta": {"content": "also valid"}}]}\n'
-                b'data: [DONE]\n'
+                b"data: [DONE]\n"
             )
 
             with aioresponses() as m:
                 m.post(
                     "http://localhost:8080/api/private/mf-model-api/v1/chat/completions",
                     status=200,
-                    body=sse_data
+                    body=sse_data,
                 )
 
                 results = []
                 async for item in service.call_stream_obj(
-                    model="test-model",
-                    messages=[{"role": "user", "content": "hello"}]
+                    model="test-model", messages=[{"role": "user", "content": "hello"}]
                 ):
                     results.append(item)
 
@@ -200,7 +199,9 @@ class TestCallStreamObj:
                 assert results[1] == {"content": "also valid"}
 
     @pytest.mark.asyncio
-    async def test_call_stream_obj_with_reasoning_content(self, model_service, mock_config):
+    async def test_call_stream_obj_with_reasoning_content(
+        self, model_service, mock_config
+    ):
         """测试包含 reasoning_content 的响应"""
         with patch("app.driven.dip.model_api_service.Config", mock_config):
             service = ModelApiService()
@@ -211,18 +212,20 @@ class TestCallStreamObj:
                 m.post(
                     "http://localhost:8080/api/private/mf-model-api/v1/chat/completions",
                     status=200,
-                    body=sse_data
+                    body=sse_data,
                 )
 
                 results = []
                 async for item in service.call_stream_obj(
-                    model="test-model",
-                    messages=[{"role": "user", "content": "hello"}]
+                    model="test-model", messages=[{"role": "user", "content": "hello"}]
                 ):
                     results.append(item)
 
                 assert len(results) == 1
-                assert results[0] == {"content": "response", "reasoning_content": "thinking"}
+                assert results[0] == {
+                    "content": "response",
+                    "reasoning_content": "thinking",
+                }
 
 
 class TestCallStream:
@@ -231,6 +234,7 @@ class TestCallStream:
     @pytest.mark.asyncio
     async def test_call_stream_content_only(self, model_service):
         """测试只返回 content 字段"""
+
         async def mock_stream_obj(*args, **kwargs):
             yield {"content": "hello", "other": "data"}
             yield {"content": "world"}
@@ -240,8 +244,7 @@ class TestCallStream:
         with patch.object(model_service, "call_stream_obj", mock_stream_obj):
             results = []
             async for item in model_service.call_stream(
-                model="test-model",
-                messages=[{"role": "user", "content": "hello"}]
+                model="test-model", messages=[{"role": "user", "content": "hello"}]
             ):
                 results.append(item)
 
@@ -262,7 +265,7 @@ class TestCallStream:
                 model="test-model",
                 messages=[{"role": "user", "content": "hello"}],
                 top_p=0.9,
-                temperature=0.7
+                temperature=0.7,
             ):
                 results.append(item)
 
@@ -279,24 +282,17 @@ class TestCallObj:
         with patch("app.driven.dip.model_api_service.Config", mock_config):
             service = ModelApiService()
 
-            response_data = {
-                "choices": [{
-                    "message": {
-                        "content": "test response"
-                    }
-                }]
-            }
+            response_data = {"choices": [{"message": {"content": "test response"}}]}
 
             with aioresponses() as m:
                 m.post(
                     "http://localhost:8080/api/private/mf-model-api/v1/chat/completions",
                     status=200,
-                    payload=response_data
+                    payload=response_data,
                 )
 
                 result = await service.call_obj(
-                    model="test-model",
-                    messages=[{"role": "user", "content": "hello"}]
+                    model="test-model", messages=[{"role": "user", "content": "hello"}]
                 )
 
                 assert result == {"content": "test response"}
@@ -307,19 +303,13 @@ class TestCallObj:
         with patch("app.driven.dip.model_api_service.Config", mock_config):
             service = ModelApiService()
 
-            response_data = {
-                "choices": [{
-                    "message": {
-                        "content": "response"
-                    }
-                }]
-            }
+            response_data = {"choices": [{"message": {"content": "response"}}]}
 
             with aioresponses() as m:
                 m.post(
                     "http://localhost:8080/api/private/mf-model-api/v1/chat/completions",
                     status=200,
-                    payload=response_data
+                    payload=response_data,
                 )
 
                 result = await service.call_obj(
@@ -331,11 +321,10 @@ class TestCallObj:
                     frequency_penalty=0.3,
                     max_tokens=2000,
                     top_k=50,
-                    userid="test-user"
+                    userid="test-user",
                 )
 
                 assert result == {"content": "response"}
-
 
     @pytest.mark.asyncio
     async def test_call_obj_with_reasoning_content(self, model_service, mock_config):
@@ -344,27 +333,31 @@ class TestCallObj:
             service = ModelApiService()
 
             response_data = {
-                "choices": [{
-                    "message": {
-                        "content": "response",
-                        "reasoning_content": "thinking"
+                "choices": [
+                    {
+                        "message": {
+                            "content": "response",
+                            "reasoning_content": "thinking",
+                        }
                     }
-                }]
+                ]
             }
 
             with aioresponses() as m:
                 m.post(
                     "http://localhost:8080/api/private/mf-model-api/v1/chat/completions",
                     status=200,
-                    payload=response_data
+                    payload=response_data,
                 )
 
                 result = await service.call_obj(
-                    model="test-model",
-                    messages=[{"role": "user", "content": "hello"}]
+                    model="test-model", messages=[{"role": "user", "content": "hello"}]
                 )
 
-                assert result == {"content": "response", "reasoning_content": "thinking"}
+                assert result == {
+                    "content": "response",
+                    "reasoning_content": "thinking",
+                }
 
     @pytest.mark.asyncio
     async def test_call_obj_error_response(self, model_service, mock_config):
@@ -376,13 +369,13 @@ class TestCallObj:
                 m.post(
                     "http://localhost:8080/api/private/mf-model-api/v1/chat/completions",
                     status=500,
-                    body=b'Internal Server Error'
+                    body=b"Internal Server Error",
                 )
 
                 with pytest.raises(CodeException):
                     await service.call_obj(
                         model="test-model",
-                        messages=[{"role": "user", "content": "hello"}]
+                        messages=[{"role": "user", "content": "hello"}],
                     )
 
     @pytest.mark.asyncio
@@ -391,29 +384,22 @@ class TestCallObj:
         with patch("app.driven.dip.model_api_service.Config", mock_config):
             service = ModelApiService()
 
-            response_data = {
-                "choices": [{
-                    "message": {
-                        "content": "response"
-                    }
-                }]
-            }
+            response_data = {"choices": [{"message": {"content": "response"}}]}
 
             with aioresponses() as m:
                 m.post(
                     "http://localhost:8080/api/private/mf-model-api/v1/chat/completions",
                     status=200,
-                    payload=response_data
+                    payload=response_data,
                 )
 
                 result = await service.call_obj(
                     model="test-model",
                     messages=[{"role": "user", "content": "hello"}],
-                    top_k=None
+                    top_k=None,
                 )
 
                 assert result == {"content": "response"}
-
 
 
 class TestCall:
@@ -426,8 +412,7 @@ class TestCall:
             mock_call.return_value = {"content": "test content"}
 
             result = await model_service.call(
-                model="test-model",
-                messages=[{"role": "user", "content": "hello"}]
+                model="test-model", messages=[{"role": "user", "content": "hello"}]
             )
 
             assert result == "test content"
@@ -439,8 +424,7 @@ class TestCall:
             mock_call.return_value = {"other": "data"}
 
             result = await model_service.call(
-                model="test-model",
-                messages=[{"role": "user", "content": "hello"}]
+                model="test-model", messages=[{"role": "user", "content": "hello"}]
             )
 
             assert result == ""
@@ -452,8 +436,7 @@ class TestCall:
             mock_call.return_value = {"content": None}
 
             result = await model_service.call(
-                model="test-model",
-                messages=[{"role": "user", "content": "hello"}]
+                model="test-model", messages=[{"role": "user", "content": "hello"}]
             )
 
             assert result == ""
@@ -468,7 +451,7 @@ class TestCall:
                 model="test-model",
                 messages=[{"role": "user", "content": "hello"}],
                 top_p=0.9,
-                temperature=0.7
+                temperature=0.7,
             )
 
             mock_call.assert_called_once()
@@ -483,6 +466,7 @@ class TestModelApiServiceSingleton:
     def test_singleton_instance(self):
         """测试全局单例"""
         from app.driven.dip.model_api_service import model_api_service
+
         assert model_api_service is not None
         assert isinstance(model_api_service, ModelApiService)
 
@@ -490,4 +474,5 @@ class TestModelApiServiceSingleton:
         """测试多次获取是同一个实例"""
         from app.driven.dip.model_api_service import model_api_service as svc1
         from app.driven.dip.model_api_service import model_api_service as svc2
+
         assert svc1 is svc2

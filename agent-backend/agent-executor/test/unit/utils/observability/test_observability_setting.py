@@ -12,7 +12,7 @@ from app.utils.observability.observability_setting import (
     ObservabilitySetting,
     ServerInfo,
     inject_trace_context,
-    extract_trace_context
+    extract_trace_context,
 )
 
 
@@ -35,7 +35,7 @@ class TestLogSetting:
             log_exporter="otlp",
             log_load_interval=60,
             log_load_max_log=1000,
-            http_log_feed_ingester_url="http://localhost:4318"
+            http_log_feed_ingester_url="http://localhost:4318",
         )
         assert setting.log_enabled is True
         assert setting.log_exporter == "otlp"
@@ -67,10 +67,7 @@ class TestLogSetting:
 
     def test_log_setting_with_large_values(self):
         """Test LogSetting with large values"""
-        setting = LogSetting(
-            log_load_interval=999999,
-            log_load_max_log=999999
-        )
+        setting = LogSetting(log_load_interval=999999, log_load_max_log=999999)
         assert setting.log_load_interval == 999999
         assert setting.log_load_max_log == 999999
 
@@ -104,7 +101,7 @@ class TestTraceSetting:
             max_export_batch_size=1024,
             http_trace_feed_ingester_url="http://localhost:4318",
             grpc_trace_feed_ingester_url="localhost:4317",
-            grpc_trace_job_id="job-123"
+            grpc_trace_job_id="job-123",
         )
         assert setting.trace_enabled is True
         assert setting.trace_provider == "otlp"
@@ -141,7 +138,9 @@ class TestTraceSetting:
 
     def test_trace_setting_with_grpc_url(self):
         """Test TraceSetting with gRPC URL"""
-        setting = TraceSetting(grpc_trace_feed_ingester_url="grpc://trace.example.com:4317")
+        setting = TraceSetting(
+            grpc_trace_feed_ingester_url="grpc://trace.example.com:4317"
+        )
         assert setting.grpc_trace_feed_ingester_url == "grpc://trace.example.com:4317"
 
     def test_trace_setting_with_job_id(self):
@@ -172,7 +171,7 @@ class TestMetricSetting:
             metric_enabled=True,
             metric_provider="prometheus",
             http_metric_feed_ingester_url="http://localhost:9090",
-            metric_interval_second=60
+            metric_interval_second=60,
         )
         assert setting.metric_enabled is True
         assert setting.metric_provider == "prometheus"
@@ -258,9 +257,7 @@ class TestObservabilitySetting:
         trace_setting = TraceSetting(trace_enabled=True)
         metric_setting = MetricSetting(metric_enabled=True)
         setting = ObservabilitySetting(
-            log=log_setting,
-            trace=trace_setting,
-            metric=metric_setting
+            log=log_setting, trace=trace_setting, metric=metric_setting
         )
         assert setting.log.log_enabled is True
         assert setting.trace.trace_enabled is True
@@ -302,7 +299,7 @@ class TestServerInfo:
             server_name="agent-executor",
             server_version="1.0.0",
             language="python",
-            python_version="3.11"
+            python_version="3.11",
         )
         assert info.server_name == "agent-executor"
         assert info.server_version == "1.0.0"
@@ -345,7 +342,7 @@ class TestServerInfo:
 class TestInjectTraceContext:
     """Tests for inject_trace_context function"""
 
-    @patch('app.utils.observability.observability_setting.trace')
+    @patch("app.utils.observability.observability_setting.trace")
     def test_inject_trace_context_with_recording_span(self, mock_trace):
         """Test inject_trace_context with recording span"""
         mock_span = MagicMock()
@@ -355,14 +352,17 @@ class TestInjectTraceContext:
         mock_propagator = MagicMock()
         mock_propagator.inject = MagicMock()
 
-        with patch('app.utils.observability.observability_setting.get_global_textmap', return_value=mock_propagator):
+        with patch(
+            "app.utils.observability.observability_setting.get_global_textmap",
+            return_value=mock_propagator,
+        ):
             headers = {}
             result = inject_trace_context(headers)
 
             mock_propagator.inject.assert_called_once_with(headers)
             assert result == headers
 
-    @patch('app.utils.observability.observability_setting.trace')
+    @patch("app.utils.observability.observability_setting.trace")
     def test_inject_trace_context_without_recording_span(self, mock_trace):
         """Test inject_trace_context without recording span"""
         mock_span = MagicMock()
@@ -375,7 +375,7 @@ class TestInjectTraceContext:
         assert result == headers
         assert headers == {"existing": "header"}
 
-    @patch('app.utils.observability.observability_setting.trace')
+    @patch("app.utils.observability.observability_setting.trace")
     def test_inject_trace_context_with_existing_headers(self, mock_trace):
         """Test inject_trace_context preserves existing headers"""
         mock_span = MagicMock()
@@ -385,14 +385,17 @@ class TestInjectTraceContext:
         mock_propagator = MagicMock()
         mock_propagator.inject = MagicMock()
 
-        with patch('app.utils.observability.observability_setting.get_global_textmap', return_value=mock_propagator):
+        with patch(
+            "app.utils.observability.observability_setting.get_global_textmap",
+            return_value=mock_propagator,
+        ):
             headers = {"Authorization": "Bearer token"}
             result = inject_trace_context(headers)
 
             assert "Authorization" in result
             assert result["Authorization"] == "Bearer token"
 
-    @patch('app.utils.observability.observability_setting.trace')
+    @patch("app.utils.observability.observability_setting.trace")
     def test_inject_trace_context_with_empty_headers(self, mock_trace):
         """Test inject_trace_context with empty headers dict"""
         mock_span = MagicMock()
@@ -402,7 +405,10 @@ class TestInjectTraceContext:
         mock_propagator = MagicMock()
         mock_propagator.inject = MagicMock()
 
-        with patch('app.utils.observability.observability_setting.get_global_textmap', return_value=mock_propagator):
+        with patch(
+            "app.utils.observability.observability_setting.get_global_textmap",
+            return_value=mock_propagator,
+        ):
             headers = {}
             result = inject_trace_context(headers)
 
@@ -412,7 +418,7 @@ class TestInjectTraceContext:
 class TestExtractTraceContext:
     """Tests for extract_trace_context function"""
 
-    @patch('app.utils.observability.observability_setting.trace')
+    @patch("app.utils.observability.observability_setting.trace")
     def test_extract_trace_context_with_valid_headers(self, mock_trace):
         """Test extract_trace_context with valid headers"""
         mock_propagator = MagicMock()
@@ -422,13 +428,16 @@ class TestExtractTraceContext:
         mock_propagator.extract.return_value = mock_context
         mock_context.get.return_value.get_span_context.return_value = mock_span_context
 
-        with patch('app.utils.observability.observability_setting.get_global_textmap', return_value=mock_propagator):
+        with patch(
+            "app.utils.observability.observability_setting.get_global_textmap",
+            return_value=mock_propagator,
+        ):
             headers = {"traceparent": "test-trace"}
             extract_trace_context(headers)
 
             mock_propagator.extract.assert_called_once_with(headers)
 
-    @patch('app.utils.observability.observability_setting.trace')
+    @patch("app.utils.observability.observability_setting.trace")
     def test_extract_trace_context_with_empty_headers(self, mock_trace):
         """Test extract_trace_context with empty headers"""
         mock_propagator = MagicMock()
@@ -438,13 +447,16 @@ class TestExtractTraceContext:
         mock_propagator.extract.return_value = mock_context
         mock_context.get.return_value.get_span_context.return_value = mock_span_context
 
-        with patch('app.utils.observability.observability_setting.get_global_textmap', return_value=mock_propagator):
+        with patch(
+            "app.utils.observability.observability_setting.get_global_textmap",
+            return_value=mock_propagator,
+        ):
             headers = {}
             extract_trace_context(headers)
 
             mock_propagator.extract.assert_called_once_with(headers)
 
-    @patch('app.utils.observability.observability_setting.trace')
+    @patch("app.utils.observability.observability_setting.trace")
     def test_extract_trace_context_with_multiple_headers(self, mock_trace):
         """Test extract_trace_context with multiple headers"""
         mock_propagator = MagicMock()
@@ -454,11 +466,14 @@ class TestExtractTraceContext:
         mock_propagator.extract.return_value = mock_context
         mock_context.get.return_value.get_span_context.return_value = mock_span_context
 
-        with patch('app.utils.observability.observability_setting.get_global_textmap', return_value=mock_propagator):
+        with patch(
+            "app.utils.observability.observability_setting.get_global_textmap",
+            return_value=mock_propagator,
+        ):
             headers = {
                 "traceparent": "test-trace",
                 "tracestate": "test-state",
-                "other": "value"
+                "other": "value",
             }
             extract_trace_context(headers)
 

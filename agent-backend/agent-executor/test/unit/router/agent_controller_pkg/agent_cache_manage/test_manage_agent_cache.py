@@ -18,7 +18,9 @@ class TestManageAgentCache:
     @pytest.fixture
     def mock_req_upsert(self):
         """创建 mock AgentCacheManageReq (upsert)"""
-        from app.router.agent_controller_pkg.rdto.v1.req.agent_cache import AgentCacheAction
+        from app.router.agent_controller_pkg.rdto.v1.req.agent_cache import (
+            AgentCacheAction,
+        )
 
         req = MagicMock()
         req.agent_id = "test_agent"
@@ -29,7 +31,9 @@ class TestManageAgentCache:
     @pytest.fixture
     def mock_req_get_info(self):
         """创建 mock AgentCacheManageReq (get_info)"""
-        from app.router.agent_controller_pkg.rdto.v1.req.agent_cache import AgentCacheAction
+        from app.router.agent_controller_pkg.rdto.v1.req.agent_cache import (
+            AgentCacheAction,
+        )
 
         req = MagicMock()
         req.agent_id = "test_agent"
@@ -111,7 +115,9 @@ class TestManageAgentCache:
                     assert result is not None
 
     @pytest.mark.asyncio
-    async def test_manage_agent_cache_get_info_not_found(self, mock_request, mock_req_get_info):
+    async def test_manage_agent_cache_get_info_not_found(
+        self, mock_request, mock_req_get_info
+    ):
         """测试 get_info action 缓存不存在"""
         mock_agent_config = MagicMock()
 

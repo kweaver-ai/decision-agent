@@ -17,6 +17,7 @@ class TestStructLoggerSingleton:
         """Test that StructLogger is a singleton"""
         # Reset the singleton
         from app.common.struct_logger import logger
+
         logger.StructLogger._instance = None
         logger.StructLogger._initialized = False
 
@@ -32,6 +33,7 @@ class TestStructLoggerSingleton:
         """Test that singleton persists but don't reload"""
         # Reset the singleton
         from app.common.struct_logger import logger
+
         logger.StructLogger._instance = None
         logger.StructLogger._initialized = False
 
@@ -40,6 +42,7 @@ class TestStructLoggerSingleton:
         instance1 = StructLogger()
         # Don't reload - just check the same instance
         from app.common.struct_logger.logger import StructLogger as StructLogger2
+
         instance2 = StructLogger2()
 
         assert instance1 is instance2
@@ -49,12 +52,13 @@ class TestStructLoggerSingleton:
         """Test that __init__ only runs once"""
         # Reset the singleton
         from app.common.struct_logger import logger
+
         logger.StructLogger._instance = None
         logger.StructLogger._initialized = False
 
         from app.common.struct_logger.logger import StructLogger
 
-        with patch.object(StructLogger, '_setup_logging') as mock_setup:
+        with patch.object(StructLogger, "_setup_logging") as mock_setup:
             instance1 = StructLogger()
             instance2 = StructLogger()
 
@@ -70,13 +74,16 @@ class TestStructLoggerLoggingMethods:
         """Test debug logging method"""
         # Reset the singleton
         from app.common.struct_logger import logger
+
         logger.StructLogger._instance = None
         logger.StructLogger._initialized = False
 
         from app.common.struct_logger.logger import StructLogger
 
-        with patch('app.common.struct_logger.logger.setup_file_logging') as mock_file:
-            with patch('app.common.struct_logger.logger.setup_console_logging') as mock_console:
+        with patch("app.common.struct_logger.logger.setup_file_logging") as mock_file:
+            with patch(
+                "app.common.struct_logger.logger.setup_console_logging"
+            ) as mock_console:
                 mock_file_logger = MagicMock()
                 mock_console_logger = MagicMock()
                 mock_file.return_value = mock_file_logger
@@ -85,21 +92,28 @@ class TestStructLoggerLoggingMethods:
                 struct_logger = StructLogger()
                 struct_logger.debug("Test debug", key="value")
 
-                mock_file_logger.debug.assert_called_once_with("Test debug", key="value")
-                mock_console_logger.debug.assert_called_once_with("Test debug", key="value")
+                mock_file_logger.debug.assert_called_once_with(
+                    "Test debug", key="value"
+                )
+                mock_console_logger.debug.assert_called_once_with(
+                    "Test debug", key="value"
+                )
 
     @pytest.mark.asyncio
     async def test_info_method(self):
         """Test info logging method"""
         # Reset the singleton
         from app.common.struct_logger import logger
+
         logger.StructLogger._instance = None
         logger.StructLogger._initialized = False
 
         from app.common.struct_logger.logger import StructLogger
 
-        with patch('app.common.struct_logger.logger.setup_file_logging') as mock_file:
-            with patch('app.common.struct_logger.logger.setup_console_logging') as mock_console:
+        with patch("app.common.struct_logger.logger.setup_file_logging") as mock_file:
+            with patch(
+                "app.common.struct_logger.logger.setup_console_logging"
+            ) as mock_console:
                 mock_file_logger = MagicMock()
                 mock_console_logger = MagicMock()
                 mock_file.return_value = mock_file_logger
@@ -108,21 +122,28 @@ class TestStructLoggerLoggingMethods:
                 struct_logger = StructLogger()
                 struct_logger.info("Test info", user_id="123")
 
-                mock_file_logger.info.assert_called_once_with("Test info", user_id="123")
-                mock_console_logger.info.assert_called_once_with("Test info", user_id="123")
+                mock_file_logger.info.assert_called_once_with(
+                    "Test info", user_id="123"
+                )
+                mock_console_logger.info.assert_called_once_with(
+                    "Test info", user_id="123"
+                )
 
     @pytest.mark.asyncio
     async def test_warning_method(self):
         """Test warning logging method"""
         # Reset the singleton
         from app.common.struct_logger import logger
+
         logger.StructLogger._instance = None
         logger.StructLogger._initialized = False
 
         from app.common.struct_logger.logger import StructLogger
 
-        with patch('app.common.struct_logger.logger.setup_file_logging') as mock_file:
-            with patch('app.common.struct_logger.logger.setup_console_logging') as mock_console:
+        with patch("app.common.struct_logger.logger.setup_file_logging") as mock_file:
+            with patch(
+                "app.common.struct_logger.logger.setup_console_logging"
+            ) as mock_console:
                 mock_file_logger = MagicMock()
                 mock_console_logger = MagicMock()
                 mock_file.return_value = mock_file_logger
@@ -139,13 +160,16 @@ class TestStructLoggerLoggingMethods:
         """Test warn method is alias for warning"""
         # Reset the singleton
         from app.common.struct_logger import logger
+
         logger.StructLogger._instance = None
         logger.StructLogger._initialized = False
 
         from app.common.struct_logger.logger import StructLogger
 
-        with patch('app.common.struct_logger.logger.setup_file_logging') as mock_file:
-            with patch('app.common.struct_logger.logger.setup_console_logging') as mock_console:
+        with patch("app.common.struct_logger.logger.setup_file_logging") as mock_file:
+            with patch(
+                "app.common.struct_logger.logger.setup_console_logging"
+            ) as mock_console:
                 mock_file_logger = MagicMock()
                 mock_console_logger = MagicMock()
                 mock_file.return_value = mock_file_logger
@@ -162,13 +186,16 @@ class TestStructLoggerLoggingMethods:
         """Test error logging method"""
         # Reset the singleton
         from app.common.struct_logger import logger
+
         logger.StructLogger._instance = None
         logger.StructLogger._initialized = False
 
         from app.common.struct_logger.logger import StructLogger
 
-        with patch('app.common.struct_logger.logger.setup_file_logging') as mock_file:
-            with patch('app.common.struct_logger.logger.setup_console_logging') as mock_console:
+        with patch("app.common.struct_logger.logger.setup_file_logging") as mock_file:
+            with patch(
+                "app.common.struct_logger.logger.setup_console_logging"
+            ) as mock_console:
                 mock_file_logger = MagicMock()
                 mock_console_logger = MagicMock()
                 mock_file.return_value = mock_file_logger
@@ -178,20 +205,25 @@ class TestStructLoggerLoggingMethods:
                 struct_logger.error("Test error", code=500)
 
                 mock_file_logger.error.assert_called_once_with("Test error", code=500)
-                mock_console_logger.error.assert_called_once_with("Test error", code=500)
+                mock_console_logger.error.assert_called_once_with(
+                    "Test error", code=500
+                )
 
     @pytest.mark.asyncio
     async def test_fatal_method(self):
         """Test fatal logging method"""
         # Reset the singleton
         from app.common.struct_logger import logger
+
         logger.StructLogger._instance = None
         logger.StructLogger._initialized = False
 
         from app.common.struct_logger.logger import StructLogger
 
-        with patch('app.common.struct_logger.logger.setup_file_logging') as mock_file:
-            with patch('app.common.struct_logger.logger.setup_console_logging') as mock_console:
+        with patch("app.common.struct_logger.logger.setup_file_logging") as mock_file:
+            with patch(
+                "app.common.struct_logger.logger.setup_console_logging"
+            ) as mock_console:
                 mock_file_logger = MagicMock()
                 mock_console_logger = MagicMock()
                 mock_file.return_value = mock_file_logger
@@ -213,13 +245,16 @@ class TestStructLoggerBind:
         """Test bind method returns file_logger with context"""
         # Reset the singleton
         from app.common.struct_logger import logger
+
         logger.StructLogger._instance = None
         logger.StructLogger._initialized = False
 
         from app.common.struct_logger.logger import StructLogger
 
-        with patch('app.common.struct_logger.logger.setup_file_logging') as mock_file:
-            with patch('app.common.struct_logger.logger.setup_console_logging') as mock_console:
+        with patch("app.common.struct_logger.logger.setup_file_logging") as mock_file:
+            with patch(
+                "app.common.struct_logger.logger.setup_console_logging"
+            ) as mock_console:
                 mock_file_logger = MagicMock()
                 mock_bound_logger = MagicMock()
                 mock_file_logger.bind.return_value = mock_bound_logger
@@ -231,7 +266,9 @@ class TestStructLoggerBind:
                 result = struct_logger.bind(request_id="123", user_id="456")
 
                 # Should return file_logger.bind result
-                mock_file_logger.bind.assert_called_once_with(request_id="123", user_id="456")
+                mock_file_logger.bind.assert_called_once_with(
+                    request_id="123", user_id="456"
+                )
                 assert result is mock_bound_logger
 
 
@@ -243,13 +280,16 @@ class TestStructLoggerProperties:
         """Test file_logger property"""
         # Reset the singleton
         from app.common.struct_logger import logger
+
         logger.StructLogger._instance = None
         logger.StructLogger._initialized = False
 
         from app.common.struct_logger.logger import StructLogger
 
-        with patch('app.common.struct_logger.logger.setup_file_logging') as mock_file:
-            with patch('app.common.struct_logger.logger.setup_console_logging') as mock_console:
+        with patch("app.common.struct_logger.logger.setup_file_logging") as mock_file:
+            with patch(
+                "app.common.struct_logger.logger.setup_console_logging"
+            ) as mock_console:
                 mock_file_logger = MagicMock()
                 mock_console_logger = MagicMock()
                 mock_file.return_value = mock_file_logger
@@ -265,13 +305,16 @@ class TestStructLoggerProperties:
         """Test console_logger property"""
         # Reset the singleton
         from app.common.struct_logger import logger
+
         logger.StructLogger._instance = None
         logger.StructLogger._initialized = False
 
         from app.common.struct_logger.logger import StructLogger
 
-        with patch('app.common.struct_logger.logger.setup_file_logging') as mock_file:
-            with patch('app.common.struct_logger.logger.setup_console_logging') as mock_console:
+        with patch("app.common.struct_logger.logger.setup_file_logging") as mock_file:
+            with patch(
+                "app.common.struct_logger.logger.setup_console_logging"
+            ) as mock_console:
                 mock_file_logger = MagicMock()
                 mock_console_logger = MagicMock()
                 mock_file.return_value = mock_file_logger
@@ -292,4 +335,4 @@ class TestModuleImports:
         from app.common.struct_logger import logger
 
         assert logger is not None
-        assert hasattr(logger, 'StructLogger')
+        assert hasattr(logger, "StructLogger")

@@ -45,7 +45,7 @@ class TestOutputVariablesVo:
             doc_retrieval_var="custom_doc",
             graph_retrieval_var="custom_graph",
             related_questions_var="custom_questions",
-            other_vars=["var1", "var2"]
+            other_vars=["var1", "var2"],
         )
 
         assert vo.answer_var == "custom_answer"
@@ -60,7 +60,10 @@ class TestOutputConfigVo:
 
     def test_init_with_required_field(self):
         """测试使用必填字段初始化"""
-        from app.domain.vo.agentvo.agent_config_vos import OutputConfigVo, DefaultFormatEnum
+        from app.domain.vo.agentvo.agent_config_vos import (
+            OutputConfigVo,
+            DefaultFormatEnum,
+        )
 
         vo = OutputConfigVo(default_format=DefaultFormatEnum.JSON)
 
@@ -69,12 +72,15 @@ class TestOutputConfigVo:
 
     def test_init_with_variables(self):
         """测试使用variables初始化"""
-        from app.domain.vo.agentvo.agent_config_vos import OutputConfigVo, OutputVariablesVo, DefaultFormatEnum
+        from app.domain.vo.agentvo.agent_config_vos import (
+            OutputConfigVo,
+            OutputVariablesVo,
+            DefaultFormatEnum,
+        )
 
         variables = OutputVariablesVo(answer_var="answer")
         vo = OutputConfigVo(
-            variables=variables,
-            default_format=DefaultFormatEnum.MARKDOWN
+            variables=variables, default_format=DefaultFormatEnum.MARKDOWN
         )
 
         assert vo.variables.answer_var == "answer"
@@ -82,7 +88,10 @@ class TestOutputConfigVo:
 
     def test_get_all_vars_with_no_variables(self):
         """测试get_all_vars当variables为None时返回空列表"""
-        from app.domain.vo.agentvo.agent_config_vos import OutputConfigVo, DefaultFormatEnum
+        from app.domain.vo.agentvo.agent_config_vos import (
+            OutputConfigVo,
+            DefaultFormatEnum,
+        )
 
         vo = OutputConfigVo(default_format=DefaultFormatEnum.JSON)
         result = vo.get_all_vars()
@@ -91,17 +100,16 @@ class TestOutputConfigVo:
 
     def test_get_all_vars_with_variables(self):
         """测试get_all_vars返回所有变量"""
-        from app.domain.vo.agentvo.agent_config_vos import OutputConfigVo, OutputVariablesVo, DefaultFormatEnum
+        from app.domain.vo.agentvo.agent_config_vos import (
+            OutputConfigVo,
+            OutputVariablesVo,
+            DefaultFormatEnum,
+        )
 
         variables = OutputVariablesVo(
-            answer_var="answer",
-            doc_retrieval_var="doc",
-            other_vars=["custom_var"]
+            answer_var="answer", doc_retrieval_var="doc", other_vars=["custom_var"]
         )
-        vo = OutputConfigVo(
-            variables=variables,
-            default_format=DefaultFormatEnum.JSON
-        )
+        vo = OutputConfigVo(variables=variables, default_format=DefaultFormatEnum.JSON)
         result = vo.get_all_vars()
 
         assert "answer" in result
@@ -112,7 +120,10 @@ class TestOutputConfigVo:
 
     def test_get_final_answer_var_with_no_variables(self):
         """测试get_final_answer_var当variables为None时返回默认值"""
-        from app.domain.vo.agentvo.agent_config_vos import OutputConfigVo, DefaultFormatEnum
+        from app.domain.vo.agentvo.agent_config_vos import (
+            OutputConfigVo,
+            DefaultFormatEnum,
+        )
 
         vo = OutputConfigVo(default_format=DefaultFormatEnum.JSON)
         result = vo.get_final_answer_var()
@@ -122,13 +133,14 @@ class TestOutputConfigVo:
 
     def test_get_final_answer_var_with_variables(self):
         """测试get_final_answer_var返回answer_var"""
-        from app.domain.vo.agentvo.agent_config_vos import OutputConfigVo, OutputVariablesVo, DefaultFormatEnum
+        from app.domain.vo.agentvo.agent_config_vos import (
+            OutputConfigVo,
+            OutputVariablesVo,
+            DefaultFormatEnum,
+        )
 
         variables = OutputVariablesVo(answer_var="custom_answer")
-        vo = OutputConfigVo(
-            variables=variables,
-            default_format=DefaultFormatEnum.JSON
-        )
+        vo = OutputConfigVo(variables=variables, default_format=DefaultFormatEnum.JSON)
         result = vo.get_final_answer_var()
 
         assert result == "custom_answer"
@@ -142,7 +154,10 @@ class TestOutputConfigVo:
 
     def test_model_dump(self):
         """测试模型序列化"""
-        from app.domain.vo.agentvo.agent_config_vos import OutputConfigVo, DefaultFormatEnum
+        from app.domain.vo.agentvo.agent_config_vos import (
+            OutputConfigVo,
+            DefaultFormatEnum,
+        )
 
         vo = OutputConfigVo(default_format=DefaultFormatEnum.JSON)
         data = vo.model_dump()
@@ -158,10 +173,7 @@ class TestOutputVariablesVoExtended:
         """Test initialization with partial fields"""
         from app.domain.vo.agentvo.agent_config_vos import OutputVariablesVo
 
-        vo = OutputVariablesVo(
-            answer_var="answer",
-            doc_retrieval_var="doc"
-        )
+        vo = OutputVariablesVo(answer_var="answer", doc_retrieval_var="doc")
 
         assert vo.answer_var == "answer"
         assert vo.doc_retrieval_var == "doc"
@@ -189,9 +201,7 @@ class TestOutputVariablesVoExtended:
         """Test initialization with multiple other_vars"""
         from app.domain.vo.agentvo.agent_config_vos import OutputVariablesVo
 
-        vo = OutputVariablesVo(
-            other_vars=["var1", "var2", "var3"]
-        )
+        vo = OutputVariablesVo(other_vars=["var1", "var2", "var3"])
 
         assert vo.other_vars == ["var1", "var2", "var3"]
 
@@ -199,10 +209,7 @@ class TestOutputVariablesVoExtended:
         """Test model_dump method"""
         from app.domain.vo.agentvo.agent_config_vos import OutputVariablesVo
 
-        vo = OutputVariablesVo(
-            answer_var="answer",
-            other_vars=["var1", "var2"]
-        )
+        vo = OutputVariablesVo(answer_var="answer", other_vars=["var1", "var2"])
 
         data = vo.model_dump()
 
@@ -246,7 +253,7 @@ class TestOutputVariablesVoExtended:
         data = {
             "answer_var": "answer",
             "doc_retrieval_var": "doc",
-            "other_vars": ["var1"]
+            "other_vars": ["var1"],
         }
 
         vo = OutputVariablesVo(**data)
@@ -261,21 +268,32 @@ class TestOutputConfigVoExtended:
 
     def test_init_with_json_format(self):
         """Test initialization with JSON format"""
-        from app.domain.vo.agentvo.agent_config_vos import OutputConfigVo, DefaultFormatEnum
+        from app.domain.vo.agentvo.agent_config_vos import (
+            OutputConfigVo,
+            DefaultFormatEnum,
+        )
 
         vo = OutputConfigVo(default_format=DefaultFormatEnum.JSON)
 
         # Due to use_enum_values config, the enum is converted to its value
-        assert vo.default_format == "json" or vo.default_format == DefaultFormatEnum.JSON
+        assert (
+            vo.default_format == "json" or vo.default_format == DefaultFormatEnum.JSON
+        )
 
     def test_init_with_markdown_format(self):
         """Test initialization with Markdown format"""
-        from app.domain.vo.agentvo.agent_config_vos import OutputConfigVo, DefaultFormatEnum
+        from app.domain.vo.agentvo.agent_config_vos import (
+            OutputConfigVo,
+            DefaultFormatEnum,
+        )
 
         vo = OutputConfigVo(default_format=DefaultFormatEnum.MARKDOWN)
 
         # Due to use_enum_values config, the enum is converted to its value
-        assert vo.default_format == "markdown" or vo.default_format == DefaultFormatEnum.MARKDOWN
+        assert (
+            vo.default_format == "markdown"
+            or vo.default_format == DefaultFormatEnum.MARKDOWN
+        )
 
     def test_init_with_string_format(self):
         """Test initialization with string format value"""
@@ -287,18 +305,19 @@ class TestOutputConfigVoExtended:
 
     def test_get_all_vars_filters_empty_values(self):
         """Test get_all_vars filters out empty values"""
-        from app.domain.vo.agentvo.agent_config_vos import OutputConfigVo, OutputVariablesVo, DefaultFormatEnum
+        from app.domain.vo.agentvo.agent_config_vos import (
+            OutputConfigVo,
+            OutputVariablesVo,
+            DefaultFormatEnum,
+        )
 
         variables = OutputVariablesVo(
             answer_var=None,
             doc_retrieval_var=None,
             graph_retrieval_var="graph",
-            related_questions_var=None
+            related_questions_var=None,
         )
-        vo = OutputConfigVo(
-            variables=variables,
-            default_format=DefaultFormatEnum.JSON
-        )
+        vo = OutputConfigVo(variables=variables, default_format=DefaultFormatEnum.JSON)
 
         result = vo.get_all_vars()
 
@@ -311,18 +330,19 @@ class TestOutputConfigVoExtended:
 
     def test_get_all_vars_includes_defaults_when_none(self):
         """Test get_all_vars includes default values when fields are None"""
-        from app.domain.vo.agentvo.agent_config_vos import OutputConfigVo, OutputVariablesVo, DefaultFormatEnum
+        from app.domain.vo.agentvo.agent_config_vos import (
+            OutputConfigVo,
+            OutputVariablesVo,
+            DefaultFormatEnum,
+        )
 
         variables = OutputVariablesVo(
             answer_var=None,
             doc_retrieval_var=None,
             graph_retrieval_var=None,
-            related_questions_var=None
+            related_questions_var=None,
         )
-        vo = OutputConfigVo(
-            variables=variables,
-            default_format=DefaultFormatEnum.JSON
-        )
+        vo = OutputConfigVo(variables=variables, default_format=DefaultFormatEnum.JSON)
 
         result = vo.get_all_vars()
 
@@ -334,19 +354,20 @@ class TestOutputConfigVoExtended:
 
     def test_get_all_vars_with_custom_all_vars(self):
         """Test get_all_vars with all custom vars"""
-        from app.domain.vo.agentvo.agent_config_vos import OutputConfigVo, OutputVariablesVo, DefaultFormatEnum
+        from app.domain.vo.agentvo.agent_config_vos import (
+            OutputConfigVo,
+            OutputVariablesVo,
+            DefaultFormatEnum,
+        )
 
         variables = OutputVariablesVo(
             answer_var="custom_answer",
             doc_retrieval_var="custom_doc",
             graph_retrieval_var="custom_graph",
             related_questions_var="custom_questions",
-            other_vars=["var1", "var2", "var3"]
+            other_vars=["var1", "var2", "var3"],
         )
-        vo = OutputConfigVo(
-            variables=variables,
-            default_format=DefaultFormatEnum.JSON
-        )
+        vo = OutputConfigVo(variables=variables, default_format=DefaultFormatEnum.JSON)
 
         result = vo.get_all_vars()
 
@@ -360,13 +381,14 @@ class TestOutputConfigVoExtended:
 
     def test_get_final_answer_var_returns_default_when_none(self):
         """Test get_final_answer_var returns default when answer_var is None"""
-        from app.domain.vo.agentvo.agent_config_vos import OutputConfigVo, OutputVariablesVo, DefaultFormatEnum
+        from app.domain.vo.agentvo.agent_config_vos import (
+            OutputConfigVo,
+            OutputVariablesVo,
+            DefaultFormatEnum,
+        )
 
         variables = OutputVariablesVo(answer_var=None)
-        vo = OutputConfigVo(
-            variables=variables,
-            default_format=DefaultFormatEnum.JSON
-        )
+        vo = OutputConfigVo(variables=variables, default_format=DefaultFormatEnum.JSON)
 
         result = vo.get_final_answer_var()
 
@@ -375,13 +397,14 @@ class TestOutputConfigVoExtended:
 
     def test_get_final_answer_var_with_empty_string(self):
         """Test get_final_answer_var with empty string"""
-        from app.domain.vo.agentvo.agent_config_vos import OutputConfigVo, OutputVariablesVo, DefaultFormatEnum
+        from app.domain.vo.agentvo.agent_config_vos import (
+            OutputConfigVo,
+            OutputVariablesVo,
+            DefaultFormatEnum,
+        )
 
         variables = OutputVariablesVo(answer_var="")
-        vo = OutputConfigVo(
-            variables=variables,
-            default_format=DefaultFormatEnum.JSON
-        )
+        vo = OutputConfigVo(variables=variables, default_format=DefaultFormatEnum.JSON)
 
         result = vo.get_final_answer_var()
 
@@ -390,16 +413,14 @@ class TestOutputConfigVoExtended:
 
     def test_model_dump_with_variables(self):
         """Test model_dump with variables"""
-        from app.domain.vo.agentvo.agent_config_vos import OutputConfigVo, OutputVariablesVo, DefaultFormatEnum
+        from app.domain.vo.agentvo.agent_config_vos import (
+            OutputConfigVo,
+            OutputVariablesVo,
+            DefaultFormatEnum,
+        )
 
-        variables = OutputVariablesVo(
-            answer_var="answer",
-            other_vars=["var1"]
-        )
-        vo = OutputConfigVo(
-            variables=variables,
-            default_format=DefaultFormatEnum.JSON
-        )
+        variables = OutputVariablesVo(answer_var="answer", other_vars=["var1"])
+        vo = OutputConfigVo(variables=variables, default_format=DefaultFormatEnum.JSON)
 
         data = vo.model_dump()
 
@@ -409,12 +430,15 @@ class TestOutputConfigVoExtended:
 
     def test_model_dump_json_with_variables(self):
         """Test model_dump_json with variables"""
-        from app.domain.vo.agentvo.agent_config_vos import OutputConfigVo, OutputVariablesVo, DefaultFormatEnum
+        from app.domain.vo.agentvo.agent_config_vos import (
+            OutputConfigVo,
+            OutputVariablesVo,
+            DefaultFormatEnum,
+        )
 
         variables = OutputVariablesVo(answer_var="answer")
         vo = OutputConfigVo(
-            variables=variables,
-            default_format=DefaultFormatEnum.MARKDOWN
+            variables=variables, default_format=DefaultFormatEnum.MARKDOWN
         )
 
         json_str = vo.model_dump_json()
@@ -424,7 +448,10 @@ class TestOutputConfigVoExtended:
 
     def test_copy(self):
         """Test copying the VO"""
-        from app.domain.vo.agentvo.agent_config_vos import OutputConfigVo, DefaultFormatEnum
+        from app.domain.vo.agentvo.agent_config_vos import (
+            OutputConfigVo,
+            DefaultFormatEnum,
+        )
 
         vo1 = OutputConfigVo(default_format=DefaultFormatEnum.JSON)
         vo2 = vo1.copy()
@@ -433,7 +460,10 @@ class TestOutputConfigVoExtended:
 
     def test_equality(self):
         """Test equality comparison"""
-        from app.domain.vo.agentvo.agent_config_vos import OutputConfigVo, DefaultFormatEnum
+        from app.domain.vo.agentvo.agent_config_vos import (
+            OutputConfigVo,
+            DefaultFormatEnum,
+        )
 
         vo1 = OutputConfigVo(default_format=DefaultFormatEnum.JSON)
         vo2 = OutputConfigVo(default_format=DefaultFormatEnum.JSON)
@@ -446,12 +476,7 @@ class TestOutputConfigVoExtended:
         """Test creating instance from dictionary"""
         from app.domain.vo.agentvo.agent_config_vos import OutputConfigVo
 
-        data = {
-            "default_format": "json",
-            "variables": {
-                "answer_var": "answer"
-            }
-        }
+        data = {"default_format": "json", "variables": {"answer_var": "answer"}}
 
         vo = OutputConfigVo(**data)
 
@@ -474,8 +499,8 @@ class TestDefaultFormatEnumExtended:
         """Test enum has correct members"""
         from app.domain.vo.agentvo.agent_config_vos import DefaultFormatEnum
 
-        assert hasattr(DefaultFormatEnum, 'JSON')
-        assert hasattr(DefaultFormatEnum, 'MARKDOWN')
+        assert hasattr(DefaultFormatEnum, "JSON")
+        assert hasattr(DefaultFormatEnum, "MARKDOWN")
 
     def test_enum_comparison(self):
         """Test enum comparison"""

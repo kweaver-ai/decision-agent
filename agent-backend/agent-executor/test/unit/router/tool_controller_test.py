@@ -11,6 +11,7 @@ from fastapi import FastAPI
 def app():
     """创建测试应用"""
     from app.router.tool_controller import router
+
     app = FastAPI()
     app.include_router(router)
     return app
@@ -38,13 +39,17 @@ class TestZhipuSearchTool:
             "id": "test_id_123",
             "model": "web-search-pro",
             "request_id": "test-request-id",
-            "usage": {"completion_tokens": 100, "prompt_tokens": 0, "total_tokens": 100}
+            "usage": {
+                "completion_tokens": 100,
+                "prompt_tokens": 0,
+                "total_tokens": 100,
+            },
         }
 
         response = client.post(
             "/tools/zhipu_search_tool",
             json={"query": "机器学习"},
-            headers={"api_key": "test_api_key"}
+            headers={"api_key": "test_api_key"},
         )
 
         assert response.status_code == 200
@@ -63,13 +68,17 @@ class TestZhipuSearchTool:
             "id": "test_id_456",
             "model": "web-search-pro",
             "request_id": "test-request-id-2",
-            "usage": {"completion_tokens": 100, "prompt_tokens": 0, "total_tokens": 100}
+            "usage": {
+                "completion_tokens": 100,
+                "prompt_tokens": 0,
+                "total_tokens": 100,
+            },
         }
 
         response = client.post(
             "/tools/zhipu_search_tool",
             json={"query": "测试查询", "database": "test_db"},
-            headers={"api_key": "test_key"}
+            headers={"api_key": "test_key"},
         )
 
         assert response.status_code == 200
@@ -81,10 +90,7 @@ class TestZhipuSearchTool:
         """测试缺少API密钥的情况"""
         m_config.app.host_prefix = ""
 
-        response = client.post(
-            "/tools/zhipu_search_tool",
-            json={"query": "测试"}
-        )
+        response = client.post("/tools/zhipu_search_tool", json={"query": "测试"})
 
         # FastAPI 应该返回验证错误
         assert response.status_code == 422
@@ -101,8 +107,13 @@ class TestOnlineSearchCiteTool:
         mock_search.return_value = {
             "answer": "这是搜索答案",
             "references": [
-                {"title": "参考1", "content": "内容1", "link": "http://example.com/1", "index": 0}
-            ]
+                {
+                    "title": "参考1",
+                    "content": "内容1",
+                    "link": "http://example.com/1",
+                    "index": 0,
+                }
+            ],
         }
 
         response = client.post(
@@ -113,8 +124,8 @@ class TestOnlineSearchCiteTool:
                 "search_tool": "zhipu_search_tool",
                 "api_key": "test_key",
                 "user_id": "user123",
-                "stream": False
-            }
+                "stream": False,
+            },
         )
 
         assert response.status_code == 200
@@ -131,7 +142,9 @@ class TestOnlineSearchCiteTool:
 
     @patch("app.router.tool_controller.Config")
     @patch("app.logic.tool.online_search_cite_tool.online_search_cite_tool")
-    def test_online_search_cite_tool_with_empty_query(self, mock_search, m_config, client):
+    def test_online_search_cite_tool_with_empty_query(
+        self, mock_search, m_config, client
+    ):
         """测试空查询"""
         m_config.app.host_prefix = ""
         mock_search.return_value = {"answer": "", "references": []}
@@ -144,8 +157,8 @@ class TestOnlineSearchCiteTool:
                 "search_tool": "tool",
                 "api_key": "key",
                 "user_id": "user",
-                "stream": False
-            }
+                "stream": False,
+            },
         )
 
         assert response.status_code == 200
@@ -166,14 +179,16 @@ class TestRouterConfiguration:
         from app.router.tool_controller import router
 
         # 应该有2个端点
-        routes = [r for r in router.routes if hasattr(r, 'path')]
+        routes = [r for r in router.routes if hasattr(r, "path")]
         assert len(routes) == 2
 
     def test_zhipu_search_endpoint_config(self):
         """测试智谱搜索端点配置"""
         from app.router.tool_controller import router
 
-        route = next((r for r in router.routes if r.path.endswith("zhipu_search_tool")), None)
+        route = next(
+            (r for r in router.routes if r.path.endswith("zhipu_search_tool")), None
+        )
         assert route is not None
         assert route.summary == "智谱搜索"
 
@@ -181,6 +196,9 @@ class TestRouterConfiguration:
         """测试联网搜索端点配置"""
         from app.router.tool_controller import router
 
-        route = next((r for r in router.routes if r.path.endswith("online_search_cite_tool")), None)
+        route = next(
+            (r for r in router.routes if r.path.endswith("online_search_cite_tool")),
+            None,
+        )
         assert route is not None
         assert route.summary == "联网搜索添加引用工具"

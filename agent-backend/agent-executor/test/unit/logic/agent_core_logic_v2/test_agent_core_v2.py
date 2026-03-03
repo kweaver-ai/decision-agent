@@ -106,12 +106,10 @@ class TestAgentCoreV2:
             resume_token="token123",
             interrupt_type="confirm",
             current_block=0,
-            restart_block=False
+            restart_block=False,
         )
         mock_resume_info = ResumeInfo(
-            resume_handle=mock_handle,
-            action="confirm",
-            data={"key": "value"}
+            resume_handle=mock_handle, action="confirm", data={"key": "value"}
         )
         core.run_options_vo.resume_info = mock_resume_info
 
@@ -132,10 +130,10 @@ class TestAgentCoreV2:
                 "resume_token": "token123",
                 "interrupt_type": "confirm",
                 "current_block": 0,
-                "restart_block": False
+                "restart_block": False,
             },
             "action": "confirm",
-            "data": {"key": "value"}
+            "data": {"key": "value"},
         }
         core.run_options_vo.resume_info = resume_data
 
@@ -230,6 +228,7 @@ class TestAgentCoreV2Run:
                                 with patch(
                                     "app.logic.agent_core_logic_v2.agent_core_v2.run_dolphin"
                                 ) as mock_run_dolphin:
+
                                     async def mock_gen():
                                         yield {"status": "success", "data": "test"}
 
@@ -238,7 +237,9 @@ class TestAgentCoreV2Run:
                                     with patch(
                                         "app.logic.agent_core_logic_v2.agent_core_v2.Config"
                                     ) as mock_config:
-                                        mock_config.features.use_explore_block_v2 = False
+                                        mock_config.features.use_explore_block_v2 = (
+                                            False
+                                        )
                                         mock_config.features.disable_dolphin_sdk_llm_cache = False
 
                                         with patch(
@@ -296,6 +297,7 @@ class TestAgentCoreV2Run:
                                 with patch(
                                     "app.logic.agent_core_logic_v2.agent_core_v2.run_dolphin"
                                 ) as mock_run_dolphin:
+
                                     async def mock_gen():
                                         raise mock_interrupt_exception
                                         yield  # noqa: F821
@@ -362,6 +364,7 @@ class TestAgentCoreV2Run:
                                 with patch(
                                     "app.logic.agent_core_logic_v2.agent_core_v2.run_dolphin"
                                 ) as mock_run_dolphin:
+
                                     async def mock_gen():
                                         raise Exception("Test error")
                                         yield  # noqa: F821

@@ -9,6 +9,7 @@ from fastapi import Request
 
 class MockURL:
     """Mock URL 类，模拟 FastAPI 的 URL 对象"""
+
     def __init__(self, path: str, query: str = ""):
         self.path = path
         self.query = query
@@ -24,7 +25,9 @@ class TestCacheRequestBody:
 
     async def test_caches_body_in_request_state(self):
         """测试缓存请求体到 request.state"""
-        from app.router.exception_handler.enhanced_unknown_handler import cache_request_body
+        from app.router.exception_handler.enhanced_unknown_handler import (
+            cache_request_body,
+        )
 
         request = MagicMock(spec=Request)
         request.state = MagicMock()
@@ -42,7 +45,9 @@ class TestGetActualException:
 
     async def test_returns_exception_for_normal_exception(self):
         """测试返回普通异常"""
-        from app.router.exception_handler.enhanced_unknown_handler import _get_actual_exception
+        from app.router.exception_handler.enhanced_unknown_handler import (
+            _get_actual_exception,
+        )
 
         exc = ValueError("Test error")
 
@@ -52,7 +57,9 @@ class TestGetActualException:
 
     async def test_handles_exception_group(self):
         """测试处理 ExceptionGroup"""
-        from app.router.exception_handler.enhanced_unknown_handler import _get_actual_exception
+        from app.router.exception_handler.enhanced_unknown_handler import (
+            _get_actual_exception,
+        )
 
         # Create a mock ExceptionGroup
         exc_group = MagicMock()
@@ -66,7 +73,9 @@ class TestGetActualException:
 
     async def test_handles_exception_group_without_exceptions(self):
         """测试没有 exceptions 属性的 ExceptionGroup"""
-        from app.router.exception_handler.enhanced_unknown_handler import _get_actual_exception
+        from app.router.exception_handler.enhanced_unknown_handler import (
+            _get_actual_exception,
+        )
 
         # Create a mock ExceptionGroup without exceptions
         exc_group = MagicMock()
@@ -86,16 +95,28 @@ class TestHandleEnhancedUnknownException:
     async def test_returns_json_response(self):
         """测试返回JSON响应"""
         # Patch at module level before import - provide valid JSON return value
-        with patch('app.router.exception_handler.enhanced_unknown_handler.exception_logger'):
-            with patch('app.utils.common.GetRequestLangFunc'):
-                with patch('app.utils.common.GetUnknowError', return_value='{"error": "Internal server error"}'):
-                    with patch('app.router.exception_handler.enhanced_unknown_handler.sys.exc_info', return_value=(None, None, None)):
-                        from app.router.exception_handler.enhanced_unknown_handler import handle_enhanced_unknown_exception
+        with patch(
+            "app.router.exception_handler.enhanced_unknown_handler.exception_logger"
+        ):
+            with patch("app.utils.common.GetRequestLangFunc"):
+                with patch(
+                    "app.utils.common.GetUnknowError",
+                    return_value='{"error": "Internal server error"}',
+                ):
+                    with patch(
+                        "app.router.exception_handler.enhanced_unknown_handler.sys.exc_info",
+                        return_value=(None, None, None),
+                    ):
+                        from app.router.exception_handler.enhanced_unknown_handler import (
+                            handle_enhanced_unknown_exception,
+                        )
 
         request = MagicMock(spec=Request)
         request.url = MockURL(path="/api/test")
         request.method = "POST"
-        request.headers = MagicMock(items=Mock(return_value=[("content-type", "application/json")]))
+        request.headers = MagicMock(
+            items=Mock(return_value=[("content-type", "application/json")])
+        )
         request.client = None
 
         exc = ValueError("Test error")
@@ -112,22 +133,32 @@ class TestHandleEnhancedUnknownException:
         # completes successfully and returns proper status code. The actual logging is
         # verified by the colored stderr output visible in test results.
         modules_to_clear = [
-            'app.router.exception_handler.enhanced_unknown_handler',
+            "app.router.exception_handler.enhanced_unknown_handler",
         ]
         for mod in modules_to_clear:
             if mod in sys.modules:
                 del sys.modules[mod]
 
         # Patch at module level before import - provide valid JSON return value
-        with patch('app.utils.common.GetRequestLangFunc'):
-            with patch('app.utils.common.GetUnknowError', return_value='{"error": "Internal server error"}'):
-                with patch('app.router.exception_handler.enhanced_unknown_handler.sys.exc_info', return_value=(None, None, None)):
-                    from app.router.exception_handler.enhanced_unknown_handler import handle_enhanced_unknown_exception
+        with patch("app.utils.common.GetRequestLangFunc"):
+            with patch(
+                "app.utils.common.GetUnknowError",
+                return_value='{"error": "Internal server error"}',
+            ):
+                with patch(
+                    "app.router.exception_handler.enhanced_unknown_handler.sys.exc_info",
+                    return_value=(None, None, None),
+                ):
+                    from app.router.exception_handler.enhanced_unknown_handler import (
+                        handle_enhanced_unknown_exception,
+                    )
 
         request = MagicMock(spec=Request)
         request.url = MockURL(path="/api/test")
         request.method = "POST"
-        request.headers = MagicMock(items=Mock(return_value=[("accept", "application/json")]))
+        request.headers = MagicMock(
+            items=Mock(return_value=[("accept", "application/json")])
+        )
         request.client = MagicMock(host="127.0.0.1")
 
         exc = RuntimeError("Test error")
@@ -142,17 +173,33 @@ class TestHandleEnhancedUnknownException:
     async def test_handles_traceback_extraction(self):
         """测试处理堆栈跟踪提取"""
         # Patch at module level before import - provide valid JSON return value
-        with patch('app.router.exception_handler.enhanced_unknown_handler.exception_logger'):
-            with patch('app.utils.common.GetRequestLangFunc'):
-                with patch('app.utils.common.GetUnknowError', return_value='{"error": "Internal server error"}'):
+        with patch(
+            "app.router.exception_handler.enhanced_unknown_handler.exception_logger"
+        ):
+            with patch("app.utils.common.GetRequestLangFunc"):
+                with patch(
+                    "app.utils.common.GetUnknowError",
+                    return_value='{"error": "Internal server error"}',
+                ):
                     # Mock sys.exc_info to return valid traceback
                     mock_tb = [
                         ("/path/to/file.py", 42, "test_function", "line of code"),
                     ]
-                    with patch('app.router.exception_handler.enhanced_unknown_handler.sys.exc_info', return_value=(None, None, mock_tb)):
-                        with patch('app.router.exception_handler.enhanced_unknown_handler.traceback.extract_tb', return_value=mock_tb):
-                            with patch('app.router.exception_handler.enhanced_unknown_handler.os.path.basename', return_value="file"):
-                                from app.router.exception_handler.enhanced_unknown_handler import handle_enhanced_unknown_exception
+                    with patch(
+                        "app.router.exception_handler.enhanced_unknown_handler.sys.exc_info",
+                        return_value=(None, None, mock_tb),
+                    ):
+                        with patch(
+                            "app.router.exception_handler.enhanced_unknown_handler.traceback.extract_tb",
+                            return_value=mock_tb,
+                        ):
+                            with patch(
+                                "app.router.exception_handler.enhanced_unknown_handler.os.path.basename",
+                                return_value="file",
+                            ):
+                                from app.router.exception_handler.enhanced_unknown_handler import (
+                                    handle_enhanced_unknown_exception,
+                                )
 
         request = MagicMock(spec=Request)
         request.url = MockURL(path="/api/test")

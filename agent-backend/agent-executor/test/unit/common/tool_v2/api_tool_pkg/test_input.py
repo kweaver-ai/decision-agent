@@ -27,14 +27,14 @@ class TestAPIToolInputHandler:
                     "name": "id",
                     "in": "path",
                     "required": True,
-                    "schema": {"type": "string", "description": "ID parameter"}
+                    "schema": {"type": "string", "description": "ID parameter"},
                 },
                 {
                     "name": "filter",
                     "in": "query",
                     "required": False,
-                    "schema": {"type": "string"}
-                }
+                    "schema": {"type": "string"},
+                },
             ]
         }
 
@@ -59,8 +59,8 @@ class TestAPIToolInputHandler:
                             "required": ["name"],
                             "properties": {
                                 "name": {"type": "string", "description": "Name"},
-                                "age": {"type": "integer"}
-                            }
+                                "age": {"type": "integer"},
+                            },
                         }
                     }
                 }
@@ -83,9 +83,7 @@ class TestAPIToolInputHandler:
             "request_body": {
                 "content": {
                     "application/json": {
-                        "schema": {
-                            "$ref": "#/components/schemas/RequestBody"
-                        }
+                        "schema": {"$ref": "#/components/schemas/RequestBody"}
                     }
                 }
             },
@@ -95,12 +93,12 @@ class TestAPIToolInputHandler:
                         "type": "object",
                         "properties": {
                             "username": {"type": "string"},
-                            "password": {"type": "string"}
+                            "password": {"type": "string"},
                         },
-                        "required": ["username"]
+                        "required": ["username"],
                     }
                 }
-            }
+            },
         }
 
         result = handler._parse_inputs(api_spec)
@@ -117,9 +115,9 @@ class TestAPIToolInputHandler:
             "type": "object",
             "properties": {
                 "name": {"type": "string", "description": "Name"},
-                "count": {"type": "integer"}
+                "count": {"type": "integer"},
             },
-            "required": ["name"]
+            "required": ["name"],
         }
 
         result = handler._parse_inputs_schema(inputs_schema)
@@ -154,8 +152,8 @@ class TestAPIToolInputHandler:
                         "type": "object",
                         "properties": {
                             "id": {"type": "string"},
-                            "name": {"type": "string"}
-                        }
+                            "name": {"type": "string"},
+                        },
                     }
                 }
             }
@@ -174,26 +172,17 @@ class TestAPIToolInputHandler:
         schema = {
             "type": "object",
             "properties": {
-                "user": {
-                    "$ref": "#/components/schemas/User"
-                },
+                "user": {"$ref": "#/components/schemas/User"},
                 "metadata": {
                     "type": "object",
-                    "properties": {
-                        "created": {"type": "string"}
-                    }
-                }
-            }
+                    "properties": {"created": {"type": "string"}},
+                },
+            },
         }
         api_spec = {
             "components": {
                 "schemas": {
-                    "User": {
-                        "type": "object",
-                        "properties": {
-                            "id": {"type": "string"}
-                        }
-                    }
+                    "User": {"type": "object", "properties": {"id": {"type": "string"}}}
                 }
             }
         }
@@ -225,19 +214,14 @@ class TestAPIToolInputHandler:
         handler = APIToolInputHandler()
         schema = {
             "type": "array",
-            "items": [
-                {"$ref": "#/components/schemas/Item"},
-                {"type": "string"}
-            ]
+            "items": [{"$ref": "#/components/schemas/Item"}, {"type": "string"}],
         }
         api_spec = {
             "components": {
                 "schemas": {
                     "Item": {
                         "type": "object",
-                        "properties": {
-                            "name": {"type": "string"}
-                        }
+                        "properties": {"name": {"type": "string"}},
                     }
                 }
             }
@@ -258,7 +242,7 @@ class TestAPIToolInputHandler:
                     "name": "simple_param",
                     "in": "query",
                     "type": "string",
-                    "description": "Simple param without schema"
+                    "description": "Simple param without schema",
                 }
             ]
         }
@@ -278,9 +262,7 @@ class TestAPIToolInputHandler:
                 {
                     "name": "partial_param",
                     "in": "query",
-                    "schema": {
-                        "description": "Partial schema"
-                    }
+                    "schema": {"description": "Partial schema"},
                 }
             ]
         }

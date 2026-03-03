@@ -9,47 +9,47 @@ class TestParamError:
     def test_param_error_returns_api_error(self):
         """测试返回APIError实例"""
         from app.common.errors.custom_errors_pkg import ParamError
-        
+
         error = ParamError()
-        
+
         # Check it has the expected attributes
-        assert hasattr(error, 'error_code')
-        assert hasattr(error, 'description')
-        assert hasattr(error, 'solution')
+        assert hasattr(error, "error_code")
+        assert hasattr(error, "description")
+        assert hasattr(error, "solution")
 
     def test_param_error_error_code(self):
         """测试错误码"""
         from app.common.errors.custom_errors_pkg import ParamError
-        
+
         error = ParamError()
-        
+
         assert "ParamError" in error.error_code
 
     def test_param_error_description_exists(self):
         """测试描述存在"""
         from app.common.errors.custom_errors_pkg import ParamError
-        
+
         error = ParamError()
-        
+
         assert error.description is not None
         assert len(error.description) > 0
 
     def test_param_error_solution_exists(self):
         """测试解决方案存在"""
         from app.common.errors.custom_errors_pkg import ParamError
-        
+
         error = ParamError()
-        
+
         assert error.solution is not None
         assert len(error.solution) > 0
 
     def test_param_error_to_dict(self):
         """测试转换为字典"""
         from app.common.errors.custom_errors_pkg import ParamError
-        
+
         error = ParamError()
         error_dict = error.to_dict()
-        
+
         assert "ErrorCode" in error_dict
         assert "Description" in error_dict
         assert "Solution" in error_dict
@@ -61,44 +61,44 @@ class TestAgentPermissionError:
     def test_agent_permission_error_returns_api_error(self):
         """测试返回APIError实例"""
         from app.common.errors.custom_errors_pkg import AgentPermissionError
-        
+
         error = AgentPermissionError()
-        
-        assert hasattr(error, 'error_code')
-        assert hasattr(error, 'description')
-        assert hasattr(error, 'solution')
+
+        assert hasattr(error, "error_code")
+        assert hasattr(error, "description")
+        assert hasattr(error, "solution")
 
     def test_agent_permission_error_error_code(self):
         """测试错误码"""
         from app.common.errors.custom_errors_pkg import AgentPermissionError
-        
+
         error = AgentPermissionError()
-        
+
         assert "PermissionError" in error.error_code
 
     def test_agent_permission_error_description(self):
         """测试描述"""
         from app.common.errors.custom_errors_pkg import AgentPermissionError
-        
+
         error = AgentPermissionError()
-        
+
         assert "permission" in error.description.lower()
 
     def test_agent_permission_error_solution(self):
         """测试解决方案"""
         from app.common.errors.custom_errors_pkg import AgentPermissionError
-        
+
         error = AgentPermissionError()
-        
+
         assert error.solution is not None
 
     def test_agent_permission_error_to_dict(self):
         """测试转换为字典"""
         from app.common.errors.custom_errors_pkg import AgentPermissionError
-        
+
         error = AgentPermissionError()
         error_dict = error.to_dict()
-        
+
         assert "ErrorCode" in error_dict
 
 
@@ -108,10 +108,10 @@ class TestDolphinSDKModelError:
     def test_dolphin_sdk_model_error_returns_api_error(self):
         """测试返回APIError实例"""
         from app.common.errors.custom_errors_pkg import DolphinSDKModelError
-        
+
         error = DolphinSDKModelError()
-        
-        assert hasattr(error, 'error_code')
+
+        assert hasattr(error, "error_code")
 
     def test_dolphin_sdk_model_error_error_code(self):
         """测试错误码"""
@@ -125,18 +125,18 @@ class TestDolphinSDKModelError:
     def test_dolphin_sdk_model_error_has_description(self):
         """测试有描述"""
         from app.common.errors.custom_errors_pkg import DolphinSDKModelError
-        
+
         error = DolphinSDKModelError()
-        
+
         assert error.description is not None
 
     def test_dolphin_sdk_model_error_to_dict(self):
         """测试转换为字典"""
         from app.common.errors.custom_errors_pkg import DolphinSDKModelError
-        
+
         error = DolphinSDKModelError()
         error_dict = error.to_dict()
-        
+
         assert isinstance(error_dict, dict)
 
 
@@ -146,10 +146,10 @@ class TestDolphinSDKSkillError:
     def test_dolphin_sdk_skill_error_returns_api_error(self):
         """测试返回APIError实例"""
         from app.common.errors.custom_errors_pkg import DolphinSDKSkillError
-        
+
         error = DolphinSDKSkillError()
-        
-        assert hasattr(error, 'error_code')
+
+        assert hasattr(error, "error_code")
 
     def test_dolphin_sdk_skill_error_error_code(self):
         """测试错误码"""
@@ -163,17 +163,17 @@ class TestDolphinSDKSkillError:
     def test_dolphin_sdk_skill_error_description(self):
         """测试描述"""
         from app.common.errors.custom_errors_pkg import DolphinSDKSkillError
-        
+
         error = DolphinSDKSkillError()
-        
+
         assert error.description is not None
 
     def test_dolphin_sdk_skill_error_solution(self):
         """测试解决方案"""
         from app.common.errors.custom_errors_pkg import DolphinSDKSkillError
-        
+
         error = DolphinSDKSkillError()
-        
+
         assert error.solution is not None
 
 
@@ -183,10 +183,10 @@ class TestDolphinSDKBaseError:
     def test_dolphin_sdk_base_error_returns_api_error(self):
         """测试返回APIError实例"""
         from app.common.errors.custom_errors_pkg import DolphinSDKBaseError
-        
+
         error = DolphinSDKBaseError()
-        
-        assert hasattr(error, 'error_code')
+
+        assert hasattr(error, "error_code")
 
     def test_dolphin_sdk_base_error_error_code(self):
         """测试错误码"""
@@ -200,9 +200,9 @@ class TestDolphinSDKBaseError:
     def test_dolphin_sdk_base_error_fields(self):
         """测试字段"""
         from app.common.errors.custom_errors_pkg import DolphinSDKBaseError
-        
+
         error = DolphinSDKBaseError()
-        
+
         assert error.description is not None
         assert error.solution is not None
 
@@ -213,10 +213,10 @@ class TestConversationRunningError:
     def test_conversation_running_error_returns_api_error(self):
         """测试返回APIError实例"""
         from app.common.errors.custom_errors_pkg import ConversationRunningError
-        
+
         error = ConversationRunningError()
-        
-        assert hasattr(error, 'error_code')
+
+        assert hasattr(error, "error_code")
 
     def test_conversation_running_error_error_code(self):
         """测试错误码"""
@@ -230,10 +230,10 @@ class TestConversationRunningError:
     def test_conversation_running_error_to_dict(self):
         """测试转换为字典"""
         from app.common.errors.custom_errors_pkg import ConversationRunningError
-        
+
         error = ConversationRunningError()
         error_dict = error.to_dict()
-        
+
         assert "ErrorCode" in error_dict
         assert "Description" in error_dict
         assert "Solution" in error_dict
@@ -247,13 +247,13 @@ class TestCustomErrorsComparison:
         from app.common.errors.custom_errors_pkg import (
             ParamError,
             AgentPermissionError,
-            DolphinSDKModelError
+            DolphinSDKModelError,
         )
-        
+
         param_error = ParamError()
         perm_error = AgentPermissionError()
         model_error = DolphinSDKModelError()
-        
+
         assert param_error.error_code != perm_error.error_code
         assert perm_error.error_code != model_error.error_code
         assert param_error.error_code != model_error.error_code
@@ -266,18 +266,18 @@ class TestCustomErrorsComparison:
             DolphinSDKModelError,
             DolphinSDKSkillError,
             DolphinSDKBaseError,
-            ConversationRunningError
+            ConversationRunningError,
         )
-        
+
         errors = [
             ParamError(),
             AgentPermissionError(),
             DolphinSDKModelError(),
             DolphinSDKSkillError(),
             DolphinSDKBaseError(),
-            ConversationRunningError()
+            ConversationRunningError(),
         ]
-        
+
         for error in errors:
             assert error.description is not None
             assert len(error.description) > 0
@@ -290,18 +290,18 @@ class TestCustomErrorsComparison:
             DolphinSDKModelError,
             DolphinSDKSkillError,
             DolphinSDKBaseError,
-            ConversationRunningError
+            ConversationRunningError,
         )
-        
+
         errors = [
             ParamError(),
             AgentPermissionError(),
             DolphinSDKModelError(),
             DolphinSDKSkillError(),
             DolphinSDKBaseError(),
-            ConversationRunningError()
+            ConversationRunningError(),
         ]
-        
+
         for error in errors:
             assert error.solution is not None
             assert len(error.solution) > 0
@@ -314,18 +314,18 @@ class TestCustomErrorsComparison:
             DolphinSDKModelError,
             DolphinSDKSkillError,
             DolphinSDKBaseError,
-            ConversationRunningError
+            ConversationRunningError,
         )
-        
+
         errors = [
             ParamError(),
             AgentPermissionError(),
             DolphinSDKModelError(),
             DolphinSDKSkillError(),
             DolphinSDKBaseError(),
-            ConversationRunningError()
+            ConversationRunningError(),
         ]
-        
+
         for error in errors:
             error_dict = error.to_dict()
             assert isinstance(error_dict, dict)
@@ -338,28 +338,28 @@ class TestCustomErrorsStr:
     def test_param_error_str(self):
         """测试ParamError字符串"""
         from app.common.errors.custom_errors_pkg import ParamError
-        
+
         error = ParamError()
         error_str = str(error)
-        
+
         assert isinstance(error_str, str)
 
     def test_agent_permission_error_str(self):
         """测试AgentPermissionError字符串"""
         from app.common.errors.custom_errors_pkg import AgentPermissionError
-        
+
         error = AgentPermissionError()
         error_str = str(error)
-        
+
         assert isinstance(error_str, str)
 
     def test_dolphin_sdk_model_error_str(self):
         """测试DolphinSDKModelError字符串"""
         from app.common.errors.custom_errors_pkg import DolphinSDKModelError
-        
+
         error = DolphinSDKModelError()
         error_str = str(error)
-        
+
         assert isinstance(error_str, str)
 
 
@@ -369,20 +369,20 @@ class TestCustomErrorsRepr:
     def test_param_error_repr(self):
         """测试ParamError repr"""
         from app.common.errors.custom_errors_pkg import ParamError
-        
+
         error = ParamError()
         error_repr = repr(error)
-        
+
         assert isinstance(error_repr, str)
         assert "Error(error_code=" in error_repr
 
     def test_agent_permission_error_repr(self):
         """测试AgentPermissionError repr"""
         from app.common.errors.custom_errors_pkg import AgentPermissionError
-        
+
         error = AgentPermissionError()
         error_repr = repr(error)
-        
+
         assert isinstance(error_repr, str)
 
     def test_all_errors_repr_format(self):
@@ -393,18 +393,18 @@ class TestCustomErrorsRepr:
             DolphinSDKModelError,
             DolphinSDKSkillError,
             DolphinSDKBaseError,
-            ConversationRunningError
+            ConversationRunningError,
         )
-        
+
         errors = [
             ParamError(),
             AgentPermissionError(),
             DolphinSDKModelError(),
             DolphinSDKSkillError(),
             DolphinSDKBaseError(),
-            ConversationRunningError()
+            ConversationRunningError(),
         ]
-        
+
         for error in errors:
             error_repr = repr(error)
             assert "Error(error_code=" in error_repr
@@ -421,9 +421,9 @@ class TestCustomErrorsPackage:
             DolphinSDKModelError,
             DolphinSDKSkillError,
             DolphinSDKBaseError,
-            ConversationRunningError
+            ConversationRunningError,
         )
-        
+
         assert callable(ParamError)
         assert callable(AgentPermissionError)
         assert callable(DolphinSDKModelError)
@@ -434,7 +434,7 @@ class TestCustomErrorsPackage:
     def test_package_all_list(self):
         """测试包的__all__列表"""
         from app.common.errors.custom_errors_pkg import __all__
-        
+
         assert "ParamError" in __all__
         assert "AgentPermissionError" in __all__
         assert "DolphinSDKModelError" in __all__
@@ -445,13 +445,18 @@ class TestCustomErrorsPackage:
     def test_all_exported_errors_work(self):
         """测试所有导出的错误都可以工作"""
         from app.common.errors.custom_errors_pkg import __all__
-        
+
         for error_name in __all__:
-            error_func = getattr(__import__('app.common.errors.custom_errors_pkg', fromlist=[error_name]), error_name)
+            error_func = getattr(
+                __import__(
+                    "app.common.errors.custom_errors_pkg", fromlist=[error_name]
+                ),
+                error_name,
+            )
             error = error_func()
-            assert hasattr(error, 'error_code')
-            assert hasattr(error, 'description')
-            assert hasattr(error, 'solution')
+            assert hasattr(error, "error_code")
+            assert hasattr(error, "description")
+            assert hasattr(error, "solution")
 
 
 class TestCustomErrorsRoundTrip:
@@ -461,20 +466,20 @@ class TestCustomErrorsRoundTrip:
         """测试ParamError往返"""
         from app.common.errors.api_error_class import APIError
         from app.common.errors.custom_errors_pkg import ParamError
-        
+
         original = ParamError()
         error_dict = original.to_dict()
         restored = APIError.from_dict(error_dict)
-        
+
         assert restored.error_code == original.error_code
 
     def test_agent_permission_error_roundtrip(self):
         """测试AgentPermissionError往返"""
         from app.common.errors.api_error_class import APIError
         from app.common.errors.custom_errors_pkg import AgentPermissionError
-        
+
         original = AgentPermissionError()
         error_dict = original.to_dict()
         restored = APIError.from_dict(error_dict)
-        
+
         assert restored.error_code == original.error_code

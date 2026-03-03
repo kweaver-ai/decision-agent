@@ -9,7 +9,7 @@ Agent-Executor 是一个 AI Agent 执行器， 基于 Agent-Factory 提供的 Ag
 ## 系统架构
 
 
-## 项目 Layout 
+## 项目 Layout
 
 
 ```
@@ -24,7 +24,7 @@ Agent-Executor 是一个 AI Agent 执行器， 基于 Agent-Factory 提供的 Ag
 │   │   ├── ad          # AD服务集成 （deprecated）
 │   │   ├── anyshare    # AnyShare 文档服务
 │   │   ├── dip         # DIP平台集成
-│   │   ├── external    # 外部API客户端 
+│   │   ├── external    # 外部API客户端
 │   │   └── infrastructure # 基础设施服务（Nebula/Opensearch/Redis）
 │   ├── logic           # 业务逻辑层
 │   │   ├── retriever   # 内容检索模块
@@ -34,7 +34,7 @@ Agent-Executor 是一个 AI Agent 执行器， 基于 Agent-Factory 提供的 Ag
 │   ├── router          # API路由层
 │   │   ├── agent_controller.py # Agent相关接口
 │   │   ├── file_controller.py # 文件操作接口 （deprecated）
-│   │   └── tool_controller.py # 工具调用接口 
+│   │   └── tool_controller.py # 工具调用接口
 │   └── utils           # 工具类库
 │       ├── common.py   # 通用工具函数
 │       ├── graph_util.py # 图数据库操作工具
@@ -155,8 +155,8 @@ uv pip install .
 make install-TelemetrySDK-Python
 ```
 
-## 开启 DEBUG 模式 
-开启后会影响日志打印级别， 默认为 INFO级别，开启后为 DEBUG级别， 同时会影响配置文件的加载，详见config.py 
+## 开启 DEBUG 模式
+开启后会影响日志打印级别， 默认为 INFO级别，开启后为 DEBUG级别， 同时会影响配置文件的加载，详见config.py
 **tip: ** : 只允许在开发环境开启 {ip} 为依赖服务所在服务器IP
 ```
 export AGENT_EXECUTOR_DEBUG=true

@@ -25,7 +25,9 @@ class TestStreamingRateLimiter_Initial:
 
     def test_init_with_custom_rate(self):
         """测试使用自定义速率初始化"""
-        from app.router.middleware_pkg.streaming_rate_limiter import StreamingRateLimiter
+        from app.router.middleware_pkg.streaming_rate_limiter import (
+            StreamingRateLimiter,
+        )
 
         limiter = StreamingRateLimiter(rate_limit=10)
 
@@ -35,7 +37,9 @@ class TestStreamingRateLimiter_Initial:
 
     def test_init_with_zero_rate(self):
         """测试速率为0时被限制为1"""
-        from app.router.middleware_pkg.streaming_rate_limiter import StreamingRateLimiter
+        from app.router.middleware_pkg.streaming_rate_limiter import (
+            StreamingRateLimiter,
+        )
 
         limiter = StreamingRateLimiter(rate_limit=0)
 
@@ -44,7 +48,9 @@ class TestStreamingRateLimiter_Initial:
 
     def test_init_with_negative_rate(self):
         """测试负速率被限制为1"""
-        from app.router.middleware_pkg.streaming_rate_limiter import StreamingRateLimiter
+        from app.router.middleware_pkg.streaming_rate_limiter import (
+            StreamingRateLimiter,
+        )
 
         limiter = StreamingRateLimiter(rate_limit=-10)
 
@@ -58,7 +64,9 @@ class TestStreamingRateLimiterLimitRate:
 
     async def test_first_call_returns_immediately(self):
         """测试第一次调用立即返回"""
-        from app.router.middleware_pkg.streaming_rate_limiter import StreamingRateLimiter
+        from app.router.middleware_pkg.streaming_rate_limiter import (
+            StreamingRateLimiter,
+        )
 
         limiter = StreamingRateLimiter(rate_limit=10)
 
@@ -71,7 +79,9 @@ class TestStreamingRateLimiterLimitRate:
 
     async def test_consecutive_calls_respect_rate_limit(self):
         """测试连续调用遵守速率限制"""
-        from app.router.middleware_pkg.streaming_rate_limiter import StreamingRateLimiter
+        from app.router.middleware_pkg.streaming_rate_limiter import (
+            StreamingRateLimiter,
+        )
 
         limiter = StreamingRateLimiter(rate_limit=10)  # 0.1s interval
 
@@ -85,7 +95,9 @@ class TestStreamingRateLimiterLimitRate:
 
     async def test_rate_limiting_with_high_rate(self):
         """测试高速率限制"""
-        from app.router.middleware_pkg.streaming_rate_limiter import StreamingRateLimiter
+        from app.router.middleware_pkg.streaming_rate_limiter import (
+            StreamingRateLimiter,
+        )
 
         limiter = StreamingRateLimiter(rate_limit=100)  # 0.01s interval
 
@@ -293,7 +305,9 @@ class TestStreamingRateLimiterEdgeCases:
 
     async def test_very_high_rate(self):
         """测试非常高的速率限制"""
-        from app.router.middleware_pkg.streaming_rate_limiter import StreamingRateLimiter
+        from app.router.middleware_pkg.streaming_rate_limiter import (
+            StreamingRateLimiter,
+        )
 
         limiter = StreamingRateLimiter(rate_limit=1000)
 
@@ -302,7 +316,9 @@ class TestStreamingRateLimiterEdgeCases:
 
     async def test_exact_timing(self):
         """测试精确的速率限制时间"""
-        from app.router.middleware_pkg.streaming_rate_limiter import StreamingRateLimiter
+        from app.router.middleware_pkg.streaming_rate_limiter import (
+            StreamingRateLimiter,
+        )
 
         limiter = StreamingRateLimiter(rate_limit=10)  # 0.1s per chunk
 

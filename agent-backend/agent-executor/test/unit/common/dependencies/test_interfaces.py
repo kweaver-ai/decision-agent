@@ -21,42 +21,42 @@ class TestIContextVarManager:
         from app.common.dependencies.interfaces import IContextVarManager
 
         assert issubclass(IContextVarManager, ABC)
-        assert hasattr(IContextVarManager, '__abstractmethods__')
+        assert hasattr(IContextVarManager, "__abstractmethods__")
 
     @pytest.mark.asyncio
     async def test_get_method_is_abstract(self):
         """Test get method is abstract"""
         from app.common.dependencies.interfaces import IContextVarManager
 
-        assert 'get' in IContextVarManager.__abstractmethods__
+        assert "get" in IContextVarManager.__abstractmethods__
 
     @pytest.mark.asyncio
     async def test_set_method_is_abstract(self):
         """Test set method is abstract"""
         from app.common.dependencies.interfaces import IContextVarManager
 
-        assert 'set' in IContextVarManager.__abstractmethods__
+        assert "set" in IContextVarManager.__abstractmethods__
 
     @pytest.mark.asyncio
     async def test_delete_method_is_abstract(self):
         """Test delete method is abstract"""
         from app.common.dependencies.interfaces import IContextVarManager
 
-        assert 'delete' in IContextVarManager.__abstractmethods__
+        assert "delete" in IContextVarManager.__abstractmethods__
 
     @pytest.mark.asyncio
     async def test_exists_method_is_abstract(self):
         """Test exists method is abstract"""
         from app.common.dependencies.interfaces import IContextVarManager
 
-        assert 'exists' in IContextVarManager.__abstractmethods__
+        assert "exists" in IContextVarManager.__abstractmethods__
 
     @pytest.mark.asyncio
     async def test_get_all_method_is_abstract(self):
         """Test get_all method is abstract"""
         from app.common.dependencies.interfaces import IContextVarManager
 
-        assert 'get_all' in IContextVarManager.__abstractmethods__
+        assert "get_all" in IContextVarManager.__abstractmethods__
 
     @pytest.mark.asyncio
     async def test_concrete_implementation(self):
@@ -106,28 +106,28 @@ class TestIExceptionHandler:
         """Test create_model_exception method is abstract"""
         from app.common.dependencies.interfaces import IExceptionHandler
 
-        assert 'create_model_exception' in IExceptionHandler.__abstractmethods__
+        assert "create_model_exception" in IExceptionHandler.__abstractmethods__
 
     @pytest.mark.asyncio
     async def test_create_skill_exception_is_abstract(self):
         """Test create_skill_exception method is abstract"""
         from app.common.dependencies.interfaces import IExceptionHandler
 
-        assert 'create_skill_exception' in IExceptionHandler.__abstractmethods__
+        assert "create_skill_exception" in IExceptionHandler.__abstractmethods__
 
     @pytest.mark.asyncio
     async def test_create_dolphin_exception_is_abstract(self):
         """Test create_dolphin_exception method is abstract"""
         from app.common.dependencies.interfaces import IExceptionHandler
 
-        assert 'create_dolphin_exception' in IExceptionHandler.__abstractmethods__
+        assert "create_dolphin_exception" in IExceptionHandler.__abstractmethods__
 
     @pytest.mark.asyncio
     async def test_is_available_is_abstract(self):
         """Test is_available method is abstract"""
         from app.common.dependencies.interfaces import IExceptionHandler
 
-        assert 'is_available' in IExceptionHandler.__abstractmethods__
+        assert "is_available" in IExceptionHandler.__abstractmethods__
 
     @pytest.mark.asyncio
     async def test_concrete_implementation(self):
@@ -169,14 +169,14 @@ class TestICallerInfoProvider:
         """Test get_caller_info method is abstract"""
         from app.common.dependencies.interfaces import ICallerInfoProvider
 
-        assert 'get_caller_info' in ICallerInfoProvider.__abstractmethods__
+        assert "get_caller_info" in ICallerInfoProvider.__abstractmethods__
 
     @pytest.mark.asyncio
     async def test_get_caller_info_is_abstract(self):
         """Test get_caller_info method is abstract"""
         from app.common.dependencies.interfaces import ICallerInfoProvider
 
-        assert 'get_caller_info' in ICallerInfoProvider.__abstractmethods__
+        assert "get_caller_info" in ICallerInfoProvider.__abstractmethods__
 
 
 class TestIEnvironmentDetector:
@@ -194,14 +194,14 @@ class TestIEnvironmentDetector:
         """Test is_in_pod method is abstract"""
         from app.common.dependencies.interfaces import IEnvironmentDetector
 
-        assert 'is_in_pod' in IEnvironmentDetector.__abstractmethods__
+        assert "is_in_pod" in IEnvironmentDetector.__abstractmethods__
 
     @pytest.mark.asyncio
     async def test_get_environment_type_is_abstract(self):
         """Test get_environment_type method is abstract"""
         from app.common.dependencies.interfaces import IEnvironmentDetector
 
-        assert 'get_environment_type' in IEnvironmentDetector.__abstractmethods__
+        assert "get_environment_type" in IEnvironmentDetector.__abstractmethods__
 
     @pytest.mark.asyncio
     async def test_concrete_implementation(self):
@@ -236,8 +236,8 @@ class TestSerializationType:
         """Test SerializationType enum members"""
         from app.common.dependencies.interfaces import SerializationType
 
-        assert hasattr(SerializationType, 'JSON')
-        assert hasattr(SerializationType, 'PICKLE')
+        assert hasattr(SerializationType, "JSON")
+        assert hasattr(SerializationType, "PICKLE")
 
 
 class TestICacheService:
@@ -255,28 +255,28 @@ class TestICacheService:
         """Test get method is abstract"""
         from app.common.dependencies.interfaces import ICacheService
 
-        assert 'get' in ICacheService.__abstractmethods__
+        assert "get" in ICacheService.__abstractmethods__
 
     @pytest.mark.asyncio
     async def test_set_method_is_abstract(self):
         """Test set method is abstract"""
         from app.common.dependencies.interfaces import ICacheService
 
-        assert 'set' in ICacheService.__abstractmethods__
+        assert "set" in ICacheService.__abstractmethods__
 
     @pytest.mark.asyncio
     async def test_delete_method_is_abstract(self):
         """Test delete method is abstract"""
         from app.common.dependencies.interfaces import ICacheService
 
-        assert 'delete' in ICacheService.__abstractmethods__
+        assert "delete" in ICacheService.__abstractmethods__
 
     @pytest.mark.asyncio
     async def test_exists_method_is_abstract(self):
         """Test exists method is abstract"""
         from app.common.dependencies.interfaces import ICacheService
 
-        assert 'exists' in ICacheService.__abstractmethods__
+        assert "exists" in ICacheService.__abstractmethods__
 
     @pytest.mark.asyncio
     async def test_set_method_signature(self):
@@ -284,7 +284,7 @@ class TestICacheService:
         from app.common.dependencies.interfaces import ICacheService, SerializationType
 
         # Check that set has serialization_type parameter with correct type
-        assert 'set' in ICacheService.__abstractmethods__
+        assert "set" in ICacheService.__abstractmethods__
 
     @pytest.mark.asyncio
     async def test_concrete_implementation(self):
@@ -298,7 +298,13 @@ class TestICacheService:
             async def get(self, key: str):
                 return self._cache.get(key)
 
-            async def set(self, key: str, value: Any, ttl=None, serialization_type=SerializationType.JSON) -> bool:
+            async def set(
+                self,
+                key: str,
+                value: Any,
+                ttl=None,
+                serialization_type=SerializationType.JSON,
+            ) -> bool:
                 self._cache[key] = value
                 return True
 

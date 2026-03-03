@@ -44,7 +44,9 @@ class TestProcessSkillsAgents:
         return skill
 
     @pytest.mark.asyncio
-    async def test_process_skills_agents_empty(self, mock_agent_core, mock_agent_config, mock_skills):
+    async def test_process_skills_agents_empty(
+        self, mock_agent_core, mock_agent_config, mock_skills
+    ):
         """测试空agents列表"""
         with patch(
             "app.logic.agent_core_logic_v2.input_handler_pkg.process_skill_pkg.agent_skills.agent_factory_service"
@@ -190,7 +192,9 @@ class TestHlAgentOptions:
         return config
 
     @pytest.mark.asyncio
-    async def test_hl_agent_options_with_temp_files(self, mock_agent_skill, mock_agent_config):
+    async def test_hl_agent_options_with_temp_files(
+        self, mock_agent_skill, mock_agent_config
+    ):
         """测试带临时文件的agent options"""
         temp_files = {"test_file": {"filename": "test.txt"}}
 
@@ -203,7 +207,9 @@ class TestHlAgentOptions:
         assert mock_agent_skill.inner_dto.agent_options is not None
 
     @pytest.mark.asyncio
-    async def test_hl_agent_options_with_inherit_data_source(self, mock_agent_skill, mock_agent_config):
+    async def test_hl_agent_options_with_inherit_data_source(
+        self, mock_agent_skill, mock_agent_config
+    ):
         """测试继承数据源的agent options"""
         mock_data_source_config = MagicMock()
         mock_data_source_config.type = "inherit_main"
@@ -219,7 +225,9 @@ class TestHlAgentOptions:
         assert mock_agent_skill.inner_dto.agent_options is not None
 
     @pytest.mark.asyncio
-    async def test_hl_agent_options_with_docs_only_inherit(self, mock_agent_skill, mock_agent_config):
+    async def test_hl_agent_options_with_docs_only_inherit(
+        self, mock_agent_skill, mock_agent_config
+    ):
         """测试仅继承文档的agent options"""
         mock_data_source_config = MagicMock()
         mock_data_source_config.type = "inherit_main"
@@ -235,7 +243,9 @@ class TestHlAgentOptions:
         assert "data_source" in mock_agent_skill.inner_dto.agent_options
 
     @pytest.mark.asyncio
-    async def test_hl_agent_options_with_graph_only_inherit(self, mock_agent_skill, mock_agent_config):
+    async def test_hl_agent_options_with_graph_only_inherit(
+        self, mock_agent_skill, mock_agent_config
+    ):
         """测试仅继承知识图谱的agent options"""
         mock_data_source_config = MagicMock()
         mock_data_source_config.type = "inherit_main"
@@ -251,7 +261,9 @@ class TestHlAgentOptions:
         assert "data_source" in mock_agent_skill.inner_dto.agent_options
 
     @pytest.mark.asyncio
-    async def test_hl_agent_options_with_inherit_llm(self, mock_agent_skill, mock_agent_config):
+    async def test_hl_agent_options_with_inherit_llm(
+        self, mock_agent_skill, mock_agent_config
+    ):
         """测试继承LLM配置的agent options"""
         mock_llm_config = MagicMock()
         mock_llm_config.type = "inherit_main"

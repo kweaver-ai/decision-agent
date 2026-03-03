@@ -1,5 +1,6 @@
 # -*- coding:utf-8 -*-
 """Unit tests for local_env_helper module"""
+
 import pytest
 from unittest.mock import patch, MagicMock
 
@@ -17,7 +18,7 @@ class TestRunScenario:
         """Test RunScenario enum members"""
         from app.infra.common.helper.env_helper import RunScenario
 
-        assert hasattr(RunScenario, 'AARON_LOCAL_DEV')
+        assert hasattr(RunScenario, "AARON_LOCAL_DEV")
         assert len(RunScenario) >= 1
 
 
@@ -28,7 +29,11 @@ class TestLocalEnvHelper:
         """Test that initialization sets up environment"""
         from app.infra.common.helper.env_helper import LocalEnvHelper
 
-        with patch.dict('os.environ', {'IS_LOCAL_DEV': 'false', 'LOCAL_DEVRUN_SCENARIO': ''}, clear=True):
+        with patch.dict(
+            "os.environ",
+            {"IS_LOCAL_DEV": "false", "LOCAL_DEVRUN_SCENARIO": ""},
+            clear=True,
+        ):
             helper = LocalEnvHelper()
             assert helper._env_inited is True
 
@@ -36,7 +41,11 @@ class TestLocalEnvHelper:
         """Test initialization with IS_LOCAL_DEV=true"""
         from app.infra.common.helper.env_helper import LocalEnvHelper
 
-        with patch.dict('os.environ', {'IS_LOCAL_DEV': 'true', 'LOCAL_DEVRUN_SCENARIO': ''}, clear=True):
+        with patch.dict(
+            "os.environ",
+            {"IS_LOCAL_DEV": "true", "LOCAL_DEVRUN_SCENARIO": ""},
+            clear=True,
+        ):
             helper = LocalEnvHelper()
             assert helper._is_local_dev is True
 
@@ -44,7 +53,11 @@ class TestLocalEnvHelper:
         """Test initialization with IS_LOCAL_DEV=false"""
         from app.infra.common.helper.env_helper import LocalEnvHelper
 
-        with patch.dict('os.environ', {'IS_LOCAL_DEV': 'false', 'LOCAL_DEVRUN_SCENARIO': ''}, clear=True):
+        with patch.dict(
+            "os.environ",
+            {"IS_LOCAL_DEV": "false", "LOCAL_DEVRUN_SCENARIO": ""},
+            clear=True,
+        ):
             helper = LocalEnvHelper()
             assert helper._is_local_dev is False
 
@@ -52,8 +65,12 @@ class TestLocalEnvHelper:
         """Test initialization with various case combinations"""
         from app.infra.common.helper.env_helper import LocalEnvHelper
 
-        for value in ['TRUE', 'True', 'tRuE', 'true']:
-            with patch.dict('os.environ', {'IS_LOCAL_DEV': value, 'LOCAL_DEVRUN_SCENARIO': ''}, clear=True):
+        for value in ["TRUE", "True", "tRuE", "true"]:
+            with patch.dict(
+                "os.environ",
+                {"IS_LOCAL_DEV": value, "LOCAL_DEVRUN_SCENARIO": ""},
+                clear=True,
+            ):
                 helper = LocalEnvHelper()
                 assert helper._is_local_dev is True
 
@@ -61,43 +78,53 @@ class TestLocalEnvHelper:
         """Test initialization with single scenario"""
         from app.infra.common.helper.env_helper import LocalEnvHelper, RunScenario
 
-        with patch.dict('os.environ', {
-            'IS_LOCAL_DEV': 'true',
-            'LOCAL_DEVRUN_SCENARIO': 'aaron_local_dev'
-        }, clear=True):
+        with patch.dict(
+            "os.environ",
+            {"IS_LOCAL_DEV": "true", "LOCAL_DEVRUN_SCENARIO": "aaron_local_dev"},
+            clear=True,
+        ):
             helper = LocalEnvHelper()
-            assert 'aaron_local_dev' in helper._run_scenarios
+            assert "aaron_local_dev" in helper._run_scenarios
 
     def test_init_with_multiple_scenarios(self):
         """Test initialization with multiple scenarios"""
         from app.infra.common.helper.env_helper import LocalEnvHelper
 
-        with patch.dict('os.environ', {
-            'IS_LOCAL_DEV': 'true',
-            'LOCAL_DEVRUN_SCENARIO': 'scenario1,scenario2,scenario3'
-        }, clear=True):
+        with patch.dict(
+            "os.environ",
+            {
+                "IS_LOCAL_DEV": "true",
+                "LOCAL_DEVRUN_SCENARIO": "scenario1,scenario2,scenario3",
+            },
+            clear=True,
+        ):
             helper = LocalEnvHelper()
-            assert helper._run_scenarios == ['scenario1', 'scenario2', 'scenario3']
+            assert helper._run_scenarios == ["scenario1", "scenario2", "scenario3"]
 
     def test_init_with_scenarios_whitespace(self):
         """Test initialization with scenarios containing whitespace"""
         from app.infra.common.helper.env_helper import LocalEnvHelper
 
-        with patch.dict('os.environ', {
-            'IS_LOCAL_DEV': 'true',
-            'LOCAL_DEVRUN_SCENARIO': ' scenario1 , scenario2 , scenario3 '
-        }, clear=True):
+        with patch.dict(
+            "os.environ",
+            {
+                "IS_LOCAL_DEV": "true",
+                "LOCAL_DEVRUN_SCENARIO": " scenario1 , scenario2 , scenario3 ",
+            },
+            clear=True,
+        ):
             helper = LocalEnvHelper()
-            assert helper._run_scenarios == ['scenario1', 'scenario2', 'scenario3']
+            assert helper._run_scenarios == ["scenario1", "scenario2", "scenario3"]
 
     def test_init_with_empty_scenarios(self):
         """Test initialization with empty scenarios"""
         from app.infra.common.helper.env_helper import LocalEnvHelper
 
-        with patch.dict('os.environ', {
-            'IS_LOCAL_DEV': 'true',
-            'LOCAL_DEVRUN_SCENARIO': ''
-        }, clear=True):
+        with patch.dict(
+            "os.environ",
+            {"IS_LOCAL_DEV": "true", "LOCAL_DEVRUN_SCENARIO": ""},
+            clear=True,
+        ):
             helper = LocalEnvHelper()
             assert helper._run_scenarios == []
 
@@ -105,10 +132,11 @@ class TestLocalEnvHelper:
         """Test is_local_dev returns True when IS_LOCAL_DEV=true and no scenarios"""
         from app.infra.common.helper.env_helper import LocalEnvHelper
 
-        with patch.dict('os.environ', {
-            'IS_LOCAL_DEV': 'true',
-            'LOCAL_DEVRUN_SCENARIO': ''
-        }, clear=True):
+        with patch.dict(
+            "os.environ",
+            {"IS_LOCAL_DEV": "true", "LOCAL_DEVRUN_SCENARIO": ""},
+            clear=True,
+        ):
             helper = LocalEnvHelper()
             assert helper.is_local_dev() is True
 
@@ -116,10 +144,11 @@ class TestLocalEnvHelper:
         """Test is_local_dev returns False when IS_LOCAL_DEV=false"""
         from app.infra.common.helper.env_helper import LocalEnvHelper
 
-        with patch.dict('os.environ', {
-            'IS_LOCAL_DEV': 'false',
-            'LOCAL_DEVRUN_SCENARIO': ''
-        }, clear=True):
+        with patch.dict(
+            "os.environ",
+            {"IS_LOCAL_DEV": "false", "LOCAL_DEVRUN_SCENARIO": ""},
+            clear=True,
+        ):
             helper = LocalEnvHelper()
             assert helper.is_local_dev() is False
 
@@ -127,10 +156,11 @@ class TestLocalEnvHelper:
         """Test is_local_dev with matching scenario"""
         from app.infra.common.helper.env_helper import LocalEnvHelper, RunScenario
 
-        with patch.dict('os.environ', {
-            'IS_LOCAL_DEV': 'true',
-            'LOCAL_DEVRUN_SCENARIO': 'aaron_local_dev'
-        }, clear=True):
+        with patch.dict(
+            "os.environ",
+            {"IS_LOCAL_DEV": "true", "LOCAL_DEVRUN_SCENARIO": "aaron_local_dev"},
+            clear=True,
+        ):
             helper = LocalEnvHelper()
             assert helper.is_local_dev([RunScenario.AARON_LOCAL_DEV]) is True
 
@@ -138,10 +168,11 @@ class TestLocalEnvHelper:
         """Test is_local_dev with non-matching scenario"""
         from app.infra.common.helper.env_helper import LocalEnvHelper, RunScenario
 
-        with patch.dict('os.environ', {
-            'IS_LOCAL_DEV': 'true',
-            'LOCAL_DEVRUN_SCENARIO': 'other_scenario'
-        }, clear=True):
+        with patch.dict(
+            "os.environ",
+            {"IS_LOCAL_DEV": "true", "LOCAL_DEVRUN_SCENARIO": "other_scenario"},
+            clear=True,
+        ):
             helper = LocalEnvHelper()
             assert helper.is_local_dev([RunScenario.AARON_LOCAL_DEV]) is False
 
@@ -149,10 +180,11 @@ class TestLocalEnvHelper:
         """Test is_local_dev with empty scenarios list"""
         from app.infra.common.helper.env_helper import LocalEnvHelper
 
-        with patch.dict('os.environ', {
-            'IS_LOCAL_DEV': 'true',
-            'LOCAL_DEVRUN_SCENARIO': ''
-        }, clear=True):
+        with patch.dict(
+            "os.environ",
+            {"IS_LOCAL_DEV": "true", "LOCAL_DEVRUN_SCENARIO": ""},
+            clear=True,
+        ):
             helper = LocalEnvHelper()
             # Empty scenarios list means no specific scenario check
             # So it should return True since IS_LOCAL_DEV is true
@@ -172,10 +204,11 @@ class TestLocalEnvHelper:
         """Test is_aaron_local_dev returns True when in Aaron local dev"""
         from app.infra.common.helper.env_helper import LocalEnvHelper
 
-        with patch.dict('os.environ', {
-            'IS_LOCAL_DEV': 'true',
-            'LOCAL_DEVRUN_SCENARIO': 'aaron_local_dev'
-        }, clear=True):
+        with patch.dict(
+            "os.environ",
+            {"IS_LOCAL_DEV": "true", "LOCAL_DEVRUN_SCENARIO": "aaron_local_dev"},
+            clear=True,
+        ):
             helper = LocalEnvHelper()
             assert helper.is_aaron_local_dev() is True
 
@@ -183,10 +216,11 @@ class TestLocalEnvHelper:
         """Test is_aaron_local_dev returns False when not in Aaron local dev"""
         from app.infra.common.helper.env_helper import LocalEnvHelper
 
-        with patch.dict('os.environ', {
-            'IS_LOCAL_DEV': 'true',
-            'LOCAL_DEVRUN_SCENARIO': 'other_scenario'
-        }, clear=True):
+        with patch.dict(
+            "os.environ",
+            {"IS_LOCAL_DEV": "true", "LOCAL_DEVRUN_SCENARIO": "other_scenario"},
+            clear=True,
+        ):
             helper = LocalEnvHelper()
             assert helper.is_aaron_local_dev() is False
 
@@ -194,27 +228,29 @@ class TestLocalEnvHelper:
         """Test get_current_scenarios returns copy of scenarios"""
         from app.infra.common.helper.env_helper import LocalEnvHelper
 
-        with patch.dict('os.environ', {
-            'IS_LOCAL_DEV': 'true',
-            'LOCAL_DEVRUN_SCENARIO': 'scenario1,scenario2'
-        }, clear=True):
+        with patch.dict(
+            "os.environ",
+            {"IS_LOCAL_DEV": "true", "LOCAL_DEVRUN_SCENARIO": "scenario1,scenario2"},
+            clear=True,
+        ):
             helper = LocalEnvHelper()
             scenarios = helper.get_current_scenarios()
-            assert scenarios == ['scenario1', 'scenario2']
+            assert scenarios == ["scenario1", "scenario2"]
 
     def test_get_current_scenarios_returns_copy(self):
         """Test get_current_scenarios returns a copy, not reference"""
         from app.infra.common.helper.env_helper import LocalEnvHelper
 
-        with patch.dict('os.environ', {
-            'IS_LOCAL_DEV': 'true',
-            'LOCAL_DEVRUN_SCENARIO': 'scenario1'
-        }, clear=True):
+        with patch.dict(
+            "os.environ",
+            {"IS_LOCAL_DEV": "true", "LOCAL_DEVRUN_SCENARIO": "scenario1"},
+            clear=True,
+        ):
             helper = LocalEnvHelper()
             scenarios = helper.get_current_scenarios()
-            scenarios.append('scenario2')
+            scenarios.append("scenario2")
             # Original should not be modified
-            assert helper._run_scenarios == ['scenario1']
+            assert helper._run_scenarios == ["scenario1"]
 
     def test_get_current_scenarios_not_inited_raises_error(self):
         """Test get_current_scenarios raises error when not initialized"""
@@ -230,10 +266,11 @@ class TestLocalEnvHelper:
         """Test is_scenario returns True for matching scenario"""
         from app.infra.common.helper.env_helper import LocalEnvHelper, RunScenario
 
-        with patch.dict('os.environ', {
-            'IS_LOCAL_DEV': 'true',
-            'LOCAL_DEVRUN_SCENARIO': 'aaron_local_dev'
-        }, clear=True):
+        with patch.dict(
+            "os.environ",
+            {"IS_LOCAL_DEV": "true", "LOCAL_DEVRUN_SCENARIO": "aaron_local_dev"},
+            clear=True,
+        ):
             helper = LocalEnvHelper()
             assert helper.is_scenario(RunScenario.AARON_LOCAL_DEV) is True
 
@@ -241,10 +278,11 @@ class TestLocalEnvHelper:
         """Test is_scenario returns False for non-matching scenario"""
         from app.infra.common.helper.env_helper import LocalEnvHelper, RunScenario
 
-        with patch.dict('os.environ', {
-            'IS_LOCAL_DEV': 'true',
-            'LOCAL_DEVRUN_SCENARIO': 'other_scenario'
-        }, clear=True):
+        with patch.dict(
+            "os.environ",
+            {"IS_LOCAL_DEV": "true", "LOCAL_DEVRUN_SCENARIO": "other_scenario"},
+            clear=True,
+        ):
             helper = LocalEnvHelper()
             assert helper.is_scenario(RunScenario.AARON_LOCAL_DEV) is False
 
@@ -252,10 +290,11 @@ class TestLocalEnvHelper:
         """Test is_scenario returns False when no scenarios set"""
         from app.infra.common.helper.env_helper import LocalEnvHelper, RunScenario
 
-        with patch.dict('os.environ', {
-            'IS_LOCAL_DEV': 'true',
-            'LOCAL_DEVRUN_SCENARIO': ''
-        }, clear=True):
+        with patch.dict(
+            "os.environ",
+            {"IS_LOCAL_DEV": "true", "LOCAL_DEVRUN_SCENARIO": ""},
+            clear=True,
+        ):
             helper = LocalEnvHelper()
             assert helper.is_scenario(RunScenario.AARON_LOCAL_DEV) is False
 
@@ -313,7 +352,7 @@ class TestEnvHelperEdgeCases:
         """Test initialization when env vars use defaults"""
         from app.infra.common.helper.env_helper import LocalEnvHelper
 
-        with patch.dict('os.environ', {}, clear=True):
+        with patch.dict("os.environ", {}, clear=True):
             helper = LocalEnvHelper()
             assert helper._is_local_dev is False
             assert helper._run_scenarios == []
@@ -323,21 +362,23 @@ class TestEnvHelperEdgeCases:
         from app.infra.common.helper.env_helper import LocalEnvHelper
 
         # Should handle gracefully - split on comma even with odd formatting
-        with patch.dict('os.environ', {
-            'IS_LOCAL_DEV': 'true',
-            'LOCAL_DEVRUN_SCENARIO': ',,test,,,'
-        }, clear=True):
+        with patch.dict(
+            "os.environ",
+            {"IS_LOCAL_DEV": "true", "LOCAL_DEVRUN_SCENARIO": ",,test,,,"},
+            clear=True,
+        ):
             helper = LocalEnvHelper()
-            assert 'test' in helper._run_scenarios
+            assert "test" in helper._run_scenarios
 
     def test_multiple_helper_instances(self):
         """Test multiple helper instances with same env"""
         from app.infra.common.helper.env_helper import LocalEnvHelper
 
-        with patch.dict('os.environ', {
-            'IS_LOCAL_DEV': 'true',
-            'LOCAL_DEVRUN_SCENARIO': 'aaron_local_dev'
-        }, clear=True):
+        with patch.dict(
+            "os.environ",
+            {"IS_LOCAL_DEV": "true", "LOCAL_DEVRUN_SCENARIO": "aaron_local_dev"},
+            clear=True,
+        ):
             helper1 = LocalEnvHelper()
             helper2 = LocalEnvHelper()
             assert helper1.is_local_dev() == helper2.is_local_dev()
@@ -346,28 +387,34 @@ class TestEnvHelperEdgeCases:
         """Test scenario checking with multiple scenarios in check list"""
         from app.infra.common.helper.env_helper import LocalEnvHelper, RunScenario
 
-        with patch.dict('os.environ', {
-            'IS_LOCAL_DEV': 'true',
-            'LOCAL_DEVRUN_SCENARIO': 'scenario2'
-        }, clear=True):
+        with patch.dict(
+            "os.environ",
+            {"IS_LOCAL_DEV": "true", "LOCAL_DEVRUN_SCENARIO": "scenario2"},
+            clear=True,
+        ):
             helper = LocalEnvHelper()
             # Create a mock enum for testing
             from enum import Enum
+
             class TestScenario(Enum):
                 SCENARIO1 = "scenario1"
                 SCENARIO2 = "scenario2"
                 SCENARIO3 = "scenario3"
 
-            assert helper.is_local_dev([TestScenario.SCENARIO1, TestScenario.SCENARIO2]) is True
+            assert (
+                helper.is_local_dev([TestScenario.SCENARIO1, TestScenario.SCENARIO2])
+                is True
+            )
 
     def test_is_local_dev_false_with_scenarios_when_not_local(self):
         """Test is_local_dev returns False when not local dev even with scenarios"""
         from app.infra.common.helper.env_helper import LocalEnvHelper, RunScenario
 
-        with patch.dict('os.environ', {
-            'IS_LOCAL_DEV': 'false',
-            'LOCAL_DEVRUN_SCENARIO': 'aaron_local_dev'
-        }, clear=True):
+        with patch.dict(
+            "os.environ",
+            {"IS_LOCAL_DEV": "false", "LOCAL_DEVRUN_SCENARIO": "aaron_local_dev"},
+            clear=True,
+        ):
             helper = LocalEnvHelper()
             # Should return False because _is_local_dev is False
             assert helper.is_local_dev([RunScenario.AARON_LOCAL_DEV]) is False

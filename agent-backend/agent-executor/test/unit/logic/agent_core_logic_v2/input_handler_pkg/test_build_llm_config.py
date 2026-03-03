@@ -39,7 +39,9 @@ class TestBuildLLMConfig:
                     "app.logic.agent_core_logic_v2.input_handler_pkg.build_llm_config.set_user_account_type"
                 ):
                     with patch.object(
-                        mock_agent_core.agent_config, 'llms', [
+                        mock_agent_core.agent_config,
+                        "llms",
+                        [
                             {
                                 "is_default": True,
                                 "llm_config": {
@@ -47,7 +49,7 @@ class TestBuildLLMConfig:
                                     "temperature": 0.7,
                                 },
                             }
-                        ]
+                        ],
                     ):
                         from app.logic.agent_core_logic_v2.input_handler_pkg.build_llm_config import (
                             build_llm_config,
@@ -198,7 +200,7 @@ class TestGetLLMConfigFromCache:
 
         with patch(
             "app.logic.agent_core_logic_v2.input_handler_pkg.build_llm_config.get_llm_config_from_cache",
-            side_effect=lambda ac, llm_id: ac.cache_handler.get_llm_config(llm_id)
+            side_effect=lambda ac, llm_id: ac.cache_handler.get_llm_config(llm_id),
         ):
             from app.logic.agent_core_logic_v2.input_handler_pkg.build_llm_config import (
                 get_llm_config_from_cache,

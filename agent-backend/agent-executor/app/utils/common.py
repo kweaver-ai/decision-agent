@@ -31,6 +31,7 @@ def _get_var_output_class():
     """
     try:
         from app.common.dependencies import get_dolphin_var_output_class
+
         return get_dolphin_var_output_class()
     except ImportError:
         # 如果依赖模块不可用，返回 None

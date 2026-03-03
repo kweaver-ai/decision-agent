@@ -41,7 +41,9 @@ class TestFormatErrorHeader:
         """测试自动生成时间戳的头部格式化"""
         exc = TypeError("Type error")
 
-        with patch('app.common.exception_logger.formatter_pkg.error_header.datetime') as mock_datetime:
+        with patch(
+            "app.common.exception_logger.formatter_pkg.error_header.datetime"
+        ) as mock_datetime:
             mock_now = datetime(2024, 8, 15, 10, 0, 0)
             mock_datetime.now.return_value = mock_now
 
@@ -86,7 +88,9 @@ class TestFormatErrorHeader:
         timestamp = datetime(2024, 11, 30, 16, 45, 0)
         request_info = {"user_id": "123", "action": "test"}
 
-        result = format_error_header(exc, timestamp=timestamp, request_info=request_info, colorize=True)
+        result = format_error_header(
+            exc, timestamp=timestamp, request_info=request_info, colorize=True
+        )
 
         assert isinstance(result, str)
         assert "RuntimeError" in result
@@ -98,7 +102,9 @@ class TestFormatErrorHeader:
         timestamp = datetime(2024, 7, 4, 9, 15, 0)
         request_info = {"endpoint": "/api/v1/test"}
 
-        result = format_error_header(exc, timestamp=timestamp, request_info=request_info, colorize=False)
+        result = format_error_header(
+            exc, timestamp=timestamp, request_info=request_info, colorize=False
+        )
 
         assert isinstance(result, str)
         assert "ValueError" in result

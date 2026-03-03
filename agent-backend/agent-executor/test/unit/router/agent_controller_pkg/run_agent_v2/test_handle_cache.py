@@ -100,7 +100,9 @@ class TestHandleCache:
             "app.router.agent_controller_pkg.run_agent_v2.handle_cache.cache_manager"
         ) as mock_manager:
             mock_manager.cache_service.load = AsyncMock(return_value=None)
-            mock_manager.create_cache = AsyncMock(side_effect=Exception("Create failed"))
+            mock_manager.create_cache = AsyncMock(
+                side_effect=Exception("Create failed")
+            )
 
             from app.router.agent_controller_pkg.run_agent_v2.handle_cache import (
                 handle_cache,

@@ -85,7 +85,7 @@ class APITool(APIToolInputHandler):
         if self.intervention:
             intervention_message = tool_config.get(
                 "intervention_confirmation_message",
-                f"工具 {self.name} 需要确认执行"  # 默认值
+                f"工具 {self.name} 需要确认执行",  # 默认值
             )
             self.interrupt_config = {
                 "requires_confirmation": True,

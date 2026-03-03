@@ -171,7 +171,9 @@ class TestDolphinSDKException:
         assert "session456" in exc.error_details
         assert "user789" in exc.error_details
         # 检查 error_code 中包含 ModelException 相关部分
-        assert "Model" in str(exc.error.error_code) and "Execption" in str(exc.error.error_code)
+        assert "Model" in str(exc.error.error_code) and "Execption" in str(
+            exc.error.error_code
+        )
 
     @patch("app.common.config.Config.is_debug_mode", return_value=False)
     def test_dolphin_sdk_skill_exception(self, mock_debug):
@@ -184,7 +186,9 @@ class TestDolphinSDKException:
         )
 
         # 检查 error_code 中包含 SkillException 相关部分
-        assert "Skill" in str(exc.error.error_code) and "Execption" in str(exc.error.error_code)
+        assert "Skill" in str(exc.error.error_code) and "Execption" in str(
+            exc.error.error_code
+        )
 
     @patch("app.common.config.Config.is_debug_mode", return_value=False)
     def test_dolphin_sdk_base_exception(self, mock_debug):
@@ -197,7 +201,9 @@ class TestDolphinSDKException:
         )
 
         # 对于未知异常类型，应该使用 BaseExecption
-        assert "Base" in str(exc.error.error_code) and "Execption" in str(exc.error.error_code)
+        assert "Base" in str(exc.error.error_code) and "Execption" in str(
+            exc.error.error_code
+        )
 
 
 class TestConversationRunningException:

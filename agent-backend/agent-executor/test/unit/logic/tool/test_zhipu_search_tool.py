@@ -21,7 +21,7 @@ class TestZhipuSearchTool:
         mock_response_data = {
             "choices": [{"message": {"content": "test result"}}],
             "id": "test_id",
-            "created": 1234567890
+            "created": 1234567890,
         }
 
         # Create proper async context manager mocks
@@ -40,7 +40,9 @@ class TestZhipuSearchTool:
         mock_session.__aexit__ = AsyncMock(return_value=None)
 
         with patch("aiohttp.ClientSession", return_value=mock_session):
-            result = await zhipu_search_tool(inputs, props, resource, data_source_config)
+            result = await zhipu_search_tool(
+                inputs, props, resource, data_source_config
+            )
 
             assert result == mock_response_data
 
@@ -69,7 +71,9 @@ class TestZhipuSearchTool:
         mock_session.__aexit__ = AsyncMock(return_value=None)
 
         with patch("aiohttp.ClientSession", return_value=mock_session):
-            result = await zhipu_search_tool(inputs, props, resource, data_source_config)
+            result = await zhipu_search_tool(
+                inputs, props, resource, data_source_config
+            )
 
             assert "error" in result
             assert "404" in result["error"]
@@ -84,12 +88,16 @@ class TestZhipuSearchTool:
         data_source_config = {}
 
         mock_session = MagicMock()
-        mock_session.post = MagicMock(side_effect=aiohttp.ClientError("Connection error"))
+        mock_session.post = MagicMock(
+            side_effect=aiohttp.ClientError("Connection error")
+        )
         mock_session.__aenter__ = AsyncMock(return_value=mock_session)
         mock_session.__aexit__ = AsyncMock(return_value=None)
 
         with patch("aiohttp.ClientSession", return_value=mock_session):
-            result = await zhipu_search_tool(inputs, props, resource, data_source_config)
+            result = await zhipu_search_tool(
+                inputs, props, resource, data_source_config
+            )
 
             assert "error" in result
             assert "Request failed" in result["error"]
@@ -109,7 +117,9 @@ class TestZhipuSearchTool:
         mock_session.__aexit__ = AsyncMock(return_value=None)
 
         with patch("aiohttp.ClientSession", return_value=mock_session):
-            result = await zhipu_search_tool(inputs, props, resource, data_source_config)
+            result = await zhipu_search_tool(
+                inputs, props, resource, data_source_config
+            )
 
             assert "error" in result
             assert "Unexpected error" in result["error"]
@@ -142,7 +152,9 @@ class TestZhipuSearchTool:
         mock_session.__aexit__ = AsyncMock(return_value=None)
 
         with patch("aiohttp.ClientSession", return_value=mock_session):
-            result = await zhipu_search_tool(inputs, props, resource, data_source_config, context)
+            result = await zhipu_search_tool(
+                inputs, props, resource, data_source_config, context
+            )
 
             assert result == mock_response_data
 

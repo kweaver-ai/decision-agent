@@ -105,7 +105,7 @@ class TestFormatRequestInfo:
             "headers": {
                 "content-type": "application/json",
                 "authorization": "Bearer token123",
-                "host": "example.com"
+                "host": "example.com",
             }
         }
 
@@ -126,7 +126,7 @@ class TestFormatRequestInfo:
                 "connection": "keep-alive",
                 "accept": "application/json",
                 "authorization": "Bearer secret",
-                "x-custom-header": "custom_value"
+                "x-custom-header": "custom_value",
             }
         }
 
@@ -174,7 +174,7 @@ class TestFormatRequestInfo:
             "query_string": "test=true",
             "client_ip": "10.0.0.1",
             "account_id": "user123",
-            "headers": {"x-custom": "value"}
+            "headers": {"x-custom": "value"},
         }
 
         result = format_request_info(request_info, colorize=False)

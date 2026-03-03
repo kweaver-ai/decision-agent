@@ -225,6 +225,7 @@ class TestIncrementalAsyncGeneratorExtended:
     @pytest.mark.asyncio
     async def test_empty_generator(self):
         """测试空生成器"""
+
         async def gen():
             return
             yield  # Never reached
@@ -239,6 +240,7 @@ class TestIncrementalAsyncGeneratorExtended:
     @pytest.mark.asyncio
     async def test_single_non_dict_value(self):
         """测试单个非字典值"""
+
         async def gen():
             yield 42
 
@@ -252,6 +254,7 @@ class TestIncrementalAsyncGeneratorExtended:
     @pytest.mark.asyncio
     async def test_list_first_value(self):
         """测试列表作为第一个值"""
+
         async def gen():
             yield [1, 2, 3]
 
@@ -265,6 +268,7 @@ class TestIncrementalAsyncGeneratorExtended:
     @pytest.mark.asyncio
     async def test_number_sequence(self):
         """测试数字序列"""
+
         async def gen():
             yield 1
             yield 2
@@ -281,6 +285,7 @@ class TestIncrementalAsyncGeneratorExtended:
     @pytest.mark.asyncio
     async def test_dict_with_nested_list(self):
         """测试字典包含嵌套列表"""
+
         async def gen():
             yield {"items": [1, 2, 3]}
 
@@ -294,6 +299,7 @@ class TestIncrementalAsyncGeneratorExtended:
     @pytest.mark.asyncio
     async def test_dict_with_empty_string(self):
         """测试字典包含空字符串"""
+
         async def gen():
             yield {"text": ""}
 
@@ -307,6 +313,7 @@ class TestIncrementalAsyncGeneratorExtended:
     @pytest.mark.asyncio
     async def test_dict_with_boolean(self):
         """测试字典包含布尔值"""
+
         async def gen():
             yield {"active": True}
 
@@ -320,6 +327,7 @@ class TestIncrementalAsyncGeneratorExtended:
     @pytest.mark.asyncio
     async def test_dict_with_null(self):
         """测试字典包含null"""
+
         async def gen():
             yield {"value": None}
 
@@ -333,6 +341,7 @@ class TestIncrementalAsyncGeneratorExtended:
     @pytest.mark.asyncio
     async def test_multiple_dict_changes_same_key(self):
         """测试同一键多次变化"""
+
         async def gen():
             yield {"count": 1}
             yield {"count": 2}
@@ -355,6 +364,7 @@ class TestIncrementalAsyncGeneratorExtended:
     @pytest.mark.asyncio
     async def test_empty_dict_first(self):
         """测试空字典作为第一个值"""
+
         async def gen():
             yield {}
 
@@ -368,6 +378,7 @@ class TestIncrementalAsyncGeneratorExtended:
     @pytest.mark.asyncio
     async def test_dict_unicode_values(self):
         """测试字典Unicode值"""
+
         async def gen():
             yield {"text": "你好世界"}
 
@@ -380,6 +391,7 @@ class TestIncrementalAsyncGeneratorExtended:
     @pytest.mark.asyncio
     async def test_dict_special_chars(self):
         """测试字典特殊字符"""
+
         async def gen():
             yield {"text": "Hello\nWorld\t!"}
 
@@ -396,6 +408,7 @@ class TestRestoreFullJsonExtended:
     @pytest.mark.asyncio
     async def test_empty_updates(self):
         """测试空更新"""
+
         async def gen():
             yield {"seq_id": 0, "key": [], "content": None, "action": "end"}
 
@@ -405,6 +418,7 @@ class TestRestoreFullJsonExtended:
     @pytest.mark.asyncio
     async def test_multiple_upserts(self):
         """测试多次upsert"""
+
         async def gen():
             yield {"seq_id": 0, "key": ["a"], "content": 1, "action": "upsert"}
             yield {"seq_id": 1, "key": ["b"], "content": 2, "action": "upsert"}
@@ -417,10 +431,16 @@ class TestRestoreFullJsonExtended:
     @pytest.mark.asyncio
     async def test_deeply_nested_structure(self):
         """测试深度嵌套结构"""
+
         async def gen():
             yield {"seq_id": 0, "key": ["a"], "content": {}, "action": "upsert"}
             yield {"seq_id": 1, "key": ["a", "b"], "content": {}, "action": "upsert"}
-            yield {"seq_id": 2, "key": ["a", "b", "c"], "content": "value", "action": "upsert"}
+            yield {
+                "seq_id": 2,
+                "key": ["a", "b", "c"],
+                "content": "value",
+                "action": "upsert",
+            }
             yield {"seq_id": 3, "key": [], "content": None, "action": "end"}
 
         result = await restore_full_json(gen())
@@ -429,6 +449,7 @@ class TestRestoreFullJsonExtended:
     @pytest.mark.asyncio
     async def test_append_to_string_multiple_times(self):
         """测试多次追加到字符串"""
+
         async def gen():
             yield {"seq_id": 0, "key": ["text"], "content": "a", "action": "upsert"}
             yield {"seq_id": 1, "key": ["text"], "content": "b", "action": "append"}
@@ -441,6 +462,7 @@ class TestRestoreFullJsonExtended:
     @pytest.mark.asyncio
     async def test_append_array_elements(self):
         """测试追加数组元素"""
+
         async def gen():
             # First create the array with upsert
             yield {"seq_id": 0, "key": ["arr"], "content": [1], "action": "upsert"}
@@ -457,9 +479,20 @@ class TestRestoreFullJsonExtended:
     @pytest.mark.asyncio
     async def test_remove_nested_key(self):
         """测试删除嵌套键"""
+
         async def gen():
-            yield {"seq_id": 0, "key": ["outer"], "content": {"inner": "value"}, "action": "upsert"}
-            yield {"seq_id": 1, "key": ["outer", "inner"], "content": None, "action": "remove"}
+            yield {
+                "seq_id": 0,
+                "key": ["outer"],
+                "content": {"inner": "value"},
+                "action": "upsert",
+            }
+            yield {
+                "seq_id": 1,
+                "key": ["outer", "inner"],
+                "content": None,
+                "action": "remove",
+            }
             yield {"seq_id": 2, "key": [], "content": None, "action": "end"}
 
         result = await restore_full_json(gen())
@@ -468,6 +501,7 @@ class TestRestoreFullJsonExtended:
     @pytest.mark.asyncio
     async def test_upsert_overwrites_existing(self):
         """测试upsert覆盖现有值"""
+
         async def gen():
             yield {"seq_id": 0, "key": ["a"], "content": "old", "action": "upsert"}
             yield {"seq_id": 1, "key": ["a"], "content": "new", "action": "upsert"}
@@ -479,6 +513,7 @@ class TestRestoreFullJsonExtended:
     @pytest.mark.asyncio
     async def test_unicode_content(self):
         """测试Unicode内容"""
+
         async def gen():
             yield {"seq_id": 0, "key": ["text"], "content": "你好", "action": "upsert"}
             yield {"seq_id": 1, "key": [], "content": None, "action": "end"}
@@ -489,8 +524,14 @@ class TestRestoreFullJsonExtended:
     @pytest.mark.asyncio
     async def test_special_characters_in_content(self):
         """测试内容中的特殊字符"""
+
         async def gen():
-            yield {"seq_id": 0, "key": ["text"], "content": "Line1\nLine2", "action": "upsert"}
+            yield {
+                "seq_id": 0,
+                "key": ["text"],
+                "content": "Line1\nLine2",
+                "action": "upsert",
+            }
             yield {"seq_id": 1, "key": [], "content": None, "action": "end"}
 
         result = await restore_full_json(gen())
@@ -499,9 +540,20 @@ class TestRestoreFullJsonExtended:
     @pytest.mark.asyncio
     async def test_boolean_values(self):
         """测试布尔值"""
+
         async def gen():
-            yield {"seq_id": 0, "key": ["bool_true"], "content": True, "action": "upsert"}
-            yield {"seq_id": 1, "key": ["bool_false"], "content": False, "action": "upsert"}
+            yield {
+                "seq_id": 0,
+                "key": ["bool_true"],
+                "content": True,
+                "action": "upsert",
+            }
+            yield {
+                "seq_id": 1,
+                "key": ["bool_false"],
+                "content": False,
+                "action": "upsert",
+            }
             yield {"seq_id": 2, "key": [], "content": None, "action": "end"}
 
         result = await restore_full_json(gen())
@@ -510,6 +562,7 @@ class TestRestoreFullJsonExtended:
     @pytest.mark.asyncio
     async def test_null_value(self):
         """测试null值"""
+
         async def gen():
             yield {"seq_id": 0, "key": ["value"], "content": None, "action": "upsert"}
             yield {"seq_id": 1, "key": [], "content": None, "action": "end"}
@@ -520,6 +573,7 @@ class TestRestoreFullJsonExtended:
     @pytest.mark.asyncio
     async def test_numeric_values(self):
         """测试数值类型"""
+
         async def gen():
             yield {"seq_id": 0, "key": ["int"], "content": 42, "action": "upsert"}
             yield {"seq_id": 1, "key": ["float"], "content": 3.14, "action": "upsert"}
@@ -537,14 +591,8 @@ class TestIntegrationScenarios:
     async def test_full_roundtrip_complex_data(self):
         """测试复杂数据完整往返"""
         original = {
-            "users": [
-                {"name": "Alice", "age": 30},
-                {"name": "Bob", "age": 25}
-            ],
-            "metadata": {
-                "version": "1.0",
-                "created": "2024-01-01"
-            }
+            "users": [{"name": "Alice", "age": 30}, {"name": "Bob", "age": 25}],
+            "metadata": {"version": "1.0", "created": "2024-01-01"},
         }
 
         async def full_gen():
@@ -561,6 +609,7 @@ class TestIntegrationScenarios:
     @pytest.mark.asyncio
     async def test_multiple_updates_same_structure(self):
         """测试相同结构多次更新"""
+
         async def full_gen():
             yield {"count": 1, "status": "init"}
             yield {"count": 2, "status": "running"}

@@ -109,7 +109,7 @@ class TestServicesConfig:
             "ecoindex_public": {"host": "index-public", "port": "8009"},
             "ecoindex_private": {"host": "index-private", "port": "8010"},
             "docset_private": {"host": "docset", "port": "8011"},
-            "datahub": {"host": "datahub", "port": "8012"}
+            "datahub": {"host": "datahub", "port": "8012"},
         }
 
         config = ServicesConfig.from_dict(data)
@@ -125,9 +125,7 @@ class TestServicesConfig:
         """测试从字典创建（部分服务）"""
         from app.config.config_v2.models.service_config import ServicesConfig
 
-        data = {
-            "mf_model_api": {"host": "custom-model-api", "port": "9999"}
-        }
+        data = {"mf_model_api": {"host": "custom-model-api", "port": "9999"}}
 
         config = ServicesConfig.from_dict(data)
 
@@ -156,9 +154,7 @@ class TestServicesConfig:
         """测试端口转换为字符串"""
         from app.config.config_v2.models.service_config import ServicesConfig
 
-        data = {
-            "mf_model_api": {"host": "model-api", "port": 9999}
-        }
+        data = {"mf_model_api": {"host": "model-api", "port": 9999}}
 
         config = ServicesConfig.from_dict(data)
 
@@ -169,9 +165,7 @@ class TestServicesConfig:
         """测试服务配置为空字典"""
         from app.config.config_v2.models.service_config import ServicesConfig
 
-        data = {
-            "mf_model_api": {}
-        }
+        data = {"mf_model_api": {}}
 
         config = ServicesConfig.from_dict(data)
 

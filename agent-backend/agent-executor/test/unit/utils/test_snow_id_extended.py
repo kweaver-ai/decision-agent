@@ -151,6 +151,7 @@ class TestIdWorkerGetId:
     def test_get_id_same_worker_same_datacenter(self):
         """测试相同worker和数据中心"""
         import time
+
         worker1 = IdWorker(5, 10)
         worker2 = IdWorker(5, 10)
         # IDs should be different due to timestamp/sequence
@@ -243,6 +244,7 @@ class TestSnowIdFunction:
     def test_snow_id_unique(self):
         """测试生成唯一ID"""
         import time
+
         ids = []
         for _ in range(10):
             ids.append(snow_id())
@@ -260,6 +262,7 @@ class TestSnowIdFunction:
     def test_snow_id_increases(self):
         """测试ID递增"""
         import time
+
         id1 = snow_id()
         time.sleep(0.001)
         id2 = snow_id()
@@ -295,14 +298,11 @@ class TestIdWorkerEdgeCases:
 
     def test_multiple_workers_parallel_ids(self):
         """测试多个worker并行生成ID"""
-        workers = [
-            IdWorker(0, i % 32) 
-            for i in range(10)
-        ]
+        workers = [IdWorker(0, i % 32) for i in range(10)]
         ids = []
         for worker in workers:
             ids.append(worker.get_id())
-        
+
         # All IDs should be unique
         assert len(set(ids)) == 10
 
@@ -317,13 +317,14 @@ class TestIdWorkerTimestampHandling:
         ids = []
         for _ in range(10):
             ids.append(worker.get_id())
-        
+
         # All should be unique
         assert len(set(ids)) == 10
 
     def test_different_millisecond_sequence_resets(self):
         """测试不同毫秒序列号重置"""
         import time
+
         worker = IdWorker(1, 1)
         id1 = worker.get_id()
         time.sleep(0.002)  # Ensure different millisecond
@@ -341,12 +342,14 @@ class TestGlobalWorker:
     def test_global_worker_exists(self):
         """测试全局worker存在"""
         from app.utils.snow_id import worker
+
         assert worker is not None
         assert isinstance(worker, IdWorker)
 
     def test_global_worker_can_generate_ids(self):
         """测试全局worker可生成ID"""
         from app.utils.snow_id import worker
+
         id_val = worker.get_id()
         assert id_val > 0
 
@@ -358,10 +361,10 @@ class TestIdStructure:
         """测试ID组件有效"""
         worker = IdWorker(5, 10)
         id_val = worker.get_id()
-        
+
         # ID should be positive
         assert id_val > 0
-        
+
         # ID should be reasonable size (less than 2^63)
         assert id_val < 2**63
 
@@ -369,6 +372,6 @@ class TestIdStructure:
         """测试ID位长度"""
         worker = IdWorker(1, 1)
         id_val = worker.get_id()
-        
+
         # Snowflake ID should be at most 64 bits
         assert id_val.bit_length() <= 64

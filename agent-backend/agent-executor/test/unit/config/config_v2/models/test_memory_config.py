@@ -20,11 +20,7 @@ class TestMemoryConfig:
         """测试自定义值"""
         from app.config.config_v2.models.memory_config import MemoryConfig
 
-        config = MemoryConfig(
-            limit=100,
-            threshold=0.7,
-            rerank_threshold=0.2
-        )
+        config = MemoryConfig(limit=100, threshold=0.7, rerank_threshold=0.2)
 
         assert config.limit == 100
         assert config.threshold == 0.7
@@ -34,11 +30,7 @@ class TestMemoryConfig:
         """测试从字典创建（所有字段）"""
         from app.config.config_v2.models.memory_config import MemoryConfig
 
-        data = {
-            "limit": 100,
-            "threshold": 0.7,
-            "rerank_threshold": 0.2
-        }
+        data = {"limit": 100, "threshold": 0.7, "rerank_threshold": 0.2}
 
         config = MemoryConfig.from_dict(data)
 

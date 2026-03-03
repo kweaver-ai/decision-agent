@@ -12,7 +12,10 @@ class TestInitTraceProvider:
     def test_returns_early_when_sdk_unavailable(self):
         """测试SDK不可用时直接返回"""
         from app.utils.observability.observability_trace import init_trace_provider
-        from app.utils.observability.observability_setting import ServerInfo, TraceSetting
+        from app.utils.observability.observability_setting import (
+            ServerInfo,
+            TraceSetting,
+        )
 
         server_info = ServerInfo(server_name="test", server_version="1.0")
         setting = TraceSetting(trace_enabled=True)
@@ -24,11 +27,16 @@ class TestInitTraceProvider:
     @patch("app.utils.observability.observability_trace.set_service_info")
     @patch("app.utils.observability.observability_trace.set_tracer_provider")
     @patch("app.common.config.Config")
-    def test_returns_when_trace_disabled_in_config(self, m_config, m_set_tracer, m_set_service):
+    def test_returns_when_trace_disabled_in_config(
+        self, m_config, m_set_tracer, m_set_service
+    ):
         """测试配置中禁用追踪时直接返回"""
         m_config.is_o11y_trace_enabled.return_value = False
         from app.utils.observability.observability_trace import init_trace_provider
-        from app.utils.observability.observability_setting import ServerInfo, TraceSetting
+        from app.utils.observability.observability_setting import (
+            ServerInfo,
+            TraceSetting,
+        )
 
         server_info = ServerInfo(server_name="test", server_version="1.0")
         setting = TraceSetting(trace_enabled=True)
@@ -46,8 +54,16 @@ class TestInitTraceProvider:
     @patch("app.utils.observability.observability_trace.ConsoleSpanExporter")
     @patch("app.utils.observability.observability_trace.trace_resource")
     @patch("app.common.config.Config")
-    def test_console_exporter_initialization(self, m_config, m_trace_resource, m_console_exporter, m_batch_processor,
-                                               m_tracer_provider, m_set_tracer, m_set_service):
+    def test_console_exporter_initialization(
+        self,
+        m_config,
+        m_trace_resource,
+        m_console_exporter,
+        m_batch_processor,
+        m_tracer_provider,
+        m_set_tracer,
+        m_set_service,
+    ):
         """测试使用console导出器初始化"""
         # Mock exporter modules
         sys.modules["exporter.ar_trace.trace_exporter"] = MagicMock(
@@ -64,7 +80,10 @@ class TestInitTraceProvider:
             m_config.is_o11y_trace_enabled.return_value = True
             m_trace_resource.return_value = MagicMock()
             from app.utils.observability.observability_trace import init_trace_provider
-            from app.utils.observability.observability_setting import ServerInfo, TraceSetting
+            from app.utils.observability.observability_setting import (
+                ServerInfo,
+                TraceSetting,
+            )
 
             mock_exporter = MagicMock()
             m_console_exporter.return_value = mock_exporter
@@ -75,9 +94,7 @@ class TestInitTraceProvider:
 
             server_info = ServerInfo(server_name="test_service", server_version="1.0")
             setting = TraceSetting(
-                trace_enabled=True,
-                trace_provider="console",
-                trace_max_queue_size=2048
+                trace_enabled=True, trace_provider="console", trace_max_queue_size=2048
             )
 
             init_trace_provider(server_info, setting)
@@ -100,7 +117,9 @@ class TestInitTraceProvider:
     @patch("app.utils.observability.observability_trace.set_service_info")
     @patch("app.utils.observability.observability_trace.trace_resource")
     @patch("app.common.config.Config")
-    def test_http_exporter_initialization(self, m_config, m_trace_resource, m_set_service):
+    def test_http_exporter_initialization(
+        self, m_config, m_trace_resource, m_set_service
+    ):
         """测试使用HTTP导出器初始化"""
         m_config.is_o11y_trace_enabled.return_value = True
         m_trace_resource.return_value = MagicMock()
@@ -119,13 +138,16 @@ class TestInitTraceProvider:
 
         try:
             from app.utils.observability.observability_trace import init_trace_provider
-            from app.utils.observability.observability_setting import ServerInfo, TraceSetting
+            from app.utils.observability.observability_setting import (
+                ServerInfo,
+                TraceSetting,
+            )
 
             server_info = ServerInfo(server_name="test_service", server_version="1.0")
             setting = TraceSetting(
                 trace_enabled=True,
                 trace_provider="http",
-                http_trace_feed_ingester_url="http://test.url"
+                http_trace_feed_ingester_url="http://test.url",
             )
 
             init_trace_provider(server_info, setting)

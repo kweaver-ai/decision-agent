@@ -49,10 +49,7 @@ class TestGetUserAccountId:
         """测试新格式优先于旧格式"""
         from app.domain.enum.common.user_account_header_key import get_user_account_id
 
-        headers = {
-            "x-account-id": "new123",
-            "x-user": "old456"
-        }
+        headers = {"x-account-id": "new123", "x-user": "old456"}
         result = get_user_account_id(headers)
 
         assert result == "new123"
@@ -83,10 +80,7 @@ class TestGetUserAccountType:
         """测试新格式优先于旧格式"""
         from app.domain.enum.common.user_account_header_key import get_user_account_type
 
-        headers = {
-            "x-account-type": "app",
-            "x-visitor-type": "user"
-        }
+        headers = {"x-account-type": "app", "x-visitor-type": "user"}
         result = get_user_account_type(headers)
 
         assert result == "app"
@@ -99,10 +93,7 @@ class TestGetUserAccount:
         """测试获取用户账号元组"""
         from app.domain.enum.common.user_account_header_key import get_user_account
 
-        headers = {
-            "x-account-id": "user123",
-            "x-account-type": "user"
-        }
+        headers = {"x-account-id": "user123", "x-account-type": "user"}
         account_id, account_type = get_user_account(headers)
 
         assert account_id == "user123"
@@ -213,10 +204,7 @@ class TestHasUserAccount:
         """测试两种格式都存在时返回True"""
         from app.domain.enum.common.user_account_header_key import has_user_account
 
-        headers = {
-            "x-account-id": "new123",
-            "x-user": "old456"
-        }
+        headers = {"x-account-id": "new123", "x-user": "old456"}
         result = has_user_account(headers)
 
         assert result
@@ -256,10 +244,7 @@ class TestHasUserAccountType:
         """测试两种格式都存在时返回True"""
         from app.domain.enum.common.user_account_header_key import has_user_account_type
 
-        headers = {
-            "x-account-type": "app",
-            "x-visitor-type": "user"
-        }
+        headers = {"x-account-type": "app", "x-visitor-type": "user"}
         result = has_user_account_type(headers)
 
         assert result

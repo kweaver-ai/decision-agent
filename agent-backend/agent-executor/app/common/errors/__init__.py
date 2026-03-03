@@ -37,6 +37,7 @@ def _get_exceptions_module():
     global _exceptions_module
     if _exceptions_module is None:
         from app.common import exceptions
+
         _exceptions_module = exceptions
     return _exceptions_module
 
@@ -44,9 +45,14 @@ def _get_exceptions_module():
 # 使用 __getattr__ 实现延迟导入
 def __getattr__(name: str):
     """延迟导入异常类，避免循环导入"""
-    if name in ("BaseException", "CodeException", "ParamException",
-                "AgentPermissionException", "DolphinSDKException",
-                "ConversationRunningException"):
+    if name in (
+        "BaseException",
+        "CodeException",
+        "ParamException",
+        "AgentPermissionException",
+        "DolphinSDKException",
+        "ConversationRunningException",
+    ):
         return getattr(_get_exceptions_module(), name)
     raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
 

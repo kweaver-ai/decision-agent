@@ -17,13 +17,13 @@ class TestGetSearchResults:
         request = {
             "search_tool": "zhipu_search_tool",
             "query": "test query",
-            "api_key": "test_key"
+            "api_key": "test_key",
         }
         headers = {"userid": "test_user"}
 
         mock_response = {
             "choices": [{"message": {"tool_calls": [{"search_result": []}]}}],
-            "id": "test_id"
+            "id": "test_id",
         }
 
         # Create proper async context manager mocks
@@ -49,10 +49,7 @@ class TestGetSearchResults:
         """Test get_search_results with unsupported search tool."""
         from app.logic.tool.online_search_cite_tool import get_search_results
 
-        request = {
-            "search_tool": "unsupported_tool",
-            "query": "test query"
-        }
+        request = {"search_tool": "unsupported_tool", "query": "test query"}
         headers = {}
 
         with pytest.raises(ValueError, match="不支持的搜索工具"):
@@ -67,28 +64,33 @@ class TestGetAnswer:
         """Test successful answer generation."""
         from app.logic.tool.online_search_cite_tool import get_answer
 
-        request = {
-            "query": "test query",
-            "model_name": "test_model"
-        }
+        request = {"query": "test query", "model_name": "test_model"}
         headers = {"userid": "test_user"}
 
         search_results = {
-            "choices": [{
-                "message": {
-                    "tool_calls": [
-                        {},  # First tool_call (ignored)
-                        {
-                            "search_result": [
-                                {"title": "Test Title", "content": "Test Content", "link": "http://test.com"}
-                            ]
-                        }
-                    ]
+            "choices": [
+                {
+                    "message": {
+                        "tool_calls": [
+                            {},  # First tool_call (ignored)
+                            {
+                                "search_result": [
+                                    {
+                                        "title": "Test Title",
+                                        "content": "Test Content",
+                                        "link": "http://test.com",
+                                    }
+                                ]
+                            },
+                        ]
+                    }
                 }
-            }]
+            ]
         }
 
-        with patch("app.driven.dip.model_api_service.model_api_service") as mock_service:
+        with patch(
+            "app.driven.dip.model_api_service.model_api_service"
+        ) as mock_service:
             mock_service.call = AsyncMock(return_value="Test answer")
 
             result, references = await get_answer(request, headers, search_results)
@@ -103,28 +105,31 @@ class TestGetAnswer:
         """Test get_answer with missing fields in search results."""
         from app.logic.tool.online_search_cite_tool import get_answer
 
-        request = {
-            "query": "test query",
-            "model_name": "test_model"
-        }
+        request = {"query": "test query", "model_name": "test_model"}
         headers = {"userid": "test_user"}
 
         search_results = {
-            "choices": [{
-                "message": {
-                    "tool_calls": [
-                        {},
-                        {
-                            "search_result": [
-                                {"content": "Test Content"}  # Missing title and link
-                            ]
-                        }
-                    ]
+            "choices": [
+                {
+                    "message": {
+                        "tool_calls": [
+                            {},
+                            {
+                                "search_result": [
+                                    {
+                                        "content": "Test Content"
+                                    }  # Missing title and link
+                                ]
+                            },
+                        ]
+                    }
                 }
-            }]
+            ]
         }
 
-        with patch("app.driven.dip.model_api_service.model_api_service") as mock_service:
+        with patch(
+            "app.driven.dip.model_api_service.model_api_service"
+        ) as mock_service:
             mock_service.call = AsyncMock(return_value="Test answer")
 
             result, references = await get_answer(request, headers, search_results)
@@ -157,7 +162,12 @@ class TestDataPreAnswer:
 
         answer = "Test answer"
         references = [
-            {"title": "Test", "content": "Content", "link": "http://test.com", "index": 0}
+            {
+                "title": "Test",
+                "content": "Content",
+                "link": "http://test.com",
+                "index": 0,
+            }
         ]
 
         result, refs_str = await data_pre_answer(answer, references)
@@ -175,15 +185,17 @@ class TestGetCompletion:
         """Test successful completion generation."""
         from app.logic.tool.online_search_cite_tool import get_completion
 
-        request = {
-            "model_name": "test_model"
-        }
+        request = {"model_name": "test_model"}
         headers = {"userid": "test_user"}
         answer = "Test answer"
         references = [{"title": "Test", "content": "Content"}]
 
-        with patch("app.driven.dip.model_api_service.model_api_service") as mock_service:
-            mock_service.call = AsyncMock(return_value="Completed answer with citations")
+        with patch(
+            "app.driven.dip.model_api_service.model_api_service"
+        ) as mock_service:
+            mock_service.call = AsyncMock(
+                return_value="Completed answer with citations"
+            )
 
             result = await get_completion(request, headers, answer, references)
 
@@ -199,9 +211,7 @@ class TestGetCompletionStream:
         """Test successful streaming completion generation."""
         from app.logic.tool.online_search_cite_tool import get_completion_stream
 
-        request = {
-            "model_name": "test_model"
-        }
+        request = {"model_name": "test_model"}
         headers = {"userid": "test_user"}
         answer = "Test answer"
         references = [{"title": "Test", "content": "Content"}]
@@ -210,11 +220,15 @@ class TestGetCompletionStream:
             yield "chunk1"
             yield "chunk2"
 
-        with patch("app.driven.dip.model_api_service.model_api_service") as mock_service:
+        with patch(
+            "app.driven.dip.model_api_service.model_api_service"
+        ) as mock_service:
             mock_service.call_stream = mock_stream
 
             chunks = []
-            async for chunk in get_completion_stream(request, headers, answer, references):
+            async for chunk in get_completion_stream(
+                request, headers, answer, references
+            ):
                 chunks.append(chunk)
 
             assert chunks == ["chunk1", "chunk2"]
@@ -232,25 +246,41 @@ class TestOnlineSearchCiteTool:
             "query": "test query",
             "model_name": "test_model",
             "search_tool": "zhipu_search_tool",
-            "api_key": "test_key"
+            "api_key": "test_key",
         }
         headers = {"userid": "test_user"}
 
         mock_search_results = {
-            "choices": [{
-                "message": {
-                    "tool_calls": [
-                        {},
-                        {"search_result": [{"title": "Test", "content": "Content"}]}
-                    ]
+            "choices": [
+                {
+                    "message": {
+                        "tool_calls": [
+                            {},
+                            {
+                                "search_result": [
+                                    {"title": "Test", "content": "Content"}
+                                ]
+                            },
+                        ]
+                    }
                 }
-            }]
+            ]
         }
 
-        with patch("app.logic.tool.online_search_cite_tool.get_search_results", new_callable=AsyncMock) as mock_get_search, \
-             patch("app.logic.tool.online_search_cite_tool.get_answer", new_callable=AsyncMock) as mock_get_ans, \
-             patch("app.logic.tool.online_search_cite_tool.get_completion", new_callable=AsyncMock) as mock_get_comp:
-
+        with (
+            patch(
+                "app.logic.tool.online_search_cite_tool.get_search_results",
+                new_callable=AsyncMock,
+            ) as mock_get_search,
+            patch(
+                "app.logic.tool.online_search_cite_tool.get_answer",
+                new_callable=AsyncMock,
+            ) as mock_get_ans,
+            patch(
+                "app.logic.tool.online_search_cite_tool.get_completion",
+                new_callable=AsyncMock,
+            ) as mock_get_comp,
+        ):
             mock_get_search.return_value = mock_search_results
             mock_get_ans.return_value = ("answer", [{"title": "Test"}])
             mock_get_comp.return_value = "completed answer"
@@ -268,6 +298,7 @@ class TestPrompts:
     def test_answer_prompt_exists(self):
         """Test that answer_prompt is defined."""
         from app.logic.tool.online_search_cite_tool import answer_prompt
+
         assert isinstance(answer_prompt, str)
         assert "references" in answer_prompt
         assert "query" in answer_prompt
@@ -275,6 +306,7 @@ class TestPrompts:
     def test_sys_prompt_exists(self):
         """Test that sys_prompt is defined."""
         from app.logic.tool.online_search_cite_tool import sys_prompt
+
         assert isinstance(sys_prompt, str)
         assert "example" in sys_prompt
         assert "references" in sys_prompt

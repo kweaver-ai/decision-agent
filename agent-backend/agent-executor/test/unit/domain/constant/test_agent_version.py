@@ -2,10 +2,7 @@
 
 import pytest
 
-from app.domain.constant.agent_version import (
-    AGENT_VERSION_V0,
-    AGENT_VERSION_LATEST
-)
+from app.domain.constant.agent_version import AGENT_VERSION_V0, AGENT_VERSION_LATEST
 
 
 class TestAgentVersionConstants:

@@ -40,12 +40,18 @@ class TestModuleConstants:
     def test_babel_translation_directories(self):
         """测试 BABEL_TRANSLATION_DIRECTORIES 常量"""
         assert BABEL_TRANSLATION_DIRECTORIES is not None
-        assert "app/common/international" in BABEL_TRANSLATION_DIRECTORIES or BABEL_TRANSLATION_DIRECTORIES.endswith("international")
+        assert (
+            "app/common/international" in BABEL_TRANSLATION_DIRECTORIES
+            or BABEL_TRANSLATION_DIRECTORIES.endswith("international")
+        )
 
     def test_babel_translation_directories_format(self):
         """测试 BABEL_TRANSLATION_DIRECTORIES 常量格式"""
         assert BABEL_TRANSLATION_DIRECTORIES is not None
-        assert "app/common/international" in BABEL_TRANSLATION_DIRECTORIES or BABEL_TRANSLATION_DIRECTORIES.startswith("app")
+        assert (
+            "app/common/international" in BABEL_TRANSLATION_DIRECTORIES
+            or BABEL_TRANSLATION_DIRECTORIES.startswith("app")
+        )
 
     def test_babel_domain(self):
         """测试 BABEL_DOMAIN 常量"""
@@ -249,8 +255,8 @@ class TestCompileCommand:
 class TestCompileAll:
     """测试 compile_all 函数"""
 
-    @patch('app.common.international.os.system')
-    @patch('app.common.international.os.path.exists')
+    @patch("app.common.international.os.system")
+    @patch("app.common.international.os.path.exists")
     def test_compile_all_skips_default_locale(self, mock_exists, mock_system):
         """测试 compile_all 跳过默认语言"""
         mock_exists.return_value = True
@@ -261,10 +267,11 @@ class TestCompileAll:
         # Check that init and update were not called for "en"
         # but we can't easily verify this without inspecting mock_system calls
 
-    @patch('app.common.international.os.system')
-    @patch('app.common.international.os.path.exists')
+    @patch("app.common.international.os.system")
+    @patch("app.common.international.os.path.exists")
     def test_compile_all_runs_commands(self, mock_exists, mock_system):
         """测试 compile_all 执行所有命令"""
+
         # Mock po files as existing for all locales except default
         def exists_side_effect(path):
             return "zh/LC_MESSAGES" in path
@@ -277,8 +284,8 @@ class TestCompileAll:
         # Verify system commands were called
         assert mock_system.call_count > 0
 
-    @patch('app.common.international.os.system')
-    @patch('app.common.international.os.path.exists')
+    @patch("app.common.international.os.system")
+    @patch("app.common.international.os.path.exists")
     def test_compile_all_handles_missing_po_file(self, mock_exists, mock_system):
         """测试 compile_all 处理缺失的 po 文件"""
         # Mock po files as not existing
@@ -290,8 +297,8 @@ class TestCompileAll:
         # Should still run commands
         assert mock_system.call_count > 0
 
-    @patch('app.common.international.os.system')
-    @patch('app.common.international.os.path.exists')
+    @patch("app.common.international.os.system")
+    @patch("app.common.international.os.path.exists")
     def test_compile_all_processes_multiple_locales(self, mock_exists, mock_system):
         """测试 compile_all 处理多个语言"""
         mock_exists.return_value = True

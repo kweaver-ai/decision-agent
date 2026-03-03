@@ -59,7 +59,9 @@ class TestGetAgentConfig:
         """测试服务错误传播"""
         from app.logic.tool.get_agent_config import get_agent_config
 
-        m_service.get_agent_config = AsyncMock(side_effect=ConnectionError("Service unavailable"))
+        m_service.get_agent_config = AsyncMock(
+            side_effect=ConnectionError("Service unavailable")
+        )
 
         with pytest.raises(ConnectionError) as exc_info:
             await get_agent_config(agent_id="123")

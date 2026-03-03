@@ -66,9 +66,7 @@ class AgentInstanceManager:
         with self._instance_lock:
             self._instances[agent_run_id] = (agent, agent_core, time.time())
 
-    def get(
-        self, agent_run_id: str
-    ) -> Optional[Tuple["DolphinAgent", "AgentCoreV2"]]:
+    def get(self, agent_run_id: str) -> Optional[Tuple["DolphinAgent", "AgentCoreV2"]]:
         """获取 Agent 实例
 
         Args:

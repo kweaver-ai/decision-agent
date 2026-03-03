@@ -60,7 +60,7 @@ class TestSSEInit:
             event="message",
             data="test data",
             comment="test comment",
-            retry=5000
+            retry=5000,
         )
 
         assert sse.ID == "msg123"
@@ -160,7 +160,7 @@ class TestSSERender:
             event="message",
             data="test data",
             comment="test comment",
-            retry=5000
+            retry=5000,
         )
         result = sse.render()
 

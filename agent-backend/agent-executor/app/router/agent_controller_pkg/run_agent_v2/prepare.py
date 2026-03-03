@@ -98,7 +98,6 @@ async def prepare(
     # 6. set agent version
     agent_config.agent_version = req.agent_version
 
-
     # 8. check agent permission
     if not await agent_factory_service.check_agent_permission(
         agent_config.agent_id, account_id, account_type

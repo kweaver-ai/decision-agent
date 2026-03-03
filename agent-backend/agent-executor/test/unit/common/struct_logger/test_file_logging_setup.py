@@ -25,7 +25,7 @@ class TestSetupFileLogging:
     @pytest.mark.asyncio
     async def test_setup_file_logging_returns_logger(self):
         """Test that setup_file_logging returns a logger"""
-        with patch('app.common.struct_logger.file_logging_setup.Config') as mock_config:
+        with patch("app.common.struct_logger.file_logging_setup.Config") as mock_config:
             mock_config.app.get_stdlib_log_level.return_value = logging.INFO
 
             from app.common.struct_logger.file_logging_setup import setup_file_logging
@@ -34,24 +34,28 @@ class TestSetupFileLogging:
 
             assert logger is not None
             # Should be a structlog BoundLogger
-            assert hasattr(logger, 'info')
-            assert hasattr(logger, 'error')
-            assert hasattr(logger, 'debug')
+            assert hasattr(logger, "info")
+            assert hasattr(logger, "error")
+            assert hasattr(logger, "debug")
 
     @pytest.mark.asyncio
     async def test_setup_file_logging_creates_handler(self):
         """Test that setup_file_logging creates TimedRotatingFileHandler"""
         # Patch at the module level before importing
-        with patch('app.common.struct_logger.file_logging_setup.Config') as mock_config:
+        with patch("app.common.struct_logger.file_logging_setup.Config") as mock_config:
             mock_config.app.get_stdlib_log_level.return_value = logging.INFO
 
-            with patch('app.common.struct_logger.file_logging_setup.TimedRotatingFileHandler') as mock_handler:
+            with patch(
+                "app.common.struct_logger.file_logging_setup.TimedRotatingFileHandler"
+            ) as mock_handler:
                 mock_handler_instance = MagicMock()
                 mock_handler_instance.setLevel = MagicMock()
                 mock_handler_instance.setFormatter = MagicMock()
                 mock_handler.return_value = mock_handler_instance
 
-                from app.common.struct_logger.file_logging_setup import setup_file_logging
+                from app.common.struct_logger.file_logging_setup import (
+                    setup_file_logging,
+                )
 
                 logger = setup_file_logging()
 
@@ -59,14 +63,14 @@ class TestSetupFileLogging:
                 assert mock_handler.called
                 call_args = mock_handler.call_args
                 assert call_args[0][0] == "log/agent-executor.log"
-                assert call_args[1]['when'] == 'midnight'
-                assert call_args[1]['interval'] == 1
-                assert call_args[1]['backupCount'] == 30
+                assert call_args[1]["when"] == "midnight"
+                assert call_args[1]["interval"] == 1
+                assert call_args[1]["backupCount"] == 30
 
     @pytest.mark.asyncio
     async def test_setup_file_logging_log_level(self):
         """Test that setup_file_logging respects log level from Config"""
-        with patch('app.common.struct_logger.file_logging_setup.Config') as mock_config:
+        with patch("app.common.struct_logger.file_logging_setup.Config") as mock_config:
             mock_config.app.get_stdlib_log_level.return_value = logging.DEBUG
 
             from app.common.struct_logger.file_logging_setup import setup_file_logging
@@ -80,7 +84,7 @@ class TestSetupFileLogging:
     @pytest.mark.asyncio
     async def test_setup_file_logging_no_propagate(self):
         """Test that file logger doesn't propagate"""
-        with patch('app.common.struct_logger.file_logging_setup.Config') as mock_config:
+        with patch("app.common.struct_logger.file_logging_setup.Config") as mock_config:
             mock_config.app.get_stdlib_log_level.return_value = logging.INFO
 
             from app.common.struct_logger.file_logging_setup import setup_file_logging
@@ -94,7 +98,7 @@ class TestSetupFileLogging:
     @pytest.mark.asyncio
     async def test_setup_file_logging_logger_name(self):
         """Test that setup_file_logging creates logger with correct name"""
-        with patch('app.common.struct_logger.file_logging_setup.Config') as mock_config:
+        with patch("app.common.struct_logger.file_logging_setup.Config") as mock_config:
             mock_config.app.get_stdlib_log_level.return_value = logging.INFO
 
             from app.common.struct_logger.file_logging_setup import setup_file_logging
@@ -108,16 +112,20 @@ class TestSetupFileLogging:
     @pytest.mark.asyncio
     async def test_setup_file_logging_handler_level(self):
         """Test that file handler is set to NOTSET level"""
-        with patch('app.common.struct_logger.file_logging_setup.Config') as mock_config:
+        with patch("app.common.struct_logger.file_logging_setup.Config") as mock_config:
             mock_config.app.get_stdlib_log_level.return_value = logging.INFO
 
-            with patch('app.common.struct_logger.file_logging_setup.TimedRotatingFileHandler') as mock_handler:
+            with patch(
+                "app.common.struct_logger.file_logging_setup.TimedRotatingFileHandler"
+            ) as mock_handler:
                 mock_handler_instance = MagicMock()
                 mock_handler_instance.setLevel = MagicMock()
                 mock_handler_instance.setFormatter = MagicMock()
                 mock_handler.return_value = mock_handler_instance
 
-                from app.common.struct_logger.file_logging_setup import setup_file_logging
+                from app.common.struct_logger.file_logging_setup import (
+                    setup_file_logging,
+                )
 
                 logger = setup_file_logging()
 
@@ -134,4 +142,4 @@ class TestModuleImports:
         from app.common.struct_logger import file_logging_setup
 
         assert file_logging_setup is not None
-        assert hasattr(file_logging_setup, 'setup_file_logging')
+        assert hasattr(file_logging_setup, "setup_file_logging")

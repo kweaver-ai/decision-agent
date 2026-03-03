@@ -38,7 +38,7 @@ class TestBuildTools:
                 self.tool_info = {
                     "name": "test_tool",
                     "description": "Test tool",
-                    "metadata": {"api_spec": {}}
+                    "metadata": {"api_spec": {}},
                 }
                 self.tool_input = []
                 self.intervention = False
@@ -70,7 +70,10 @@ class TestBuildTools:
                 self.intervention = False
                 self.agent_input = []
                 self.inner_dto = MagicMock()
-                self.inner_dto.agent_info = {"name": "test_agent", "profile": "Test agent"}
+                self.inner_dto.agent_info = {
+                    "name": "test_agent",
+                    "profile": "Test agent",
+                }
 
         mock_skills = MagicMock()
         mock_skills.tools = None
@@ -96,17 +99,14 @@ class TestBuildTools:
         class MockTool:
             def __init__(self, tool_id, name):
                 self.tool_id = tool_id
-                self.tool_info = {
-                    "name": name,
-                    "metadata": {"api_spec": {}}
-                }
+                self.tool_info = {"name": name, "metadata": {"api_spec": {}}}
                 self.tool_input = []
                 self.intervention = False
 
         mock_skills = MagicMock()
         mock_skills.tools = [
             MockTool("tool1", "same_name"),
-            MockTool("tool2", "same_name")
+            MockTool("tool2", "same_name"),
         ]
         mock_skills.agents = None
         mock_skills.mcps = None
@@ -159,9 +159,7 @@ class TestBuildTools:
         class MockTool:
             def __init__(self):
                 self.tool_id = "tool123"
-                self.tool_info = {
-                    "metadata": {"api_spec": {}}
-                }
+                self.tool_info = {"metadata": {"api_spec": {}}}
                 self.tool_input = []
                 self.intervention = False
 

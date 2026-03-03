@@ -9,12 +9,12 @@ from app.models.tool_responses import (
     ReferenceResult,
     OnlineSearchCiteResponse,
     NL2NGQLResponse,
-    SchemaInfo
+    SchemaInfo,
 )
 from app.models.tool_requests import (
     ZhipuSearchRequest,
     GetSchemaRequest,
-    OnlineSearchCiteRequest
+    OnlineSearchCiteRequest,
 )
 
 
@@ -28,7 +28,7 @@ class TestToolResponsesMassive:
             id="test-id",
             model="test-model",
             request_id="req-123",
-            usage={}
+            usage={},
         )
         assert response.id == "test-id"
 
@@ -39,7 +39,7 @@ class TestToolResponsesMassive:
             id="test-id",
             model="test-model",
             request_id="req-123",
-            usage={}
+            usage={},
         )
         assert len(response.choices) == 1
 
@@ -50,7 +50,7 @@ class TestToolResponsesMassive:
             id="test-id",
             model="test-model",
             request_id="req-123",
-            usage={}
+            usage={},
         )
         assert response.created == 9999999999
 
@@ -61,7 +61,7 @@ class TestToolResponsesMassive:
             id="test-id",
             model="web-search-pro",
             request_id="req-123",
-            usage={}
+            usage={},
         )
         assert response.model == "web-search-pro"
 
@@ -72,7 +72,7 @@ class TestToolResponsesMassive:
             id="test-id",
             model="test-model",
             request_id="request-abc",
-            usage={}
+            usage={},
         )
         assert response.request_id == "request-abc"
 
@@ -83,7 +83,7 @@ class TestToolResponsesMassive:
             id="test-id",
             model="test-model",
             request_id="req-123",
-            usage={"total_tokens": 100}
+            usage={"total_tokens": 100},
         )
         assert response.usage["total_tokens"] == 100
 
@@ -94,150 +94,87 @@ class TestToolResponsesMassive:
             id="test-id",
             model="test-model",
             request_id="req-123",
-            usage={}
+            usage={},
         )
         assert len(response.choices) == 3
 
     def test_reference_result_basic(self):
         ref = ReferenceResult(
-            title="Test Title",
-            content="Test Content",
-            index=0,
-            link="http://test.com"
+            title="Test Title", content="Test Content", index=0, link="http://test.com"
         )
         assert ref.title == "Test Title"
 
     def test_reference_result_title(self):
         ref = ReferenceResult(
-            title="Custom Title",
-            content="content",
-            index=0,
-            link="link"
+            title="Custom Title", content="content", index=0, link="link"
         )
         assert ref.title == "Custom Title"
 
     def test_reference_result_content(self):
         ref = ReferenceResult(
-            title="title",
-            content="Custom Content",
-            index=0,
-            link="link"
+            title="title", content="Custom Content", index=0, link="link"
         )
         assert ref.content == "Custom Content"
 
     def test_reference_result_index(self):
-        ref = ReferenceResult(
-            title="title",
-            content="content",
-            index=5,
-            link="link"
-        )
+        ref = ReferenceResult(title="title", content="content", index=5, link="link")
         assert ref.index == 5
 
     def test_reference_result_index_zero(self):
-        ref = ReferenceResult(
-            title="title",
-            content="content",
-            index=0,
-            link="link"
-        )
+        ref = ReferenceResult(title="title", content="content", index=0, link="link")
         assert ref.index == 0
 
     def test_reference_result_link(self):
         ref = ReferenceResult(
-            title="title",
-            content="content",
-            index=0,
-            link="http://example.com"
+            title="title", content="content", index=0, link="http://example.com"
         )
         assert ref.link == "http://example.com"
 
     def test_reference_result_title_unicode(self):
-        ref = ReferenceResult(
-            title="标题",
-            content="content",
-            index=0,
-            link="link"
-        )
+        ref = ReferenceResult(title="标题", content="content", index=0, link="link")
         assert "标题" in ref.title
 
     def test_reference_result_content_unicode(self):
-        ref = ReferenceResult(
-            title="title",
-            content="内容",
-            index=0,
-            link="link"
-        )
+        ref = ReferenceResult(title="title", content="内容", index=0, link="link")
         assert "内容" in ref.content
 
     def test_reference_result_index_negative(self):
-        ref = ReferenceResult(
-            title="title",
-            content="content",
-            index=-1,
-            link="link"
-        )
+        ref = ReferenceResult(title="title", content="content", index=-1, link="link")
         assert ref.index == -1
 
     def test_online_search_cite_response_basic(self):
-        response = OnlineSearchCiteResponse(
-            references=[],
-            answer="Test answer"
-        )
+        response = OnlineSearchCiteResponse(references=[], answer="Test answer")
         assert response.answer == "Test answer"
 
     def test_online_search_cite_response_references_empty(self):
-        response = OnlineSearchCiteResponse(
-            references=[],
-            answer="answer"
-        )
+        response = OnlineSearchCiteResponse(references=[], answer="answer")
         assert len(response.references) == 0
 
     def test_online_search_cite_response_references_single(self):
-        ref = ReferenceResult(
-            title="title",
-            content="content",
-            index=0,
-            link="link"
-        )
-        response = OnlineSearchCiteResponse(
-            references=[ref],
-            answer="answer"
-        )
+        ref = ReferenceResult(title="title", content="content", index=0, link="link")
+        response = OnlineSearchCiteResponse(references=[ref], answer="answer")
         assert len(response.references) == 1
 
     def test_online_search_cite_response_references_multiple(self):
         refs = [
             ReferenceResult(title="t1", content="c1", index=0, link="l1"),
             ReferenceResult(title="t2", content="c2", index=1, link="l2"),
-            ReferenceResult(title="t3", content="c3", index=2, link="l3")
+            ReferenceResult(title="t3", content="c3", index=2, link="l3"),
         ]
-        response = OnlineSearchCiteResponse(
-            references=refs,
-            answer="answer"
-        )
+        response = OnlineSearchCiteResponse(references=refs, answer="answer")
         assert len(response.references) == 3
 
     def test_online_search_cite_response_answer_empty(self):
-        response = OnlineSearchCiteResponse(
-            references=[],
-            answer=""
-        )
+        response = OnlineSearchCiteResponse(references=[], answer="")
         assert response.answer == ""
 
     def test_online_search_cite_response_answer_long(self):
         long_answer = "a" * 1000
-        response = OnlineSearchCiteResponse(
-            references=[],
-            answer=long_answer
-        )
+        response = OnlineSearchCiteResponse(references=[], answer=long_answer)
         assert len(response.answer) == 1000
 
     def test_online_search_cite_response_answer_unicode(self):
-        response = OnlineSearchCiteResponse(
-            references=[],
-            answer="回答内容"
-        )
+        response = OnlineSearchCiteResponse(references=[], answer="回答内容")
         assert "回答" in response.answer
 
     def test_nl2ngql_response_basic(self):
@@ -249,21 +186,12 @@ class TestToolResponsesMassive:
         assert len(response.outputs) == 1
 
     def test_nl2ngql_response_outputs_multiple(self):
-        response = NL2NGQLResponse(
-            outputs=[
-                {"r1": "d1"},
-                {"r2": "d2"},
-                {"r3": "d3"}
-            ]
-        )
+        response = NL2NGQLResponse(outputs=[{"r1": "d1"}, {"r2": "d2"}, {"r3": "d3"}])
         assert len(response.outputs) == 3
 
     def test_nl2ngql_response_outputs_complex(self):
         response = NL2NGQLResponse(
-            outputs=[
-                {"nested": {"key": "value"}},
-                {"array": [1, 2, 3]}
-            ]
+            outputs=[{"nested": {"key": "value"}}, {"array": [1, 2, 3]}]
         )
         assert len(response.outputs) == 2
 
@@ -277,21 +205,13 @@ class TestToolResponsesMassive:
 
     def test_schema_info_nested(self):
         schema = SchemaInfo(
-            schema={
-                "vertices": ["person", "company"],
-                "edges": ["knows", "works_for"]
-            }
+            schema={"vertices": ["person", "company"], "edges": ["knows", "works_for"]}
         )
         assert "vertices" in schema.model_dump()["schema_data"]
 
     def test_schema_info_complex(self):
         schema = SchemaInfo(
-            schema={
-                "graph": {
-                    "name": "test",
-                    "properties": {"p1": "v1"}
-                }
-            }
+            schema={"graph": {"name": "test", "properties": {"p1": "v1"}}}
         )
         assert schema.model_dump()["schema_data"]["graph"]["name"] == "test"
 
@@ -326,6 +246,7 @@ class TestToolRequestsMassive:
 
     def test_zhipu_search_request_is_pydantic(self):
         from pydantic import BaseModel
+
         request = ZhipuSearchRequest(query="test")
         assert isinstance(request, BaseModel)
 
@@ -351,6 +272,7 @@ class TestToolRequestsMassive:
 
     def test_get_schema_request_is_pydantic(self):
         from pydantic import BaseModel
+
         request = GetSchemaRequest(database="test")
         assert isinstance(request, BaseModel)
 
@@ -360,7 +282,7 @@ class TestToolRequestsMassive:
             model_name="model",
             search_tool="tool",
             api_key="key",
-            user_id="user"
+            user_id="user",
         )
         assert request.query == "test"
 
@@ -370,7 +292,7 @@ class TestToolRequestsMassive:
             model_name="model",
             search_tool="tool",
             api_key="key",
-            user_id="user"
+            user_id="user",
         )
         assert request.query == "search query"
 
@@ -380,7 +302,7 @@ class TestToolRequestsMassive:
             model_name="deepseek-v3",
             search_tool="tool",
             api_key="key",
-            user_id="user"
+            user_id="user",
         )
         assert request.model_name == "deepseek-v3"
 
@@ -390,7 +312,7 @@ class TestToolRequestsMassive:
             model_name="model",
             search_tool="zhipu_search_tool",
             api_key="key",
-            user_id="user"
+            user_id="user",
         )
         assert request.search_tool == "zhipu_search_tool"
 
@@ -400,7 +322,7 @@ class TestToolRequestsMassive:
             model_name="model",
             search_tool="tool",
             api_key="12345",
-            user_id="user"
+            user_id="user",
         )
         assert request.api_key == "12345"
 
@@ -410,7 +332,7 @@ class TestToolRequestsMassive:
             model_name="model",
             search_tool="tool",
             api_key="key",
-            user_id="user123"
+            user_id="user123",
         )
         assert request.user_id == "user123"
 
@@ -420,7 +342,7 @@ class TestToolRequestsMassive:
             model_name="model",
             search_tool="tool",
             api_key="key",
-            user_id="user"
+            user_id="user",
         )
         assert request.stream is False
 
@@ -431,7 +353,7 @@ class TestToolRequestsMassive:
             search_tool="tool",
             api_key="key",
             user_id="user",
-            stream=True
+            stream=True,
         )
         assert request.stream is True
 
@@ -441,7 +363,7 @@ class TestToolRequestsMassive:
             model_name="model",
             search_tool="tool",
             api_key="key",
-            user_id="user"
+            user_id="user",
         )
         assert request.query == "搜索"
 
@@ -452,7 +374,7 @@ class TestToolRequestsMassive:
             search_tool="search-tool",
             api_key="api-key",
             user_id="user-id",
-            stream=True
+            stream=True,
         )
         assert request.query == "test query"
         assert request.model_name == "model-name"
@@ -463,11 +385,12 @@ class TestToolRequestsMassive:
 
     def test_online_search_cite_request_is_pydantic(self):
         from pydantic import BaseModel
+
         request = OnlineSearchCiteRequest(
             query="test",
             model_name="model",
             search_tool="tool",
             api_key="key",
-            user_id="user"
+            user_id="user",
         )
         assert isinstance(request, BaseModel)

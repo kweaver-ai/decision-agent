@@ -216,7 +216,7 @@ class TestModuleImports:
         from app.common.struct_logger import error_log_class
 
         assert error_log_class is not None
-        assert hasattr(error_log_class, 'ErrorLog')
-        assert hasattr(error_log_class, 'create_error_log')
-        assert hasattr(error_log_class, 'get_error_log_dict')
-        assert hasattr(error_log_class, 'get_error_log_json')
+        assert hasattr(error_log_class, "ErrorLog")
+        assert hasattr(error_log_class, "create_error_log")
+        assert hasattr(error_log_class, "get_error_log_dict")
+        assert hasattr(error_log_class, "get_error_log_json")

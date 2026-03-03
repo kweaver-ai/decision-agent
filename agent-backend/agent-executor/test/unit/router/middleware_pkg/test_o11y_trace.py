@@ -23,7 +23,9 @@ class TestO11yTrace:
 
         call_next = AsyncMock(return_value=Mock(spec=Response))
 
-        with patch('app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE', False):
+        with patch(
+            "app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE", False
+        ):
             response = await o11y_trace(request, call_next)
 
         call_next.assert_called_once_with(request)
@@ -45,9 +47,11 @@ class TestO11yTrace:
 
         call_next = AsyncMock(return_value=response)
 
-        with patch('app.common.config.Config') as MockConfig:
+        with patch("app.common.config.Config") as MockConfig:
             MockConfig.o11y.trace_enabled = False
-            with patch('app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE', True):
+            with patch(
+                "app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE", True
+            ):
                 result = await o11y_trace(request, call_next)
 
         call_next.assert_called_once_with(request)
@@ -81,11 +85,16 @@ class TestO11yTrace:
         mock_trace_exporter = MagicMock()
         mock_trace_exporter.tracer = mock_tracer
 
-        with patch('app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE', True):
-            with patch('app.common.config.Config') as MockConfig:
+        with patch(
+            "app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE", True
+        ):
+            with patch("app.common.config.Config") as MockConfig:
                 MockConfig.o11y.trace_enabled = True
                 # Inject the mock module into sys.modules
-                with patch.dict(sys.modules, {'exporter.ar_trace.trace_exporter': mock_trace_exporter}):
+                with patch.dict(
+                    sys.modules,
+                    {"exporter.ar_trace.trace_exporter": mock_trace_exporter},
+                ):
                     result = await o11y_trace(request, call_next)
 
         call_next.assert_called_once_with(request)
@@ -99,7 +108,7 @@ class TestO11yTrace:
         request.url.path = "/api/test"
         request.headers = {
             "traceparent": "00-0af7651916cd43dd8448eb211c80319c-b7ad6b7169203331-01",
-            "tracestate": "congo=ttl%3D28msrojo%3Dgreen"
+            "tracestate": "congo=ttl%3D28msrojo%3Dgreen",
         }
         request.method = "GET"
         request.url = MagicMock(__str__=Mock(return_value="http://test/api/test"))
@@ -121,10 +130,15 @@ class TestO11yTrace:
         mock_trace_exporter = MagicMock()
         mock_trace_exporter.tracer = mock_tracer
 
-        with patch('app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE', True):
-            with patch('app.common.config.Config') as MockConfig:
+        with patch(
+            "app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE", True
+        ):
+            with patch("app.common.config.Config") as MockConfig:
                 MockConfig.o11y.trace_enabled = True
-                with patch.dict(sys.modules, {'exporter.ar_trace.trace_exporter': mock_trace_exporter}):
+                with patch.dict(
+                    sys.modules,
+                    {"exporter.ar_trace.trace_exporter": mock_trace_exporter},
+                ):
                     result = await o11y_trace(request, call_next)
 
         call_next.assert_called_once_with(request)
@@ -156,10 +170,15 @@ class TestO11yTrace:
         mock_trace_exporter = MagicMock()
         mock_trace_exporter.tracer = mock_tracer
 
-        with patch('app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE', True):
-            with patch('app.common.config.Config') as MockConfig:
+        with patch(
+            "app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE", True
+        ):
+            with patch("app.common.config.Config") as MockConfig:
                 MockConfig.o11y.trace_enabled = True
-                with patch.dict(sys.modules, {'exporter.ar_trace.trace_exporter': mock_trace_exporter}):
+                with patch.dict(
+                    sys.modules,
+                    {"exporter.ar_trace.trace_exporter": mock_trace_exporter},
+                ):
                     with pytest.raises(ValueError):
                         result = await o11y_trace(request, call_next)
 
@@ -194,10 +213,15 @@ class TestO11yTrace:
         mock_trace_exporter = MagicMock()
         mock_trace_exporter.tracer = mock_tracer
 
-        with patch('app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE', True):
-            with patch('app.common.config.Config') as MockConfig:
+        with patch(
+            "app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE", True
+        ):
+            with patch("app.common.config.Config") as MockConfig:
                 MockConfig.o11y.trace_enabled = True
-                with patch.dict(sys.modules, {'exporter.ar_trace.trace_exporter': mock_trace_exporter}):
+                with patch.dict(
+                    sys.modules,
+                    {"exporter.ar_trace.trace_exporter": mock_trace_exporter},
+                ):
                     result = await o11y_trace(request, call_next)
 
         # Verify status code was set
@@ -230,10 +254,15 @@ class TestO11yTrace:
         mock_trace_exporter = MagicMock()
         mock_trace_exporter.tracer = mock_tracer
 
-        with patch('app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE', True):
-            with patch('app.common.config.Config') as MockConfig:
+        with patch(
+            "app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE", True
+        ):
+            with patch("app.common.config.Config") as MockConfig:
                 MockConfig.o11y.trace_enabled = True
-                with patch.dict(sys.modules, {'exporter.ar_trace.trace_exporter': mock_trace_exporter}):
+                with patch.dict(
+                    sys.modules,
+                    {"exporter.ar_trace.trace_exporter": mock_trace_exporter},
+                ):
                     with pytest.raises(ValueError):
                         result = await o11y_trace(request, call_next)
 
@@ -268,10 +297,15 @@ class TestO11yTrace:
         mock_trace_exporter = MagicMock()
         mock_trace_exporter.tracer = mock_tracer
 
-        with patch('app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE', True):
-            with patch('app.common.config.Config') as MockConfig:
+        with patch(
+            "app.router.middleware_pkg.o11y_trace.TELEMETRY_SDK_AVAILABLE", True
+        ):
+            with patch("app.common.config.Config") as MockConfig:
                 MockConfig.o11y.trace_enabled = True
-                with patch.dict(sys.modules, {'exporter.ar_trace.trace_exporter': mock_trace_exporter}):
+                with patch.dict(
+                    sys.modules,
+                    {"exporter.ar_trace.trace_exporter": mock_trace_exporter},
+                ):
                     result = await o11y_trace(request, call_next)
 
         # Verify tracer was called

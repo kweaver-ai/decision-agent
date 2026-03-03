@@ -36,6 +36,7 @@ class TestResumeAgent:
             with patch(
                 "app.router.agent_controller_pkg.resume_agent_v2.create_resume_generator"
             ) as mock_create:
+
                 async def mock_gen():
                     yield "test data"
 

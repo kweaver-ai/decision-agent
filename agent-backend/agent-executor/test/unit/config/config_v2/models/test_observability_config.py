@@ -19,10 +19,7 @@ class TestO11yConfig:
         """测试自定义值"""
         from app.config.config_v2.models.observability_config import O11yConfig
 
-        config = O11yConfig(
-            log_enabled=True,
-            trace_enabled=True
-        )
+        config = O11yConfig(log_enabled=True, trace_enabled=True)
 
         assert config.log_enabled is True
         assert config.trace_enabled is True
@@ -31,10 +28,7 @@ class TestO11yConfig:
         """测试从字典创建（所有字段）"""
         from app.config.config_v2.models.observability_config import O11yConfig
 
-        data = {
-            "log_enabled": True,
-            "trace_enabled": True
-        }
+        data = {"log_enabled": True, "trace_enabled": True}
 
         config = O11yConfig.from_dict(data)
 
@@ -91,7 +85,7 @@ class TestDialogLoggingConfig:
             enable_dialog_logging=False,
             use_single_log_file=True,
             single_profile_file_path="/tmp/profile.log",
-            single_trajectory_file_path="/tmp/trajectory.log"
+            single_trajectory_file_path="/tmp/trajectory.log",
         )
 
         assert config.enable_dialog_logging is False
@@ -107,7 +101,7 @@ class TestDialogLoggingConfig:
             "enable_dialog_logging": False,
             "use_single_log_file": True,
             "single_profile_file_path": "/tmp/profile.log",
-            "single_trajectory_file_path": "/tmp/trajectory.log"
+            "single_trajectory_file_path": "/tmp/trajectory.log",
         }
 
         config = DialogLoggingConfig.from_dict(data)
@@ -151,9 +145,9 @@ class TestDialogLoggingConfig:
         """测试自定义profile路径"""
         from app.config.config_v2.models.observability_config import DialogLoggingConfig
 
-        config = DialogLoggingConfig.from_dict({
-            "single_profile_file_path": "/var/log/profile.log"
-        })
+        config = DialogLoggingConfig.from_dict(
+            {"single_profile_file_path": "/var/log/profile.log"}
+        )
 
         assert config.single_profile_file_path == "/var/log/profile.log"
 
@@ -161,8 +155,8 @@ class TestDialogLoggingConfig:
         """测试自定义trajectory路径"""
         from app.config.config_v2.models.observability_config import DialogLoggingConfig
 
-        config = DialogLoggingConfig.from_dict({
-            "single_trajectory_file_path": "/var/log/trajectory.log"
-        })
+        config = DialogLoggingConfig.from_dict(
+            {"single_trajectory_file_path": "/var/log/trajectory.log"}
+        )
 
         assert config.single_trajectory_file_path == "/var/log/trajectory.log"

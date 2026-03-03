@@ -7,7 +7,10 @@ import os
 from app.config.config_v2.config_loader import ConfigLoader
 from app.config.config_v2.config_class_v2 import ConfigClassV2
 from app.config.config_v2.models.app_config import AppConfig
-from app.config.config_v2.models.observability_config import O11yConfig, DialogLoggingConfig
+from app.config.config_v2.models.observability_config import (
+    O11yConfig,
+    DialogLoggingConfig,
+)
 from app.config.config_v2.models.feature_config import FeaturesConfig
 from app.config.config_v2.models.service_config import ServiceEndpoint, ServicesConfig
 
@@ -16,8 +19,8 @@ class TestConfigLoaderMassive:
     """Massive tests for ConfigLoader"""
 
     def test_class_vars_exist(self):
-        assert hasattr(ConfigLoader, '_config_path')
-        assert hasattr(ConfigLoader, '_config_data')
+        assert hasattr(ConfigLoader, "_config_path")
+        assert hasattr(ConfigLoader, "_config_data")
 
     def test_reset(self):
         ConfigLoader._config_path = "test"
@@ -107,11 +110,13 @@ class TestAppConfigMassive:
     def test_get_stdlib_log_level_info(self):
         config = AppConfig(log_level="info")
         import logging
+
         assert config.get_stdlib_log_level() == logging.INFO
 
     def test_get_stdlib_log_level_debug(self):
         config = AppConfig(log_level="debug")
         import logging
+
         assert config.get_stdlib_log_level() == logging.DEBUG
 
     def test_from_dict_empty(self):
@@ -136,6 +141,7 @@ class TestAppConfigMassive:
 
     def test_is_dataclass(self):
         from dataclasses import is_dataclass
+
         assert is_dataclass(AppConfig)
 
 
@@ -202,7 +208,9 @@ class TestDialogLoggingConfigMassive:
         assert config.single_trajectory_file_path == "./data/debug_logs/trajectory.log"
 
     def test_single_trajectory_file_path_custom(self):
-        config = DialogLoggingConfig(single_trajectory_file_path="/custom/trajectory.log")
+        config = DialogLoggingConfig(
+            single_trajectory_file_path="/custom/trajectory.log"
+        )
         assert config.single_trajectory_file_path == "/custom/trajectory.log"
 
     def test_from_dict_empty(self):
@@ -260,6 +268,7 @@ class TestFeaturesConfigMassive:
 
     def test_is_dataclass(self):
         from dataclasses import is_dataclass
+
         assert is_dataclass(FeaturesConfig)
 
 
@@ -294,6 +303,7 @@ class TestServiceEndpointMassive:
 
     def test_is_dataclass(self):
         from dataclasses import is_dataclass
+
         assert is_dataclass(ServiceEndpoint)
 
 
@@ -380,17 +390,18 @@ class TestServicesConfigMassive:
         assert config.mf_model_api is not None
 
     def test_from_dict_with_values(self):
-        config = ServicesConfig.from_dict({
-            "mf_model_api": {"host": "custom", "port": "1111"}
-        })
+        config = ServicesConfig.from_dict(
+            {"mf_model_api": {"host": "custom", "port": "1111"}}
+        )
         assert config.mf_model_api.host == "custom"
 
     def test_from_dict_port_int(self):
-        config = ServicesConfig.from_dict({
-            "mf_model_api": {"host": "test", "port": 9999}
-        })
+        config = ServicesConfig.from_dict(
+            {"mf_model_api": {"host": "test", "port": 9999}}
+        )
         assert config.mf_model_api.port == "9999"
 
     def test_is_dataclass(self):
         from dataclasses import is_dataclass
+
         assert is_dataclass(ServicesConfig)

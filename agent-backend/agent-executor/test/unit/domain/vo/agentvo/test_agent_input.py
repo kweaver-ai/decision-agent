@@ -140,7 +140,7 @@ class TestAgentInputVo:
         history = [
             {"role": "user", "content": "hello"},
             {"role": "assistant", "content": "hi there"},
-            {"role": "user", "content": "how are you?"}
+            {"role": "user", "content": "how are you?"},
         ]
         vo = AgentInputVo(query="test", history=history)
 
@@ -223,7 +223,7 @@ class TestAgentInputVoEdgeCases:
             {
                 "role": "user",
                 "content": "Question",
-                "extra": "extra_value"  # Extra field with string value
+                "extra": "extra_value",  # Extra field with string value
             }
         ]
         vo = AgentInputVo(query="test", history=history)
@@ -237,11 +237,8 @@ class TestAgentInputVoEdgeCases:
         tool = {
             "name": "test_tool",
             "description": "A test tool",
-            "parameters": {
-                "param1": "value1",
-                "param2": {"nested": "value2"}
-            },
-            "required": ["param1"]
+            "parameters": {"param1": "value1", "param2": {"nested": "value2"}},
+            "required": ["param1"],
         }
         vo = AgentInputVo(query="test", tool=tool)
 
@@ -255,7 +252,7 @@ class TestAgentInputVoEdgeCases:
             "Authorization": "Bearer token",
             "Content-Type": "application/json",
             "Accept": "application/json",
-            "User-Agent": "TestAgent/1.0"
+            "User-Agent": "TestAgent/1.0",
         }
         vo = AgentInputVo(query="test", header=header)
 
@@ -266,13 +263,7 @@ class TestAgentInputVoEdgeCases:
         """测试嵌套的self_config"""
         from app.domain.vo.agentvo import AgentInputVo
 
-        config = {
-            "level1": {
-                "level2": {
-                    "level3": "deep_value"
-                }
-            }
-        }
+        config = {"level1": {"level2": {"level3": "deep_value"}}}
         vo = AgentInputVo(query="test", self_config=config)
 
         assert vo.self_config["level1"]["level2"]["level3"] == "deep_value"
@@ -395,7 +386,7 @@ class TestAgentInputVoEdgeCases:
             history=[{"role": "user", "content": "hi"}],
             header={"Auth": "Bearer token"},
             self_config={"key": "value"},
-            custom_field="custom"
+            custom_field="custom",
         )
 
         data = vo.model_dump()
@@ -432,7 +423,7 @@ class TestAgentInputVoEdgeCases:
         from app.domain.vo.agentvo import AgentInputVo
 
         vo = AgentInputVo(query="test", count=123)
-        data = vo.model_dump(mode='json')
+        data = vo.model_dump(mode="json")
 
         assert data["count"] == 123
 
@@ -483,7 +474,7 @@ class TestAgentInputVoEdgeCases:
         data = {
             "query": "test query",
             "history": [{"role": "user", "content": "hello"}],
-            "custom": "value"
+            "custom": "value",
         }
 
         vo = AgentInputVo(**data)
@@ -533,7 +524,7 @@ class TestAgentInputVoEdgeCases:
         """测试XML格式的query"""
         from app.domain.vo.agentvo import AgentInputVo
 
-        query = '<root><item>value</item></root>'
+        query = "<root><item>value</item></root>"
         vo = AgentInputVo(query=query)
 
         assert vo.query == query
@@ -564,7 +555,7 @@ class TestAgentInputVoEdgeCases:
             {"role": "system", "content": "System message"},
             {"role": "user", "content": "User message"},
             {"role": "assistant", "content": "Assistant message"},
-            {"role": "function", "content": "Function result"}
+            {"role": "function", "content": "Function result"},
         ]
         vo = AgentInputVo(query="test", history=history)
 
@@ -576,10 +567,7 @@ class TestAgentInputVoEdgeCases:
         from app.domain.vo.agentvo import AgentInputVo
 
         vo = AgentInputVo(
-            query="test",
-            field1="value1",
-            field2="value2",
-            field3="value3"
+            query="test", field1="value1", field2="value2", field3="value3"
         )
 
         assert vo.field1 == "value1"
@@ -598,7 +586,7 @@ class TestAgentInputVoEdgeCases:
             bool_field=True,
             list_field=[1, 2, 3],
             dict_field={"key": "value"},
-            none_field=None
+            none_field=None,
         )
 
         assert vo.string_field == "string"
@@ -680,7 +668,7 @@ class TestAgentInputVoEdgeCases:
         from app.domain.vo.agentvo import AgentInputVo
 
         # Check that extra fields are allowed
-        assert AgentInputVo.model_config.get('extra') == 'allow'
+        assert AgentInputVo.model_config.get("extra") == "allow"
 
     def test_field_description(self):
         """测试字段描述"""

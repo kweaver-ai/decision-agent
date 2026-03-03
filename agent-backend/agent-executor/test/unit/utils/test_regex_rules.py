@@ -316,7 +316,9 @@ class TestRegexPatternsEdgeCases:
         pattern = RegexPatterns.oss_id_pattern_allow_empty
 
         # Valid OSS ID: AD-19digits-19digits
-        assert re.match(pattern, "AD-1234567890123456789-1234567890123456789") is not None
+        assert (
+            re.match(pattern, "AD-1234567890123456789-1234567890123456789") is not None
+        )
         assert re.match(pattern, "") is not None  # Allow empty
 
     def test_oss_id_pattern_invalid(self):
@@ -326,7 +328,9 @@ class TestRegexPatternsEdgeCases:
 
         pattern = RegexPatterns.oss_id_pattern_allow_empty
 
-        assert re.match(pattern, "AD-123456789012345678-123456789012345678") is None  # 18 digits
+        assert (
+            re.match(pattern, "AD-123456789012345678-123456789012345678") is None
+        )  # 18 digits
 
     def test_snow_id_pattern_allow_empty(self):
         """测试允许空的雪花ID模式"""

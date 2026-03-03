@@ -27,9 +27,9 @@ class ExceptionHandler:
 
         # 使用 exception_logger 记录异常（增强日志）
         exception_logger.log_exception(
-            exc, 
-            {"context": "agent_core_v2", "source": "ExceptionHandler"}, 
-            datetime.now()
+            exc,
+            {"context": "agent_core_v2", "source": "ExceptionHandler"},
+            datetime.now(),
         )
 
         message = "agent run failed: {}".format(repr(exc))

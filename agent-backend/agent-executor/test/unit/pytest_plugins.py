@@ -6,6 +6,7 @@
 import sys
 from unittest.mock import MagicMock
 
+
 def pytest_configure(config):
     """Pytest 配置钩子 - 在测试开始前调用"""
     setup_all_dolphin_mocks()
@@ -16,31 +17,31 @@ def setup_all_dolphin_mocks():
 
     # 完整的模块列表
     dolphin_modules = {
-        'dolphin': None,
-        'dolphin.core': None,
-        'dolphin.core.common': None,
-        'dolphin.core.common.constants': {
-            'KEY_SESSION_ID': 'session_id',
-            'KEY_USER_ID': 'user_id',
-            'KEY_AGENT_ID': 'agent_id',
+        "dolphin": None,
+        "dolphin.core": None,
+        "dolphin.core.common": None,
+        "dolphin.core.common.constants": {
+            "KEY_SESSION_ID": "session_id",
+            "KEY_USER_ID": "user_id",
+            "KEY_AGENT_ID": "agent_id",
         },
-        'dolphin.core.common.exceptions': {
-            'ModelException': type('ModelException', (Exception,), {}),
-            'SkillException': type('SkillException', (Exception,), {}),
-            'DolphinException': type('DolphinException', (Exception,), {}),
+        "dolphin.core.common.exceptions": {
+            "ModelException": type("ModelException", (Exception,), {}),
+            "SkillException": type("SkillException", (Exception,), {}),
+            "DolphinException": type("DolphinException", (Exception,), {}),
         },
-        'dolphin.core.context': None,
-        'dolphin.core.context.context': None,
-        'dolphin.core.context.var_output': {
-            'VarOutput': create_mock_var_output_class(),
+        "dolphin.core.context": None,
+        "dolphin.core.context.context": None,
+        "dolphin.core.context.var_output": {
+            "VarOutput": create_mock_var_output_class(),
         },
-        'dolphin.core.coroutine': None,
-        'dolphin.core.coroutine.resume_handle': {
-            'ResumeHandle': create_mock_resume_handle_class(),
+        "dolphin.core.coroutine": None,
+        "dolphin.core.coroutine.resume_handle": {
+            "ResumeHandle": create_mock_resume_handle_class(),
         },
-        'dolphin.core.utils': None,
-        'dolphin.core.utils.tools': {
-            'Tool': type('Tool', (object,), {}),
+        "dolphin.core.utils": None,
+        "dolphin.core.utils.tools": {
+            "Tool": type("Tool", (object,), {}),
         },
     }
 
@@ -48,7 +49,7 @@ def setup_all_dolphin_mocks():
         if module_name not in sys.modules:
             mock_module = MagicMock()
             mock_module.__name__ = module_name
-            mock_module.__file__ = f'{module_name.replace(".", "/")}/__init__.py'
+            mock_module.__file__ = f"{module_name.replace('.', '/')}/__init__.py"
             mock_module.__path__ = []  # 使其成为包
 
             # 添加特定属性
@@ -94,8 +95,15 @@ def create_mock_resume_handle_class():
     """创建模拟的 ResumeHandle 类"""
 
     class MockResumeHandle:
-        def __init__(self, frame_id="", snapshot_id="", resume_token="",
-                     interrupt_type="", current_block="", restart_block=""):
+        def __init__(
+            self,
+            frame_id="",
+            snapshot_id="",
+            resume_token="",
+            interrupt_type="",
+            current_block="",
+            restart_block="",
+        ):
             self.frame_id = frame_id
             self.snapshot_id = snapshot_id
             self.resume_token = resume_token

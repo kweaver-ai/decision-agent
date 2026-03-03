@@ -56,7 +56,9 @@ class TestBuildMemory:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.post = MagicMock(return_value=mock_post_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -79,7 +81,9 @@ class TestBuildMemory:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.post = MagicMock(return_value=mock_post_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -105,7 +109,9 @@ class TestBuildMemory:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.post = MagicMock(return_value=mock_post_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -115,7 +121,7 @@ class TestBuildMemory:
                 agent_id=agent_id,
                 run_id=run_id,
                 metadata=metadata,
-                headers=headers
+                headers=headers,
             )
 
     @pytest.mark.asyncio
@@ -134,7 +140,9 @@ class TestBuildMemory:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.post = MagicMock(return_value=mock_post_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -147,13 +155,17 @@ class TestBuildMemory:
         messages = [{"role": "user", "content": "test"}]
 
         mock_post_context = AsyncMock()
-        mock_post_context.__aenter__.side_effect = asyncio.TimeoutError("Request timeout")
+        mock_post_context.__aenter__.side_effect = asyncio.TimeoutError(
+            "Request timeout"
+        )
         mock_post_context.__aexit__.return_value = None
 
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.post = MagicMock(return_value=mock_post_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -172,7 +184,9 @@ class TestBuildMemory:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.post = MagicMock(return_value=mock_post_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
@@ -193,7 +207,9 @@ class TestBuildMemory:
         with patch("aiohttp.ClientSession") as mock_session_class:
             mock_session_instance = MagicMock()
             mock_session_instance.post = MagicMock(return_value=mock_post_context)
-            mock_session_instance.__aenter__ = AsyncMock(return_value=mock_session_instance)
+            mock_session_instance.__aenter__ = AsyncMock(
+                return_value=mock_session_instance
+            )
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 

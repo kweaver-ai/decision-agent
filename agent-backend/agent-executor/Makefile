@@ -85,12 +85,7 @@ test-verbose:
 # 代码质量检查
 lint:
 	@echo "🔍 检查代码质量..."
-	@if uv run which ruff >/dev/null 2>&1; then \
-		uv run ruff check --fix app test; \
-		uv run ruff format app test; \
-	else \
-		echo "⚠️  ruff 未安装，跳过代码检查"; \
-	fi
+	uv run pre-commit run -a
 
 # 代码格式化
 format:
@@ -104,6 +99,7 @@ format:
 # UV 特定操作
 uv-sync:
 	uv sync --all-groups
+	uv run pre-commit install
 	@echo "✅ UV 环境同步完成"
 
 uv-clean:
@@ -146,4 +142,3 @@ help:
 	@echo "  make dev-setup                    # 设置开发环境"
 	@echo "  make test                         # 运行所有测试"
 	@echo "  make run                          # 运行应用"
-	

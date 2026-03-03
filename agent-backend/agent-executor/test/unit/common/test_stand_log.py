@@ -44,7 +44,9 @@ class TestStandLogLogging:
     @patch("app.common.stand_log.Config")
     @patch("app.common.stand_log.os.path.exists")
     @patch("app.common.stand_log.os.makedirs")
-    def test_init_creates_log_directory_if_not_exists(self, m_makedirs, m_exists, m_config):
+    def test_init_creates_log_directory_if_not_exists(
+        self, m_makedirs, m_exists, m_config
+    ):
         """测试日志目录不存在时创建"""
         m_exists.return_value = False
         m_config.app.get_stdlib_log_level.return_value = logging.INFO

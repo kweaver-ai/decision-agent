@@ -35,7 +35,10 @@ class TestConfigInitializer:
         """测试使用空配置初始化"""
         m_loader.load_config_file.return_value = {}
 
-        from app.config.config_v2.config_initializer import ConfigInitializer, ConfigState
+        from app.config.config_v2.config_initializer import (
+            ConfigInitializer,
+            ConfigState,
+        )
 
         state = ConfigState()
         ConfigInitializer.initialize(state)
@@ -64,7 +67,10 @@ class TestConfigInitializer:
         }
         m_loader.load_config_file.return_value = test_config
 
-        from app.config.config_v2.config_initializer import ConfigInitializer, ConfigState
+        from app.config.config_v2.config_initializer import (
+            ConfigInitializer,
+            ConfigState,
+        )
 
         state = ConfigState()
         ConfigInitializer.initialize(state)
@@ -84,7 +90,11 @@ class TestConfigInitializer:
         m_sys.frozen = False
         m_sys._MEIPASS = "/tmp/pyinstaller"
 
-        from app.config.config_v2.config_initializer import ConfigInitializer, ConfigState, AppConfig
+        from app.config.config_v2.config_initializer import (
+            ConfigInitializer,
+            ConfigState,
+            AppConfig,
+        )
 
         app_config = AppConfig()
         ConfigInitializer._post_process_app_config(app_config)
@@ -101,7 +111,11 @@ class TestConfigInitializer:
         m_sys.frozen = True
         m_sys._MEIPASS = "/tmp/pyinstaller"
 
-        from app.config.config_v2.config_initializer import ConfigInitializer, ConfigState, AppConfig
+        from app.config.config_v2.config_initializer import (
+            ConfigInitializer,
+            ConfigState,
+            AppConfig,
+        )
 
         app_config = AppConfig()
         ConfigInitializer._post_process_app_config(app_config)
@@ -114,7 +128,11 @@ class TestConfigInitializer:
         """测试IPv4地址后处理"""
         m_loader.load_config_file.return_value = {}
 
-        from app.config.config_v2.config_initializer import ConfigInitializer, ConfigState, AppConfig
+        from app.config.config_v2.config_initializer import (
+            ConfigInitializer,
+            ConfigState,
+            AppConfig,
+        )
 
         app_config = AppConfig(host_ip="192.168.1.1")
         ConfigInitializer._post_process_host_ip(app_config)
@@ -127,7 +145,11 @@ class TestConfigInitializer:
         m_loader.load_config_file.return_value = {}
 
         import ipaddress
-        from app.config.config_v2.config_initializer import ConfigInitializer, ConfigState, AppConfig
+        from app.config.config_v2.config_initializer import (
+            ConfigInitializer,
+            ConfigState,
+            AppConfig,
+        )
 
         app_config = AppConfig(host_ip="::1")
         ConfigInitializer._post_process_host_ip(app_config)
@@ -139,7 +161,11 @@ class TestConfigInitializer:
         """测试无效IP地址后处理"""
         m_loader.load_config_file.return_value = {}
 
-        from app.config.config_v2.config_initializer import ConfigInitializer, ConfigState, AppConfig
+        from app.config.config_v2.config_initializer import (
+            ConfigInitializer,
+            ConfigState,
+            AppConfig,
+        )
 
         app_config = AppConfig(host_ip="invalid-ip")
         ConfigInitializer._post_process_host_ip(app_config)
@@ -151,7 +177,11 @@ class TestConfigInitializer:
         """测试localhost地址后处理"""
         m_loader.load_config_file.return_value = {}
 
-        from app.config.config_v2.config_initializer import ConfigInitializer, ConfigState, AppConfig
+        from app.config.config_v2.config_initializer import (
+            ConfigInitializer,
+            ConfigState,
+            AppConfig,
+        )
 
         app_config = AppConfig(host_ip="127.0.0.1")
         ConfigInitializer._post_process_host_ip(app_config)

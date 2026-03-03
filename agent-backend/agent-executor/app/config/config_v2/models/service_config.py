@@ -101,5 +101,3 @@ class ServicesConfig:
             docset_private=get_endpoint(data.get("docset_private", {})),
             datahub=get_endpoint(data.get("datahub", {})),
         )
-
-

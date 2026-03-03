@@ -67,7 +67,6 @@ class AgentCoreV2:
 
     memory_handler: MemoryHandler = None
 
-
     output_handler: OutputHandler = None
 
     cache_handler: CacheHandler = None
@@ -120,38 +119,46 @@ class AgentCoreV2:
 
     def _get_resume_info_from_options(self) -> Optional["ResumeInfo"]:
         """从 run_options 中获取 resume_info，并转换为 ResumeInfo 类型"""
-        if hasattr(self.run_options_vo, 'resume_info') and self.run_options_vo.resume_info:
+        if (
+            hasattr(self.run_options_vo, "resume_info")
+            and self.run_options_vo.resume_info
+        ):
             resume_info_data = self.run_options_vo.resume_info
-            
+
             # 如果已经是 ResumeInfo 类型，直接返回
-            from app.router.agent_controller_pkg.rdto.v2.req.resume_agent import ResumeInfo
+            from app.router.agent_controller_pkg.rdto.v2.req.resume_agent import (
+                ResumeInfo,
+            )
+
             if isinstance(resume_info_data, ResumeInfo):
                 return resume_info_data
-            
+
             # 如果是 dict 类型（JSON 反序列化后），转换为 ResumeInfo 对象
             if isinstance(resume_info_data, dict):
                 return ResumeInfo(**resume_info_data)
-            
+
             # 其他情况尝试直接返回
             return resume_info_data
         return None
 
     def _get_registered_agent_instance(self, agent_run_id: str) -> "DolphinAgent":
         """根据 agent_run_id 获取已注册的 DolphinAgent 实例
-        
+
         Args:
             agent_run_id: Agent 运行 ID
-            
+
         Returns:
             DolphinAgent 实例
-            
+
         Raises:
             ValueError: 当实例不存在时
         """
         result = agent_instance_manager.get(agent_run_id)
         if result is None:
-            raise ValueError(f"Agent instance not found for agent_run_id: {agent_run_id}")
-        
+            raise ValueError(
+                f"Agent instance not found for agent_run_id: {agent_run_id}"
+            )
+
         agent, _ = result
         return agent
 
@@ -212,7 +219,7 @@ class AgentCoreV2:
             context_variables[KEY_SESSION_ID] = event_key
             context_variables[KEY_USER_ID] = get_user_account_id(headers) or "unknown"
 
-            # 根据配置启用 dophin explore v2 
+            # 根据配置启用 dophin explore v2
             if Config.features.use_explore_block_v2:
                 # context_variables["explore_block_v2"] = "true"
                 flags.set_flag(flags.EXPLORE_BLOCK_V2, True)
@@ -225,7 +232,6 @@ class AgentCoreV2:
             else:
                 flags.set_flag(flags.DISABLE_LLM_CACHE, False)
 
-            
             # 将认证信息添加到 context_variables 中
             set_user_account_id(context_variables, get_user_account_id(headers) or "")
             set_user_account_type(
@@ -238,23 +244,34 @@ class AgentCoreV2:
             try:
                 # 判断是否为恢复执行场景
                 resume_info = self._get_resume_info_from_options()
-                
+
                 if resume_info:
                     # 恢复执行：使用 resume_dolphin_agent_run
                     from .resume_dolphin_agent_run import resume_dolphin_agent_run
-                    
+
                     # 获取已注册的 DolphinAgent 实例
                     agent = self._get_registered_agent_instance(event_key)
-                    
+
                     StandLogger.info(f"Resume agent with agent_run_id: {event_key}")
                     output_generator = resume_dolphin_agent_run(
-                        self, agent, event_key, resume_info,
-                        agent_config, context_variables, headers, is_debug
+                        self,
+                        agent,
+                        event_key,
+                        resume_info,
+                        agent_config,
+                        context_variables,
+                        headers,
+                        is_debug,
                     )
                 else:
                     # 首次执行：走原有 run_dolphin 流程
                     output_generator = run_dolphin(
-                        self, agent_config, context_variables, headers, is_debug, temp_files
+                        self,
+                        agent_config,
+                        context_variables,
+                        headers,
+                        is_debug,
+                        temp_files,
                     )
 
                 if output_vars:

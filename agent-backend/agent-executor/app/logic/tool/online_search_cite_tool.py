@@ -108,7 +108,9 @@ async def get_answer(request, headers, search_results) -> (str, list):
 
     # Validate search_results structure before accessing nested elements
     try:
-        ref_list = search_results["choices"][0]["message"]["tool_calls"][1]["search_result"]
+        ref_list = search_results["choices"][0]["message"]["tool_calls"][1][
+            "search_result"
+        ]
     except (KeyError, IndexError, TypeError) as e:
         raise ValueError(f"Invalid search_results structure: {e}") from e
 

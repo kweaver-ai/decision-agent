@@ -30,4 +30,3 @@ class AgentRunOptionsVo(BaseModel):
     # new add 2026年01月25日 --start--
     resume_info: Optional[Any] = None  # 恢复执行信息，类型为 ResumeInfo
     # new add 2026年01月25日 --end--
-

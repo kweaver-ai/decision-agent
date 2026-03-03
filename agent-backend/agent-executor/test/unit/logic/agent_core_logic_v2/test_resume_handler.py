@@ -25,10 +25,18 @@ class TestCreateResumeGenerator:
             yield {"output": "chunk1"}
             yield {"output": "chunk2"}
 
-        with patch("app.logic.agent_core_logic_v2.resume_handler.interrupt_handle_to_resume_handle") as mock_convert, \
-             patch("app.logic.agent_core_logic_v2.interrupt_utils.process_arun_loop") as mock_process, \
-             patch("app.logic.agent_core_logic_v2.resume_handler.json_serialize_async", new_callable=AsyncMock) as mock_serialize:
-
+        with (
+            patch(
+                "app.logic.agent_core_logic_v2.resume_handler.interrupt_handle_to_resume_handle"
+            ) as mock_convert,
+            patch(
+                "app.logic.agent_core_logic_v2.interrupt_utils.process_arun_loop"
+            ) as mock_process,
+            patch(
+                "app.logic.agent_core_logic_v2.resume_handler.json_serialize_async",
+                new_callable=AsyncMock,
+            ) as mock_serialize,
+        ):
             mock_convert.return_value = MagicMock()
             mock_process.return_value = mock_process_arun_loop(mock_agent, False)
             mock_serialize.return_value = '{"output": "serialized"}'
@@ -36,7 +44,9 @@ class TestCreateResumeGenerator:
             mock_agent.resume = AsyncMock()
 
             results = []
-            async for result in create_resume_generator(mock_agent, mock_agent_core, agent_run_id, mock_resume_info):
+            async for result in create_resume_generator(
+                mock_agent, mock_agent_core, agent_run_id, mock_resume_info
+            ):
                 results.append(result)
 
             assert len(results) == 3  # 2 chunks + 1 final
@@ -58,10 +68,18 @@ class TestCreateResumeGenerator:
         async def mock_process_arun_loop(agent, is_debug):
             yield {"output": "result"}
 
-        with patch("app.logic.agent_core_logic_v2.resume_handler.interrupt_handle_to_resume_handle") as mock_convert, \
-             patch("app.logic.agent_core_logic_v2.interrupt_utils.process_arun_loop") as mock_process, \
-             patch("app.logic.agent_core_logic_v2.resume_handler.json_serialize_async", new_callable=AsyncMock) as mock_serialize:
-
+        with (
+            patch(
+                "app.logic.agent_core_logic_v2.resume_handler.interrupt_handle_to_resume_handle"
+            ) as mock_convert,
+            patch(
+                "app.logic.agent_core_logic_v2.interrupt_utils.process_arun_loop"
+            ) as mock_process,
+            patch(
+                "app.logic.agent_core_logic_v2.resume_handler.json_serialize_async",
+                new_callable=AsyncMock,
+            ) as mock_serialize,
+        ):
             mock_convert.return_value = MagicMock()
             mock_process.return_value = mock_process_arun_loop(mock_agent, False)
             mock_serialize.return_value = '{"output": "serialized"}'
@@ -69,7 +87,9 @@ class TestCreateResumeGenerator:
             mock_agent.resume = AsyncMock()
 
             results = []
-            async for result in create_resume_generator(mock_agent, mock_agent_core, agent_run_id, mock_resume_info):
+            async for result in create_resume_generator(
+                mock_agent, mock_agent_core, agent_run_id, mock_resume_info
+            ):
                 results.append(result)
 
             assert len(results) == 2  # 1 chunk + 1 final
@@ -102,10 +122,18 @@ class TestCreateResumeGenerator:
         async def mock_process_arun_loop(agent, is_debug):
             yield {"output": "test"}
 
-        with patch("app.logic.agent_core_logic_v2.resume_handler.interrupt_handle_to_resume_handle") as mock_convert, \
-             patch("app.logic.agent_core_logic_v2.interrupt_utils.process_arun_loop") as mock_process, \
-             patch("app.logic.agent_core_logic_v2.resume_handler.json_serialize_async", new_callable=AsyncMock) as mock_serialize:
-
+        with (
+            patch(
+                "app.logic.agent_core_logic_v2.resume_handler.interrupt_handle_to_resume_handle"
+            ) as mock_convert,
+            patch(
+                "app.logic.agent_core_logic_v2.interrupt_utils.process_arun_loop"
+            ) as mock_process,
+            patch(
+                "app.logic.agent_core_logic_v2.resume_handler.json_serialize_async",
+                new_callable=AsyncMock,
+            ) as mock_serialize,
+        ):
             mock_convert.return_value = MagicMock()
             mock_process.return_value = mock_process_arun_loop(mock_agent, False)
             mock_serialize.return_value = '{"output": "test"}'
@@ -113,7 +141,9 @@ class TestCreateResumeGenerator:
             mock_agent.resume = AsyncMock()
 
             results = []
-            async for result in create_resume_generator(mock_agent, mock_agent_core, agent_run_id, mock_resume_info):
+            async for result in create_resume_generator(
+                mock_agent, mock_agent_core, agent_run_id, mock_resume_info
+            ):
                 results.append(result)
 
             assert len(results) == 2
@@ -132,14 +162,25 @@ class TestCreateResumeGenerator:
 
         agent_run_id = "test_run_error"
 
-        with patch("app.logic.agent_core_logic_v2.resume_handler.interrupt_handle_to_resume_handle", side_effect=Exception("Test error")), \
-             patch("app.logic.agent_core_logic_v2.resume_handler.json_serialize_async", new_callable=AsyncMock) as mock_serialize, \
-             patch("app.logic.agent_core_logic_v2.resume_handler.agent_instance_manager") as mock_manager:
-
+        with (
+            patch(
+                "app.logic.agent_core_logic_v2.resume_handler.interrupt_handle_to_resume_handle",
+                side_effect=Exception("Test error"),
+            ),
+            patch(
+                "app.logic.agent_core_logic_v2.resume_handler.json_serialize_async",
+                new_callable=AsyncMock,
+            ) as mock_serialize,
+            patch(
+                "app.logic.agent_core_logic_v2.resume_handler.agent_instance_manager"
+            ) as mock_manager,
+        ):
             mock_serialize.return_value = '{"error": "Test error"}'
 
             results = []
-            async for result in create_resume_generator(mock_agent, mock_agent_core, agent_run_id, mock_resume_info):
+            async for result in create_resume_generator(
+                mock_agent, mock_agent_core, agent_run_id, mock_resume_info
+            ):
                 results.append(result)
 
             # Should return error output
@@ -163,10 +204,18 @@ class TestCreateResumeGenerator:
             return
             yield  # Make it a generator without yielding
 
-        with patch("app.logic.agent_core_logic_v2.resume_handler.interrupt_handle_to_resume_handle") as mock_convert, \
-             patch("app.logic.agent_core_logic_v2.interrupt_utils.process_arun_loop") as mock_process, \
-             patch("app.logic.agent_core_logic_v2.resume_handler.json_serialize_async", new_callable=AsyncMock) as mock_serialize:
-
+        with (
+            patch(
+                "app.logic.agent_core_logic_v2.resume_handler.interrupt_handle_to_resume_handle"
+            ) as mock_convert,
+            patch(
+                "app.logic.agent_core_logic_v2.interrupt_utils.process_arun_loop"
+            ) as mock_process,
+            patch(
+                "app.logic.agent_core_logic_v2.resume_handler.json_serialize_async",
+                new_callable=AsyncMock,
+            ) as mock_serialize,
+        ):
             mock_convert.return_value = MagicMock()
             mock_process.return_value = mock_process_arun_loop(mock_agent, False)
             mock_serialize.return_value = '{"answer": {}}'
@@ -174,7 +223,9 @@ class TestCreateResumeGenerator:
             mock_agent.resume = AsyncMock()
 
             results = []
-            async for result in create_resume_generator(mock_agent, mock_agent_core, agent_run_id, mock_resume_info):
+            async for result in create_resume_generator(
+                mock_agent, mock_agent_core, agent_run_id, mock_resume_info
+            ):
                 results.append(result)
 
             # Should still return final output
@@ -196,10 +247,17 @@ class TestCreateResumeGenerator:
         async def mock_process_arun_loop(agent, is_debug):
             yield {"data": "test_data"}
 
-        with patch("app.logic.agent_core_logic_v2.resume_handler.interrupt_handle_to_resume_handle") as mock_convert, \
-             patch("app.logic.agent_core_logic_v2.interrupt_utils.process_arun_loop") as mock_process, \
-             patch("app.logic.agent_core_logic_v2.resume_handler.json_serialize_async") as mock_serialize:
-
+        with (
+            patch(
+                "app.logic.agent_core_logic_v2.resume_handler.interrupt_handle_to_resume_handle"
+            ) as mock_convert,
+            patch(
+                "app.logic.agent_core_logic_v2.interrupt_utils.process_arun_loop"
+            ) as mock_process,
+            patch(
+                "app.logic.agent_core_logic_v2.resume_handler.json_serialize_async"
+            ) as mock_serialize,
+        ):
             serialization_calls = []
 
             async def mock_serialize_async(data):
@@ -213,7 +271,9 @@ class TestCreateResumeGenerator:
             mock_agent.resume = AsyncMock()
 
             results = []
-            async for result in create_resume_generator(mock_agent, mock_agent_core, agent_run_id, mock_resume_info):
+            async for result in create_resume_generator(
+                mock_agent, mock_agent_core, agent_run_id, mock_resume_info
+            ):
                 results.append(result)
 
             # Check that status fields were set
@@ -235,16 +295,26 @@ class TestCreateResumeGenerator:
 
         agent_run_id = "test_run_agent_error"
 
-        with patch("app.logic.agent_core_logic_v2.resume_handler.interrupt_handle_to_resume_handle") as mock_convert, \
-             patch("app.logic.agent_core_logic_v2.resume_handler.json_serialize_async", new_callable=AsyncMock) as mock_serialize, \
-             patch("app.logic.agent_core_logic_v2.resume_handler.agent_instance_manager") as mock_manager:
-
+        with (
+            patch(
+                "app.logic.agent_core_logic_v2.resume_handler.interrupt_handle_to_resume_handle"
+            ) as mock_convert,
+            patch(
+                "app.logic.agent_core_logic_v2.resume_handler.json_serialize_async",
+                new_callable=AsyncMock,
+            ) as mock_serialize,
+            patch(
+                "app.logic.agent_core_logic_v2.resume_handler.agent_instance_manager"
+            ) as mock_manager,
+        ):
             mock_convert.return_value = MagicMock()
             mock_serialize.return_value = '{"error": "Agent error"}'
             mock_agent.resume = AsyncMock(side_effect=Exception("Agent resume failed"))
 
             results = []
-            async for result in create_resume_generator(mock_agent, mock_agent_core, agent_run_id, mock_resume_info):
+            async for result in create_resume_generator(
+                mock_agent, mock_agent_core, agent_run_id, mock_resume_info
+            ):
                 results.append(result)
 
             # Should handle error and return error output

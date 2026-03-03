@@ -47,7 +47,6 @@ class RunAgentResponse(BaseModel):
     )
 
 
-
 @internal_span()
 def process_options(
     options: AgentOptions,

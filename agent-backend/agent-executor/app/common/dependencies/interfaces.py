@@ -149,6 +149,7 @@ class IEnvironmentDetector(ABC):
 
 class SerializationType(Enum):
     """序列化类型"""
+
     JSON = "json"
     PICKLE = "pickle"
 
@@ -174,7 +175,7 @@ class ICacheService(ABC):
         key: str,
         value: Any,
         ttl: Optional[int] = None,
-        serialization_type: SerializationType = SerializationType.JSON
+        serialization_type: SerializationType = SerializationType.JSON,
     ) -> bool:
         """设置缓存
 

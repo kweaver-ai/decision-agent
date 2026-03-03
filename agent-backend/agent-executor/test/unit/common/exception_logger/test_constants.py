@@ -36,7 +36,7 @@ class TestExceptionLoggerConstants:
         """Test log file name constants"""
         from app.common.exception_logger.constants import (
             EXCEPTION_LOG_SIMPLE,
-            EXCEPTION_LOG_DETAILED
+            EXCEPTION_LOG_DETAILED,
         )
 
         assert EXCEPTION_LOG_SIMPLE == "exception_simple.log"
@@ -45,12 +45,7 @@ class TestExceptionLoggerConstants:
     @pytest.mark.asyncio
     async def test_ansi_reset_codes(self):
         """Test ANSI reset codes"""
-        from app.common.exception_logger.constants import (
-            RESET,
-            BOLD,
-            DIM,
-            UNDERLINE
-        )
+        from app.common.exception_logger.constants import RESET, BOLD, DIM, UNDERLINE
 
         assert RESET == "\033[0m"
         assert BOLD == "\033[1m"
@@ -95,7 +90,7 @@ class TestExceptionLoggerConstants:
         from app.common.exception_logger.constants import (
             BORDER_DOUBLE,
             BORDER_SINGLE,
-            BORDER_DOT
+            BORDER_DOT,
         )
 
         assert BORDER_DOUBLE == "═"

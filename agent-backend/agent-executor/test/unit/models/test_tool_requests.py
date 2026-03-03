@@ -99,7 +99,7 @@ class TestOnlineSearchCiteRequest:
             model_name="model",
             search_tool="tool",
             api_key="key",
-            user_id="user123"
+            user_id="user123",
         )
 
         assert request.query == "test"
@@ -119,7 +119,7 @@ class TestOnlineSearchCiteRequest:
             search_tool="tool",
             api_key="key",
             user_id="user123",
-            stream=True
+            stream=True,
         )
 
         assert request.stream is True
@@ -147,7 +147,7 @@ class TestOnlineSearchCiteRequest:
             model_name="model",
             search_tool="tool",
             api_key="key",
-            user_id="user123"
+            user_id="user123",
         )
         data = request.model_dump()
 
@@ -163,7 +163,7 @@ class TestOnlineSearchCiteRequest:
             model_name="model",
             search_tool="tool",
             api_key="key",
-            user_id="user123"
+            user_id="user123",
         )
         json_str = request.model_dump_json()
 
@@ -182,7 +182,7 @@ class TestOnlineSearchCiteRequest:
             model_name="model",
             search_tool="tool",
             api_key="key",
-            user_id="user123"
+            user_id="user123",
         )
         assert request.query == ""
 
@@ -195,7 +195,7 @@ class TestOnlineSearchCiteRequest:
             model_name="模型-名称",
             search_tool="工具-搜索",
             api_key="密钥-123",
-            user_id="用户@#$%"
+            user_id="用户@#$%",
         )
         assert request.query == "测试搜索"
         assert request.model_name == "模型-名称"
@@ -210,7 +210,7 @@ class TestOnlineSearchCiteRequest:
             model_name="model<>",
             search_tool="tool&name",
             api_key="key=123",
-            user_id="user@example.com"
+            user_id="user@example.com",
         )
         assert "<script>" in request.query
         assert request.model_name == "model<>"
@@ -225,7 +225,7 @@ class TestOnlineSearchCiteRequest:
             model_name="model",
             search_tool="tool",
             api_key="key",
-            user_id="user123"
+            user_id="user123",
         )
         assert len(request.query) == len(long_query)
 
@@ -238,7 +238,7 @@ class TestOnlineSearchCiteRequest:
             model_name="model",
             search_tool="tool",
             api_key="key",
-            user_id="user123"
+            user_id="user123",
         )
         assert "\n" in request.query
         assert "\t" in request.query

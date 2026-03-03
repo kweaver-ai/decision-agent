@@ -29,7 +29,7 @@ class TestRdsConfig:
             dbname="testdb",
             user="testuser",
             password="testpass",
-            db_type="postgresql"
+            db_type="postgresql",
         )
 
         assert config.host == "localhost"
@@ -49,7 +49,7 @@ class TestRdsConfig:
             "dbname": "testdb",
             "user": "testuser",
             "password": "testpass",
-            "db_type": "postgresql"
+            "db_type": "postgresql",
         }
 
         config = RdsConfig.from_dict(data)
@@ -116,7 +116,7 @@ class TestRedisConfig:
             "host": "localhost",
             "port": "6379",
             "user": "default",
-            "password": "pass123"
+            "password": "pass123",
         }
 
         config = RedisConfig.from_dict(data)
@@ -137,7 +137,7 @@ class TestRedisConfig:
             "sentinel_user": "sentinel_user",
             "sentinel_password": "sentinel_pass",
             "host": "sentinel-host",
-            "port": "26379"
+            "port": "26379",
         }
 
         config = RedisConfig.from_dict(data)
@@ -160,7 +160,7 @@ class TestRedisConfig:
             "write_host": "write-host",
             "write_port": "6379",
             "write_user": "write_user",
-            "write_password": "write_pass"
+            "write_password": "write_pass",
         }
 
         config = RedisConfig.from_dict(data)
@@ -206,7 +206,7 @@ class TestGraphDBConfig:
             port="9669",
             type="nebulaGraph",
             read_only_user="user",
-            read_only_password="pass"
+            read_only_password="pass",
         )
 
         assert config.host == "localhost"
@@ -224,7 +224,7 @@ class TestGraphDBConfig:
             "port": "9669",
             "type": "nebulaGraph",
             "read_only_user": "user",
-            "read_only_password": "pass"
+            "read_only_password": "pass",
         }
 
         config = GraphDBConfig.from_dict(data)
@@ -275,10 +275,7 @@ class TestOpenSearchConfig:
         from app.config.config_v2.models.database_config import OpenSearchConfig
 
         config = OpenSearchConfig(
-            host="localhost",
-            port="9200",
-            user="admin",
-            password="admin123"
+            host="localhost", port="9200", user="admin", password="admin123"
         )
 
         assert config.host == "localhost"
@@ -294,7 +291,7 @@ class TestOpenSearchConfig:
             "host": "localhost",
             "port": "9200",
             "user": "admin",
-            "password": "admin123"
+            "password": "admin123",
         }
 
         config = OpenSearchConfig.from_dict(data)

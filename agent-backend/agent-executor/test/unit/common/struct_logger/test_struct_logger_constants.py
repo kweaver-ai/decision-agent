@@ -108,11 +108,11 @@ class TestModuleImports:
         from app.common.struct_logger import constants
 
         assert constants is not None
-        assert hasattr(constants, 'LOG_DIR')
-        assert hasattr(constants, 'SYSTEM_LOG')
-        assert hasattr(constants, 'BUSINESS_LOG')
-        assert hasattr(constants, 'COLORS')
-        assert hasattr(constants, 'LEVEL_EMOJI')
-        assert hasattr(constants, 'RESET')
-        assert hasattr(constants, 'BOLD')
-        assert hasattr(constants, 'DIM')
+        assert hasattr(constants, "LOG_DIR")
+        assert hasattr(constants, "SYSTEM_LOG")
+        assert hasattr(constants, "BUSINESS_LOG")
+        assert hasattr(constants, "COLORS")
+        assert hasattr(constants, "LEVEL_EMOJI")
+        assert hasattr(constants, "RESET")
+        assert hasattr(constants, "BOLD")
+        assert hasattr(constants, "DIM")

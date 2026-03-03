@@ -29,7 +29,10 @@ async def zhipu_search_tool(inputs, props, resource, data_source_config, context
                     logger.error(
                         f"zhipu_search_tool request failed with status {response.status}: {error_text}"
                     )
-                    return {"error": f"Request failed with status {response.status}", "details": error_text}
+                    return {
+                        "error": f"Request failed with status {response.status}",
+                        "details": error_text,
+                    }
         except aiohttp.ClientError as e:
             logger.error(f"zhipu_search_tool request error: {e}")
             return {"error": f"Request failed: {str(e)}"}

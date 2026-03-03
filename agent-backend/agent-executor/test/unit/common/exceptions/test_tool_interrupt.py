@@ -9,17 +9,24 @@ from types import ModuleType
 # Import the module directly by file path to avoid circular imports through __init__.py
 # Get the project root (go up from test/unit/common/exceptions to project root)
 project_root = Path(__file__).parent.parent.parent.parent.parent
-tool_interrupt_file = project_root / "app" / "common" / "exceptions" / "tool_interrupt.py"
+tool_interrupt_file = (
+    project_root / "app" / "common" / "exceptions" / "tool_interrupt.py"
+)
 
 # Use importlib to import the module directly
 import importlib.util
-spec = importlib.util.spec_from_file_location("tool_interrupt_module", str(tool_interrupt_file))
+
+spec = importlib.util.spec_from_file_location(
+    "tool_interrupt_module", str(tool_interrupt_file)
+)
 tool_interrupt_module = importlib.util.module_from_spec(spec)
+
 
 # Mock the dolphin dependency before loading
 # Use proper module structure to avoid breaking other tests
 class MockResumeHandle:
     pass
+
 
 # Create proper mock modules that are packages (with __path__)
 def create_mock_package(name):
@@ -28,17 +35,20 @@ def create_mock_package(name):
     module.__path__ = []  # Mark as package
     return module
 
+
 # Only set up mocks if they don't already exist
-if 'dolphin' not in sys.modules:
-    sys.modules['dolphin'] = create_mock_package('dolphin')
-if 'dolphin.core' not in sys.modules:
-    sys.modules['dolphin.core'] = create_mock_package('dolphin.core')
-if 'dolphin.core.coroutine' not in sys.modules:
-    sys.modules['dolphin.core.coroutine'] = create_mock_package('dolphin.core.coroutine')
-if 'dolphin.core.coroutine.resume_handle' not in sys.modules:
-    resume_handle_module = create_mock_package('dolphin.core.coroutine.resume_handle')
+if "dolphin" not in sys.modules:
+    sys.modules["dolphin"] = create_mock_package("dolphin")
+if "dolphin.core" not in sys.modules:
+    sys.modules["dolphin.core"] = create_mock_package("dolphin.core")
+if "dolphin.core.coroutine" not in sys.modules:
+    sys.modules["dolphin.core.coroutine"] = create_mock_package(
+        "dolphin.core.coroutine"
+    )
+if "dolphin.core.coroutine.resume_handle" not in sys.modules:
+    resume_handle_module = create_mock_package("dolphin.core.coroutine.resume_handle")
     resume_handle_module.ResumeHandle = MockResumeHandle
-    sys.modules['dolphin.core.coroutine.resume_handle'] = resume_handle_module
+    sys.modules["dolphin.core.coroutine.resume_handle"] = resume_handle_module
 
 # Now load the module
 spec.loader.exec_module(tool_interrupt_module)
@@ -77,12 +87,12 @@ class TestToolInterruptInfo:
             "tool_description": "A complex tool",
             "tool_args": [
                 {"key": "param1", "value": "value1", "type": "string"},
-                {"key": "param2", "value": 42, "type": "integer"}
+                {"key": "param2", "value": 42, "type": "integer"},
             ],
             "interrupt_config": {
                 "requires_confirmation": True,
-                "confirmation_message": "Please confirm"
-            }
+                "confirmation_message": "Please confirm",
+            },
         }
 
         info = ToolInterruptInfo(handle=mock_handle, data=data)
@@ -113,15 +123,15 @@ class TestGetResumeHandleClass:
             resume_token="test_token",
             interrupt_type="test_type",
             current_block="test_current",
-            restart_block="test_restart"
+            restart_block="test_restart",
         )
 
-        assert hasattr(handle, 'frame_id')
-        assert hasattr(handle, 'snapshot_id')
-        assert hasattr(handle, 'resume_token')
-        assert hasattr(handle, 'interrupt_type')
-        assert hasattr(handle, 'current_block')
-        assert hasattr(handle, 'restart_block')
+        assert hasattr(handle, "frame_id")
+        assert hasattr(handle, "snapshot_id")
+        assert hasattr(handle, "resume_token")
+        assert hasattr(handle, "interrupt_type")
+        assert hasattr(handle, "current_block")
+        assert hasattr(handle, "restart_block")
 
     def test_get_resume_handle_class_mock_values(self):
         """Test that mock ResumeHandle stores values correctly."""
@@ -133,7 +143,7 @@ class TestGetResumeHandleClass:
             resume_token="token789",
             interrupt_type="user_input",
             current_block="block1",
-            restart_block="block2"
+            restart_block="block2",
         )
 
         assert handle.frame_id == "frame123"
@@ -173,7 +183,7 @@ class TestResumeHandleClassModuleLevel:
 
     def test_resume_handle_class_exists(self):
         """Test that ResumeHandleClass is defined at module level."""
-        assert hasattr(tool_interrupt_module, 'ResumeHandleClass')
+        assert hasattr(tool_interrupt_module, "ResumeHandleClass")
         assert tool_interrupt_module.ResumeHandleClass is not None
 
     def test_resume_handle_class_is_callable(self):
@@ -183,12 +193,11 @@ class TestResumeHandleClassModuleLevel:
     def test_resume_handle_class_creates_instance(self):
         """Test that ResumeHandleClass can create instances."""
         handle = tool_interrupt_module.ResumeHandleClass(
-            frame_id="test",
-            snapshot_id="test"
+            frame_id="test", snapshot_id="test"
         )
 
         assert handle is not None
-        assert hasattr(handle, 'frame_id')
+        assert hasattr(handle, "frame_id")
 
 
 class TestToolInterruptException:
@@ -262,11 +271,11 @@ class TestToolInterruptException:
         mock_handle = MagicMock()
         data = {
             "tool_name": "attribute_test",
-            "tool_args": [{"key": "test", "value": "value"}]
+            "tool_args": [{"key": "test", "value": "value"}],
         }
         info = ToolInterruptInfo(handle=mock_handle, data=data)
 
         exception = ToolInterruptException(info)
 
-        assert hasattr(exception, 'interrupt_info')
+        assert hasattr(exception, "interrupt_info")
         assert exception.interrupt_info.data == data
