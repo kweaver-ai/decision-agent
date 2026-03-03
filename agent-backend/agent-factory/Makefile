@@ -1,4 +1,4 @@
-.DEFAULT_GOAL := format_and_lint
+.DEFAULT_GOAL := lint
 
 ciLint:
 	golangci-lint run --out-format=colored-line-number ./...

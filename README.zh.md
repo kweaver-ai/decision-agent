@@ -183,6 +183,37 @@ Decision Agent 是以业务知识网络为统一业务语义基础，融合企�
 4. 推送到分支 (`git push origin feature/amazing-feature`)
 5. 创建 Pull Request
 
+## 代码质量
+
+本项目使用 pre-commit hooks 进行代码质量检查。根目录配置会调度到各子项目的独立配置。
+
+### 从根目录执行 Lint
+
+```bash
+make lint
+```
+
+### Git Commit（自动触发）
+
+`git commit` 时会自动运行 pre-commit hooks：
+
+```bash
+git commit -m "your message"
+```
+
+### 按子项目手动执行 Lint
+
+```bash
+# agent-executor (Python)
+cd agent-backend/agent-executor && make lint
+
+# agent-memory (Python)
+cd agent-backend/agent-memory && make lint
+
+# agent-factory (Go)
+cd agent-backend/agent-factory && make lint
+```
+
 ## 许可证
 
 本项目采用 Apache License 2.0 许可证。详情请参阅 [LICENSE](LICENSE.txt) 文件。

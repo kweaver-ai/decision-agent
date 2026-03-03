@@ -120,3 +120,17 @@ pytest tests/
 ```bash
 pytest tests/test_rerank_model_client.py
 ```
+
+## 代码质量
+
+运行代码检查（包括 ruff lint 和 format）：
+
+```bash
+make lint
+```
+
+或者使用 uv 直接运行：
+
+```bash
+uv run pre-commit run -a --config .pre-commit-config.yaml
+```
