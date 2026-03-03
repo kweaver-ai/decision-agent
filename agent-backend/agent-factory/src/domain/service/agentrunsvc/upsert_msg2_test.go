@@ -269,6 +269,61 @@ func TestUpsertMsg_InterruptedAssistantMsgID_UpdateFails(t *testing.T) {
 	assert.Error(t, err)
 }
 
+// UpsertUserAndAssistantMsg: InterruptedAssistantMsgID set → InterruptInfo in Ext should be cleared
+func TestUpsertMsg_InterruptedAssistantMsgID_ClearsInterruptInfo(t *testing.T) {
+	t.Parallel()
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockMsgRepo := idbaccessmock.NewMockIConversationMsgRepo(ctrl)
+	mockConvRepo := idbaccessmock.NewMockIConversationRepo(ctrl)
+	mockLogger := cmpmock.NewMockLogger(ctrl)
+	allowAnyLoggerCalls(mockLogger)
+
+	// 构造带有 InterruptInfo 的 Ext JSON
+	extWithInterrupt := `{"interrupt_info":{"handle":{"resume_data":"test"},"data":{"tool_name":"test_tool"}},"total_time":1.5,"agent_run_id":"run-1"}`
+
+	mockMsgRepo.EXPECT().GetByID(gomock.Any(), "asst-interrupt-clear").Return(&dapo.ConversationMsgPO{
+		ID: "asst-interrupt-clear", ReplyID: "user-interrupt-clear", Index: 2, Ext: &extWithInterrupt,
+	}, nil).Times(2)
+
+	// 捕获 Update 的参数，验证 InterruptInfo 已被清除
+	var capturedPO *dapo.ConversationMsgPO
+
+	mockMsgRepo.EXPECT().Update(gomock.Any(), gomock.Any()).DoAndReturn(func(_ context.Context, po *dapo.ConversationMsgPO) error {
+		capturedPO = po
+		return nil
+	})
+
+	svc := &agentSvc{
+		SvcBase:             service.NewSvcBase(),
+		conversationMsgRepo: mockMsgRepo,
+		conversationRepo:    mockConvRepo,
+		logger:              mockLogger,
+	}
+
+	req := &agentreq.ChatReq{
+		AgentID:                   "a1",
+		ConversationID:            "conv-interrupt-clear",
+		InterruptedAssistantMsgID: "asst-interrupt-clear",
+		InternalParam:             agentreq.InternalParam{UserID: "u1"},
+	}
+
+	userID, asstID, _, err := svc.UpsertUserAndAssistantMsg(context.Background(), req, 0, &dapo.ConversationPO{ID: "conv-interrupt-clear"})
+	assert.NoError(t, err)
+	assert.Equal(t, "user-interrupt-clear", userID)
+	assert.Equal(t, "asst-interrupt-clear", asstID)
+
+	// 验证 Ext 已更新且 InterruptInfo 被清除
+	assert.NotNil(t, capturedPO)
+	assert.NotNil(t, capturedPO.Ext)
+	assert.NotContains(t, *capturedPO.Ext, "interrupt_info")
+	// 验证其他字段保留
+	assert.Contains(t, *capturedPO.Ext, "total_time")
+	assert.Contains(t, *capturedPO.Ext, "agent_run_id")
+}
+
 func TestUpsertMsg_RegenerateUserMsgID_Success(t *testing.T) {
 	t.Parallel()
 
