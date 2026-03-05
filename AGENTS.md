@@ -75,18 +75,18 @@ npm run lint           # ESLint checks
 
 ### Python (FastAPI Services)
 
-**Linting & Formatting**: 
+**Linting & Formatting**:
 - agent-executor & agent-memory: Ruff (configured in pyproject.toml)
 - data-retrieval: flake8 + ruff format, type hints required
 
 **Import Order**: standard library → third-party → local
 
-**Naming**: 
+**Naming**:
 - snake_case (variables/functions)
 - PascalCase (classes/Pydantic models)
 - UPPER_SNAKE_CASE (constants)
 
-**Patterns**: 
+**Patterns**:
 - async/await for endpoints
 - Pydantic for validation
 - custom exception classes
@@ -102,18 +102,18 @@ npm run lint           # ESLint checks
 
 **Import Order**: standard library → third-party → local
 
-**Naming**: 
+**Naming**:
 - PascalCase (exported)
 - camelCase (private)
 - snake_case (packages)
 
-**DDD Structure**: 
+**DDD Structure**:
 - domain (entity/service/valueobject/aggregate)
 - drivenadapter (infrastructure)
 - driveradapter (API)
 - port (interfaces)
 
-**Patterns**: 
+**Patterns**:
 - Repository pattern
 - singleton with sync.Once
 - service layer with DTO injection
@@ -129,12 +129,12 @@ npm run lint           # ESLint checks
 
 **Import Order**: React → third-party → local (use @/ alias for absolute imports)
 
-**Naming**: 
+**Naming**:
 - PascalCase (components/interfaces)
 - camelCase (variables/functions)
 - kebab-case (files/CSS)
 
-**Patterns**: 
+**Patterns**:
 - Functional components with hooks
 - MobX observer pattern
 - Ant Design library

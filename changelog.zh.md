@@ -2,9 +2,59 @@
 
 ## 0.3.5
 
+### 功能与改进
+
+- 为 decision-agent 添加 CI/CD 工作流和代码质量改进
+- 添加 pre-commit 钩子并优化代码格式化
+- 增强 docker-compose 部署，支持可配置端口和自动化
+- 为领域服务和基础设施添加全面的单元测试
+- 为 agent-factory 添加全面的单元测试
+- 为 agent-executor 添加配置文件并更新 gitignore
+
 ### Bug 修复
 
 - 修复 EnsureSandboxSession 在重建会话前先删除失败状态的会话
+- 修复恢复中断对话时未清除 Ext 中的 InterruptInfo 的问题
+- 修复 agent-web 独立运行时路由匹配错误
+- 修复 agent-web 独立运行时静态资源加载错误
+
+### 重构与清理
+
+- 修复临时区会话 ID，检查对话中的 name 属性值，移除旧文件上传组件 (agent-web)
+- 移除未使用的导入并优化代码结构 (agent-executor)
+- 移除已废弃的空间相关模块
+- 重构单元测试以避免环境变量竞争条件
+- 重命名 helm 模板并移除未使用的 configmap
+- 将 agent-factory HTTP 访问层替换为内部服务调用
+- 改进环境变量加载并添加 air 热重载支持
+- 移除未使用的 DelInternationalPath 函数
+- 重构 agent-web Dockerfile 以支持 Docker Compose
+
+### 测试
+
+- 为 DTO 和基础设施层添加全面的单元测试
+- 为基础设施和处理器层添加全面的单元测试
+- 为领域服务和值对象添加全面的单元测试
+- 为 agentrunsvc 和相关服务添加单元测试
+- 为 agentconfigsvc、agentrunsvc 和 releasesvc 添加单元测试
+- 为智能体导入/导出功能添加全面的测试用例
+- 为 tool_v2 API 工具包模块添加单元测试
+- 为 agent factory 配置添加全面的测试覆盖
+- 为依赖模块和启动模块添加测试
+- 为异常处理器和路由中间件模块添加测试
+- 扩展 tool_requests 和 json 模块的测试
+
+### 文档
+
+- 添加代码质量指南和 lint 说明
+- 添加 Claude Code 指导文档 (CLAUDE.md)
+
+### 其他
+
+- 为 agent-executor 添加 pre-commit 配置并更新开发工作流
+- 添加覆盖率配置以排除测试和构建文件
+- 更新生产部署配置文件
+- 更新 PyInstaller spec 以包含 setuptools 依赖
 
 ## 0.3.4
 
