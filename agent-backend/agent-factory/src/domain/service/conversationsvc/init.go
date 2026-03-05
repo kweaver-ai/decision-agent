@@ -10,6 +10,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/sandboxplatformhttp/sandboxplatformdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationresp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
@@ -42,7 +43,7 @@ func (sv *conversationSvc) Init(ctx context.Context, req conversationreq.InitReq
 	var sandboxSessionID string
 
 	if sv.sandboxPlatformConf.Enable {
-		sessionID := fmt.Sprintf("sess-%s", req.UserID)
+		sessionID := cutil.GetSandboxSessionID()
 
 		var sandboxErr error
 

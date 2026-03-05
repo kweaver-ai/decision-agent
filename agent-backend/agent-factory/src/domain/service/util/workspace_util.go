@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 )
 
 // buildWorkspaceContextMessage 生成独立的工作区上下文消息
@@ -36,7 +37,7 @@ func BuildWorkspaceContextMessage(conversationID string, userID string, selected
 	}
 
 	rootPath := fmt.Sprintf("/workspace/%s/uploads/temparea/", conversationID)
-	sandboxSessionID := fmt.Sprintf("sess-%s", userID)
+	sandboxSessionID := cutil.GetSandboxSessionID()
 	contextMsg := fmt.Sprintf(`【System auto-generated context - not user query】
 
 Current workspace path: %s

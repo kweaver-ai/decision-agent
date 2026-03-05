@@ -18,6 +18,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/ctype"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/logs"
 	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
@@ -138,7 +139,7 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	var sandboxSessionID string
 
 	if agentSvc.sandboxPlatformConf.Enable {
-		sessionID := fmt.Sprintf("sess-%s", req.UserID)
+		sessionID := cutil.GetSandboxSessionID()
 
 		var sandboxErr error
 
