@@ -90,3 +90,50 @@ func TestLogFailedExecutionWithEmptySessionID(t *testing.T) {
 	assert.NotEmpty(t, req.ConversationSessionID)
 	assert.Contains(t, req.ConversationSessionID, "conv-789")
 }
+
+func TestLogFailedExecution_NilProgress(t *testing.T) {
+	t.Parallel()
+
+	ctx := context.Background()
+
+	req := &agentreq.ChatReq{
+		InternalParam: agentreq.InternalParam{
+			UserID:       "user-456",
+			ReqStartTime: 1234567890,
+		},
+		AgentID:               "agent-123",
+		ConversationID:        "conv-789",
+		ConversationSessionID: "session-abc",
+		Query:                 "test query",
+	}
+
+	// progress 值为 nil — 这是导致 panic 的场景
+	respWithNilProgress := &agentresp.ChatResp{
+		Message: conversationmsgvo.Message{
+			Content: map[string]interface{}{
+				"middle_answer": map[string]interface{}{
+					"progress": nil,
+				},
+			},
+		},
+	}
+
+	assert.NotPanics(t, func() {
+		LogFailedExecution(ctx, req, errors.New("test error"), respWithNilProgress)
+	})
+
+	// progress 值为非预期类型 string
+	respWithBadProgress := &agentresp.ChatResp{
+		Message: conversationmsgvo.Message{
+			Content: map[string]interface{}{
+				"middle_answer": map[string]interface{}{
+					"progress": "not-an-array",
+				},
+			},
+		},
+	}
+
+	assert.NotPanics(t, func() {
+		LogFailedExecution(ctx, req, errors.New("test error"), respWithBadProgress)
+	})
+}

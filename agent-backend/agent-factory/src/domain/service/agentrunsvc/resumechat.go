@@ -6,6 +6,7 @@ import (
 
 	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/panichelper"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -42,6 +43,7 @@ func (agentSvc *agentSvc) ResumeChat(ctx context.Context, conversationID string)
 	channel := make(chan []byte)
 
 	go func() {
+		defer panichelper.Recovery(agentSvc.logger)
 		defer close(channel)
 
 		oldResp := []byte(`{}`)

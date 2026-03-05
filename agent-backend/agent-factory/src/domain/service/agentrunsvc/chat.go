@@ -17,6 +17,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/panichelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/ctype"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/logs"
@@ -201,11 +202,14 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	channel := make(chan []byte, CHANNEL_SIZE)
 
 	go func() {
+		defer panichelper.Recovery(agentSvc.logger)
 		_ = agentSvc.Process(req, agentInfo, stopChan, channel, messageChan, errChan, agentCall.Cancel)
 	}()
 
 	// NOTE: 9. 异步恢复会话
 	go func() {
+		defer panichelper.Recovery(agentSvc.logger)
+
 		manageReq := sessionreq.ManageReq{
 			Action:         sessionreq.SessionManageActionRecoverLifetimeOrCreate,
 			AgentID:        req.AgentID,

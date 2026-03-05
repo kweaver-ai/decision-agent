@@ -12,8 +12,9 @@ class TestConfigClassV2:
 
         ConfigClassV2._instance = None
 
+    @patch("app.boot.load_env.load_env")
     @patch("app.config.config_v2.config_class_v2.ConfigInitializer")
-    def test_singleton_pattern(self, m_initializer):
+    def test_singleton_pattern(self, m_initializer, m_load_env):
         """测试单例模式"""
         from app.config.config_v2.config_class_v2 import ConfigClassV2
 
@@ -23,8 +24,9 @@ class TestConfigClassV2:
         assert config1 is config2
         assert id(config1) == id(config2)
 
+    @patch("app.boot.load_env.load_env")
     @patch("app.config.config_v2.config_class_v2.ConfigInitializer")
-    def test_init_called_once(self, m_initializer):
+    def test_init_called_once(self, m_initializer, m_load_env):
         """测试初始化只调用一次"""
         from app.config.config_v2.config_class_v2 import ConfigClassV2
 
@@ -37,8 +39,9 @@ class TestConfigClassV2:
         # ConfigInitializer.initialize should only be called once per instance
         # (but since we reset _initialized, it might be called again)
 
+    @patch("app.boot.load_env.load_env")
     @patch("app.config.config_v2.config_class_v2.ConfigInitializer")
-    def test_get_local_dev_model_config(self, m_initializer):
+    def test_get_local_dev_model_config(self, m_initializer, m_load_env):
         """测试获取本地开发模型配置"""
         from app.config.config_v2.config_class_v2 import ConfigClassV2
 
@@ -54,8 +57,9 @@ class TestConfigClassV2:
 
         assert result == {"param": "value1"}
 
+    @patch("app.boot.load_env.load_env")
     @patch("app.config.config_v2.config_class_v2.ConfigInitializer")
-    def test_get_local_dev_model_config_not_found(self, m_initializer):
+    def test_get_local_dev_model_config_not_found(self, m_initializer, m_load_env):
         """测试获取不存在的模型配置返回空字典"""
         from app.config.config_v2.config_class_v2 import ConfigClassV2
 
@@ -67,8 +71,9 @@ class TestConfigClassV2:
 
         assert result == {}
 
+    @patch("app.boot.load_env.load_env")
     @patch("app.config.config_v2.config_class_v2.ConfigInitializer")
-    def test_is_o11y_log_enabled(self, m_initializer):
+    def test_is_o11y_log_enabled(self, m_initializer, m_load_env):
         """测试检查o11y日志是否启用"""
         from app.config.config_v2.config_class_v2 import ConfigClassV2
 
@@ -81,8 +86,9 @@ class TestConfigClassV2:
         config.o11y.log_enabled = False
         assert config.is_o11y_log_enabled() is False
 
+    @patch("app.boot.load_env.load_env")
     @patch("app.config.config_v2.config_class_v2.ConfigInitializer")
-    def test_is_o11y_trace_enabled(self, m_initializer):
+    def test_is_o11y_trace_enabled(self, m_initializer, m_load_env):
         """测试检查o11y追踪是否启用"""
         from app.config.config_v2.config_class_v2 import ConfigClassV2
 
@@ -95,8 +101,9 @@ class TestConfigClassV2:
         config.o11y.trace_enabled = False
         assert config.is_o11y_trace_enabled() is False
 
+    @patch("app.boot.load_env.load_env")
     @patch("app.config.config_v2.config_class_v2.ConfigInitializer")
-    def test_is_debug_mode(self, m_initializer):
+    def test_is_debug_mode(self, m_initializer, m_load_env):
         """测试检查是否为调试模式"""
         from app.config.config_v2.config_class_v2 import ConfigClassV2
 
@@ -109,8 +116,9 @@ class TestConfigClassV2:
         config.app.debug = False
         assert config.is_debug_mode() is False
 
+    @patch("app.boot.load_env.load_env")
     @patch("app.config.config_v2.config_class_v2.ConfigInitializer")
-    def test_to_dict(self, m_initializer):
+    def test_to_dict(self, m_initializer, m_load_env):
         """测试转换为字典"""
         from app.config.config_v2.config_class_v2 import ConfigClassV2
         from dataclasses import dataclass
@@ -137,8 +145,9 @@ class TestConfigClassV2:
         assert "test_config" in result
         assert result["test_config"]["field1"] == "value1"
 
+    @patch("app.boot.load_env.load_env")
     @patch("app.config.config_v2.config_class_v2.ConfigInitializer")
-    def test_to_dict_with_non_dataclass(self, m_initializer):
+    def test_to_dict_with_non_dataclass(self, m_initializer, m_load_env):
         """测试转换包含非dataclass属性的对象"""
         from app.config.config_v2.config_class_v2 import ConfigClassV2
 

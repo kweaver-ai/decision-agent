@@ -2,22 +2,12 @@
 
 
 def on_boot_run():
-    # 1. 加载环境变量 ()
-    from . import load_env
-
-    load_env.load_env()
-
-    # 2. 配置初始化（创建单例实例）
-    from app.config.config_v2 import ConfigClassV2
-
-    ConfigClassV2()
-
-    # 3. 初始化内置agent和工具
+    # 1. 初始化内置agent和工具
     from . import built_in
 
     built_in.handle_built_in()
 
-    # 4. 启动时输出Config信息
+    # 2. 启动时输出Config信息
     from app.common.config import Config
 
     if Config.local_dev.is_show_config_on_boot:

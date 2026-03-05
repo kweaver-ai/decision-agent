@@ -229,6 +229,8 @@ class APITool(APIToolInputHandler):
             "timeout": toolTimeout,
         }
 
+        toolTimeout = toolTimeout + 1
+
         # 5. 打印请求信息
         StandLogger.info(
             f"\n{COLORS['header']}{COLORS['bold']}开始请求工具 {self.name} 的代理接口{COLORS['end']}\n"
