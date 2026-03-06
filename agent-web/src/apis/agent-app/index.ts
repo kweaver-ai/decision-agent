@@ -2,7 +2,7 @@ import { del, post, put, get } from '@/utils/http';
 import type { AddFileToTempParams, CreateTempParams, CreateTempResponseSourceType, TempFileType } from './interface';
 import { message } from 'antd';
 
-const apiBaseUrl = '/api/agent-app/v1';
+const apiBaseUrl = '/api/agent-factory/v1';
 const tempBaseUrl = `${apiBaseUrl}/temparea`;
 
 // 获取Agent Api文档
