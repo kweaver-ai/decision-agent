@@ -118,7 +118,6 @@ ENV MEM0_DIR=/app/agent-memory
 COPY --from=builder-factory --chown=$UID:$GID /build/agent-factory /app/agent-factory/agent-factory
 COPY --from=builder-factory --chown=$UID:$GID /build/locale /app/agent-factory/locale
 COPY --from=builder-factory --chown=$UID:$GID /build/dict /app/agent-factory/dict
-COPY --from=builder-factory --chown=$UID:$GID /build/src/drivenadapter/httpaccess/uniqueryaccess/*.json /app/agent-factory/src/drivenadapter/httpaccess/uniqueryaccess/
 COPY --from=builder-executor --chown=$UID:$GID /build/dist/agent-executor /app/agent-executor
 COPY --from=builder-memory --chown=$UID:$GID /build/dist/agent-memory /app/agent-memory
 
