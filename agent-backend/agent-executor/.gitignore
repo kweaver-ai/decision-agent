@@ -34,8 +34,6 @@ dist/
 # Dependencies and Libraries
 # =============================================================================
 vendor
-hooks
-hooks/*
 lfs
 lfs/*
 

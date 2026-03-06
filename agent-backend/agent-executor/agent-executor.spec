@@ -18,11 +18,16 @@ a = Analysis(
     pathex=[project_root],
     binaries=[],
     datas=datas,
+    hookspath=['hooks'],
     hiddenimports=[
         'pkg_resources',
         'setuptools',
         'setuptools._distutils',
         'opentelemetry.instrumentation.dependencies',
+        'charset_normalizer',
+        'charset_normalizer.md',
+        'chardet',
+        'requests.packages.chardet',
     ],
     excludes=[
         'tkinter',
