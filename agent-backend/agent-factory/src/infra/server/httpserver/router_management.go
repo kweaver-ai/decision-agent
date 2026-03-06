@@ -62,6 +62,9 @@ func (s *httpServer) registerManagementPriRoutes(engine *gin.Engine) {
 
 	// 内部接口默认使用默认业务域
 	isUseDefaultBizDomain := global.GConfig.SwitchFields.UseDefaultBizDomain
+	if !isUseDefaultBizDomain {
+		isUseDefaultBizDomain = true
+	}
 
 	internalRouterG.Use(
 		capimiddleware.Recovery(),
