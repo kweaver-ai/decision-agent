@@ -53,6 +53,7 @@ COPY agent-backend/agent-executor/pyproject.toml /build/pyproject.toml
 COPY agent-backend/agent-executor/app /build/app
 COPY agent-backend/agent-executor/main.py /build/main.py
 COPY agent-backend/agent-executor/data_migrations /build/data_migrations
+COPY agent-backend/agent-executor/hooks /build/hooks
 # COPY agent-backend/agent-executor/mq-sdk-lib /build/mq-sdk-lib
 
 # 安装依赖并构建 agent-executor
