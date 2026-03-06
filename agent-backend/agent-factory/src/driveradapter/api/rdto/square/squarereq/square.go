@@ -11,8 +11,6 @@ type AgentInfoReq struct {
 	AgentID      string
 	AgentVersion string
 	IsVisit      bool
-
-	CustomSpaceID string `json:"custom_space_id"`
 }
 
 // Agent 应用广场请求对象

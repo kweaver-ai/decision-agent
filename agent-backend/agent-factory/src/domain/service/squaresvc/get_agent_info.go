@@ -206,15 +206,14 @@ func (svc *squareSvc) RecordVisitLog(ctx context.Context, agentInfoReq *squarere
 	currentTs := cutil.GetCurrentMSTimestamp()
 
 	visitHistoryPO := &dapo.VisitHistoryPO{
-		ID:            cutil.UlidMake(),
-		AgentID:       agentInfoReq.AgentID,
-		AgentVersion:  historyAgentVersion,
-		VisitCount:    1,
-		CustomSpaceID: agentInfoReq.CustomSpaceID,
-		CreateTime:    currentTs,
-		UpdateTime:    currentTs,
-		CreateBy:      agentInfoReq.UserID,
-		UpdateBy:      agentInfoReq.UserID,
+		ID:           cutil.UlidMake(),
+		AgentID:      agentInfoReq.AgentID,
+		AgentVersion: historyAgentVersion,
+		VisitCount:   1,
+		CreateTime:   currentTs,
+		UpdateTime:   currentTs,
+		CreateBy:     agentInfoReq.UserID,
+		UpdateBy:     agentInfoReq.UserID,
 	}
 
 	err = svc.visitHistoryRepo.IncVisitCount(ctx, visitHistoryPO)

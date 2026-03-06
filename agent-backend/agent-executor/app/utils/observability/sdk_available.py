@@ -21,10 +21,17 @@ if is_aaron_local_dev():
     print("Info: Aaron local dev mode, skipping TelemetrySDK import.")
 else:
     try:
-        import tlogging as tlogging_module
-        from tlogging import SamplerLogger
-        from exporter.resource.resource import log_resource, trace_resource, set_service_info
-        from exporter.ar_trace.trace_exporter import tracer as sdk_tracer
+        import tlogging as tlogging_module  # noqa: F401
+        from tlogging import SamplerLogger  # noqa: F401
+        from exporter.resource.resource import (  # noqa: F401
+            log_resource,  # noqa: F401
+            trace_resource,  # noqa: F401
+            set_service_info,  # noqa: F401
+        )
+        from exporter.ar_trace.trace_exporter import tracer as sdk_tracer  # noqa: F401
+
         TELEMETRY_SDK_AVAILABLE = True
     except ImportError:
-        print("Warning: TelemetrySDK is not installed. Observability features will be disabled.")
+        print(
+            "Warning: TelemetrySDK is not installed. Observability features will be disabled."
+        )

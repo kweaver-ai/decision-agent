@@ -6,7 +6,6 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/daconfdbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/releaseacc"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/spacedb/spacedbacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/visithistoryacc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/chttpinject"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/usermanagementacc"
@@ -29,7 +28,6 @@ type squareSvc struct {
 	releaseHistoryRepo       idbaccess.IReleaseHistoryRepo
 	usermanagementHttpClient iusermanagementacc.UserMgnt
 	visitHistoryRepo         idbaccess.IVisitHistoryRepo
-	spaceRepo                idbaccess.ISpaceRepo
 
 	umHttp iumacc.UmHttpAcc
 }
@@ -45,7 +43,6 @@ func NewSquareService() iv3portdriver.ISquareSvc {
 			agentConfRepo:            daconfdbacc.NewDataAgentRepo(),
 			usermanagementHttpClient: usermanagementacc.NewClient(),
 			visitHistoryRepo:         visithistoryacc.NewVisitHistoryRepo(),
-			spaceRepo:                spacedbacc.NewSpaceRepo(),
 
 			umHttp: chttpinject.NewUmHttpAcc(),
 		}

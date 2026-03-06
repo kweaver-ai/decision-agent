@@ -23,7 +23,7 @@ type mqClient struct {
 
 // NewMQClientWithPath 根据路径创建消息队列
 func NewMQClientWithPath(cfgPath ...string) icmp.IMQClient {
-	if global.GConfig.MockMQClient {
+	if global.GConfig.SwitchFields.Mock.MockMQClient {
 		return &mqClient{}
 	}
 

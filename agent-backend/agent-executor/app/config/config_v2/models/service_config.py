@@ -18,8 +18,6 @@ class ServicesConfig:
     """依赖服务配置"""
 
     # 模型相关服务
-    mf_model_factory: ServiceEndpoint = None
-    mf_model_manager: ServiceEndpoint = None
     mf_model_api: ServiceEndpoint = None
 
     # Agent相关服务
@@ -43,10 +41,6 @@ class ServicesConfig:
 
     def __post_init__(self):
         """初始化默认值"""
-        if self.mf_model_factory is None:
-            self.mf_model_factory = ServiceEndpoint("mf-model-factory", "9898")
-        if self.mf_model_manager is None:
-            self.mf_model_manager = ServiceEndpoint("mf-model-manager", "9898")
         if self.mf_model_api is None:
             self.mf_model_api = ServiceEndpoint("mf-model-api", "9898")
         if self.agent_executor is None:
@@ -90,8 +84,6 @@ class ServicesConfig:
             )
 
         return cls(
-            mf_model_factory=get_endpoint(data.get("mf_model_factory", {})),
-            mf_model_manager=get_endpoint(data.get("mf_model_manager", {})),
             mf_model_api=get_endpoint(data.get("mf_model_api", {})),
             agent_executor=get_endpoint(data.get("agent_executor", {})),
             agent_factory=get_endpoint(data.get("agent_factory", {})),
@@ -108,25 +100,4 @@ class ServicesConfig:
             ecoindex_private=get_endpoint(data.get("ecoindex_private", {})),
             docset_private=get_endpoint(data.get("docset_private", {})),
             datahub=get_endpoint(data.get("datahub", {})),
-        )
-
-
-@dataclass
-class ExternalServicesConfig:
-    """外部服务配置"""
-
-    # Embedding服务
-    emb_url: str = ""
-    embedding_dimension: int = 768
-
-    # Rerank服务
-    rerank_url: str = ""
-
-    @classmethod
-    def from_dict(cls, data: dict) -> "ExternalServicesConfig":
-        """从字典创建配置对象"""
-        return cls(
-            emb_url=data.get("emb_url", ""),
-            embedding_dimension=int(data.get("embedding_dimension", 768)),
-            rerank_url=data.get("rerank_url", ""),
         )

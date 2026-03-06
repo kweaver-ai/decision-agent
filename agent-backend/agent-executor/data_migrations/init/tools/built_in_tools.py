@@ -1,6 +1,5 @@
 import sys
 from pathlib import Path
-from typing import Any
 
 sys.path.insert(0, Path(__file__).parent.parent.parent.parent.as_posix())
 
@@ -13,13 +12,13 @@ from data_migrations.init.tools.tool_box_creator import add_tool_box
 def manage_built_in_tools(update_mode: bool = False) -> None:
     """
     管理内置工具箱的创建和更新
-    
+
     Args:
         update_mode: 是否为更新模式，默认为False
-        
+
     Returns:
         None: 无返回值
-        
+
     Note:
         - 初始化模式：只添加不存在的工具箱，跳过已存在的
         - 更新模式：更新所有工具箱配置
@@ -27,13 +26,11 @@ def manage_built_in_tools(update_mode: bool = False) -> None:
     """
 
     for tool_box_config in tool_box_configs:
-
         # 1. 获取tool-box信息
         tool_box_info = get_tool_box_info(tool_box_config["box_id"])
 
         # 2. tool-box已存在
         if tool_box_info:
-
             if update_mode:
                 print(f"Update built-in tool-box {tool_box_config['box_name']}")
                 tool_box_info = add_tool_box(tool_box_config)

@@ -6,6 +6,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 	observabilityreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/observability/req"
 	observabilityresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/observability/resp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squarereq"
 )
 
 func (s *observabilitySvc) AnalyticsQuery(ctx context.Context, req *observabilityreq.AnalyticsQueryReq) (*observabilityresp.AnalyticsQueryResp, error) {
@@ -72,12 +73,14 @@ func (s *observabilitySvc) getAgentMetrics(ctx context.Context, req *observabili
 	}
 
 	// 2. 获取Agent配置
-	agent, err := s.agentFactory.GetAgent(ctx, req.ID, "latest")
-
 	var agentConfig daconfvalobj.Config
 
-	if err == nil {
-		agentConfig = agent.Config
+	agentInfo, agentErr := s.squareSvc.GetAgentInfo(ctx, &squarereq.AgentInfoReq{
+		AgentID:      req.ID,
+		AgentVersion: "latest",
+	})
+	if agentErr == nil && agentInfo != nil {
+		agentConfig = agentInfo.Config
 	}
 
 	// 3. 获取Session列表 - 使用分页参数获取前10000个session
@@ -180,9 +183,12 @@ func (s *observabilitySvc) getSessionMetrics(ctx context.Context, req *observabi
 		if len(runListResp.Entries) > 0 {
 			agentID := runListResp.Entries[0].AgentID
 
-			agent, err := s.agentFactory.GetAgent(ctx, agentID, "latest")
-			if err == nil {
-				agentConfig = agent.Config
+			agentInfo, agentErr := s.squareSvc.GetAgentInfo(ctx, &squarereq.AgentInfoReq{
+				AgentID:      agentID,
+				AgentVersion: "latest",
+			})
+			if agentErr == nil && agentInfo != nil {
+				agentConfig = agentInfo.Config
 			}
 		}
 	}

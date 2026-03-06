@@ -87,6 +87,9 @@ func (repo *releaseRepo) listRecentUnpublishedAgent(ctx context.Context, req squ
 	wb.WhereEqual("cfg.f_deleted_at", 0).WhereEqual("v.f_create_by", req.UserID).Where("v.f_update_time", sqlhelper2.OperatorGte, req.StartTime).Where("v.f_update_time", sqlhelper2.OperatorLte, req.EndTime)
 
 	whereSql, whereArgs, err := wb.ToWhereSQL()
+	if err != nil {
+		return
+	}
 
 	toBe := dapo.PublishedToBeStruct{}
 
@@ -100,7 +103,6 @@ func (repo *releaseRepo) listRecentUnpublishedAgent(ctx context.Context, req squ
 	rawSql = fmt.Sprintf("%s LIMIT %d OFFSET %d", rawSql, req.Size, 0)
 
 	err = sr.Raw(rawSql, whereArgs...).Find(&unpublishedAgentPOList)
-
 	if err != nil {
 		return nil, errors.Wrapf(err, "find release agent")
 	}
@@ -135,6 +137,9 @@ func (repo *releaseRepo) listRecentPublishedAgent(ctx context.Context, req squar
 	wb.WhereEqual("v.f_create_by", req.UserID).Where("v.f_update_time", sqlhelper2.OperatorGte, req.StartTime).Where("v.f_update_time", sqlhelper2.OperatorLte, req.EndTime)
 
 	whereSql, whereArgs, err := wb.ToWhereSQL()
+	if err != nil {
+		return
+	}
 
 	rawSql := fmt.Sprintf("SELECT %s, r.f_agent_config, r.f_agent_desc, r.f_agent_version, r.f_update_time AS publish_time, r.f_update_by AS publish_user_id, v.f_update_time AS last_visit_time,%s %s ", sqlselectCfgPart, sqlSelectPubedToBePart, sqlFromPart)
 
@@ -146,7 +151,6 @@ func (repo *releaseRepo) listRecentPublishedAgent(ctx context.Context, req squar
 	rawSql = fmt.Sprintf("%s LIMIT %d OFFSET %d", rawSql, req.Size, 0)
 
 	err = sr.Raw(rawSql, whereArgs...).Find(&publishedAgentPOList)
-
 	if err != nil {
 		return nil, errors.Wrapf(err, "find release agent")
 	}

@@ -6,7 +6,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentfactoryaccess/agentfactorydto"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 )
 
@@ -26,9 +26,9 @@ func NewOutputVariablesS() *OutputVariablesS {
 	return &OutputVariablesS{}
 }
 
-func (v *OutputVariablesS) LoadFromAgent(agent *agentfactorydto.Agent) (err error) {
+func (v *OutputVariablesS) LoadFromConfig(config *daconfvalobj.Config) (err error) {
 	// 1. 拿到output配置
-	err = cutil.CopyStructUseJSON(v, agent.Config.Output.Variables)
+	err = cutil.CopyStructUseJSON(v, config.Output.Variables)
 	if err != nil {
 		return
 	}
@@ -38,8 +38,8 @@ func (v *OutputVariablesS) LoadFromAgent(agent *agentfactorydto.Agent) (err erro
 		return
 	}
 
-	dolphin := agent.Config.Dolphin
-	isDolphinMode := agent.Config.IsDolphinMode
+	dolphin := config.Dolphin
+	isDolphinMode := config.IsDolphinMode
 
 	if dolphin != "" && isDolphinMode == 1 {
 		var middleOutputVars []string

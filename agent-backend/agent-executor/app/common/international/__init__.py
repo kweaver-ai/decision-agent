@@ -1,7 +1,5 @@
 import os
 
-from app.common.international.del_all_path import DelInternationalPath
-
 # 项目根路径: /agent-executor
 PROJECT_PATH = os.path.abspath(
     os.path.dirname(
@@ -98,6 +96,5 @@ def compile_all():
         else:
             # 更新翻译模板内容
             os.system(update_command())
-    DelInternationalPath()
-    # 编译模板内容
-    os.system(compile_command())
+        # 编译模板内容
+        os.system(compile_command())

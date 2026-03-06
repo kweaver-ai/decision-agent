@@ -159,6 +159,53 @@ Use struct slices with name, input, expected fields, iterate with `t.Run()` for 
 - Mock generation: `go generate ./...` (uses mockgen with `//go:generate` directives)
 - Coverage: `make ut` generates reports in `coverage_report/`
 
+### Local Development Mode Testing Policy
+**Do NOT test local development mode code paths in unit tests.**
+
+**Rationale:**
+- Local dev mode uses `cenvhelper.IsLocalDev()` which checks environment variables
+- Environment variable modifications in tests cause race conditions even without `t.Parallel()`
+- Go's test framework runs packages in parallel internally, causing unpredictable test failures
+
+**Best Practice:**
+- Only write tests for non-local-dev mode (production code paths)
+- Configure `TestMain` to NOT set `AGENT_FACTORY_LOCAL_DEV=true`
+- Use real mock objects (e.g., `mockUmHttp`) instead of `nil` parameters
+- This ensures stable, reliable tests without race conditions
+
+**Example:**
+```go
+// ✅ GOOD: Configure TestMain to run in non-local-dev mode
+func TestMain(m *testing.M) {
+    os.Setenv("SERVICE_NAME", "AGENT_FACTORY")
+    // Note: Do NOT set AGENT_FACTORY_LOCAL_DEV=true
+    // We only test non-local-dev (production) mode to avoid environment variable race conditions
+    os.Setenv("I18N_MODE_UT", "true")
+    
+    cenvhelper.InitEnvForTest()
+    locale.Register()
+    
+    code := m.Run()
+    os.Exit(code)
+}
+
+// ✅ GOOD: Testing production mode with mock
+func TestFunction_NonLocalDevMode(t *testing.T) {
+    ctx := context.WithValue(context.Background(), cenum.VisitLangCtxKey.String(), rest.SimplifiedChinese)
+    
+    ctrl := gomock.NewController(t)
+    defer ctrl.Finish()
+    mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
+    
+    // Setup expectations
+    mockUmHttp.EXPECT().GetOsnNames(ctx, gomock.Any()).Return(userMap, nil)
+    
+    result := SomeFunction(ctx, data, mockUmHttp)
+    // Test production behavior
+}
+
+```
+
 ## Important Notes
 
 - Always run `make all` before committing

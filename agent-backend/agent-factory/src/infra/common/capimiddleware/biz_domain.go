@@ -20,7 +20,7 @@ func HandleBizDomain(isUseDefault bool) gin.HandlerFunc {
 			c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 			return
 		}
-		
+
 		// 1.1 验证业务域ID是否存在，如果不存在且不使用默认值，则返回错误
 		if !isExist && !isUseDefault {
 			c.AbortWithStatusJSON(http.StatusBadRequest, gin.H{"error": "biz domain id is required"})
@@ -37,7 +37,7 @@ func HandleBizDomain(isUseDefault bool) gin.HandlerFunc {
 		c.Set(ctxKey, bizDomainID)
 
 		// 3. 设置request context
-		_ctx := context.WithValue(c.Request.Context(), ctxKey, bizDomainID)
+		_ctx := context.WithValue(c.Request.Context(), ctxKey, bizDomainID) //nolint:staticcheck // SA1029 使用 cenum 字符串作为 ctx key，后续统一改造
 		cutil.UpdateGinReqCtx(c, _ctx)
 
 		// 4. 继续处理请求

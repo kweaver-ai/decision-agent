@@ -59,7 +59,7 @@ class MockAsyncResponse:
             return self.json_data
         try:
             return json.dumps(self.json_data)
-        except:
+        except (TypeError, ValueError):
             return str(self.json_data)
 
     async def read(self):

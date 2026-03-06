@@ -13,8 +13,6 @@ type ISquareSvc interface {
 
 	GetRecentAgentList(ctx context.Context, req squarereq.AgentSquareRecentAgentReq) (res squareresp.RecentListAgentResp, err error)
 
-	IsSpaceExists(ctx context.Context, spaceID string) (exists bool, err error)
-
 	IsAgentExists(ctx context.Context, agentID string) (exists bool, err error)
 
 	CheckAndGetID(ctx context.Context, agentID string) (newAgentID string, err error)

@@ -7,6 +7,8 @@ import (
 )
 
 func TestBitUnit_EnumCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		b       BitUnit
@@ -46,6 +48,8 @@ func TestBitUnit_EnumCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.b.EnumCheck()
 			if tt.wantErr {
 				assert.Error(t, err, "expected error")

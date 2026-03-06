@@ -1,26 +1,27 @@
 """
 Agent创建功能模块
 """
+
 import requests
 
 
 def create_agent(agent_data, api_base_url, headers, user_id, update_mode=False) -> str:
     """
     创建或更新agent
-    
+
     Args:
         agent_data: agent配置数据
         api_base_url: API基础URL
         headers: 请求头
         user_id: 用户ID
         update_mode: 是否为更新模式
-        
+
     Returns:
         str: agent ID - 创建或更新后的agent唯一标识符
-        
+
     Raises:
         Exception: 当API调用失败时抛出异常，包含错误信息
-        
+
     Examples:
         >>> agent_id = create_agent(agent_data, api_base_url, headers, user_id, update_mode=True)
         >>> print(f"Agent created/updated with ID: {agent_id}")
@@ -69,7 +70,6 @@ def create_agent(agent_data, api_base_url, headers, user_id, update_mode=False) 
             raise Exception(error_msg)
     # 4. 如果存在则更新
     else:
-
         if not update_mode:
             print(f"Agent {agent_data['name']} already exists, skipping update")
             return agent_id

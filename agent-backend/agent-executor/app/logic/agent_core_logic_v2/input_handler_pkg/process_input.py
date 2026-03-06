@@ -50,7 +50,7 @@ async def process_input(
                 except (json.JSONDecodeError, TypeError):
                     try:
                         var_value = ast.literal_eval(var_value)
-                    except:
+                    except (ValueError, SyntaxError):
                         var_value = str(var_value)
                 agent_input.set_value(var_name, var_value)
             else:

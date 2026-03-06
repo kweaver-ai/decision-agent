@@ -3,9 +3,7 @@
 统一导入和注册所有异常处理器
 """
 
-from fastapi import Request
 from fastapi.exceptions import RequestValidationError
-from fastapi.responses import JSONResponse
 
 from app.common.errors import ParamException, AgentPermissionException, CodeException
 

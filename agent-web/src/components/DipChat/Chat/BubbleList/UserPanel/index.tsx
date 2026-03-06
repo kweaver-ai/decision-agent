@@ -44,21 +44,20 @@ const UserPanel = ({ chatItemIndex, readOnly }: any) => {
                           if (readOnly) {
                             return;
                           }
-                          setDipChatStore({
-                            previewFile: {
-                              fileId: item.id,
-                              fileName: item.name,
-                              fileExt: getFileExtension(item.name),
-                            },
-                          });
+                          // setDipChatStore({
+                          //   previewFile: {
+                          //     fileId: item.id,
+                          //     fileName: item.name,
+                          //     fileExt: getFileExtension(item.name),
+                          //   },
+                          // });
                         }}
                         className={classNames(styles.fileItem, 'dip-flex-align-center')}
                       >
-                        <FileTypeIcon extension={getFileExtension(item.name)} fontSize={20} />
-                        {/* <DipIcon style={{ fontSize: 32 }} type={getFileIconByExt(getFileExtension(item.name, false))} />*/}
+                        <FileTypeIcon extension={getFileExtension(item?.name)} fontSize={20} />
                         <div className="dip-ml-8 dip-flex-item-full-width">
-                          <div title={item.name} className="dip-ellipsis">
-                            {item.name}
+                          <div title={item?.name} className="dip-ellipsis">
+                            {item?.name}
                           </div>
                           {/* <div className="dip-text-color-45 dip-font-12">{convertFileSize(item.size)}</div>*/}
                         </div>

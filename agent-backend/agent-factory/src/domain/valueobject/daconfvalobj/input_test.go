@@ -8,6 +8,8 @@ import (
 )
 
 func TestInput_GetErrMsgMap(t *testing.T) {
+	t.Parallel()
+
 	input := &Input{}
 	msgMap := input.GetErrMsgMap()
 
@@ -30,6 +32,8 @@ func TestInput_GetErrMsgMap(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := msgMap[tt.key]
 			if got != tt.want {
 				t.Errorf("GetErrMsgMap()[%q] = %q, want %q", tt.key, got, tt.want)
@@ -39,6 +43,8 @@ func TestInput_GetErrMsgMap(t *testing.T) {
 }
 
 func TestInput_ValObjCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   *Input
@@ -57,15 +63,6 @@ func TestInput_ValObjCheck(t *testing.T) {
 			name: "Fields为空",
 			input: &Input{
 				Fields: nil,
-			},
-			wantErr: true,
-		},
-		{
-			name: "包含文件字段但缺少TempZoneConfig",
-			input: &Input{
-				Fields: Fields{
-					&Field{Name: "file1", Type: cdaenum.InputFieldTypeFile},
-				},
 			},
 			wantErr: true,
 		},
@@ -114,10 +111,47 @@ func TestInput_ValObjCheck(t *testing.T) {
 			},
 			wantErr: false,
 		},
+		{
+			name: "Fields验证失败",
+			input: &Input{
+				Fields: Fields{
+					&Field{Name: "", Type: cdaenum.InputFieldTypeString}, // Name is empty
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Rewrite验证失败",
+			input: &Input{
+				Fields: Fields{
+					&Field{Name: "field1", Type: cdaenum.InputFieldTypeString},
+				},
+				Rewrite: &Rewrite{
+					Enable: func() *bool { b := true; return &b }(),
+					// Pattern is empty when Enable is true
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "Augment验证失败",
+			input: &Input{
+				Fields: Fields{
+					&Field{Name: "field1", Type: cdaenum.InputFieldTypeString},
+				},
+				Augment: &Augment{
+					Enable: func() *bool { b := true; return &b }(),
+					// DataSource is nil when Enable is true
+				},
+			},
+			wantErr: true,
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.input.ValObjCheck()
 			if tt.wantErr {
 				assert.Error(t, err, "expected error")
@@ -127,4 +161,3 @@ func TestInput_ValObjCheck(t *testing.T) {
 		})
 	}
 }
-

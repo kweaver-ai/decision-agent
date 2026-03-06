@@ -7,6 +7,8 @@ import (
 )
 
 func TestRewrite_ValObjCheck(t *testing.T) {
+	t.Parallel()
+
 	validLlmConfig := &LlmConfig{
 		Name:      "gpt-4",
 		MaxTokens: 2048,
@@ -48,10 +50,31 @@ func TestRewrite_ValObjCheck(t *testing.T) {
 			},
 			wantErr: true,
 		},
+		{
+			name: "启用但LlmConfig无效",
+			rewrite: &Rewrite{
+				Enable: func() *bool { b := true; return &b }(),
+				LlmConfig: &LlmConfig{
+					// Missing required Name field
+					MaxTokens: 2048,
+				},
+			},
+			wantErr: true,
+		},
+		{
+			name: "禁用且LlmConfig为空",
+			rewrite: &Rewrite{
+				Enable:    func() *bool { b := false; return &b }(),
+				LlmConfig: nil,
+			},
+			wantErr: false,
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			err := tt.rewrite.ValObjCheck()
 			if tt.wantErr {
 				assert.Error(t, err, "expected error")

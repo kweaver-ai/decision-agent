@@ -5,14 +5,16 @@ from dolphin.core.coroutine.resume_handle import ResumeHandle
 from app.domain.vo.interrupt.interrupt_handle import InterruptHandle
 
 
-def interrupt_handle_to_resume_handle(interrupt_handle: InterruptHandle) -> ResumeHandle:
+def interrupt_handle_to_resume_handle(
+    interrupt_handle: InterruptHandle,
+) -> ResumeHandle:
     """将 Pydantic 的 InterruptHandle 转换为 Dolphin SDK 的 ResumeHandle
-    
+
     用于从 API 层转换到内部逻辑层（请求处理）
-    
+
     Args:
         interrupt_handle: Pydantic 的 InterruptHandle 对象
-        
+
     Returns:
         ResumeHandle: Dolphin SDK 的 ResumeHandle 对象
     """

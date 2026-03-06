@@ -13,6 +13,8 @@ import (
 )
 
 func TestReplyError2(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
 
 	tests := []struct {
@@ -59,6 +61,8 @@ func TestReplyError2(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			w := httptest.NewRecorder()
 			c, _ := gin.CreateTestContext(w)
 			c.Request = &http.Request{}
@@ -72,6 +76,8 @@ func TestReplyError2(t *testing.T) {
 }
 
 func TestGetRestHttpErr(t *testing.T) {
+	t.Parallel()
+
 	gin.SetMode(gin.TestMode)
 
 	tests := []struct {
@@ -113,9 +119,12 @@ func TestGetRestHttpErr(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			restErr, ok := GetRestHttpErr(tt.err)
 
 			assert.Equal(t, tt.want, ok, "GetRestHttpErr should return expected bool")
+
 			if tt.want {
 				assert.NotNil(t, restErr, "GetRestHttpErr should return non-nil error")
 			} else {

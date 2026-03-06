@@ -7,6 +7,8 @@ import (
 )
 
 func TestClause_Build(t *testing.T) {
+	t.Parallel()
+
 	var err error
 
 	// OperatorEq
@@ -110,6 +112,8 @@ func TestClause_Build(t *testing.T) {
 }
 
 func TestClause_Build_OperatorIn(t *testing.T) {
+	t.Parallel()
+
 	var err error
 
 	// OperatorIn []int
@@ -169,6 +173,8 @@ func TestClause_Build_OperatorIn(t *testing.T) {
 }
 
 func TestClause_Build_OperatorIn_duplicate(t *testing.T) {
+	t.Parallel()
+
 	var err error
 
 	// OperatorIn []int has duplicate value
@@ -220,6 +226,8 @@ func TestClause_Build_OperatorIn_duplicate(t *testing.T) {
 }
 
 func TestClause_Build_OperatorNotIn(t *testing.T) {
+	t.Parallel()
+
 	var err error
 
 	clause := Clause{
@@ -234,6 +242,8 @@ func TestClause_Build_OperatorNotIn(t *testing.T) {
 }
 
 func TestClause_Build_OperatorLike(t *testing.T) {
+	t.Parallel()
+
 	var err error
 
 	clause := Clause{
@@ -248,6 +258,8 @@ func TestClause_Build_OperatorLike(t *testing.T) {
 }
 
 func TestClause_Build_OperatorNotLike(t *testing.T) {
+	t.Parallel()
+
 	var err error
 
 	clause := Clause{
@@ -262,6 +274,8 @@ func TestClause_Build_OperatorNotLike(t *testing.T) {
 }
 
 func TestClause_Build_OperatorIsNull(t *testing.T) {
+	t.Parallel()
+
 	var err error
 
 	clause := Clause{
@@ -276,6 +290,8 @@ func TestClause_Build_OperatorIsNull(t *testing.T) {
 }
 
 func TestClause_Build_OperatorIsNotNull(t *testing.T) {
+	t.Parallel()
+
 	var err error
 
 	clause := Clause{
@@ -290,6 +306,8 @@ func TestClause_Build_OperatorIsNotNull(t *testing.T) {
 }
 
 func TestClause_Build_OperatorGt(t *testing.T) {
+	t.Parallel()
+
 	var err error
 
 	clause := Clause{
@@ -304,6 +322,8 @@ func TestClause_Build_OperatorGt(t *testing.T) {
 }
 
 func TestClause_Build_OperatorLt(t *testing.T) {
+	t.Parallel()
+
 	var err error
 
 	clause := Clause{
@@ -318,6 +338,8 @@ func TestClause_Build_OperatorLt(t *testing.T) {
 }
 
 func TestClause_Build_OperatorGte(t *testing.T) {
+	t.Parallel()
+
 	var err error
 
 	clause := Clause{
@@ -332,6 +354,8 @@ func TestClause_Build_OperatorGte(t *testing.T) {
 }
 
 func TestClause_Build_OperatorLte(t *testing.T) {
+	t.Parallel()
+
 	var err error
 
 	clause := Clause{
@@ -346,6 +370,8 @@ func TestClause_Build_OperatorLte(t *testing.T) {
 }
 
 func TestClause_Build_OperatorNotEq(t *testing.T) {
+	t.Parallel()
+
 	var err error
 
 	clause := Clause{
@@ -360,6 +386,8 @@ func TestClause_Build_OperatorNotEq(t *testing.T) {
 }
 
 func TestClause_Build_OperatorEq(t *testing.T) {
+	t.Parallel()
+
 	var err error
 
 	clause := Clause{
@@ -374,6 +402,8 @@ func TestClause_Build_OperatorEq(t *testing.T) {
 }
 
 func TestClause_isAllElementsSameType(t *testing.T) {
+	t.Parallel()
+
 	// 1. 是同一类型
 	s1 := []interface{}{1, 2, 3}
 	assert.Equal(t, true, isAllElementsSameType(s1))
@@ -385,6 +415,8 @@ func TestClause_isAllElementsSameType(t *testing.T) {
 }
 
 func TestClause_parseInClauseForInterfaceSlice(t *testing.T) {
+	t.Parallel()
+
 	// 1. []interface{}元素为int
 	s1 := []interface{}{1, 2, 3}
 	clause := Clause{
@@ -548,7 +580,7 @@ func TestClause_parseInClauseForInterfaceSlice(t *testing.T) {
 		Value:    s14,
 		Operator: OperatorIn,
 	}
-	sqlStr, args, err = clause.Build()
+	sqlStr, args, err = clause.Build() //nolint:staticcheck,ineffassign
 	assert.Equal(t, err.Error(), "[parseInClauseForInterfaceSlice]: unsupported type")
 
 	//	15. []interface{}内的元素不是同一类型
@@ -558,7 +590,7 @@ func TestClause_parseInClauseForInterfaceSlice(t *testing.T) {
 		Value:    s15,
 		Operator: OperatorIn,
 	}
-	sqlStr, args, err = clause.Build()
+	sqlStr, args, err = clause.Build() //nolint:staticcheck,ineffassign
 	assert.Equal(t, err.Error(), "when operator is OperatorIn or OperatorNotIn, all elements should be of the same type")
 
 	// 16. []interface{}为空
@@ -568,7 +600,7 @@ func TestClause_parseInClauseForInterfaceSlice(t *testing.T) {
 		Value:    s16,
 		Operator: OperatorIn,
 	}
-	sqlStr, args, err = clause.Build()
+	sqlStr, args, err = clause.Build() //nolint:staticcheck,ineffassign
 	assert.Equal(t, err.Error(), "[parseInClauseForInterfaceSlice]:OperatorNotIn and OperatorIn must have at least one element")
 
 	// 17. []interface{}元素为interface{}
@@ -582,4 +614,36 @@ func TestClause_parseInClauseForInterfaceSlice(t *testing.T) {
 	assert.Equal(t, nil, err)
 	assert.Equal(t, "age in (?,?,?)", sqlStr)
 	assert.Equal(t, []interface{}{interface{}(1), interface{}(2), interface{}(3)}, args)
+}
+
+func TestClause_Build_OperatorIn_UnsupportedType(t *testing.T) {
+	t.Parallel()
+
+	// Test with unsupported type (not a slice)
+	clause := Clause{
+		Key:      "id",
+		Value:    "not a slice",
+		Operator: OperatorIn,
+	}
+	sqlStr, args, err := clause.Build()
+	assert.NotNil(t, err)
+	assert.Contains(t, err.Error(), "OperatorNotIn and OperatorIn only support")
+	assert.Empty(t, sqlStr)
+	assert.Empty(t, args)
+}
+
+func TestClause_Build_OperatorNotIn_UnsupportedType(t *testing.T) {
+	t.Parallel()
+
+	// Test with unsupported type (not a slice)
+	clause := Clause{
+		Key:      "id",
+		Value:    "not a slice",
+		Operator: OperatorNotIn,
+	}
+	sqlStr, args, err := clause.Build()
+	assert.NotNil(t, err)
+	assert.Contains(t, err.Error(), "OperatorNotIn and OperatorIn only support")
+	assert.Empty(t, sqlStr)
+	assert.Empty(t, args)
 }

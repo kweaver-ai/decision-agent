@@ -63,6 +63,8 @@ func createTestPolicyEntry(id, resourceID string) *authzhttpres.PolicyEntry {
 }
 
 func TestListPolicyAll_SinglePage(t *testing.T) {
+	t.Parallel()
+
 	// 创建 mock 对象
 	mockAcc := &mockAuthZHttpAccForTest{
 		mockResponses: []*authzhttpres.ListPolicyRes{
@@ -98,6 +100,8 @@ func TestListPolicyAll_SinglePage(t *testing.T) {
 }
 
 func TestListPolicyAll_MultiplePages(t *testing.T) {
+	t.Parallel()
+
 	// 测试多页数据的情况
 	mockAcc := &mockAuthZHttpAccForTest{
 		mockResponses: []*authzhttpres.ListPolicyRes{
@@ -195,6 +199,8 @@ func TestListPolicyAll_MultiplePages(t *testing.T) {
 }
 
 func TestListPolicyAll_MaxIterationsExceeded(t *testing.T) {
+	t.Parallel()
+
 	// 测试达到最大循环次数的情况
 	mockAcc := &mockAuthZHttpAccForTest{
 		mockResponses: make([]*authzhttpres.ListPolicyRes, 6), // 6 页，超过最大限制 5 页
@@ -288,6 +294,8 @@ func TestListPolicyAll_MaxIterationsExceeded(t *testing.T) {
 }
 
 func TestListPolicyAll_ErrorHandling(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		name          string
 		mockResponses []*authzhttpres.ListPolicyRes
@@ -340,6 +348,8 @@ func TestListPolicyAll_ErrorHandling(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			mockAcc := &mockAuthZHttpAccForTest{
 				mockResponses: tc.mockResponses,
 				mockErrors:    tc.mockErrors,
@@ -401,6 +411,8 @@ func TestListPolicyAll_ErrorHandling(t *testing.T) {
 }
 
 func TestListPolicyAll_EmptyResult(t *testing.T) {
+	t.Parallel()
+
 	// 测试空结果的情况
 	mockAcc := &mockAuthZHttpAccForTest{
 		mockResponses: []*authzhttpres.ListPolicyRes{
@@ -428,6 +440,8 @@ func TestListPolicyAll_EmptyResult(t *testing.T) {
 }
 
 func TestListPolicyAll_BoundaryConditions(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		name         string
 		totalCount   int
@@ -462,6 +476,7 @@ func TestListPolicyAll_BoundaryConditions(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
 			// 根据测试用例构造 mock 响应
 			mockResponses := make([]*authzhttpres.ListPolicyRes, tc.expectPages)
 
@@ -514,6 +529,8 @@ func TestListPolicyAll_BoundaryConditions(t *testing.T) {
 
 // 测试 ListPolicyAll 逻辑的完整流程
 func TestListPolicyAllLogic_Complete(t *testing.T) {
+	t.Parallel()
+
 	// 模拟完整的 ListPolicyAll 逻辑
 	mockAcc := &mockAuthZHttpAccForTest{
 		mockResponses: []*authzhttpres.ListPolicyRes{

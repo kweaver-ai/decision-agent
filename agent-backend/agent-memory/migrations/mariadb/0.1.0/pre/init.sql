@@ -20,4 +20,3 @@ CREATE TABLE IF NOT EXISTS `t_data_agent_memory_history` (
   PRIMARY KEY (`f_id`),
   KEY `idx_memory_id` (`f_memory_id`)
 ) ENGINE=InnoDB COMMENT='记忆历史数据表';
-

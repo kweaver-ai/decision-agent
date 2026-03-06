@@ -16,7 +16,6 @@ import (
 // 如果 agentRunID 不为空，先调用 Executor 终止，再执行原有逻辑
 // 如果 interruptedAssistantMessageID 不为空，更新消息状态为 cancelled
 func (agentSvc *agentSvc) TerminateChat(ctx context.Context, conversationID string, agentRunID string, interruptedAssistantMessageID string) (err error) {
-
 	ctx, _ = o11y.StartInternalSpan(ctx)
 	defer o11y.EndSpan(ctx, err)
 	o11y.SetAttributes(ctx, attribute.String("conversation_id", conversationID))
@@ -53,8 +52,10 @@ func (agentSvc *agentSvc) TerminateChat(ctx context.Context, conversationID stri
 			} else {
 				o11y.Error(ctx, fmt.Sprintf("[TerminateChat] terminate chat failed, conversationID: %s, stopchan is nil", conversationID))
 				agentSvc.logger.Errorf("terminate chat failed, conversationID: %s, stopchan is nil", conversationID)
+
 				err = capierr.New500Err(ctx, "stopchan is nil")
 			}
+
 			return
 		}
 		// interruptedAssistantMessageID 不为空时，静默继续执行后续逻辑
@@ -91,4 +92,3 @@ func (agentSvc *agentSvc) TerminateChat(ctx context.Context, conversationID stri
 
 	return
 }
-

@@ -8,7 +8,7 @@ import (
 )
 
 func initPermission() (err error) {
-	if global.GConfig.DisablePmsCheck {
+	if global.GConfig.SwitchFields.DisablePmsCheck {
 		return
 	}
 

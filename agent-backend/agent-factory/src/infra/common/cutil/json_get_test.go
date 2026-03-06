@@ -7,6 +7,8 @@ import (
 )
 
 func TestSplitJSONArray(t *testing.T) {
+	t.Parallel()
+
 	jsonData := `[1,2,3,4,5,6,7,8,9,10]`
 	expected := []string{
 		`[1,2,3]`,
@@ -21,6 +23,8 @@ func TestSplitJSONArray(t *testing.T) {
 }
 
 func TestSplitJSONArrayWithStrings(t *testing.T) {
+	t.Parallel()
+
 	jsonData := `["a2ss","b","c","d","e","f","g","h","i","j"]`
 	expected := []string{
 		`["a2ss","b","c"]`,
@@ -35,6 +39,8 @@ func TestSplitJSONArrayWithStrings(t *testing.T) {
 }
 
 func TestSplitJSONArrayBys(t *testing.T) {
+	t.Parallel()
+
 	jsonData := []byte(`["a2ss","b","c","d","e","f","g","h","i","j"]`)
 	expected := [][]byte{
 		[]byte(`["a2ss","b","c"]`),

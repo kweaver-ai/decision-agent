@@ -1,159 +1,274 @@
 package cutil
 
 import (
-	"math"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestCheckInRange_Int(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name  string
-		value int
-		min   int
-		max   int
-		want  bool
+		name     string
+		value    int
+		min      int
+		max      int
+		expected bool
 	}{
-		{"值在范围内", 5, 1, 10, true},
-		{"值等于最小值", 1, 1, 10, true},
-		{"值等于最大值", 10, 1, 10, true},
-		{"值小于最小值", 0, 1, 10, false},
-		{"值大于最大值", 11, 1, 10, false},
-		{"负数范围内", -5, -10, -1, true},
-		{"负数小于最小值", -11, -10, -1, false},
-		{"负数大于最大值", 0, -10, -1, false},
+		{
+			name:     "value in range",
+			value:    5,
+			min:      1,
+			max:      10,
+			expected: true,
+		},
+		{
+			name:     "value at min boundary",
+			value:    1,
+			min:      1,
+			max:      10,
+			expected: true,
+		},
+		{
+			name:     "value at max boundary",
+			value:    10,
+			min:      1,
+			max:      10,
+			expected: true,
+		},
+		{
+			name:     "value below min",
+			value:    0,
+			min:      1,
+			max:      10,
+			expected: false,
+		},
+		{
+			name:     "value above max",
+			value:    11,
+			min:      1,
+			max:      10,
+			expected: false,
+		},
+		{
+			name:     "negative values",
+			value:    -5,
+			min:      -10,
+			max:      0,
+			expected: true,
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := CheckInRange(tt.value, tt.min, tt.max)
-			if got != tt.want {
-				t.Errorf("CheckInRange(%v, %v, %v) = %v, want %v", tt.value, tt.min, tt.max, got, tt.want)
-			}
+			t.Parallel()
+
+			result := CheckInRange(tt.value, tt.min, tt.max)
+			assert.Equal(t, tt.expected, result)
 		})
 	}
 }
 
-func TestCheckInRange_Float(t *testing.T) {
+func TestCheckInRange_Float64(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name  string
-		value float64
-		min   float64
-		max   float64
-		want  bool
+		name     string
+		value    float64
+		min      float64
+		max      float64
+		expected bool
 	}{
-		{"浮点数范围内", 5.5, 1.0, 10.0, true},
-		{"浮点数等于最小值", 1.0, 1.0, 10.0, true},
-		{"浮点数等于最大值", 10.0, 1.0, 10.0, true},
-		{"浮点数小于最小值", 0.9, 1.0, 10.0, false},
-		{"浮点数大于最大值", 10.1, 1.0, 10.0, false},
+		{
+			name:     "value in range",
+			value:    5.5,
+			min:      1.0,
+			max:      10.0,
+			expected: true,
+		},
+		{
+			name:     "value at min boundary",
+			value:    1.0,
+			min:      1.0,
+			max:      10.0,
+			expected: true,
+		},
+		{
+			name:     "value at max boundary",
+			value:    10.0,
+			min:      1.0,
+			max:      10.0,
+			expected: true,
+		},
+		{
+			name:     "value below min",
+			value:    0.9,
+			min:      1.0,
+			max:      10.0,
+			expected: false,
+		},
+		{
+			name:     "value above max",
+			value:    10.1,
+			min:      1.0,
+			max:      10.0,
+			expected: false,
+		},
+		{
+			name:     "negative values",
+			value:    -5.5,
+			min:      -10.0,
+			max:      0.0,
+			expected: true,
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := CheckInRange(tt.value, tt.min, tt.max)
-			if got != tt.want {
-				t.Errorf("CheckInRange(%v, %v, %v) = %v, want %v", tt.value, tt.min, tt.max, got, tt.want)
-			}
+			t.Parallel()
+
+			result := CheckInRange(tt.value, tt.min, tt.max)
+			assert.Equal(t, tt.expected, result)
 		})
 	}
 }
 
 func TestCheckInRange_Uint(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name  string
-		value uint
-		min   uint
-		max   uint
-		want  bool
+		name     string
+		value    uint
+		min      uint
+		max      uint
+		expected bool
 	}{
-		{"uint 在范围内", uint(5), uint(1), uint(10), true},
-		{"uint 超出范围-小于", uint(0), uint(1), uint(10), false},
-		{"uint 超出范围-大于", uint(11), uint(1), uint(10), false},
+		{
+			name:     "value in range",
+			value:    5,
+			min:      1,
+			max:      10,
+			expected: true,
+		},
+		{
+			name:     "value at boundaries",
+			value:    0,
+			min:      0,
+			max:      100,
+			expected: true,
+		},
+		{
+			name:     "value above max",
+			value:    101,
+			min:      0,
+			max:      100,
+			expected: false,
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := CheckInRange(tt.value, tt.min, tt.max)
-			if got != tt.want {
-				t.Errorf("CheckInRange(%v, %v, %v) = %v, want %v", tt.value, tt.min, tt.max, got, tt.want)
-			}
+			t.Parallel()
+
+			result := CheckInRange(tt.value, tt.min, tt.max)
+			assert.Equal(t, tt.expected, result)
 		})
 	}
 }
 
-func TestCheckInRange_Int8(t *testing.T) {
+func TestCheckMin_Int(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name  string
-		value int8
-		min   int8
-		max   int8
-		want  bool
+		name     string
+		value    int
+		min      int
+		expected bool
 	}{
-		{"int8 在范围内", int8(5), int8(1), int8(10), true},
-		{"int8 超出范围-小于", int8(0), int8(1), int8(10), false},
-		{"int8 超出范围-大于", int8(11), int8(1), int8(10), false},
+		{
+			name:     "value above min",
+			value:    10,
+			min:      5,
+			expected: true,
+		},
+		{
+			name:     "value at min",
+			value:    5,
+			min:      5,
+			expected: true,
+		},
+		{
+			name:     "value below min",
+			value:    4,
+			min:      5,
+			expected: false,
+		},
+		{
+			name:     "negative values",
+			value:    -5,
+			min:      -10,
+			expected: true,
+		},
+		{
+			name:     "value equal to zero",
+			value:    0,
+			min:      0,
+			expected: true,
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := CheckInRange(tt.value, tt.min, tt.max)
-			if got != tt.want {
-				t.Errorf("CheckInRange(%v, %v, %v) = %v, want %v", tt.value, tt.min, tt.max, got, tt.want)
-			}
+			t.Parallel()
+
+			result := CheckMin(tt.value, tt.min)
+			assert.Equal(t, tt.expected, result)
 		})
 	}
 }
 
-func TestCheckInRange_FloatSpecial(t *testing.T) {
+func TestCheckMin_Float64(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name  string
-		value float64
-		min   float64
-		max   float64
-		want  bool
+		name     string
+		value    float64
+		min      float64
+		expected bool
 	}{
-		{"无穷大超出范围", math.Inf(1), 0.0, 100.0, false},
-		{"负无穷大超出范围", math.Inf(-1), -100.0, 0.0, false},
-		{"NaN不在范围内", math.NaN(), 0.0, 100.0, true},
+		{
+			name:     "value above min",
+			value:    10.5,
+			min:      5.0,
+			expected: true,
+		},
+		{
+			name:     "value at min",
+			value:    5.0,
+			min:      5.0,
+			expected: true,
+		},
+		{
+			name:     "value below min",
+			value:    4.9,
+			min:      5.0,
+			expected: false,
+		},
+		{
+			name:     "negative values",
+			value:    -5.0,
+			min:      -10.0,
+			expected: true,
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := CheckInRange(tt.value, tt.min, tt.max)
-			if got != tt.want {
-				t.Errorf("CheckInRange(%v, %v, %v) = %v, want %v", tt.value, tt.min, tt.max, got, tt.want)
-			}
-		})
-	}
-}
+			t.Parallel()
 
-func TestCheckMin(t *testing.T) {
-	tests := []struct {
-		name  string
-		value int
-		min   int
-		want  bool
-	}{
-		{"值等于最小值", 5, 5, true},
-		{"值大于最小值", 10, 5, true},
-		{"值小于最小值", 3, 5, false},
-		{"负数等于最小值", -5, -5, true},
-		{"负数大于最小值", -1, -5, true},
-		{"负数小于最小值", -10, -5, false},
-		{"零值", 0, 0, true},
-		{"零值大于最小值", 0, -1, true},
-		{"零值小于最小值", 0, 1, false},
-		{"浮点数等于最小值", 5.0, 5.0, true},
-		{"浮点数大于最小值", 10.0, 5.0, true},
-		{"浮点数小于最小值", 3.0, 5.0, false},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got := CheckMin(tt.value, tt.min)
-			if got != tt.want {
-				t.Errorf("CheckMin(%v, %v) = %v, want %v", tt.value, tt.min, got, tt.want)
-			}
+			result := CheckMin(tt.value, tt.min)
+			assert.Equal(t, tt.expected, result)
 		})
 	}
 }

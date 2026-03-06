@@ -262,8 +262,8 @@ func (q *SQLRunner) Exists() (exists bool, err error) {
 	}
 
 	var aa int
-	err = q.db.QueryRow(_sql, args...).Scan(&aa)
 
+	err = q.db.QueryRow(_sql, args...).Scan(&aa)
 	if err != nil {
 		if !errors.Is(err, sql.ErrNoRows) {
 			return
@@ -291,8 +291,8 @@ func (q *SQLRunner) RawExists(rawSql string, args ...interface{}) (exists bool, 
 	}
 
 	var aa int
-	err = q.db.QueryRow(rawSql, args...).Scan(&aa)
 
+	err = q.db.QueryRow(rawSql, args...).Scan(&aa)
 	if err != nil {
 		if !errors.Is(err, sql.ErrNoRows) {
 			return

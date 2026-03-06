@@ -132,7 +132,7 @@ func (svc *releaseSvc) genPmsControlResp(ctx context.Context, pos []*dapo.Releas
 	for _, po := range pos {
 		switch po.ObjectType {
 		case cenum.PmsTargetObjTypeRole:
-			roleIds = append(roleIds, po.ObjectId)
+			roleIds = append(roleIds, po.ObjectId) //nolint:staticcheck // SA4010 暂忽略
 		case cenum.PmsTargetObjTypeUser:
 			userIds = append(userIds, po.ObjectId)
 		case cenum.PmsTargetObjTypeUserGroup:

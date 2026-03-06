@@ -3,6 +3,8 @@ package cutil
 import "testing"
 
 func TestAddToJSON(t *testing.T) {
+	t.Parallel()
+
 	jsonStr := `{"name":"John", "age":30, "cars":{"car1":"Ford","car2":"BMW"}}`
 	jsonPath := "cars.car3"
 	value := "Audi"
@@ -20,6 +22,8 @@ func TestAddToJSON(t *testing.T) {
 }
 
 func TestAddKeyToJSONArray(t *testing.T) {
+	t.Parallel()
+
 	jsonArrayStr := `[{"a":1},{"a":1},{"a":1}]`
 	key := "b"
 	value := 2
@@ -36,7 +40,87 @@ func TestAddKeyToJSONArray(t *testing.T) {
 	}
 }
 
+func TestAddToJSON_InvalidJSON(t *testing.T) {
+	t.Parallel()
+
+	jsonStr := `{invalid json}`
+	jsonPath := "key"
+	value := "value"
+
+	_, err := AddToJSON(jsonStr, jsonPath, value)
+	if err == nil {
+		t.Error("Expected error for invalid JSON, but got nil")
+	}
+}
+
+func TestAddToJSON_InvalidPath(t *testing.T) {
+	t.Parallel()
+
+	jsonStr := `{"name":"John"}`
+	jsonPath := "" // Empty path might cause issues
+	value := "value"
+
+	_, err := AddToJSON(jsonStr, jsonPath, value)
+	// sjson.Set might return an error for invalid path
+	if err != nil {
+		t.Logf("Got expected error for invalid path: %v", err)
+	}
+}
+
+func TestAddKeyToJSONArray_InvalidJSON(t *testing.T) {
+	t.Parallel()
+
+	jsonArrayStr := `{invalid json}`
+	key := "b"
+	value := 2
+
+	_, err := AddKeyToJSONArray(jsonArrayStr, key, value)
+	if err == nil {
+		t.Error("Expected error for invalid JSON, but got nil")
+	}
+}
+
+func TestAddKeyToJSONArray_EmptyArray(t *testing.T) {
+	t.Parallel()
+
+	jsonArrayStr := `[]`
+	key := "b"
+	value := 2
+
+	expectedJSON := `[]`
+
+	updatedJSON, err := AddKeyToJSONArray(jsonArrayStr, key, value)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+
+	if updatedJSON != expectedJSON {
+		t.Errorf("Test failed, expected: '%s', got: '%s'", expectedJSON, updatedJSON)
+	}
+}
+
+func TestAddKeyToJSONArray_SingleElement(t *testing.T) {
+	t.Parallel()
+
+	jsonArrayStr := `[{"a":1}]`
+	key := "b"
+	value := 2
+
+	expectedJSON := `[{"a":1,"b":2}]`
+
+	updatedJSON, err := AddKeyToJSONArray(jsonArrayStr, key, value)
+	if err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+
+	if updatedJSON != expectedJSON {
+		t.Errorf("Test failed, expected: '%s', got: '%s'", expectedJSON, updatedJSON)
+	}
+}
+
 func TestRemoveKeyFromJSON(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		jsonStr     string
@@ -90,6 +174,8 @@ func TestRemoveKeyFromJSON(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result, err := RemoveKeyFromJSON(tt.jsonStr, tt.jsonPath)
 
 			if tt.expectError {

@@ -152,7 +152,7 @@ def format_request_info(
         if isinstance(body, dict):
             try:
                 body_str = json.dumps(body, ensure_ascii=False, indent=4)
-            except:
+            except (TypeError, ValueError):
                 body_str = str(body)
         else:
             body_str = str(body)

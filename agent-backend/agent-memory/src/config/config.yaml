@@ -38,7 +38,7 @@ vector_store:
   port: 30920
   user: "admin"
   password: "xxx"
-  embedding_model_dims: 768 
+  embedding_model_dims: 768
 
 rerank:
   # rerank_url: "http://192.168.152.11:18343/v1/rerank"

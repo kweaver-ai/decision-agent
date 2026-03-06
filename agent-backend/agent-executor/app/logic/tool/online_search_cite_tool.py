@@ -105,7 +105,15 @@ async def get_search_results(request, headers):
 async def get_answer(request, headers, search_results) -> (str, list):
     references = []
     references_str = ""
-    ref_list = search_results["choices"][0]["message"]["tool_calls"][1]["search_result"]
+
+    # Validate search_results structure before accessing nested elements
+    try:
+        ref_list = search_results["choices"][0]["message"]["tool_calls"][1][
+            "search_result"
+        ]
+    except (KeyError, IndexError, TypeError) as e:
+        raise ValueError(f"Invalid search_results structure: {e}") from e
+
     count = 0
     for ref in ref_list:
         # 修改为创建新 dict，并为缺失字段提供默认值，以匹配 ReferenceResult 模型

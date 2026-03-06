@@ -14,9 +14,5 @@ func CheckInRange[T Ordered](value, min, max T) (ok bool) {
 }
 
 func CheckMin[T Ordered](value, min T) (ok bool) {
-	if value < min {
-		return false
-	}
-
-	return true
+	return value >= min
 }

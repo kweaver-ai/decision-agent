@@ -56,7 +56,7 @@ async def create_resume_generator(
 
         # 3. 继续执行 arun（使用公共方法）
         from .interrupt_utils import process_arun_loop
-        
+
         async for output in process_arun_loop(agent, is_debug=False):
             # 添加 resume 特有的字段
             output["status"] = "False"

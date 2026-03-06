@@ -97,10 +97,13 @@ func (svc *squareSvc) GetRecentAgentList(ctx context.Context, req squarereq.Agen
 
 			err = json.Unmarshal([]byte(po.AgentConfig.String), agentCfgPo)
 			if err != nil {
-				return marketAgentListEmpty, errors.Wrapf(err, "json.Unmarshal([]byte(%s), &agentCfg)", po.AgentConfig.String)
+				return marketAgentListEmpty, errors.Wrapf(err, "[GetRecentAgentList] json.Unmarshal error")
 			}
 
 			agentCfgEO, err = daconfp2e.DataAgent(ctx, agentCfgPo)
+			if err != nil {
+				return marketAgentListEmpty, errors.Wrapf(err, "[GetRecentAgentList] daconfp2e.DataAgent(&agentCfgPo)")
+			}
 
 			agentCfgEO.Status = cdaenum.StatusPublished
 			marketAgentList[i] = squareresp.RecentAgentListItem{

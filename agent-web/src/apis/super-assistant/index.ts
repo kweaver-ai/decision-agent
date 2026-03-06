@@ -1,7 +1,7 @@
 import { get, post, del, put } from '@/utils/http';
 import qs from 'qs';
 import { message } from 'antd';
-const agentAppV1BaseUrl = '/api/agent-app/v1';
+const agentAppV1BaseUrl = '/api/agent-factory/v1';
 const agentFactoryV3BaseUrl = '/api/agent-factory/v3';
 
 export const getChatUrl = (

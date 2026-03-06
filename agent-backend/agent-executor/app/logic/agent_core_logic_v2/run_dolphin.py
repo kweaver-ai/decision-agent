@@ -3,7 +3,6 @@ from typing import Any, AsyncGenerator, Dict, Optional, TYPE_CHECKING
 from dolphin.sdk.agent.dolphin_agent import DolphinAgent
 from dolphin.core.config.global_config import GlobalConfig
 from dolphin.sdk.skill.traditional_toolkit import TriditionalToolkit
-from dolphin.core.utils.tools import ToolInterrupt
 
 from app.common.config import Config
 from app.common.stand_log import StandLogger
@@ -11,10 +10,6 @@ from app.common.struct_logger import struct_logger
 from app.domain.vo.agentvo import AgentConfigVo
 from app.logic.agent_core_logic_v2.output_variables import get_output_variables
 from app.logic.agent_core_logic_v2.prompt_builder import PromptBuilder
-from app.logic.sensitive_word_detection import check_sensitive_word
-from app.utils.common import (
-    get_dolphin_var_value,
-)
 from app.common.tool_v2.tool import build_tools
 from app.utils.observability.trace_wrapper import internal_span
 from opentelemetry.trace import Span
@@ -136,13 +131,6 @@ async def run_dolphin(
         # "skillkit_hook": skillkit_hook,
     }
 
-    # 7. 检查敏感词
-    if check_sensitive_word(dolphin_prompt + str(context_variables)):
-        message = "抱歉，您输入的内容包含敏感词汇，请重新编辑您的信息"
-        output = {"answer": message}
-        yield output
-        return
-
     o11y_logger().info(f"[run_dolphin] agent_init init_params = {init_params}")
     o11y_logger().info(f"[run_dolphin] agent_run dolphin_prompt = {dolphin_prompt}")
 
@@ -197,7 +185,7 @@ async def run_dolphin(
 
     # 12. 执行agent
     output = {}
-    
+
     # 使用公共的 arun 循环处理方法
     from .interrupt_utils import process_arun_loop
 

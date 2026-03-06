@@ -1,3 +1,4 @@
+//nolint:unused // 预留给 sfg 优化使用
 package pubedagentdbacc
 
 import (

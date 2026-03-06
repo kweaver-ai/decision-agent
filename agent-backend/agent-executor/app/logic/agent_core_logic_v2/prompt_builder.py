@@ -7,7 +7,6 @@ from app.common.config import Config
 from app.logic import plan_mode_logic
 from app.utils.observability.trace_wrapper import internal_span
 
-from app.common.structs import DEFAULT_INPUTS
 from app.domain.vo.agentvo import AgentConfigVo
 
 
@@ -211,13 +210,13 @@ $query
 2. 生成的问题不要和原始用户问题重复。
 3. 确保生成的问题主谓宾完整，长度不超过25个字。
 4. 不要输出问题对应的答案。
-5. 输出格式为：
+5. 输出格式必须是纯JSON列表，仅包含字符串类型：
 ["第一个问题", "第二个问题", "第三个问题"]
 6. 如果无法生成问题，则返回空列表 []
 7. 示例:
 原始问题:你能帮我写一首描写春天的唐诗吗？
 相关问题:["春天的唐诗中有哪些典型的意象？", "这首唐诗中如何体现春天的生机与活力？", "唐诗中春天的描写与现代人对春天的感受有何不同？"]
-8. 不要输出多余的内容。
+8. 不要输出多余的内容，仅输出JSON格式的列表。
 -> related_questions
 eval($related_questions.answer) -> related_questions
 """

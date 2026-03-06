@@ -1,39 +1,14 @@
-import json
-from typing import Any, AsyncGenerator, Dict, Optional, TYPE_CHECKING
+from typing import Any, AsyncGenerator, Dict, TYPE_CHECKING
 from dolphin.sdk.agent.dolphin_agent import DolphinAgent
-from dolphin.core.config.global_config import GlobalConfig
-from dolphin.sdk.skill.traditional_toolkit import TriditionalToolkit
-from dolphin.core.utils.tools import ToolInterrupt
 
 # from DolphinLanguageSDK.context_engineer.core.context_manager import (
 #     ContextManager,
 # )
 
-from app.common.config import Config
-from app.common.stand_log import StandLogger
-from app.common.struct_logger import struct_logger
 from app.domain.vo.agentvo import AgentConfigVo
-from app.logic.agent_core_logic_v2.output_variables import get_output_variables
-from app.logic.agent_core_logic_v2.prompt_builder import PromptBuilder
-from app.logic.sensitive_word_detection import check_sensitive_word
-from app.utils.common import (
-    get_dolphin_var_value,
-)
-from app.common.tool_v2.tool import build_tools
 from app.utils.observability.trace_wrapper import internal_span
-from opentelemetry.trace import Span
-from app.utils.observability.observability_log import get_logger as o11y_logger
 from .dialog_log import DialogLogHandler
 
-from .trace import span_set_attrs
-from .input_handler_pkg import (
-    build_llm_config,
-    build_skills,
-)
-from app.domain.enum.common.user_account_header_key import (
-    get_user_account_id,
-    get_user_account_type,
-)
 
 from app.utils.interrupt_converter import interrupt_handle_to_resume_handle
 
@@ -41,8 +16,6 @@ if TYPE_CHECKING:
     from .agent_core_v2 import AgentCoreV2
     from dolphin.sdk.agent.dolphin_agent import DolphinAgent
     from app.router.agent_controller_pkg.rdto.v2.req.resume_agent import ResumeInfo
-
-from .agent_instance_manager import agent_instance_manager
 
 
 @internal_span()
@@ -55,7 +28,6 @@ async def resume_dolphin_agent_run(
     context_variables: Dict[str, Any],
     headers: Dict[str, str],
     is_debug: bool = False,
-
 ) -> AsyncGenerator[Dict[str, Any], None]:
     """运行Dolphin引擎处理请求
 
@@ -103,13 +75,12 @@ async def resume_dolphin_agent_run(
     resume_handle = interrupt_handle_to_resume_handle(resume_info.resume_handle)
     await agent.resume(updates=updates, resume_handle=resume_handle)
 
-    
     # 12. 执行agent
     output = {}
-    
+
     # 使用公共的 arun 循环处理方法
     from .interrupt_utils import process_arun_loop
-    
+
     async for output in process_arun_loop(agent, is_debug):
         yield output
 

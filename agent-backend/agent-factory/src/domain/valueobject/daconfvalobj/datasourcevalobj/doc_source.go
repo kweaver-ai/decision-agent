@@ -16,6 +16,10 @@ type DocSource struct {
 
 // ValObjCheck 验证数据源配置
 func (p *DocSource) ValObjCheck() (err error) {
+	if p == nil {
+		err = errors.New("[DocSource]: cannot be nil")
+		return
+	}
 	// 检查DsID是否为空
 	if p.DsID == "" {
 		err = errors.New("[DocSource]: ds_id is required")
@@ -82,6 +86,10 @@ type DocSourceField struct {
 
 // ValObjCheck 验证文档源字段
 func (p *DocSourceField) ValObjCheck() (err error) {
+	if p == nil {
+		err = errors.New("[DocSourceField]: cannot be nil")
+		return
+	}
 	// 检查Name是否为空
 	if p.Name == "" {
 		err = errors.New("[DocSourceField]: name is required")

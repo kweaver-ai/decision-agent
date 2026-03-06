@@ -27,7 +27,6 @@ func NewConversationSvc() iportdriver.IConversationSvc {
 			Logger:              logger.GetLogger(),
 			AgentExecutorV1:     httpinject.NewAgentExecutorV1HttpAcc(),
 			AgentExecutorV2:     httpinject.NewAgentExecutorV2HttpAcc(),
-			AgentFactory:        httpinject.NewAgentFactoryHttpAcc(),
 			SandboxPlatform:     httpinject.NewSandboxPlatformHttpAcc(),
 			SandboxPlatformConf: global.GConfig.SandboxPlatformConf,
 		}

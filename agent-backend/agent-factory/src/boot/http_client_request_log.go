@@ -38,11 +38,11 @@ func initHTTPClientRequestLog() {
 		IncludeResponseBody: true,
 	}
 
-	// 本地开发环境同时输出到控制台
-	if cenvhelper.IsLocalDev() {
-		// config.OutputMode = httprequesthelper.OutputModeBoth
-		// config.PrettyJSON = true
-	}
+	// 本地开发环境配置（如需额外配置可在此处添加）
+	// if cenvhelper.IsLocalDev() {
+	// 	config.OutputMode = httprequesthelper.OutputModeBoth
+	// 	config.PrettyJSON = true
+	// }
 
 	// 启用请求日志记录
 	if err := httphelper.EnableHTTPClientRequestLogging(config); err != nil {

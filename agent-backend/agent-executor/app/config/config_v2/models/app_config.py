@@ -34,8 +34,6 @@ class AppConfig:
     # dolphin agent 是否启用详细输出模式
     enable_dolphin_agent_verbose: bool = False
 
-
-
     # 是否记录 conversation-session/init 请求日志
     log_conversation_session_init: bool = False
 

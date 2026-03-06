@@ -24,7 +24,7 @@ func Language() gin.HandlerFunc {
 		c.Set(ctxKey, language)
 
 		// 3. 设置request context
-		_ctx := context.WithValue(c.Request.Context(), ctxKey, language)
+		_ctx := context.WithValue(c.Request.Context(), ctxKey, language) //nolint:staticcheck // SA1029
 		// 满足mdl中的language ctx设置
 		_ctx = context.WithValue(_ctx, rest.XLangKey, language)
 		cutil.UpdateGinReqCtx(c, _ctx)

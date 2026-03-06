@@ -14,9 +14,9 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo/daresvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/conversationmsgvo"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentfactoryaccess/agentfactorydto"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squareresp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 
@@ -30,7 +30,7 @@ import (
 )
 
 // NOTE: 对话后处理模块
-func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, req *agentreq.ChatReq, agent *agentfactorydto.Agent) ([]byte, bool, error) {
+func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, req *agentreq.ChatReq, agent *squareresp.AgentMarketAgentInfoResp) ([]byte, bool, error) {
 	var err error
 
 	var newData []byte
@@ -49,7 +49,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 	// 2. 获取output配置中的variables
 	outputVariablesS := agentconfigvo.NewOutputVariablesS()
 
-	err = outputVariablesS.LoadFromAgent(agent)
+	err = outputVariablesS.LoadFromConfig(&agent.Config)
 	if err != nil {
 		o11y.Error(ctx, fmt.Sprintf("[AfterProcess] load output variables err: %v", err))
 		httpErr := rest.NewHTTPError(ctx, http.StatusInternalServerError, apierr.AgentAPP_InternalError).WithErrorDetails(err.Error())
@@ -254,8 +254,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 		AgentInfo: valueobject.AgentInfo{
 			AgentID:      req.AgentID,
 			AgentVersion: req.AgentVersion,
-			AgentName:    agent.Name,
-			// AgentStatus:  agent.Status,
+			AgentName:    agent.DataAgent.Name,
 		},
 		Index: req.AssistantMessageIndex,
 		Ext: &conversationmsgvo.MessageExt{
@@ -397,6 +396,7 @@ func (agentSvc *agentSvc) handleMessageAndTempArea(ctx context.Context, req *age
 
 		return err
 	}
+
 	return nil
 }
 
@@ -426,7 +426,7 @@ func (agentSvc *agentSvc) addCitesToProgress(ctx context.Context, progresses []*
 
 			cites := make([]*agentrespvo.AnswerCite, 0)
 			for _, reference := range docRetrievalAns.FullResult.References {
-				cites = append(cites, &agentrespvo.AnswerCite{
+				cites = append(cites, &agentrespvo.AnswerCite{ //nolint:staticcheck // SA4010 暂忽略
 					Content:  reference.Content,
 					Meta:     reference.Meta,
 					CiteType: reference.RetrieveSourceType,

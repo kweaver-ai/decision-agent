@@ -21,38 +21,74 @@ from app.utils.observability.observability_setting import LogSetting, ServerInfo
 
 class NullLogger:
     """空操作日志器，当 TelemetrySDK 不可用时使用
-    
+
     实现与 SamplerLogger 相同的接口，但所有方法都是空操作（no-op）。
     这样可以避免在 SDK 不可用时调用 o11y_logger().info() 等方法报错。
     """
-    
-    def info(self, message: Any = "", attributes: Any = None, etype: Any = None, ctx: Any = None) -> None:
+
+    def info(
+        self,
+        message: Any = "",
+        attributes: Any = None,
+        etype: Any = None,
+        ctx: Any = None,
+    ) -> None:
         pass
-    
-    def error(self, message: Any = "", attributes: Any = None, etype: Any = None, ctx: Any = None) -> None:
+
+    def error(
+        self,
+        message: Any = "",
+        attributes: Any = None,
+        etype: Any = None,
+        ctx: Any = None,
+    ) -> None:
         pass
-    
-    def warn(self, message: Any = "", attributes: Any = None, etype: Any = None, ctx: Any = None) -> None:
+
+    def warn(
+        self,
+        message: Any = "",
+        attributes: Any = None,
+        etype: Any = None,
+        ctx: Any = None,
+    ) -> None:
         pass
-    
-    def debug(self, message: Any = "", attributes: Any = None, etype: Any = None, ctx: Any = None) -> None:
+
+    def debug(
+        self,
+        message: Any = "",
+        attributes: Any = None,
+        etype: Any = None,
+        ctx: Any = None,
+    ) -> None:
         pass
-    
-    def fatal(self, message: Any = "", attributes: Any = None, etype: Any = None, ctx: Any = None) -> None:
+
+    def fatal(
+        self,
+        message: Any = "",
+        attributes: Any = None,
+        etype: Any = None,
+        ctx: Any = None,
+    ) -> None:
         pass
-    
-    def trace(self, message: Any = "", attributes: Any = None, etype: Any = None, ctx: Any = None) -> None:
+
+    def trace(
+        self,
+        message: Any = "",
+        attributes: Any = None,
+        etype: Any = None,
+        ctx: Any = None,
+    ) -> None:
         pass
-    
+
     def set_level(self, level: str) -> None:
         pass
-    
+
     def get_level(self) -> int:
         return 0
-    
+
     def set_exporters(self, *exporters) -> None:
         pass
-    
+
     def shutdown(self) -> None:
         pass
 
@@ -79,7 +115,7 @@ def get_caller_info() -> str:
 
 def info(msg: str, ctx: Optional[context.Context] = None) -> None:
     """记录INFO级别日志
-    
+
     Args:
         msg: 日志消息内容
         ctx: OpenTelemetry上下文
@@ -94,7 +130,7 @@ def info(msg: str, ctx: Optional[context.Context] = None) -> None:
 
 def error(msg: str, ctx: Optional[context.Context] = None) -> None:
     """记录ERROR级别日志
-    
+
     Args:
         msg: 日志消息内容
         ctx: OpenTelemetry上下文
@@ -109,7 +145,7 @@ def error(msg: str, ctx: Optional[context.Context] = None) -> None:
 
 def warn(msg: str, ctx: Optional[context.Context] = None) -> None:
     """记录WARNING级别日志
-    
+
     Args:
         msg: 日志消息内容
         ctx: OpenTelemetry上下文
@@ -124,7 +160,7 @@ def warn(msg: str, ctx: Optional[context.Context] = None) -> None:
 
 def debug(msg: str, ctx: Optional[context.Context] = None) -> None:
     """记录DEBUG级别日志
-    
+
     Args:
         msg: 日志消息内容
         ctx: OpenTelemetry上下文
@@ -139,7 +175,7 @@ def debug(msg: str, ctx: Optional[context.Context] = None) -> None:
 
 def fatal(msg: str, ctx: Optional[context.Context] = None) -> None:
     """记录FATAL级别日志并退出程序
-    
+
     Args:
         msg: 日志消息内容
         ctx: OpenTelemetry上下文
@@ -155,20 +191,20 @@ def fatal(msg: str, ctx: Optional[context.Context] = None) -> None:
 
 def init_log_provider(server_info: ServerInfo, setting: LogSetting) -> None:
     """初始化日志导出器
-    
+
     Args:
         server_info: 服务器信息
         setting: 日志配置设置
     """
     global logger
-    
+
     # 如果 SDK 不可用，直接返回
     if not TELEMETRY_SDK_AVAILABLE:
         return
-    
+
     # 延迟导入 Config 避免循环依赖
     from app.common.config import Config
-    
+
     set_service_info(
         server_info.server_name,
         server_info.server_version,

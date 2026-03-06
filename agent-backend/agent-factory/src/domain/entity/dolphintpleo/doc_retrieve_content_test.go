@@ -9,19 +9,25 @@ import (
 )
 
 func TestNewDocRetrieveContent(t *testing.T) {
+	t.Parallel()
+
 	content := NewDocRetrieveContent()
-	if content == nil {
+	if content == nil { //nolint:staticcheck
 		t.Error("NewDocRetrieveContent() should return non-nil")
 	}
-	if content.Content != "" {
+
+	if content.Content != "" { //nolint:staticcheck
 		t.Errorf("Content should be empty, got %q", content.Content)
 	}
+
 	if content.IsEnable {
 		t.Error("IsEnable should be false")
 	}
 }
 
 func TestDocRetrieveContent_LoadFromConfig(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name                string
 		config              *daconfvalobj.Config
@@ -50,8 +56,8 @@ func TestDocRetrieveContent_LoadFromConfig(t *testing.T) {
 			isBuiltInDocQAAgent: false,
 			wantIsEnable:        true,
 			wantContent: `
- /judge/(tools=["doc_qa"], history=True)判断【$query】是否需要到文档中召回，如果不需要召回，则直接返回"不需要文档召回"，否则执行工具对【$query】进行召回 -> doc_retrieval_res
- `,
+/judge/(tools=["doc_qa"], history=True)判断【$query】是否需要到文档中召回，如果不需要召回，则直接返回\"不需要文档召回\"，否则执行工具对【$query】进行召回 -> doc_retrieval_res
+`,
 		},
 		{
 			name: "no doc data source",
@@ -77,11 +83,15 @@ func TestDocRetrieveContent_LoadFromConfig(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			content := NewDocRetrieveContent()
 			content.LoadFromConfig(tt.config, tt.isBuiltInDocQAAgent)
+
 			if content.IsEnable != tt.wantIsEnable {
 				t.Errorf("IsEnable = %v, want %v", content.IsEnable, tt.wantIsEnable)
 			}
+
 			if content.Content != tt.wantContent {
 				t.Errorf("Content = %q, want %q", content.Content, tt.wantContent)
 			}
@@ -90,6 +100,8 @@ func TestDocRetrieveContent_LoadFromConfig(t *testing.T) {
 }
 
 func TestDocRetrieveContent_ToString(t *testing.T) {
+	t.Parallel()
+
 	content := NewDocRetrieveContent()
 	content.Content = "test content"
 
@@ -100,6 +112,8 @@ func TestDocRetrieveContent_ToString(t *testing.T) {
 }
 
 func TestDocRetrieveContent_ToDolphinTplEo(t *testing.T) {
+	t.Parallel()
+
 	content := NewDocRetrieveContent()
 	content.Content = "test"
 
@@ -107,6 +121,7 @@ func TestDocRetrieveContent_ToDolphinTplEo(t *testing.T) {
 	if eo.Key != cdaenum.DolphinTplKeyDocRetrieve {
 		t.Errorf("Key = %v, want %v", eo.Key, cdaenum.DolphinTplKeyDocRetrieve)
 	}
+
 	if eo.Value != "test" {
 		t.Errorf("Value = %q, want %q", eo.Value, "test")
 	}

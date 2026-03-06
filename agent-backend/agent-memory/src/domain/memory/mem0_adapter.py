@@ -1,6 +1,6 @@
 from mem0.memory.main import AsyncMemory
 from src.config import memory_config, rerank_config
-from typing import Any, Dict, Optional, List
+from typing import Any, Dict, List
 from src.utils.logger import logger
 from src.adaptee.mf_model_factory.rerank_model_client import RerankModelClient
 

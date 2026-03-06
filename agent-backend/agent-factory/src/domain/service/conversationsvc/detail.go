@@ -40,7 +40,7 @@ func (svc *conversationSvc) Detail(ctx context.Context, id string) (res conversa
 
 	// 3. 转换为响应DTO
 	conversationDetail := conversationresp.NewConversationDetail()
-	conversationDetail.LoadFromEo(eo)
+	_ = conversationDetail.LoadFromEo(eo)
 	res = *conversationDetail
 
 	return

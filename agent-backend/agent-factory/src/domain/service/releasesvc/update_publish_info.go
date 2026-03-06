@@ -2,9 +2,7 @@ package releasesvc
 
 import (
 	"context"
-	"slices"
 
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/daenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/auditlogdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/release/releasereq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/release/releaseresp"
@@ -127,13 +125,13 @@ func (svc *releaseSvc) UpdatePublishInfo(ctx context.Context, agentID string, re
 	}
 
 	// 9. 当req.PublishToWhere不包含"custom_space"时，删除自定义空间关联
-	if !slices.Contains(req.PublishToWhere, daenum.PublishToWhereCustomSpace) {
-		err = svc.spaceResourceRepo.DeleteByAgentID(ctx, tx, agentID)
-		if err != nil {
-			err = errors.Wrapf(err, "delete custom space relations failed")
-			return
-		}
-	}
+	//if !slices.Contains(req.PublishToWhere, daenum.PublishToWhereCustomSpace) {
+	//	err = svc.spaceResourceRepo.DeleteByAgentID(ctx, tx, agentID)
+	//	if err != nil {
+	//		err = errors.Wrapf(err, "delete custom space relations failed")
+	//		return
+	//	}
+	//}
 
 	// 10. 提交事务
 	err = tx.Commit()

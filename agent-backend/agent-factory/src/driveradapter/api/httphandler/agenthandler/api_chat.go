@@ -7,9 +7,10 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
+	// "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper" // reserved for local dev debug
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 
 	// "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr/chelper"
@@ -50,9 +51,10 @@ func (h *agentHTTPHandler) APIChat(c *gin.Context) {
 		return
 	}
 
-	if cenvhelper.IsLocalDev(cenvhelper.RunScenario_Aaron_Local_Dev) {
-		// req.IncStream=false
-	}
+	// 本地调试：可取消注释以关闭 IncStream
+	// if cenvhelper.IsLocalDev(cenvhelper.RunScenario_Aaron_Local_Dev) {
+	// 	req.IncStream = false
+	// }
 
 	// NOTE: 获取用户ID
 	user := chelper.GetVisitorFromCtx(c)
@@ -134,6 +136,14 @@ func (h *agentHTTPHandler) APIChat(c *gin.Context) {
 				rest.ReplyError(c, err)
 				return
 			}
+		}
+
+		if res == nil {
+			h.logger.Errorf("[APIChat] chat failed: res is nil")
+			c.JSON(http.StatusInternalServerError, rest.NewHTTPError(c.Request.Context(), http.StatusInternalServerError, apierr.AgentAPP_InternalError).
+				WithErrorDetails("[APIChat] chat failed: res is nil").BaseError)
+
+			return
 		}
 
 		resultMap := res.(map[string]any)

@@ -7,6 +7,8 @@ import (
 )
 
 func Test_struct2SqlValPairsMapByTag(t *testing.T) {
+	t.Parallel()
+
 	// 1. 基本类型
 	type User struct {
 		Name string `json:"name"`
@@ -69,7 +71,7 @@ func Test_struct2SqlValPairsMapByTag(t *testing.T) {
 		},
 	}
 
-	pairs, err = struct2SQLValPairsMapByTag(user3, "json")
+	pairs, err = struct2SQLValPairsMapByTag(user3, "json") //nolint:staticcheck,ineffassign
 	assert.Equal(t, err.Error(), "only support string number *string *number, but field School is struct", "ib.ToInsertSQL() failed")
 
 	// 4. 零值
@@ -104,7 +106,7 @@ func Test_struct2SqlValPairsMapByTag(t *testing.T) {
 		School: &school,
 	}
 
-	pairs, err = struct2SQLValPairsMapByTag(user5, "json")
+	pairs, err = struct2SQLValPairsMapByTag(user5, "json") //nolint:staticcheck,ineffassign
 
 	assert.Equal(t, err.Error(), "only support string number *string *number, but field Age is bool", "ib.ToInsertSQL() failed")
 }

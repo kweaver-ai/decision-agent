@@ -1,13 +1,10 @@
-import copy
 import logging
 
 from fastapi import APIRouter
 from pydantic import BaseModel, Field
 
 from app.common.config import Config
-from app.common.stand_log import StandLogger
 from app.common.structs import AgentConfig, AgentInput, AgentOptions
-from app.logic.sensitive_word_detection import check_sensitive_word
 from app.utils.observability.trace_wrapper import internal_span
 from opentelemetry.trace import Span
 
@@ -46,20 +43,6 @@ class RunAgentResponse(BaseModel):
         title="status",
         description='"True": 流式信息已结束; "False": 流式信息未结束，正在返回; "Error": 失败',
     )
-
-
-def history_delete_sensitive(agent_input: AgentInput) -> AgentInput:
-    """删除含有敏感词的历史记录"""
-    if agent_input.history is None:
-        return agent_input
-
-    history_iter = copy.deepcopy(agent_input.history)
-    for i, message in enumerate(history_iter):
-        if check_sensitive_word(message["content"]):
-            agent_input.history.remove(message)
-            StandLogger.info(f"删除带有敏感词的历史记录: {message}")
-
-    return agent_input
 
 
 @internal_span()

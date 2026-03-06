@@ -45,6 +45,7 @@ service:
   businessTimeOffset: 0
   # APP 配置
   streamDiffFrequency: 5
+
   # 是否保留老的APP路径
   keep_legacy_app_path: true
 
@@ -65,10 +66,8 @@ service:
   swaggerToken: ""
   # ========================================
 
-  # ========== 日志和调试配置 ==========
+  # ========== 日志配置 ==========
   logFile: "/app/agent-factory/log/agent-factory.log"
-  debug: false
-  debugHost: ""
   # ========================================
   sessionAffinity: ClientIP
   sessionAffinityConfig:
@@ -185,20 +184,6 @@ depServices:
       host: business-system-service
       port: 80
       protocol: http
-  # ========== 依赖服务配置 ==========
-  rbac:
-    host: kg-user-rbac
-    port: 6900
-  intelliQa:
-    host: intelli-qa
-    port: 8887
-  builder:
-    host: kg-builder
-    port: 6475
-  auth:
-    host: kg-data-auth
-    port: 7000
-  # ========================================
 
   agentFactory:
     privateSvc:

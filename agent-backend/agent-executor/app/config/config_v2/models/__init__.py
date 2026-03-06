@@ -5,9 +5,8 @@
 
 from .app_config import AppConfig
 from .database_config import RdsConfig, RedisConfig, GraphDBConfig, OpenSearchConfig
-from .service_config import ServicesConfig, ExternalServicesConfig
+from .service_config import ServicesConfig
 from .memory_config import MemoryConfig
-from .document_config import DocumentConfig
 from .local_dev_config import LocalDevConfig
 from .outer_llm_config import OuterLLMConfig
 from .feature_config import FeaturesConfig
@@ -20,9 +19,7 @@ __all__ = [
     "GraphDBConfig",
     "OpenSearchConfig",
     "ServicesConfig",
-    "ExternalServicesConfig",
     "MemoryConfig",
-    "DocumentConfig",
     "LocalDevConfig",
     "OuterLLMConfig",
     "FeaturesConfig",

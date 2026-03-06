@@ -6,8 +6,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"reflect"
-	"strconv"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
@@ -39,16 +37,16 @@ type Config struct {
 	Redis   RedisConf `yaml:"redis"`
 	Hydra   HydraCfg  `yaml:"hydra"`
 
-	ModelFactory   *ModelFactoryConf   `yaml:"model_factory"`
-	Authorization  *AuthzCfg           `yaml:"authorization"`
-	AgentFactory   *AgentFactoryConf   `yaml:"agent_factory"`
-	BizDomain      *BizDomainConf      `yaml:"biz_domain"`
+	ModelFactory  *ModelFactoryConf `yaml:"model_factory"`
+	Authorization *AuthzCfg         `yaml:"authorization"`
+	AgentFactory  *AgentFactoryConf `yaml:"agent_factory"`
+	BizDomain     *BizDomainConf    `yaml:"biz_domain"`
 
 	MqCfgPath string
 }
 
 func (c *Config) IsDebug() bool {
-	return c.Project.Debug
+	return cenvhelper.IsDebugMode()
 }
 
 func (c *Config) String() string {
@@ -56,8 +54,10 @@ func (c *Config) String() string {
 	if err != nil {
 		return fmt.Sprintf("Config{error: %v}", err)
 	}
+
 	return "======= Config =======\n" + string(b) + "\n======= End Config ======="
 }
+
 func (c *Config) Check() (err error) {
 	err = c.Project.Check()
 	if err != nil {
@@ -83,8 +83,6 @@ func BaseDefConfig() (defConf *Config) {
 			Port:        30777,
 			Language:    rest.SimplifiedChinese,
 			LoggerLevel: 1,
-			Debug:       false,
-			DebugHost:   "",
 		},
 		DB: DBConf{
 			UserName:         "anyshare",
@@ -137,6 +135,7 @@ func BaseDefConfig() (defConf *Config) {
 func GetConfigBys(fileName string) []byte {
 	configFilePath := filepath.Join(GetConfigPath(), fileName)
 	log.Printf("Loading config file: %s\n", configFilePath)
+
 	file, err := os.ReadFile(configFilePath)
 	if err != nil {
 		log.Fatalf("load %v failed: %v", configFilePath, err)
@@ -151,65 +150,10 @@ func LoadConfig(file []byte, configImpl IConf) IConf {
 		log.Fatalf("unmarshal yaml file failed: %v", err)
 	}
 
-	overrideWithEnv(configImpl)
-
 	if configImpl.IsDebug() {
 		conf := configImpl
 		log.Println(conf)
 	}
 
 	return configImpl
-}
-
-// overrideWithEnv 自动遍历结构体，用反射根据 tag 进行环境变量覆盖
-func overrideWithEnv(cfg interface{}) {
-	v := reflect.ValueOf(cfg).Elem() // 获取指向结构体的指针
-	t := v.Type()
-
-	for i := 0; i < v.NumField(); i++ {
-		field := v.Field(i)
-		fieldType := t.Field(i)
-
-		if field.Kind() == reflect.Struct {
-			// 递归处理嵌套结构体
-			overrideWithEnv(field.Addr().Interface())
-			continue
-		}
-
-		// 获取字段的 env 标签
-		envTag := fieldType.Tag.Get("env")
-		if envTag == "" {
-			continue // 如果没有定义 env 标签，跳过
-		}
-
-		// 判断环境变量是否存在
-		envValue, exists := os.LookupEnv(envTag)
-		if !exists {
-			continue // 如果环境变量 key 不存在，跳过
-		}
-
-		// 如果 key 存在但值为空，则将字段设为类型的零值
-		if envValue == "" {
-			field.Set(reflect.Zero(field.Type()))
-			continue
-		}
-
-		// 使用反射直接设置字段值，要求类型匹配
-		switch field.Kind() {
-		case reflect.String:
-			field.SetString(envValue)
-		case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
-			intValue, err := strconv.ParseInt(envValue, 10, 64)
-			if err == nil {
-				field.SetInt(intValue)
-			}
-		case reflect.Bool:
-			boolValue, err := strconv.ParseBool(envValue)
-			if err == nil {
-				field.SetBool(boolValue)
-			}
-		default:
-			panic("Unsupported field type for env override")
-		}
-	}
 }

@@ -23,7 +23,7 @@ func NewAgentSvc() iportdriver.IAgent {
 		dto := &agentsvc.NewAgentSvcDto{
 			SvcBase:             service.NewSvcBase(),
 			Logger:              logger.GetLogger(),
-			AgentFactory:        httpinject.NewAgentFactoryHttpAcc(),
+			SquareSvc:           NewSquareSvc(),
 			AgentExecutorV1:     httpinject.NewAgentExecutorV1HttpAcc(),
 			AgentExecutorV2:     httpinject.NewAgentExecutorV2HttpAcc(),
 			ConversationSvc:     NewConversationSvc(),

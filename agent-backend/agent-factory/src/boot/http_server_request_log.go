@@ -40,11 +40,11 @@ func initHTTPServerRequestLog() {
 		SingleFileMaxEntries: 500, // 同时记录到 single/all_requests.log，保留最近500条
 	}
 
-	// 本地开发环境同时输出到控制台
-	if cenvhelper.IsLocalDev() {
-		// config.OutputMode = httprequesthelper.OutputModeBoth
-		// config.PrettyJSON = true
-	}
+	// 本地开发环境配置（如需额外配置可在此处添加）
+	// if cenvhelper.IsLocalDev() {
+	// 	config.OutputMode = httprequesthelper.OutputModeBoth
+	// 	config.PrettyJSON = true
+	// }
 
 	// 启用请求日志记录
 	if err := capimiddleware.InitDefaultRequestLoggerV2(config); err != nil {

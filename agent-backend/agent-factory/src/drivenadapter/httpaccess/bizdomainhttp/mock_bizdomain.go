@@ -38,22 +38,28 @@ func (m *mockBizDomainHttpAcc) DisassociateResource(ctx context.Context, req *bi
 
 func (m *mockBizDomainHttpAcc) QueryResourceAssociations(ctx context.Context, req *bizdomainhttpreq.QueryResourceAssociationsReq) (res *bizdomainhttpres.QueryResourceAssociationsRes, err error) {
 	m.logger.Infof("[MockBizDomain] QueryResourceAssociations: bdID=%s, resourceType=%s", req.BdID, req.Type)
+
 	res = &bizdomainhttpres.QueryResourceAssociationsRes{
 		Items: []*bizdomainhttpres.ResourceAssociationItem{},
 	}
+
 	return res, nil
 }
 
 func (m *mockBizDomainHttpAcc) GetAllAgentIDList(ctx context.Context, bdIDs []string) (agentIDs []string, agentID2BdIDMap map[string]string, err error) {
 	m.logger.Infof("[MockBizDomain] GetAllAgentIDList: bdIDs=%v", bdIDs)
+
 	agentIDs = []string{}
 	agentID2BdIDMap = make(map[string]string)
+
 	return agentIDs, agentID2BdIDMap, nil
 }
 
 func (m *mockBizDomainHttpAcc) GetAllAgentTplIDList(ctx context.Context, bdIDs []string) (agentIDs []string, err error) {
 	m.logger.Infof("[MockBizDomain] GetAllAgentTplIDList: bdIDs=%v", bdIDs)
+
 	agentIDs = []string{}
+
 	return agentIDs, nil
 }
 

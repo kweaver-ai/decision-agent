@@ -15,7 +15,7 @@ func SetInternalAPIFlag() gin.HandlerFunc {
 		c.Set(ctxKey, true)
 
 		// 设置request context
-		_ctx := context.WithValue(c.Request.Context(), ctxKey, true)
+		_ctx := context.WithValue(c.Request.Context(), ctxKey, true) //nolint:staticcheck // SA1029
 		cutil.UpdateGinReqCtx(c, _ctx)
 
 		c.Next()

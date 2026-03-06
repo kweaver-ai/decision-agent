@@ -148,5 +148,6 @@ func (l *Logger) Close() error {
 	if l.singleWriter != nil {
 		_ = l.singleWriter.Close()
 	}
+
 	return l.writer.Close()
 }

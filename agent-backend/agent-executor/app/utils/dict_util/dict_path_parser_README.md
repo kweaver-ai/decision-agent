@@ -64,7 +64,7 @@ all_depts = parser.get_flat('companies[*].departments[*].name')
 result = get_by_path(data, 'companies[*].name', preserve_structure=True)
 # 结果: ['公司A', '公司B']
 
-result = get_by_path(data, 'companies[*].name', preserve_structure=False)  
+result = get_by_path(data, 'companies[*].name', preserve_structure=False)
 # 结果: ['公司A', '公司B']  # 这个例子中结果相同
 ```
 
@@ -93,7 +93,7 @@ data = {
             ]
         },
         {
-            'name': 'Bob', 
+            'name': 'Bob',
             'orders': [
                 {'id': 3, 'items': ['D', 'E']}
             ]
@@ -105,7 +105,7 @@ parser = DictPathParser(data)
 
 # 各种路径示例
 parser.get('users[0].name')                    # 'Alice'
-parser.get('users[*].name')                    # ['Alice', 'Bob']  
+parser.get('users[*].name')                    # ['Alice', 'Bob']
 parser.get('users[*].orders[*].id')            # [[1, 2], [3]]  (保持结构)
 parser.get_flat('users[*].orders[*].id')       # [1, 2, 3]      (扁平化)
 parser.get_flat('users[*].orders[*].items')    # ['A', 'B', 'C', 'D', 'E']
@@ -191,7 +191,7 @@ new_data = set_by_path(data, 'new.field', 'value')
 ```python
 data = {
     'groups': [
-        {'items': ['a', 'b']}, 
+        {'items': ['a', 'b']},
         {'items': ['c', 'd']}
     ]
 }
@@ -203,7 +203,7 @@ result = parser.get('groups[*].items')
 
 ### 扁平化模式
 ```python
-result = parser.get_flat('groups[*].items') 
+result = parser.get_flat('groups[*].items')
 # 结果: ['a', 'b', 'c', 'd']  # 完全扁平化
 ```
 
@@ -221,7 +221,7 @@ config = {
             ]
         },
         {
-            'name': 'web-02', 
+            'name': 'web-02',
             'services': [
                 {'name': 'nginx', 'port': 80}
             ]
@@ -239,7 +239,7 @@ services_by_server = parser.get('servers[*].services')
 # ]
 
 # 所有服务端口（扁平化） - 用于端口冲突检查
-all_ports = parser.get_flat('servers[*].services[*].port')  
+all_ports = parser.get_flat('servers[*].services[*].port')
 # 结果: [80, 8080, 80]
 ```
 
@@ -252,7 +252,7 @@ except KeyError as e:
     print(f"键不存在: {e}")
 
 try:
-    result = parser.get('array[100]')  
+    result = parser.get('array[100]')
 except IndexError as e:
     print(f"索引超出范围: {e}")
 
@@ -278,7 +278,7 @@ sales_data = {
         {
             'name': '华南',
             'stores': [
-                {'city': '深圳', 'revenue': 1200, 'products': ['A', 'C', 'D']}  
+                {'city': '深圳', 'revenue': 1200, 'products': ['A', 'C', 'D']}
             ]
         }
     ]
@@ -291,7 +291,7 @@ revenue_by_region = parser.get('regions[*].stores[*].revenue')
 # 结果: [[1000, 800], [1200]]
 
 # 总收入分析
-total_revenues = parser.get_flat('regions[*].stores[*].revenue') 
+total_revenues = parser.get_flat('regions[*].stores[*].revenue')
 # 结果: [1000, 800, 1200]
 # 可以直接用于: sum(total_revenues), max(total_revenues) 等
 
@@ -312,7 +312,7 @@ parser.set('servers[*].services[*].monitoring', True)
 # 检查所有路径是否存在
 paths_to_check = [
     'companies[0].name',
-    'companies[1].departments', 
+    'companies[1].departments',
     'companies[*].status'
 ]
 

@@ -1,27 +1,27 @@
 package cconf
 
 type RedisConf struct {
-	ConnectType string `yaml:"connect_type" env:"REDISCLUSTERMODE"` // 部署方式 sentinel:哨兵模式 master-slave:主从模式 cluster:集群模式 standalone:单机模式
+	ConnectType string `yaml:"connect_type"` // 部署方式 sentinel:哨兵模式 master-slave:主从模式 cluster:集群模式 standalone:单机模式
 
-	UserName string `yaml:"username" env:"REDISUSER"`
-	Password string `yaml:"password" env:"REDISPASS"`
+	UserName string `yaml:"username"`
+	Password string `yaml:"password"`
 
 	// standalone
-	Host string `yaml:"host" env:"REDISHOST"`
-	Port string `yaml:"port" env:"REDISPORT"`
+	Host string `yaml:"host"`
+	Port string `yaml:"port"`
 
 	// sentinel
-	MasterGroupName  string `yaml:"master_group_name" env:"SENTINELMASTER"`
-	SentinelHost     string `yaml:"sentinel_host" env:"REDISHOST"`
-	SentinelPort     string `yaml:"sentinel_port" env:"REDISPORT"`
-	SentinelUsername string `yaml:"sentinel_username" env:"SENTINELUSER"`
-	SentinelPwd      string `yaml:"sentinel_password" env:"SENTINELPASS"`
+	MasterGroupName  string `yaml:"master_group_name"`
+	SentinelHost     string `yaml:"sentinel_host"`
+	SentinelPort     string `yaml:"sentinel_port"`
+	SentinelUsername string `yaml:"sentinel_username"`
+	SentinelPwd      string `yaml:"sentinel_password"`
 
 	// master-slave
-	MasterHost string `yaml:"master_host" env:"REDISWRITEHOST"`
-	MasterPort string `yaml:"master_port" env:"REDISWRITEPORT"`
-	SlaveHost  string `yaml:"slave_host" env:"REDISREADHOST"`
-	SlavePort  string `yaml:"slave_port" env:"REDISREADPORT"`
+	MasterHost string `yaml:"master_host"`
+	MasterPort string `yaml:"master_port"`
+	SlaveHost  string `yaml:"slave_host"`
+	SlavePort  string `yaml:"slave_port"`
 
 	// cluster 弃用，proton不支持这种模式
 	ClusterHosts []string `yaml:"cluster_addrs"`

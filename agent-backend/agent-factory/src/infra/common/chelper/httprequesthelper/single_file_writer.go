@@ -54,6 +54,7 @@ func (w *SingleFileWriter) Write(content string) error {
 		if err != nil {
 			return fmt.Errorf("failed to open single log file: %w", err)
 		}
+
 		w.file = file
 	}
 
@@ -85,6 +86,7 @@ func (w *SingleFileWriter) Close() error {
 	if w.file != nil {
 		return w.file.Close()
 	}
+
 	return nil
 }
 
@@ -95,15 +97,18 @@ func (w *SingleFileWriter) countLines() (int, error) {
 		if os.IsNotExist(err) {
 			return 0, nil
 		}
+
 		return 0, err
 	}
 	defer file.Close()
 
 	scanner := bufio.NewScanner(file)
 	count := 0
+
 	for scanner.Scan() {
 		count++
 	}
+
 	return count, scanner.Err()
 }
 
@@ -141,6 +146,7 @@ func (w *SingleFileWriter) truncateLocked() error {
 	if err != nil {
 		return err
 	}
+
 	w.file = file
 
 	return nil
@@ -155,6 +161,7 @@ func (w *SingleFileWriter) readAllLines() ([]string, error) {
 	defer file.Close()
 
 	var lines []string
+
 	scanner := bufio.NewScanner(file)
 	// 增加缓冲区大小以处理较长的日志行
 	buf := make([]byte, 0, 64*1024)

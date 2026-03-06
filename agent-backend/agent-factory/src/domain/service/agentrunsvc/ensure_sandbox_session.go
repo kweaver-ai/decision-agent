@@ -2,10 +2,9 @@ package agentsvc
 
 import (
 	"context"
+	"net/http"
 	"strings"
 	"time"
-
-	"net/http"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/sandboxplatformhttp/sandboxplatformdto"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
@@ -36,6 +35,7 @@ func (s *agentSvc) EnsureSandboxSession(ctx context.Context, sessionID string, r
 		// 其他错误：尝试创建新 Session
 		// o11y.SetAttributes(ctx, o11y.String("action", "recover_from_error"))
 		s.logger.Warnf("[EnsureSandboxSession] get session failed: %v, will create new session", err)
+
 		return s.createNewSession(ctx, sessionID, req)
 	}
 
@@ -46,9 +46,22 @@ func (s *agentSvc) EnsureSandboxSession(ctx context.Context, sessionID string, r
 		return sessionID, nil
 	}
 
-	// 3. Session 状态非 running，自动重新创建
+	// 3. Session 状态为 failed 或 error，先删除再创建
+	if sessionInfo.Status == "failed" || sessionInfo.Status == "error" || sessionInfo.Status == "stopped" {
+		// o11y.SetAttributes(ctx, o11y.String("action", "delete_and_recreate"))
+		s.logger.Warnf("[EnsureSandboxSession] session status is %s, will delete and recreate: %s", sessionInfo.Status, sessionID)
+
+		if delErr := s.sandboxPlatform.DeleteSession(ctx, sessionID); delErr != nil {
+			s.logger.Errorf("[EnsureSandboxSession] delete session failed: %v", delErr)
+		}
+
+		return s.createNewSession(ctx, sessionID, req)
+	}
+
+	// 4. Session 状态非 running，自动重新创建
 	// o11y.SetAttributes(ctx, o11y.String("action", "recreate"))
 	s.logger.Warnf("[EnsureSandboxSession] session status is %s, will recreate: %s", sessionInfo.Status, sessionID)
+
 	return s.createNewSession(ctx, sessionID, req)
 }
 
@@ -58,14 +71,17 @@ func (s *agentSvc) createNewSession(ctx context.Context, sessionID string, req *
 	if cpu == "" {
 		cpu = "1"
 	}
+
 	memory := s.sandboxPlatformConf.DefaultMemory
 	if memory == "" {
 		memory = "512Mi"
 	}
+
 	disk := s.sandboxPlatformConf.DefaultDisk
 	if disk == "" {
 		disk = "1Gi"
 	}
+
 	timeout := s.sandboxPlatformConf.DefaultTimeout
 	if timeout == 0 {
 		timeout = 300
@@ -100,6 +116,7 @@ func (s *agentSvc) createNewSession(ctx context.Context, sessionID string, req *
 		}
 
 		s.logger.Errorf("[createNewSession] create failed: %v", err)
+
 		return "", errors.Wrap(err, "create sandbox session failed")
 	}
 
@@ -119,6 +136,7 @@ func (s *agentSvc) waitForSessionReady(ctx context.Context, sessionID string) (s
 	retryIntervalDuration, err := time.ParseDuration(retryInterval)
 	if err != nil {
 		s.logger.Warnf("[waitForSessionReady] failed to parse retry interval, using default 500ms")
+
 		retryIntervalDuration = 500 * time.Millisecond
 	}
 
@@ -127,6 +145,7 @@ func (s *agentSvc) waitForSessionReady(ctx context.Context, sessionID string) (s
 		if err != nil {
 			s.logger.Errorf("[waitForSessionReady] get session status failed (attempt %d): %v", i+1, err)
 			time.Sleep(retryIntervalDuration)
+
 			continue
 		}
 
@@ -153,6 +172,7 @@ func (s *agentSvc) isSessionNotFoundError(err error) bool {
 	if errors.As(err, &httpErr) {
 		return httpErr.HTTPCode == http.StatusNotFound
 	}
+
 	return false
 }
 
@@ -162,5 +182,6 @@ func (s *agentSvc) isSessionAlreadyExistsError(err error) bool {
 	if errors.As(err, &httpErr) {
 		return httpErr.HTTPCode == http.StatusConflict
 	}
+
 	return strings.Contains(err.Error(), "already exists")
 }

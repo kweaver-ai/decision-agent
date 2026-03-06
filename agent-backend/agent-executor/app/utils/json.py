@@ -14,6 +14,7 @@ def custom_serializer(obj):
     通用 JSON 序列化器，支持多种 Python 特殊类型和自定义对象。
 
     支持的类型包括：
+    - 基本类型 (None, int, float, str, bool, list, dict)
     - datetime/datetime.time/datetime.date
     - decimal.Decimal
     - uuid.UUID
@@ -23,6 +24,10 @@ def custom_serializer(obj):
     - 生成器和迭代器（转换为列表）
     - 其他具有 __dict__ 属性的对象
     """
+    # 基本类型直接返回（JSON原生支持）
+    if obj is None or isinstance(obj, (int, float, str, bool, list, dict)):
+        return obj
+
     # 日期时间类型
     if isinstance(obj, (datetime.datetime, datetime.time, datetime.date)):
         return obj.isoformat()
@@ -45,7 +50,10 @@ def custom_serializer(obj):
 
     # 尝试使用 __dict__ 属性序列化对象
     if hasattr(obj, "__dict__"):
-        return obj.__dict__
+        # 如果 __dict__ 为空，检查是否有其他可序列化的属性
+        obj_dict = obj.__dict__
+        if obj_dict or hasattr(obj, "__slots__"):
+            return obj_dict
 
     # 其他类型抛出错误
     raise TypeError(f"Object of type {obj.__class__.__name__} is not JSON serializable")

@@ -19,7 +19,7 @@ func NewSandboxPlatformHttpAcc() isandboxhtpp.ISandboxPlatform {
 	sandboxPlatformOnce.Do(func() {
 		sandboxPlatformConf := global.GConfig.SandboxPlatformConf
 
-		if global.GConfig.MockSandboxPlatform {
+		if global.GConfig.SwitchFields.Mock.MockSandboxPlatform {
 			sandboxPlatformImpl = sandboxplatformhttp.NewMockSandboxPlatform(logger.GetLogger())
 		} else {
 			sandboxPlatformImpl = sandboxplatformhttp.NewSandboxPlatformHttpAcc(

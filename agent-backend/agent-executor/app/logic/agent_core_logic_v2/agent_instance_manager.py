@@ -29,7 +29,7 @@ class AgentInstanceManager:
         self._instances: Dict[str, Tuple] = {}
         self._instance_lock = Lock()
         # 实例过期时间（秒）
-        self._expire_seconds = 30 * 60  # 30分钟
+        self._expire_seconds = 60 * 60  # 1小时
         # 启动后台清理线程
         self._start_cleanup_thread()
 
@@ -66,9 +66,7 @@ class AgentInstanceManager:
         with self._instance_lock:
             self._instances[agent_run_id] = (agent, agent_core, time.time())
 
-    def get(
-        self, agent_run_id: str
-    ) -> Optional[Tuple["DolphinAgent", "AgentCoreV2"]]:
+    def get(self, agent_run_id: str) -> Optional[Tuple["DolphinAgent", "AgentCoreV2"]]:
         """获取 Agent 实例
 
         Args:
@@ -108,11 +106,6 @@ class AgentInstanceManager:
             ]
             for run_id in expired_ids:
                 del self._instances[run_id]
-
-    def get_instance_count(self) -> int:
-        """获取当前实例数量"""
-        with self._instance_lock:
-            return len(self._instances)
 
 
 # 全局单例

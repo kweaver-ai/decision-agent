@@ -15,9 +15,6 @@ type permissionSvc struct {
 	releasePermissionRepo idbaccess.IReleasePermissionRepo
 	umHttp                iumacc.UmHttpAcc
 	authZHttp             iauthzacc.AuthZHttpAcc
-
-	spaceRepo idbaccess.ISpaceRepo
-	// spaceSvc                 iv3portdriver.ISpaceService
 }
 
 var _ iv3portdriver.IPermissionSvc = &permissionSvc{}
@@ -29,9 +26,6 @@ type NewPermissionSvcDto struct {
 	ReleasePermissionRepo idbaccess.IReleasePermissionRepo
 	UmHttp                iumacc.UmHttpAcc
 	AuthZHttp             iauthzacc.AuthZHttpAcc
-
-	SpaceRepo idbaccess.ISpaceRepo
-	// SpaceSvc                 iv3portdriver.ISpaceService
 }
 
 func NewPermissionService(dto *NewPermissionSvcDto) iv3portdriver.IPermissionSvc {
@@ -42,8 +36,6 @@ func NewPermissionService(dto *NewPermissionSvcDto) iv3portdriver.IPermissionSvc
 		releasePermissionRepo: dto.ReleasePermissionRepo,
 		umHttp:                dto.UmHttp,
 		authZHttp:             dto.AuthZHttp,
-		spaceRepo:             dto.SpaceRepo,
-		// spaceSvc:                 dto.SpaceSvc,
 	}
 
 	return permissionSvcImpl

@@ -187,6 +187,16 @@ github.com/json-iterator/go v1.1.12
 - **安全扫描**：Trivy镜像扫描
 - **质量门禁**：SonarQube代码质量检查
 
+## 代码质量
+
+运行代码格式化和检查：
+
+```bash
+make lint
+```
+
+该命令会自动执行代码格式化和 golangci-lint 检查。
+
 ## 名词解释
 
 | 术语名称                      | 定义                                                                            |

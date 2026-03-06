@@ -7,6 +7,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/uniqueryaccess/uniquerydto"
 	observabilityreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/observability/req"
 	observabilityresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/observability/resp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squarereq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
@@ -14,7 +15,10 @@ import (
 
 func (s *observabilitySvc) AgentDetail(ctx context.Context, req *observabilityreq.AgentDetailReq) (*observabilityresp.AgentResp, error) {
 	// 1. 获取agent信息
-	agent, err := s.agentFactory.GetAgent(ctx, req.AgentID, req.AgentVersion)
+	agentInfo, err := s.squareSvc.GetAgentInfo(ctx, &squarereq.AgentInfoReq{
+		AgentID:      req.AgentID,
+		AgentVersion: req.AgentVersion,
+	})
 	if err != nil {
 		s.logger.Errorf("[AgentDetail] get agent config failed: %v", err.Error())
 		return nil, rest.NewHTTPError(ctx, http.StatusInternalServerError, apierr.AgentAPP_Agent_GetAgentFailed).WithErrorDetails(err.Error())
@@ -171,8 +175,8 @@ func (s *observabilitySvc) AgentDetail(ctx context.Context, req *observabilityre
 		Agent: observabilityresp.Agent{
 			ID:      req.AgentID,
 			Version: req.AgentVersion,
-			Name:    agent.Name,
-			Config:  agent.Config,
+			Name:    agentInfo.DataAgent.Name,
+			Config:  agentInfo.Config,
 		},
 		TotalRequests:      totalRequests,
 		TotalSessions:      totalSessions,

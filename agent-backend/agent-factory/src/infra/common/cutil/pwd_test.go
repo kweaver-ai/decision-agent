@@ -3,6 +3,8 @@ package cutil
 import "testing"
 
 func TestCheckPassword(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		password string
@@ -52,6 +54,8 @@ func TestCheckPassword(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if got := CheckPassword(tt.password); got != tt.want {
 				t.Errorf("CheckPassword() = %v, want %v", got, tt.want)
 			}

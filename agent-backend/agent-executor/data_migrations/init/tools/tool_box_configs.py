@@ -2,7 +2,6 @@
 内置工具箱配置
 """
 
-import os
 from pathlib import Path
 
 from app.common.config import Config

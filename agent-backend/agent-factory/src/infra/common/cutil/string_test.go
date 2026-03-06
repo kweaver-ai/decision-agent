@@ -7,6 +7,8 @@ import (
 )
 
 func TestMustParseInt(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		input    string
@@ -47,6 +49,8 @@ func TestMustParseInt(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if tt.panicMsg != "" {
 				assert.Panics(t, func() {
 					MustParseInt(tt.input)
@@ -60,6 +64,8 @@ func TestMustParseInt(t *testing.T) {
 }
 
 func TestMustParseInt64(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		input    string
@@ -105,6 +111,8 @@ func TestMustParseInt64(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if tt.panicMsg != "" {
 				assert.Panics(t, func() {
 					MustParseInt64(tt.input)
@@ -118,6 +126,8 @@ func TestMustParseInt64(t *testing.T) {
 }
 
 func TestStringToBool(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name  string
 		input string
@@ -172,6 +182,8 @@ func TestStringToBool(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := StringToBool(tt.input)
 			assert.Equal(t, tt.want, result, "Result should match expected value")
 		})
@@ -179,6 +191,8 @@ func TestStringToBool(t *testing.T) {
 }
 
 func TestRuneLength(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name  string
 		input string
@@ -228,6 +242,8 @@ func TestRuneLength(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := RuneLength(tt.input)
 			assert.Equal(t, tt.want, result, "Result should match expected length")
 		})

@@ -517,7 +517,7 @@ async def get_llm_config(self, model_id):
 任何通过logger方法传入的额外参数都会作为字段出现在JSON中：
 
 ```python
-file_logger.info("用户操作", 
+file_logger.info("用户操作",
     user_id="12345",
     action="login",
     ip="192.168.1.1",
@@ -568,7 +568,7 @@ with open('log/agent-executor.log', 'r') as f:
         if match:
             timestamp, level, json_str = match.groups()
             data = json.loads(json_str)
-            
+
             # 处理日志数据
             if level == 'ERROR':
                 print(f"{timestamp}: {data.get('event')} - {data.get('error_code')}")
@@ -796,7 +796,7 @@ struct_logger.error(
    ```python
    # 旧代码
    StandLogger.error(f"error: {message}")
-   
+
    # 新代码
    struct_logger.error("error occurred", message=message)
    ```

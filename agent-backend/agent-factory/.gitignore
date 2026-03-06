@@ -8,7 +8,9 @@ coverage_report
 agent-factory
 !agent-factory/
 .claude/
-CLAUDE.md
 WARP.md
+coverage.out
 # Swagger 文档
 /docs/swagger.*
+# UT coverage reports
+test_out/

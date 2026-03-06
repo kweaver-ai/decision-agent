@@ -7,6 +7,8 @@ import (
 )
 
 func TestInt8Ptr(t *testing.T) {
+	t.Parallel()
+
 	value := int8(42)
 	ptr := Int8Ptr(value)
 
@@ -15,6 +17,8 @@ func TestInt8Ptr(t *testing.T) {
 }
 
 func TestInt8PtrZero(t *testing.T) {
+	t.Parallel()
+
 	value := int8(0)
 	ptr := Int8Ptr(value)
 
@@ -23,6 +27,8 @@ func TestInt8PtrZero(t *testing.T) {
 }
 
 func TestInt8PtrNegative(t *testing.T) {
+	t.Parallel()
+
 	value := int8(-42)
 	ptr := Int8Ptr(value)
 

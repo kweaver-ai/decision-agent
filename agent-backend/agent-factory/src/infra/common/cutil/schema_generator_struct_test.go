@@ -7,6 +7,8 @@ import (
 )
 
 func TestCreateDynamicStruct(t *testing.T) {
+	t.Parallel()
+
 	schemaStr := `{
 		"name": {"type": "string"},
 		"age": {"type": "integer"},
@@ -22,6 +24,8 @@ func TestCreateDynamicStruct(t *testing.T) {
 }
 
 func TestCreateDynamicStruct_InvalidSchema(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name      string
 		schemaStr string
@@ -41,6 +45,8 @@ func TestCreateDynamicStruct_InvalidSchema(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			typ, err := CreateDynamicStruct(tt.schemaStr)
 
 			if tt.wantErr {
@@ -55,6 +61,8 @@ func TestCreateDynamicStruct_InvalidSchema(t *testing.T) {
 }
 
 func TestCreateDynamicStruct_NestedObject(t *testing.T) {
+	t.Parallel()
+
 	schemaStr := `{
 		"user": {
 			"type": "object",

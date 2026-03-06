@@ -10,6 +10,8 @@ import (
 )
 
 func TestListPolicyReq_ToReqQuery(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		name string
 		req  *authzhttpreq.ListPolicyReq
@@ -49,6 +51,8 @@ func TestListPolicyReq_ToReqQuery(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := tc.req.ToReqQuery()
 			assert.Equal(t, tc.want, got)
 		})
@@ -56,6 +60,8 @@ func TestListPolicyReq_ToReqQuery(t *testing.T) {
 }
 
 func TestNewListPolicyReq(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		name         string
 		resourceID   string
@@ -88,6 +94,8 @@ func TestNewListPolicyReq(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
 			req := authzhttpreq.NewListPolicyReq(tc.resourceID, tc.resourceType)
 
 			assert.Equal(t, tc.wantLimit, req.Limit)
@@ -100,6 +108,8 @@ func TestNewListPolicyReq(t *testing.T) {
 
 // 测试响应结构的正确性
 func TestPolicyResponseStructure(t *testing.T) {
+	t.Parallel()
+
 	mockResponse := &authzhttpres.ListPolicyRes{
 		TotalCount: 2,
 		Entries: []*authzhttpres.PolicyEntry{
@@ -124,6 +134,8 @@ func TestPolicyResponseStructure(t *testing.T) {
 
 // 测试 URL 构造的正确性
 func TestListPolicyURLConstruction(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		name        string
 		baseURL     string
@@ -156,6 +168,7 @@ func TestListPolicyURLConstruction(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
 			// 构造预期的 URL
 			actualURL := tc.baseURL + "/api/authorization/v1/policy?" + tc.req.ToReqQuery()
 			assert.Equal(t, tc.expectedURL, actualURL)
@@ -165,6 +178,8 @@ func TestListPolicyURLConstruction(t *testing.T) {
 
 // 测试边界条件
 func TestListPolicyReq_BoundaryConditions(t *testing.T) {
+	t.Parallel()
+
 	testCases := []struct {
 		name string
 		req  *authzhttpreq.ListPolicyReq
@@ -200,6 +215,7 @@ func TestListPolicyReq_BoundaryConditions(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
 			// 验证请求对象可以正常序列化
 			queryString := tc.req.ToReqQuery()
 			assert.NotEmpty(t, queryString)

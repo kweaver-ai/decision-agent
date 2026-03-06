@@ -16,7 +16,7 @@ var (
 
 func NewBizDomainHttpAcc() ibizdomainacc.BizDomainHttpAcc {
 	bizDomainOnce.Do(func() {
-		if global.GConfig.MockBizDomain {
+		if global.GConfig.SwitchFields.Mock.MockBizDomain {
 			bizDomainImpl = bizdomainhttp.NewMockBizDomainHttpAcc(
 				logger.GetLogger(),
 			)

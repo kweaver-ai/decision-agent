@@ -43,14 +43,8 @@ func (svc *releaseSvc) handlePmsCtrl(ctx context.Context, pmsControl *pmsvo.PmsC
 			err = errors.Wrapf(err, "handlePmsCtrlRange failed")
 			return
 		}
-	} else {
-		//// 4.2 给所有人授权
-		// err = svc.grantUsePmsToAll(ctx, agentID, agentName)
-		//if err != nil {
-		//	err = errors.Wrapf(err, "grant use pms to all failed")
-		//	return
-		//}
 	}
+	// 注: pmsControl 为 nil 时，暂不授权给所有人（grantUsePmsToAll 已注释）
 
 	return
 }

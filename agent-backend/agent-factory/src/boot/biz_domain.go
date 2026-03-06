@@ -13,7 +13,7 @@ import (
 
 // initBizDomainRel 初始化业务域关联关系
 func initBizDomainRel() (err error) {
-	if global.GConfig.DisableBizDomainInit {
+	if global.GConfig.SwitchFields.DisableBizDomainInit {
 		return
 	}
 

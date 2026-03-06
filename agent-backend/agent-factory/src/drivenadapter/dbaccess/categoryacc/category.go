@@ -45,7 +45,7 @@ func (repo *categoryRepo) List(ctx context.Context, req interface{}) (rt []*dapo
 
 	err = sr.Find(&list)
 	if err != nil {
-		// todo
+		return nil, err
 	}
 
 	rt = cutil.SliceToPtrSlice(list)
