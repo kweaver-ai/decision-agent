@@ -16,6 +16,16 @@ datas += copy_metadata('setuptools')
 cn_datas, cn_binaries, cn_hiddenimports = collect_all('charset_normalizer')
 datas += cn_datas
 
+# Collect mypyc runtime shared library from top-level site-packages
+# charset_normalizer 3.x uses mypyc to compile modules, the runtime .so file
+# (e.g. 81d243bd2c585b0f4821__mypyc.*.so) is placed at site-packages root,
+# NOT inside charset_normalizer/, so collect_all won't find it.
+import glob
+_cn_pkg_dir = os.path.dirname(__import__('charset_normalizer').__file__)
+_site_packages = os.path.dirname(_cn_pkg_dir)
+for _mypyc_file in glob.glob(os.path.join(_site_packages, '*__mypyc*')):
+    cn_binaries.append((_mypyc_file, '.'))
+
 # Analysis configuration
 a = Analysis(
     ['main.py'],
