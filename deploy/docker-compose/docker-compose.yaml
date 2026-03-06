@@ -102,7 +102,7 @@ services:
   agent-web:
     build:
       context: ../..
-      dockerfile: agent-web/Dockerfile
+      dockerfile: agent-web/Dockerfile-compose
     container_name: decision-agent-web
     restart: unless-stopped
     environment:
