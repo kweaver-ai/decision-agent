@@ -159,6 +159,11 @@ async def run_dolphin(
     history_limit = context_variables.get("history_limit")
     if history_limit is None:
         history_limit = 4
+    elif not isinstance(history_limit, int) or history_limit < 0 or history_limit > 20:
+        struct_logger.console_logger.warning(
+            f"[run_dolphin] Invalid history_limit: {history_limit}, using default 4"
+        )
+        history_limit = 4
     context_variables["_history_compact_recent_turns"] = history_limit
     # new add 2026年03月06日 --end--
 
