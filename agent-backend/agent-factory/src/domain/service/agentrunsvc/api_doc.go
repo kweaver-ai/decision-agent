@@ -22,7 +22,8 @@ func (agentSvc *agentSvc) GetAPIDoc(ctx context.Context, req *agentreq.GetAPIDoc
 	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
 	o11y.SetAttributes(ctx, attribute.String("agent_version", req.AgentVersion))
 
-	agentInfo, err := agentSvc.squareSvc.GetAgentInfo(ctx, &squarereq.AgentInfoReq{
+	// 1. 通过agent id获取agent信息
+	agentInfo, err := agentSvc.squareSvc.GetAgentInfoByIDOrKey(ctx, &squarereq.AgentInfoReq{
 		AgentID:      req.AgentID,
 		AgentVersion: req.AgentVersion,
 	})
@@ -30,7 +31,8 @@ func (agentSvc *agentSvc) GetAPIDoc(ctx context.Context, req *agentreq.GetAPIDoc
 		o11y.Error(ctx, fmt.Sprintf("[GetAPIDoc] get agent failed: %v", err))
 		return nil, errors.Wrapf(err, "[GetAPIDoc] get agent failed: %v", err)
 	}
-	// 读取api文档模版并解析为openapi3类型
+
+	// 2. 读取api文档模版并解析为openapi3类型
 	loader := openapi3.NewLoader()
 
 	docByte, err := static.StaticFiles.ReadFile("agent-api.json")
@@ -45,7 +47,7 @@ func (agentSvc *agentSvc) GetAPIDoc(ctx context.Context, req *agentreq.GetAPIDoc
 		return nil, errors.Wrapf(err, "[GetAPIDoc] load api doc err: %v", err)
 	}
 
-	// 取这个接口的配置
+	// 3. 取这个接口的配置
 	pathItem := apiDoc.Paths.Value("/api/agent-app/v1/app/{app_key}/api/chat/completion")
 	pathItem.Post.Summary = agentInfo.DataAgent.Name
 
@@ -54,7 +56,7 @@ func (agentSvc *agentSvc) GetAPIDoc(ctx context.Context, req *agentreq.GetAPIDoc
 		pathItem.Post.Description = profile
 	}
 
-	// 取请求体
+	// 4. 取请求体
 	chatRequest := apiDoc.Components.Schemas["ChatRequest"]
 	// 初始化示例
 	reqExample := make(map[string]interface{})
@@ -111,11 +113,13 @@ func (agentSvc *agentSvc) GetAPIDoc(ctx context.Context, req *agentreq.GetAPIDoc
 		delete(reqExample, "custom_querys")
 	}
 
+	// 5. 设置请求体示例和schema
 	reqExample["stream"] = false
 	reqExample["agent_version"] = agentInfo.Version
 	reqExample["agent_key"] = agentInfo.DataAgent.Key
 	pathItem.Post.RequestBody.Value.Content["application/json"].Example = reqExample
 	pathItem.Post.RequestBody.Value.Content["application/json"].Schema = chatRequest
 
+	// 6. 返回
 	return apiDoc, nil
 }

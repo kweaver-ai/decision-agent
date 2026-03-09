@@ -1,4 +1,30 @@
 # Changelog
+## 0.3.6
+
+### Features & Improvements
+
+- Add agent lookup by ID or key in `agent-factory` and update related chat / API doc flows
+- Increase API tool timeout buffer in `agent-executor` to improve long-running request stability
+
+### Bug Fixes
+
+- Fix permission checks for agent-key based access by resolving the actual agent ID before validation
+- Update sandbox session ID to use the default `sess-agent-default` format required by code execution
+
+### Refactoring & Cleanup
+
+- Update square service interfaces and related service logic to reuse the new ID-or-key lookup path
+- Improve `api_doc.go` step annotations for clearer code flow
+
+### Testing
+
+- Add unit tests for API tool timeout handling and agent lookup by ID or key
+- Update related `agent-factory` service tests to cover the new lookup behavior and permission flow
+
+### Chores
+
+- Bump project version to 0.3.6
+
 ## 0.3.5
 
 ### Features & Improvements

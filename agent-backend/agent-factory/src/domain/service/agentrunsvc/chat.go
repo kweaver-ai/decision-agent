@@ -64,7 +64,9 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 
 	// NOTE: 1. 根据agentID 和agentVersion 获取agent配置
 	// NOTE: Chat接口请求时，agentID 实际值为agentID, APIChat接口请求时，agentID 实际值为agentKey
-	agentInfo, err := agentSvc.squareSvc.GetAgentInfo(newCtx, &squarereq.AgentInfoReq{
+
+	// 1.1 通过agent id获取agent信息
+	agentInfo, err := agentSvc.squareSvc.GetAgentInfoByIDOrKey(newCtx, &squarereq.AgentInfoReq{
 		AgentID:      req.AgentID,
 		AgentVersion: req.AgentVersion,
 	})
@@ -79,7 +81,7 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 			apierr.AgentAPP_Agent_GetAgentFailed).WithErrorDetails(fmt.Sprintf("[chat] get agent failed: %v", err))
 	}
 
-	// NOTE：传递给AgentExecutor的agentID 前确保实际值为agentID
+	// 1.2 传递给AgentExecutor的agentID 前确保实际值为agentID
 	req.AgentID = agentInfo.DataAgent.ID
 
 	// NOTE: 如果是apichat,但是没有发布成api agent，则返回403

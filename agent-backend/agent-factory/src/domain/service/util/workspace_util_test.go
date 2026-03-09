@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -42,7 +43,7 @@ func TestBuildWorkspaceContextMessage(t *testing.T) {
 			wantEmpty: false,
 			wantContains: []string{
 				"Current workspace path: /workspace/conv-123/uploads/temparea/",
-				"Sandbox Session ID: sess-user-456",
+				"Sandbox Session ID: " + cutil.GetSandboxSessionID(),
 				"- data.csv (/workspace/conv-123/uploads/temparea/data.csv)",
 				"System auto-generated context - not user query",
 			},
@@ -73,7 +74,7 @@ func TestBuildWorkspaceContextMessage(t *testing.T) {
 			wantEmpty: false,
 			wantContains: []string{
 				"- file.pdf (/workspace/conv-abc/uploads/temparea/subdir/nested/file.pdf)",
-				"sess-user-xyz",
+				cutil.GetSandboxSessionID(),
 			},
 		},
 		{

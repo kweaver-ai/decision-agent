@@ -16,7 +16,7 @@ import (
 // 【System auto-generated context - not user query】
 //
 // Current workspace path: /workspace/{conversation_id}/uploads/temparea/
-// Sandbox Session ID: sess-{user_id} (IMPORTANT: This ID is required for code execution tool calls)
+// Sandbox Session ID: sess-agent-default (IMPORTANT: This ID is required for code execution tool calls)
 //
 // Available files:
 // - data.csv (/workspace/conv-123/uploads/temparea/data.csv)

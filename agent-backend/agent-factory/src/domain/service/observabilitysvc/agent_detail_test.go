@@ -7,6 +7,7 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/uniqueryaccess/uniquerydto"
 	observabilityreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/observability/req"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squarereq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squareresp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp/cmpmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iuniqueryhttp/uniquerymock"
@@ -70,7 +71,7 @@ func TestObservabilitySvc_AgentDetail_Success_EmptyEntries(t *testing.T) {
 		EndTime:      2000000,
 	}
 
-	ms.EXPECT().GetAgentInfo(ctx, gomock.Any()).Return(&squareresp.AgentMarketAgentInfoResp{}, nil)
+	ms.EXPECT().GetAgentInfoByIDOrKey(ctx, gomock.Any()).Return(&squareresp.AgentMarketAgentInfoResp{}, nil)
 	mu.EXPECT().GetDataView(ctx, "__dip_o11y_log", gomock.Any()).
 		Return(uniquerydto.ViewResults{Entries: []interface{}{}}, nil)
 
@@ -81,6 +82,36 @@ func TestObservabilitySvc_AgentDetail_Success_EmptyEntries(t *testing.T) {
 	assert.Equal(t, 0, resp.TotalRequests)
 	assert.Equal(t, 0, resp.TotalSessions)
 	assert.Equal(t, float32(0), resp.RunSuccessRate)
+}
+
+func TestObservabilitySvc_AgentDetail_AgentKeyLookupSuccess(t *testing.T) {
+	t.Parallel()
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	svc, mu, _, ms := newSvcWithAll(ctrl)
+	ctx := context.Background()
+	req := &observabilityreq.AgentDetailReq{
+		AgentID:      "agent-key",
+		AgentVersion: "v1",
+		StartTime:    1000000,
+		EndTime:      2000000,
+	}
+
+	ms.EXPECT().GetAgentInfoByIDOrKey(ctx, gomock.AssignableToTypeOf(&squarereq.AgentInfoReq{})).
+		DoAndReturn(func(_ context.Context, gotReq *squarereq.AgentInfoReq) (*squareresp.AgentMarketAgentInfoResp, error) {
+			assert.Equal(t, "agent-key", gotReq.AgentID)
+			return &squareresp.AgentMarketAgentInfoResp{}, nil
+		})
+	mu.EXPECT().GetDataView(ctx, "__dip_o11y_log", gomock.Any()).
+		Return(uniquerydto.ViewResults{Entries: []interface{}{}}, nil)
+
+	resp, err := svc.AgentDetail(ctx, req)
+	require.NoError(t, err)
+	require.NotNil(t, resp)
+	assert.Equal(t, "agent-key", resp.Agent.ID)
+	assert.Equal(t, 0, resp.TotalRequests)
 }
 
 func TestObservabilitySvc_AgentDetail_Success_WithEntries(t *testing.T) {
@@ -109,7 +140,7 @@ func TestObservabilitySvc_AgentDetail_Success_WithEntries(t *testing.T) {
 		makeAgentDetailEntry("session-2", "agent-1", "failed", 0, 0, 1, 1, 1300000, 1800000),
 	}
 
-	ms.EXPECT().GetAgentInfo(ctx, gomock.Any()).Return(agentResp, nil)
+	ms.EXPECT().GetAgentInfoByIDOrKey(ctx, gomock.Any()).Return(agentResp, nil)
 	mu.EXPECT().GetDataView(ctx, "__dip_o11y_log", gomock.Any()).
 		Return(uniquerydto.ViewResults{Entries: entries}, nil)
 
@@ -136,7 +167,7 @@ func TestObservabilitySvc_AgentDetail_GetAgentInfoError(t *testing.T) {
 	ctx := context.Background()
 	req := &observabilityreq.AgentDetailReq{AgentID: "agent-1", AgentVersion: "v1"}
 
-	ms.EXPECT().GetAgentInfo(ctx, gomock.Any()).Return(nil, errors.New("square unavailable"))
+	ms.EXPECT().GetAgentInfoByIDOrKey(ctx, gomock.Any()).Return(nil, errors.New("square unavailable"))
 	ml.EXPECT().Errorf(gomock.Any(), gomock.Any()).AnyTimes()
 
 	_, err := svc.AgentDetail(ctx, req)
@@ -153,7 +184,7 @@ func TestObservabilitySvc_AgentDetail_UniqueryError(t *testing.T) {
 	ctx := context.Background()
 	req := &observabilityreq.AgentDetailReq{AgentID: "agent-1", AgentVersion: "v1", StartTime: 1000000, EndTime: 2000000}
 
-	ms.EXPECT().GetAgentInfo(ctx, gomock.Any()).Return(&squareresp.AgentMarketAgentInfoResp{}, nil)
+	ms.EXPECT().GetAgentInfoByIDOrKey(ctx, gomock.Any()).Return(&squareresp.AgentMarketAgentInfoResp{}, nil)
 	mu.EXPECT().GetDataView(ctx, "__dip_o11y_log", gomock.Any()).
 		Return(uniquerydto.ViewResults{}, errors.New("db error"))
 	ml.EXPECT().Errorf(gomock.Any(), gomock.Any()).AnyTimes()
@@ -176,7 +207,7 @@ func TestObservabilitySvc_AgentDetail_ZeroValues(t *testing.T) {
 		makeAgentDetailEntry("s1", "a", "success", 0, 0, 0, 0, 100, 200),
 	}
 
-	ms.EXPECT().GetAgentInfo(ctx, gomock.Any()).Return(&squareresp.AgentMarketAgentInfoResp{}, nil)
+	ms.EXPECT().GetAgentInfoByIDOrKey(ctx, gomock.Any()).Return(&squareresp.AgentMarketAgentInfoResp{}, nil)
 	mu.EXPECT().GetDataView(ctx, "__dip_o11y_log", gomock.Any()).
 		Return(uniquerydto.ViewResults{Entries: entries}, nil)
 
@@ -202,7 +233,7 @@ func TestObservabilitySvc_AgentDetail_AllRunsFailed(t *testing.T) {
 		makeAgentDetailEntry("session-1", "agent-1", "failed", 3.0, 300, 1, 1, 2000000, 3000000),
 	}
 
-	ms.EXPECT().GetAgentInfo(ctx, gomock.Any()).Return(&squareresp.AgentMarketAgentInfoResp{}, nil)
+	ms.EXPECT().GetAgentInfoByIDOrKey(ctx, gomock.Any()).Return(&squareresp.AgentMarketAgentInfoResp{}, nil)
 	mu.EXPECT().GetDataView(ctx, "__dip_o11y_log", gomock.Any()).
 		Return(uniquerydto.ViewResults{Entries: entries}, nil)
 
