@@ -38,7 +38,7 @@ func TestAgentSvc_GetAPIDoc_SquareSvcError(t *testing.T) {
 		logger:    mockLogger,
 	}
 
-	mockSquare.EXPECT().GetAgentInfo(gomock.Any(), gomock.Any()).Return(nil, errors.New("not found"))
+	mockSquare.EXPECT().GetAgentInfoByIDOrKey(gomock.Any(), gomock.Any()).Return(nil, errors.New("not found"))
 
 	ctx := context.Background()
 	req := &agentreq.GetAPIDocReq{AgentID: "a1", AgentVersion: "v1"}
@@ -63,7 +63,7 @@ func TestAgentSvc_GetAPIDoc_Success(t *testing.T) {
 	}
 
 	agentInfoResp := newTestAgent()
-	mockSquare.EXPECT().GetAgentInfo(gomock.Any(), gomock.Any()).Return(agentInfoResp, nil)
+	mockSquare.EXPECT().GetAgentInfoByIDOrKey(gomock.Any(), gomock.Any()).Return(agentInfoResp, nil)
 
 	ctx := context.Background()
 	req := &agentreq.GetAPIDocReq{AgentID: "a1", AgentVersion: "v1"}
@@ -102,7 +102,7 @@ func TestAgentSvc_GetAPIDoc_CustomFieldsAndProfile(t *testing.T) {
 		&daconfvalobj.Field{Name: "tool", Type: cdaenum.InputFieldTypeJSONObject},
 	}
 
-	mockSquare.EXPECT().GetAgentInfo(gomock.Any(), gomock.Any()).Return(agentInfoResp, nil)
+	mockSquare.EXPECT().GetAgentInfoByIDOrKey(gomock.Any(), gomock.Any()).Return(agentInfoResp, nil)
 
 	ctx := context.Background()
 	req := &agentreq.GetAPIDocReq{AgentID: "a1", AgentVersion: "v1"}
@@ -171,7 +171,7 @@ func TestAgentSvc_GetAPIDoc_RemoveEmptyCustomQuerys(t *testing.T) {
 		&daconfvalobj.Field{Name: "tool", Type: cdaenum.InputFieldTypeJSONObject},
 	}
 
-	mockSquare.EXPECT().GetAgentInfo(gomock.Any(), gomock.Any()).Return(agentInfoResp, nil)
+	mockSquare.EXPECT().GetAgentInfoByIDOrKey(gomock.Any(), gomock.Any()).Return(agentInfoResp, nil)
 
 	ctx := context.Background()
 	req := &agentreq.GetAPIDocReq{AgentID: "a2", AgentVersion: "v2"}

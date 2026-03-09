@@ -85,12 +85,12 @@ func TestObservabilitySvc_AnalyticsQuery_AgentLevel_Success(t *testing.T) {
 	}
 
 	// AgentDetail calls squareSvc.GetAgentInfo + uniquery.GetDataView
-	ms.EXPECT().GetAgentInfo(ctx, gomock.Any()).Return(&squareresp.AgentMarketAgentInfoResp{}, nil).Times(1)
+	ms.EXPECT().GetAgentInfoByIDOrKey(ctx, gomock.Any()).Return(&squareresp.AgentMarketAgentInfoResp{}, nil).Times(1)
 	mu.EXPECT().GetDataView(ctx, "__dip_o11y_log", gomock.Any()).
 		Return(uniquerydto.ViewResults{Entries: []interface{}{}}, nil).Times(1)
 
 	// getAgentMetrics also calls squareSvc.GetAgentInfo again for agent config
-	ms.EXPECT().GetAgentInfo(ctx, gomock.Any()).Return(&squareresp.AgentMarketAgentInfoResp{}, nil).Times(1)
+	ms.EXPECT().GetAgentInfoByIDOrKey(ctx, gomock.Any()).Return(&squareresp.AgentMarketAgentInfoResp{}, nil).Times(1)
 
 	// SessionList calls uniquery.GetDataView
 	mu.EXPECT().GetDataView(ctx, "__dip_o11y_log", gomock.Any()).
@@ -118,7 +118,7 @@ func TestObservabilitySvc_AnalyticsQuery_AgentLevel_Error(t *testing.T) {
 		EndTime:       2000000,
 	}
 
-	ms.EXPECT().GetAgentInfo(ctx, gomock.Any()).Return(nil, errors.New("square down"))
+	ms.EXPECT().GetAgentInfoByIDOrKey(ctx, gomock.Any()).Return(nil, errors.New("square down"))
 	ml.EXPECT().Errorf(gomock.Any(), gomock.Any()).AnyTimes()
 
 	resp, err := svc.AnalyticsQuery(ctx, req)
@@ -157,7 +157,7 @@ func TestObservabilitySvc_AnalyticsQuery_SessionLevel_Success(t *testing.T) {
 		}}, nil).Times(1)
 
 	// getAgentInfo for agent config (from RunList entries[0].AgentID)
-	ms.EXPECT().GetAgentInfo(ctx, gomock.Any()).Return(&squareresp.AgentMarketAgentInfoResp{}, nil).Times(1)
+	ms.EXPECT().GetAgentInfoByIDOrKey(ctx, gomock.Any()).Return(&squareresp.AgentMarketAgentInfoResp{}, nil).Times(1)
 
 	resp, err := svc.AnalyticsQuery(ctx, req)
 	require.NoError(t, err)

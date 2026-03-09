@@ -3,6 +3,7 @@ package capimiddleware
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/inject/v3/dainject"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/squaresvc"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/rdto/agent_permission/cpmsreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
@@ -30,8 +31,18 @@ func CheckPms(req *CheckPmsReq, clb func(c *gin.Context, hasPms bool)) gin.Handl
 			panic("capimiddleware: [CheckPms]: clb is nil")
 		}
 
+		// NOTE: 通过AgentKey查询AgentID
+		agentID, err := squaresvc.NewSquareService().CheckAndGetID(c.Request.Context(), req.ResourceID)
+		if err != nil {
+			httpErr := capierr.New400Err(c, "[capimiddleware][CheckPms] CheckAndGetID failed")
+			rest.ReplyError(c, httpErr)
+			c.Abort()
+
+			return
+		}
+
 		_req := &cpmsreq.CheckAgentRunReq{
-			AgentID:      req.ResourceID,
+			AgentID:      agentID,
 			UserID:       req.UserID,
 			AppAccountID: req.AppAccountID,
 		}

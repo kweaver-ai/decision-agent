@@ -229,7 +229,7 @@ class APITool(APIToolInputHandler):
             "timeout": toolTimeout,
         }
 
-        toolTimeout = toolTimeout + 1
+        toolTimeout = toolTimeout + 30
 
         # 5. 打印请求信息
         StandLogger.info(

@@ -15,7 +15,7 @@ import (
 
 func (s *observabilitySvc) AgentDetail(ctx context.Context, req *observabilityreq.AgentDetailReq) (*observabilityresp.AgentResp, error) {
 	// 1. 获取agent信息
-	agentInfo, err := s.squareSvc.GetAgentInfo(ctx, &squarereq.AgentInfoReq{
+	agentInfo, err := s.squareSvc.GetAgentInfoByIDOrKey(ctx, &squarereq.AgentInfoReq{
 		AgentID:      req.AgentID,
 		AgentVersion: req.AgentVersion,
 	})

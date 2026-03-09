@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/stretchr/testify/assert"
 )
@@ -124,7 +125,7 @@ func TestBuildWorkspaceContextMessage(t *testing.T) {
 				{FileName: "/workspace/conv-123/uploads/temparea/data.csv"},
 			},
 			wantContains: []string{
-				"sess-user-456",
+				cutil.GetSandboxSessionID(),
 				"data.csv",
 			},
 		},

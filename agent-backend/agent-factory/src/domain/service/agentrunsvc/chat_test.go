@@ -36,7 +36,7 @@ func TestAgentSvc_Chat_GetAgentInfoError(t *testing.T) {
 		sandboxPlatformConf: &conf.SandboxPlatformConf{},
 	}
 
-	mockSquare.EXPECT().GetAgentInfo(gomock.Any(), gomock.Any()).Return(nil, errors.New("agent not found"))
+	mockSquare.EXPECT().GetAgentInfoByIDOrKey(gomock.Any(), gomock.Any()).Return(nil, errors.New("agent not found"))
 
 	ctx := context.Background()
 	req := &agentreq.ChatReq{
@@ -66,7 +66,7 @@ func TestAgentSvc_Chat_APIChat_NotPublished(t *testing.T) {
 
 	agentInfo := newTestAgent()
 	agentInfo.PublishInfo.IsAPIAgent = 0
-	mockSquare.EXPECT().GetAgentInfo(gomock.Any(), gomock.Any()).Return(agentInfo, nil)
+	mockSquare.EXPECT().GetAgentInfoByIDOrKey(gomock.Any(), gomock.Any()).Return(agentInfo, nil)
 
 	ctx := context.Background()
 	req := &agentreq.ChatReq{
@@ -100,7 +100,7 @@ func TestAgentSvc_Chat_GetHistoryError(t *testing.T) {
 	}
 
 	agentInfo := newTestAgent()
-	mockSquare.EXPECT().GetAgentInfo(gomock.Any(), gomock.Any()).Return(agentInfo, nil)
+	mockSquare.EXPECT().GetAgentInfoByIDOrKey(gomock.Any(), gomock.Any()).Return(agentInfo, nil)
 	mockConvRepo.EXPECT().Create(gomock.Any(), gomock.Any()).Return(nil, errors.New("db error"))
 
 	ctx := context.Background()
@@ -134,7 +134,7 @@ func TestAgentSvc_Chat_UpsertMsgError(t *testing.T) {
 	}
 
 	agentInfo := newTestAgent()
-	mockSquare.EXPECT().GetAgentInfo(gomock.Any(), gomock.Any()).Return(agentInfo, nil)
+	mockSquare.EXPECT().GetAgentInfoByIDOrKey(gomock.Any(), gomock.Any()).Return(agentInfo, nil)
 	mockConvRepo.EXPECT().Create(gomock.Any(), gomock.Any()).Return(&dapo.ConversationPO{ID: "conv-1"}, nil)
 	mockMsgRepo.EXPECT().Create(gomock.Any(), gomock.Any()).Return("", errors.New("msg create error"))
 
@@ -171,7 +171,7 @@ func TestAgentSvc_Chat_SessionSvcError(t *testing.T) {
 	}
 
 	agentInfo := newTestAgent()
-	mockSquare.EXPECT().GetAgentInfo(gomock.Any(), gomock.Any()).Return(agentInfo, nil)
+	mockSquare.EXPECT().GetAgentInfoByIDOrKey(gomock.Any(), gomock.Any()).Return(agentInfo, nil)
 	mockConvRepo.EXPECT().Create(gomock.Any(), gomock.Any()).Return(&dapo.ConversationPO{ID: "conv-s1"}, nil)
 	gomock.InOrder(
 		mockMsgRepo.EXPECT().Create(gomock.Any(), gomock.Any()).Return("user-msg-1", nil),

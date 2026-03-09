@@ -14,6 +14,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/sandboxplatformhttp/sandboxplatformdto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationreq"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
@@ -133,7 +134,7 @@ func TestConversationSvc_Init_MoreBranches(t *testing.T) {
 
 		resp, err := svc.Init(context.Background(), conversationreq.InitReq{UserID: "u1"})
 		assert.NoError(t, err)
-		assert.Equal(t, "sess-u1", resp.SandboxSessionID)
+		assert.Equal(t, cutil.GetSandboxSessionID(), resp.SandboxSessionID)
 	})
 
 	t.Run("sandbox create failed but init still succeeds", func(t *testing.T) {

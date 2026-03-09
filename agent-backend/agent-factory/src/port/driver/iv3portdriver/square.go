@@ -10,6 +10,7 @@ import (
 //go:generate mockgen -source=./square.go -destination ./v3portdrivermock/square.go -package v3portdrivermock
 type ISquareSvc interface {
 	GetAgentInfo(ctx context.Context, agentInfoReq *squarereq.AgentInfoReq) (resp *squareresp.AgentMarketAgentInfoResp, err error)
+	GetAgentInfoByIDOrKey(ctx context.Context, agentInfoReq *squarereq.AgentInfoReq) (resp *squareresp.AgentMarketAgentInfoResp, err error)
 
 	GetRecentAgentList(ctx context.Context, req squarereq.AgentSquareRecentAgentReq) (res squareresp.RecentListAgentResp, err error)
 
