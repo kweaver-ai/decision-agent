@@ -27,7 +27,7 @@ def internal_span(
     def decorator(func: Callable) -> Callable:
         # 延迟导入 Config 避免循环依赖
         from app.common.config import Config
-        
+
         # 如果 SDK 不可用或追踪未启用，直接返回原函数
         if not TELEMETRY_SDK_AVAILABLE or not Config.is_o11y_trace_enabled():
             return func

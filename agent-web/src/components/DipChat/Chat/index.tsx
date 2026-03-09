@@ -21,13 +21,12 @@ import TempArea from './TempArea';
 import RightSideBar from './RightSideBar';
 import { useMicroWidgetProps } from '@/hooks';
 import AgentDescription from './AgentDescription';
-import type { ChatBody, FileItem } from '../interface';
+import type { ChatBody } from '../interface';
 import DebuggerProcess from './DebuggerProcess';
 import AgentInputParamDrawer from './AgentInputParamDrawer';
 import FilePreview from '../components/FilePreview';
 import ColorLoading from '@/components/DipChat/components/ColorLoading';
 import intl from 'react-intl-universal';
-import { getFileExtension } from '@/utils/doc';
 import { getParam } from '@/utils/handle-function';
 import dayjs from 'dayjs';
 
@@ -375,15 +374,6 @@ const DipChat = () => {
                 }}
                 autoSize={{ minRows: 1, maxRows: 6 }}
                 tempFileList={tempFileList}
-                onPreviewFile={(file: FileItem) => {
-                  setDipChatStore({
-                    previewFile: {
-                      fileId: file.id,
-                      fileExt: getFileExtension(file.name),
-                      fileName: file.name,
-                    },
-                  });
-                }}
               />
             </div>
           </div>

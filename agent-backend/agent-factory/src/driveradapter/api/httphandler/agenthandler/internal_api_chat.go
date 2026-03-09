@@ -6,6 +6,7 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
@@ -116,6 +117,14 @@ func (h *agentHTTPHandler) InternalAPIChat(c *gin.Context) {
 				rest.ReplyError(c, err)
 				return
 			}
+		}
+
+		if res == nil {
+			h.logger.Errorf("[InternalAPIChat] chat failed: res is nil")
+			c.JSON(http.StatusInternalServerError, rest.NewHTTPError(c.Request.Context(), http.StatusInternalServerError, apierr.AgentAPP_InternalError).
+				WithErrorDetails("[InternalAPIChat] chat failed: res is nil").BaseError)
+
+			return
 		}
 
 		resultMap := res.(map[string]any)

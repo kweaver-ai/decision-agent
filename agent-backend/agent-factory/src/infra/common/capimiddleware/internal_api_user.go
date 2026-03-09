@@ -82,7 +82,7 @@ func SetInternalAPIUserInfo(isCheckAccountType bool, supportAccountTypes ...cenu
 		c.Set(ctxKey, &visitor)
 
 		// 设置request context
-		_ctx := context.WithValue(c.Request.Context(), ctxKey, &visitor)
+		_ctx := context.WithValue(c.Request.Context(), ctxKey, &visitor) //nolint:staticcheck // SA1029
 		cutil.UpdateGinReqCtx(c, _ctx)
 
 		// 4. 继续执行

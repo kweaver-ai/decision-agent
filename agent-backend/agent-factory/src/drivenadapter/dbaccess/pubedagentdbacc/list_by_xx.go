@@ -75,7 +75,6 @@ func (repo *pubedAgentRepo) GetPubedListByXx(ctx context.Context, arg *padbarg.G
 
 	// 4. 执行查询
 	err = sr.Raw(rawSql, whereArgs...).Find(&pos)
-
 	if err != nil {
 		err = errors.Wrapf(err, "[GetPubedListByXx] find failed")
 		return

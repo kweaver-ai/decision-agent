@@ -1,14 +1,11 @@
 from typing import Any, Dict, Optional
 
-from app.common.stand_log import StandLogger
 from app.domain.vo.agentvo import AgentInputVo
 from app.utils.observability.trace_wrapper import internal_span
 from opentelemetry.trace import Span
 
 from ..trace import span_set_attrs
 from app.domain.enum.common.user_account_header_key import get_user_account_id
-
-
 
 
 @internal_span()
@@ -23,7 +20,7 @@ async def process_tool_input(
 
     Returns:
         tuple: (处理后的上下文变量, 可能更新的event_key)
-    
+
     Note:
         Resume 时前端会通过新的 /v2/agent/resume 接口传递 handle，
         不再需要从 Redis 获取上下文。

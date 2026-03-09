@@ -27,8 +27,6 @@ type dataAgentConfigSvc struct {
 
 	productRepo idbaccess.IProductRepo
 
-	spaceResourceRepo idbaccess.ISpaceResourceRepo
-
 	um2Http iumacc.UmHttpAcc
 
 	tplSvc iv3portdriver.IDataAgentTplSvc
@@ -48,19 +46,18 @@ type dataAgentConfigSvc struct {
 var _ iv3portdriver.IDataAgentConfigSvc = &dataAgentConfigSvc{}
 
 type NewDaConfSvcDto struct {
-	RedisCmp          icmp.RedisCmp
-	SvcBase           *service.SvcBase
-	AgentConfRepo     idbaccess.IDataAgentConfigRepo
-	AgentTplRepo      idbaccess.IDataAgentTplRepo
-	ReleaseRepo       idbaccess.IReleaseRepo
-	PubedAgentRepo    idbaccess.IPubedAgentRepo
-	Logger            icmp.Logger
-	OpenAICmp         icmp.IOpenAI
-	UmHttp            iusermanagementacc.UserMgnt
-	ProductRepo       idbaccess.IProductRepo
-	SpaceResourceRepo idbaccess.ISpaceResourceRepo
-	Um2Http           iumacc.UmHttpAcc
-	ModelApiAcc       imodelfactoryacc.IModelApiAcc
+	RedisCmp       icmp.RedisCmp
+	SvcBase        *service.SvcBase
+	AgentConfRepo  idbaccess.IDataAgentConfigRepo
+	AgentTplRepo   idbaccess.IDataAgentTplRepo
+	ReleaseRepo    idbaccess.IReleaseRepo
+	PubedAgentRepo idbaccess.IPubedAgentRepo
+	Logger         icmp.Logger
+	OpenAICmp      icmp.IOpenAI
+	UmHttp         iusermanagementacc.UserMgnt
+	ProductRepo    idbaccess.IProductRepo
+	Um2Http        iumacc.UmHttpAcc
+	ModelApiAcc    imodelfactoryacc.IModelApiAcc
 
 	TplSvc   iv3portdriver.IDataAgentTplSvc
 	MqAccess imqaccess.IMqAccess
@@ -86,7 +83,6 @@ func NewDataAgentConfigService(dto *NewDaConfSvcDto) iv3portdriver.IDataAgentCon
 		OpenAICmp:         dto.OpenAICmp,
 		umHttp:            dto.UmHttp,
 		productRepo:       dto.ProductRepo,
-		spaceResourceRepo: dto.SpaceResourceRepo,
 		um2Http:           dto.Um2Http,
 		tplSvc:            dto.TplSvc,
 		modelFactoryAcc:   dto.ModelApiAcc,

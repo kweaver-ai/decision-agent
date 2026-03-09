@@ -17,9 +17,9 @@ var (
 func NewObservabilitySvc() iportdriver.IObservability {
 	observabilitySvcOnce.Do(func() {
 		dto := &observabilitysvc.NewObservabilitySvcDto{
-			Logger:       logger.GetLogger(),
-			Uniquery:     httpinject.NewUniqueryHttpAcc(),
-			AgentFactory: httpinject.NewAgentFactoryHttpAcc(),
+			Logger:    logger.GetLogger(),
+			Uniquery:  httpinject.NewUniqueryHttpAcc(),
+			SquareSvc: NewSquareSvc(),
 		}
 
 		observabilitySvcImpl = observabilitysvc.NewObservabilitySvc(dto)

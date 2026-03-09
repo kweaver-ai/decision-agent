@@ -6,10 +6,10 @@
 def load_agent_config(file_path) -> dict:
     """
     加载agent配置文件中的配置信息
-    
+
     Args:
         file_path: 配置文件路径
-        
+
     Returns:
         dict: agent配置信息，包含以下字段：
             - name: agent名称
@@ -19,11 +19,11 @@ def load_agent_config(file_path) -> dict:
             - product_key: 产品标识
             - key: agent唯一标识
             - config: agent配置字典
-            
+
     Raises:
         FileNotFoundError: 当配置文件不存在时
         Exception: 当配置文件解析失败时
-        
+
     Examples:
         >>> config = load_agent_config("/path/to/agent_config.py")
         >>> print(f"Agent name: {config['name']}")
@@ -37,7 +37,7 @@ def load_agent_config(file_path) -> dict:
     # 2. 使用exec执行文件内容，但限制在局部作用域中
     local_vars = {}
     exec(content, {}, local_vars)
-    
+
     # 3. 从局部作用域中获取配置信息
     config = {
         "name": local_vars.get("name", ""),

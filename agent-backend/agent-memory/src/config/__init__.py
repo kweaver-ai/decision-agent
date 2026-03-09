@@ -1,8 +1,4 @@
-import os
-import yaml
-from pathlib import Path
-from typing import Dict, Any
-from .config import Config, MemoryConfig
+from .config import Config
 
 # 导出配置实例
 config = Config()

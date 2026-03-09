@@ -83,7 +83,7 @@ export default defineConfig({
       js: process.env.NODE_ENV === 'development' ? 'cheap-module-source-map' : false,
       css: process.env.NODE_ENV === 'development',
     },
-    assetPrefix: './', // 静态资源路径前缀，用于解决相对路径问题
+    assetPrefix: '/agent-web/', // 静态资源绝对路径前缀，确保前端路由跳转后 chunk 仍能正确加载
     polyfill: 'usage', // 仅引入使用到的polyfill，减小包大小
     copy: [
       {

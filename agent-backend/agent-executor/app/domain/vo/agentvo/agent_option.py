@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Optional, TYPE_CHECKING
 from pydantic import BaseModel
 
 if TYPE_CHECKING:
-    from app.router.agent_controller_pkg.rdto.v2.req.resume_agent import ResumeInfo
+    pass
 
 
 class AgentRunOptionsVo(BaseModel):
@@ -34,4 +34,3 @@ class AgentRunOptionsVo(BaseModel):
     # new add 2026年03月06日 --start--
     history_limit: Optional[int] = None  # 历史上下文限制，默认10轮
     # new add 2026年03月06日 --end--
-

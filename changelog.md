@@ -1,4 +1,63 @@
 # Changelog
+## 0.3.5
+
+### Features & Improvements
+
+- Add CI/CD workflows and code quality improvements for decision-agent
+- Add pre-commit hooks and optimize code formatting
+- Enhance docker-compose deployment with configurable ports and automation
+- Add comprehensive unit tests for domain services and infrastructure
+- Add comprehensive unit tests for agent-factory
+- Add configuration file and update gitignore for agent-executor
+
+### Bug Fixes
+
+- Fix EnsureSandboxSession to delete failed sessions before recreating
+- Clear InterruptInfo from Ext when resuming interrupted chat
+- Fix route matching errors when agent-web runs independently
+- Fix static resource loading errors when agent-web runs independently
+- Fix Agent conversation error when memory function is enabled
+- Add dbutilsx dependency and refactor memory configuration parsing
+- Update numpy minimum version to 1.23.5 for compatibility
+- Fix memory retrieval reranking error when relevance_score is None
+
+### Refactoring & Cleanup
+
+- Fix temporary zone session ID and remove old file upload component in agent-web
+- Remove unused imports and optimize code structure in agent-executor
+- Remove deprecated space-related modules
+- Refactor unit tests to avoid environment variable race conditions
+- Rename helm templates and remove unused configmap
+- Replace agent-factory HTTP access layer with internal service calls
+- Improve env loading and add air hot-reload support
+- Remove unused DelInternationalPath function
+- Refactor agent-web Dockerfile to support Docker Compose
+
+### Testing
+
+- Add comprehensive unit tests for DTO and Infrastructure layers
+- Add comprehensive unit tests for infrastructure and handler layers
+- Add comprehensive unit tests for domain services and value objects
+- Add unit tests for agentrunsvc and related services
+- Add unit tests for agentconfigsvc, agentrunsvc and releasesvc
+- Add comprehensive test cases for agent import/export functionality
+- Add unit tests for tool_v2 API tool package modules
+- Add comprehensive test coverage for agent factory configuration
+- Add tests for dependencies modules and boot module
+- Add tests for exception handlers and router middleware modules
+- Expand tests for tool_requests and json modules
+
+### Documentation
+
+- Add code quality guidelines and linting instructions
+- Add comprehensive documentation for Claude Code guidance (CLAUDE.md)
+
+### Chores
+
+- Add pre-commit configuration and update development workflow for agent-executor
+- Add coverage configuration to exclude test and build files
+- Update configuration files for production deployment
+- Update PyInstaller spec with setuptools dependencies
 
 ## 0.3.4
 

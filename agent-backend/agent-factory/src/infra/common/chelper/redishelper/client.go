@@ -81,7 +81,7 @@ func masterSlave(conf *cconf.RedisConf) redis.UniversalClient {
 	}
 
 	if conf.MasterPort == "" {
-		conf.Port = "6379"
+		conf.MasterPort = "6379"
 	}
 
 	opt := &redis.Options{

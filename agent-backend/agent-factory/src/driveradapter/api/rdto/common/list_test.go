@@ -3,6 +3,8 @@ package common
 import "testing"
 
 func TestListCommon_SetEntries(t *testing.T) {
+	t.Parallel()
+
 	listCommon := NewListCommon()
 
 	// 1. 字符串切片
@@ -76,4 +78,59 @@ func TestListCommon_SetEntries(t *testing.T) {
 
 		listCommon.SetEntries("a")
 	}()
+}
+
+func TestNewListCommonWithTotal(t *testing.T) {
+	t.Parallel()
+
+	t.Run("creates empty list with total", func(t *testing.T) {
+		t.Parallel()
+
+		listCommon := NewListCommonWithTotal()
+
+		if listCommon == nil { //nolint:staticcheck
+			t.Error("expected non-nil list")
+		}
+
+		if listCommon.Total != 0 { //nolint:staticcheck
+			t.Errorf("expected total 0, got %d", listCommon.Total)
+		}
+	})
+}
+
+func TestListCommonWithTotal_SetEntries(t *testing.T) {
+	t.Parallel()
+
+	listCommon := NewListCommonWithTotal()
+
+	// Test with string slice
+	listCommon.SetEntries([]string{"a", "b", "c"})
+
+	if len(listCommon.Entries) != 3 {
+		t.Errorf("expected 3 entries, got %d", len(listCommon.Entries))
+	}
+
+	// Verify Total is preserved
+	listCommon.Total = 100
+	if listCommon.Total != 100 {
+		t.Errorf("expected total 100, got %d", listCommon.Total)
+	}
+}
+
+func TestListCommonWithTotal_SetTotal(t *testing.T) {
+	t.Parallel()
+
+	listCommon := NewListCommonWithTotal()
+
+	listCommon.SetTotal(42)
+
+	if listCommon.Total != 42 {
+		t.Errorf("expected total 42, got %d", listCommon.Total)
+	}
+
+	listCommon.SetTotal(0)
+
+	if listCommon.Total != 0 {
+		t.Errorf("expected total 0, got %d", listCommon.Total)
+	}
 }

@@ -5,7 +5,7 @@
 在运行时遇到以下异常：
 
 ```
-2025-10-27 21:30:03 - ERROR - app/router/exception_handler.py:226 
+2025-10-27 21:30:03 - ERROR - app/router/exception_handler.py:226
 {
   'message': 'RuntimeError("Attempted to exit a cancel scope that isn\'t the current tasks\'s current cancel scope")',
   'caller': '/Users/Zhuanz/Work/as/dip_ws/agent-executor/app/router/exception_handler.py:223',
@@ -48,13 +48,13 @@ async def log_requests(request: Request, call_next):
     # 读取请求体
     body_bytes = await request.body()
     request_body = body_bytes.decode("utf-8")
-    
+
     # 问题：创建新的 Request 对象并替换原始对象
     async def receive():
         return {"type": "http.request", "body": body_bytes}
-    
+
     request = Request(request.scope, receive=receive)  # ❌ 破坏了 cancel scope
-    
+
     response = await call_next(request)  # 传递了新的 request
     return response
 ```
@@ -78,9 +78,9 @@ async def log_requests(request: Request, call_next):
     # 读取请求体（Starlette 会自动缓存，后续 handler 仍可读取）
     body_bytes = await request.body()
     request_body = body_bytes.decode("utf-8") if body_bytes else ""
-    
+
     request_info["body"] = request_body
-    
+
     # 直接使用原始 request 对象，不替换
     response = await call_next(request)  # ✅ 保持 cancel scope 完整
     return response

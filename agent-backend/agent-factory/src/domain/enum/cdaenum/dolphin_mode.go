@@ -15,11 +15,7 @@ func (d DolphinMode) EnumCheck() (err error) {
 }
 
 func (d DolphinMode) Bool() bool {
-	if d == DolphinModeEnabled {
-		return true
-	}
-
-	return false
+	return d == DolphinModeEnabled
 }
 
 const (

@@ -10,9 +10,9 @@ import (
 	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/agentrunsvc/chatlogrecord"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentfactoryaccess/agentfactorydto"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squareresp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
@@ -20,7 +20,7 @@ import (
 )
 
 // NOTE: 流式处理, 接受agent-executor的返回结果,进行会话后处理，响应前端
-func (agentSvc *agentSvc) Process(req *agentreq.ChatReq, agent agentfactorydto.Agent, stopChan chan struct{},
+func (agentSvc *agentSvc) Process(req *agentreq.ChatReq, agent *squareresp.AgentMarketAgentInfoResp, stopChan chan struct{},
 	respChan chan []byte, messageChan chan string, errChan chan error, cancelFunc func(),
 ) error {
 	// NOTE: 记录开始时间
@@ -88,7 +88,7 @@ looplabel:
 			}
 			// NOTE: message 是原始数据
 			// currentData, isEnd, err = agentSvc.CallResult2MsgResp(ctx, []byte(message), req)
-			currentData, isEnd, err = agentSvc.AfterProcess(ctx, []byte(message), req, &agent)
+			currentData, isEnd, err = agentSvc.AfterProcess(ctx, []byte(message), req, agent)
 			if err != nil {
 				agentSvc.logger.Errorf("[Process] after process err: %v", err)
 				o11y.Error(ctx, fmt.Sprintf("[Process] after process err: %v", err))
@@ -188,7 +188,7 @@ looplabel:
 		}
 
 		conversationAssistantMsgPO.Status = cdaenum.MsgStatusFailed
-		agentSvc.conversationMsgRepo.Update(ctx, conversationAssistantMsgPO)
+		_ = agentSvc.conversationMsgRepo.Update(ctx, conversationAssistantMsgPO)
 
 		// NOTE： 上报日志
 		var agentResp agentresp.ChatResp
@@ -209,7 +209,7 @@ looplabel:
 		// NOTE: 分类讨论
 		if req.Stream {
 			// NOTE: 如果err不为nil，则把err写入到respChan,是chatresponse结构，可以携带正确数据的信息
-			StreamDiff(ctx, seq, lastData, currentData, respChan)
+			_ = StreamDiff(ctx, seq, lastData, currentData, respChan)
 		} else {
 			// NOTE: 非流式处理，直接返回err，直接是错误码，无法携带正确数据信息
 			httpErr := rest.NewHTTPError(ctx, http.StatusInternalServerError, apierr.AgentAPP_InternalError).WithErrorDetails(err.Error())

@@ -6,42 +6,90 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestConversationOrigin_EnumCheck(t *testing.T) {
+func TestConversationOrigin_Constants(t *testing.T) {
+	t.Parallel()
+
+	assert.Equal(t, ConversationOrigin("web_chat"), ConversationWebChat)
+	assert.Equal(t, ConversationOrigin("api_call"), ConversationAPICall)
+}
+
+func TestConversationOrigin_EnumCheck_Valid(t *testing.T) {
+	t.Parallel()
+
+	validOrigins := []ConversationOrigin{
+		ConversationWebChat,
+		ConversationAPICall,
+	}
+
+	for _, origin := range validOrigins {
+		t.Run(string(origin), func(t *testing.T) {
+			t.Parallel()
+
+			err := origin.EnumCheck()
+			assert.NoError(t, err)
+		})
+	}
+}
+
+func TestConversationOrigin_EnumCheck_Invalid(t *testing.T) {
+	t.Parallel()
+
+	invalidOrigin := ConversationOrigin("invalid_origin")
+	err := invalidOrigin.EnumCheck()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "对话来源不合法")
+}
+
+func TestConversationOrigin_EnumCheck_Empty(t *testing.T) {
+	t.Parallel()
+
+	emptyOrigin := ConversationOrigin("")
+	err := emptyOrigin.EnumCheck()
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "对话来源不合法")
+}
+
+func TestConversationOrigin_AllUnique(t *testing.T) {
+	t.Parallel()
+
+	origins := []ConversationOrigin{
+		ConversationWebChat,
+		ConversationAPICall,
+	}
+
+	uniqueOrigins := make(map[ConversationOrigin]bool)
+	for _, origin := range origins {
+		assert.False(t, uniqueOrigins[origin], "Duplicate origin found: %s", origin)
+		uniqueOrigins[origin] = true
+	}
+}
+
+func TestConversationOrigin_StringValues(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name    string
-		t       ConversationOrigin
-		wantErr bool
+		name     string
+		origin   ConversationOrigin
+		expected string
 	}{
 		{
-			name:    "WebChat来源",
-			t:       ConversationWebChat,
-			wantErr: false,
+			name:     "web chat origin",
+			origin:   ConversationWebChat,
+			expected: "web_chat",
 		},
 		{
-			name:    "APICall来源",
-			t:       ConversationAPICall,
-			wantErr: false,
-		},
-		{
-			name:    "无效来源",
-			t:       ConversationOrigin("invalid"),
-			wantErr: true,
-		},
-		{
-			name:    "空字符串",
-			t:       ConversationOrigin(""),
-			wantErr: true,
+			name:     "api call origin",
+			origin:   ConversationAPICall,
+			expected: "api_call",
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := tt.t.EnumCheck()
-			if tt.wantErr {
-				assert.Error(t, err, "expected error")
-			} else {
-				assert.NoError(t, err, "expected no error")
-			}
+			t.Parallel()
+
+			result := string(tt.origin)
+			assert.Equal(t, tt.expected, result)
 		})
 	}
 }

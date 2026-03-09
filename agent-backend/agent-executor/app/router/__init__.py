@@ -1,7 +1,5 @@
 # -*- coding:utf-8 -*-
-import asyncio
-import os
-from typing import Any, Callable
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request, Response
 from fastapi.openapi.utils import get_openapi
@@ -10,19 +8,27 @@ from opentelemetry.instrumentation.aiohttp_client import AioHttpClientInstrument
 from pydantic import BaseModel, Field
 
 from app.common.config import Config, observability_config, server_info
-from app.common.stand_log import StandLogger
-from app.common.struct_logger import struct_logger
-from app.logic.sensitive_word_detection import build_sensitive_detector
 from app.utils.observability.observability import (
     init_observability,
     shutdown_observability,
 )
-from app.utils.observability.observability_log import get_logger as o11y_logger
 
 # 导入中间件
-from .middleware_pkg import before_request, o11y_trace, log_requests
+from .middleware_pkg import o11y_trace, log_requests
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """应用生命周期管理"""
+    # 启动时执行
+    init_observability(server_info, observability_config)
+    AioHttpClientInstrumentor().instrument()
+    yield
+    # 关闭时执行
+    shutdown_observability()
+
+
+app = FastAPI(lifespan=lifespan)
 
 
 token_rate = Config.app.rps_limit
@@ -32,13 +38,6 @@ token_consume_limit = 2
 
 # 创建一个令牌桶限流器，设置容量为tokenBucketLimit，每秒产生tokenBucketLimit个令牌
 limiter = Limiter(rate=token_rate, capacity=token_capacity, consume=token_consume_limit)
-
-
-# 注册中间件
-@app.middleware("http")
-async def before_request_middleware(request: Request, call_next) -> Response:
-    """国际化中间件"""
-    return await before_request(request, call_next)
 
 
 @app.middleware("http")
@@ -60,27 +59,15 @@ async def ready():
     return "OK"
 
 
-@app.on_event("startup")
-async def startup_event():
-    build_sensitive_detector()
-    init_observability(server_info, observability_config)
-    AioHttpClientInstrumentor().instrument()
-
-
-@app.on_event("shutdown")
-async def shutdown_event():
-    shutdown_observability()
-
-
 # 导入路由
-from app.router.agent_controller_pkg.common_v2 import router_v2 as agent_router_v2
-from app.router.agent_controller_pkg import (
-    run_agent_v2,
-    run_agent_debug_v2,
-    agent_cache_manage,
+from app.router.agent_controller_pkg.common_v2 import router_v2 as agent_router_v2  # noqa: E402
+from app.router.agent_controller_pkg import (  # noqa: E402
+    run_agent_v2,  # noqa: F401
+    run_agent_debug_v2,  # noqa: F401
+    agent_cache_manage,  # noqa: F401
 )
-from app.router.exception_handler import register_exception_handlers
-from app.router.tool_controller import router as tool_router
+from app.router.exception_handler import register_exception_handlers  # noqa: E402
+from app.router.tool_controller import router as tool_router  # noqa: E402
 
 # 注册异常处理器
 register_exception_handlers(app)

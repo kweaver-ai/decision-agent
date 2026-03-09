@@ -7,6 +7,8 @@ import (
 )
 
 func TestDeepCopyMap(t *testing.T) {
+	t.Parallel()
+
 	// 1. Test case with simple key-value pairs
 	original := map[string]interface{}{
 		"key1": "value1",

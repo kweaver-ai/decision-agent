@@ -1,4 +1,4 @@
-.DEFAULT_GOAL := all
+.DEFAULT_GOAL := lint
 
 ciLint:
 	golangci-lint run --out-format=colored-line-number ./...
@@ -17,10 +17,10 @@ fmt:
 	@goimports -w ./**/*.go
 	@echo "fmt done"
 
-all:
+lint:
 	$(MAKE) wsl
 	$(MAKE) fmt
-	#$(MAKE) ciLintFix
+	$(MAKE) ciLintFix
 
 ut:
 	rm -rf coverage_report
@@ -34,8 +34,64 @@ goGenerate:
 	go generate ./...
 
 goTest:
-	go test -v ./...
+	go test -v $$(go list ./... | grep -vE '/[^/]*mock[^/]*($$|/)')
 
+# 排除不需要测试的包列表:
+# - *mock*: 自动生成的 mock 代码，无业务逻辑
+# - boot: init() 依赖真实 DB/Redis/MQ，UT 环境无法连接
+# - port/driven/idbaccess$$: 纯 interface 定义，无可执行代码
+# - port/driven/ihttpaccess: 纯 interface 定义
+# - port/driven/imqaccess: 纯 interface 定义
+# - port/driven/iredisaccess: 纯 interface 定义
+# - port/driver: 纯 interface 定义
+# - infra/opentelemetry/(logs|metrics|middleware|trace): 依赖外部 OTLP Collector，UT 环境 panic
+# - infra/interf: 纯 interface 定义
+# - infra/common/cglobal: 纯全局变量定义
+# - infra/common/constant: 纯常量定义
+# - infra/cmp/opensearchcmp: 依赖 OpenSearch
+# - infra/cmp/efastcmp: 依赖 eFast HTTP
+# - infra/cmp/redisdlmcmp: 依赖 Redis
+# - infra/server/httpserver: 服务器启动代码
+# - infra/common/cconf: 配置加载基础库
+UT_EXCLUDE_PATTERN := mock|boot|port/driven/idbaccess$$|port/driven/ihttpaccess|port/driven/imqaccess|port/driven/iredisaccess|port/driver|infra/opentelemetry/(logs|metrics|middleware|trace)|infra/interf|infra/common/cglobal|infra/common/constant|infra/cmp/opensearchcmp|infra/cmp/efastcmp|infra/cmp/redisdlmcmp|infra/server/httpserver|infra/common/cconf
+
+utExclude:
+	go test -v -count=1 $$(go list ./... | grep -vE '$(UT_EXCLUDE_PATTERN)')
+
+utCoverage:
+	@mkdir -p test_out
+	go test -count=1 -timeout 30m \
+		-coverprofile=test_out/coverage_full.out \
+		-covermode=atomic \
+		$$(go list ./... | grep -vE '$(UT_EXCLUDE_PATTERN)') \
+		2>&1 | tee test_out/ut_full_output.log
+	@go tool cover -func=test_out/coverage_full.out > test_out/coverage_by_func.txt
+	@go tool cover -func=test_out/coverage_full.out | tail -1 > test_out/coverage_total.txt
+	@grep -E "^(ok|FAIL)" test_out/ut_full_output.log > test_out/ut_timing.log
+	@echo "Coverage report saved to test_out/"
+	@cat test_out/coverage_total.txt
+
+serviceUtAndCoverage:
+	@mkdir -p test_out
+	@echo "========================================="
+	@echo "Running Service UT: ./src/domain/service/..."
+	@echo "========================================="
+	go test -timeout 30m \
+		-coverprofile=test_out/coverage_service.out \
+		-covermode=atomic \
+		./src/domain/service/... \
+		2>&1 | tee test_out/ut_service_output.log || true
+	@echo ""
+	@echo "========================================="
+	@echo "Coverage by function:"
+	@echo "========================================="
+	@go tool cover -func=test_out/coverage_service.out 2>/dev/null || true
+	@echo ""
+	@echo "========================================="
+	@echo "Total coverage:"
+	@echo "========================================="
+	@go tool cover -func=test_out/coverage_service.out 2>/dev/null | tail -1 || true
+	@echo "========================================="
 # Swagger 文档生成
 gen-swag:
 	swag init -g main.go -o docs --parseDependency
@@ -60,24 +116,3 @@ push:
 	git pull origin $(shell git rev-parse --abbrev-ref HEAD)
 	git push origin $(shell git rev-parse --abbrev-ref HEAD)
 
-
-localRun:
-	export AD_STRATEGY_CENTER_AR_TRACE_DEBUG=true;\
-	export AD_STRATEGY_CENTER_LOCAL_DEV=true;\
-	export AGENT_FACTORY_AR_TRACE_DEBUG=true;\
-	export AGENT_FACTORY_CONFIG_PATH=./conf/;\
-	export AGENT_FACTORY_LOCAL_DEV=true;\
-	export AGENT_FACTORY_LOCAL_DEV_LOG_ROOT_DIR=./log/;\
-	export AGENT_FACTORY_LOCAL_DEV_AARON=true;\
-	export AGENT_FACTORY_SQL_PRINT=false;\
-	export STRATEGY_CENTER_CONFIG_PATH=./conf/;\
-	export STRATEGY_CENTER_SQL_PRINT=false;\
-	export SERVICE_NAME=agent-factory;\
-	go run ./main.go
-
-killLocal:
-	lsof -i :13020 | awk 'NR!=1 {print $2}' | xargs kill -9
-
-reRunLocal:
-	$(MAKE) killLocal
-	$(MAKE) localRun

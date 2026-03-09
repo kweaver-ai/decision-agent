@@ -1,5 +1,5 @@
-from fastapi import APIRouter, HTTPException, Request, Response
-from typing import List, Optional, Dict, Any
+from fastapi import APIRouter, Request, Response
+from typing import Dict, Any
 from .schemas import (
     BuildMemoryRequest,
     RetrievalMemoryRequest,
@@ -65,7 +65,7 @@ async def build_memory(request: Request, build_request: BuildMemoryRequest):
         build_request.model_dump(),
         context,
     )
-    result = await build_memory_use_case.execute(
+    await build_memory_use_case.execute(
         messages=[msg.model_dump() for msg in build_request.messages],
         user_id=build_request.user_id,
         agent_id=build_request.agent_id,

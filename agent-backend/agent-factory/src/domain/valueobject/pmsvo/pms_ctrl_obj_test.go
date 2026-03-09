@@ -5,6 +5,8 @@ import (
 )
 
 func TestPmsControlObjS(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name   string
 		pmsObj PmsControlObjS
@@ -43,19 +45,25 @@ func TestPmsControlObjS(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if len(tt.pmsObj.RoleIDs) != len(tt.pmsObj.RoleIDs) {
+			t.Parallel()
+
+			if len(tt.pmsObj.RoleIDs) != len(tt.pmsObj.RoleIDs) { //nolint:staticcheck
 				t.Errorf("RoleIDs length mismatch")
 			}
-			if len(tt.pmsObj.UserIDs) != len(tt.pmsObj.UserIDs) {
+
+			if len(tt.pmsObj.UserIDs) != len(tt.pmsObj.UserIDs) { //nolint:staticcheck
 				t.Errorf("UserIDs length mismatch")
 			}
-			if len(tt.pmsObj.UserGroupIDs) != len(tt.pmsObj.UserGroupIDs) {
+
+			if len(tt.pmsObj.UserGroupIDs) != len(tt.pmsObj.UserGroupIDs) { //nolint:staticcheck
 				t.Errorf("UserGroupIDs length mismatch")
 			}
-			if len(tt.pmsObj.DepartmentIDs) != len(tt.pmsObj.DepartmentIDs) {
+
+			if len(tt.pmsObj.DepartmentIDs) != len(tt.pmsObj.DepartmentIDs) { //nolint:staticcheck
 				t.Errorf("DepartmentIDs length mismatch")
 			}
-			if len(tt.pmsObj.AppAccountIDs) != len(tt.pmsObj.AppAccountIDs) {
+
+			if len(tt.pmsObj.AppAccountIDs) != len(tt.pmsObj.AppAccountIDs) { //nolint:staticcheck
 				t.Errorf("AppAccountIDs length mismatch")
 			}
 		})

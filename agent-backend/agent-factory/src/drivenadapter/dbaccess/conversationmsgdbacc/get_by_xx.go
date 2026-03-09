@@ -32,8 +32,8 @@ func (repo *ConversationMsgRepo) GetMaxIndexByID(ctx context.Context, id string)
 	sr := dbhelper2.NewSQLRunner(repo.db, repo.logger)
 	po := &dapo.ConversationMsgPO{}
 	sr.FromPo(po)
-	err = sr.WhereEqual("f_conversation_id", id).Order("f_index DESC").Limit(1).FindOne(po)
 
+	err = sr.WhereEqual("f_conversation_id", id).Order("f_index DESC").Limit(1).FindOne(po)
 	if err != nil {
 		return 0, errors.Wrapf(err, "get max index by id")
 	}

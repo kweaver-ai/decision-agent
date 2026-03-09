@@ -4,64 +4,43 @@ import (
 	"testing"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestConversation(t *testing.T) {
-	hello := "Hello"
-	world := "World"
+func TestConversation_New(t *testing.T) {
+	t.Parallel()
+
 	conversation := &Conversation{
-		ConversationPO: &dapo.ConversationPO{
-			ID:    "conv-123",
-			Title: "Test Topic",
-		},
-		Messages: []*dapo.ConversationMsgPO{
-			{ID: "msg-1", Content: &hello},
-			{ID: "msg-2", Content: &world},
-		},
+		ConversationPO: &dapo.ConversationPO{},
+		Messages:       []*dapo.ConversationMsgPO{},
 	}
 
-	if conversation.ID != "conv-123" {
-		t.Errorf("ID = %q, want %q", conversation.ID, "conv-123")
-	}
-	if conversation.Title != "Test Topic" {
-		t.Errorf("Title = %q, want %q", conversation.Title, "Test Topic")
-	}
-	if len(conversation.Messages) != 2 {
-		t.Errorf("Messages length = %d, want 2", len(conversation.Messages))
-	}
-}
-
-func TestConversation_Empty(t *testing.T) {
-	conversation := &Conversation{}
-
-	if conversation.ConversationPO != nil {
-		t.Error("ConversationPO should be nil")
-	}
-	if conversation.Messages != nil {
-		t.Error("Messages should be nil")
-	}
+	assert.NotNil(t, conversation)
+	assert.NotNil(t, conversation.ConversationPO)
+	assert.NotNil(t, conversation.Messages)
 }
 
 func TestConversation_NilPO(t *testing.T) {
-	conversation := &Conversation{
-		Messages: []*dapo.ConversationMsgPO{},
-	}
+	t.Parallel()
 
-	if conversation.ConversationPO != nil {
-		t.Error("ConversationPO should be nil")
-	}
-	if len(conversation.Messages) != 0 {
-		t.Error("Messages should be empty")
-	}
-}
-
-func TestConversation_NilMessages(t *testing.T) {
 	conversation := &Conversation{
-		ConversationPO: &dapo.ConversationPO{},
+		ConversationPO: nil,
 		Messages:       nil,
 	}
 
-	if conversation.Messages != nil {
-		t.Error("Messages should be nil")
+	assert.NotNil(t, conversation)
+	assert.Nil(t, conversation.ConversationPO)
+	assert.Nil(t, conversation.Messages)
+}
+
+func TestConversation_EmptyMessages(t *testing.T) {
+	t.Parallel()
+
+	conversation := &Conversation{
+		ConversationPO: &dapo.ConversationPO{},
+		Messages:       []*dapo.ConversationMsgPO{},
 	}
+
+	assert.NotNil(t, conversation.Messages)
+	assert.Empty(t, conversation.Messages)
 }

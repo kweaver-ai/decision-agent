@@ -10,7 +10,7 @@ def get_output_variables(ac: "AgentCoreV2") -> List[str]:
     """获取输出变量配置"""
 
     # 1. 先获取配置中的所有输出变量
-    l: List[str] = ac.agent_config.output.get_all_vars()
+    output_vars: List[str] = ac.agent_config.output.get_all_vars()
 
     # 2. 除了上面那个以外其他需要输出的字段 如果有其他需要输出的字段，可以在这里添加
     # 说明：
@@ -28,7 +28,7 @@ def get_output_variables(ac: "AgentCoreV2") -> List[str]:
         to_add.append("_progress")
 
     # 4. 合并
-    l.extend([var for var in to_add if var not in l])
+    output_vars.extend([var for var in to_add if var not in output_vars])
 
     # 5. 返回
-    return l
+    return output_vars

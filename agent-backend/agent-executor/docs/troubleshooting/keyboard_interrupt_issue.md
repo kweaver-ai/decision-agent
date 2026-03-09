@@ -42,11 +42,11 @@ signal.signal(signal.SIGTERM, signal_handler)
 def asyncio_exception_handler(loop, context):
     """Asyncio 异常处理器 - 抑制 KeyboardInterrupt 警告"""
     exception = context.get("exception")
-    
+
     # 忽略 KeyboardInterrupt 和 CancelledError
     if isinstance(exception, (KeyboardInterrupt, asyncio.CancelledError)):
         return
-    
+
     # 其他异常正常处理
     if exception:
         print(f"Asyncio 异常: {exception}")
@@ -62,19 +62,19 @@ loop.set_exception_handler(asyncio_exception_handler)
 async def shutdown_event():
     # 关闭可观测模块
     shutdown_observability()
-    
+
     # 清理所有正在运行的 rebuild 任务
     try:
         from app.logic.agent_core_logic_v2.session.session_rebuild_service import rebuild_service
-        
+
         tasks_to_cancel = list(rebuild_service.rebuild_tasks.values())
         for task in tasks_to_cancel:
             if not task.done():
                 task.cancel()
-        
+
         if tasks_to_cancel:
             await asyncio.gather(*tasks_to_cancel, return_exceptions=True)
-            
+
         rebuild_service.rebuild_tasks.clear()
     except Exception:
         pass

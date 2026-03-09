@@ -20,7 +20,7 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/configmap: {{ include (print $.Template.BasePath "/configmap.yaml") . | sha256sum }}
+        checksum/configmap: {{ include (print $.Template.BasePath "/configmap-factory.yaml") . | sha256sum }}
       labels:
         app: agent-factory
     spec:
@@ -76,148 +76,6 @@ spec:
               - name: TZ
                 value: {{ .Values.env.timezone }}
             {{- end}}
-              - name: RDSHOST
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: RDSHOST
-              - name: RDSPORT
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: RDSPORT
-              - name: RDSUSER
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: RDSUSER
-              - name: RDSPASS
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: RDSPASS
-
-              - name: RDSDBNAME
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: RDSDBNAME
-              - name: OPENSEARCH_HOST
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: OPENSEARCH_HOST
-              - name: OPENSEARCHWRITE
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: OPENSEARCHWRITE
-              - name: OPENSEARCHREAD
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: OPENSEARCHRED
-              - name: OPENSEARCH_PORT
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: OPENSEARCH_PORT
-              - name: OPENSEARCH_USER
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: OPENSEARCH_USER
-              - name: OPENSEARCH_PASS
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: OPENSEARCH_PASS
-              - name: REDISCLUSTERMODE
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: REDISCLUSTERMODE
-              - name: REDISUSER
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: REDISUSER
-              - name: REDISPASS
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: REDISPASS
-              {{- if ne .Values.depServices.redis.connectType "master-slave" }}
-              - name: REDISHOST
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: REDISHOST
-              - name: REDISPORT
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: REDISPORT
-              {{- end }}
-              {{- if eq .Values.depServices.redis.connectType "sentinel" }}
-              - name: SENTINELMASTER
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: SENTINELMASTER
-              - name: SENTINELUSER
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: SENTINELUSER
-              - name: SENTINELPASS
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: SENTINELPASS
-              {{- end }}
-              {{- if eq .Values.depServices.redis.connectType "master-slave" }}
-              - name: REDISREADHOST
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: REDISREADHOST
-              - name: REDISREADPORT
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: REDISREADPORT
-              - name: REDISREADUSER
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: REDISREADUSER
-              - name: REDISREADPASS
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: REDISREADPASS
-              - name: REDISWRITEHOST
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: REDISWRITEHOST
-              - name: REDISWRITEPORT
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: REDISWRITEPORT
-              - name: REDISWRITEUSER
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: REDISWRITEUSER
-              - name: REDISWRITEPASS
-                valueFrom:
-                  configMapKeyRef:
-                    name: agent-factory-yaml
-                    key: REDISWRITEPASS
-              {{- end }}
 
               # ========== Memory特有环境变量 (从agent-memory-yaml ConfigMap获取) ==========
               - name: HOST_IP
@@ -360,14 +218,11 @@ spec:
             - name: agent-factory-yaml
               mountPath: /sysvol/conf/mq_config.yaml
               subPath: mq_config.yaml
-            # ========== 其他挂载 ==========
-            - name: agent-factory-dependant-configmap
-              mountPath: /mdl-shared-configmap
             # ========== Secret使用目录级挂载 ==========
             - name: agent-factory-secret-yaml
               mountPath: /sysvol/conf/secret
             # ========== Executor配置文件挂载 ==========
-            - name: executor-yaml-v2
+            - name: executor-yaml
               mountPath: /sysvol/conf/agent-executor.yaml
               subPath: agent-executor.yaml
             # ========== 时间同步 ==========
@@ -396,13 +251,10 @@ spec:
         - name: agent-factory-secret-yaml
           secret:
             secretName: agent-factory-secret-yaml
-        - name: agent-factory-dependant-configmap
-          configMap:
-            name: agent-factory-dependant-configmap
         # ========== Executor配置Volume ==========
-        - name: executor-yaml-v2
+        - name: executor-yaml
           configMap:
-            name: agent-executor-yaml-v2
+            name: agent-executor-yaml
         # ========== 时间同步Volume ==========
         - name: host-time
           hostPath:

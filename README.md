@@ -184,6 +184,37 @@ Quick start:
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Create a Pull Request
 
+## Code Quality
+
+This project uses pre-commit hooks for code quality checks. The root configuration dispatches to subproject-specific configs.
+
+### Run Lint from Root
+
+```bash
+make lint
+```
+
+### Git Commit (Automatic)
+
+Pre-commit hooks run automatically on `git commit`:
+
+```bash
+git commit -m "your message"
+```
+
+### Manual Lint by Subproject
+
+```bash
+# agent-executor (Python)
+cd agent-backend/agent-executor && make lint
+
+# agent-memory (Python)
+cd agent-backend/agent-memory && make lint
+
+# agent-factory (Go)
+cd agent-backend/agent-factory && make lint
+```
+
 ## License
 
 This project is licensed under the Apache License 2.0. See the [LICENSE](LICENSE.txt) file for details.

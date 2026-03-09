@@ -319,6 +319,26 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 		// NOTE: 中断将将assistantMessage 状态设置为processing
 		conversationAssistantMsgPO.Status = cdaenum.MsgStatusProcessing
 
+		// NOTE: 清除 Ext 中的 InterruptInfo，因为中断恢复后旧的中断信息不再有效
+		if conversationAssistantMsgPO.Ext != nil && *conversationAssistantMsgPO.Ext != "" {
+			var msgExt conversationmsgvo.MessageExt
+			if err = sonic.Unmarshal([]byte(*conversationAssistantMsgPO.Ext), &msgExt); err != nil {
+				o11y.Error(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] unmarshal ext err: %v", err))
+				return userMessageID, assistantMessageID, assistantMessageIndex, errors.Wrapf(err, "[UpsertUserAndAssistantMsg] unmarshal ext err")
+			}
+
+			msgExt.InterruptInfo = nil
+
+			extBytes, marshalErr := sonic.Marshal(msgExt)
+			if marshalErr != nil {
+				o11y.Error(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] marshal ext err: %v", marshalErr))
+				return userMessageID, assistantMessageID, assistantMessageIndex, errors.Wrapf(marshalErr, "[UpsertUserAndAssistantMsg] marshal ext err")
+			}
+
+			extStr := string(extBytes)
+			conversationAssistantMsgPO.Ext = &extStr
+		}
+
 		err = agentSvc.conversationMsgRepo.Update(ctx, conversationAssistantMsgPO)
 		if err != nil {
 			o11y.Error(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] update conversation assistant message failed: %v", err))

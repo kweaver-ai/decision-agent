@@ -5,6 +5,8 @@ import (
 )
 
 func TestNameRe(t *testing.T) {
+	t.Parallel()
+
 	// 测试字符串和预期结果的映射
 	testCases := map[string]bool{
 		"<":             false,

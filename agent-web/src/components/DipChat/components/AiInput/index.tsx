@@ -25,7 +25,6 @@ const AiInput = forwardRef<AiInputRef, AiInputProps>((props, ref) => {
     agentConfig,
     tempFileList = [],
     autoSize = { minRows: 3, maxRows: 6 },
-    onPreviewFile,
     ...restProps
   } = props;
 

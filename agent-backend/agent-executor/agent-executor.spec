@@ -1,36 +1,48 @@
 # agent-executor.spec
 # -*- mode: python ; coding: utf-8 -*-
 # PyInstaller specification file for Agent-Executor
-# Based on dependency analysis and configuration requirements
 
-from PyInstaller.utils.hooks import copy_metadata
+from PyInstaller.utils.hooks import copy_metadata, collect_all
 
-block_cipher = None
 project_root = os.path.abspath('.')
 
 # Data files to include
 datas = [
     ("data_migrations", "data_migrations"),
-    # 包含配置文件和数据文件
-    ("app/resources/data/sensitive_words.txt", "app/resources/data"),
-    # Dolphin 包已更新，不再需要单独的 installed 文件
-    # (".venv/lib64/python3.10/site-packages/DolphinLanguageSDK/skill/installed", "DolphinLanguageSDK/skill/installed")
 ]
 datas += copy_metadata('setuptools')
 
+# Collect all charset_normalizer files (including mypyc compiled .so modules)
+cn_datas, cn_binaries, cn_hiddenimports = collect_all('charset_normalizer')
+datas += cn_datas
+
+# Collect mypyc runtime shared library from top-level site-packages
+# charset_normalizer 3.x uses mypyc to compile modules, the runtime .so file
+# (e.g. 81d243bd2c585b0f4821__mypyc.*.so) is placed at site-packages root,
+# NOT inside charset_normalizer/, so collect_all won't find it.
+import glob
+_cn_pkg_dir = os.path.dirname(__import__('charset_normalizer').__file__)
+_site_packages = os.path.dirname(_cn_pkg_dir)
+for _mypyc_file in glob.glob(os.path.join(_site_packages, '*__mypyc*')):
+    cn_binaries.append((_mypyc_file, '.'))
 
 # Analysis configuration
 a = Analysis(
-    ['main.py'],  # Entry point
+    ['main.py'],
     pathex=[project_root],
-    binaries=[],
+    binaries=cn_binaries,
     datas=datas,
+    hookspath=['hooks'],
     hiddenimports=[
         'pkg_resources',
         'setuptools',
         'setuptools._distutils',
         'opentelemetry.instrumentation.dependencies',
-    ],
+        'charset_normalizer',
+        'charset_normalizer.md',
+        'chardet',
+        'requests.packages.chardet',
+    ] + cn_hiddenimports,
     excludes=[
         'tkinter',
         'matplotlib',
@@ -42,36 +54,22 @@ a = Analysis(
         'pylint',
         'coverage',
     ],
-    win_no_prefer_redirects=False,
-    win_private_assemblies=False,
-    cipher=block_cipher,
-    noarchive=False,
 )
 
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+pyz = PYZ(a.pure, a.zipped_data)
 
 exe = EXE(
     pyz,
     a.scripts,
+    exclude_binaries=True,
+    name='agent-executor',
+    console=True,
+)
+
+coll = COLLECT(
+    exe,
     a.binaries,
     a.zipfiles,
     a.datas,
-    [],
     name='agent-executor',
-    debug=False,
-    bootloader_ignore_signals=False,
-    strip=False,
-    upx=True,
-    upx_exclude=[
-        'vcruntime140.dll',
-        'python*.dll',
-        'msvcp*.dll',
-    ],
-    runtime_tmpdir=None,
-    console=True,
-    disable_windowed_traceback=False,
-    argv_emulation=False,
-    target_arch=None,
-    codesign_identity=None,
-    entitlements_file=None,
 )

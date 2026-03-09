@@ -17,7 +17,9 @@ if TYPE_CHECKING:
 
 
 @internal_span()
-async def build_tools(ac: "AgentCoreV2",skills: SkillVo, span: Span = None) -> Dict[str, Tool]:
+async def build_tools(
+    ac: "AgentCoreV2", skills: SkillVo, span: Span = None
+) -> Dict[str, Tool]:
     """
     skills样例:
 
@@ -102,7 +104,7 @@ async def build_tools(ac: "AgentCoreV2",skills: SkillVo, span: Span = None) -> D
                     f"agent_name {agent_name} already exists, use agent_key {agent.agent_key} instead"
                 )
 
-            tools[agent_name] = AgentTool(ac,agent)
+            tools[agent_name] = AgentTool(ac, agent)
 
     # 处理MCP工具
     if skills.mcps:

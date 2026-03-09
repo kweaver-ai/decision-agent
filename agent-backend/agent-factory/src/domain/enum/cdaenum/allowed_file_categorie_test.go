@@ -7,6 +7,8 @@ import (
 )
 
 func TestAllowedFileCategory_EnumCheck(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		c       AllowedFileCategory
@@ -76,7 +78,10 @@ func TestAllowedFileCategory_EnumCheck(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			cats := AllowedFileCategories{tt.c}
+
 			err := cats.EnumCheck()
 			if tt.wantErr {
 				assert.Error(t, err, "expected error")
@@ -88,6 +93,8 @@ func TestAllowedFileCategory_EnumCheck(t *testing.T) {
 }
 
 func TestAllowedFileCategories_GetAllowedFileTypes(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name       string
 		categories AllowedFileCategories
@@ -164,6 +171,8 @@ func TestAllowedFileCategories_GetAllowedFileTypes(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			types, err := tt.categories.GetAllowedFileTypes()
 			if tt.wantErr {
 				assert.Error(t, err, "expected error")
@@ -176,6 +185,8 @@ func TestAllowedFileCategories_GetAllowedFileTypes(t *testing.T) {
 }
 
 func TestGetFileExtMap(t *testing.T) {
+	t.Parallel()
+
 	fileMap := GetFileExtMap()
 
 	tests := []struct {
@@ -242,6 +253,8 @@ func TestGetFileExtMap(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			_, present := fileMap[tt.category]
 			assert.Equal(t, tt.wantPresent, present, "category presence should match expected")
 		})

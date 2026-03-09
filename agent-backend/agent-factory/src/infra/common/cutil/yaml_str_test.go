@@ -7,6 +7,8 @@ import (
 )
 
 func TestYamlParseFromStr(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		yamlStr string
@@ -45,6 +47,8 @@ b:
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			obj := struct {
 				A string `yaml:"a"`
 				B struct {
@@ -59,9 +63,11 @@ b:
 				assert.Error(t, err, "YamlParseFromStr should return error")
 			} else {
 				assert.NoError(t, err, "YamlParseFromStr should not return error")
+
 				if tt.wantA != "" {
 					assert.Equal(t, tt.wantA, obj.A, "A field should match")
 				}
+
 				if tt.wantC != 0 {
 					assert.Equal(t, tt.wantC, obj.B.C, "B.C field should match")
 				}

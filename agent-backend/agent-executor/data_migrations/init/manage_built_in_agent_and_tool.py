@@ -21,11 +21,9 @@
 import argparse
 import os
 import sys
-import traceback
 from datetime import datetime
 import time
 
-import requests
 import urllib3
 
 sys.path.insert(
@@ -127,7 +125,7 @@ def main():
         except Exception as e:
             from app.common.struct_logger import struct_logger
 
-            struct_logger.console_logger.error(f"管理内置agent和工具失败", exc_info=e)
+            struct_logger.console_logger.error("管理内置agent和工具失败", exc_info=e)
 
             if idx < len(retry_intervals) - 1:
                 print(f"{interval} 秒后重试...（已重试 {idx + 1} 次）")

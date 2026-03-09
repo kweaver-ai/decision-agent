@@ -10,7 +10,7 @@ dependencies = [
     "groq==0.4.2",
     "httpx==0.25.2",
     "litellm==1.30.7",
-    "numpy>=1.23.5",
+    "numpy>=1.26",
     "ollama==0.1.6",
     "openai==1.14.2",
     "opensearch-py==2.8.0",
@@ -20,11 +20,11 @@ dependencies = [
     "pytz==2024.1",
     "pyyaml==6.0.1",
     "PyMySQL==1.1.1",
-    "pymysql",
+    "dbutilsx==1.3.3",
     "qdrant-client==1.8.0",
     "redis==5.0.1",
-    "redisvl==0.7.0",
     "requests==2.32.0",
+    "setuptools==76.0.0",
     "sqlalchemy==1.4.23",
     "setuptools==76.0.0",
     "together==0.2.4",
@@ -39,6 +39,8 @@ dev = [
     "pytest-asyncio==0.21.0",
     "pytest-cov==4.1.0",
     "mock==5.1.0",
+    "pre-commit>=3.0.0",
+    "ruff>=0.1.0",
 ]
 
 [tool.pytest.ini_options]
@@ -70,6 +72,7 @@ omit = [
     "*/env/*",
     "*/__pycache__/*",
     "*/mem0/*",
+    "src/main.py"
 ]
 
 [tool.coverage.report]
@@ -83,3 +86,34 @@ exclude_lines = [
     "@abstractmethod",
 ]
 precision = 2
+
+
+[tool.uv]
+# 使用清华大学 PyPI 镜像源加速依赖下载
+index-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+
+[tool.ruff]
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = [
+    "E501",  # line too long
+    "E722",  # bare except
+    "W605",  # invalid escape sequence (regex patterns)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+    "F401",  # unused import
+    "F811",  # redefinition of unused
+    "F821",  # undefined name
+    "F841",  # unused variable
+    "E721",  # type comparison
+    "E731",  # lambda assignment
+    "E741",  # ambiguous variable name
+    "E402",  # import not at top
+]
+"src/main.py" = [
+    "E402",  # import not at top (entry point script needs sys.path manipulation)
+]

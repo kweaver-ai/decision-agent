@@ -8,16 +8,16 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/cmp/icmp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iagentexecutorhttp"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iagentfactoryhttp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/isandboxhtpp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/iv2agentexecutorhttp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iportdriver"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver"
 )
 
 type agentSvc struct {
 	*service.SvcBase
 	logger          icmp.Logger
-	agentFactory    iagentfactoryhttp.IAgentFactory
+	squareSvc       iv3portdriver.ISquareSvc
 	agentExecutorV1 iagentexecutorhttp.IAgentExecutor
 	agentExecutorV2 iv2agentexecutorhttp.IV2AgentExecutor
 	conversationSvc iportdriver.IConversationSvc
@@ -39,7 +39,7 @@ var _ iportdriver.IAgent = &agentSvc{}
 type NewAgentSvcDto struct {
 	SvcBase             *service.SvcBase
 	Logger              icmp.Logger
-	AgentFactory        iagentfactoryhttp.IAgentFactory
+	SquareSvc           iv3portdriver.ISquareSvc
 	AgentExecutorV1     iagentexecutorhttp.IAgentExecutor
 	AgentExecutorV2     iv2agentexecutorhttp.IV2AgentExecutor
 	ConversationSvc     iportdriver.IConversationSvc
@@ -55,7 +55,7 @@ func NewAgentSvc(dto *NewAgentSvcDto) iportdriver.IAgent {
 	impl := &agentSvc{
 		SvcBase:             dto.SvcBase,
 		logger:              dto.Logger,
-		agentFactory:        dto.AgentFactory,
+		squareSvc:           dto.SquareSvc,
 		agentExecutorV1:     dto.AgentExecutorV1,
 		agentExecutorV2:     dto.AgentExecutorV2,
 		conversationSvc:     dto.ConversationSvc,

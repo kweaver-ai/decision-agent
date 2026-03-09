@@ -7,11 +7,15 @@ import (
 )
 
 func TestJSON(t *testing.T) {
+	t.Parallel()
+
 	json := JSON()
 	assert.NotNil(t, json)
 }
 
 func TestJSONObjectToArray(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		json string
@@ -36,6 +40,8 @@ func TestJSONObjectToArray(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := JSONObjectToArray([]byte(tt.json))
 			assert.Equal(t, tt.want, string(result))
 		})
@@ -43,6 +49,8 @@ func TestJSONObjectToArray(t *testing.T) {
 }
 
 func TestFormatJSONString(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   string
@@ -77,11 +85,14 @@ func TestFormatJSONString(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result, err := FormatJSONString(tt.input)
 			if tt.wantErr {
 				assert.Error(t, err)
 			} else {
 				assert.NoError(t, err)
+
 				if tt.name == "空字符串" {
 					assert.Empty(t, result)
 				} else {
@@ -93,6 +104,8 @@ func TestFormatJSONString(t *testing.T) {
 }
 
 func TestFormatJSON(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   interface{}
@@ -118,10 +131,17 @@ func TestFormatJSON(t *testing.T) {
 			input:   nil,
 			wantErr: false,
 		},
+		{
+			name:    "unmarshalable value (function)",
+			input:   func() {},
+			wantErr: true,
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result, err := FormatJSON(tt.input)
 			if tt.wantErr {
 				assert.Error(t, err)
@@ -134,29 +154,45 @@ func TestFormatJSON(t *testing.T) {
 }
 
 func TestToMapByJSON(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   interface{}
 		wantKey string
+		wantErr bool
 	}{
 		{
 			name:    "简单对象",
 			input:   map[string]interface{}{"name": "John", "age": 30},
 			wantKey: "name",
+			wantErr: false,
 		},
 		{
 			name:    "嵌套对象",
 			input:   map[string]interface{}{"person": map[string]interface{}{"name": "John"}},
 			wantKey: "person",
+			wantErr: false,
+		},
+		{
+			name:    "invalid input - channel",
+			input:   make(chan int),
+			wantErr: true,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result, err := ToMapByJSON(tt.input)
-			assert.NoError(t, err)
-			assert.NotNil(t, result)
-			assert.Contains(t, result, tt.wantKey)
+			if tt.wantErr {
+				assert.Error(t, err)
+			} else {
+				assert.NoError(t, err)
+				assert.NotNil(t, result)
+				assert.Contains(t, result, tt.wantKey)
+			}
 		})
 	}
 }

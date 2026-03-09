@@ -32,4 +32,4 @@ error_link = "https://api.example.com/docs/errors/service-unavailable"
 [AgentMemory.Internal.Error]
 description = "Internal server error"
 solution = "Please try again later. If the problem persists, contact the administrator"
-error_link = "https://api.example.com/docs/errors/internal-error" 
+error_link = "https://api.example.com/docs/errors/internal-error"

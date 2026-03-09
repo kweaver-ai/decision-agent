@@ -117,8 +117,6 @@ class Config:
         )
 
         # mem0
-        from mem0.configs.base import MemoryConfig as Mem0Config
-
         if "mem0" in self.config:
             if "memory" not in self.config:
                 self.config["memory"] = {}
@@ -162,8 +160,7 @@ class Config:
             config={
                 "model": llm_config.get("model", ""),
                 "openai_base_url": llm_config.get("base_url", ""),
-                "api_key": os.getenv("LLM_API_KEY")
-                or llm_config.get("api_key", ""),
+                "api_key": os.getenv("LLM_API_KEY") or llm_config.get("api_key", ""),
             },
         )
 
@@ -176,9 +173,7 @@ class Config:
                 "model": embedder_config.get("model", "text-embedding-3-small"),
                 "api_key": os.getenv("OPENAI_API_KEY")
                 or embedder_config.get("api_key", ""),
-                "openai_base_url": embedder_config.get(
-                    "base_url", ""
-                ),
+                "openai_base_url": embedder_config.get("base_url", ""),
                 "embedding_dims": embedder_config.get("embedding_dims", 768),
             },
         )

@@ -209,12 +209,8 @@ func (p *Config) checkAboutDolphin() (err error) {
 			err = errors.New("[Config]: pre_dolphin or post_dolphin or dolphin is required when is_dolphin_mode is enabled")
 			return
 		}
-	} else if p.SystemPrompt == "" {
-		// 去掉这里的验证（2025年05月29日16:24:47）
-		// 如果未启用dolphin模式，system_prompt不能为空
-		// err = errors.New("[Config]: system_prompt is required when is_dolphin_mode is disabled")
-		// return
 	}
+	// 注: 未启用dolphin模式时，不再强制要求system_prompt不能为空（2025年05月29日16:24:47）
 
 	return
 }

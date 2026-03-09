@@ -6,6 +6,8 @@ import (
 )
 
 func TestRsa2048Decrypt(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name       string
 		encrypted  string
@@ -34,6 +36,8 @@ func TestRsa2048Decrypt(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			decrypted, err := Rsa2048Decrypt(tt.encrypted)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Rsa2048Decrypt() error = %v, wantErr %v", err, tt.wantErr)

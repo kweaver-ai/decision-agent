@@ -1,7 +1,6 @@
 from typing import Any, Dict, Optional, TYPE_CHECKING
 
 from app.common.config import Config
-from app.driven.dip.model_manager_service import model_manager_service
 from app.utils.observability.trace_wrapper import internal_span
 from opentelemetry.trace import Span
 
@@ -17,27 +16,32 @@ if TYPE_CHECKING:
 
 
 def _configure_local_dev_llm(llm: Dict[str, Any], llm_config: Dict[str, Any]) -> None:
-    """配置本地开发环境的LLM设置"""
-    model_name = llm["llm_config"]["name"]
-    model_config = Config.get_local_dev_model_config(model_name)
+    """配置本地开发环境的LLM设置
+
+    使用 llm_config.name 作为 model_list 的查找 key，
+    不修改 llm["llm_config"]["name"]，只更新 model_name/api/api_key，
+    避免下次调用时 key 变化导致匹配失败。
+    """
+    # 用当前 name 查找 model_list（不会被 mutation 影响）
+    original_name = llm["llm_config"]["name"]
+    model_config = Config.get_local_dev_model_config(original_name)
 
     if model_config:
         # 使用配置映射表中的模型配置
         llm["llm_config"]["api"] = model_config["api"]
         llm["llm_config"]["api_key"] = model_config["api_key"]
         llm["llm_config"]["model_name"] = model_config["model"]
-        llm_config["default"] = model_config["model"]
     else:
         # 使用默认配置
         llm["llm_config"]["api"] = Config.outer_llm.api
         llm["llm_config"]["api_key"] = Config.outer_llm.api_key
         llm["llm_config"]["model_name"] = Config.outer_llm.model
-        llm_config["default"] = Config.outer_llm.model
 
     from dolphin.core.config.global_config import TypeAPI
 
     llm["llm_config"]["type_api"] = TypeAPI.OPENAI.value
-    llm["llm_config"]["name"] = llm["llm_config"]["model_name"]
+    # 注意：不再修改 llm["llm_config"]["name"]，保持原始值（如 "deepseek-v3"），
+    # 以确保下次调用时仍能正确匹配 model_list。
 
 
 @internal_span()
@@ -75,18 +79,6 @@ async def build_llm_config(
         set_user_account_id(llm_headers, user_id)
         set_user_account_type(llm_headers, visitor_type)
         llm["llm_config"]["headers"] = llm_headers
-
-        modelInfo = get_llm_config_from_cache(ac, llm["llm_config"]["id"])
-
-        if not modelInfo:
-            modelInfo = await model_manager_service.get_llm_config(
-                llm["llm_config"]["id"]
-            )
-
-            if ac.is_warmup:
-                ac.cache_handler.set_llm_config(llm["llm_config"]["id"], modelInfo)
-
-        llm["llm_config"]["max_model_len"] = modelInfo["max_model_len"]
 
         llm_config["llms"][llm["llm_config"]["name"]] = llm["llm_config"]
 

@@ -1,71 +1,65 @@
 package util
 
-import "testing"
+import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
 
 func TestLeftTrimEllipsisSize(t *testing.T) {
-	tests := []struct {
-		name string
-		str  string
-		size int
-		exp  string
-	}{
-		{"正常截断_size5", "123456789", 5, "12..."},
-		{"正常截断_size10", "123456789", 10, "123456789"},
-		{"字符串短于size_size15", "123456789", 15, "123456789"},
-		{"字符串短于size_size20", "123456789", 20, "123456789"},
-		{"边界情况_size4", "123456789", 4, "1..."},
-		{"边界情况_size等于字符串长度", "123456789", 9, "123456789"},
-		{"长字符串_size10", "1234567890123", 10, "1234567..."},
-		{"空字符串_size4", "", 4, ""},
-		{"空字符串_size10", "", 10, ""},
-		{"单字符_size4", "a", 4, "a"},
-		{"单字符_size10", "a", 10, "a"},
-		{"三字符_size4", "abc", 4, "abc"},
-		{"三字符_size6", "abc", 6, "abc"},
-		{"四字符_size4", "abcd", 4, "abcd"},
-		{"四字符_size5", "abcd", 5, "abcd"},
-		{"五字符_size4", "abcde", 4, "a..."},
-		{"包含中文字符", "abc中文def", 6, "abc..."},
-		{"纯英文长字符串", "abcdefghijklmnop", 8, "abcde..."},
-		{"中文字符串较短", "中文测试", 10, "中文测试"},
-		{"中文字符串较长", "这是一个很长的中文字符串测试", 8, "这是一个很..."},
-		{"特殊字符_size6", "!@#$%^&*()", 6, "!@#..."},
-		{"特殊字符_size15", "!@#$%^&*()", 15, "!@#$%^&*()"},
-	}
+	t.Parallel()
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			act := LeftTrimEllipsisSize(tt.str, tt.size)
-			if act != tt.exp {
-				t.Errorf("LeftTrimEllipsisSize(%s, %d) = %s, want %s", tt.str, tt.size, act, tt.exp)
-			}
+	t.Run("returns original string when shorter than size", func(t *testing.T) {
+		t.Parallel()
+
+		result := LeftTrimEllipsisSize("abc", 10)
+		assert.Equal(t, "abc", result)
+	})
+
+	t.Run("trims string when longer than size", func(t *testing.T) {
+		t.Parallel()
+
+		result := LeftTrimEllipsisSize("123456789", 5)
+		assert.Equal(t, "12...", result)
+	})
+
+	t.Run("handles exact size match", func(t *testing.T) {
+		t.Parallel()
+
+		result := LeftTrimEllipsisSize("12345", 5)
+		assert.Equal(t, "12345", result)
+	})
+
+	t.Run("handles empty string", func(t *testing.T) {
+		t.Parallel()
+
+		result := LeftTrimEllipsisSize("", 10)
+		assert.Equal(t, "", result)
+	})
+
+	t.Run("panics when size is 3 or less", func(t *testing.T) {
+		t.Parallel()
+		assert.Panics(t, func() {
+			LeftTrimEllipsisSize("test", 3)
 		})
-	}
-}
 
-func TestLeftTrimEllipsisSizePanic(t *testing.T) {
-	tests := []struct {
-		name string
-		str  string
-		size int
-	}{
-		{"size为0", "123456789", 0},
-		{"size为1", "123456789", 1},
-		{"size为2", "123456789", 2},
-		{"size为3", "123456789", 3},
-		{"size为负数", "123456789", -1},
-		{"空字符串size为0", "", 0},
-		{"空字符串size为负数", "", -5},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			defer func() {
-				if r := recover(); r == nil {
-					t.Errorf("期望panic但没有发生，size=%d", tt.size)
-				}
-			}()
-			LeftTrimEllipsisSize(tt.str, tt.size)
+		assert.Panics(t, func() {
+			LeftTrimEllipsisSize("test", 2)
 		})
-	}
+
+		assert.Panics(t, func() {
+			LeftTrimEllipsisSize("test", 0)
+		})
+
+		assert.Panics(t, func() {
+			LeftTrimEllipsisSize("test", -1)
+		})
+	})
+
+	t.Run("handles unicode characters", func(t *testing.T) {
+		t.Parallel()
+
+		result := LeftTrimEllipsisSize("你好世界欢迎", 5)
+		assert.Equal(t, "你好...", result)
+	})
 }

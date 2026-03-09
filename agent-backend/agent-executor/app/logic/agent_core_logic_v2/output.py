@@ -38,7 +38,7 @@ class OutputHandler:
         Yields:
             str: JSON字符串
         """
-        loop = asyncio.get_event_loop()
+        _loop = asyncio.get_event_loop()
 
         async for chunk in generator:
             yield await json_serialize_async(chunk)
@@ -80,7 +80,7 @@ class OutputHandler:
             Dict[str, Any]: 添加了TTFT字段的输出
         """
         # 计算TTFT（毫秒）
-        ttft_ms = int((time.time() - start_time) * 1000)
+        _ttft_ms = int((time.time() - start_time) * 1000)
 
         async for chunk in generator:
             # 在最外层添加ttft字段
@@ -100,7 +100,7 @@ class OutputHandler:
             Dict[str, Any]: 添加了日期时间字段的输出
         """
         # 生成格式化的日期时间（精确到毫秒）
-        dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
+        _dt = datetime.now().strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
 
         async for chunk in generator:
             # 在最外层添加datetime字段
@@ -194,7 +194,7 @@ class OutputHandler:
                         value = value[field]
                         if is_dolphin_var(value):
                             value = value.get("value")
-                    except:
+                    except (KeyError, TypeError):
                         pass
                 res = value
             elif len(output_vars) > 1:
@@ -209,7 +209,7 @@ class OutputHandler:
                             value = value[field]
                             if is_dolphin_var(value):
                                 value = value.get("value")
-                        except:
+                        except (KeyError, TypeError):
                             has_value = False
                     if has_value:
                         res[field] = value

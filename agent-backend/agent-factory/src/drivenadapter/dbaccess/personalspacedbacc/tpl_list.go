@@ -56,7 +56,9 @@ func (repo *personalSpaceRepo) ListPersonalSpaceTpl(ctx context.Context, arg *ps
 
 	// 1.7 按更新时间过滤
 	if req.Marker != nil {
-		repo.handleTplMarker(arg, sr)
+		if err = repo.handleTplMarker(arg, sr); err != nil {
+			return
+		}
 	}
 
 	// 2. 获取列表数据

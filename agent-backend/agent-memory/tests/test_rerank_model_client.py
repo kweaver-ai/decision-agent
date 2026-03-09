@@ -1,4 +1,5 @@
-import sys, os
+import os
+import sys
 import pytest
 from unittest.mock import patch, AsyncMock, MagicMock
 
@@ -12,6 +13,7 @@ from src.adaptee.mf_model_factory.rerank_model_client import (
     RerankResponseResult,
 )
 import asyncio
+
 
 def test_init_and_prepare_request_body():
     config = Config(rerank_url="http://test.com/rerank")
@@ -124,7 +126,7 @@ async def test_rerank_http_error():
         mock_session_cls.return_value.__aenter__.return_value = mock_session
 
         with pytest.raises(Exception) as exc:
-            await client.rerank("q", ["d1"]) 
+            await client.rerank("q", ["d1"])
         # The raised exception message should include the inner error
         assert "Error reranking documents" in str(exc.value)
         assert "500" in str(exc.value)
@@ -150,7 +152,9 @@ async def test_rerank_with_threshold():
         created=1234567890,
     )
 
-    with patch.object(client, "rerank", new=AsyncMock(return_value=mock_response)) as mock_rerank:
+    with patch.object(
+        client, "rerank", new=AsyncMock(return_value=mock_response)
+    ) as mock_rerank:
         filtered = await client.rerank_with_threshold("q", ["d1", "d2"], threshold=0.7)
         assert isinstance(filtered, RerankResponse)
         assert [r.relevance_score for r in filtered.results] == [0.9, 0.8]
@@ -159,12 +163,14 @@ async def test_rerank_with_threshold():
 
 if __name__ == "__main__":
     from src.config import rerank_config
+
     client = RerankModelClient(rerank_config)
-    result = asyncio.run(client.rerank_with_threshold("我叫什么", [
-       "周敏时国家二级心里咨询师",
-       "我的姓名是郭晨光",
-       "无关"
-   ], threshold=0.1))
+    result = asyncio.run(
+        client.rerank_with_threshold(
+            "我叫什么",
+            ["周敏时国家二级心里咨询师", "我的姓名是郭晨光", "无关"],
+            threshold=0.1,
+        )
+    )
 
     print(result)
-    

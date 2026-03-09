@@ -9,14 +9,14 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/comvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutordto"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentfactoryaccess/agentfactorydto"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req/chatopt"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squareresp"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"go.opentelemetry.io/otel/attribute"
 )
 
-func (agentSvc *agentSvc) GenerateAgentCallReq(ctx context.Context, req *agentreq.ChatReq, contexts []*comvalobj.LLMMessage, agent agentfactorydto.Agent) (*agentexecutordto.AgentCallReq, error) {
+func (agentSvc *agentSvc) GenerateAgentCallReq(ctx context.Context, req *agentreq.ChatReq, contexts []*comvalobj.LLMMessage, agent *squareresp.AgentMarketAgentInfoResp) (*agentexecutordto.AgentCallReq, error) {
 	var err error
 
 	ctx, _ = o11y.StartInternalSpan(ctx)

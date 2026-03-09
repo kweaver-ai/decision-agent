@@ -65,8 +65,8 @@ func GetStruct(rdb redis.Cmdable, key string, value interface{}) (err error) {
 }
 
 func GetRedisClientUniversal() (uc redis.UniversalClient) {
-	uc, ok := RedisClient().(redis.UniversalClient)
-	if !ok {
+	uc = RedisClient()
+	if uc == nil {
 		panic("redis client is not a universal client")
 	}
 

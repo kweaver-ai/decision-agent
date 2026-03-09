@@ -81,7 +81,7 @@ class SkillInputVo(BaseModel):
                                     # 可选值: fixedValue/var/model/auto
     map_value: Optional[Any]        # 映射值
     children: Optional[List["SkillInputVo"]]  # 子参数列表（用于嵌套参数）
-    
+
 ```
 
 **支持的映射类型**：

@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/apimiddleware"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capimiddleware"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
@@ -13,7 +14,14 @@ func (s *httpServer) registerManagementPubRoutes(engine *gin.Engine) {
 	router := engine.Group("/api/agent-factory/v3")
 
 	// 外部接口默认不使用默认业务域
-	isUseDefaultBizDomain := global.GConfig.UseDefaultBizDomain
+	isUseDefaultBizDomain := global.GConfig.SwitchFields.UseDefaultBizDomain
+
+	if cenvhelper.IsLocalDev() {
+		router.Use(capimiddleware.Cors())
+
+		// 添加通用OPTIONS路由处理CORS预检请求
+		router.OPTIONS("/*path", func(c *gin.Context) {})
+	}
 
 	router.Use(
 		capimiddleware.Recovery(),
@@ -53,7 +61,10 @@ func (s *httpServer) registerManagementPriRoutes(engine *gin.Engine) {
 	internalRouterG := engine.Group("/api/agent-factory/internal/v3")
 
 	// 内部接口默认使用默认业务域
-	isUseDefaultBizDomain := true
+	isUseDefaultBizDomain := global.GConfig.SwitchFields.UseDefaultBizDomain
+	if !isUseDefaultBizDomain {
+		isUseDefaultBizDomain = true
+	}
 
 	internalRouterG.Use(
 		capimiddleware.Recovery(),

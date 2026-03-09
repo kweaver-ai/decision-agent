@@ -47,10 +47,10 @@ func (h *daConfHTTPHandler) RegPriRouter(router *gin.RouterGroup) {
 	g := apiv3common.GetPrivateRouterGroup(router)
 
 	// 私有路由注册
-	g.POST("/agent", h.Create)                   // 新建agent
-	g.PUT("/agent/:agent_id", h.Update)          // 编辑agent
-	g.DELETE("/agent/:agent_id", h.Delete)       // 删除agent
-	g.GET("/agent", h.AgentListListForBenchmark) // agent列表 for benchmark
+	g.POST("/agent", h.Create)             // 新建agent
+	g.PUT("/agent/:agent_id", h.Update)    // 编辑agent
+	g.DELETE("/agent/:agent_id", h.Delete) // 删除agent
+	// g.GET("/agent", h.AgentListListForBenchmark) // agent列表 for benchmark （2026-03-02 13:44:20注释掉）
 
 	g.GET("/agent/:agent_id", h.Detail)        // 获取agent详情
 	g.GET("/agent/by-key/:key", h.DetailByKey) // 获取agent详情 by key

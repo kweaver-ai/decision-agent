@@ -15,7 +15,6 @@ class FeaturesConfig:
     # 是否禁用dolphin sdk缓存
     disable_dolphin_sdk_llm_cache: bool = False
 
-    
     # 是否启用dolphin agent输出变量控制
     enable_dolphin_agent_output_variables_ctrl: bool = True
 

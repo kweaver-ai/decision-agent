@@ -28,10 +28,10 @@ def init_trace_provider(server_info: ServerInfo, setting: TraceSetting) -> None:
     # 如果 SDK 不可用，直接返回
     if not TELEMETRY_SDK_AVAILABLE:
         return
-    
+
     # 延迟导入 Config 避免循环依赖
     from app.common.config import Config
-    
+
     set_service_info(
         server_info.server_name,
         server_info.server_version,

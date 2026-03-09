@@ -17,8 +17,7 @@ type releaseSvc struct {
 	releaseCategoryRelRepo idbaccess.IReleaseCategoryRelRepo
 	releasePermissionRepo  idbaccess.IReleasePermissionRepo
 
-	categoryRepo      idbaccess.ICategoryRepo
-	spaceResourceRepo idbaccess.ISpaceResourceRepo
+	categoryRepo idbaccess.ICategoryRepo
 
 	umHttp iumacc.UmHttpAcc
 
@@ -38,7 +37,6 @@ func NewReleaseService(dto *NewReleaseSvcDto) iv3portdriver.IReleaseSvc {
 		releaseCategoryRelRepo: dto.ReleaseCategoryRepo,
 		releasePermissionRepo:  dto.ReleasePermissionRepo,
 		categoryRepo:           dto.CategoryRepo,
-		spaceResourceRepo:      dto.SpaceResourceRepo,
 		umHttp:                 dto.UmHttp,
 		authZHttp:              dto.AuthZHttp,
 		pmsSvc:                 dto.PmsSvc,
@@ -55,8 +53,7 @@ type NewReleaseSvcDto struct {
 	ReleaseCategoryRepo   idbaccess.IReleaseCategoryRelRepo
 	ReleasePermissionRepo idbaccess.IReleasePermissionRepo
 
-	CategoryRepo      idbaccess.ICategoryRepo
-	SpaceResourceRepo idbaccess.ISpaceResourceRepo
+	CategoryRepo idbaccess.ICategoryRepo
 
 	UmHttp iumacc.UmHttpAcc
 

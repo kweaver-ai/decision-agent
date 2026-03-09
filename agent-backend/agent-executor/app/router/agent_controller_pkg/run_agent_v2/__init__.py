@@ -9,7 +9,6 @@ run_agent_v2 包
 - handle_cache.py: 处理缓存初始化和状态管理
 - safe_output_generator.py: 安全的输出生成器，处理客户端断开连接
 - process_options.py: 处理Agent运行选项
-- history_delete_sensitive.py: 删除含有敏感词的历史记录
 """
 
 from .run_agent import run_agent

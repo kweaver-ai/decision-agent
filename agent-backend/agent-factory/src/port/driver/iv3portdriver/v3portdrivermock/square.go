@@ -101,18 +101,3 @@ func (mr *MockISquareSvcMockRecorder) IsAgentExists(ctx, agentID any) *gomock.Ca
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsAgentExists", reflect.TypeOf((*MockISquareSvc)(nil).IsAgentExists), ctx, agentID)
 }
-
-// IsSpaceExists mocks base method.
-func (m *MockISquareSvc) IsSpaceExists(ctx context.Context, spaceID string) (bool, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "IsSpaceExists", ctx, spaceID)
-	ret0, _ := ret[0].(bool)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// IsSpaceExists indicates an expected call of IsSpaceExists.
-func (mr *MockISquareSvcMockRecorder) IsSpaceExists(ctx, spaceID any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsSpaceExists", reflect.TypeOf((*MockISquareSvc)(nil).IsSpaceExists), ctx, spaceID)
-}

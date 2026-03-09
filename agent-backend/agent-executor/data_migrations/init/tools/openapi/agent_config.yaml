@@ -1,6 +1,6 @@
 openapi: 3.0.2
 info:
-  title: DATA AGNET（数据智能体） API 
+  title: DATA AGNET（数据智能体） API
   version: 1.0.0
 servers:
   - url: http://agent-factory:13020/api
@@ -741,7 +741,7 @@ components:
             - 错误详情（比如当某些数据不存在时，这里可以包含不存在的id）
             - 任意类型
           type: string
-            
+
           nullable: true
     config:
       type: object

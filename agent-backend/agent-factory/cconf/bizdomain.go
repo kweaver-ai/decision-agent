@@ -5,7 +5,7 @@ type BizDomainConf struct {
 }
 
 type BizDomainSvcConf struct {
-	Host     string `yaml:"host" env:"BIZDOMAIN_HOST"`
-	Port     int    `yaml:"port" env:"BIZDOMAIN_PORT"`
-	Protocol string `yaml:"protocol" env:"BIZDOMAIN_PROTOCOL"`
+	Host     string `yaml:"host"`
+	Port     int    `yaml:"port"`
+	Protocol string `yaml:"protocol"`
 }

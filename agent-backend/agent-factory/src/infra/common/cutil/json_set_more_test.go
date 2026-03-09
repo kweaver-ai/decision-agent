@@ -7,6 +7,8 @@ import (
 )
 
 func TestAddKeyToJSONArrayBys(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		jsonStr  string
@@ -50,6 +52,8 @@ func TestAddKeyToJSONArrayBys(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result, err := AddKeyToJSONArrayBys([]byte(tt.jsonStr), tt.key, tt.valueStr)
 
 			if tt.wantErr {
@@ -63,6 +67,8 @@ func TestAddKeyToJSONArrayBys(t *testing.T) {
 }
 
 func TestAddJSONArrayToJSON(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		jsonStr  string
@@ -114,6 +120,8 @@ func TestAddJSONArrayToJSON(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result, err := AddJSONArrayToJSON(tt.jsonStr, tt.key, tt.arrayStr)
 
 			if tt.wantErr {

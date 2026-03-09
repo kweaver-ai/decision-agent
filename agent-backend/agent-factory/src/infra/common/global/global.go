@@ -134,12 +134,6 @@ func InitOpenTelemetry(otelProvider *opentelemetry.Provider) error {
 
 // ShutdownOpenTelemetry 关闭OpenTelemetry相关资源
 func ShutdownOpenTelemetry() {
-	if GLogger != nil {
-		// Logger没有显式的关闭方法
-	}
-
-	if GMetrics != nil {
-		// Metrics没有显式的关闭方法
-	}
+	// Logger和Metrics当前没有显式的关闭方法
 	// 这里可以添加其他清理逻辑
 }

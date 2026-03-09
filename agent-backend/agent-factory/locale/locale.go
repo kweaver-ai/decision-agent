@@ -14,13 +14,26 @@ var localeDir = "/locale"
 func Register() {
 	var abPath string
 
+	// Auto-detect test mode: use UT mode if locale directory doesn't exist
+	isTestMode := os.Getenv("I18N_MODE_UT") == "true"
+	if !isTestMode {
+		abPath, _ = os.Getwd()
+		abPath += localeDir
+
+		if _, err := os.Stat(abPath); os.IsNotExist(err) {
+			// Locale directory doesn't exist, assume we're in test mode
+			isTestMode = true
+		}
+	}
+
 	// UT MODE
-	if os.Getenv("I18N_MODE_UT") == "true" {
+	if isTestMode {
 		_, filename, _, ok := runtime.Caller(0)
 		if ok {
 			abPath = path.Dir(filename)
 		} else {
-			log.Fatal("failed to get absolute path")
+			log.Println("locale: failed to get absolute path")
+			return
 		}
 	} else {
 		abPath, _ = os.Getwd()

@@ -16,6 +16,7 @@ func (s *sandboxPlatformHttpAcc) CreateSession(ctx context.Context, req sandboxd
 	var resp sandboxdto.CreateSessionResp
 
 	uri := s.baseURL + "/api/v1/sessions"
+
 	code, res, err := s.client.PostNoUnmarshal(ctx, uri, nil, req)
 	if err != nil {
 		s.logger.Errorf("[SandboxPlatform] create session failed: %v", err)
@@ -33,6 +34,7 @@ func (s *sandboxPlatformHttpAcc) CreateSession(ctx context.Context, req sandboxd
 	}
 
 	s.logger.Infof("[SandboxPlatform] create session success: %s", resp.ID)
+
 	return &resp, nil
 }
 
@@ -40,6 +42,7 @@ func (s *sandboxPlatformHttpAcc) GetSession(ctx context.Context, sessionID strin
 	var resp sandboxdto.GetSessionResp
 
 	uri := s.baseURL + "/api/v1/sessions/" + sessionID
+
 	code, res, err := s.client.GetNoUnmarshal(ctx, uri, nil, nil)
 	if err != nil {
 		s.logger.Errorf("[SandboxPlatform] get session failed: %v", err)
@@ -48,9 +51,11 @@ func (s *sandboxPlatformHttpAcc) GetSession(ctx context.Context, sessionID strin
 
 	if code != http.StatusOK {
 		s.logger.Errorf("[SandboxPlatform] get session status code: %d, resp: %s", code, string(res))
+
 		if code == http.StatusNotFound {
 			return nil, rest.NewHTTPError(ctx, http.StatusNotFound, rest.PublicError_NotFound)
 		}
+
 		return nil, fmt.Errorf("get sandbox session failed: status code %d, resp %s", code, string(res))
 	}
 
@@ -60,11 +65,13 @@ func (s *sandboxPlatformHttpAcc) GetSession(ctx context.Context, sessionID strin
 	}
 
 	s.logger.Infof("[SandboxPlatform] get session success: %s, status: %s", sessionID, resp.Status)
+
 	return &resp, nil
 }
 
 func (s *sandboxPlatformHttpAcc) DeleteSession(ctx context.Context, sessionID string) error {
 	uri := s.baseURL + "/api/v1/sessions/" + sessionID
+
 	code, res, err := s.client.DeleteNoUnmarshal(ctx, uri, nil)
 	if err != nil {
 		s.logger.Errorf("[SandboxPlatform] delete session failed: %v", err)
@@ -77,6 +84,7 @@ func (s *sandboxPlatformHttpAcc) DeleteSession(ctx context.Context, sessionID st
 	}
 
 	s.logger.Infof("[SandboxPlatform] delete session success: %s", sessionID)
+
 	return nil
 }
 
@@ -107,5 +115,6 @@ func (s *sandboxPlatformHttpAcc) ListFiles(ctx context.Context, sessionID string
 	}
 
 	s.logger.Infof("[SandboxPlatform] list files success: found %d files", len(resp.Files))
+
 	return resp.Files, nil
 }

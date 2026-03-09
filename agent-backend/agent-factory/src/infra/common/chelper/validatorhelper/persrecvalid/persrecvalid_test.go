@@ -7,8 +7,10 @@ import (
 )
 
 func TestCheckName(t *testing.T) {
+	t.Parallel()
+
 	validate := validator.New()
-	validate.RegisterValidation("checkName", CheckName)
+	validate.RegisterValidation("checkName", CheckName) //nolint:errcheck
 
 	type TestStruct struct {
 		Name string `validate:"checkName"`
@@ -63,7 +65,10 @@ func TestCheckName(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			s := TestStruct{Name: tt.value}
+
 			err := validate.Struct(s)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CheckName(%q) error = %v, wantErr %v", tt.value, err, tt.wantErr)
@@ -73,8 +78,10 @@ func TestCheckName(t *testing.T) {
 }
 
 func TestCheckCode(t *testing.T) {
+	t.Parallel()
+
 	validate := validator.New()
-	validate.RegisterValidation("checkCode", CheckCode)
+	validate.RegisterValidation("checkCode", CheckCode) //nolint:errcheck
 
 	type TestStruct struct {
 		Code string `validate:"checkCode"`
@@ -129,7 +136,10 @@ func TestCheckCode(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			s := TestStruct{Code: tt.value}
+
 			err := validate.Struct(s)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CheckCode(%q) error = %v, wantErr %v", tt.value, err, tt.wantErr)
@@ -139,6 +149,8 @@ func TestCheckCode(t *testing.T) {
 }
 
 func TestGenNameErrMsg(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name   string
 		target string
@@ -163,6 +175,8 @@ func TestGenNameErrMsg(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := GenNameErrMsg(tt.target)
 			if got != tt.want {
 				t.Errorf("GenNameErrMsg(%q) = %q, want %q", tt.target, got, tt.want)
@@ -172,6 +186,8 @@ func TestGenNameErrMsg(t *testing.T) {
 }
 
 func TestGenCodeErrMsg(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name   string
 		target string
@@ -196,6 +212,8 @@ func TestGenCodeErrMsg(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := GenCodeErrMsg(tt.target)
 			if got != tt.want {
 				t.Errorf("GenCodeErrMsg(%q) = %q, want %q", tt.target, got, tt.want)

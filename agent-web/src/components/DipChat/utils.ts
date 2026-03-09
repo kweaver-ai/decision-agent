@@ -425,7 +425,7 @@ export const getChatItemContent = (message: any): DipChatItemContentType => {
 
           if (name === 'text2metric') {
             let title = defaultTitle;
-            const inputArgs = toolArgs.find((arg: any) => arg.name === 'input');
+            const inputArgs = toolArgs.find((arg: any) => arg?.name === 'input');
             if (inputArgs) {
               title = inputArgs.value;
             }
@@ -448,7 +448,7 @@ export const getChatItemContent = (message: any): DipChatItemContentType => {
           }
           if (name === 'text2sql' || name === 'sql_helper') {
             let title = defaultTitle;
-            const inputArgs = toolArgs.find((arg: any) => arg.name === 'input');
+            const inputArgs = toolArgs.find((arg: any) => arg?.name === 'input');
             if (inputArgs) {
               title = inputArgs.value;
             }
@@ -477,7 +477,7 @@ export const getChatItemContent = (message: any): DipChatItemContentType => {
           if (name === 'json2plot') {
             // 说明是图表工具，显示标题和结果
             let title = defaultTitle;
-            const inputArgs = toolArgs.find((arg: any) => arg.name === 'title');
+            const inputArgs = toolArgs.find((arg: any) => arg?.name === 'title');
             if (inputArgs) {
               title = inputArgs.value;
             }
@@ -508,7 +508,7 @@ export const getChatItemContent = (message: any): DipChatItemContentType => {
             if (actionMessage) {
               title = actionMessage;
             }
-            const inputArgs = toolArgs.find((arg: any) => arg.name === 'filename');
+            const inputArgs = toolArgs.find((arg: any) => arg?.name === 'filename');
             if (inputArgs) {
               title = inputArgs.value;
             }
@@ -517,7 +517,7 @@ export const getChatItemContent = (message: any): DipChatItemContentType => {
               title = titleRes;
             }
             let input = '';
-            const contentArgs = toolArgs.find((arg: any) => arg.name === 'content' || arg.name === 'command');
+            const contentArgs = toolArgs.find((arg: any) => arg?.name === 'content' || arg?.name === 'command');
             if (contentArgs) {
               input = contentArgs.value;
             }
@@ -536,7 +536,7 @@ export const getChatItemContent = (message: any): DipChatItemContentType => {
           }
           if (name === 'text2ngql') {
             let title = defaultTitle;
-            const inputArgs = toolArgs.find((arg: any) => arg.name === 'query');
+            const inputArgs = toolArgs.find((arg: any) => arg?.name === 'query');
             if (inputArgs) {
               title = inputArgs.value;
             }
@@ -561,7 +561,7 @@ export const getChatItemContent = (message: any): DipChatItemContentType => {
           }
           if (name === 'doc_qa') {
             let title = defaultTitle;
-            const inputArgs = toolArgs.find((arg: any) => arg.name === 'query');
+            const inputArgs = toolArgs.find((arg: any) => arg?.name === 'query');
             if (inputArgs) {
               title = inputArgs.value;
             }
@@ -646,7 +646,7 @@ export const getChatItemContent = (message: any): DipChatItemContentType => {
                 markdownText = JSON.stringify(answer, null, 2);
               }
               let title = defaultTitle;
-              const inputArgs = toolArgs.find((arg: any) => arg.name === 'query' || arg.name === 'input');
+              const inputArgs = toolArgs.find((arg: any) => arg?.name === 'query' || arg?.name === 'input');
               if (inputArgs && typeof inputArgs.value !== 'object' && inputArgs.value?.toString().trim()) {
                 title = inputArgs.value;
               }
@@ -717,7 +717,7 @@ export const getDefaultCountdown = () => dayjs().valueOf() + 1000 * 5;
 export const getAgentInputDisplayFields = (agentConfig: any) => {
   const buildInFields = ['history', 'tool', 'header', 'self_config', 'query'];
   const inputConfig = _.get(agentConfig, 'input.fields') || [];
-  return inputConfig.filter((field: any) => !buildInFields.includes(field.name) && field.type !== 'file');
+  return inputConfig.filter((field: any) => !buildInFields.includes(field?.name) && field.type !== 'file');
 };
 
 /** 处理Agent配置中 文件类型 */

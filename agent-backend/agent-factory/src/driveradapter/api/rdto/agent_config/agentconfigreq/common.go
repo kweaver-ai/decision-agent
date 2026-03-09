@@ -7,7 +7,6 @@ import (
 )
 
 func setDefaultValue(config *daconfvalobj.Config) {
-
 	// 2. 给metaData设置默认值
 	if config.GetConfigMetadata().GetConfigTplVersion() == "" {
 		config.GetConfigMetadata().SetConfigTplVersion(agentconfigenum.ConfigTplVersionV1)
@@ -15,7 +14,6 @@ func setDefaultValue(config *daconfvalobj.Config) {
 }
 
 func HandleConfig(config *daconfvalobj.Config) (err error) {
-
 	// 1. 设置默认值
 	setDefaultValue(config)
 

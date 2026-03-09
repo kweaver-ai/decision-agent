@@ -42,7 +42,7 @@ func (a *authZHttpAcc) ResourceFilter(ctx context.Context, req *authzhttpreq.Res
 }
 
 func (a *authZHttpAcc) FilterCanUseAgentIDs(ctx context.Context, uid string, agentIDs []string) (filteredAgentIDs []string, err error) {
-	if global.GConfig.DisablePmsCheck {
+	if global.GConfig.SwitchFields.DisablePmsCheck {
 		filteredAgentIDs = make([]string, len(agentIDs))
 		copy(filteredAgentIDs, agentIDs)
 

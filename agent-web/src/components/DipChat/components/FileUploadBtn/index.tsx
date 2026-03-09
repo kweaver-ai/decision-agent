@@ -4,7 +4,6 @@ import { forwardRef, type ReactNode, useImperativeHandle } from 'react';
 import type { UploadProps } from 'antd';
 import { useDipChatStore } from '@/components/DipChat/store.tsx';
 import { createConversation } from '@/apis/super-assistant';
-import { useMicroWidgetProps } from '@/hooks';
 import { getFileListFromSandBox, uploadFileToSandBox } from '@/apis/sandbox';
 
 export type FileUploadBtnProps = {
@@ -19,7 +18,6 @@ export type FileUploadBtnRef = {
 };
 
 const FileUploadBtn = forwardRef<FileUploadBtnRef, FileUploadBtnProps>((props, ref) => {
-  const microWidgetProps = useMicroWidgetProps();
   const {
     dipChatStore: { agentDetails, agentAppKey, debug },
     getDipChatStore,
@@ -28,7 +26,7 @@ const FileUploadBtn = forwardRef<FileUploadBtnRef, FileUploadBtnProps>((props, r
   } = useDipChatStore();
   const { disabled = false, customBtn } = props;
   const [messageApi, contextHolder] = message.useMessage();
-  const sessionId = `sess-${microWidgetProps.userid}`;
+  const sessionId = 'sess-agent-default';
 
   useImperativeHandle(ref, () => ({
     getFileList,

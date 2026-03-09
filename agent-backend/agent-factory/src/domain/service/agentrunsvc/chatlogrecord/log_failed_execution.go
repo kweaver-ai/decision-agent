@@ -56,15 +56,21 @@ func LogFailedExecution(ctx context.Context, req *agentreq.ChatReq, err error, r
 						progressJsonStr, _ := json.Marshal(val)
 						options = append(options, field.WithAttribute(field.NewAttribute("progress", field.MallocJsonField(string(progressJsonStr)))))
 
-						progresses := val.([]interface{})
-						for _, val := range progresses {
-							progress := val.(map[string]interface{})
-							if stage, ok := progress["stage"].(string); ok {
-								if stage == "skill" {
-									toolCallCount++
+						progresses, ok := val.([]interface{})
+						if ok {
+							for _, val := range progresses {
+								progress, ok := val.(map[string]interface{})
+								if !ok {
+									continue
+								}
 
-									if status, ok := progress["status"].(string); ok && status == "failed" {
-										toolCallFailedCount++
+								if stage, ok := progress["stage"].(string); ok {
+									if stage == "skill" {
+										toolCallCount++
+
+										if status, ok := progress["status"].(string); ok && status == "failed" {
+											toolCallFailedCount++
+										}
 									}
 								}
 							}

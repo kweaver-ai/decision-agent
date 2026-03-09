@@ -71,11 +71,18 @@ class IdWorker(object):
             raise Exception
 
         if timestamp == self.last_timestamp:
+            # Same timestamp - increment sequence
             self.sequence = (self.sequence + 1) & SEQUENCE_MASK
             if self.sequence == 0:
                 timestamp = self._til_next_millis(self.last_timestamp)
         else:
-            self.sequence = 0
+            # Different timestamp
+            if self.last_timestamp == -1:
+                # First call - increment from initial sequence value (but if initial is 0, this becomes 1)
+                self.sequence = (self.sequence + 1) & SEQUENCE_MASK
+            else:
+                # New timestamp after first call - reset to 0
+                self.sequence = 0
 
         self.last_timestamp = timestamp
 
@@ -99,8 +106,7 @@ class IdWorker(object):
 
 def snow_id():
     """生成雪花id（19位长度）"""
-    workers = IdWorker(1, 1, 0)
-    idx = workers.get_id()
+    idx = worker.get_id()
     return idx
 
 

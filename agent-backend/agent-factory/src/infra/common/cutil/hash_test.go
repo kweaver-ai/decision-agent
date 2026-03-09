@@ -3,6 +3,8 @@ package cutil
 import "testing"
 
 func TestHash256(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		data []byte
@@ -16,6 +18,8 @@ func TestHash256(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if got := Hash256(tt.data); got != tt.want {
 				t.Errorf("Hash256(%v) = %v, want %v", tt.data, got, tt.want)
 			}
@@ -24,6 +28,8 @@ func TestHash256(t *testing.T) {
 }
 
 func TestMD5(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		data []byte
@@ -37,6 +43,8 @@ func TestMD5(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			if got := MD5(tt.data); got != tt.want {
 				t.Errorf("MD5(%v) = %v, want %v", tt.data, got, tt.want)
 			}

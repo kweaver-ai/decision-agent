@@ -20,9 +20,9 @@ func NewDolphinTplMapStruct() *DolphinTplMapStruct {
 	graphRetrieve := NewGraphRetrieveContent()
 
 	otherTplStruct := &OtherTplStruct{
-		MemoryRetrieve:  memoryRetrieve,
-		DocRetrieve:     docRetrieve,
-		GraphRetrieve:   graphRetrieve,
+		MemoryRetrieve: memoryRetrieve,
+		DocRetrieve:    docRetrieve,
+		GraphRetrieve:  graphRetrieve,
 	}
 
 	contextOrganize := NewContextOrganizeContent(otherTplStruct)

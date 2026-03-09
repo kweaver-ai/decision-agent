@@ -1,23 +1,19 @@
 # -*- coding:utf-8 -*-
-import os
 import sys
 import signal
 import asyncio
 import logging
+import uvicorn
 
 # 1. 服务启动前的boot
 from app.boot import boot
+from app.common.config import Config
+from app.router import app
 
 boot.on_boot_run()
 
 
-import uvicorn
-
-
 server_instance = None
-
-from app.common.config import Config
-from app.router import app
 
 
 def signal_handler(signum, frame):

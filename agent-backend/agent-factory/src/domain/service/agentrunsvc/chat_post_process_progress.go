@@ -15,10 +15,8 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 )
 
-var (
-	// NOTE: key 为assistantMessageID，value 为bool ,判断是否已经获取过中断前的progress
-	isInterruptPreProgressGetMap sync.Map = sync.Map{}
-)
+// NOTE: key 为assistantMessageID，value 为bool ,判断是否已经获取过中断前的progress
+var isInterruptPreProgressGetMap sync.Map = sync.Map{}
 
 func (agentSvc *agentSvc) handleProgressOld(ctx context.Context, req *agentreq.ChatReq, progresses []*agentrespvo.Progress) ([]*agentrespvo.Progress, error) {
 	ctx, _ = o11y.StartInternalSpan(ctx)
@@ -40,7 +38,6 @@ func (agentSvc *agentSvc) handleProgressOld(ctx context.Context, req *agentreq.C
 
 	// 2. 遍历 progresses
 	for _, progress := range progresses {
-
 		if progress.Status == "completed" || progress.Status == "failed" {
 			if _, ok := set[progress.ID]; !ok {
 				if v, ok := progressMap.Load(req.AssistantMessageID); !ok {
@@ -75,15 +72,14 @@ func (agentSvc *agentSvc) handleProgressOld(ctx context.Context, req *agentreq.C
 	return ans, nil
 }
 
-func (agentSvc *agentSvc) handleProgress(ctx context.Context, req *agentreq.ChatReq, progresses []*agentrespvo.Progress) (newPgs []*agentrespvo.Progress,err error) {
-
+func (agentSvc *agentSvc) handleProgress(ctx context.Context, req *agentreq.ChatReq, progresses []*agentrespvo.Progress) (newPgs []*agentrespvo.Progress, err error) {
 	ctx, _ = o11y.StartInternalSpan(ctx)
 	defer o11y.EndSpan(ctx, nil)
 	o11y.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
 	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
 	o11y.SetAttributes(ctx, attribute.String("user_id", req.UserID))
 
-	aMsgID:=req.AssistantMessageID
+	aMsgID := req.AssistantMessageID
 
 	setInterface, _ := progressSet.Load(aMsgID)
 
@@ -98,24 +94,21 @@ func (agentSvc *agentSvc) handleProgress(ctx context.Context, req *agentreq.Chat
 	// 2. NOTE： 如果是中断，还需要将中断前的结果拿到并拼接
 	prePgs, err := agentSvc.forResumeInterrupt(ctx, req)
 	if err != nil {
-		return 
+		return
 	}
 
-	pgs:=append(prePgs, progresses...)
+	pgs := append(prePgs, progresses...)
 
 	var currentProgress *agentrespvo.Progress
 
 	// 3. 遍历 progresses
-	for _, pg := range pgs{
-
-		//fmt.Printf("pid: %s,status: %s\n", pg.ID, pg.Status)
-
+	for _, pg := range pgs {
+		// fmt.Printf("pid: %s,status: %s\n", pg.ID, pg.Status)
 		if _, exist := set[pg.ID]; exist {
 			continue
 		}
 
 		if pg.Status == "completed" || pg.Status == "failed" || pg.Status == "skipped" {
-
 			if v, _exist := progressMap.Load(aMsgID); !_exist {
 				progressMap.Store(aMsgID, []*agentrespvo.Progress{pg})
 			} else {
@@ -123,14 +116,10 @@ func (agentSvc *agentSvc) handleProgress(ctx context.Context, req *agentreq.Chat
 			}
 
 			set[pg.ID] = true
-
 		} else if pg.Status == "processing" {
-
 			currentProgress = pg
 		}
 	}
-
-
 
 	// 4. append
 	if v, ok := progressMap.Load(aMsgID); ok {
@@ -142,14 +131,13 @@ func (agentSvc *agentSvc) handleProgress(ctx context.Context, req *agentreq.Chat
 		newPgs = append(newPgs, currentProgress)
 	}
 
-	return 
+	return
 }
 
 func (agentSvc *agentSvc) forResumeInterrupt(ctx context.Context, req *agentreq.ChatReq) (ans []*agentrespvo.Progress, err error) {
 	ans = make([]*agentrespvo.Progress, 0)
 
 	if req.InterruptedAssistantMsgID != "" {
-
 		// 0. 检查是否已经获取过中断前的progress
 		if _, ok := isInterruptPreProgressGetMap.Load(req.AssistantMessageID); ok {
 			return
@@ -176,6 +164,7 @@ func (agentSvc *agentSvc) forResumeInterrupt(ctx context.Context, req *agentreq.
 			if err != nil {
 				o11y.Error(ctx, fmt.Sprintf("[handleProgress] unmarshal assistant content error, id: %s, err: %v", req.InterruptedAssistantMsgID, err))
 				err = errors.Wrapf(err, "[handleProgress] unmarshal assistant content error, id: %s, err: %v", req.InterruptedAssistantMsgID, err)
+
 				return
 			}
 		}

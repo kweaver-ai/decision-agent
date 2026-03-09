@@ -22,12 +22,12 @@ async def check_and_update_cache(
     account_type: str,
 ) -> None:
     """检查并更新缓存
-    
+
     根据缓存的TTL状态决定是创建新缓存还是更新已有缓存：
     - TTL <= 0: 缓存不存在或已过期，创建新缓存
     - TTL > 0 且已过时间 >= 阈值: 更新缓存数据
     - TTL > 0 且已过时间 < 阈值: 无需更新
-    
+
     Args:
         cache_id_vo: 缓存ID值对象
         agent_config: Agent配置
@@ -37,7 +37,7 @@ async def check_and_update_cache(
     """
     try:
         current_ttl = await cache_manager.cache_service.get_ttl(cache_id_vo)
-        
+
         # 缓存不存在或已过期 (TTL <= 0)
         if current_ttl <= 0:
             StandLogger.debug(

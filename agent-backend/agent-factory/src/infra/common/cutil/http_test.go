@@ -9,6 +9,8 @@ import (
 )
 
 func TestIsHttpErr(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name        string
 		statusCode  int
@@ -53,6 +55,8 @@ func TestIsHttpErr(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			response := &http.Response{StatusCode: tt.statusCode}
 			result := IsHttpErr(response)
 
@@ -62,6 +66,8 @@ func TestIsHttpErr(t *testing.T) {
 }
 
 func TestSetTpTlsInsecureSkipVerify(t *testing.T) {
+	t.Parallel()
+
 	tp := &http.Transport{}
 
 	SetTpTlsInsecureSkipVerify(tp)
@@ -71,6 +77,8 @@ func TestSetTpTlsInsecureSkipVerify(t *testing.T) {
 }
 
 func TestSetTpTlsInsecureSkipVerify_NilConfig(t *testing.T) {
+	t.Parallel()
+
 	tp := &http.Transport{
 		TLSClientConfig: &tls.Config{
 			InsecureSkipVerify: false,
@@ -83,6 +91,8 @@ func TestSetTpTlsInsecureSkipVerify_NilConfig(t *testing.T) {
 }
 
 func TestGetHTTPAccess(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		addr     string
@@ -129,6 +139,8 @@ func TestGetHTTPAccess(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := GetHTTPAccess(tt.addr, tt.port, tt.protocol)
 			assert.Equal(t, tt.want, result, "GetHTTPAccess should return expected result")
 		})
@@ -136,6 +148,8 @@ func TestGetHTTPAccess(t *testing.T) {
 }
 
 func TestDoubleStackHost(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name string
 		host string
@@ -180,6 +194,8 @@ func TestDoubleStackHost(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			result := DoubleStackHost(tt.host)
 			assert.Equal(t, tt.want, result, "DoubleStackHost should return expected result")
 		})

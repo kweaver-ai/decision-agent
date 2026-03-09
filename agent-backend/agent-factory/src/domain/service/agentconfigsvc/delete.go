@@ -79,10 +79,10 @@ func (s *dataAgentConfigSvc) Delete(ctx context.Context, id, uid string, isPriva
 	}
 
 	// 7. 删除空间下资源的关联关系
-	err = s.spaceResourceRepo.DeleteByAgentID(ctx, tx, id)
-	if err != nil {
-		return
-	}
+	//err = s.spaceResourceRepo.DeleteByAgentID(ctx, tx, id)
+	//if err != nil {
+	//	return
+	//}
 
 	// 8. 解除业务域关联（先删除本地关联表，再调用HTTP）
 	bdID := chelper.GetBizDomainIDFromCtx(ctx)

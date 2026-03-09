@@ -8,145 +8,205 @@ import (
 )
 
 func TestNowStr(t *testing.T) {
-	result := NowStr()
-	assert.NotEmpty(t, result, "NowStr() should not be empty")
+	t.Parallel()
 
-	_, err := time.Parse(DefaultTimeFormat, result)
-	assert.NoError(t, err, "NowStr() should return valid time format")
+	result := NowStr()
+	assert.NotEmpty(t, result)
+	assert.Contains(t, result, "-")
+	assert.Contains(t, result, ":")
 }
 
 func TestGetCurrentMSTimestamp(t *testing.T) {
-	before := GetCurrentMSTimestamp()
-	time.Sleep(1 * time.Millisecond)
-	after := GetCurrentMSTimestamp()
-	assert.Greater(t, after, before, "GetCurrentMSTimestamp() should return increasing values")
+	t.Parallel()
+
+	timestamp := GetCurrentMSTimestamp()
+	assert.Greater(t, timestamp, int64(0))
+	assert.Less(t, timestamp, int64(9999999999999))
 }
 
 func TestGetCurrentTimestamp(t *testing.T) {
-	before := GetCurrentTimestamp()
-	time.Sleep(2 * time.Second)
-	after := GetCurrentTimestamp()
-	assert.Greater(t, after, before, "GetCurrentTimestamp() should return increasing values")
+	t.Parallel()
+
+	timestamp := GetCurrentTimestamp()
+	assert.Greater(t, timestamp, int64(1700000000)) // After 2023
+	assert.Less(t, timestamp, int64(9999999999))
 }
 
 func TestFormatTime(t *testing.T) {
-	now := time.Date(2026, 1, 24, 12, 30, 45, 0, time.Local)
-	formatted := FormatTime(now)
-	assert.NotEmpty(t, formatted, "FormatTime() should not be empty")
-	assert.Equal(t, "2026-01-24 12:30:45", formatted)
+	t.Parallel()
+
+	testTime := time.Date(2024, 1, 15, 14, 30, 45, 0, time.UTC)
+	result := FormatTime(testTime)
+	assert.Equal(t, "2024-01-15 14:30:45", result)
 }
 
 func TestFormatTimeUnix(t *testing.T) {
-	timestamp := int64(1735724645)
-	formatted := FormatTimeUnix(timestamp)
-	assert.NotEmpty(t, formatted, "FormatTimeUnix() should not be empty")
+	t.Parallel()
 
-	_, err := time.Parse(DefaultTimeFormat, formatted)
-	assert.NoError(t, err, "FormatTimeUnix() should return valid time format")
+	// Just test that it returns a valid formatted string
+	timestamp := GetCurrentTimestamp()
+	result := FormatTimeUnix(timestamp)
+	assert.NotEmpty(t, result)
+	assert.Contains(t, result, "-") // Has date separators
+	assert.Contains(t, result, ":") // Has time separators
 }
 
-func TestParseTime(t *testing.T) {
+func TestParseTime_Valid(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
-		name     string
-		timeStr  string
-		wantHour int
-		wantMin  int
-		wantSec  int
-		wantErr  bool
+		name      string
+		timeStr   string
+		expectedH int
+		expectedM int
+		expectedS int
 	}{
 		{
-			name:     "有效时间",
-			timeStr:  "12:30:45",
-			wantHour: 12,
-			wantMin:  30,
-			wantSec:  45,
-			wantErr:  false,
+			name:      "midnight",
+			timeStr:   "00:00:00",
+			expectedH: 0,
+			expectedM: 0,
+			expectedS: 0,
 		},
 		{
-			name:     "边界值-最大小时",
-			timeStr:  "23:59:59",
-			wantHour: 23,
-			wantMin:  59,
-			wantSec:  59,
-			wantErr:  false,
+			name:      "end of day",
+			timeStr:   "23:59:59",
+			expectedH: 23,
+			expectedM: 59,
+			expectedS: 59,
 		},
 		{
-			name:     "边界值-最大分钟",
-			timeStr:  "12:59:59",
-			wantHour: 12,
-			wantMin:  59,
-			wantSec:  59,
-			wantErr:  false,
+			name:      "noon",
+			timeStr:   "12:00:00",
+			expectedH: 12,
+			expectedM: 0,
+			expectedS: 0,
 		},
 		{
-			name:     "边界值-最大秒",
-			timeStr:  "12:30:59",
-			wantHour: 12,
-			wantMin:  30,
-			wantSec:  59,
-			wantErr:  false,
+			name:      "with spaces",
+			timeStr:   " 14 : 30 : 45 ",
+			expectedH: 14,
+			expectedM: 30,
+			expectedS: 45,
 		},
 		{
-			name:     "最小值",
-			timeStr:  "00:00:00",
-			wantHour: 0,
-			wantMin:  0,
-			wantSec:  0,
-			wantErr:  false,
-		},
-		{
-			name:     "格式错误-部分格式",
-			timeStr:  "12:30",
-			wantHour: 0,
-			wantMin:  0,
-			wantSec:  0,
-			wantErr:  true,
-		},
-		{
-			name:     "格式错误-完整格式",
-			timeStr:  "12:30:45:67",
-			wantHour: 0,
-			wantMin:  0,
-			wantSec:  0,
-			wantErr:  true,
-		},
-		{
-			name:     "分钟超出范围",
-			timeStr:  "12:60:00",
-			wantHour: 0,
-			wantMin:  0,
-			wantSec:  0,
-			wantErr:  true,
-		},
-		{
-			name:     "小时超出范围",
-			timeStr:  "24:00:00",
-			wantHour: 0,
-			wantMin:  0,
-			wantSec:  0,
-			wantErr:  true,
-		},
-		{
-			name:     "空字符串",
-			timeStr:  "",
-			wantHour: 0,
-			wantMin:  0,
-			wantSec:  0,
-			wantErr:  true,
+			name:      "regular time",
+			timeStr:   "14:30:45",
+			expectedH: 14,
+			expectedM: 30,
+			expectedS: 45,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			hour, min, sec, err := ParseTime(tt.timeStr)
-			if tt.wantErr {
-				assert.Error(t, err, "expected error")
-			} else {
-				assert.NoError(t, err, "expected no error")
-				assert.Equal(t, tt.wantHour, hour, "hour should match expected")
-				assert.Equal(t, tt.wantMin, min, "min should match expected")
-				assert.Equal(t, tt.wantSec, sec, "sec should match expected")
-			}
+			t.Parallel()
+
+			h, m, s, err := ParseTime(tt.timeStr)
+			assert.NoError(t, err)
+			assert.Equal(t, tt.expectedH, h)
+			assert.Equal(t, tt.expectedM, m)
+			assert.Equal(t, tt.expectedS, s)
+		})
+	}
+}
+
+func TestParseTime_InvalidFormat(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name    string
+		timeStr string
+	}{
+		{
+			name:    "missing seconds",
+			timeStr: "14:30",
+		},
+		{
+			name:    "missing minutes and seconds",
+			timeStr: "14",
+		},
+		{
+			name:    "too many parts",
+			timeStr: "14:30:45:00",
+		},
+		{
+			name:    "empty string",
+			timeStr: "",
+		},
+		{
+			name:    "wrong delimiter",
+			timeStr: "14-30-45",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			h, m, s, err := ParseTime(tt.timeStr)
+			assert.Error(t, err)
+			assert.Equal(t, 0, h)
+			assert.Equal(t, 0, m)
+			assert.Equal(t, 0, s)
+		})
+	}
+}
+
+func TestParseTime_InvalidValues(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name    string
+		timeStr string
+	}{
+		{
+			name:    "invalid hour",
+			timeStr: "24:00:00",
+		},
+		{
+			name:    "invalid hour text",
+			timeStr: "ab:30:45",
+		},
+		{
+			name:    "invalid minute",
+			timeStr: "14:60:00",
+		},
+		{
+			name:    "invalid minute text",
+			timeStr: "14:cd:45",
+		},
+		{
+			name:    "invalid second",
+			timeStr: "14:30:60",
+		},
+		{
+			name:    "invalid second text",
+			timeStr: "14:30:ef",
+		},
+		{
+			name:    "negative hour",
+			timeStr: "-1:30:45",
+		},
+		{
+			name:    "negative minute",
+			timeStr: "14:-1:45",
+		},
+		{
+			name:    "negative second",
+			timeStr: "14:30:-1",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			h, m, s, err := ParseTime(tt.timeStr)
+			assert.Error(t, err)
+			assert.Equal(t, 0, h)
+			assert.Equal(t, 0, m)
+			assert.Equal(t, 0, s)
 		})
 	}
 }

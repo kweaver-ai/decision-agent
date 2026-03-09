@@ -26,6 +26,11 @@ class ConfigClassV2(ConfigState):
         if self._initialized:
             return
 
+        # 先加载环境变量，确保配置初始化前环境变量已就绪
+        from app.boot.load_env import load_env
+
+        load_env()
+
         super().__init__()
         ConfigInitializer.initialize(self)
         self._initialized = True
@@ -60,7 +65,7 @@ class ConfigClassV2(ConfigState):
                     try:
                         # 尝试使用dataclasses.asdict
                         config_dict[attr_name] = dataclasses.asdict(attr_value)
-                    except:
+                    except (TypeError, ValueError):
                         # 如果不是dataclass，使用__dict__
                         config_dict[attr_name] = (
                             attr_value.__dict__

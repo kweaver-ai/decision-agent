@@ -10,10 +10,10 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/sqlhelper2"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/pkg/errors"
-	"golang.org/x/sync/singleflight"
+	// "golang.org/x/sync/singleflight" // reserved for future sfg optimization
 )
 
-var _pubListSfg singleflight.Group
+// var _pubListSfg singleflight.Group // unused, reserved for future sfg optimization
 
 // GetPubedList 获取已发布智能体列表
 func (repo *pubedAgentRepo) GetPubedList(ctx context.Context, req *pubedreq.PubedAgentListReq) (rt []*dapo.PublishedJoinPo, err error) {
@@ -126,26 +126,13 @@ func (repo *pubedAgentRepo) buildSql(req *pubedreq.PubedAgentListReq) (fromClaus
 	}
 
 	// 8. 自定义空间ID过滤
-	if req.CustomSpaceID != "" {
-		// // 因为某个空间下的资源的数量有上限（目前是500），所以可以这样来过滤
-		// // 8.1. 获取空间中的agent
-		// var agentPos []*dapo.SpaceResourcePo
-		// agentPos, _, err = repo.spaceResourceRepo.List(ctx, req.CustomSpaceID, nil, cdaenum.ResourceTypeDataAgent)
-		// if err != nil {
-		// 	return
-		// }
-		// // 8.2. 构建IN条件
-		// agentIDs := make([]string, 0, len(agentPos))
-		// for _, agentPos := range agentPos {
-		// 	agentIDs = append(agentIDs, agentPos.ResourceID)
-		// }
-		// wb.In("cfg.f_id", agentIDs)
-		spaceResourcePO := &dapo.SpaceResourcePo{}
-		fromClause += fmt.Sprintf(" INNER JOIN %s AS sr ON cfg.f_id = sr.f_resource_id ", spaceResourcePO.TableName())
-
-		wb.WhereEqual("sr.f_space_id", req.CustomSpaceID)
-		wb.WhereEqual("sr.f_resource_type", cdaenum.ResourceTypeDataAgent)
-	}
+	//if req.CustomSpaceID != "" {
+	//	// 自定义空间资源表（SpaceResourcePo 已清理，直接使用表名）
+	//	fromClause += fmt.Sprintf(" INNER JOIN %s AS sr ON cfg.f_id = sr.f_resource_id ", "t_custom_space_resource")
+	//
+	//	wb.WhereEqual("sr.f_space_id", req.CustomSpaceID)
+	//	wb.WhereEqual("sr.f_resource_type", cdaenum.ResourceTypeDataAgent)
+	//}
 
 	// 9. ”发布到“过滤
 	if req.IsToCustomSpace != 0 {

@@ -7,6 +7,8 @@ import (
 )
 
 func TestDecimalSum(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name     string
 		numbers  []float64
@@ -71,10 +73,13 @@ func TestDecimalSum(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := DecimalSum(tt.numbers...)
 			if got.Sign() != tt.wantSign {
 				t.Errorf("DecimalSum(%v).Sign() = %d, want %d", tt.numbers, got.Sign(), tt.wantSign)
 			}
+
 			if got.String() != tt.wantStr {
 				t.Errorf("DecimalSum(%v) = %s, want %s", tt.numbers, got.String(), tt.wantStr)
 			}
@@ -83,6 +88,8 @@ func TestDecimalSum(t *testing.T) {
 }
 
 func TestDecimalSumEqualOne(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		numbers []float64
@@ -132,6 +139,8 @@ func TestDecimalSumEqualOne(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := DecimalSumEqualOne(tt.numbers...)
 			if got != tt.want {
 				t.Errorf("DecimalSumEqualOne(%v) = %v, want %v", tt.numbers, got, tt.want)
@@ -141,14 +150,19 @@ func TestDecimalSumEqualOne(t *testing.T) {
 }
 
 func TestDecimalSum_Precision(t *testing.T) {
+	t.Parallel()
+
 	sum := DecimalSum(0.1, 0.2, 0.3)
 	expected := decimal.NewFromFloat(0.6)
+
 	if !sum.Equal(expected) {
 		t.Errorf("DecimalSum(0.1, 0.2, 0.3) = %s, want %s", sum.String(), expected.String())
 	}
 }
 
 func TestDecimalSumEqualOne_Precision(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name    string
 		numbers []float64
@@ -168,6 +182,8 @@ func TestDecimalSumEqualOne_Precision(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			got := DecimalSumEqualOne(tt.numbers...)
 			if got != tt.want {
 				t.Errorf("DecimalSumEqualOne(%v) = %v, want %v", tt.numbers, got, tt.want)

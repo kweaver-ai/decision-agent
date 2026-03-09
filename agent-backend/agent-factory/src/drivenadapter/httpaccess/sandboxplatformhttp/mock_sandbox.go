@@ -25,14 +25,17 @@ func (m *mockSandboxPlatform) CreateSession(ctx context.Context, req sandboxdto.
 	if req.CPU != "" {
 		cpu = req.CPU
 	}
+
 	memory := "512Mi"
 	if req.Memory != "" {
 		memory = req.Memory
 	}
+
 	disk := "1Gi"
 	if req.Disk != "" {
 		disk = req.Disk
 	}
+
 	timeout := 300
 	if req.Timeout > 0 {
 		timeout = req.Timeout
@@ -62,6 +65,7 @@ func (m *mockSandboxPlatform) CreateSession(ctx context.Context, req sandboxdto.
 	*(resp.ResourceLimit.MaxProcesses) = 128
 
 	m.logger.Infof("[MockSandboxPlatform] create session success: %s", resp.ID)
+
 	return resp, nil
 }
 
@@ -87,12 +91,14 @@ func (m *mockSandboxPlatform) GetSession(ctx context.Context, sessionID string) 
 	}
 
 	m.logger.Infof("[MockSandboxPlatform] get session success: %s, status: %s", sessionID, resp.Status)
+
 	return resp, nil
 }
 
 func (m *mockSandboxPlatform) DeleteSession(ctx context.Context, sessionID string) error {
 	m.logger.Infof("[MockSandboxPlatform] delete session: %s", sessionID)
 	m.logger.Infof("[MockSandboxPlatform] delete session success: %s", sessionID)
+
 	return nil
 }
 
@@ -111,5 +117,6 @@ func (m *mockSandboxPlatform) ListFiles(ctx context.Context, sessionID string, l
 	}
 
 	m.logger.Infof("[MockSandboxPlatform] list files success: found %d files", len(files))
+
 	return files, nil
 }

@@ -11,12 +11,14 @@ import (
 )
 
 func TestUpdateGinReqCtx(t *testing.T) {
+	t.Parallel()
+
 	router := gin.Default()
 
 	var updatedCtx context.Context
 
 	router.GET("/test", func(c *gin.Context) {
-		ctx := context.WithValue(context.Background(), "key", "value")
+		ctx := context.WithValue(context.Background(), "key", "value") //nolint:staticcheck
 		UpdateGinReqCtx(c, ctx)
 
 		updatedCtx = c.Request.Context()

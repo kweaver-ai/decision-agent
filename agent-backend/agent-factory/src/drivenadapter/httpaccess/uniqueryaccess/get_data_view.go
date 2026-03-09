@@ -2,11 +2,8 @@ package uniqueryaccess
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
-	"os"
-	"path/filepath"
 
 	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/uniqueryaccess/uniquerydto"
@@ -53,48 +50,6 @@ func (uq *uniqueryHttpAcc) GetDataView(ctx context.Context, viewID string, reqDa
 	if err != nil {
 		o11y.Error(ctx, fmt.Sprintf("[GetDataViews] request uri %s unmarshal err %s,  resp %s ", uri, err, string(res)))
 		return uniquerydto.ViewResults{}, errors.Wrapf(err, "[GetDataViews] request uri %s unmarshal err %s,  resp %s ", uri, err, string(res))
-	}
-
-	return response, nil
-}
-
-func (uq *uniqueryHttpAcc) GetDataViewMock(ctx context.Context, viewID string, reqData uniquerydto.ReqDataView, mockType string) (uniquerydto.ViewResults, error) {
-	// 根据mockType参数选择不同的JSON文件
-	var fileName string
-
-	switch mockType {
-	case "run_detail":
-		fileName = "run_detail.json"
-	case "run_list":
-		fileName = "run_list.json"
-	case "session_list":
-		fileName = "session_list.json"
-	default:
-		return uniquerydto.ViewResults{}, nil
-	}
-
-	currentDir := filepath.Dir("./src/drivenadapter/httpaccess/uniqueryaccess/")
-	jsonPath := filepath.Join(currentDir, fileName)
-
-	// 读取JSON文件
-	data, err := os.ReadFile(jsonPath)
-	if err != nil {
-		return uniquerydto.ViewResults{}, err
-	}
-
-	// 解析JSON数据
-	var jsonData struct {
-		Entries []interface{} `json:"entries"`
-	}
-
-	if err := json.Unmarshal(data, &jsonData); err != nil {
-		return uniquerydto.ViewResults{}, err
-	}
-
-	// 构建返回结果
-	response := uniquerydto.ViewResults{
-		Entries:    jsonData.Entries,
-		TotalCount: len(jsonData.Entries),
 	}
 
 	return response, nil

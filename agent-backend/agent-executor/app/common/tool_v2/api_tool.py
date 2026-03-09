@@ -4,7 +4,6 @@ import json
 import asyncio
 import aiohttp
 
-from dolphin.core.utils.tools import ToolInterrupt
 from dolphin.core.context.context import Context
 from app.common.stand_log import StandLogger
 
@@ -85,7 +84,7 @@ class APITool(APIToolInputHandler):
         if self.intervention:
             intervention_message = tool_config.get(
                 "intervention_confirmation_message",
-                f"工具 {self.name} 需要确认执行"  # 默认值
+                f"工具 {self.name} 需要确认执行",  # 默认值
             )
             self.interrupt_config = {
                 "requires_confirmation": True,
@@ -229,6 +228,8 @@ class APITool(APIToolInputHandler):
             "path": path_params,
             "timeout": toolTimeout,
         }
+
+        toolTimeout = toolTimeout + 1
 
         # 5. 打印请求信息
         StandLogger.info(

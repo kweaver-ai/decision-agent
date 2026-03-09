@@ -14,8 +14,8 @@ func (r *DataAgentRes) GetMiddleOutputVars() (middleOutputVarRes *agentrespvo.Mi
 	}
 
 	var m map[string]interface{}
-	m, err = r.middleOutputVarsHelper.GetMiddleOutputVarsMap()
 
+	m, err = r.middleOutputVarsHelper.GetMiddleOutputVarsMap()
 	if err != nil {
 		return
 	}

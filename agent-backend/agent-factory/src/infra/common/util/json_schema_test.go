@@ -5,6 +5,8 @@ import (
 )
 
 func TestValidJsonSchema(t *testing.T) {
+	t.Parallel()
+
 	schema := `{
 		"type": "object",
 		"properties": {
@@ -72,6 +74,8 @@ func TestValidJsonSchema(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			invalidFields, err := ValidJsonSchema(tt.schemaStr, tt.doc)
 
 			if (err != nil) != tt.wantErr {
@@ -87,6 +91,8 @@ func TestValidJsonSchema(t *testing.T) {
 }
 
 func TestValidJsonSchema_InvalidSchema(t *testing.T) {
+	t.Parallel()
+
 	tests := []struct {
 		name      string
 		schemaStr string
@@ -106,6 +112,8 @@ func TestValidJsonSchema_InvalidSchema(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			_, err := ValidJsonSchema(tt.schemaStr, tt.doc)
 			if err == nil {
 				t.Error("ValidJsonSchema() should return error for invalid schema")
@@ -114,7 +122,46 @@ func TestValidJsonSchema_InvalidSchema(t *testing.T) {
 	}
 }
 
+func TestValidJsonSchema_InvalidDocument(t *testing.T) {
+	t.Parallel()
+
+	schema := `{
+		"type": "object",
+		"properties": {
+			"name": {"type": "string"}
+		},
+		"required": ["name"]
+	}`
+
+	tests := []struct {
+		name string
+		doc  string
+	}{
+		{
+			name: "invalid JSON document",
+			doc:  `{invalid json}`,
+		},
+		{
+			name: "malformed JSON document",
+			doc:  `{"name": "test",}`,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			_, err := ValidJsonSchema(schema, tt.doc)
+			if err == nil {
+				t.Error("ValidJsonSchema() should return error for invalid document")
+			}
+		})
+	}
+}
+
 func TestIsJsonschemaValid(t *testing.T) {
+	t.Parallel()
+
 	schema := `{
 		"type": "object",
 		"properties": {
@@ -156,6 +203,8 @@ func TestIsJsonschemaValid(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
 			isValid, err := IsJsonschemaValid(tt.schema, tt.doc)
 
 			if (err != nil) != tt.wantErr {
@@ -171,6 +220,8 @@ func TestIsJsonschemaValid(t *testing.T) {
 }
 
 func TestIsJsonschemaValid_InvalidSchema(t *testing.T) {
+	t.Parallel()
+
 	_, err := IsJsonschemaValid(`{invalid}`, `{"name": "test"}`)
 	if err == nil {
 		t.Error("IsJsonschemaValid() should return error for invalid schema")
@@ -178,6 +229,8 @@ func TestIsJsonschemaValid_InvalidSchema(t *testing.T) {
 }
 
 func TestValidJsonSchema_ComplexSchema(t *testing.T) {
+	t.Parallel()
+
 	schema := `{
 		"type": "object",
 		"properties": {
@@ -210,20 +263,26 @@ func TestValidJsonSchema_ComplexSchema(t *testing.T) {
 	}`
 
 	t.Run("valid complex document", func(t *testing.T) {
+		t.Parallel()
+
 		invalidFields, err := ValidJsonSchema(schema, validDoc)
 		if err != nil {
 			t.Errorf("ValidJsonSchema() error = %v", err)
 		}
+
 		if len(invalidFields) != 0 {
 			t.Errorf("ValidJsonSchema() should have no errors, got %d", len(invalidFields))
 		}
 	})
 
 	t.Run("invalid complex document", func(t *testing.T) {
+		t.Parallel()
+
 		invalidFields, err := ValidJsonSchema(schema, invalidDoc)
 		if err != nil {
 			t.Errorf("ValidJsonSchema() error = %v", err)
 		}
+
 		if len(invalidFields) == 0 {
 			t.Error("ValidJsonSchema() should have errors")
 		}

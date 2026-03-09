@@ -31,6 +31,8 @@ func initDb() (repoImpl idbaccess.UlidRepo, db *sqlx.DB, sqlMock sqlmock.Sqlmock
 }
 
 func TestGenUniqID(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 
 	repoImpl, _, sqlMock := initDb()
@@ -72,6 +74,8 @@ func TestGenUniqID(t *testing.T) {
 }
 
 func TestGenDBID(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 
 	repoImpl, db, sqlMock := initDb()
@@ -138,6 +142,8 @@ func TestGenDBID(t *testing.T) {
 }
 
 func TestBatchGenDBID(t *testing.T) {
+	t.Parallel()
+
 	ctx := context.Background()
 
 	repoImpl, db, sqlMock := initDb()

@@ -3,16 +3,21 @@ package dbaulid
 import (
 	"testing"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cconstant"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewUlidRepo(t *testing.T) {
+	t.Parallel()
+
 	repo := NewUlidRepo()
 
 	assert.NotNil(t, repo, "NewUlidRepo should return non-nil repo")
 }
 
 func TestUniqueID_TableName(t *testing.T) {
+	t.Parallel()
+
 	uid := &UniqueID{}
 
 	tableName := uid.TableName()
@@ -21,11 +26,13 @@ func TestUniqueID_TableName(t *testing.T) {
 }
 
 func TestUniqueID_Fields(t *testing.T) {
+	t.Parallel()
+
 	uid := &UniqueID{
 		ID:   "test123",
-		Flag: 1,
+		Flag: cconstant.UniqueIDFlag(1),
 	}
 
 	assert.Equal(t, "test123", uid.ID, "ID field should be set")
-	assert.Equal(t, 1, uid.Flag, "Flag field should be set")
+	assert.Equal(t, cconstant.UniqueIDFlag(1), uid.Flag, "Flag field should be set")
 }
