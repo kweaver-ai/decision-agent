@@ -49,6 +49,12 @@ func (agentSvc *agentSvc) GenerateAgentCallReq(ctx context.Context, req *agentre
 	}
 
 	// NOTE: 动态字段 file  和 自定义变量
+	// HistoryLimit 只从 Agent 配置中获取，请求参数中的 history_limit 不再生效
+	historyLimit := agent.Config.HistoryLimit
+	if historyLimit <= 0 {
+		historyLimit = 4 // 默认值4轮
+	}
+
 	agentCallReq := &agentexecutordto.AgentCallReq{
 		ID:           req.AgentID,
 		AgentVersion: req.AgentVersion,
@@ -63,12 +69,12 @@ func (agentSvc *agentSvc) GenerateAgentCallReq(ctx context.Context, req *agentre
 		XAccountID:        req.XAccountID,
 		XAccountType:      req.XAccountType,
 		XBusinessDomainID: req.XBusinessDomainID,
-		// ConversationSessionID: req.ConversationSessionID,
 		ChatOption: chatopt.ChatOption{
 			EnableDependencyCache: req.ChatOption.EnableDependencyCache,
 			// IsNeedDocRetrivalPostProcess: req.ChatOption.IsNeedDocRetrivalPostProcess,
 			IsNeedHistory:  req.ChatOption.IsNeedHistory,
 			IsNeedProgress: req.ChatOption.IsNeedProgress,
+			HistoryLimit:   historyLimit,
 		},
 	}
 	// NOTE: 将agent.Config.Input.Fields 转换为map，排除一些内置参数

@@ -31,3 +31,7 @@ class AgentRunOptionsVo(BaseModel):
     resume_info: Optional[Any] = None  # 恢复执行信息，类型为 ResumeInfo
     # new add 2026年01月25日 --end--
 
+    # new add 2026年03月06日 --start--
+    history_limit: Optional[int] = None  # 历史上下文限制，默认10轮
+    # new add 2026年03月06日 --end--
+

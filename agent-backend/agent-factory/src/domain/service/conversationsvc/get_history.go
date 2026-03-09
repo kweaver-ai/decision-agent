@@ -105,7 +105,7 @@ func (svc *conversationSvc) GetHistory(ctx context.Context, id string, limit int
 	}
 
 	if limit == 0 {
-		limit = 10
+		limit = 4
 	}
 	// NOTE:获取会话详情时，message的顺序按照index asc排序，这里需要取最近的limit条
 	if len(history) <= limit || limit == -1 {

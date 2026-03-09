@@ -38,6 +38,7 @@ type AgentOptions struct {
 	AgentRunID            string `json:"agent_run_id"`
 	IsNeedProgress        bool   `json:"is_need_progress"`
 	EnableDependencyCache bool   `json:"enable_dependency_cache"`
+	HistoryLimit          int    `json:"history_limit"` // 历史上下文限制，默认10轮
 
 	// 新增：恢复执行信息（统一 Run 接口支持恢复执行）
 	ResumeInfo *AgentResumeInfo `json:"resume_info,omitempty"`

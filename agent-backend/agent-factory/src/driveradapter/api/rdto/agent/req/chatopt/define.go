@@ -12,6 +12,8 @@ type ChatOption struct {
 	IsNeedDocRetrivalPostProcess bool `json:"is_need_doc_retrival_post_process"` // 是否需要文档检索后处理
 
 	IsNeedProgress bool `json:"is_need_progress"` // 是否需要progress
+
+	HistoryLimit int `json:"history_limit"` // 历史上下文限制，默认10轮
 }
 
 func (o *ChatOption) Check(isDebugMode bool) (err error) {

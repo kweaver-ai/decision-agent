@@ -67,3 +67,8 @@ def process_options(
         # # 兼容老的
         # agent_config.session_id = options.agent_run_id
     # new add 2025年10月19日16:52:53 --end--
+
+    # new add 2026年03月06日 --start--
+    if options.history_limit is not None:
+        agent_input.set_value("history_limit", options.history_limit)
+    # new add 2026年03月06日 --end--

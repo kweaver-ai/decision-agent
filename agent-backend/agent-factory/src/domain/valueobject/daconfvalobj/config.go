@@ -31,6 +31,8 @@ type Config struct {
 	RelatedQuestion      *RelatedQuestion      `json:"related_question"`           // 相关问题配置
 	PlanMode             *PlanMode             `json:"plan_mode"`                  // 任务规划模式配置
 
+	HistoryLimit int `json:"history_limit"` // 历史上下文限制，默认4轮，范围1-20
+
 	Metadata ConfigMetadata `json:"metadata"` // 配置元数据
 }
 
@@ -157,6 +159,16 @@ func (p *Config) ValObjCheckWithCtx(ctx context.Context, isPrivateAPI bool) (err
 			err = errors.New("[Config]: plan_mode is invalid when is_dolphin_mode is true")
 			return
 		}
+	}
+
+	// 13. 验证history_limit配置
+	if p.HistoryLimit < 0 || p.HistoryLimit > 20 {
+		err = errors.New("[Config]: history_limit must be between 0 and 20")
+		return
+	}
+	// 如果history_limit未设置（为0），设置为默认值4
+	if p.HistoryLimit == 0 {
+		p.HistoryLimit = 4
 	}
 
 	return

@@ -166,6 +166,14 @@ async def run_dolphin(
             f"[run_dolphin] output_variables: {output_variables}"
         )
 
+    # new add 2026年03月06日 --start--
+    # 设置历史上下文限制，默认4轮（与Agent配置保持一致）
+    history_limit = context_variables.get("history_limit")
+    if history_limit is None:
+        history_limit = 4
+    context_variables["_history_compact_recent_turns"] = history_limit
+    # new add 2026年03月06日 --end--
+
     # ctx_manager = ContextManager()
 
     agent = DolphinAgent(
