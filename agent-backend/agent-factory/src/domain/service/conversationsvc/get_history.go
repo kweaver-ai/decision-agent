@@ -58,10 +58,8 @@ func (svc *conversationSvc) GetHistory(ctx context.Context, id string, limit int
 	o11y.SetAttributes(ctx, attribute.String("conversation_id", id))
 
 	// NOTE: 如果不需要regenerate，则使用DetailWithLimit减少数据库查询
-	// 需要limit*2因为用户+助手消息是成对的
 	if regenerateUserMsgID == "" && regenerateAssistantMsgID == "" && limit > 0 {
-		dbLimit := limit * 2
-		conversation, err := svc.DetailWithLimit(ctx, id, dbLimit)
+		conversation, err := svc.DetailWithLimit(ctx, id, limit)
 		if err != nil {
 			o11y.Error(ctx, fmt.Sprintf("[GetHistory] get conversation detail error, id: %s, err: %v", id, err))
 			return nil, errors.Wrapf(err, "[GetHistory] get conversation detail error, id: %s, err: %v", id, err)

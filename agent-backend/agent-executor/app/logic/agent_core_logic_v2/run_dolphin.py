@@ -163,12 +163,12 @@ async def run_dolphin(
     if strategy == "none":
         history_limit = 0
     else:
-        history_limit = history_config.get("limit", 8)
-        if not isinstance(history_limit, int) or history_limit < 0 or history_limit > 20:
+        history_limit = history_config.get("limit", Config.app.DEFAULT_HISTORY_LIMIT)
+        if not isinstance(history_limit, int) or history_limit < 0 or history_limit > Config.app.MAX_HISTORY_LIMIT:
             struct_logger.console_logger.warning(
-                f"[run_dolphin] Invalid history_limit: {history_limit}, using default 8"
+                f"[run_dolphin] Invalid history_limit: {history_limit}, using default {Config.app.DEFAULT_HISTORY_LIMIT}"
             )
-            history_limit = 8
+            history_limit = Config.app.DEFAULT_HISTORY_LIMIT
 
     # 预处理历史数据：Dolphin 不支持按轮数限制历史，需要在传入前截断
     # 只有 count 策略才需要截断历史
