@@ -2,6 +2,8 @@ package chatopt
 
 import (
 	"fmt"
+
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 )
 
 type ChatOption struct {
@@ -13,7 +15,7 @@ type ChatOption struct {
 
 	IsNeedProgress bool `json:"is_need_progress"` // 是否需要progress
 
-	HistoryLimit int `json:"history_limit"` // 历史上下文限制，默认10轮
+	HistoryConfig *daconfvalobj.HistoryConfig `json:"history_config"` // 历史对话配置
 }
 
 func (o *ChatOption) Check(isDebugMode bool) (err error) {

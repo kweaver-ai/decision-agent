@@ -87,7 +87,7 @@ func TestAgentSvc_GetHistoryAndMsgIndex_NewConversation_Success(t *testing.T) {
 
 	ctx := context.Background()
 	req := &agentreq.ChatReq{AgentID: "a1", ConversationID: "", Query: "hello"}
-	convPO, _, _, err := svc.GetHistoryAndMsgIndex(ctx, req)
+	convPO, _, _, err := svc.GetHistoryAndMsgIndex(ctx, req, 0, nil)
 	assert.NoError(t, err)
 	assert.Equal(t, "new-conv", convPO.ID)
 }
@@ -103,7 +103,7 @@ func TestAgentSvc_GetHistoryAndMsgIndex_NewConversation_LongQuery(t *testing.T) 
 
 	ctx := context.Background()
 	req := &agentreq.ChatReq{ConversationID: "", Query: "这是一个超过五十个字符的非常长的查询字符串用于测试标题截取逻辑是否正确处理了多字节Unicode字符集的情况测试测试测试"}
-	_, _, _, err := svc.GetHistoryAndMsgIndex(ctx, req)
+	_, _, _, err := svc.GetHistoryAndMsgIndex(ctx, req, 0, nil)
 	assert.NoError(t, err)
 }
 
@@ -118,7 +118,7 @@ func TestAgentSvc_GetHistoryAndMsgIndex_NewConversation_CreateError(t *testing.T
 
 	ctx := context.Background()
 	req := &agentreq.ChatReq{ConversationID: ""}
-	_, _, _, err := svc.GetHistoryAndMsgIndex(ctx, req)
+	_, _, _, err := svc.GetHistoryAndMsgIndex(ctx, req, 0, nil)
 	assert.Error(t, err)
 }
 
@@ -133,7 +133,7 @@ func TestAgentSvc_GetHistoryAndMsgIndex_ExistingConversation_GetError(t *testing
 
 	ctx := context.Background()
 	req := &agentreq.ChatReq{ConversationID: "conv-1"}
-	_, _, _, err := svc.GetHistoryAndMsgIndex(ctx, req)
+	_, _, _, err := svc.GetHistoryAndMsgIndex(ctx, req, 0, nil)
 	assert.Error(t, err)
 }
 
@@ -150,7 +150,7 @@ func TestAgentSvc_GetHistoryAndMsgIndex_ExistingConversation_GetMaxIndexError(t 
 
 	ctx := context.Background()
 	req := &agentreq.ChatReq{ConversationID: "conv-1"}
-	_, _, _, err := svc.GetHistoryAndMsgIndex(ctx, req)
+	_, _, _, err := svc.GetHistoryAndMsgIndex(ctx, req, 0, nil)
 	assert.Error(t, err)
 }
 
@@ -167,7 +167,7 @@ func TestAgentSvc_GetHistoryAndMsgIndex_ExistingConversation_Success(t *testing.
 
 	ctx := context.Background()
 	req := &agentreq.ChatReq{ConversationID: "conv-1"}
-	convPO, _, idx, err := svc.GetHistoryAndMsgIndex(ctx, req)
+	convPO, _, idx, err := svc.GetHistoryAndMsgIndex(ctx, req, 0, nil)
 	assert.NoError(t, err)
 	assert.Equal(t, 5, idx)
 	assert.Equal(t, "conv-1", convPO.ID)
@@ -190,13 +190,12 @@ func TestAgentSvc_GetHistoryAndMsgIndex_NeedHistory_GetHistoryError(t *testing.T
 
 	req := &agentreq.ChatReq{
 		ConversationID:           "conv-need-history",
-		HistoryLimit:             5,
 		RegenerateUserMsgID:      "regen-user",
 		RegenerateAssistantMsgID: "regen-asst",
 		ChatOption:               chatopt.ChatOption{IsNeedHistory: true},
 	}
 
-	_, _, _, err := svc.GetHistoryAndMsgIndex(context.Background(), req)
+	_, _, _, err := svc.GetHistoryAndMsgIndex(context.Background(), req, 5, nil)
 	assert.Error(t, err)
 }
 
@@ -219,11 +218,10 @@ func TestAgentSvc_GetHistoryAndMsgIndex_NeedHistory_Success(t *testing.T) {
 
 	req := &agentreq.ChatReq{
 		ConversationID: "conv-need-history-ok",
-		HistoryLimit:   3,
 		ChatOption:     chatopt.ChatOption{IsNeedHistory: true},
 	}
 
-	_, history, idx, err := svc.GetHistoryAndMsgIndex(context.Background(), req)
+	_, history, idx, err := svc.GetHistoryAndMsgIndex(context.Background(), req, 3, nil)
 	assert.NoError(t, err)
 	assert.Equal(t, 7, idx)
 	assert.Equal(t, expectedHistory, history)

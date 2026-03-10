@@ -34,7 +34,6 @@ type ChatReq struct {
 	RegenerateUserMsgID      string                  `json:"regenerate_user_message_id"`      // 重新生成的用户消息ID
 	RegenerateAssistantMsgID string                  `json:"regenerate_assistant_message_id"` // 重新生成的助手消息ID
 	History                  []*comvalobj.LLMMessage `json:"history,omitempty"`               // 历史上下文
-	HistoryLimit             int                     `json:"history_limit,omitempty"`         // 历史上下文限制,默认10轮
 	ModelName                string                  `json:"model_name,omitempty"`            // 指定使用的大模型名称
 	// NOTE: 新增stream参数，控制流式返回
 	Stream    bool `json:"stream,omitempty"`     // 是否流式返回

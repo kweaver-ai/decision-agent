@@ -14,6 +14,7 @@ import (
 	reflect "reflect"
 
 	comvalobj "github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/comvalobj"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 	conversationreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationreq"
 	conversationresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationresp"
 	gomock "go.uber.org/mock/gomock"
@@ -99,6 +100,21 @@ func (m *MockIConversationSvc) GetHistory(ctx context.Context, id string, limit 
 func (mr *MockIConversationSvcMockRecorder) GetHistory(ctx, id, limit, regenerateUserMsgID, regenerateAssistantMsgID any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHistory", reflect.TypeOf((*MockIConversationSvc)(nil).GetHistory), ctx, id, limit, regenerateUserMsgID, regenerateAssistantMsgID)
+}
+
+// GetHistoryV2 mocks base method.
+func (m *MockIConversationSvc) GetHistoryV2(ctx context.Context, id string, historyConfig *daconfvalobj.HistoryConfig, regenerateUserMsgID, regenerateAssistantMsgID string) ([]*comvalobj.LLMMessage, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetHistoryV2", ctx, id, historyConfig, regenerateUserMsgID, regenerateAssistantMsgID)
+	ret0, _ := ret[0].([]*comvalobj.LLMMessage)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// GetHistoryV2 indicates an expected call of GetHistoryV2.
+func (mr *MockIConversationSvcMockRecorder) GetHistoryV2(ctx, id, historyConfig, regenerateUserMsgID, regenerateAssistantMsgID any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetHistoryV2", reflect.TypeOf((*MockIConversationSvc)(nil).GetHistoryV2), ctx, id, historyConfig, regenerateUserMsgID, regenerateAssistantMsgID)
 }
 
 // Init mocks base method.

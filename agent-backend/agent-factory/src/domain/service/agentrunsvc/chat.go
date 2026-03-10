@@ -89,15 +89,13 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	}
 
 	// NOTE: 设置历史上下文限制，从 Agent 配置中获取
-	if req.HistoryLimit == 0 {
-		req.HistoryLimit = agentInfo.Config.HistoryLimit
-		if req.HistoryLimit <= 0 {
-			req.HistoryLimit = 4 // 默认4轮
-		}
+	historyLimit := constant.DefaultHistoryLimit
+	if agentInfo.Config.HistoryConfig != nil && agentInfo.Config.HistoryConfig.Limit > 0 {
+		historyLimit = agentInfo.Config.HistoryConfig.Limit
 	}
 
 	// NOTE: 2. 获取历史上下文
-	conversationPO, contexts, msgIndex, err := agentSvc.GetHistoryAndMsgIndex(newCtx, req)
+	conversationPO, contexts, msgIndex, err := agentSvc.GetHistoryAndMsgIndex(newCtx, req, historyLimit, agentInfo.Config.HistoryConfig)
 	if err != nil {
 		o11y.Error(newCtx, fmt.Sprintf("[chat] get history and msg index failed: %v", err))
 		return nil, err

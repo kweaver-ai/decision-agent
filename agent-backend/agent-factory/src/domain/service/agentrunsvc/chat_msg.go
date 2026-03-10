@@ -7,6 +7,7 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/comvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/conversationmsgvo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
@@ -69,7 +70,7 @@ func (agentSvc *agentSvc) MsgResp2MsgPO(ctx context.Context, msgResp agentresp.C
 }
 
 // NOTE: 获取会话中的上下文、会话中消息的最大下标、更新req.ConversationID
-func (agentSvc *agentSvc) GetHistoryAndMsgIndex(ctx context.Context, req *agentreq.ChatReq) (*dapo.ConversationPO, []*comvalobj.LLMMessage, int, error) {
+func (agentSvc *agentSvc) GetHistoryAndMsgIndex(ctx context.Context, req *agentreq.ChatReq, historyLimit int, historyConfig *daconfvalobj.HistoryConfig) (*dapo.ConversationPO, []*comvalobj.LLMMessage, int, error) {
 	var contexts []*comvalobj.LLMMessage
 
 	var conversationPO *dapo.ConversationPO
@@ -142,8 +143,11 @@ func (agentSvc *agentSvc) GetHistoryAndMsgIndex(ctx context.Context, req *agentr
 		}
 
 		if req.ChatOption.IsNeedHistory {
-			// NOTE: 获取历史上下文，-1表示获取所有历史上下文
-			contexts, err = agentSvc.conversationSvc.GetHistory(ctx, req.ConversationID, req.HistoryLimit, req.RegenerateUserMsgID, req.RegenerateAssistantMsgID)
+			if historyConfig != nil {
+				contexts, err = agentSvc.conversationSvc.GetHistoryV2(ctx, req.ConversationID, historyConfig, req.RegenerateUserMsgID, req.RegenerateAssistantMsgID)
+			} else {
+				contexts, err = agentSvc.conversationSvc.GetHistory(ctx, req.ConversationID, historyLimit, req.RegenerateUserMsgID, req.RegenerateAssistantMsgID)
+			}
 			if err != nil {
 				o11y.Error(ctx, fmt.Sprintf("[GetHistoryAndMsgIndex] get conversation messages history failed: %v", err))
 				return nil, nil, 0, rest.NewHTTPError(ctx, http.StatusInternalServerError,

@@ -32,5 +32,5 @@ class AgentRunOptionsVo(BaseModel):
     # new add 2026年01月25日 --end--
 
     # new add 2026年03月06日 --start--
-    history_limit: Optional[int] = None  # 历史上下文限制，默认4轮
+    history_config: Optional[Dict[str, Any]] = None  # 历史对话配置
     # new add 2026年03月06日 --end--

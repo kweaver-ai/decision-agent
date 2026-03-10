@@ -5,14 +5,48 @@ import (
 	"fmt"
 
 	"github.com/bytedance/sonic"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/comvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/conversationmsgvo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
+
+func (svc *conversationSvc) GetHistoryV2(ctx context.Context, id string, historyConfig *daconfvalobj.HistoryConfig, regenerateUserMsgID string,
+	regenerateAssistantMsgID string,
+) ([]*comvalobj.LLMMessage, error) {
+	var err error
+
+	ctx, _ = o11y.StartInternalSpan(ctx)
+	defer o11y.EndSpan(ctx, err)
+	o11y.SetAttributes(ctx, attribute.String("conversation_id", id))
+
+	if historyConfig == nil {
+		return nil, errors.New("[GetHistoryV2] history_config is required")
+	}
+
+	if err = historyConfig.Strategy.EnumCheck(); err != nil {
+		o11y.Error(ctx, fmt.Sprintf("[GetHistoryV2] invalid history strategy, err: %v", err))
+		return nil, errors.Wrapf(err, "[GetHistoryV2] invalid history strategy, err: %v", err)
+	}
+
+	switch historyConfig.Strategy {
+	case cdaenum.HistoryStrategyNone:
+		return []*comvalobj.LLMMessage{}, nil
+	case cdaenum.HistoryStrategyCount:
+		return svc.GetHistory(ctx, id, historyConfig.Limit, regenerateUserMsgID, regenerateAssistantMsgID)
+	case cdaenum.HistoryStrategyTimeWindow:
+		return nil, errors.New("[GetHistoryV2] time_window strategy is not implemented yet")
+	case cdaenum.HistoryStrategyToken:
+		return nil, errors.New("[GetHistoryV2] token strategy is not implemented yet")
+	default:
+		return nil, errors.New("[GetHistoryV2] unsupported history strategy")
+	}
+}
 
 func (svc *conversationSvc) GetHistory(ctx context.Context, id string, limit int, regenerateUserMsgID string,
 	regenerateAssistantMsgID string,
@@ -22,14 +56,101 @@ func (svc *conversationSvc) GetHistory(ctx context.Context, id string, limit int
 	ctx, _ = o11y.StartInternalSpan(ctx)
 	defer o11y.EndSpan(ctx, err)
 	o11y.SetAttributes(ctx, attribute.String("conversation_id", id))
-	// NOTE:获取会话详情
+
+	// NOTE: 如果不需要regenerate，则使用DetailWithLimit减少数据库查询
+	// 需要limit*2因为用户+助手消息是成对的
+	if regenerateUserMsgID == "" && regenerateAssistantMsgID == "" && limit > 0 {
+		dbLimit := limit * 2
+		conversation, err := svc.DetailWithLimit(ctx, id, dbLimit)
+		if err != nil {
+			o11y.Error(ctx, fmt.Sprintf("[GetHistory] get conversation detail error, id: %s, err: %v", id, err))
+			return nil, errors.Wrapf(err, "[GetHistory] get conversation detail error, id: %s, err: %v", id, err)
+		}
+
+		history := make([]*comvalobj.LLMMessage, 0)
+
+		for _, msg := range conversation.Messages {
+			if msg.Role == cdaenum.MsgRoleAssistant {
+				content := conversationmsgvo.AssistantContent{}
+				if msg.Content != nil && *msg.Content != "" {
+					err := sonic.Unmarshal([]byte(*msg.Content), &content)
+					if err != nil {
+						o11y.Error(ctx, fmt.Sprintf("[GetHistory] unmarshal assistant content error, id: %s, err: %v", id, err))
+						return nil, errors.Wrapf(err, "[GetHistory] unmarshal assistant content error, id: %s, err: %v", id, err)
+					}
+				}
+				if content.FinalAnswer.Answer.Text != "" {
+					history = append(history, &comvalobj.LLMMessage{
+						Role:    string(msg.Role),
+						Content: content.FinalAnswer.Answer.Text,
+					})
+				} else if len(content.FinalAnswer.SkillProcess) > 0 {
+					history = append(history, &comvalobj.LLMMessage{
+						Role:    string(msg.Role),
+						Content: content.FinalAnswer.SkillProcess[len(content.FinalAnswer.SkillProcess)-1].Text,
+					})
+				} else {
+					other := content.FinalAnswer.AnswerTypeOther
+					if otherStr, ok := other.(string); ok {
+						history = append(history, &comvalobj.LLMMessage{
+							Role:    string(msg.Role),
+							Content: otherStr,
+						})
+					} else {
+						byt, _ := sonic.Marshal(other)
+						history = append(history, &comvalobj.LLMMessage{
+							Role:    string(msg.Role),
+							Content: string(byt),
+						})
+					}
+				}
+			} else {
+				userContent := conversationmsgvo.UserContent{}
+				if msg.Content != nil && *msg.Content != "" {
+					err := sonic.Unmarshal([]byte(*msg.Content), &userContent)
+					if err != nil {
+						o11y.Error(ctx, fmt.Sprintf("[GetHistory] unmarshal user content error, id: %s, err: %v", id, err))
+						return nil, errors.Wrapf(err, "[GetHistory] unmarshal user content error, id: %s, err: %v", id, err)
+					}
+				}
+
+				if len(userContent.SelectedFiles) > 0 {
+					contextMsg := &comvalobj.LLMMessage{
+						Role:    "user",
+						Content: buildWorkspaceContextMessage(msg.ConversationID, conversation.CreateBy, userContent.SelectedFiles),
+					}
+					history = append(history, contextMsg)
+				}
+
+				history = append(history, &comvalobj.LLMMessage{
+					Role:    string(msg.Role),
+					Content: userContent.Text,
+				})
+			}
+		}
+
+		if limit == 0 {
+			limit = constant.DefaultHistoryLimit
+		}
+
+		if len(history) == 0 || limit == -1 {
+			return history, nil
+		}
+
+		if limit >= len(history) {
+			return history, nil
+		}
+
+		return history[len(history)-limit:], nil
+	}
+
+	// NOTE: 需要regenerate或limit<=0时，使用原来的全量查询逻辑
 	conversation, err := svc.Detail(ctx, id)
 	if err != nil {
 		o11y.Error(ctx, fmt.Sprintf("[GetHistory] get conversation detail error, id: %s, err: %v", id, err))
 		return nil, errors.Wrapf(err, "[GetHistory] get conversation detail error, id: %s, err: %v", id, err)
 	}
 
-	// NOTE: 提取会话中的历史上下文
 	history := make([]*comvalobj.LLMMessage, 0)
 
 	userMsgID, assistantMsgID := GetID(ctx, conversation.Messages, regenerateUserMsgID, regenerateAssistantMsgID)
@@ -105,9 +226,8 @@ func (svc *conversationSvc) GetHistory(ctx context.Context, id string, limit int
 	}
 
 	if limit == 0 {
-		limit = 4
+		limit = constant.DefaultHistoryLimit
 	}
-	limit = limit * 2
 
 	if len(history) == 0 || limit == -1 {
 		return history, nil

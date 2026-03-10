@@ -2,7 +2,9 @@ package daconfvalobj
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj/datasourcevalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj/skillvalobj"
@@ -10,10 +12,47 @@ import (
 	"github.com/pkg/errors"
 )
 
-const (
-	DefaultHistoryLimit = 4
-	MaxHistoryLimit     = 20
-)
+// HistoryConfig 历史对话配置
+type HistoryConfig struct {
+	Strategy   cdaenum.HistoryStrategy `json:"strategy"`    // 历史对话策略：none(无历史), count(按数量), time_window(按时间窗口-预留), token(按token-预留)
+	Limit      int                     `json:"limit"`       // 历史上下文限制，默认8轮，范围0-20（0表示使用默认值DefaultHistoryLimit），仅在strategy=count时生效
+	TimeWindow int                     `json:"time_window"` // 时间窗口（单位：分钟），仅在strategy=time_window时生效（预留）
+	TokenLimit int                     `json:"token_limit"` // Token限制，仅在strategy=token时生效（预留）
+}
+
+func (h *HistoryConfig) ValObjCheck() (err error) {
+	if h == nil {
+		return
+	}
+
+	if err = h.Strategy.EnumCheck(); err != nil {
+		return
+	}
+
+	switch h.Strategy {
+	case cdaenum.HistoryStrategyNone:
+	case cdaenum.HistoryStrategyCount:
+		if h.Limit < 0 || h.Limit > constant.MaxHistoryLimit {
+			err = errors.New(fmt.Sprintf("[HistoryConfig]: limit must be between 0 and %d when strategy is count (0 means use default value %d)", constant.MaxHistoryLimit, constant.DefaultHistoryLimit))
+			return
+		}
+		if h.Limit == 0 {
+			h.Limit = constant.DefaultHistoryLimit
+		}
+	case cdaenum.HistoryStrategyTimeWindow:
+		if h.TimeWindow <= 0 {
+			err = errors.New("[HistoryConfig]: time_window must be greater than 0 when strategy is time_window")
+			return
+		}
+	case cdaenum.HistoryStrategyToken:
+		if h.TokenLimit <= 0 {
+			err = errors.New("[HistoryConfig]: token_limit must be greater than 0 when strategy is token")
+			return
+		}
+	}
+
+	return
+}
 
 // Config 表示agent配置
 type Config struct {
@@ -36,7 +75,7 @@ type Config struct {
 	RelatedQuestion      *RelatedQuestion      `json:"related_question"`           // 相关问题配置
 	PlanMode             *PlanMode             `json:"plan_mode"`                  // 任务规划模式配置
 
-	HistoryLimit int `json:"history_limit"` // 历史上下文限制，默认4轮，范围0-20（0表示使用默认值DefaultHistoryLimit）
+	HistoryConfig *HistoryConfig `json:"history_config"` // 历史对话配置
 
 	Metadata ConfigMetadata `json:"metadata"` // 配置元数据
 }
@@ -166,14 +205,26 @@ func (p *Config) ValObjCheckWithCtx(ctx context.Context, isPrivateAPI bool) (err
 		}
 	}
 
-	// 13. 验证history_limit配置
-	if p.HistoryLimit < 0 || p.HistoryLimit > MaxHistoryLimit {
-		err = errors.New("[Config]: history_limit must be between 0 and 20 (0 means use default value 4)")
-		return
+	// 13. 验证history_config配置
+	if p.HistoryConfig != nil {
+		if err = p.HistoryConfig.ValObjCheck(); err != nil {
+			err = errors.Wrap(err, "[Config]: history_config is invalid")
+			return
+		}
 	}
-	// 如果history_limit未设置（为0），设置为默认值4
-	if p.HistoryLimit == 0 {
-		p.HistoryLimit = DefaultHistoryLimit
+
+	// 14. 如果HistoryConfig为空，创建默认配置
+	if p.HistoryConfig == nil {
+		p.HistoryConfig = &HistoryConfig{
+			Strategy: cdaenum.HistoryStrategyCount,
+			Limit:    constant.DefaultHistoryLimit,
+		}
+	}
+
+	// 15. 验证history_config内部配置
+	if err = p.HistoryConfig.ValObjCheck(); err != nil {
+		err = errors.Wrap(err, "[Config]: history_config is invalid")
+		return
 	}
 
 	return

@@ -69,6 +69,6 @@ def process_options(
     # new add 2025年10月19日16:52:53 --end--
 
     # new add 2026年03月06日 --start--
-    if options.history_limit is not None:
-        agent_input.set_value("history_limit", options.history_limit)
+    if options.history_config is not None:
+        agent_config.history_config = options.history_config
     # new add 2026年03月06日 --end--

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/comvalobj"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation/conversationresp"
 )
@@ -18,7 +19,10 @@ type IConversationSvc interface {
 	DeleteByAppKey(ctx context.Context, appKey string) (err error)
 	MarkRead(ctx context.Context, id string, latest_read_index int) (err error)
 
-	// NOTE: 获取会话中的历史上下文
+	// NOTE: 获取会话中的历史上下文（新版本，支持多种策略）
+	GetHistoryV2(ctx context.Context, id string, historyConfig *daconfvalobj.HistoryConfig, regenerateUserMsgID string, regenerateAssistantMsgID string) ([]*comvalobj.LLMMessage, error)
+
+	// NOTE: 获取会话中的历史上下文（旧版本，保持兼容）
 	GetHistory(ctx context.Context, id string, limit int, regenerateUserMsgID string, regenerateAssistantMsgID string) ([]*comvalobj.LLMMessage, error)
 
 	// 根据agentID获取所有会话

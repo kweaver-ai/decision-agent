@@ -3,6 +3,7 @@ package conversationsvc
 import (
 	"testing"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/comvalobj"
 	"github.com/stretchr/testify/assert"
 )
@@ -67,7 +68,7 @@ func TestGetHistory_EdgeCaseLogic(t *testing.T) {
 			history := tt.history
 
 			if limit == 0 {
-				limit = 4
+				limit = constant.DefaultHistoryLimit
 			}
 			limit = limit * 2
 

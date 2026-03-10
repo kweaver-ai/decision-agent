@@ -34,11 +34,11 @@ type AgentOptions struct {
 	// UserDefine             map[string]interface{} `json:"user_define,omitempty"`
 
 	// AgentID                string                 `json:"agent_id"`
-	ConversationID        string `json:"conversation_id"`
-	AgentRunID            string `json:"agent_run_id"`
-	IsNeedProgress        bool   `json:"is_need_progress"`
-	EnableDependencyCache bool   `json:"enable_dependency_cache"`
-	HistoryLimit          int    `json:"history_limit"` // 历史上下文限制，默认10轮
+	ConversationID        string                 `json:"conversation_id"`
+	AgentRunID            string                 `json:"agent_run_id"`
+	IsNeedProgress        bool                   `json:"is_need_progress"`
+	EnableDependencyCache bool                   `json:"enable_dependency_cache"`
+	HistoryConfig         *daconfvalobj.HistoryConfig `json:"history_config"` // 历史对话配置
 
 	// 新增：恢复执行信息（统一 Run 接口支持恢复执行）
 	ResumeInfo *AgentResumeInfo `json:"resume_info,omitempty"`

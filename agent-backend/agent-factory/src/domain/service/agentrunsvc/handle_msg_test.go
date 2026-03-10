@@ -170,7 +170,7 @@ func TestGetHistoryAndMsgIndex_EmptyConversationID_CreateError(t *testing.T) {
 
 	mockConvRepo.EXPECT().Create(gomock.Any(), gomock.Any()).Return(nil, errors.New("create error"))
 
-	_, _, _, err := svc.GetHistoryAndMsgIndex(ctx, req)
+	_, _, _, err := svc.GetHistoryAndMsgIndex(ctx, req, 0, nil)
 
 	assert.Error(t, err)
 }
@@ -201,7 +201,7 @@ func TestGetHistoryAndMsgIndex_EmptyConversationID_CreateSuccess(t *testing.T) {
 	createdConv := &dapo.ConversationPO{ID: "new-conv-id"}
 	mockConvRepo.EXPECT().Create(gomock.Any(), gomock.Any()).Return(createdConv, nil)
 
-	convPO, contexts, msgIndex, err := svc.GetHistoryAndMsgIndex(ctx, req)
+	convPO, contexts, msgIndex, err := svc.GetHistoryAndMsgIndex(ctx, req, 0, nil)
 
 	assert.NoError(t, err)
 	assert.NotNil(t, convPO)
@@ -235,7 +235,7 @@ func TestGetHistoryAndMsgIndex_ExistingConversation_GetByIDError(t *testing.T) {
 
 	mockConvRepo.EXPECT().GetByID(gomock.Any(), "existing-conv").Return(nil, errors.New("db error"))
 
-	_, _, _, err := svc.GetHistoryAndMsgIndex(ctx, req)
+	_, _, _, err := svc.GetHistoryAndMsgIndex(ctx, req, 0, nil)
 
 	assert.Error(t, err)
 }
