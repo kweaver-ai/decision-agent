@@ -1,4 +1,13 @@
 # Changelog
+## 0.4.0
+
+### Features & Improvements
+
+- Enhance log directory creation with proper permission handling in `agent-executor`
+  - Implement directory permission handling with 0o755 mode
+  - Add write permission check for LOG_DIR with appropriate error handling
+  - Add unit tests for new permission checking logic
+
 ## 0.3.6
 
 ### Features & Improvements
