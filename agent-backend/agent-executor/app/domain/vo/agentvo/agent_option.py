@@ -30,7 +30,3 @@ class AgentRunOptionsVo(BaseModel):
     # new add 2026年01月25日 --start--
     resume_info: Optional[Any] = None  # 恢复执行信息，类型为 ResumeInfo
     # new add 2026年01月25日 --end--
-
-    # new add 2026年03月06日 --start--
-    history_config: Optional[Dict[str, Any]] = None  # 历史对话配置
-    # new add 2026年03月06日 --end--

@@ -67,7 +67,6 @@ func (agentSvc *agentSvc) GenerateAgentCallReq(ctx context.Context, req *agentre
 			// IsNeedDocRetrivalPostProcess: req.ChatOption.IsNeedDocRetrivalPostProcess,
 			IsNeedHistory:  req.ChatOption.IsNeedHistory,
 			IsNeedProgress: req.ChatOption.IsNeedProgress,
-			HistoryConfig:  agent.Config.HistoryConfig,
 		},
 	}
 	// NOTE: 将agent.Config.Input.Fields 转换为map，排除一些内置参数

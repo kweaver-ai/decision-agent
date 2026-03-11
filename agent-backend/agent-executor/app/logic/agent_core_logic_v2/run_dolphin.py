@@ -154,29 +154,6 @@ async def run_dolphin(
             f"[run_dolphin] output_variables: {output_variables}"
         )
 
-    # 设置历史上下文限制（与Agent配置保持一致）
-    # 优先使用 history_config，否则使用默认值
-    history_config = config.history_config if config.history_config else {}
-    strategy = history_config.get("strategy", "count")
-
-    # 如果策略是 none，不获取历史
-    if strategy == "none":
-        history_limit = 0
-    else:
-        history_limit = history_config.get("limit", Config.app.DEFAULT_HISTORY_LIMIT)
-        if not isinstance(history_limit, int) or history_limit < 0 or history_limit > Config.app.MAX_HISTORY_LIMIT:
-            struct_logger.console_logger.warning(
-                f"[run_dolphin] Invalid history_limit: {history_limit}, using default {Config.app.DEFAULT_HISTORY_LIMIT}"
-            )
-            history_limit = Config.app.DEFAULT_HISTORY_LIMIT
-
-    # 预处理历史数据：Dolphin 不支持按轮数限制历史，需要在传入前截断
-    # 只有 count 策略才需要截断历史
-    history = context_variables.get("history")
-    if history and isinstance(history, list) and history_limit > 0 and strategy == "count":
-        # 按消息数量截取，不区分 user/assistant
-        context_variables["history"] = history[-history_limit:]
-
     # ctx_manager = ContextManager()
 
     agent = DolphinAgent(

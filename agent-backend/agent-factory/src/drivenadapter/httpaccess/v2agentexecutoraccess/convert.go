@@ -22,7 +22,6 @@ func ConvertV1ToV2CallReq(v1Req *agentexecutordto.AgentCallReq) *v2agentexecutor
 			AgentRunID:            v1Req.Config.SessionID,
 			IsNeedProgress:        v1Req.ChatOption.IsNeedProgress,
 			EnableDependencyCache: v1Req.ChatOption.EnableDependencyCache,
-			HistoryConfig:         v1Req.ChatOption.HistoryConfig,
 		},
 		VisitorType:       v1Req.VisitorType,
 		XAccountID:        v1Req.XAccountID,

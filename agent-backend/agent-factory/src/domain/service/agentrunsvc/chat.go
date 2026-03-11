@@ -90,8 +90,8 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 
 	// NOTE: 设置历史上下文限制，从 Agent 配置中获取
 	historyLimit := constant.DefaultHistoryLimit
-	if agentInfo.Config.HistoryConfig != nil && agentInfo.Config.HistoryConfig.Limit > 0 {
-		historyLimit = agentInfo.Config.HistoryConfig.Limit
+	if agentInfo.Config.HistoryConfig != nil && agentInfo.Config.HistoryConfig.CountParams != nil && agentInfo.Config.HistoryConfig.CountParams.CountLimit > 0 {
+		historyLimit = agentInfo.Config.HistoryConfig.CountParams.CountLimit
 	}
 
 	// NOTE: 2. 获取历史上下文

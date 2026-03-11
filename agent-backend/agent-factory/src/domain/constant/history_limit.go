@@ -1,6 +1,6 @@
 package constant
 
 const (
-	DefaultHistoryLimit = 8
-	MaxHistoryLimit     = 20
+	DefaultHistoryLimit = 10
+	MaxHistoryLimit     = 1000
 )

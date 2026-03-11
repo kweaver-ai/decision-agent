@@ -20,7 +20,7 @@ type IConversationSvc interface {
 	MarkRead(ctx context.Context, id string, latest_read_index int) (err error)
 
 	// NOTE: 获取会话中的历史上下文（新版本，支持多种策略）
-	GetHistoryV2(ctx context.Context, id string, historyConfig *daconfvalobj.HistoryConfig, regenerateUserMsgID string, regenerateAssistantMsgID string) ([]*comvalobj.LLMMessage, error)
+	GetHistoryV2(ctx context.Context, id string, historyConfig *daconfvalobj.ConversationHistoryConfig, regenerateUserMsgID string, regenerateAssistantMsgID string) ([]*comvalobj.LLMMessage, error)
 
 	// NOTE: 获取会话中的历史上下文（旧版本，保持兼容）
 	GetHistory(ctx context.Context, id string, limit int, regenerateUserMsgID string, regenerateAssistantMsgID string) ([]*comvalobj.LLMMessage, error)

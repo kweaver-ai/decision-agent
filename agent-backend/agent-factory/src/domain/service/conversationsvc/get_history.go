@@ -16,7 +16,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 )
 
-func (svc *conversationSvc) GetHistoryV2(ctx context.Context, id string, historyConfig *daconfvalobj.HistoryConfig, regenerateUserMsgID string,
+func (svc *conversationSvc) GetHistoryV2(ctx context.Context, id string, historyConfig *daconfvalobj.ConversationHistoryConfig, regenerateUserMsgID string,
 	regenerateAssistantMsgID string,
 ) ([]*comvalobj.LLMMessage, error) {
 	var err error
@@ -38,7 +38,11 @@ func (svc *conversationSvc) GetHistoryV2(ctx context.Context, id string, history
 	case cdaenum.HistoryStrategyNone:
 		return []*comvalobj.LLMMessage{}, nil
 	case cdaenum.HistoryStrategyCount:
-		return svc.GetHistory(ctx, id, historyConfig.Limit, regenerateUserMsgID, regenerateAssistantMsgID)
+		countLimit := constant.DefaultHistoryLimit
+		if historyConfig.CountParams != nil && historyConfig.CountParams.CountLimit > 0 {
+			countLimit = historyConfig.CountParams.CountLimit
+		}
+		return svc.GetHistory(ctx, id, countLimit, regenerateUserMsgID, regenerateAssistantMsgID)
 	case cdaenum.HistoryStrategyTimeWindow:
 		return nil, errors.New("[GetHistoryV2] time_window strategy is not implemented yet")
 	case cdaenum.HistoryStrategyToken:

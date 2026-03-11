@@ -40,7 +40,7 @@ func TestGetHistory_EdgeCaseLogic(t *testing.T) {
 				{Role: "user", Content: "msg3"},
 				{Role: "assistant", Content: "msg4"},
 			},
-			limit:          2,
+			limit:          4,
 			expectedLength: 4,
 		},
 		{
@@ -56,7 +56,7 @@ func TestGetHistory_EdgeCaseLogic(t *testing.T) {
 				{Role: "assistant", Content: "msg8"},
 			},
 			limit:          2,
-			expectedLength: 4,
+			expectedLength: 2,
 		},
 	}
 

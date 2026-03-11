@@ -70,7 +70,7 @@ func (agentSvc *agentSvc) MsgResp2MsgPO(ctx context.Context, msgResp agentresp.C
 }
 
 // NOTE: 获取会话中的上下文、会话中消息的最大下标、更新req.ConversationID
-func (agentSvc *agentSvc) GetHistoryAndMsgIndex(ctx context.Context, req *agentreq.ChatReq, historyLimit int, historyConfig *daconfvalobj.HistoryConfig) (*dapo.ConversationPO, []*comvalobj.LLMMessage, int, error) {
+func (agentSvc *agentSvc) GetHistoryAndMsgIndex(ctx context.Context, req *agentreq.ChatReq, historyLimit int, historyConfig *daconfvalobj.ConversationHistoryConfig) (*dapo.ConversationPO, []*comvalobj.LLMMessage, int, error) {
 	var contexts []*comvalobj.LLMMessage
 
 	var conversationPO *dapo.ConversationPO

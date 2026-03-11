@@ -10,10 +10,6 @@ from dataclasses import dataclass
 class AppConfig:
     """应用相关配置"""
 
-    # 历史对话默认值
-    DEFAULT_HISTORY_LIMIT: int = 8
-    MAX_HISTORY_LIMIT: int = 20
-
     # 调试模式
     debug: bool = False
 

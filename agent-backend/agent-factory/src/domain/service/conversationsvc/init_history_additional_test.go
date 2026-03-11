@@ -253,7 +253,7 @@ func TestConversationSvc_GetHistory_MoreBranches(t *testing.T) {
 		bad := "{"
 
 		mockRepo.EXPECT().GetByID(gomock.Any(), "c1").Return(&dapo.ConversationPO{ID: "c1", CreateBy: "u1"}, nil)
-		mockMsgRepo.EXPECT().GetRecentMessages(gomock.Any(), "c1", 20).Return([]*dapo.ConversationMsgPO{
+		mockMsgRepo.EXPECT().GetRecentMessages(gomock.Any(), "c1", 10).Return([]*dapo.ConversationMsgPO{
 			{ID: "m1", ConversationID: "c1", Role: cdaenum.MsgRoleAssistant, Content: &bad},
 		}, nil)
 
@@ -279,7 +279,7 @@ func TestConversationSvc_GetHistory_MoreBranches(t *testing.T) {
 		bad := "{"
 
 		mockRepo.EXPECT().GetByID(gomock.Any(), "c1").Return(&dapo.ConversationPO{ID: "c1", CreateBy: "u1"}, nil)
-		mockMsgRepo.EXPECT().GetRecentMessages(gomock.Any(), "c1", 20).Return([]*dapo.ConversationMsgPO{
+		mockMsgRepo.EXPECT().GetRecentMessages(gomock.Any(), "c1", 10).Return([]*dapo.ConversationMsgPO{
 			{ID: "m1", ConversationID: "c1", Role: cdaenum.MsgRoleUser, Content: &bad},
 		}, nil)
 
@@ -308,7 +308,7 @@ func TestConversationSvc_GetHistory_MoreBranches(t *testing.T) {
 		assistant2 := `{"final_answer":{"skill_process":[{"text":"skill answer"}]}}`
 
 		mockRepo.EXPECT().GetByID(gomock.Any(), "c1").Return(&dapo.ConversationPO{ID: "c1", CreateBy: "u1"}, nil)
-		mockMsgRepo.EXPECT().GetRecentMessages(gomock.Any(), "c1", 4).Return([]*dapo.ConversationMsgPO{
+		mockMsgRepo.EXPECT().GetRecentMessages(gomock.Any(), "c1", 2).Return([]*dapo.ConversationMsgPO{
 			{ID: "m1", ConversationID: "c1", Role: cdaenum.MsgRoleUser, Content: &user1},
 			{ID: "m2", ConversationID: "c1", Role: cdaenum.MsgRoleAssistant, Content: &assistant1},
 			{ID: "m3", ConversationID: "c1", Role: cdaenum.MsgRoleUser, Content: &user2},
@@ -354,7 +354,7 @@ func TestConversationSvc_GetHistory_MoreBranches(t *testing.T) {
 		assistantOtherObj := `{"final_answer":{"answer_type_other":{"k":"v"}}}`
 
 		mockRepo.EXPECT().GetByID(gomock.Any(), "c1").Return(&dapo.ConversationPO{ID: "c1", CreateBy: "u1"}, nil)
-		mockMsgRepo.EXPECT().GetRecentMessages(gomock.Any(), "c1", 20).Return([]*dapo.ConversationMsgPO{
+		mockMsgRepo.EXPECT().GetRecentMessages(gomock.Any(), "c1", 10).Return([]*dapo.ConversationMsgPO{
 			{ID: "m1", ConversationID: "c1", Role: cdaenum.MsgRoleAssistant, Content: &assistantOtherStr},
 		}, nil)
 
@@ -363,7 +363,7 @@ func TestConversationSvc_GetHistory_MoreBranches(t *testing.T) {
 		assert.Equal(t, "plain-other", h1[0].Content)
 
 		mockRepo.EXPECT().GetByID(gomock.Any(), "c1").Return(&dapo.ConversationPO{ID: "c1", CreateBy: "u1"}, nil)
-		mockMsgRepo.EXPECT().GetRecentMessages(gomock.Any(), "c1", 20).Return([]*dapo.ConversationMsgPO{
+		mockMsgRepo.EXPECT().GetRecentMessages(gomock.Any(), "c1", 10).Return([]*dapo.ConversationMsgPO{
 			{ID: "m2", ConversationID: "c1", Role: cdaenum.MsgRoleAssistant, Content: &assistantOtherObj},
 		}, nil)
 

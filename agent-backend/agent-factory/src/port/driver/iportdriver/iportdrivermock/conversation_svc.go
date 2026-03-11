@@ -103,7 +103,7 @@ func (mr *MockIConversationSvcMockRecorder) GetHistory(ctx, id, limit, regenerat
 }
 
 // GetHistoryV2 mocks base method.
-func (m *MockIConversationSvc) GetHistoryV2(ctx context.Context, id string, historyConfig *daconfvalobj.HistoryConfig, regenerateUserMsgID, regenerateAssistantMsgID string) ([]*comvalobj.LLMMessage, error) {
+func (m *MockIConversationSvc) GetHistoryV2(ctx context.Context, id string, historyConfig *daconfvalobj.ConversationHistoryConfig, regenerateUserMsgID, regenerateAssistantMsgID string) ([]*comvalobj.LLMMessage, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetHistoryV2", ctx, id, historyConfig, regenerateUserMsgID, regenerateAssistantMsgID)
 	ret0, _ := ret[0].([]*comvalobj.LLMMessage)

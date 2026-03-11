@@ -2,8 +2,6 @@ package chatopt
 
 import (
 	"fmt"
-
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 )
 
 type ChatOption struct {
@@ -14,8 +12,6 @@ type ChatOption struct {
 	IsNeedDocRetrivalPostProcess bool `json:"is_need_doc_retrival_post_process"` // 是否需要文档检索后处理
 
 	IsNeedProgress bool `json:"is_need_progress"` // 是否需要progress
-
-	HistoryConfig *daconfvalobj.HistoryConfig `json:"history_config"` // 历史对话配置
 }
 
 func (o *ChatOption) Check(isDebugMode bool) (err error) {

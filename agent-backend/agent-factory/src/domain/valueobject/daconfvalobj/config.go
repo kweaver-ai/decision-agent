@@ -12,41 +12,50 @@ import (
 	"github.com/pkg/errors"
 )
 
-// HistoryConfig 历史对话配置
-type HistoryConfig struct {
-	Strategy   cdaenum.HistoryStrategy `json:"strategy"`    // 历史对话策略：none(无历史), count(按数量), time_window(按时间窗口-预留), token(按token-预留)
-	Limit      int                     `json:"limit"`       // 历史上下文限制，默认8轮，范围0-20（0表示使用默认值DefaultHistoryLimit），仅在strategy=count时生效
-	TimeWindow *int                    `json:"time_window"` // 时间窗口（单位：分钟），仅在strategy=time_window时生效（预留），为空时表示未设置
-	TokenLimit *int                    `json:"token_limit"` // Token限制，仅在strategy=token时生效（预留），为空时表示未设置
+// ConversationHistoryConfig 会话历史配置
+type ConversationHistoryConfig struct {
+	Strategy         cdaenum.HistoryStrategy `json:"strategy"`           // 会话历史策略：none(无历史), count(按数量), time_window(按时间窗口-预留), token(按token-预留)
+	CountParams      *CountParams            `json:"count_params"`       // count策略参数
+	TimeWindowParams *TimeWindowParams       `json:"time_window_params"` // time_window策略参数（预留）
+	TokenLimitParams *TokenLimitParams       `json:"token_limit_params"` // token_limit策略参数（预留）
 }
 
-func (h *HistoryConfig) ValObjCheck() (err error) {
-	if h == nil {
-		return
-	}
+type CountParams struct {
+	CountLimit int `json:"count_limit"` // 消息数量限制，默认10条，范围0-1000（0表示使用默认值DefaultHistoryLimit）
+}
 
-	if err = h.Strategy.EnumCheck(); err != nil {
-		return
-	}
+type TimeWindowParams struct{} // 预留
 
-	switch h.Strategy {
-	case cdaenum.HistoryStrategyNone:
-	case cdaenum.HistoryStrategyCount:
-		if h.Limit < 0 || h.Limit > constant.MaxHistoryLimit {
-			err = errors.New(fmt.Sprintf("[HistoryConfig]: limit must be between 0 and %d when strategy is count (0 means use default value %d)", constant.MaxHistoryLimit, constant.DefaultHistoryLimit))
+type TokenLimitParams struct{} // 预留
+
+func (h *ConversationHistoryConfig) ValObjCheck() (err error) {
+	// 1. 检查 count 策略参数
+	if h.Strategy == cdaenum.HistoryStrategyCount {
+		if h.CountParams == nil {
+			h.CountParams = &CountParams{}
+		}
+		if h.CountParams.CountLimit < 0 || h.CountParams.CountLimit > constant.MaxHistoryLimit {
+			err = errors.New(fmt.Sprintf("[ConversationHistoryConfig]: count_limit must be between 0 and %d when strategy is count (0 means use default value %d)", constant.MaxHistoryLimit, constant.DefaultHistoryLimit))
 			return
 		}
-		if h.Limit == 0 {
-			h.Limit = constant.DefaultHistoryLimit
+		// 0 表示使用默认值
+		if h.CountParams.CountLimit == 0 {
+			h.CountParams.CountLimit = constant.DefaultHistoryLimit
 		}
-	case cdaenum.HistoryStrategyTimeWindow:
-		if h.TimeWindow == nil || *h.TimeWindow <= 0 {
-			err = errors.New("[HistoryConfig]: time_window must be greater than 0 when strategy is time_window")
+	}
+
+	// 2. 检查 time_window 策略参数
+	if h.Strategy == cdaenum.HistoryStrategyTimeWindow {
+		if h.TimeWindowParams == nil {
+			err = errors.New("[ConversationHistoryConfig]: time_window_params is required when strategy is time_window")
 			return
 		}
-	case cdaenum.HistoryStrategyToken:
-		if h.TokenLimit == nil || *h.TokenLimit <= 0 {
-			err = errors.New("[HistoryConfig]: token_limit must be greater than 0 when strategy is token")
+	}
+
+	// 3. 检查 token 策略参数
+	if h.Strategy == cdaenum.HistoryStrategyToken {
+		if h.TokenLimitParams == nil {
+			err = errors.New("[ConversationHistoryConfig]: token_limit_params is required when strategy is token")
 			return
 		}
 	}
@@ -75,7 +84,7 @@ type Config struct {
 	RelatedQuestion      *RelatedQuestion      `json:"related_question"`           // 相关问题配置
 	PlanMode             *PlanMode             `json:"plan_mode"`                  // 任务规划模式配置
 
-	HistoryConfig *HistoryConfig `json:"history_config"` // 历史对话配置
+	HistoryConfig *ConversationHistoryConfig `json:"history_config"` // 会话历史配置
 
 	Metadata ConfigMetadata `json:"metadata"` // 配置元数据
 }
@@ -215,9 +224,9 @@ func (p *Config) ValObjCheckWithCtx(ctx context.Context, isPrivateAPI bool) (err
 
 	// 14. 如果HistoryConfig为空，创建默认配置
 	if p.HistoryConfig == nil {
-		p.HistoryConfig = &HistoryConfig{
-			Strategy: cdaenum.HistoryStrategyCount,
-			Limit:    constant.DefaultHistoryLimit,
+		p.HistoryConfig = &ConversationHistoryConfig{
+			Strategy:    cdaenum.HistoryStrategyCount,
+			CountParams: &CountParams{CountLimit: constant.DefaultHistoryLimit},
 		}
 	}
 

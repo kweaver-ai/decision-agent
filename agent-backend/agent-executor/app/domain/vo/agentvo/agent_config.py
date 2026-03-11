@@ -48,9 +48,6 @@ class AgentConfigVo(BaseModel):
     # 通过请求参数传入
     agent_version: Optional[str] = None
 
-    # 历史对话配置
-    history_config: Optional[Dict[str, Any]] = None
-
     @validator("skills", pre=True, always=True)
     def validate_skills(cls, v):
         """验证skills字段，如果传入null则转换为SkillVo对象"""
