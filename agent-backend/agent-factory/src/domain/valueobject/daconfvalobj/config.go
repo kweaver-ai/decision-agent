@@ -16,8 +16,8 @@ import (
 type HistoryConfig struct {
 	Strategy   cdaenum.HistoryStrategy `json:"strategy"`    // 历史对话策略：none(无历史), count(按数量), time_window(按时间窗口-预留), token(按token-预留)
 	Limit      int                     `json:"limit"`       // 历史上下文限制，默认8轮，范围0-20（0表示使用默认值DefaultHistoryLimit），仅在strategy=count时生效
-	TimeWindow int                     `json:"time_window"` // 时间窗口（单位：分钟），仅在strategy=time_window时生效（预留）
-	TokenLimit int                     `json:"token_limit"` // Token限制，仅在strategy=token时生效（预留）
+	TimeWindow *int                    `json:"time_window"` // 时间窗口（单位：分钟），仅在strategy=time_window时生效（预留），为空时表示未设置
+	TokenLimit *int                    `json:"token_limit"` // Token限制，仅在strategy=token时生效（预留），为空时表示未设置
 }
 
 func (h *HistoryConfig) ValObjCheck() (err error) {
@@ -40,12 +40,12 @@ func (h *HistoryConfig) ValObjCheck() (err error) {
 			h.Limit = constant.DefaultHistoryLimit
 		}
 	case cdaenum.HistoryStrategyTimeWindow:
-		if h.TimeWindow <= 0 {
+		if h.TimeWindow == nil || *h.TimeWindow <= 0 {
 			err = errors.New("[HistoryConfig]: time_window must be greater than 0 when strategy is time_window")
 			return
 		}
 	case cdaenum.HistoryStrategyToken:
-		if h.TokenLimit <= 0 {
+		if h.TokenLimit == nil || *h.TokenLimit <= 0 {
 			err = errors.New("[HistoryConfig]: token_limit must be greater than 0 when strategy is token")
 			return
 		}

@@ -70,7 +70,6 @@ func TestGetHistory_EdgeCaseLogic(t *testing.T) {
 			if limit == 0 {
 				limit = constant.DefaultHistoryLimit
 			}
-			limit = limit * 2
 
 			if len(history) == 0 || limit == -1 {
 				assert.Equal(t, tt.expectedLength, len(history))
