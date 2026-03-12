@@ -2,13 +2,62 @@ package daconfvalobj
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj/datasourcevalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj/skillvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/pkg/errors"
 )
+
+// ConversationHistoryConfig 会话历史配置
+type ConversationHistoryConfig struct {
+	Strategy         cdaenum.HistoryStrategy `json:"strategy"`           // 会话历史策略：none(无历史), count(按数量), time_window(按时间窗口-预留), token(按token-预留)
+	CountParams      *CountParams            `json:"count_params"`       // count策略参数
+	TimeWindowParams *TimeWindowParams       `json:"time_window_params"` // time_window策略参数（预留）
+	TokenLimitParams *TokenLimitParams       `json:"token_limit_params"` // token_limit策略参数（预留）
+}
+
+type CountParams struct {
+	CountLimit int `json:"count_limit"` // 消息数量限制，默认10条，范围1-1000
+}
+
+type TimeWindowParams struct{} // 预留
+
+type TokenLimitParams struct{} // 预留
+
+func (h *ConversationHistoryConfig) ValObjCheck() (err error) {
+	// 1. 检查 count 策略参数
+	if h.Strategy == cdaenum.HistoryStrategyCount {
+		if h.CountParams == nil {
+			h.CountParams = &CountParams{CountLimit: constant.DefaultHistoryLimit}
+		}
+		if h.CountParams.CountLimit < 1 || h.CountParams.CountLimit > constant.MaxHistoryLimit {
+			err = errors.New(fmt.Sprintf("[ConversationHistoryConfig]: count_limit must be between 1 and %d when strategy is count", constant.MaxHistoryLimit))
+			return
+		}
+	}
+
+	// 2. 检查 time_window 策略参数
+	if h.Strategy == cdaenum.HistoryStrategyTimeWindow {
+		if h.TimeWindowParams == nil {
+			err = errors.New("[ConversationHistoryConfig]: time_window_params is required when strategy is time_window")
+			return
+		}
+	}
+
+	// 3. 检查 token 策略参数
+	if h.Strategy == cdaenum.HistoryStrategyToken {
+		if h.TokenLimitParams == nil {
+			err = errors.New("[ConversationHistoryConfig]: token_limit_params is required when strategy is token")
+			return
+		}
+	}
+
+	return
+}
 
 // Config 表示agent配置
 type Config struct {
@@ -30,6 +79,8 @@ type Config struct {
 	MemoryCfg            *MemoryCfg            `json:"memory"`                     // 长期记忆配置
 	RelatedQuestion      *RelatedQuestion      `json:"related_question"`           // 相关问题配置
 	PlanMode             *PlanMode             `json:"plan_mode"`                  // 任务规划模式配置
+
+	ConversationHistoryConfig *ConversationHistoryConfig `json:"conversation_history_config"` // 会话历史配置
 
 	Metadata ConfigMetadata `json:"metadata"` // 配置元数据
 }
@@ -157,6 +208,20 @@ func (p *Config) ValObjCheckWithCtx(ctx context.Context, isPrivateAPI bool) (err
 			err = errors.New("[Config]: plan_mode is invalid when is_dolphin_mode is true")
 			return
 		}
+	}
+
+	// 13. 验证conversation_history_config配置（如果为空则使用默认值）
+	if p.ConversationHistoryConfig == nil {
+		p.ConversationHistoryConfig = &ConversationHistoryConfig{
+			Strategy:    cdaenum.HistoryStrategyCount,
+			CountParams: &CountParams{CountLimit: constant.DefaultHistoryLimit},
+		}
+	}
+
+	// 14. 验证conversation_history_config内部配置
+	if err = p.ConversationHistoryConfig.ValObjCheck(); err != nil {
+		err = errors.Wrap(err, "[Config]: conversation_history_config is invalid")
+		return
 	}
 
 	return

@@ -10,7 +10,6 @@ import (
 	"github.com/pkg/errors"
 )
 
-// DataAgent PO转EO
 func Conversation(ctx context.Context, _po *dapo.ConversationPO, conversationMsgRepo idbaccess.IConversationMsgRepo, withMsg bool) (eo *conversationeo.Conversation, err error) {
 	eo = &conversationeo.Conversation{
 		ConversationPO: _po,
@@ -24,6 +23,21 @@ func Conversation(ctx context.Context, _po *dapo.ConversationPO, conversationMsg
 
 		eo.Messages = msgPOList
 	}
+
+	return
+}
+
+func ConversationWithLimit(ctx context.Context, _po *dapo.ConversationPO, conversationMsgRepo idbaccess.IConversationMsgRepo, limit int) (eo *conversationeo.Conversation, err error) {
+	eo = &conversationeo.Conversation{
+		ConversationPO: _po,
+	}
+
+	msgPOList, err := conversationMsgRepo.GetRecentMessages(ctx, _po.ID, limit)
+	if err != nil {
+		return nil, errors.Wrapf(err, "查询对话消息失败")
+	}
+
+	eo.Messages = msgPOList
 
 	return
 }

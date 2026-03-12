@@ -196,19 +196,6 @@ func TestInternalParam_Empty(t *testing.T) {
 	assert.Empty(t, param.SandboxSessionID)
 }
 
-func TestChatReq_WithHistoryLimit(t *testing.T) {
-	t.Parallel()
-
-	limits := []int{0, 5, 10, 20, 50}
-
-	for _, limit := range limits {
-		req := &ChatReq{
-			HistoryLimit: limit,
-		}
-		assert.Equal(t, limit, req.HistoryLimit)
-	}
-}
-
 func TestChatReq_WithExecutorVersion(t *testing.T) {
 	t.Parallel()
 

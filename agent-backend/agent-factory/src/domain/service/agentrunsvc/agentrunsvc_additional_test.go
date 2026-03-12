@@ -715,7 +715,7 @@ func TestAgentSvc_GetHistoryAndMsgIndex_ExistingConversation_MaxIndexNotFound(t 
 
 	ctx := context.Background()
 	req := &agentreq.ChatReq{ConversationID: "conv-1"}
-	_, _, idx, err := svc.GetHistoryAndMsgIndex(ctx, req)
+	_, _, idx, err := svc.GetHistoryAndMsgIndex(ctx, req, 0, nil)
 	// record not found is not sql.ErrNoRows so it will be treated as general error
 	assert.Error(t, err)
 
