@@ -82,6 +82,31 @@ spec:
                 valueFrom:
                   fieldRef:
                     fieldPath: status.hostIP
+              - name: RDSHOST
+                valueFrom:
+                  configMapKeyRef:
+                    key: RDSHOST
+                    name: agent-memory-yaml
+              - name: RDSPORT
+                valueFrom:
+                  configMapKeyRef:
+                    key: RDSPORT
+                    name: agent-memory-yaml
+              - name: RDSUSER
+                valueFrom:
+                  configMapKeyRef:
+                    key: RDSUSER
+                    name: agent-memory-yaml
+              - name: RDSPASS
+                valueFrom:
+                  configMapKeyRef:
+                    key: RDSPASS
+                    name: agent-memory-yaml
+              - name: RDSDBNAME
+                valueFrom:
+                  configMapKeyRef:
+                    key: RDSDBNAME
+                    name: agent-memory-yaml
               - name: TRACE_URL
                 valueFrom:
                   configMapKeyRef:
@@ -116,6 +141,26 @@ spec:
                 valueFrom:
                   configMapKeyRef:
                     key: GRAPHDB_PASSWORD
+                    name: agent-memory-yaml
+              - name: OPENSEARCH_HOST
+                valueFrom:
+                  configMapKeyRef:
+                    key: OPENSEARCH_HOST
+                    name: agent-memory-yaml
+              - name: OPENSEARCH_PORT
+                valueFrom:
+                  configMapKeyRef:
+                    key: OPENSEARCH_PORT
+                    name: agent-memory-yaml
+              - name: OPENSEARCH_USER
+                valueFrom:
+                  configMapKeyRef:
+                    key: OPENSEARCH_USER
+                    name: agent-memory-yaml
+              - name: OPENSEARCH_PASS
+                valueFrom:
+                  configMapKeyRef:
+                    key: OPENSEARCH_PASS
                     name: agent-memory-yaml
               {{- if eq .Values.depServices.graphDatabase.type "nebulaGraph" }}
               - name: GRAPHDB_READ_ONLY_USER
