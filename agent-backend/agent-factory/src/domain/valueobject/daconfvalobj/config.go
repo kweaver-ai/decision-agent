@@ -34,13 +34,9 @@ func (h *ConversationHistoryConfig) ValObjCheck() (err error) {
 		if h.CountParams == nil {
 			h.CountParams = &CountParams{}
 		}
-		if h.CountParams.CountLimit < 0 || h.CountParams.CountLimit > constant.MaxHistoryLimit {
-			err = errors.New(fmt.Sprintf("[ConversationHistoryConfig]: count_limit must be between 0 and %d when strategy is count (0 means use default value %d)", constant.MaxHistoryLimit, constant.DefaultHistoryLimit))
+		if h.CountParams.CountLimit < 1 || h.CountParams.CountLimit > constant.MaxHistoryLimit {
+			err = errors.New(fmt.Sprintf("[ConversationHistoryConfig]: count_limit must be between 1 and %d when strategy is count (0 means use default value %d)", constant.MaxHistoryLimit, constant.DefaultHistoryLimit))
 			return
-		}
-		// 0 表示使用默认值
-		if h.CountParams.CountLimit == 0 {
-			h.CountParams.CountLimit = constant.DefaultHistoryLimit
 		}
 	}
 
@@ -84,7 +80,7 @@ type Config struct {
 	RelatedQuestion      *RelatedQuestion      `json:"related_question"`           // 相关问题配置
 	PlanMode             *PlanMode             `json:"plan_mode"`                  // 任务规划模式配置
 
-	HistoryConfig *ConversationHistoryConfig `json:"history_config"` // 会话历史配置
+	ConversationHistoryConfig *ConversationHistoryConfig `json:"conversation_history_config"` // 会话历史配置
 
 	Metadata ConfigMetadata `json:"metadata"` // 配置元数据
 }
@@ -214,24 +210,24 @@ func (p *Config) ValObjCheckWithCtx(ctx context.Context, isPrivateAPI bool) (err
 		}
 	}
 
-	// 13. 验证history_config配置
-	if p.HistoryConfig != nil {
-		if err = p.HistoryConfig.ValObjCheck(); err != nil {
-			err = errors.Wrap(err, "[Config]: history_config is invalid")
+	// 13. 验证conversation_history_config配置
+	if p.ConversationHistoryConfig != nil {
+		if err = p.ConversationHistoryConfig.ValObjCheck(); err != nil {
+			err = errors.Wrap(err, "[Config]: conversation_history_config is invalid")
 			return
 		}
 	}
 
-	// 14. 如果HistoryConfig为空，创建默认配置
-	if p.HistoryConfig == nil {
-		p.HistoryConfig = &ConversationHistoryConfig{
+	// 14. 如果ConversationHistoryConfig为空，创建默认配置
+	if p.ConversationHistoryConfig == nil {
+		p.ConversationHistoryConfig = &ConversationHistoryConfig{
 			Strategy:    cdaenum.HistoryStrategyCount,
 			CountParams: &CountParams{CountLimit: constant.DefaultHistoryLimit},
 		}
 	}
 
 	// 15. 验证history_config内部配置
-	if err = p.HistoryConfig.ValObjCheck(); err != nil {
+	if err = p.ConversationHistoryConfig.ValObjCheck(); err != nil {
 		err = errors.Wrap(err, "[Config]: history_config is invalid")
 		return
 	}

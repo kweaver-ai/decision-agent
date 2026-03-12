@@ -92,12 +92,11 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 
 	// NOTE: 设置历史上下文限制，从 Agent 配置中获取
 	historyLimit := constant.DefaultHistoryLimit
-	if agentInfo.Config.HistoryConfig != nil && agentInfo.Config.HistoryConfig.CountParams != nil && agentInfo.Config.HistoryConfig.CountParams.CountLimit > 0 {
-		historyLimit = agentInfo.Config.HistoryConfig.CountParams.CountLimit
+	if agentInfo.Config.ConversationHistoryConfig != nil && agentInfo.Config.ConversationHistoryConfig.CountParams != nil && agentInfo.Config.ConversationHistoryConfig.CountParams.CountLimit > 0 {
+		historyLimit = agentInfo.Config.ConversationHistoryConfig.CountParams.CountLimit
 	}
 
-	// NOTE: 2. 获取历史上下文
-	conversationPO, contexts, msgIndex, err := agentSvc.GetHistoryAndMsgIndex(newCtx, req, historyLimit, agentInfo.Config.HistoryConfig)
+	conversationPO, contexts, msgIndex, err := agentSvc.GetHistoryAndMsgIndex(newCtx, req, historyLimit, agentInfo.Config.ConversationHistoryConfig)
 	if err != nil {
 		o11y.Error(newCtx, fmt.Sprintf("[chat] get history and msg index failed: %v", err))
 		return nil, err
