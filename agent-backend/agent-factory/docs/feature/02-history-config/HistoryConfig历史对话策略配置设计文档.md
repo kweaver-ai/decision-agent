@@ -90,7 +90,7 @@
 |------|------|------|--------|------|
 | strategy | string | 是 | "count" | 历史策略：none/count/time_window/token |
 | count_params | object | 否 | {"count_limit": 10} | count策略参数 |
-| count_params.count_limit | int | 否 | 10 | 消息数量限制，范围0-1000，0使用默认值 |
+| count_params.count_limit | int | 否 | 10 | 消息数量限制，范围1-1000|
 | time_window_params | object | 否 | {} | time_window策略参数（预留） |
 | time_window_params.time_window | int | 否 | null | 时间窗口（分钟） |
 | token_limit_params | object | 否 | {} | token策略参数（预留） |
