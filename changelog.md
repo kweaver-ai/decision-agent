@@ -7,9 +7,9 @@
   - Implement directory permission handling with 0o755 mode
   - Add write permission check for LOG_DIR with appropriate error handling
   - Add unit tests for new permission checking logic
-- Add backward compatibility support for agent router v1 in `agent-executor`
+- Fix missing agent router v1 registration in `agent-executor`
   - Import and register agent_router_v1 alongside existing v2 router
-  - Maintain API compatibility for existing v1 clients
+  - Restore complete API routing functionality for v1 endpoints
 
 ## 0.3.6
 

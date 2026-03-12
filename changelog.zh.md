@@ -7,9 +7,9 @@
   - 实现目录权限处理，使用 0o755 模式
   - 添加 LOG_DIR 写权限检查和适当的错误处理
   - 为新权限检查逻辑添加单元测试
-- 在 `agent-executor` 中添加 agent router v1 的向后兼容支持
+- 修复 `agent-executor` 中缺少的 agent router v1 注册
   - 导入并注册 agent_router_v1，与现有的 v2 路由并存
-  - 为现有 v1 客户端维护 API 兼容性
+  - 恢复 v1 端点的完整 API 路由功能
 
 ## 0.3.6
 
