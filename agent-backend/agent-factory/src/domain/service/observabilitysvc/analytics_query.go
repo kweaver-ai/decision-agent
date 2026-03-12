@@ -75,7 +75,7 @@ func (s *observabilitySvc) getAgentMetrics(ctx context.Context, req *observabili
 	// 2. 获取Agent配置
 	var agentConfig daconfvalobj.Config
 
-	agentInfo, agentErr := s.squareSvc.GetAgentInfo(ctx, &squarereq.AgentInfoReq{
+	agentInfo, agentErr := s.squareSvc.GetAgentInfoByIDOrKey(ctx, &squarereq.AgentInfoReq{
 		AgentID:      req.ID,
 		AgentVersion: "latest",
 	})
@@ -183,7 +183,7 @@ func (s *observabilitySvc) getSessionMetrics(ctx context.Context, req *observabi
 		if len(runListResp.Entries) > 0 {
 			agentID := runListResp.Entries[0].AgentID
 
-			agentInfo, agentErr := s.squareSvc.GetAgentInfo(ctx, &squarereq.AgentInfoReq{
+			agentInfo, agentErr := s.squareSvc.GetAgentInfoByIDOrKey(ctx, &squarereq.AgentInfoReq{
 				AgentID:      agentID,
 				AgentVersion: "latest",
 			})
