@@ -32,21 +32,12 @@ func ConversationWithLimit(ctx context.Context, _po *dapo.ConversationPO, conver
 		ConversationPO: _po,
 	}
 
-	if limit > 0 {
-		msgPOList, err := conversationMsgRepo.GetRecentMessages(ctx, _po.ID, limit)
-		if err != nil {
-			return nil, errors.Wrapf(err, "查询对话消息失败")
-		}
-
-		eo.Messages = msgPOList
-	} else {
-		msgPOList, err := conversationMsgRepo.List(ctx, conversationmsgreq.ListReq{ConversationID: _po.ID})
-		if err != nil {
-			return nil, errors.Wrapf(err, "查询对话消息失败")
-		}
-
-		eo.Messages = msgPOList
+	msgPOList, err := conversationMsgRepo.GetRecentMessages(ctx, _po.ID, limit)
+	if err != nil {
+		return nil, errors.Wrapf(err, "查询对话消息失败")
 	}
+
+	eo.Messages = msgPOList
 
 	return
 }

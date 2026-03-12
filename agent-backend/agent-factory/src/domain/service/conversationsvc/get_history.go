@@ -62,7 +62,7 @@ func (svc *conversationSvc) GetHistory(ctx context.Context, id string, limit int
 	o11y.SetAttributes(ctx, attribute.String("conversation_id", id))
 
 	// NOTE: 如果不需要regenerate，则使用DetailWithLimit减少数据库查询
-	if regenerateUserMsgID == "" && regenerateAssistantMsgID == "" && limit > 0 {
+	if regenerateUserMsgID == "" && regenerateAssistantMsgID == "" {
 		conversation, err := svc.DetailWithLimit(ctx, id, limit)
 		if err != nil {
 			o11y.Error(ctx, fmt.Sprintf("[GetHistory] get conversation detail error, id: %s, err: %v", id, err))
@@ -131,11 +131,7 @@ func (svc *conversationSvc) GetHistory(ctx context.Context, id string, limit int
 			}
 		}
 
-		if limit == 0 {
-			limit = constant.DefaultHistoryLimit
-		}
-
-		if len(history) == 0 || limit == -1 {
+		if len(history) == 0 {
 			return history, nil
 		}
 
@@ -146,7 +142,7 @@ func (svc *conversationSvc) GetHistory(ctx context.Context, id string, limit int
 		return history[len(history)-limit:], nil
 	}
 
-	// NOTE: 需要regenerate或limit<=0时，使用原来的全量查询逻辑
+	// NOTE: 需要regenerate时，使用原来的全量查询逻辑
 	conversation, err := svc.Detail(ctx, id)
 	if err != nil {
 		o11y.Error(ctx, fmt.Sprintf("[GetHistory] get conversation detail error, id: %s, err: %v", id, err))
@@ -227,11 +223,7 @@ func (svc *conversationSvc) GetHistory(ctx context.Context, id string, limit int
 		}
 	}
 
-	if limit == 0 {
-		limit = constant.DefaultHistoryLimit
-	}
-
-	if len(history) == 0 || limit == -1 {
+	if len(history) == 0 {
 		return history, nil
 	}
 
