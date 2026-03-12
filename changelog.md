@@ -7,6 +7,9 @@
   - Implement directory permission handling with 0o755 mode
   - Add write permission check for LOG_DIR with appropriate error handling
   - Add unit tests for new permission checking logic
+- Add backward compatibility support for agent router v1 in `agent-executor`
+  - Import and register agent_router_v1 alongside existing v2 router
+  - Maintain API compatibility for existing v1 clients
 
 ## 0.3.6
 
@@ -51,10 +54,6 @@
 - Clear InterruptInfo from Ext when resuming interrupted chat
 - Fix route matching errors when agent-web runs independently
 - Fix static resource loading errors when agent-web runs independently
-- Fix Agent conversation error when memory function is enabled
-- Add dbutilsx dependency and refactor memory configuration parsing
-- Update numpy minimum version to 1.23.5 for compatibility
-- Fix memory retrieval reranking error when relevance_score is None
 
 ### Refactoring & Cleanup
 
