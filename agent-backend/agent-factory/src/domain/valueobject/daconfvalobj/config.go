@@ -32,10 +32,10 @@ func (h *ConversationHistoryConfig) ValObjCheck() (err error) {
 	// 1. 检查 count 策略参数
 	if h.Strategy == cdaenum.HistoryStrategyCount {
 		if h.CountParams == nil {
-			h.CountParams = &CountParams{}
+			h.CountParams = &CountParams{CountLimit: constant.DefaultHistoryLimit}
 		}
 		if h.CountParams.CountLimit < 1 || h.CountParams.CountLimit > constant.MaxHistoryLimit {
-			err = errors.New(fmt.Sprintf("[ConversationHistoryConfig]: count_limit must be between 1 and %d when strategy is count (0 means use default value %d)", constant.MaxHistoryLimit, constant.DefaultHistoryLimit))
+			err = errors.New(fmt.Sprintf("[ConversationHistoryConfig]: count_limit must be between 1 and %d when strategy is count", constant.MaxHistoryLimit))
 			return
 		}
 	}
@@ -210,15 +210,7 @@ func (p *Config) ValObjCheckWithCtx(ctx context.Context, isPrivateAPI bool) (err
 		}
 	}
 
-	// 13. 验证conversation_history_config配置
-	if p.ConversationHistoryConfig != nil {
-		if err = p.ConversationHistoryConfig.ValObjCheck(); err != nil {
-			err = errors.Wrap(err, "[Config]: conversation_history_config is invalid")
-			return
-		}
-	}
-
-	// 14. 如果ConversationHistoryConfig为空，创建默认配置
+	// 13. 验证conversation_history_config配置（如果为空则使用默认值）
 	if p.ConversationHistoryConfig == nil {
 		p.ConversationHistoryConfig = &ConversationHistoryConfig{
 			Strategy:    cdaenum.HistoryStrategyCount,
@@ -226,9 +218,9 @@ func (p *Config) ValObjCheckWithCtx(ctx context.Context, isPrivateAPI bool) (err
 		}
 	}
 
-	// 15. 验证history_config内部配置
+	// 14. 验证conversation_history_config内部配置
 	if err = p.ConversationHistoryConfig.ValObjCheck(); err != nil {
-		err = errors.Wrap(err, "[Config]: history_config is invalid")
+		err = errors.Wrap(err, "[Config]: conversation_history_config is invalid")
 		return
 	}
 
