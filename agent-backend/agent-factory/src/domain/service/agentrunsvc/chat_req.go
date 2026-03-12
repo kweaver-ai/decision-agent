@@ -48,6 +48,7 @@ func (agentSvc *agentSvc) GenerateAgentCallReq(ctx context.Context, req *agentre
 		contexts = append(contexts, contextMsg)
 	}
 
+	// NOTE: 动态字段 file  和 自定义变量
 	agentCallReq := &agentexecutordto.AgentCallReq{
 		ID:           req.AgentID,
 		AgentVersion: req.AgentVersion,
@@ -62,6 +63,7 @@ func (agentSvc *agentSvc) GenerateAgentCallReq(ctx context.Context, req *agentre
 		XAccountID:        req.XAccountID,
 		XAccountType:      req.XAccountType,
 		XBusinessDomainID: req.XBusinessDomainID,
+		// ConversationSessionID: req.ConversationSessionID,
 		ChatOption: chatopt.ChatOption{
 			EnableDependencyCache: req.ChatOption.EnableDependencyCache,
 			// IsNeedDocRetrivalPostProcess: req.ChatOption.IsNeedDocRetrivalPostProcess,

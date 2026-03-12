@@ -21,7 +21,7 @@ type ConversationHistoryConfig struct {
 }
 
 type CountParams struct {
-	CountLimit int `json:"count_limit"` // 消息数量限制，默认10条，范围0-1000（0表示使用默认值DefaultHistoryLimit）
+	CountLimit int `json:"count_limit"` // 消息数量限制，默认10条，范围1-1000
 }
 
 type TimeWindowParams struct{} // 预留

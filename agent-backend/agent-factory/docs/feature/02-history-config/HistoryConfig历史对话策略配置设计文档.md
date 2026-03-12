@@ -13,6 +13,10 @@
 - 无法灵活配置不同策略
 - 预留策略（时间窗口、token）的扩展性不足
 
+注意：
+- 本设计文档仅关注会话历史策略配置，不涉及其他功能模块
+- 本设计文档不涉及历史对话的存储和检索，仅关注历史策略的配置
+- 本设计文档设计的会话历史策略配置管控的是Agent配置层，跟dolphin sdk中的explore模式提供的参数history=true并不等同。这是2个不同的控制维度。
 ---
 
 ## 2. 目标
@@ -26,7 +30,7 @@
    - `time_window`：按时间窗口获取（预留）
    - `token`：按 token 数量限制（预留）
 3. **前后端配置一致性**：确保 Agent 配置在创建、获取、运行时保持一致
-4. **可扩展性设计**：预留策略字段使用指针类型，未设置时返回 `null`
+4. **可扩展性设计**：预留策略字段使用空结构体，未设置时返回 `null`
 
 ### 2.2 非目标
 
@@ -71,7 +75,7 @@
 
 ```json
 {
-  "history_config": {
+  "conversation_history_config": {
     "strategy": "count",             // 策略类型：none/count/time_window/token
     "count_params": {
       "count_limit": 10              // 消息数量限制（strategy=count时生效）
@@ -115,7 +119,7 @@ sequenceDiagram
     participant DB as 数据库
 
     User->>Frontend: 配置 Agent 历史策略
-    Frontend->>Factory: 创建/更新 Agent (含 history_config)
+    Frontend->>Factory: 创建/更新 Agent (含 conversation_history_config)
     Factory->>Factory: 校验 ConversationHistoryConfig 参数
     Factory->>DB: 保存 Agent 配置
     DB-->>Factory: 保存成功
@@ -187,7 +191,7 @@ sequenceDiagram
   "agent_config": {
     "input": {...},
     "system_prompt": "...",
-    "history_config": {
+    "conversation_history_config": {
       "strategy": "count",
       "count_params": {
         "count_limit": 10
@@ -210,7 +214,7 @@ sequenceDiagram
   "agent_config": {
     "input": {...},
     "system_prompt": "...",
-    "history_config": {
+    "conversation_history_config": {
       "strategy": "count",
       "count_params": {
         "count_limit": 10
@@ -284,11 +288,11 @@ type TokenLimitParams struct {
 
 | 场景 | 步骤 | 预期结果 |
 |------|------|----------|
-| 创建 Agent 时设置 history_config | 1. POST /v1/agent/create，传入 history_config<br/>2. GET /v1/agent/config/{id} | 配置正确保存并返回 |
-| 不传 history_config 时使用默认值 | 1. POST /v1/agent/create，不传 history_config<br/>2. GET /v1/agent/config/{id} | 返回默认策略 `count`，`count_params.count_limit=10` |
-| 设置 strategy=none | 1. 设置 history_config.strategy="none"<br/>2. 运行 Agent | 历史为空 |
-| 设置 strategy=count, count_limit=5 | 1. 设置 history_config.strategy="count", count_params.count_limit=5<br/>2. 运行 Agent | 历史为最近5条消息 |
-| 设置无效 count_limit 值 | 1. 设置 history_config.count_params.count_limit=-1 | 返回参数校验错误 |
+| 创建 Agent 时设置 conversation_history_config | 1. POST /v1/agent/create，传入 conversation_history_config<br/>2. GET /v1/agent/config/{id} | 配置正确保存并返回 |
+| 不传 conversation_history_config 时使用默认值 | 1. POST /v1/agent/create，不传 conversation_history_config<br/>2. GET /v1/agent/config/{id} | 返回默认策略 `count`，`count_params.count_limit=10` |
+| 设置 strategy=none | 1. 设置 conversation_history_config.strategy="none"<br/>2. 运行 Agent | 历史为空 |
+| 设置 strategy=count, count_limit=5 | 1. 设置 conversation_history_config.strategy="count", count_params.count_limit=5<br/>2. 运行 Agent | 历史为最近5条消息 |
+| 设置无效 count_limit 值 | 1. 设置 conversation_history_config.count_params.count_limit=-1 | 返回参数校验错误 |
 
 ### 7.2 运行时行为
 
@@ -297,7 +301,6 @@ type TokenLimitParams struct {
 | count 策略正常工作 | 1. 配置 strategy="count", count_params.count_limit=3<br/>2. 有10条历史消息<br/>3. 运行 Agent | 只传递最近3条消息给 Dolphin |
 | none 策略返回空历史 | 1. 配置 strategy="none"<br/>2. 有10条历史消息<br/>3. 运行 Agent | history=[]，不调用历史获取方法 |
 | count_limit 超出实际消息数 | 1. 配置 strategy="count", count_params.count_limit=100<br/>2. 实际只有5条消息<br/>3. 运行 Agent | 返回全部5条消息，不报错 |
-| count_limit=0 使用默认值 | 1. 配置 strategy="count", count_params.count_limit=0<br/>2. 运行 Agent | 使用默认值10条 |
 
 ### 7.3 预留策略处理
 
@@ -310,7 +313,7 @@ type TokenLimitParams struct {
 
 | 场景 | 步骤 | 预期结果 |
 |------|------|----------|
-| 旧版本 Agent 升级 | 1. 获取历史 Agent 配置（无 history_config）<br/>2. 运行 Agent | 自动使用默认策略（count, count_params.count_limit=10） |
+| 旧版本 Agent 升级 | 1. 获取历史 Agent 配置（无 conversation_history_config）<br/>2. 运行 Agent | 自动使用默认策略（count, count_params.count_limit=10） |
 
 ---
 
