@@ -60,6 +60,7 @@ async def ready():
 
 
 # 导入路由
+from app.router.agent_controller_pkg.common import router as agent_router_v1  # noqa: E402
 from app.router.agent_controller_pkg.common_v2 import router_v2 as agent_router_v2  # noqa: E402
 from app.router.agent_controller_pkg import (  # noqa: E402
     run_agent_v2,  # noqa: F401
@@ -74,6 +75,7 @@ register_exception_handlers(app)
 
 # 注册路由
 app.include_router(agent_router_v2)
+app.include_router(agent_router_v1)
 app.include_router(tool_router)
 
 

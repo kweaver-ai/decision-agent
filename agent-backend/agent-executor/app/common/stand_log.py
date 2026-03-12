@@ -1,5 +1,6 @@
 import logging
 import time
+import stat
 
 
 from app.common.config import Config
@@ -41,8 +42,7 @@ class StandLog_logging(object):
 
     def __init__(self):
         try:
-            if not os.path.exists(LOG_DIR):
-                os.makedirs(LOG_DIR)
+            self._ensure_log_dir()
 
             if self._info_logger is None:
                 self._info_logger = logging.getLogger("agent-executor")
@@ -81,6 +81,17 @@ class StandLog_logging(object):
 
         except Exception as e:
             print("-----------------------------------logger  init error :", e)
+
+    def _ensure_log_dir(self):
+        os.makedirs(LOG_DIR, mode=0o755, exist_ok=True)
+
+        dir_mode = stat.S_IMODE(os.stat(LOG_DIR).st_mode)
+        expected_mode = dir_mode | stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR
+        if expected_mode != dir_mode:
+            os.chmod(LOG_DIR, expected_mode)
+
+        if not os.access(LOG_DIR, os.W_OK):
+            raise PermissionError(f"LOG_DIR is not writable: {LOG_DIR}")
 
     def get_request_logger(self):
         return self._fastapi_logger

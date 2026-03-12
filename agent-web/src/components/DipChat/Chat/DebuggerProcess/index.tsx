@@ -28,7 +28,9 @@ const DebuggerProcess = () => {
       skill: '技能/工具调用',
       assign: '赋值操作',
     };
-    const progressRes = _.get(sourceData, 'message.content.middle_answer.progress', []).filter((item: any) => !!item);
+    const progressRes = (_.get(sourceData, 'message.content.middle_answer.progress', []) || []).filter(
+      (item: any) => !!item
+    );
     const tempArr = [
       ...progressRes.map((item: any, index: number) => ({
         // name: item?.skill_info?.name || 'LLM',

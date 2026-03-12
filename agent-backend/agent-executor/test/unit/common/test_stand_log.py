@@ -1,6 +1,7 @@
 """单元测试 - common/stand_log 模块"""
 
 import logging
+import stat
 from unittest.mock import MagicMock, patch
 import sys
 
@@ -41,41 +42,59 @@ class TestStandLogLogging:
     """测试 StandLog_logging 类"""
 
     @patch("app.common.stand_log.Config")
-    @patch("app.common.stand_log.os.path.exists")
+    @patch("app.common.stand_log.os.access")
+    @patch("app.common.stand_log.os.stat")
+    @patch("app.common.stand_log.os.chmod")
     @patch("app.common.stand_log.os.makedirs")
     def test_init_creates_log_directory_if_not_exists(
-        self, m_makedirs, m_exists, m_config
+        self, m_makedirs, m_chmod, m_stat, m_access, m_config
     ):
         """测试日志目录不存在时创建"""
-        m_exists.return_value = False
+        m_stat.return_value.st_mode = stat.S_IRUSR | stat.S_IXUSR
+        m_access.return_value = True
         m_config.app.get_stdlib_log_level.return_value = logging.INFO
 
         from app.common.stand_log import StandLog_logging
 
         logger = StandLog_logging()
 
-        m_makedirs.assert_called_once_with("log")
+        m_makedirs.assert_called_once_with("log", mode=0o755, exist_ok=True)
+        m_chmod.assert_called_once_with(
+            "log", stat.S_IRUSR | stat.S_IWUSR | stat.S_IXUSR
+        )
         assert logger._info_logger is not None
 
     @patch("app.common.stand_log.Config")
-    @patch("app.common.stand_log.os.path.exists")
-    def test_init_with_existing_directory(self, m_exists, m_config):
+    @patch("app.common.stand_log.os.access")
+    @patch("app.common.stand_log.os.stat")
+    @patch("app.common.stand_log.os.chmod")
+    @patch("app.common.stand_log.os.makedirs")
+    def test_init_with_existing_directory(
+        self, m_makedirs, m_chmod, m_stat, m_access, m_config
+    ):
         """测试目录已存在时正常初始化"""
-        m_exists.return_value = True
+        m_stat.return_value.st_mode = 0o755
+        m_access.return_value = True
         m_config.app.get_stdlib_log_level.return_value = logging.INFO
 
         from app.common.stand_log import StandLog_logging
 
         logger = StandLog_logging()
 
+        m_makedirs.assert_called_once_with("log", mode=0o755, exist_ok=True)
+        m_chmod.assert_not_called()
         assert logger._info_logger is not None
         assert logger._fastapi_logger is not None
 
     @patch("app.common.stand_log.Config")
-    @patch("app.common.stand_log.os.path.exists")
-    def test_get_request_logger(self, m_exists, m_config):
+    @patch("app.common.stand_log.os.access")
+    @patch("app.common.stand_log.os.stat")
+    @patch("app.common.stand_log.os.chmod")
+    @patch("app.common.stand_log.os.makedirs")
+    def test_get_request_logger(self, m_makedirs, m_chmod, m_stat, m_access, m_config):
         """测试获取请求日志记录器"""
-        m_exists.return_value = True
+        m_stat.return_value.st_mode = 0o755
+        m_access.return_value = True
         m_config.app.get_stdlib_log_level.return_value = logging.INFO
 
         from app.common.stand_log import StandLog_logging
@@ -83,8 +102,33 @@ class TestStandLogLogging:
         logger = StandLog_logging()
         request_logger = logger.get_request_logger()
 
+        m_makedirs.assert_called_once_with("log", mode=0o755, exist_ok=True)
+        m_chmod.assert_not_called()
         assert request_logger is not None
         assert request_logger == logger._fastapi_logger
+
+    @patch("builtins.print")
+    @patch("app.common.stand_log.Config")
+    @patch("app.common.stand_log.os.access")
+    @patch("app.common.stand_log.os.stat")
+    @patch("app.common.stand_log.os.chmod")
+    @patch("app.common.stand_log.os.makedirs")
+    def test_init_prints_error_when_log_dir_is_not_writable(
+        self, m_makedirs, m_chmod, m_stat, m_access, m_config, m_print
+    ):
+        """测试日志目录不可写时打印初始化错误"""
+        m_stat.return_value.st_mode = 0o755
+        m_access.return_value = False
+        m_config.app.get_stdlib_log_level.return_value = logging.INFO
+
+        from app.common.stand_log import StandLog_logging
+
+        logger = StandLog_logging()
+
+        m_makedirs.assert_called_once_with("log", mode=0o755, exist_ok=True)
+        m_chmod.assert_not_called()
+        m_print.assert_called_once()
+        assert logger._info_logger is None
 
     @patch("app.common.stand_log.Config")
     @patch("app.common.stand_log.os.path.exists")
