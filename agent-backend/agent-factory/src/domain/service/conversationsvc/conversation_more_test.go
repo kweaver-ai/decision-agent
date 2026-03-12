@@ -133,9 +133,7 @@ func TestConversationSvc_ListAndDelete_MoreBranches(t *testing.T) {
 		req := conversationreq.ListReq{AgentAPPKey: "app1"}
 		po := &dapo.ConversationPO{ID: "c1", AgentAPPKey: "app1", Title: "t1"}
 		mockConvRepo.EXPECT().List(gomock.Any(), req).Return([]*dapo.ConversationPO{po}, int64(1), nil)
-		mockMsgRepo.EXPECT().GetLatestMsgByConversationID(gomock.Any(), "c1").Return(&dapo.ConversationMsgPO{
-			Status: cdaenum.MsgStatusProcessing,
-		}, nil)
+		mockMsgRepo.EXPECT().GetConversationStatus(gomock.Any(), "c1").Return("processing", nil)
 
 		resp, count, err := svc.List(context.Background(), req)
 		assert.NoError(t, err)
@@ -159,7 +157,7 @@ func TestConversationSvc_ListAndDelete_MoreBranches(t *testing.T) {
 		req := conversationreq.ListReq{AgentAPPKey: "app1"}
 		po := &dapo.ConversationPO{ID: "c1", AgentAPPKey: "app1", Title: "t1"}
 		mockConvRepo.EXPECT().List(gomock.Any(), req).Return([]*dapo.ConversationPO{po}, int64(1), nil)
-		mockMsgRepo.EXPECT().GetLatestMsgByConversationID(gomock.Any(), "c1").Return(nil, sql.ErrNoRows)
+		mockMsgRepo.EXPECT().GetConversationStatus(gomock.Any(), "c1").Return("completed", nil)
 
 		resp, _, err := svc.List(context.Background(), req)
 		assert.NoError(t, err)
@@ -181,7 +179,7 @@ func TestConversationSvc_ListAndDelete_MoreBranches(t *testing.T) {
 		req := conversationreq.ListReq{AgentAPPKey: "app1"}
 		po := &dapo.ConversationPO{ID: "c1", AgentAPPKey: "app1", Title: "t1"}
 		mockConvRepo.EXPECT().List(gomock.Any(), req).Return([]*dapo.ConversationPO{po}, int64(1), nil)
-		mockMsgRepo.EXPECT().GetLatestMsgByConversationID(gomock.Any(), "c1").Return(nil, errors.New("db failed"))
+		mockMsgRepo.EXPECT().GetConversationStatus(gomock.Any(), "c1").Return("", errors.New("db failed"))
 
 		resp, _, err := svc.List(context.Background(), req)
 		assert.Error(t, err)
@@ -190,12 +188,12 @@ func TestConversationSvc_ListAndDelete_MoreBranches(t *testing.T) {
 
 	t.Run("list latest message status mappings", func(t *testing.T) {
 		tests := []struct {
-			msgStatus cdaenum.ConversationMsgStatus
-			want      cdaenum.ConversationStatus
+			statusWant string
+			want       cdaenum.ConversationStatus
 		}{
-			{msgStatus: cdaenum.MsgStatusSucceded, want: cdaenum.ConvStatusCompleted},
-			{msgStatus: cdaenum.MsgStatusCancelled, want: cdaenum.ConvStatusCancelled},
-			{msgStatus: cdaenum.MsgStatusFailed, want: cdaenum.ConvStatusFailed},
+			{statusWant: "completed", want: cdaenum.ConvStatusCompleted},
+			{statusWant: "cancelled", want: cdaenum.ConvStatusCancelled},
+			{statusWant: "failed", want: cdaenum.ConvStatusFailed},
 		}
 
 		for _, tt := range tests {
@@ -210,9 +208,7 @@ func TestConversationSvc_ListAndDelete_MoreBranches(t *testing.T) {
 			req := conversationreq.ListReq{AgentAPPKey: "app1"}
 			po := &dapo.ConversationPO{ID: "c1", AgentAPPKey: "app1", Title: "t1"}
 			mockConvRepo.EXPECT().List(gomock.Any(), req).Return([]*dapo.ConversationPO{po}, int64(1), nil)
-			mockMsgRepo.EXPECT().GetLatestMsgByConversationID(gomock.Any(), "c1").Return(&dapo.ConversationMsgPO{
-				Status: tt.msgStatus,
-			}, nil)
+			mockMsgRepo.EXPECT().GetConversationStatus(gomock.Any(), "c1").Return(tt.statusWant, nil)
 
 			resp, _, err := svc.List(context.Background(), req)
 			assert.NoError(t, err)

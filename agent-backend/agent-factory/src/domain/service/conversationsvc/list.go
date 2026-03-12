@@ -2,7 +2,6 @@ package conversationsvc
 
 import (
 	"context"
-	"database/sql"
 	"fmt"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
@@ -52,24 +51,12 @@ func (svc *conversationSvc) List(ctx context.Context, req conversationreq.ListRe
 
 	// NOTE: 获取会话最新消息的状态
 	for index, conversation := range conversationList {
-		po, err := svc.conversationMsgRepo.GetLatestMsgByConversationID(ctx, conversation.ID)
+		status, err := svc.conversationMsgRepo.GetConversationStatus(ctx, conversation.ID)
 		if err != nil {
-			if errors.Is(err, sql.ErrNoRows) {
-				conversationList[index].Status = cdaenum.ConvStatusCompleted
-			} else {
-				return conversationListEmpty, 0, errors.Wrapf(err, "获取会话最新消息失败")
-			}
-		} else {
-			if po.Status == cdaenum.MsgStatusProcessing {
-				conversationList[index].Status = cdaenum.ConvStatusProcessing
-			} else if po.Status == cdaenum.MsgStatusSucceded {
-				conversationList[index].Status = cdaenum.ConvStatusCompleted
-			} else if po.Status == cdaenum.MsgStatusCancelled {
-				conversationList[index].Status = cdaenum.ConvStatusCancelled
-			} else {
-				conversationList[index].Status = cdaenum.ConvStatusFailed
-			}
+			o11y.Error(ctx, fmt.Sprintf("[List] get conversation status error, conversationID: %s, err: %v", conversation.ID, err))
+			return conversationListEmpty, 0, errors.Wrapf(err, "获取会话状态失败")
 		}
+		conversationList[index].Status = cdaenum.ConversationStatus(status)
 	}
 
 	return

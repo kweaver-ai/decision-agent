@@ -24,4 +24,5 @@ type IConversationMsgRepo interface {
 	List(ctx context.Context, req conversationmsgreq.ListReq) (rt []*dapo.ConversationMsgPO, err error)
 	GetRecentMessages(ctx context.Context, conversationID string, limit int) (rt []*dapo.ConversationMsgPO, err error)
 	GetLatestMsgByConversationID(ctx context.Context, conversationID string) (po *dapo.ConversationMsgPO, err error)
+	GetConversationStatus(ctx context.Context, conversationID string) (status string, err error)
 }
