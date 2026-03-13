@@ -159,25 +159,11 @@ export interface AgentConfig {
       rewrite?: {
         enable: boolean;
         llm_config: LLMConfig;
-        data_source?: {
-          kg: Array<{
-            kg_id: string;
-            fields: string[];
-            field_properties?: {
-              [key: string]: string[];
-            };
-            output_fields?: string[];
-          }>;
-        };
+        data_source?: Record<string, never>;
       };
       augment?: {
         enable: boolean;
-        data_source?: {
-          kg: Array<{
-            kg_id: string;
-            fields: string[];
-          }>;
-        };
+        data_source?: Record<string, never>;
       };
       is_temp_zone_enabled?: number;
       temp_zone_config?: {
@@ -216,7 +202,6 @@ export interface AgentConfig {
       profile?: boolean;
       input_config?: boolean;
       system_prompt?: boolean;
-      'data_source.kg'?: boolean;
       'data_source.doc'?: boolean;
       model?: boolean;
       skills?: boolean;
@@ -226,14 +211,6 @@ export interface AgentConfig {
       'skills.tools.tool_input'?: boolean;
     };
     data_source?: {
-      kg?: Array<{
-        kg_id: string;
-        fields?: string[];
-        field_properties?: {
-          [key: string]: string[];
-        };
-        output_fields?: string[];
-      }>;
       doc?: Array<{
         ds_id: string | number;
         fields?: Array<{
@@ -261,16 +238,6 @@ export interface AgentConfig {
           slice_head_num?: number;
           slice_tail_num?: number;
           documents_num?: number;
-          retrieval_max_length?: number;
-        } | null;
-        kg?: {
-          graph_rag_topk?: number;
-          long_text_length?: number;
-          reranker_sim_threshold?: number;
-          text_match_entity_nums?: number;
-          vector_match_entity_nums?: number;
-          enable_rag?: boolean;
-          enable_ngql?: boolean;
           retrieval_max_length?: number;
         } | null;
       };
@@ -372,8 +339,7 @@ export interface AgentDetailType {
   published_at: number;
   config: {
     input: {
-      fields: [
-        {
+      fields: [{
           name: string;
           type: string;
           desc: string;
@@ -399,17 +365,14 @@ export interface AgentDetailType {
     post_dolphin?: PrePostDolphinType[];
     is_dolphin_mode: 1;
     data_source: {
-      kg: [
-        {
-          kg_id: '45';
-          fields: ['nulla consectetur veniam', 'aliqua qui velit', 'dolor ad'];
-          field_properties: {
+      /*
             comments: ['※vid', 'content', 'votes', 'comment_time'];
             regions: ['※vid', 'regions'];
           };
           output_fields: ['Duis irure cupidatat', 'occaecat', 'aliquip anim ullamco'];
         },
       ];
+      */
       doc: [
         {
           ds_id: '1';
