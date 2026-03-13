@@ -73,11 +73,6 @@ const normalizeDataSourceConfig = (config: AgentConfig['config']) => {
     }
   }
 
-  if (!config?.data_source?.kg?.length && newConfig?.data_source?.advanced_config) {
-    // 当图谱类型数据源为空时，对应的召回高级配置应该也为空
-    newConfig.data_source.advanced_config.kg = null;
-  }
-
   return newConfig;
 };
 
@@ -92,12 +87,6 @@ interface AgentConfigActions {
   updateProductId: (product_key: string) => void;
   updateInputConfig: (fields: Array<{ name: string; type: string }>, tempZoneConfig?: any) => void;
   updateKnowledgeSources: (sources: {
-    kg: Array<{
-      kg_id: string;
-      fields?: string[];
-      field_properties?: Record<string, string[]>;
-      output_fields?: string[];
-    }>;
     doc: Array<{
       ds_id: string;
       fields?: Array<{
@@ -105,6 +94,9 @@ interface AgentConfigActions {
         path: string;
         source: string;
       }>;
+    }>;
+    knowledge_network?: Array<{
+      knowledge_network_id: string;
     }>;
   }) => void;
   updateSkills: (skills: {
@@ -173,14 +165,13 @@ interface AgentConfigActions {
   validateAndFixInputReferences: (config: AgentConfigState['config']) => AgentConfigState['config'];
 
   // 更新数据源下的有效性，用于保存时校验
-  updateDataSourceInvalid: (key: 'kg' | 'kg-experiment' | 'doc' | 'metric' | 'kn_entry', invalid: boolean) => void;
+  updateDataSourceInvalid: (key: 'kg-experiment' | 'doc' | 'metric' | 'kn_entry', invalid: boolean) => void;
 
   // 更新数据源
-  updateDataSourceNameMapping: (key: 'kg' | 'doc' | 'metric' | 'kn_entry', nameMapping: Record<string, string>) => void;
+  updateDataSourceNameMapping: (key: 'doc' | 'metric' | 'kn_entry', nameMapping: Record<string, string>) => void;
 
   // 获取dataSourceNameMapping
   getDataSourceNameMapping: () => {
-    kg: Record<string, string>;
     doc: Record<string, string>;
     metric: Record<string, string>;
     kn_entry: Record<string, string>;
@@ -216,9 +207,7 @@ const initialState: AgentConfigState = {
       ],
       augment: {
         enable: false,
-        data_source: {
-          kg: [],
-        },
+        data_source: {},
       },
       rewrite: {
         enable: false,
@@ -251,12 +240,10 @@ const initialState: AgentConfigState = {
       is_enabled: false,
     },
     data_source: {
-      kg: [],
       knowledge_network: [],
       doc: [],
       advanced_config: {
         doc: null,
-        kg: null,
       },
     },
     skills: {
@@ -298,19 +285,16 @@ export const AgentConfigProvider: React.FC<{
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   // 存储dataSource下 id 到 name的映射关系（用于AI生成的传参）
   const dataSourceNameMappingRef = useRef<{
-    kg: Record<string, string>;
     doc: Record<string, string>;
     metric: Record<string, string>;
     kn_entry: Record<string, string>;
   }>({
-    kg: {},
     doc: {},
     metric: {},
     kn_entry: {},
   });
   // 数据源是否无效，默认均有效
-  const dataSourceInvalidRef = useRef<{ kg: boolean; doc: boolean; metric: boolean; kn_entry: boolean }>({
-    kg: false,
+  const dataSourceInvalidRef = useRef<{ doc: boolean; metric: boolean; kn_entry: boolean }>({
     doc: false,
     metric: false,
     kn_entry: false,
@@ -435,8 +419,8 @@ export const AgentConfigProvider: React.FC<{
           ...prev.config,
           data_source: {
             ...prev.config.data_source,
-            kg: sources.kg,
             doc: sources.doc,
+            ...(sources.knowledge_network ? { knowledge_network: sources.knowledge_network } : {}),
           },
         },
         isDirty: true,
@@ -667,21 +651,6 @@ export const AgentConfigProvider: React.FC<{
         // 验证模型是否有效
         if (currentData.config.llms.find(({ llm_config }) => llm_config?.invalid)) {
           message.error(intl.get('dataAgent.modelHasInvalidItems'));
-          return null;
-        }
-
-        // 验证数据源配置
-        if (
-          currentData.config.data_source?.kg?.length !== 0 &&
-          currentData.config.data_source?.kg?.some(item => item.fields?.length === 0 || !item.kg_id)
-        ) {
-          message.error(intl.get('dataAgent.configureBizKnowledgeDataSource'));
-          return null;
-        }
-
-        // 验证业务知识网络是否有效
-        if (dataSourceInvalidRef.current.kg) {
-          message.error(intl.get('dataAgent.bizKnowledgeDataSourceHasInvalidItems'));
           return null;
         }
 

@@ -118,13 +118,6 @@ const getBuiltInVariableDescriptions = () => ({
         ]
       }
     ],
-    "kg": [
-      {
-        "kg_id": "129",
-        "fields": ["regions", "comments"],
-        "output_fields": ["comments"]
-      }
-    ],
     "metric": [
       {
         "metric_model_id": "523210081068677639"
