@@ -58,27 +58,7 @@ const mergeWithOldData = (newItems: any[], oldItems?: any[], defaultValues = { e
 
 // 规范化数据源配置
 const normalizeDataSourceConfig = (config: AgentConfig['config']) => {
-  const newConfig = { ...config };
-
-  if (config?.data_source?.doc?.length) {
-    newConfig.data_source.doc = config.data_source.doc.map((item: any) => ({
-      ...item,
-      // type默认为folder
-      fields: item.fields?.map((field: any) => ({ ...field, type: field.type || 'folder' })),
-    }));
-  } else {
-    // 当文档类型数据源为空时，对应的召回高级配置应该也为空
-    if (newConfig?.data_source?.advanced_config) {
-      newConfig.data_source.advanced_config.doc = null;
-    }
-  }
-
-  if (!config?.data_source?.kg?.length && newConfig?.data_source?.advanced_config) {
-    // 当图谱类型数据源为空时，对应的召回高级配置应该也为空
-    newConfig.data_source.advanced_config.kg = null;
-  }
-
-  return newConfig;
+  return config;
 };
 
 // Context actions interface
@@ -92,19 +72,8 @@ interface AgentConfigActions {
   updateProductId: (product_key: string) => void;
   updateInputConfig: (fields: Array<{ name: string; type: string }>, tempZoneConfig?: any) => void;
   updateKnowledgeSources: (sources: {
-    kg: Array<{
-      kg_id: string;
-      fields?: string[];
-      field_properties?: Record<string, string[]>;
-      output_fields?: string[];
-    }>;
-    doc: Array<{
-      ds_id: string;
-      fields?: Array<{
-        name: string;
-        path: string;
-        source: string;
-      }>;
+    knowledge_network?: Array<{
+      knowledge_network_id: string;
     }>;
   }) => void;
   updateSkills: (skills: {
@@ -173,15 +142,13 @@ interface AgentConfigActions {
   validateAndFixInputReferences: (config: AgentConfigState['config']) => AgentConfigState['config'];
 
   // 更新数据源下的有效性，用于保存时校验
-  updateDataSourceInvalid: (key: 'kg' | 'kg-experiment' | 'doc' | 'metric' | 'kn_entry', invalid: boolean) => void;
+  updateDataSourceInvalid: (key: 'kg-experiment' | 'metric' | 'kn_entry', invalid: boolean) => void;
 
   // 更新数据源
-  updateDataSourceNameMapping: (key: 'kg' | 'doc' | 'metric' | 'kn_entry', nameMapping: Record<string, string>) => void;
+  updateDataSourceNameMapping: (key: 'metric' | 'kn_entry', nameMapping: Record<string, string>) => void;
 
   // 获取dataSourceNameMapping
   getDataSourceNameMapping: () => {
-    kg: Record<string, string>;
-    doc: Record<string, string>;
     metric: Record<string, string>;
     kn_entry: Record<string, string>;
   };
@@ -216,9 +183,7 @@ const initialState: AgentConfigState = {
       ],
       augment: {
         enable: false,
-        data_source: {
-          kg: [],
-        },
+        data_source: {},
       },
       rewrite: {
         enable: false,
@@ -251,13 +216,7 @@ const initialState: AgentConfigState = {
       is_enabled: false,
     },
     data_source: {
-      kg: [],
       knowledge_network: [],
-      doc: [],
-      advanced_config: {
-        doc: null,
-        kg: null,
-      },
     },
     skills: {
       tools: [],
@@ -298,20 +257,14 @@ export const AgentConfigProvider: React.FC<{
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   // 存储dataSource下 id 到 name的映射关系（用于AI生成的传参）
   const dataSourceNameMappingRef = useRef<{
-    kg: Record<string, string>;
-    doc: Record<string, string>;
     metric: Record<string, string>;
     kn_entry: Record<string, string>;
   }>({
-    kg: {},
-    doc: {},
     metric: {},
     kn_entry: {},
   });
   // 数据源是否无效，默认均有效
-  const dataSourceInvalidRef = useRef<{ kg: boolean; doc: boolean; metric: boolean; kn_entry: boolean }>({
-    kg: false,
-    doc: false,
+  const dataSourceInvalidRef = useRef<{ metric: boolean; kn_entry: boolean }>({
     metric: false,
     kn_entry: false,
   });
@@ -435,8 +388,7 @@ export const AgentConfigProvider: React.FC<{
           ...prev.config,
           data_source: {
             ...prev.config.data_source,
-            kg: sources.kg,
-            doc: sources.doc,
+            ...(sources.knowledge_network ? { knowledge_network: sources.knowledge_network } : {}),
           },
         },
         isDirty: true,
@@ -670,21 +622,6 @@ export const AgentConfigProvider: React.FC<{
           return null;
         }
 
-        // 验证数据源配置
-        if (
-          currentData.config.data_source?.kg?.length !== 0 &&
-          currentData.config.data_source?.kg?.some(item => item.fields?.length === 0 || !item.kg_id)
-        ) {
-          message.error(intl.get('dataAgent.configureBizKnowledgeDataSource'));
-          return null;
-        }
-
-        // 验证业务知识网络是否有效
-        if (dataSourceInvalidRef.current.kg) {
-          message.error(intl.get('dataAgent.bizKnowledgeDataSourceHasInvalidItems'));
-          return null;
-        }
-
         // 验证指标是否有效
         if (dataSourceInvalidRef.current.metric) {
           message.error(intl.get('dataAgent.indicatorHasInvalidItems'));
@@ -694,14 +631,6 @@ export const AgentConfigProvider: React.FC<{
         // 验证kn_entry是否有效
         if (dataSourceInvalidRef.current.kn_entry) {
           message.error(intl.get('dataAgent.knowledgeEntryHasInvalidItems'));
-          return null;
-        }
-
-        if (
-          currentData.config.data_source?.doc?.length !== 0 &&
-          currentData.config.data_source?.doc?.some(item => item.fields?.length === 0 || !item.ds_id)
-        ) {
-          message.error(intl.get('dataAgent.configureDocTypeDataSource'));
           return null;
         }
 

@@ -403,24 +403,8 @@ const RoleInstruction: React.FC = () => {
     message.loading({ content: intl.get('dataAgent.generatingRoleInstruction'), key: 'generatePrompt' });
 
     let sources: string[] = [];
-    // 仅传递doc数据源，图谱暂时不传（因为图谱没有name）
-    state?.config?.data_source?.doc?.forEach(item => {
-      sources = [...sources, ...(item?.fields?.map(({ name }) => name) || [])];
-    });
 
-    const {
-      kg: kgNameMapping,
-      kn_entry: knEntryNameMapping,
-      metric: metricNameMapping,
-    } = actions.getDataSourceNameMapping();
-
-    // 获取业务知识网络的名称
-    state?.config?.data_source?.kg?.forEach(item => {
-      const name = kgNameMapping[item?.kg_id];
-      if (name) {
-        sources = [...sources, name.split('/')[1] || name];
-      }
-    });
+    const { kn_entry: knEntryNameMapping, metric: metricNameMapping } = actions.getDataSourceNameMapping();
 
     // 获取指标的名称
     state?.config?.data_source?.metric?.forEach(item => {

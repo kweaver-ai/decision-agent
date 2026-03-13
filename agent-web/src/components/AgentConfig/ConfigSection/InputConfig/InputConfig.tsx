@@ -106,25 +106,6 @@ const getBuiltInVariableDescriptions = () => ({
 \`\`\`json
 {
   "data_source": {
-    "doc": [
-      {
-        "ds_id": "181",
-        "fields": [
-          {
-            "name": "代码规范",
-            "path": "测试数据/代码规范",
-            "source": "gns://92EE2D87255142B78A6F1DFB6BBB836B/AEBB543FEA1A4FD9917594CA013FC671"
-          }
-        ]
-      }
-    ],
-    "kg": [
-      {
-        "kg_id": "129",
-        "fields": ["regions", "comments"],
-        "output_fields": ["comments"]
-      }
-    ],
     "metric": [
       {
         "metric_model_id": "523210081068677639"
@@ -134,14 +115,7 @@ const getBuiltInVariableDescriptions = () => ({
       {
         "kn_entry_id": "d28q82kgpm5637kisosg"
       }
-    ],
-    "advanced_config": {
-      "doc": {
-        "document_threshold": -5.5,
-        "retrieval_slices_num": 150,
-        "max_slice_per_cite": 16
-      }
-    }
+    ]
   }
 }
 \`\`\``,
