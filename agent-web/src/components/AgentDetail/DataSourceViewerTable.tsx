@@ -31,17 +31,6 @@ const DataSourceViewerTable = memo(({ config }: Props) => {
       });
     }
 
-    if (config?.config?.data_source?.doc) {
-      config.config.data_source.doc.forEach((doc: any) => {
-        arr.push({
-          key: doc.ds_id,
-          type: intl.get('dataAgent.config.document'),
-          name: doc.ds_id === '0' ? intl.get('dataAgent.config.docLib') : 'AnyShare',
-          fields: doc.fields,
-        });
-      });
-    }
-
     if (config?.config?.data_source?.metric?.length) {
       const fields = config.config.data_source.metric.map(
         ({ metric_model_id }) => metricNames[metric_model_id] || '---'

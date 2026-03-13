@@ -55,7 +55,7 @@ const KnowledgeSource: React.FC<KnowledgeSourceProps> = () => {
       statePath: 'metric' | 'kn_entry';
       idKey: 'metric_model_id' | 'kn_entry_id';
       invalidIds: React.MutableRefObject<string[]>;
-      updateInvalidFn: (key: 'kg-experiment' | 'doc' | 'metric' | 'kn_entry', invalid: boolean) => void;
+      updateInvalidFn: (key: 'kg-experiment' | 'metric' | 'kn_entry', invalid: boolean) => void;
     }
   ) => {
     const { canEdit, statePath, idKey, invalidIds, updateInvalidFn } = options;

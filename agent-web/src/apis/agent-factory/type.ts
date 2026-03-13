@@ -202,7 +202,6 @@ export interface AgentConfig {
       profile?: boolean;
       input_config?: boolean;
       system_prompt?: boolean;
-      'data_source.doc'?: boolean;
       model?: boolean;
       skills?: boolean;
       opening_remark_config?: boolean;
@@ -211,14 +210,6 @@ export interface AgentConfig {
       'skills.tools.tool_input'?: boolean;
     };
     data_source?: {
-      doc?: Array<{
-        ds_id: string | number;
-        fields?: Array<{
-          name: string;
-          path: string;
-          source: string;
-        }>;
-      }>;
       // 指标类型数据源
       metric?: Array<{
         // 指标模型id
@@ -229,18 +220,6 @@ export interface AgentConfig {
         // 知识条目id
         kn_entry_id: string;
       }>;
-      advanced_config?: {
-        doc?: {
-          document_threshold?: number;
-          retrieval_slices_num?: number;
-          max_slice_per_cite?: number;
-          rerank_topk?: number;
-          slice_head_num?: number;
-          slice_tail_num?: number;
-          documents_num?: number;
-          retrieval_max_length?: number;
-        } | null;
-      };
       knowledge_network?: Array<{
         knowledge_network_id: string;
       }>; // 储存知识网络实验版
@@ -373,23 +352,6 @@ export interface AgentDetailType {
         },
       ];
       */
-      doc: [
-        {
-          ds_id: '1';
-          fields: [
-            {
-              name: 'dir2';
-              path: 'dir1/dir2';
-              source: 'gns://92EE2D87255142B78A6F1DFB6BBB836B/90B7F2F079824711886F317955008C5F';
-            },
-            {
-              name: 'dir2';
-              path: 'dir1/dir2';
-              source: 'gns://92EE2D87255142B78A6F1DFB6BBB836B/90B7F2F079824711886F317955008C5F';
-            },
-          ];
-        },
-      ];
       metric?: Array<{ metric_model_id: string }>;
       kn_entry?: Array<{ kn_entry_id: string }>;
       knowledge_network?: Array<{ knowledge_network_id: string }>;
