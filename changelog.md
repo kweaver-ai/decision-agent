@@ -1,4 +1,11 @@
 # Changelog
+## 0.4.2
+
+### Frontend (agent-web)
+
+- Bug fix: remove legacy business knowledge network checks from the Agent configuration page.
+- Bug fix: remove document-related checks from the Agent configuration page.
+
 ## 0.4.1
 
 ### Features & Improvements

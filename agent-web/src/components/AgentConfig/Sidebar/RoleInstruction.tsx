@@ -403,10 +403,6 @@ const RoleInstruction: React.FC = () => {
     message.loading({ content: intl.get('dataAgent.generatingRoleInstruction'), key: 'generatePrompt' });
 
     let sources: string[] = [];
-    // 仅传递doc数据源，图谱暂时不传（因为图谱没有name）
-    state?.config?.data_source?.doc?.forEach(item => {
-      sources = [...sources, ...(item?.fields?.map(({ name }) => name) || [])];
-    });
 
     const { kn_entry: knEntryNameMapping, metric: metricNameMapping } = actions.getDataSourceNameMapping();
 

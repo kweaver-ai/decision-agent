@@ -58,22 +58,7 @@ const mergeWithOldData = (newItems: any[], oldItems?: any[], defaultValues = { e
 
 // 规范化数据源配置
 const normalizeDataSourceConfig = (config: AgentConfig['config']) => {
-  const newConfig = { ...config };
-
-  if (config?.data_source?.doc?.length) {
-    newConfig.data_source.doc = config.data_source.doc.map((item: any) => ({
-      ...item,
-      // type默认为folder
-      fields: item.fields?.map((field: any) => ({ ...field, type: field.type || 'folder' })),
-    }));
-  } else {
-    // 当文档类型数据源为空时，对应的召回高级配置应该也为空
-    if (newConfig?.data_source?.advanced_config) {
-      newConfig.data_source.advanced_config.doc = null;
-    }
-  }
-
-  return newConfig;
+  return config;
 };
 
 // Context actions interface
@@ -87,14 +72,6 @@ interface AgentConfigActions {
   updateProductId: (product_key: string) => void;
   updateInputConfig: (fields: Array<{ name: string; type: string }>, tempZoneConfig?: any) => void;
   updateKnowledgeSources: (sources: {
-    doc: Array<{
-      ds_id: string;
-      fields?: Array<{
-        name: string;
-        path: string;
-        source: string;
-      }>;
-    }>;
     knowledge_network?: Array<{
       knowledge_network_id: string;
     }>;
@@ -165,14 +142,13 @@ interface AgentConfigActions {
   validateAndFixInputReferences: (config: AgentConfigState['config']) => AgentConfigState['config'];
 
   // 更新数据源下的有效性，用于保存时校验
-  updateDataSourceInvalid: (key: 'kg-experiment' | 'doc' | 'metric' | 'kn_entry', invalid: boolean) => void;
+  updateDataSourceInvalid: (key: 'kg-experiment' | 'metric' | 'kn_entry', invalid: boolean) => void;
 
   // 更新数据源
-  updateDataSourceNameMapping: (key: 'doc' | 'metric' | 'kn_entry', nameMapping: Record<string, string>) => void;
+  updateDataSourceNameMapping: (key: 'metric' | 'kn_entry', nameMapping: Record<string, string>) => void;
 
   // 获取dataSourceNameMapping
   getDataSourceNameMapping: () => {
-    doc: Record<string, string>;
     metric: Record<string, string>;
     kn_entry: Record<string, string>;
   };
@@ -241,10 +217,6 @@ const initialState: AgentConfigState = {
     },
     data_source: {
       knowledge_network: [],
-      doc: [],
-      advanced_config: {
-        doc: null,
-      },
     },
     skills: {
       tools: [],
@@ -285,17 +257,14 @@ export const AgentConfigProvider: React.FC<{
   const pollingIntervalRef = useRef<NodeJS.Timeout | null>(null);
   // 存储dataSource下 id 到 name的映射关系（用于AI生成的传参）
   const dataSourceNameMappingRef = useRef<{
-    doc: Record<string, string>;
     metric: Record<string, string>;
     kn_entry: Record<string, string>;
   }>({
-    doc: {},
     metric: {},
     kn_entry: {},
   });
   // 数据源是否无效，默认均有效
-  const dataSourceInvalidRef = useRef<{ doc: boolean; metric: boolean; kn_entry: boolean }>({
-    doc: false,
+  const dataSourceInvalidRef = useRef<{ metric: boolean; kn_entry: boolean }>({
     metric: false,
     kn_entry: false,
   });
@@ -419,7 +388,6 @@ export const AgentConfigProvider: React.FC<{
           ...prev.config,
           data_source: {
             ...prev.config.data_source,
-            doc: sources.doc,
             ...(sources.knowledge_network ? { knowledge_network: sources.knowledge_network } : {}),
           },
         },
@@ -663,14 +631,6 @@ export const AgentConfigProvider: React.FC<{
         // 验证kn_entry是否有效
         if (dataSourceInvalidRef.current.kn_entry) {
           message.error(intl.get('dataAgent.knowledgeEntryHasInvalidItems'));
-          return null;
-        }
-
-        if (
-          currentData.config.data_source?.doc?.length !== 0 &&
-          currentData.config.data_source?.doc?.some(item => item.fields?.length === 0 || !item.ds_id)
-        ) {
-          message.error(intl.get('dataAgent.configureDocTypeDataSource'));
           return null;
         }
 
