@@ -1,4 +1,30 @@
 # Changelog
+## 0.4.1
+
+### Features & Improvements
+
+- Add conversation history configuration in `agent-factory`
+  - Support configuring conversation history retention strategy via API
+  - Implement count-based history control (default strategy)
+  - Reserve configuration options for time window and token usage strategies
+  - Support no-history conversation mode
+  - Add `conversationHistoryConfig` structure and related enum types
+  - Add history count limit constant (range 1-1000)
+
+### Bug Fixes
+
+- Remove duplicate parameter validation: caller already validates `historyLimit` parameter, subsequent functions no longer repeat validation
+- Correct count limit range description: updated to 1-1000
+
+### Testing
+
+- Add unit tests for conversation history configuration validation logic
+- Add test cases for conversation history retrieval edge cases
+
+### Documentation
+
+- Add conversation history strategy configuration design document
+
 ## 0.4.0
 
 ### Features & Improvements
