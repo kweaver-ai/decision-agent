@@ -14,3 +14,4 @@ coverage.out
 /docs/swagger.*
 # UT coverage reports
 test_out/
+*.test
