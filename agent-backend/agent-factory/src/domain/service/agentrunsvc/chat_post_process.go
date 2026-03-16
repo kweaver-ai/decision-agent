@@ -11,6 +11,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/agentrunsvc/chatlogrecord"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentconfigvo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentresperr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo/daresvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/conversationmsgvo"
@@ -274,6 +275,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 			TotalTokens:    totalTokens,
 			TTFT:           req.TTFT,
 			AgentRunID:     result.AgentRunID,
+			Error:          convertErrorToRespError(result.Error),
 		},
 	}
 	chatResponse = agentresp.ChatResp{
@@ -489,4 +491,17 @@ func TransformErrorToHTTPError(ctx context.Context, err interface{}) *rest.HTTPE
 	}
 
 	return nil
+}
+
+func convertErrorToRespError(err interface{}) *agentresperr.RespError {
+	if err == nil {
+		return nil
+	}
+
+	errMap, ok := err.(map[string]interface{})
+	if !ok {
+		return agentresperr.NewRespError(agentresperr.RespErrorTypeAgentFactory, err)
+	}
+
+	return agentresperr.NewRespError(agentresperr.RespErrorTypeAgentExecutor, errMap)
 }
