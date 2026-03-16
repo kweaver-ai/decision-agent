@@ -197,6 +197,16 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 
 		return bytes, false, errors.Wrapf(err, "[AfterProcess] handle progress err: %v", err)
 	}
+
+	// NOTE: 当状态为Error时，如果progressAns为空，尝试从progressMap中获取
+	if result.Status == "Error" && len(progressAns) == 0 {
+		if v, ok := progressMap.Load(req.AssistantMessageID); ok {
+			progressAns = v.([]*agentrespvo.Progress)
+			agentSvc.logger.Infof("[AfterProcess] status is Error, loaded progress from progressMap, count: %d", len(progressAns))
+		} else {
+			agentSvc.logger.Warnf("[AfterProcess] status is Error, progressMap is empty for assistantMessageID: %s", req.AssistantMessageID)
+		}
+	}
 	// NOTE: 计算TTFT，单位ms
 	if req.TTFT == 0 {
 		req.TTFT = CalculateTTFT(req.ReqStartTime, progressAns, req.CallType)
