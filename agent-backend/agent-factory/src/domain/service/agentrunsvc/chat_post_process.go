@@ -202,8 +202,12 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 	// NOTE: 当状态为Error时，如果progressAns为空，尝试从progressMap中获取
 	if result.Status == "Error" && len(progressAns) == 0 {
 		if v, ok := progressMap.Load(req.AssistantMessageID); ok {
-			progressAns = v.([]*agentrespvo.Progress)
-			agentSvc.logger.Infof("[AfterProcess] status is Error, loaded progress from progressMap, count: %d", len(progressAns))
+			if pgs, ok := v.([]*agentrespvo.Progress); ok {
+				progressAns = pgs
+				agentSvc.logger.Infof("[AfterProcess] status is Error, loaded progress from progressMap, count: %d", len(progressAns))
+			} else {
+				agentSvc.logger.Warnf("[AfterProcess] progressMap has wrong type for assistantMessageID: %s", req.AssistantMessageID)
+			}
 		} else {
 			agentSvc.logger.Warnf("[AfterProcess] status is Error, progressMap is empty for assistantMessageID: %s", req.AssistantMessageID)
 		}
