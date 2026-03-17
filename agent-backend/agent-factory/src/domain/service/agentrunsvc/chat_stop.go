@@ -25,6 +25,12 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 	o11y.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
 	o11y.SetAttributes(ctx, attribute.String("user_id", req.UserID))
 
+	// 检查 session 是否为 nil
+	if session == nil {
+		o11y.Error(ctx, "[HandleStopChan] session cannot be nil")
+		return errors.New("session cannot be nil")
+	}
+
 	// 首先尝试从session中获取临时消息
 	msgResp := session.GetTempMsgResp()
 	var msgPO dapo.ConversationMsgPO
@@ -35,7 +41,7 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 		o11y.Info(ctx, "[HandleStopChan] temp msg resp is empty, trying to get from database")
 		existingMsgPO, err := agentSvc.conversationMsgRepo.GetByID(ctx, req.AssistantMessageID)
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] get existing message err: %v", err))
+			o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] failed to get message %s: %v", req.AssistantMessageID, err))
 			return errors.Wrapf(err, "[HandleStopChan] get existing message err")
 		}
 		if existingMsgPO != nil {
@@ -44,6 +50,19 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 			o11y.Info(ctx, "[HandleStopChan] got existing message from database")
 		} else {
 			o11y.Info(ctx, "[HandleStopChan] no existing message found, creating new one")
+			// 初始化 msgPO 基本字段
+			msgPO = dapo.ConversationMsgPO{
+				ConversationID: req.ConversationID,
+				AgentAPPKey:    req.AgentAPPKey,
+				AgentID:        req.AgentID,
+				AgentVersion:   req.AgentVersion,
+				Role:           cdaenum.MsgRoleAssistant,
+				Content:        new(string),
+				ContentType:    cdaenum.MsgText,
+				Ext:            new(string),
+				CreateBy:       req.UserID,
+				UpdateBy:       req.UserID,
+			}
 		}
 	} else {
 		// 从session中的临时消息转换为msgPO
