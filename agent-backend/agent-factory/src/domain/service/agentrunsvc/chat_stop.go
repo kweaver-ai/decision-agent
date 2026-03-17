@@ -37,7 +37,14 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 	var exists bool
 
 	// 如果session中的临时消息为空，从数据库中获取最新的消息状态
-	if msgResp.Message.Content == "" {
+	var contentEmpty bool
+	if msgResp.Message.Content == nil {
+		contentEmpty = true
+	} else if contentStr, ok := msgResp.Message.Content.(string); !ok || contentStr == "" {
+		contentEmpty = true
+	}
+
+	if contentEmpty {
 		o11y.Info(ctx, "[HandleStopChan] temp msg resp is empty, trying to get from database")
 		existingMsgPO, err := agentSvc.conversationMsgRepo.GetByID(ctx, req.AssistantMessageID)
 		if err != nil {
@@ -66,7 +73,11 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 		}
 	} else {
 		// 从session中的临时消息转换为msgPO
-		bytes, _ := sonic.Marshal(msgResp)
+		bytes, err := sonic.Marshal(msgResp)
+		if err != nil {
+			o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] marshal msgResp err: %v", err))
+			return errors.Wrapf(err, "[HandleStopChan] marshal msgResp err")
+		}
 		var resp agentresp.ChatResp
 		err = sonic.Unmarshal(bytes, &resp)
 		if err != nil {
