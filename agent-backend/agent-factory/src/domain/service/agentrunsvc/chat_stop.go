@@ -85,10 +85,18 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 			return errors.Wrapf(err, "[HandleStopChan] unmarshal msgResp err")
 		}
 
-		msgPO, exists, err = agentSvc.MsgResp2MsgPO(ctx, resp, req)
+		msgPO, _, err = agentSvc.MsgResp2MsgPO(ctx, resp, req)
 		if err != nil {
 			o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] convert msgResp to msgPO err: %v", err))
 			return errors.Wrapf(err, "[HandleStopChan] convert msgResp to msgPO err")
+		}
+
+		// 检查消息是否已经存在
+		if req.AssistantMessageID != "" {
+			existingMsgPO, err := agentSvc.conversationMsgRepo.GetByID(ctx, req.AssistantMessageID)
+			if err == nil && existingMsgPO != nil {
+				exists = true
+			}
 		}
 	}
 
