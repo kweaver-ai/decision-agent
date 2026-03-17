@@ -190,11 +190,15 @@ looplabel:
 		// NOTE: 发生错误或agent-executor进程被杀死，将assistantMessage 状态设置为failed
 		conversationAssistantMsgPO, errNew := agentSvc.conversationMsgRepo.GetByID(ctx, req.AssistantMessageID)
 		if errNew != nil {
-			agentSvc.logger.Errorf("[Process] get conversation assistant message failed: %v", errNew)
-			o11y.Error(ctx, fmt.Sprintf("[Process] get conversation assistant message failed: %v", errNew))
+			agentSvc.logger.Errorf("[Process] failed to get assistant message %s: %v", req.AssistantMessageID, errNew)
+			o11y.Error(ctx, fmt.Sprintf("[Process] failed to get assistant message %s: %v", req.AssistantMessageID, errNew))
 		} else {
 			conversationAssistantMsgPO.Status = cdaenum.MsgStatusFailed
-			_ = agentSvc.conversationMsgRepo.Update(ctx, conversationAssistantMsgPO)
+			updateErr := agentSvc.conversationMsgRepo.Update(ctx, conversationAssistantMsgPO)
+			if updateErr != nil {
+				agentSvc.logger.Errorf("[Process] update message status failed: %v", updateErr)
+				o11y.Error(ctx, fmt.Sprintf("[Process] update message status failed: %v", updateErr))
+			}
 		}
 
 		// NOTE： 上报日志
@@ -202,7 +206,7 @@ looplabel:
 		var logErr error
 		if err != nil {
 			logErr = err
-		} else {
+		} else if messageChanClosed {
 			logErr = fmt.Errorf("agent-executor process terminated unexpectedly")
 		}
 
