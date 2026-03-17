@@ -7,13 +7,13 @@ import (
 	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
+	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
 
-// NOTE: 处理终止信号，对话终止时，进行 助手消息的持久化
 func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.ChatReq, session *Session) error {
 	var err error
 
@@ -25,7 +25,6 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 
 	msgResp := session.GetTempMsgResp()
 
-	// 添加日志，记录 msgResp.Message.Content 的值
 	if msgResp.Message.Content == nil {
 		o11y.Info(ctx, "[HandleStopChan] msgResp.Message.Content is nil")
 		agentSvc.logger.Infof("[HandleStopChan] msgResp.Message.Content is nil")
@@ -39,7 +38,14 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 		agentSvc.logger.Infof("[HandleStopChan] msgResp.Message.Content: %s", string(contentBytes))
 	}
 
-	// 检查消息是否已经存在
+	bytes, _ := sonic.Marshal(msgResp)
+	var resp agentresp.ChatResp
+	err = sonic.Unmarshal(bytes, &resp)
+	if err != nil {
+		o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] unmarshal msgResp err: %v", err))
+		return errors.Wrapf(err, "[HandleStopChan] unmarshal msgResp err")
+	}
+
 	existingMsgPO, err := agentSvc.conversationMsgRepo.GetByID(ctx, req.AssistantMessageID)
 	if err != nil {
 		o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] get message %s err: %v", req.AssistantMessageID, err))
@@ -47,32 +53,60 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 	}
 
 	if existingMsgPO == nil {
-		o11y.Info(ctx, "[HandleStopChan] message does not exist, skip updating")
-		agentSvc.logger.Infof("[HandleStopChan] message does not exist, skip updating")
-		return nil
-	}
+		o11y.Info(ctx, "[HandleStopChan] message does not exist, creating new message")
+		agentSvc.logger.Infof("[HandleStopChan] message does not exist, creating new message")
+		msgPO, _, err := agentSvc.MsgResp2MsgPO(ctx, resp, req)
+		if err != nil {
+			o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] convert msgResp to msgPO err: %v", err))
+			return errors.Wrapf(err, "[HandleStopChan] convert msgResp to msgPO err")
+		}
 
-	// 添加日志，记录 existingMsgPO.Content 的值
-	if existingMsgPO.Content != nil {
-		o11y.Info(ctx, fmt.Sprintf("[HandleStopChan] existingMsgPO.Content: %s", *existingMsgPO.Content))
-		agentSvc.logger.Infof("[HandleStopChan] existingMsgPO.Content: %s", *existingMsgPO.Content)
+		msgPO.Status = cdaenum.MsgStatusCancelled
+		msgPO.UpdateTime = cutil.GetCurrentMSTimestamp()
+
+		_, err = agentSvc.conversationMsgRepo.Create(ctx, &msgPO)
+		if err != nil {
+			o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] create message err: %v", err))
+			return errors.Wrapf(err, "[HandleStopChan] create message err")
+		}
 	} else {
-		o11y.Info(ctx, "[HandleStopChan] existingMsgPO.Content is nil")
-		agentSvc.logger.Infof("[HandleStopChan] existingMsgPO.Content is nil")
+		if existingMsgPO.Content != nil {
+			o11y.Info(ctx, fmt.Sprintf("[HandleStopChan] existingMsgPO.Content: %s", *existingMsgPO.Content))
+			agentSvc.logger.Infof("[HandleStopChan] existingMsgPO.Content: %s", *existingMsgPO.Content)
+		} else {
+			o11y.Info(ctx, "[HandleStopChan] existingMsgPO.Content is nil")
+			agentSvc.logger.Infof("[HandleStopChan] existingMsgPO.Content is nil")
+		}
+
+		msgPO, _, err := agentSvc.MsgResp2MsgPO(ctx, resp, req)
+		if err != nil {
+			o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] convert msgResp to msgPO err: %v", err))
+			return errors.Wrapf(err, "[HandleStopChan] convert msgResp to msgPO err")
+		}
+
+		if msgPO.Content != nil {
+			o11y.Info(ctx, fmt.Sprintf("[HandleStopChan] msgPO.Content: %s", *msgPO.Content))
+			agentSvc.logger.Infof("[HandleStopChan] msgPO.Content: %s", *msgPO.Content)
+		} else {
+			o11y.Info(ctx, "[HandleStopChan] msgPO.Content is nil")
+			agentSvc.logger.Infof("[HandleStopChan] msgPO.Content is nil")
+		}
+
+		existingMsgPO.Content = msgPO.Content
+		existingMsgPO.ContentType = msgPO.ContentType
+		existingMsgPO.Ext = msgPO.Ext
+		existingMsgPO.Status = cdaenum.MsgStatusCancelled
+		existingMsgPO.UpdateTime = cutil.GetCurrentMSTimestamp()
+
+		o11y.Info(ctx, "[HandleStopChan] message exists, updating content and status to cancelled")
+		agentSvc.logger.Infof("[HandleStopChan] message exists, updating content and status to cancelled")
+		err = agentSvc.conversationMsgRepo.Update(ctx, existingMsgPO)
+		if err != nil {
+			o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] update message err: %v", err))
+			return errors.Wrapf(err, "[HandleStopChan] update message err")
+		}
 	}
 
-	// 消息存在，只更新状态和时间，不覆盖内容
-	o11y.Info(ctx, "[HandleStopChan] message exists, updating status to cancelled")
-	agentSvc.logger.Infof("[HandleStopChan] message exists, updating status to cancelled")
-	existingMsgPO.Status = cdaenum.MsgStatusCancelled
-	existingMsgPO.UpdateTime = cutil.GetCurrentMSTimestamp()
-	err = agentSvc.conversationMsgRepo.Update(ctx, existingMsgPO)
-	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] update message status err: %v", err))
-		return errors.Wrapf(err, "[HandleStopChan] update message status err")
-	}
-
-	// 更新会话
 	conversationPO, err := agentSvc.conversationRepo.GetByID(ctx, req.ConversationID)
 	if err != nil {
 		o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] get conversationPO err: %v", err))
