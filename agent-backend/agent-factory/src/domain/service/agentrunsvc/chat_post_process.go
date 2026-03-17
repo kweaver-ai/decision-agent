@@ -11,6 +11,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/agentrunsvc/chatlogrecord"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentconfigvo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentresperr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo/daresvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/conversationmsgvo"
@@ -197,6 +198,42 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 
 		return bytes, false, errors.Wrapf(err, "[AfterProcess] handle progress err: %v", err)
 	}
+
+	// NOTE: 当状态为Error时，如果progressAns为空，尝试从progressMap中获取
+	if result.Status == "Error" && len(progressAns) == 0 {
+		if v, ok := progressMap.Load(req.AssistantMessageID); ok {
+			if pgs, ok := v.([]*agentrespvo.Progress); ok {
+				progressAns = pgs
+				agentSvc.logger.Debugf("[AfterProcess] status is Error, loaded progress from progressMap, count: %d", len(progressAns))
+			} else {
+				agentSvc.logger.Warnf("[AfterProcess] progressMap has wrong type for assistantMessageID: %s", req.AssistantMessageID)
+				// 提供回退机制：创建一个默认的progress对象
+				progressAns = []*agentrespvo.Progress{
+					{
+						ID:     "fallback-" + req.AssistantMessageID,
+						Status: "failed",
+						Answer: map[string]interface{}{
+							"text": "[AfterProcess] agent error, please try again",
+						},
+					},
+				}
+			}
+			// 清理progressMap，避免内存泄漏
+			progressMap.Delete(req.AssistantMessageID)
+		} else {
+			agentSvc.logger.Debugf("[AfterProcess] status is Error, progressMap is empty for assistantMessageID: %s", req.AssistantMessageID)
+			// 提供回退机制：创建一个默认的progress对象
+			progressAns = []*agentrespvo.Progress{
+				{
+					ID:     "fallback-" + req.AssistantMessageID,
+					Status: "failed",
+					Answer: map[string]interface{}{
+						"text": "[AfterProcess] agent error, please try again",
+					},
+				},
+			}
+		}
+	}
 	// NOTE: 计算TTFT，单位ms
 	if req.TTFT == 0 {
 		req.TTFT = CalculateTTFT(req.ReqStartTime, progressAns, req.CallType)
@@ -264,6 +301,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 			TotalTokens:    totalTokens,
 			TTFT:           req.TTFT,
 			AgentRunID:     result.AgentRunID,
+			Error:          convertErrorToRespError(result.Error),
 		},
 	}
 	chatResponse = agentresp.ChatResp{
@@ -479,4 +517,17 @@ func TransformErrorToHTTPError(ctx context.Context, err interface{}) *rest.HTTPE
 	}
 
 	return nil
+}
+
+func convertErrorToRespError(err interface{}) *agentresperr.RespError {
+	if err == nil {
+		return nil
+	}
+
+	errMap, ok := err.(map[string]interface{})
+	if !ok {
+		return agentresperr.NewRespError(agentresperr.RespErrorTypeAgentFactory, err)
+	}
+
+	return agentresperr.NewRespError(agentresperr.RespErrorTypeAgentExecutor, errMap)
 }
