@@ -28,9 +28,15 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 	// 添加日志，记录 msgResp.Message.Content 的值
 	if msgResp.Message.Content == nil {
 		o11y.Info(ctx, "[HandleStopChan] msgResp.Message.Content is nil")
+		agentSvc.logger.Infof("[HandleStopChan] msgResp.Message.Content is nil")
 	} else {
-		contentBytes, _ := sonic.Marshal(msgResp.Message.Content)
+		contentBytes, err := sonic.Marshal(msgResp.Message.Content)
+		if err != nil {
+			o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] marshal msgResp.Message.Content err: %v", err))
+			return errors.Wrapf(err, "[HandleStopChan] marshal msgResp.Message.Content err")
+		}
 		o11y.Info(ctx, fmt.Sprintf("[HandleStopChan] msgResp.Message.Content: %s", string(contentBytes)))
+		agentSvc.logger.Infof("[HandleStopChan] msgResp.Message.Content: %s", string(contentBytes))
 	}
 
 	// 检查消息是否已经存在
@@ -42,18 +48,22 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 
 	if existingMsgPO == nil {
 		o11y.Info(ctx, "[HandleStopChan] message does not exist, skip updating")
+		agentSvc.logger.Infof("[HandleStopChan] message does not exist, skip updating")
 		return nil
 	}
 
 	// 添加日志，记录 existingMsgPO.Content 的值
 	if existingMsgPO.Content != nil {
 		o11y.Info(ctx, fmt.Sprintf("[HandleStopChan] existingMsgPO.Content: %s", *existingMsgPO.Content))
+		agentSvc.logger.Infof("[HandleStopChan] existingMsgPO.Content: %s", *existingMsgPO.Content)
 	} else {
 		o11y.Info(ctx, "[HandleStopChan] existingMsgPO.Content is nil")
+		agentSvc.logger.Infof("[HandleStopChan] existingMsgPO.Content is nil")
 	}
 
 	// 消息存在，只更新状态和时间，不覆盖内容
-	o11y.Info(ctx, fmt.Sprintf("[HandleStopChan] message exists, updating status to cancelled"))
+	o11y.Info(ctx, "[HandleStopChan] message exists, updating status to cancelled")
+	agentSvc.logger.Infof("[HandleStopChan] message exists, updating status to cancelled")
 	existingMsgPO.Status = cdaenum.MsgStatusCancelled
 	existingMsgPO.UpdateTime = cutil.GetCurrentMSTimestamp()
 	err = agentSvc.conversationMsgRepo.Update(ctx, existingMsgPO)
@@ -79,6 +89,7 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 	}
 
 	o11y.Info(ctx, "[HandleStopChan] terminate chat success")
+	agentSvc.logger.Infof("[HandleStopChan] terminate chat success")
 
 	return nil
 }
