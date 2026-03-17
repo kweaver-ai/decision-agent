@@ -204,7 +204,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 		if v, ok := progressMap.Load(req.AssistantMessageID); ok {
 			if pgs, ok := v.([]*agentrespvo.Progress); ok {
 				progressAns = pgs
-				agentSvc.logger.Infof("[AfterProcess] status is Error, loaded progress from progressMap, count: %d", len(progressAns))
+				agentSvc.logger.Debugf("[AfterProcess] status is Error, loaded progress from progressMap, count: %d", len(progressAns))
 			} else {
 				agentSvc.logger.Warnf("[AfterProcess] progressMap has wrong type for assistantMessageID: %s", req.AssistantMessageID)
 				// 提供回退机制：创建一个默认的progress对象
@@ -213,7 +213,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 						ID:     "fallback-" + req.AssistantMessageID,
 						Status: "failed",
 						Answer: map[string]interface{}{
-							"text": "处理过程中出现错误",
+							"text": "[AfterProcess] agent error, please try again",
 						},
 					},
 				}
@@ -221,14 +221,14 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 			// 清理progressMap，避免内存泄漏
 			progressMap.Delete(req.AssistantMessageID)
 		} else {
-			agentSvc.logger.Infof("[AfterProcess] status is Error, progressMap is empty for assistantMessageID: %s", req.AssistantMessageID)
+			agentSvc.logger.Debugf("[AfterProcess] status is Error, progressMap is empty for assistantMessageID: %s", req.AssistantMessageID)
 			// 提供回退机制：创建一个默认的progress对象
 			progressAns = []*agentrespvo.Progress{
 				{
 					ID:     "fallback-" + req.AssistantMessageID,
 					Status: "failed",
 					Answer: map[string]interface{}{
-						"text": "处理过程中出现错误",
+						"text": "[AfterProcess] agent error, please try again",
 					},
 				},
 			}
