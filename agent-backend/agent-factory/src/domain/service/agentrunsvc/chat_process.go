@@ -148,6 +148,8 @@ looplabel:
 
 		case err, more := <-errChan:
 			if !more {
+				// errChan 关闭，可能是因为 agent-executor 进程被杀死
+				messageChanClosed = true
 				isEnd = true
 				break looplabel
 			}
@@ -158,6 +160,8 @@ looplabel:
 					respChan <- formatSSEMessage(string(errBytes))
 				}
 				if err.Error() == "unexpected EOF" || err.Error() == "EOF" {
+					// EOF 错误，可能是因为 agent-executor 进程被杀死
+					messageChanClosed = true
 					isEnd = true
 					break looplabel
 				}
