@@ -65,12 +65,15 @@ func (agentSvc *agentSvc) Process(req *agentreq.ChatReq, agent *squareresp.Agent
 	var session *Session = &Session{}
 	// failed := false
 	var counter int = -1
+	// 标记是否是因为agent-executor进程被杀死而结束的循环
+	messageChanClosed := false
 looplabel:
 	for {
 		select {
 		case msg, more := <-messageChan:
 			if !more {
 				// NOTE: 如果channel不关闭，则会导致channel阻塞
+				messageChanClosed = true
 				isEnd = true
 				break looplabel
 			}
@@ -179,40 +182,46 @@ looplabel:
 		}
 	}
 
-	if err != nil {
-		// NOTE: 发生错误，将assistantMessage 状态设置为failed
+	if err != nil || messageChanClosed {
+		// NOTE: 发生错误或agent-executor进程被杀死，将assistantMessage 状态设置为failed
 		conversationAssistantMsgPO, errNew := agentSvc.conversationMsgRepo.GetByID(ctx, req.AssistantMessageID)
 		if errNew != nil {
 			agentSvc.logger.Errorf("[Process] get conversation assistant message failed: %v", errNew)
 			o11y.Error(ctx, fmt.Sprintf("[Process] get conversation assistant message failed: %v", errNew))
+		} else {
+			conversationAssistantMsgPO.Status = cdaenum.MsgStatusFailed
+			_ = agentSvc.conversationMsgRepo.Update(ctx, conversationAssistantMsgPO)
 		}
-
-		conversationAssistantMsgPO.Status = cdaenum.MsgStatusFailed
-		_ = agentSvc.conversationMsgRepo.Update(ctx, conversationAssistantMsgPO)
 
 		// NOTE： 上报日志
 		var agentResp agentresp.ChatResp
+		var logErr error
+		if err != nil {
+			logErr = err
+		} else {
+			logErr = fmt.Errorf("agent-executor process terminated unexpectedly")
+		}
 
 		if len(currentData) == 0 {
-			chatlogrecord.LogFailedExecution(ctx, req, err, nil)
+			chatlogrecord.LogFailedExecution(ctx, req, logErr, nil)
 		} else {
 			unmarshalErr := sonic.Unmarshal(currentData, &agentResp)
 			if unmarshalErr != nil {
-				chatlogrecord.LogFailedExecution(ctx, req, err, nil)
-				agentSvc.logger.Errorf("[Process] unmarshal currentData err: %v", err)
+				chatlogrecord.LogFailedExecution(ctx, req, logErr, nil)
+				agentSvc.logger.Errorf("[Process] unmarshal currentData err: %v", unmarshalErr)
 			} else {
-				chatlogrecord.LogFailedExecution(ctx, req, err, &agentResp)
+				chatlogrecord.LogFailedExecution(ctx, req, logErr, &agentResp)
 			}
 		}
 
 		// NOTE: 上报运行失败日志
 		// NOTE: 分类讨论
 		if req.Stream {
-			// NOTE: 如果err不为nil，则把err写入到respChan,是chatresponse结构，可以携带正确数据的信息
+			// NOTE: 如果err不为nil，则把err写入到respChan,是chatresponse结构，可以携带正确数据信息
 			_ = StreamDiff(ctx, seq, lastData, currentData, respChan)
 		} else {
 			// NOTE: 非流式处理，直接返回err，直接是错误码，无法携带正确数据信息
-			httpErr := rest.NewHTTPError(ctx, http.StatusInternalServerError, apierr.AgentAPP_InternalError).WithErrorDetails(err.Error())
+			httpErr := rest.NewHTTPError(ctx, http.StatusInternalServerError, apierr.AgentAPP_InternalError).WithErrorDetails(logErr.Error())
 			errBytes, _ := sonic.Marshal(httpErr)
 			respChan <- errBytes
 		}
