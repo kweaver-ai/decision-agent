@@ -27,6 +27,7 @@ func TestProcess_IncStream(t *testing.T) {
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 	allowAnyLoggerCalls(mockLogger)
 
+	mockMsgRepo.EXPECT().GetByID(gomock.Any(), "asst-inc").Return(&dapo.ConversationMsgPO{ID: "asst-inc"}, nil).AnyTimes()
 	mockMsgRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil).AnyTimes()
 	mockConvRepo.EXPECT().GetByID(gomock.Any(), gomock.Any()).Return(&dapo.ConversationPO{ID: "conv-inc"}, nil).AnyTimes()
 	mockConvRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil).AnyTimes()
@@ -135,6 +136,10 @@ func TestProcess_Stream_UnexpectedEOF(t *testing.T) {
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 	allowAnyLoggerCalls(mockLogger)
 
+	// stream unexpected EOF triggers GetByID + Update to set message status to failed
+	mockMsgRepo.EXPECT().GetByID(gomock.Any(), "asst-ueof").Return(&dapo.ConversationMsgPO{ID: "asst-ueof"}, nil)
+	mockMsgRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
+
 	svc := &agentSvc{
 		SvcBase:             service.NewSvcBase(),
 		conversationMsgRepo: mockMsgRepo,
@@ -188,6 +193,10 @@ func TestProcess_Stream_NonEOFError(t *testing.T) {
 	mockConvRepo := idbaccessmock.NewMockIConversationRepo(ctrl)
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 	allowAnyLoggerCalls(mockLogger)
+
+	// stream non-EOF error triggers GetByID + Update to set message status to failed
+	mockMsgRepo.EXPECT().GetByID(gomock.Any(), "asst-sneof").Return(&dapo.ConversationMsgPO{ID: "asst-sneof"}, nil)
+	mockMsgRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
 
 	svc := &agentSvc{
 		SvcBase:             service.NewSvcBase(),
@@ -244,6 +253,10 @@ func TestProcess_InvalidMessageFormat(t *testing.T) {
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 	allowAnyLoggerCalls(mockLogger)
 
+	// invalid message format triggers GetByID + Update to set message status to failed
+	mockMsgRepo.EXPECT().GetByID(gomock.Any(), "asst-invfmt").Return(&dapo.ConversationMsgPO{ID: "asst-invfmt"}, nil)
+	mockMsgRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
+
 	svc := &agentSvc{
 		SvcBase:             service.NewSvcBase(),
 		conversationMsgRepo: mockMsgRepo,
@@ -296,6 +309,7 @@ func TestProcess_TimeoutBranch(t *testing.T) {
 	allowAnyLoggerCalls(mockLogger)
 
 	mockMsgRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil).AnyTimes()
+	mockMsgRepo.EXPECT().GetByID(gomock.Any(), "asst-to").Return(&dapo.ConversationMsgPO{ID: "asst-to"}, nil)
 	mockConvRepo.EXPECT().GetByID(gomock.Any(), gomock.Any()).Return(&dapo.ConversationPO{ID: "conv-to"}, nil).AnyTimes()
 	mockConvRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil).AnyTimes()
 

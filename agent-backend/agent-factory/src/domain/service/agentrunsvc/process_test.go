@@ -51,6 +51,10 @@ func TestProcess_MessageChanClosed(t *testing.T) {
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 	allowAnyLoggerCalls(mockLogger)
 
+	// messageChan closed triggers GetByID + Update to set message status to failed
+	mockMsgRepo.EXPECT().GetByID(gomock.Any(), "asst-proc-1").Return(&dapo.ConversationMsgPO{ID: "asst-proc-1"}, nil)
+	mockMsgRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
+
 	svc := newProcessSvc(ctrl, mockMsgRepo, mockConvRepo, mockLogger)
 
 	req := &agentreq.ChatReq{
@@ -93,6 +97,10 @@ func TestProcess_ErrChanEOF(t *testing.T) {
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 	allowAnyLoggerCalls(mockLogger)
 
+	// errChan EOF triggers GetByID + Update to set message status to failed
+	mockMsgRepo.EXPECT().GetByID(gomock.Any(), "asst-proc-2").Return(&dapo.ConversationMsgPO{ID: "asst-proc-2"}, nil)
+	mockMsgRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
+
 	svc := newProcessSvc(ctrl, mockMsgRepo, mockConvRepo, mockLogger)
 
 	req := &agentreq.ChatReq{
@@ -134,6 +142,10 @@ func TestProcess_ErrChanNonEOF(t *testing.T) {
 	mockConvRepo := idbaccessmock.NewMockIConversationRepo(ctrl)
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 	allowAnyLoggerCalls(mockLogger)
+
+	// errChan non-EOF error triggers GetByID + Update to set message status to failed
+	mockMsgRepo.EXPECT().GetByID(gomock.Any(), "asst-proc-3").Return(&dapo.ConversationMsgPO{ID: "asst-proc-3"}, nil)
+	mockMsgRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
 
 	svc := newProcessSvc(ctrl, mockMsgRepo, mockConvRepo, mockLogger)
 
@@ -276,7 +288,8 @@ func TestProcess_StopChanTriggered(t *testing.T) {
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 	allowAnyLoggerCalls(mockLogger)
 
-	// HandleStopChan calls conversationMsgRepo.Update + conversationRepo.GetByID + conversationRepo.Update
+	// HandleStopChan calls conversationMsgRepo.GetByID + Update + conversationRepo.GetByID + Update
+	mockMsgRepo.EXPECT().GetByID(gomock.Any(), "asst-proc-4").Return(&dapo.ConversationMsgPO{ID: "asst-proc-4"}, nil)
 	mockMsgRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil).AnyTimes()
 	mockConvRepo.EXPECT().GetByID(gomock.Any(), "conv-proc-4").Return(&dapo.ConversationPO{ID: "conv-proc-4"}, nil).AnyTimes()
 	mockConvRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil).AnyTimes()
