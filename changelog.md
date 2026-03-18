@@ -1,8 +1,7 @@
 # Changelog
-## 0.4.2
+## 0.5.0
 
-### Backend (agent-factory)
-
+### Bug Fixes
 - Bug fix: Fix the issue where conversation status is not updated to failed when agent-executor process is killed or other exceptions occur
   - Modify chat_process.go file to set messageChanClosed = true when errChan is closed or receives EOF error
   - Ensure conversation status is correctly updated to failed when agent-executor process is killed or other exceptions occur
@@ -11,6 +10,8 @@
 - Bug fix: Fix the issue where assistant message content is empty after user stops the conversation
   - Modify HandleStopChan function to update session's temporary message content to database when user clicks stop button
   - Ensure stopped conversation content can be displayed normally in conversation list
+
+## 0.4.2
 
 ### Frontend (agent-web)
 
