@@ -7,7 +7,6 @@ import (
 	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
-	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
@@ -38,15 +37,6 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 		o11y.Info(ctx, fmt.Sprintf("[HandleStopChan] msgResp.Message.Content: %s", string(contentBytes)))
 	}
 
-	bytes, _ := sonic.Marshal(msgResp)
-	var resp agentresp.ChatResp
-	err = sonic.Unmarshal(bytes, &resp)
-	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] unmarshal msgResp err: %v", err))
-		return errors.Wrapf(err, "[HandleStopChan] unmarshal msgResp err")
-	}
-
-	// NOTE: 将msgResp转换为msgPO
 	existingMsgPO, err := agentSvc.conversationMsgRepo.GetByID(ctx, req.AssistantMessageID)
 	if err != nil {
 		o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] get message %s err: %v", req.AssistantMessageID, err))
@@ -56,7 +46,7 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 	if existingMsgPO == nil {
 		o11y.Info(ctx, "[HandleStopChan] message does not exist, creating new message")
 		agentSvc.logger.Infof("[HandleStopChan] message does not exist, creating new message")
-		msgPO, _, err := agentSvc.MsgResp2MsgPO(ctx, resp, req)
+		msgPO, _, err := agentSvc.MsgResp2MsgPO(ctx, msgResp, req)
 		if err != nil {
 			o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] convert msgResp to msgPO err: %v", err))
 			return errors.Wrapf(err, "[HandleStopChan] convert msgResp to msgPO err")
@@ -78,7 +68,7 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 			agentSvc.logger.Infof("[HandleStopChan] existingMsgPO.Content is nil")
 		}
 
-		msgPO, _, err := agentSvc.MsgResp2MsgPO(ctx, resp, req)
+		msgPO, _, err := agentSvc.MsgResp2MsgPO(ctx, msgResp, req)
 		if err != nil {
 			o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] convert msgResp to msgPO err: %v", err))
 			return errors.Wrapf(err, "[HandleStopChan] convert msgResp to msgPO err")
