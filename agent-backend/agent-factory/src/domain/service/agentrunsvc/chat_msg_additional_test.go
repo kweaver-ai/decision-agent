@@ -328,12 +328,14 @@ func TestAgentSvc_HandleStopChan_MsgRepoUpdateError(t *testing.T) {
 	mockMsgRepo := idbaccessmock.NewMockIConversationMsgRepo(ctrl)
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 	mockLogger.EXPECT().Errorf(gomock.Any(), gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Infof(gomock.Any(), gomock.Any()).AnyTimes()
 	svc := &agentSvc{SvcBase: service.NewSvcBase(), conversationMsgRepo: mockMsgRepo, logger: mockLogger}
+	mockMsgRepo.EXPECT().GetByID(gomock.Any(), gomock.Any()).Return(&dapo.ConversationMsgPO{ID: "asst-1"}, nil)
 	mockMsgRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(errors.New("update error"))
 
 	session := &Session{ConversationID: "conv-1", TempMsgResp: agentresp.ChatResp{ConversationID: "conv-1"}}
 	ctx := context.Background()
-	req := &agentreq.ChatReq{AgentID: "a1", ConversationID: "conv-1", AgentRunID: "run-1", InternalParam: agentreq.InternalParam{UserID: "u1"}}
+	req := &agentreq.ChatReq{AgentID: "a1", ConversationID: "conv-1", AgentRunID: "run-1", InternalParam: agentreq.InternalParam{UserID: "u1", AssistantMessageID: "asst-1"}}
 	err := svc.HandleStopChan(ctx, req, session)
 	assert.Error(t, err)
 }
@@ -347,13 +349,15 @@ func TestAgentSvc_HandleStopChan_GetConversationError(t *testing.T) {
 	mockMsgRepo := idbaccessmock.NewMockIConversationMsgRepo(ctrl)
 	mockLogger := cmpmock.NewMockLogger(ctrl)
 	mockLogger.EXPECT().Errorf(gomock.Any(), gomock.Any()).AnyTimes()
+	mockLogger.EXPECT().Infof(gomock.Any(), gomock.Any()).AnyTimes()
 	svc := &agentSvc{SvcBase: service.NewSvcBase(), conversationRepo: mockConvRepo, conversationMsgRepo: mockMsgRepo, logger: mockLogger}
+	mockMsgRepo.EXPECT().GetByID(gomock.Any(), gomock.Any()).Return(&dapo.ConversationMsgPO{ID: "asst-1"}, nil)
 	mockMsgRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
 	mockConvRepo.EXPECT().GetByID(gomock.Any(), "conv-1").Return(nil, errors.New("conv not found"))
 
 	session := &Session{ConversationID: "conv-1", TempMsgResp: agentresp.ChatResp{ConversationID: "conv-1"}}
 	ctx := context.Background()
-	req := &agentreq.ChatReq{AgentID: "a1", ConversationID: "conv-1", AgentRunID: "run-1", InternalParam: agentreq.InternalParam{UserID: "u1"}}
+	req := &agentreq.ChatReq{AgentID: "a1", ConversationID: "conv-1", AgentRunID: "run-1", InternalParam: agentreq.InternalParam{UserID: "u1", AssistantMessageID: "asst-1"}}
 	err := svc.HandleStopChan(ctx, req, session)
 	assert.Error(t, err)
 }
@@ -369,13 +373,14 @@ func TestAgentSvc_HandleStopChan_Success(t *testing.T) {
 	mockLogger.EXPECT().Infof(gomock.Any(), gomock.Any()).AnyTimes()
 	mockLogger.EXPECT().Errorf(gomock.Any(), gomock.Any()).AnyTimes()
 	svc := &agentSvc{SvcBase: service.NewSvcBase(), conversationRepo: mockConvRepo, conversationMsgRepo: mockMsgRepo, logger: mockLogger}
+	mockMsgRepo.EXPECT().GetByID(gomock.Any(), gomock.Any()).Return(&dapo.ConversationMsgPO{ID: "asst-1"}, nil)
 	mockMsgRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
 	mockConvRepo.EXPECT().GetByID(gomock.Any(), "conv-1").Return(&dapo.ConversationPO{ID: "conv-1"}, nil)
 	mockConvRepo.EXPECT().Update(gomock.Any(), gomock.Any()).Return(nil)
 
 	session := &Session{ConversationID: "conv-1", TempMsgResp: agentresp.ChatResp{ConversationID: "conv-1"}}
 	ctx := context.Background()
-	req := &agentreq.ChatReq{AgentID: "a1", ConversationID: "conv-1", AgentRunID: "run-1", InternalParam: agentreq.InternalParam{UserID: "u1"}}
+	req := &agentreq.ChatReq{AgentID: "a1", ConversationID: "conv-1", AgentRunID: "run-1", InternalParam: agentreq.InternalParam{UserID: "u1", AssistantMessageID: "asst-1"}}
 	err := svc.HandleStopChan(ctx, req, session)
 	assert.NoError(t, err)
 }
