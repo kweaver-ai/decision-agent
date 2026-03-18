@@ -14,6 +14,7 @@ import (
 	"go.opentelemetry.io/otel/attribute"
 )
 
+// NOTE: 处理终止信号，对话终止时，进行 助手消息的持久化
 func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.ChatReq, session *Session) error {
 	var err error
 
@@ -35,7 +36,6 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 			return errors.Wrapf(err, "[HandleStopChan] marshal msgResp.Message.Content err")
 		}
 		o11y.Info(ctx, fmt.Sprintf("[HandleStopChan] msgResp.Message.Content: %s", string(contentBytes)))
-		agentSvc.logger.Infof("[HandleStopChan] msgResp.Message.Content: %s", string(contentBytes))
 	}
 
 	bytes, _ := sonic.Marshal(msgResp)
@@ -46,6 +46,7 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 		return errors.Wrapf(err, "[HandleStopChan] unmarshal msgResp err")
 	}
 
+	// NOTE: 将msgResp转换为msgPO
 	existingMsgPO, err := agentSvc.conversationMsgRepo.GetByID(ctx, req.AssistantMessageID)
 	if err != nil {
 		o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] get message %s err: %v", req.AssistantMessageID, err))
@@ -72,7 +73,6 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 	} else {
 		if existingMsgPO.Content != nil {
 			o11y.Info(ctx, fmt.Sprintf("[HandleStopChan] existingMsgPO.Content: %s", *existingMsgPO.Content))
-			agentSvc.logger.Infof("[HandleStopChan] existingMsgPO.Content: %s", *existingMsgPO.Content)
 		} else {
 			o11y.Info(ctx, "[HandleStopChan] existingMsgPO.Content is nil")
 			agentSvc.logger.Infof("[HandleStopChan] existingMsgPO.Content is nil")
@@ -86,7 +86,6 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 
 		if msgPO.Content != nil {
 			o11y.Info(ctx, fmt.Sprintf("[HandleStopChan] msgPO.Content: %s", *msgPO.Content))
-			agentSvc.logger.Infof("[HandleStopChan] msgPO.Content: %s", *msgPO.Content)
 		} else {
 			o11y.Info(ctx, "[HandleStopChan] msgPO.Content is nil")
 			agentSvc.logger.Infof("[HandleStopChan] msgPO.Content is nil")
@@ -116,6 +115,7 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 	conversationPO.UpdateTime = cutil.GetCurrentMSTimestamp()
 	conversationPO.MessageIndex = req.AssistantMessageIndex
 
+	// 更新会话
 	err = agentSvc.conversationRepo.Update(ctx, conversationPO)
 	if err != nil {
 		o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] update conversationPO err: %v", err))
@@ -123,7 +123,6 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 	}
 
 	o11y.Info(ctx, "[HandleStopChan] terminate chat success")
-	agentSvc.logger.Infof("[HandleStopChan] terminate chat success")
 
 	return nil
 }
