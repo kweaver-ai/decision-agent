@@ -1,11 +1,21 @@
 # 版本 changelog 说明
+## 0.5.0
+
+### 修复问题
+- Bug 修复：修复 agent-executor 进程被杀死等其他异常时，对话状态未更新为 failed 的问题
+  - 修改 chat_process.go 文件，在 errChan 关闭或收到 EOF 错误时设置 messageChanClosed = true
+  - 确保 agent-executor 进程被杀死或其他异常时，对话状态能够正确更新为 failed
+  - 避免 UI 上显示状态为 running，且重新打开历史对话时报错 "conversation_id not found"
+
+- Bug 修复：修复用户中止对话后，assistant 消息内容为空的问题
+  - 修改 HandleStopChan 函数，当用户点击中止按钮时，将 session 中已输出的临时消息内容更新到数据库
+  - 确保中止对话的内容能够在对话列表中正常显示
+
 ## 0.4.2
 
 ### 前端 (agent-web)
 
 - Bug 修复：Agent 配置界面移除对旧业务知识网络判断逻辑。
-
-
 - Bug 修复：Agent 配置界面移除对文档的判断逻辑。
 
 ## 0.4.1
