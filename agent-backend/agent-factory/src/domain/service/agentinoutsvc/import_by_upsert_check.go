@@ -5,6 +5,7 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_inout/agentinoutresp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/pkg/errors"
 )
@@ -32,6 +33,10 @@ func (s *agentInOutSvc) importByUpsertCheck(ctx context.Context, exportData *age
 // checkBizDomainConflict 检查业务域冲突
 // 检查导入的agent key是否有不在当前业务域中的
 func (s *agentInOutSvc) checkBizDomainConflict(ctx context.Context, exportData *agentinoutresp.ExportResp, resp *agentinoutresp.ImportResp) (err error) {
+	if global.GConfig.IsBizDomainDisabled() {
+		return nil
+	}
+
 	// 1. 从header获取当前业务域的id
 	bdID := chelper.GetBizDomainIDFromCtx(ctx)
 

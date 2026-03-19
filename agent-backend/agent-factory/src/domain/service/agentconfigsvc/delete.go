@@ -9,6 +9,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 )
 
 // Delete 通过id删除数据智能体配置
@@ -75,6 +76,10 @@ func (s *dataAgentConfigSvc) Delete(ctx context.Context, id, uid string, isPriva
 	// 5. 调用repo层删除数据
 	err = s.agentConfRepo.Delete(ctx, tx, id)
 	if err != nil {
+		return
+	}
+
+	if global.GConfig.IsBizDomainDisabled() {
 		return
 	}
 

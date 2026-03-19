@@ -15,6 +15,8 @@ import (
 
 var hydraInstance rest.Hydra
 
+const defaultMockUserID = "e39adc84-6de8-11f0-b206-4a2c3f0cd493"
+
 type MockHydra struct{}
 
 func (m *MockHydra) GetLanguage(c *gin.Context) rest.Language {
@@ -22,8 +24,16 @@ func (m *MockHydra) GetLanguage(c *gin.Context) rest.Language {
 }
 
 func (m *MockHydra) VerifyToken(ctx context.Context, c *gin.Context) (rest.Visitor, error) {
+	userID := defaultMockUserID
+	if global.GConfig != nil &&
+		global.GConfig.SwitchFields != nil &&
+		global.GConfig.SwitchFields.Mock != nil &&
+		global.GConfig.SwitchFields.Mock.MockUserID != "" {
+		userID = global.GConfig.SwitchFields.Mock.MockUserID
+	}
+
 	return rest.Visitor{
-		ID:      "e39adc84-6de8-11f0-b206-4a2c3f0cd493",
+		ID:      userID,
 		TokenID: "Bearer mock token",
 		Type:    rest.VisitorType_RealName,
 	}, nil

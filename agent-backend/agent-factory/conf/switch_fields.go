@@ -8,6 +8,9 @@ type SwitchFields struct {
 	// 是否禁用权限检查，默认false
 	DisablePmsCheck bool `yaml:"disable_pms_check"`
 
+	// 是否禁用业务域，默认false；开启后业务域相关逻辑全部失效
+	DisableBizDomain bool `yaml:"disable_biz_domain"`
+
 	// 是否禁用业务域初始化，默认false
 	DisableBizDomainInit bool `yaml:"disable_biz_domain_init"`
 
@@ -27,6 +30,10 @@ func NewSwitchFields() *SwitchFields {
 	}
 }
 
+func (sf *SwitchFields) IsBizDomainDisabled() bool {
+	return sf != nil && sf.DisableBizDomain
+}
+
 // MockSwitchFields 定义了各种Mock服务的开关配置
 type MockSwitchFields struct {
 	// 是否使用Mock MQ客户端（本地开发时建议设置为true）
@@ -43,4 +50,7 @@ type MockSwitchFields struct {
 
 	// 是否使用Mock BizDomain（本地开发时建议设置为true）
 	MockBizDomain bool `yaml:"mock_biz_domain"`
+
+	// Mock Hydra 返回的用户 ID
+	MockUserID string `yaml:"mock_user_id"`
 }

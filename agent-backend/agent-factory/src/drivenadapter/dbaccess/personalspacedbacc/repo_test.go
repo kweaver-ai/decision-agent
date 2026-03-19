@@ -203,20 +203,37 @@ func TestListPersonalSpaceAgent_WithBizDomainIDs_Error(t *testing.T) {
 	assert.Error(t, err)
 }
 
-// ==================== ListPersonalSpaceTpl ====================
-
-func TestListPersonalSpaceTpl_PanicEmptyTplIDs(t *testing.T) {
+func TestListPersonalSpaceTpl_NilTplIDsDoesNotPanic(t *testing.T) {
 	t.Parallel()
 
-	repo, db, _ := newRepoWithMock(t)
+	repo, db, mock := newRepoWithMock(t)
 	defer db.Close()
 
-	assert.Panics(t, func() {
-		_, _ = repo.ListPersonalSpaceTpl(context.Background(), &psdbarg.TplListArg{
-			ListReq:    &personalspacereq.AgentTplListReq{Size: 10},
-			TplIDsByBd: []string{},
-		})
+	mock.ExpectQuery(`(?i)select .*`).WillReturnError(errors.New("find err"))
+
+	_, err := repo.ListPersonalSpaceTpl(context.Background(), &psdbarg.TplListArg{
+		ListReq:    &personalspacereq.AgentTplListReq{Size: 10},
+		CreatedBy:  "u1",
+		TplIDsByBd: nil,
 	})
+	assert.Error(t, err)
+}
+
+// ==================== ListPersonalSpaceTpl ====================
+
+func TestListPersonalSpaceTpl_EmptyTplIDsDoesNotPanic(t *testing.T) {
+	t.Parallel()
+
+	repo, db, mock := newRepoWithMock(t)
+	defer db.Close()
+
+	mock.ExpectQuery(`(?i)select .*`).WillReturnError(errors.New("find err"))
+
+	_, err := repo.ListPersonalSpaceTpl(context.Background(), &psdbarg.TplListArg{
+		ListReq:    &personalspacereq.AgentTplListReq{Size: 10},
+		TplIDsByBd: []string{},
+	})
+	assert.Error(t, err)
 }
 
 func TestListPersonalSpaceTpl_FindError(t *testing.T) {

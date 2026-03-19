@@ -7,6 +7,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/published/pubedreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/published/pubedresp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/pkg/errors"
 )
 
@@ -22,22 +23,27 @@ func (svc *publishedSvc) GetPubedTplList(ctx context.Context, req *pubedreq.Pube
 	needSize := req.Size
 	req.Size += 1
 
-	// 1.1 获取业务域ID
-	bdID := chelper.GetBizDomainIDFromCtx(ctx)
+	var tplIDsByBd []string
 
-	// 1.2 获取业务域ID对应的模板ID列表
-	tplIDsByBd, err := svc.bizDomainHttp.GetAllAgentTplIDList(ctx, []string{bdID})
-	if err != nil {
-		err = errors.Wrapf(err, "[publishedSvc][GetPubTplList]: bizDomainHttp.GetAllAgentTplIDList failed")
-		return
+	if !global.GConfig.IsBizDomainDisabled() {
+		// 1.1 获取业务域ID
+		bdID := chelper.GetBizDomainIDFromCtx(ctx)
+
+		// 1.2 获取业务域ID对应的模板ID列表
+		tplIDsByBd, err = svc.bizDomainHttp.GetAllAgentTplIDList(ctx, []string{bdID})
+		if err != nil {
+			err = errors.Wrapf(err, "[publishedSvc][GetPubTplList]: bizDomainHttp.GetAllAgentTplIDList failed")
+			return
+		}
+
+		if len(tplIDsByBd) == 0 {
+			res.IsLastPage = true
+			return
+		}
+
+		req.TplIDsByBd = tplIDsByBd
 	}
 
-	if len(tplIDsByBd) == 0 {
-		res.IsLastPage = true
-		return
-	}
-
-	req.TplIDsByBd = tplIDsByBd
 	// 1.3 从数据库获取已发布模板列表
 	pos, err := svc.publishedTplRepo.GetPubTplList(ctx, req)
 	if err != nil {

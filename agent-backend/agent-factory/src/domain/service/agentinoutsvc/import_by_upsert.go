@@ -9,6 +9,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 )
 
@@ -79,7 +80,7 @@ func (s *agentInOutSvc) importByUpsert(ctx context.Context, exportData *agentino
 	}
 
 	// 3. 关联业务域（只对新创建的agent添加关联，更新的agent已有关联）
-	if len(createPos) > 0 {
+	if len(createPos) > 0 && !global.GConfig.IsBizDomainDisabled() {
 		bdID := chelper.GetBizDomainIDFromCtx(ctx)
 
 		// 3.1 构建本地关联表数据

@@ -5,10 +5,16 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/cconf"
+	"github.com/kweaver-ai/decision-agent/agent-factory/conf"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/dbaccess/personalspacedbacc/psdbarg"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/personal_space/personalspacereq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/ibizdomainacc/bizdomainaccmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driver/iv3portdriver/v3portdrivermock"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
@@ -25,6 +31,21 @@ func createPersonalSpaceCtx(userID, bdID string) context.Context {
 	ctx = context.WithValue(ctx, cenum.BizDomainIDCtxKey.String(), bdID)                        //nolint:staticcheck
 
 	return ctx
+}
+
+func setDisableBizDomain(t *testing.T, disable bool) {
+	t.Helper()
+
+	oldCfg := global.GConfig
+	global.GConfig = &conf.Config{
+		Config:       cconf.BaseDefConfig(),
+		SwitchFields: conf.NewSwitchFields(),
+	}
+	global.GConfig.SwitchFields.DisableBizDomain = disable
+
+	t.Cleanup(func() {
+		global.GConfig = oldCfg
+	})
 }
 
 func TestAgentTplList_NilRequest(t *testing.T) {
@@ -256,4 +277,69 @@ func TestAgentList_BizDomainHttpError(t *testing.T) {
 	assert.Error(t, err)
 	assert.NotNil(t, resp)
 	assert.Contains(t, err.Error(), "get agent list from repo failed")
+}
+
+func TestAgentList_DisableBizDomainSkipsFilter(t *testing.T) {
+	setDisableBizDomain(t, true)
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockPmsSvc := v3portdrivermock.NewMockIPermissionSvc(ctrl)
+	mockRepo := idbaccessmock.NewMockIPersonalSpaceRepo(ctrl)
+
+	req := &personalspacereq.AgentListReq{
+		Size: 10,
+	}
+
+	mockPmsSvc.EXPECT().GetSingleMgmtPermission(gomock.Any(), cdaenum.ResourceTypeDataAgent, gomock.Any()).Return(true, nil)
+	mockRepo.EXPECT().ListPersonalSpaceAgent(gomock.Any(), gomock.Any()).DoAndReturn(
+		func(_ context.Context, arg *psdbarg.AgentListArg) ([]*dapo.DataAgentPo, error) {
+			assert.Nil(t, arg.AgentIDsByBizDomain)
+			return []*dapo.DataAgentPo{}, nil
+		},
+	)
+
+	svc := &PersonalSpaceService{
+		SvcBase:           service.NewSvcBase(),
+		pmsSvc:            mockPmsSvc,
+		personalSpaceRepo: mockRepo,
+	}
+
+	ctx := createPersonalSpaceCtx("user-123", "bd-123")
+	resp, err := svc.AgentList(ctx, req)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, resp)
+}
+
+func TestAgentTplList_DisableBizDomainSkipsFilter(t *testing.T) {
+	setDisableBizDomain(t, true)
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockRepo := idbaccessmock.NewMockIPersonalSpaceRepo(ctrl)
+
+	req := &personalspacereq.AgentTplListReq{
+		Size: 10,
+	}
+
+	mockRepo.EXPECT().ListPersonalSpaceTpl(gomock.Any(), gomock.Any()).DoAndReturn(
+		func(_ context.Context, arg *psdbarg.TplListArg) ([]*dapo.DataAgentTplPo, error) {
+			assert.Nil(t, arg.TplIDsByBd)
+			return []*dapo.DataAgentTplPo{}, nil
+		},
+	)
+
+	svc := &PersonalSpaceService{
+		SvcBase:           service.NewSvcBase(),
+		personalSpaceRepo: mockRepo,
+	}
+
+	ctx := createPersonalSpaceCtx("user-123", "bd-123")
+	resp, err := svc.AgentTplList(ctx, req)
+
+	assert.NoError(t, err)
+	assert.NotNil(t, resp)
 }

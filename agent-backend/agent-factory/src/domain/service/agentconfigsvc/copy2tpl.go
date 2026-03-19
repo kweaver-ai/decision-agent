@@ -16,6 +16,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cconstant"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/util"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/pkg/errors"
@@ -62,6 +63,10 @@ func (s *dataAgentConfigSvc) Copy2Tpl(ctx context.Context, agentID string, req *
 	res, err = s.createTemplateFromAgent(ctx, sourcePo, newName, tx)
 	if err != nil {
 		err = errors.Wrapf(err, "[dataAgentConfigSvc][Copy2Tpl]创建模板失败")
+		return
+	}
+
+	if global.GConfig.IsBizDomainDisabled() {
 		return
 	}
 

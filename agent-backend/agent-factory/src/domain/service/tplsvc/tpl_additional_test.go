@@ -9,11 +9,14 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"go.uber.org/mock/gomock"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/cconf"
+	"github.com/kweaver-ai/decision-agent/agent-factory/conf"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/daconfvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_tpl/agenttplreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/ibizdomainacc/bizdomainaccmock"
@@ -55,6 +58,21 @@ func newTplTx(t *testing.T) (*sql.Tx, sqlmock.Sqlmock, func()) {
 	}
 
 	return tx, mock, cleanup
+}
+
+func setTplDisableBizDomain(t *testing.T, disable bool) {
+	t.Helper()
+
+	oldCfg := global.GConfig
+	global.GConfig = &conf.Config{
+		Config:       cconf.BaseDefConfig(),
+		SwitchFields: conf.NewSwitchFields(),
+	}
+	global.GConfig.SwitchFields.DisableBizDomain = disable
+
+	t.Cleanup(func() {
+		global.GConfig = oldCfg
+	})
 }
 
 func TestDataAgentTplSvc_HelperFunctions(t *testing.T) {
@@ -244,6 +262,36 @@ func TestDataAgentTplSvc_PublishUnpublish_Success(t *testing.T) {
 }
 
 func TestDataAgentTplSvc_Copy_Update_Delete_UpdatePublishInfo(t *testing.T) {
+	t.Run("copy success when biz domain disabled skips association", func(t *testing.T) {
+		setTplDisableBizDomain(t, true)
+
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		tx, sqlMock, done := newTplTx(t)
+		defer done()
+		sqlMock.ExpectCommit()
+
+		mockTplRepo := idbaccessmock.NewMockIDataAgentTplRepo(ctrl)
+		svc := &dataAgentTplSvc{
+			SvcBase:      &service.SvcBase{Logger: noopTplLogger{}},
+			agentTplRepo: mockTplRepo,
+		}
+
+		ctx := createTplCtxWithUserID("u1")
+		sourcePo := &dapo.DataAgentTplPo{ID: 7, Name: "tpl_src", Key: "tpl_src_key", CreatedBy: "u1"}
+
+		mockTplRepo.EXPECT().GetByID(gomock.Any(), int64(7)).Return(sourcePo, nil)
+		mockTplRepo.EXPECT().BeginTx(gomock.Any()).Return(tx, nil)
+		mockTplRepo.EXPECT().Create(gomock.Any(), tx, gomock.Any()).Return(nil)
+		mockTplRepo.EXPECT().GetByKeyWithTx(gomock.Any(), tx, gomock.Any()).Return(&dapo.DataAgentTplPo{ID: 88}, nil)
+
+		resp, _, err := svc.Copy(ctx, 7)
+		require.NoError(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, int64(88), resp.ID)
+	})
+
 	t.Run("copy success", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
@@ -374,6 +422,40 @@ func TestDataAgentTplSvc_Copy_Update_Delete_UpdatePublishInfo(t *testing.T) {
 		mockPubedRepo.EXPECT().DeleteByTplID(gomock.Any(), tx, int64(10)).Return(nil)
 		mockBdRelRepo.EXPECT().DeleteByAgentTplID(gomock.Any(), tx, int64(10)).Return(nil)
 		mockBizDomain.EXPECT().DisassociateResource(gomock.Any(), gomock.Any()).Return(nil)
+
+		auditInfo, err := svc.Delete(ctx, 10, "u1", false)
+		require.NoError(t, err)
+		assert.Equal(t, "10", auditInfo.ID)
+	})
+
+	t.Run("delete success when biz domain disabled skips disassociation", func(t *testing.T) {
+		setTplDisableBizDomain(t, true)
+
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		tx, sqlMock, done := newTplTx(t)
+		defer done()
+		sqlMock.ExpectCommit()
+
+		mockTplRepo := idbaccessmock.NewMockIDataAgentTplRepo(ctrl)
+		mockPubedRepo := idbaccessmock.NewMockIPublishedTplRepo(ctrl)
+		builtInNo := cdaenum.BuiltInNo
+		po := &dapo.DataAgentTplPo{ID: 10, Name: "tpl10", CreatedBy: "u1", Status: cdaenum.StatusUnpublished, IsBuiltIn: &builtInNo}
+
+		svc := &dataAgentTplSvc{
+			SvcBase:          &service.SvcBase{Logger: noopTplLogger{}},
+			agentTplRepo:     mockTplRepo,
+			publishedTplRepo: mockPubedRepo,
+		}
+
+		ctx := context.Background()
+
+		mockTplRepo.EXPECT().ExistsByID(gomock.Any(), int64(10)).Return(true, nil)
+		mockTplRepo.EXPECT().GetByID(gomock.Any(), int64(10)).Return(po, nil)
+		mockTplRepo.EXPECT().BeginTx(gomock.Any()).Return(tx, nil)
+		mockTplRepo.EXPECT().Delete(gomock.Any(), tx, int64(10)).Return(nil)
+		mockPubedRepo.EXPECT().DeleteByTplID(gomock.Any(), tx, int64(10)).Return(nil)
 
 		auditInfo, err := svc.Delete(ctx, 10, "u1", false)
 		require.NoError(t, err)

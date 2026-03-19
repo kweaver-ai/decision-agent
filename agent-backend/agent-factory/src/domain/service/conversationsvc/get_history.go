@@ -42,6 +42,7 @@ func (svc *conversationSvc) GetHistoryV2(ctx context.Context, id string, history
 		if historyConfig.CountParams != nil && historyConfig.CountParams.CountLimit > 0 {
 			countLimit = historyConfig.CountParams.CountLimit
 		}
+
 		return svc.GetHistory(ctx, id, countLimit, regenerateUserMsgID, regenerateAssistantMsgID)
 	case cdaenum.HistoryStrategyTimeWindow:
 		return nil, errors.New("[GetHistoryV2] time_window strategy is not implemented yet")
@@ -81,6 +82,7 @@ func (svc *conversationSvc) GetHistory(ctx context.Context, id string, limit int
 						return nil, errors.Wrapf(err, "[GetHistory] unmarshal assistant content error, id: %s, err: %v", id, err)
 					}
 				}
+
 				if content.FinalAnswer.Answer.Text != "" {
 					history = append(history, &comvalobj.LLMMessage{
 						Role:    string(msg.Role),

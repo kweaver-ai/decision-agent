@@ -12,6 +12,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/pkg/errors"
 )
@@ -93,6 +94,15 @@ func (s *dataAgentConfigSvc) Create(ctx context.Context, req *agentconfigreq.Cre
 	// 5.1 保存数据
 	err = s.createPo(ctx, tx, req, po, id)
 	if err != nil {
+		return
+	}
+
+	if global.GConfig.IsBizDomainDisabled() {
+		err = tx.Commit()
+		if err != nil {
+			return
+		}
+
 		return
 	}
 

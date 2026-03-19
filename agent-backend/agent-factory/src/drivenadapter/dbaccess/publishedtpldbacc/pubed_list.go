@@ -14,11 +14,6 @@ import (
 
 // GetPubTplList 获取已发布模板列表
 func (repo *PubedTplRepo) GetPubTplList(ctx context.Context, req *pubedreq.PubedTplListReq) (rt []*dapo.PublishedTplPo, err error) {
-	if len(req.TplIDsByBd) == 0 {
-		// 如果len(req.TplIDsByBd) == 0不应该调用此方法
-		panic("[PubedTplRepo][GetPubTplList] req.TplIDsByBd should not be empty")
-	}
-
 	// 1. 初始化一些变量等
 	agentTplPo := &dapo.PublishedTplPo{}
 	categoryAccPo := &dapo.PubTplCatAssocPo{}

@@ -10,6 +10,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/personal_space/personalspaceresp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/pkg/errors"
 )
 
@@ -38,16 +39,18 @@ func (s *PersonalSpaceService) AgentTplList(ctx context.Context, req *personalsp
 	// 3.1. 构建argDto
 	var tplIDsByBdID []string
 
-	bdID := chelper.GetBizDomainIDFromCtx(ctx)
+	if !global.GConfig.IsBizDomainDisabled() {
+		bdID := chelper.GetBizDomainIDFromCtx(ctx)
 
-	tplIDsByBdID, err = s.bizDomainHttp.GetAllAgentTplIDList(ctx, []string{bdID})
-	if err != nil {
-		err = errors.Wrapf(err, "[PersonalSpaceService][AgentTplList]: get all agent tpl id list failed")
-		return
-	}
-	// 如果此业务域下没有agent tpl，直接返回
-	if len(tplIDsByBdID) == 0 {
-		return
+		tplIDsByBdID, err = s.bizDomainHttp.GetAllAgentTplIDList(ctx, []string{bdID})
+		if err != nil {
+			err = errors.Wrapf(err, "[PersonalSpaceService][AgentTplList]: get all agent tpl id list failed")
+			return
+		}
+		// 如果此业务域下没有agent tpl，直接返回
+		if len(tplIDsByBdID) == 0 {
+			return
+		}
 	}
 
 	argDto := psdbarg.NewTplListArg(req, uid, tplIDsByBdID)
