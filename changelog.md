@@ -1,7 +1,13 @@
 # Changelog
-## 0.5.0
+## 0.4.3
 
 ### Bug Fixes
+- Bug fix: Gracefully handle unavailable tools during skill initialization instead of failing the entire `dolphin_run` request
+  - Update `get_tool_info` to log tool availability errors and return an empty result instead of raising an exception
+  - Remove unavailable tools from `skills.tools` so remaining tools can continue to load and execute
+  - Set the sandbox execute-sync OpenAPI `session_id` path parameter default to `sess-agent-default`
+  - Add unit tests covering unavailable tool filtering and the downgraded tool info error path
+
 - Bug fix: Fix the issue where conversation status is not updated to failed when agent-executor process is killed or other exceptions occur
   - Modify chat_process.go file to set messageChanClosed = true when errChan is closed or receives EOF error
   - Ensure conversation status is correctly updated to failed when agent-executor process is killed or other exceptions occur
