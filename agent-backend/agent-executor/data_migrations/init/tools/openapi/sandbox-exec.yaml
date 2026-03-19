@@ -62,6 +62,7 @@ paths:
         schema:
           type: string
           title: Session Id
+          default: sess-agent-default
       - name: poll_interval
         in: query
         required: false

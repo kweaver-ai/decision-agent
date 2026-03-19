@@ -214,8 +214,9 @@ class TestGetToolInfo:
             mock_session_instance.__aexit__ = AsyncMock(return_value=None)
             mock_session_class.return_value = mock_session_instance
 
-            with pytest.raises(CodeException):
-                await agent_operator_service.get_tool_info(box_id, tool_id)
+            result = await agent_operator_service.get_tool_info(box_id, tool_id)
+
+            assert result is None
 
 
 class TestGetMcpTools:

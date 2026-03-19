@@ -1,6 +1,10 @@
+import sys
+import app.common.stand_log as log_oper
 from typing import TYPE_CHECKING
 
 from app.common.config import Config
+from app.common.stand_log import StandLogger
+from app.common.struct_logger.error_log_class import get_error_log_json
 from app.driven.dip.agent_operator_integration_service import (
     agent_operator_integration_service,
 )
@@ -27,6 +31,8 @@ async def process_skills_tools(
     if not skills:
         return
 
+    available_tools = []
+
     for tool in skills.tools:
         service_headers = {}
         user_id = get_user_account_id(headers) or ""
@@ -46,8 +52,16 @@ async def process_skills_tools(
                 tool.tool_box_id, tool.tool_id
             )
 
-            if ac.is_warmup:
+            if tool_info and ac.is_warmup:
                 ac.cache_handler.set_tools_info_dict(tool.tool_id, tool_info)
+
+        if not tool_info:
+            err = "工具不可用，已移除问题工具: tool_box_id={}, tool_id={}".format(
+                tool.tool_box_id, tool.tool_id
+            )
+            error_log = get_error_log_json(err, sys._getframe())
+            StandLogger.error(error_log, log_oper.SYSTEM_LOG)
+            continue
 
         # 3. 保存tool_rules到context_variables
         if "tool_rules" not in context_variables["self_config"]:
@@ -65,3 +79,6 @@ async def process_skills_tools(
         tool.__dict__["PORT_AGENT_OPERATOR"] = (
             Config.services.agent_operator_integration.port
         )
+        available_tools.append(tool)
+
+    skills.tools = available_tools
