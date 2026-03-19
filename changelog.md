@@ -1,6 +1,24 @@
 # Changelog
 ## 0.4.3
 
+### Features & Improvements
+
+- Add DisableBizDomain feature
+  - Add DisableBizDomain configuration option in SwitchFields
+  - Implement IsBizDomainDisabled() helper method
+  - Update agent config services to support business domain disable
+  - Modify personal space and published services accordingly
+  - Update OAuth middleware to handle disabled business domain
+  - Add configuration examples and documentation updates
+  - Deploy Helm chart configuration updates
+
+### Testing
+
+- Add comprehensive unit test coverage for disable business domain functionality
+  - Add disable_biz_domain_test.go test file
+  - Update test cases for related services
+  - Enhance middleware test coverage
+
 ### Bug Fixes
 - Bug fix: Gracefully handle unavailable tools during skill initialization instead of failing the entire `dolphin_run` request
   - Update `get_tool_info` to log tool availability errors and return an empty result instead of raising an exception
