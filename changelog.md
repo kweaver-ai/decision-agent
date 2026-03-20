@@ -1,7 +1,31 @@
 # Changelog
-## 0.5.0
+## 0.4.3
+
+### Features & Improvements
+
+- Add DisableBizDomain feature
+  - Add DisableBizDomain configuration option in SwitchFields
+  - Implement IsBizDomainDisabled() helper method
+  - Update agent config services to support business domain disable
+  - Modify personal space and published services accordingly
+  - Update OAuth middleware to handle disabled business domain
+  - Add configuration examples and documentation updates
+  - Deploy Helm chart configuration updates
+
+### Testing
+
+- Add comprehensive unit test coverage for disable business domain functionality
+  - Add disable_biz_domain_test.go test file
+  - Update test cases for related services
+  - Enhance middleware test coverage
 
 ### Bug Fixes
+- Bug fix: Gracefully handle unavailable tools during skill initialization instead of failing the entire `dolphin_run` request
+  - Update `get_tool_info` to log tool availability errors and return an empty result instead of raising an exception
+  - Remove unavailable tools from `skills.tools` so remaining tools can continue to load and execute
+  - Set the sandbox execute-sync OpenAPI `session_id` path parameter default to `sess-agent-default`
+  - Add unit tests covering unavailable tool filtering and the downgraded tool info error path
+
 - Bug fix: Fix the issue where conversation status is not updated to failed when agent-executor process is killed or other exceptions occur
   - Modify chat_process.go file to set messageChanClosed = true when errChan is closed or receives EOF error
   - Ensure conversation status is correctly updated to failed when agent-executor process is killed or other exceptions occur

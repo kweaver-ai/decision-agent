@@ -6,11 +6,14 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/kweaver-ai/decision-agent/agent-factory/cconf"
+	"github.com/kweaver-ai/decision-agent/agent-factory/conf"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdapmsenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 )
 
 func init() {
@@ -193,4 +196,54 @@ func TestHandleBizDomain_MissingBizDomain_UseDefault(t *testing.T) {
 	val, exists := c.Get(ctxKey)
 	assert.True(t, exists)
 	assert.Equal(t, cenum.BizDomainPublic.ToString(), val)
+}
+
+func TestHandleBizDomain_DisabledWithoutHeader(t *testing.T) {
+	oldCfg := global.GConfig
+	global.GConfig = &conf.Config{
+		Config:       cconf.BaseDefConfig(),
+		SwitchFields: conf.NewSwitchFields(),
+	}
+	global.GConfig.SwitchFields.DisableBizDomain = true
+
+	t.Cleanup(func() {
+		global.GConfig = oldCfg
+	})
+
+	handler := HandleBizDomain(false)
+	c, recorder := newBizDomainCtx(http.MethodGet, "/", map[string]string{})
+
+	handler(c)
+	assert.Equal(t, http.StatusOK, recorder.Code)
+
+	ctxKey := cenum.BizDomainIDCtxKey.String()
+	_, exists := c.Get(ctxKey)
+	assert.False(t, exists)
+	assert.Empty(t, c.Request.Context().Value(ctxKey))
+}
+
+func TestHandleBizDomain_DisabledWithHeader(t *testing.T) {
+	oldCfg := global.GConfig
+	global.GConfig = &conf.Config{
+		Config:       cconf.BaseDefConfig(),
+		SwitchFields: conf.NewSwitchFields(),
+	}
+	global.GConfig.SwitchFields.DisableBizDomain = true
+
+	t.Cleanup(func() {
+		global.GConfig = oldCfg
+	})
+
+	handler := HandleBizDomain(true)
+	c, recorder := newBizDomainCtx(http.MethodGet, "/", map[string]string{
+		"x-business-domain": "bd-123",
+	})
+
+	handler(c)
+	assert.Equal(t, http.StatusOK, recorder.Code)
+
+	ctxKey := cenum.BizDomainIDCtxKey.String()
+	_, exists := c.Get(ctxKey)
+	assert.False(t, exists)
+	assert.Empty(t, c.Request.Context().Value(ctxKey))
 }

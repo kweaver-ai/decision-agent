@@ -34,6 +34,7 @@ func (h *ConversationHistoryConfig) ValObjCheck() (err error) {
 		if h.CountParams == nil {
 			h.CountParams = &CountParams{CountLimit: constant.DefaultHistoryLimit}
 		}
+
 		if h.CountParams.CountLimit < 1 || h.CountParams.CountLimit > constant.MaxHistoryLimit {
 			err = errors.New(fmt.Sprintf("[ConversationHistoryConfig]: count_limit must be between 1 and %d when strategy is count", constant.MaxHistoryLimit))
 			return

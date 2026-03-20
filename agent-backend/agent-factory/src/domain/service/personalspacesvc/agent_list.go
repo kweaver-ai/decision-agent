@@ -12,6 +12,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/personal_space/personalspaceresp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/pkg/errors"
 )
@@ -44,20 +45,24 @@ func (s *PersonalSpaceService) AgentList(ctx context.Context, req *personalspace
 	needSize := req.Size
 	req.Size++
 
-	// 3.1. 获取当前用户当前的业务域ID
-	bdIDs := []string{
-		chelper.GetBizDomainIDFromCtx(ctx),
-	}
-	// 3.2. 获取当前用户所属的业务域ID下的Agent ID列表
-	agentIDsByBizDomain, _, err := s.bizDomainHttp.GetAllAgentIDList(ctx, bdIDs)
-	if err != nil {
-		err = errors.Wrapf(err, "[PersonalSpaceService][AgentList]: get agent list from repo failed")
-		return
-	}
+	var agentIDsByBizDomain []string
 
-	// 如果此业务域下没有agent，直接返回
-	if len(agentIDsByBizDomain) == 0 {
-		return
+	if !global.GConfig.IsBizDomainDisabled() {
+		// 3.1. 获取当前用户当前的业务域ID
+		bdIDs := []string{
+			chelper.GetBizDomainIDFromCtx(ctx),
+		}
+		// 3.2. 获取当前用户所属的业务域ID下的Agent ID列表
+		agentIDsByBizDomain, _, err = s.bizDomainHttp.GetAllAgentIDList(ctx, bdIDs)
+		if err != nil {
+			err = errors.Wrapf(err, "[PersonalSpaceService][AgentList]: get agent list from repo failed")
+			return
+		}
+
+		// 如果此业务域下没有agent，直接返回
+		if len(agentIDsByBizDomain) == 0 {
+			return
+		}
 	}
 
 	// 3.3. 构建参数

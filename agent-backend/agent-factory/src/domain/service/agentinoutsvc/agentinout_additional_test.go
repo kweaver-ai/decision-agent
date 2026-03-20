@@ -9,8 +9,11 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"go.uber.org/mock/gomock"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/cconf"
+	"github.com/kweaver-ai/decision-agent/agent-factory/conf"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent_inout/agentinoutresp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/ibizdomainacc/bizdomainaccmock"
@@ -66,6 +69,21 @@ func makeExportData(keys ...string) *agentinoutresp.ExportResp {
 	return &agentinoutresp.ExportResp{Agents: agents}
 }
 
+func setAgentInOutDisableBizDomain(t *testing.T, disable bool) {
+	t.Helper()
+
+	oldCfg := global.GConfig
+	global.GConfig = &conf.Config{
+		Config:       cconf.BaseDefConfig(),
+		SwitchFields: conf.NewSwitchFields(),
+	}
+	global.GConfig.SwitchFields.DisableBizDomain = disable
+
+	t.Cleanup(func() {
+		global.GConfig = oldCfg
+	})
+}
+
 func TestAgentInOutSvc_checkBizDomainConflict(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -119,6 +137,33 @@ func TestAgentInOutSvc_checkBizDomainConflict(t *testing.T) {
 }
 
 func TestAgentInOutSvc_importByCreate(t *testing.T) {
+	t.Run("success when biz domain disabled skips association", func(t *testing.T) {
+		setAgentInOutDisableBizDomain(t, true)
+
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		tx, sqlMock, done := newAgentSQLTx(t)
+		defer done()
+		sqlMock.ExpectCommit()
+
+		mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
+		svc := &agentInOutSvc{
+			agentConfRepo: mockAgentRepo,
+			logger:        noopAgentLogger{},
+		}
+
+		exportData := makeExportData("k1")
+		resp := agentinoutresp.NewImportResp()
+
+		mockAgentRepo.EXPECT().GetByKeys(gomock.Any(), []string{"k1"}).Return([]*dapo.DataAgentPo{}, nil)
+		mockAgentRepo.EXPECT().BeginTx(gomock.Any()).Return(tx, nil)
+		mockAgentRepo.EXPECT().CreateBatch(gomock.Any(), tx, gomock.Any()).Return(nil)
+
+		err := svc.importByCreate(context.Background(), exportData, "u1", resp)
+		assert.NoError(t, err)
+	})
+
 	t.Run("begin tx error", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()
@@ -207,6 +252,33 @@ func TestAgentInOutSvc_importByCreate(t *testing.T) {
 }
 
 func TestAgentInOutSvc_importByUpsert(t *testing.T) {
+	t.Run("success when biz domain disabled skips conflict check and association", func(t *testing.T) {
+		setAgentInOutDisableBizDomain(t, true)
+
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		tx, sqlMock, done := newAgentSQLTx(t)
+		defer done()
+		sqlMock.ExpectCommit()
+
+		mockAgentRepo := idbaccessmock.NewMockIDataAgentConfigRepo(ctrl)
+		svc := &agentInOutSvc{
+			agentConfRepo: mockAgentRepo,
+			logger:        noopAgentLogger{},
+		}
+
+		exportData := makeExportData("k1")
+		resp := agentinoutresp.NewImportResp()
+
+		mockAgentRepo.EXPECT().GetByKeys(gomock.Any(), []string{"k1"}).Return([]*dapo.DataAgentPo{}, nil)
+		mockAgentRepo.EXPECT().BeginTx(gomock.Any()).Return(tx, nil)
+		mockAgentRepo.EXPECT().CreateBatch(gomock.Any(), tx, gomock.Any()).Return(nil)
+
+		err := svc.importByUpsert(context.Background(), exportData, "u1", resp)
+		assert.NoError(t, err)
+	})
+
 	t.Run("begin tx error", func(t *testing.T) {
 		ctrl := gomock.NewController(t)
 		defer ctrl.Finish()

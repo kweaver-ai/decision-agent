@@ -8,6 +8,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
@@ -40,8 +41,8 @@ func (h *publishedHandler) PublishedAgentList(c *gin.Context) {
 		return
 	}
 
-	// 如果business_domain_ids为空，设置为公共业务域
-	if len(req.BusinessDomainIDs) == 0 {
+	// 如果未全局禁用业务域且 business_domain_ids 为空，则回填当前上下文中的业务域
+	if len(req.BusinessDomainIDs) == 0 && !global.GConfig.IsBizDomainDisabled() {
 		bdID := chelper.GetBizDomainIDFromCtx(c)
 		req.BusinessDomainIDs = []string{bdID}
 	}

@@ -12,15 +12,14 @@ import (
 
 // ==================== GetPubTplList ====================
 
-func TestGetPubTplList_PanicOnEmptyTplIDs(t *testing.T) {
+func TestGetPubTplList_EmptyTplIDsDoesNotPanic(t *testing.T) {
 	t.Parallel()
 
 	repo, db, _ := newPubedTplRepoWithMock(t)
 	defer db.Close()
 
-	assert.Panics(t, func() {
-		_, _ = repo.GetPubTplList(context.Background(), &pubedreq.PubedTplListReq{})
-	})
+	_, err := repo.GetPubTplList(context.Background(), &pubedreq.PubedTplListReq{Size: 10})
+	assert.Error(t, err)
 }
 
 func TestGetPubTplList_FindError(t *testing.T) {

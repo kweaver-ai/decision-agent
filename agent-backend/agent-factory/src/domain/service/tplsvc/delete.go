@@ -11,6 +11,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/pkg/errors"
 )
 
@@ -83,6 +84,10 @@ func (s *dataAgentTplSvc) Delete(ctx context.Context, id int64, uid string, isPr
 	err = s.publishedTplRepo.DeleteByTplID(ctx, tx, id)
 	if err != nil {
 		err = errors.Wrapf(err, "delete published template")
+		return
+	}
+
+	if global.GConfig.IsBizDomainDisabled() {
 		return
 	}
 

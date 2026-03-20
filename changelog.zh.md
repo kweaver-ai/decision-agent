@@ -1,7 +1,31 @@
 # 版本 changelog 说明
-## 0.5.0
+## 0.4.3
+
+### 功能与改进
+
+- 新增业务域禁用功能 (DisableBizDomain)
+  - 在 SwitchFields 中新增 DisableBizDomain 配置选项
+  - 实现 IsBizDomainDisabled() 辅助方法
+  - 更新代理配置服务以支持业务域禁用
+  - 修改个人空间和已发布服务以适应业务域禁用
+  - 更新 OAuth 中间件以处理禁用的业务域
+  - 添加配置示例和文档更新
+  - 部署 Helm chart 配置更新
+
+### 测试
+
+- 为业务域禁用功能添加全面的单元测试覆盖
+  - 添加 disable_biz_domain_test.go 测试文件
+  - 更新相关服务的测试用例
+  - 增强中间件测试覆盖
 
 ### 修复问题
+- Bug 修复：工具初始化阶段遇到不可用工具时，降级为跳过问题工具，而不是直接导致整个 `dolphin_run` 请求失败
+  - 将 `get_tool_info` 调整为只记录工具可用性错误日志并返回空结果，不再直接抛出异常
+  - 从 `skills.tools` 中移除不可用工具，确保其余可用工具仍能继续加载和执行
+  - 为沙盒 execute-sync OpenAPI 的 `session_id` 路径参数补充默认值 `sess-agent-default`
+  - 补充单元测试，覆盖问题工具过滤和工具信息失败降级路径
+
 - Bug 修复：修复 agent-executor 进程被杀死等其他异常时，对话状态未更新为 failed 的问题
   - 修改 chat_process.go 文件，在 errChan 关闭或收到 EOF 错误时设置 messageChanClosed = true
   - 确保 agent-executor 进程被杀死或其他异常时，对话状态能够正确更新为 failed

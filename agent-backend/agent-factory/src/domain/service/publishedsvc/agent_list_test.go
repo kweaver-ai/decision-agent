@@ -40,6 +40,25 @@ func setDisablePmsCheck(t *testing.T, disable bool) {
 	})
 }
 
+func setDisableBizDomainForPublished(t *testing.T, disable bool) {
+	t.Helper()
+
+	oldCfg := global.GConfig
+	oldCConf := cglobal.GConfig
+
+	global.GConfig = &conf.Config{
+		Config:       cconf.BaseDefConfig(),
+		SwitchFields: conf.NewSwitchFields(),
+	}
+	cglobal.GConfig = cconf.BaseDefConfig()
+	global.GConfig.SwitchFields.DisableBizDomain = disable
+
+	t.Cleanup(func() {
+		global.GConfig = oldCfg
+		cglobal.GConfig = oldCConf
+	})
+}
+
 func newPublishedJoinPo(id string, isPmsCtrl int, publishedAt int64) *dapo.PublishedJoinPo {
 	profile := "profile-" + id
 
@@ -203,6 +222,32 @@ func TestPublishedSvc_getPmsAgentPos(t *testing.T) {
 		assert.Len(t, pos, 1)
 		assert.Equal(t, "a1", pos[0].ID)
 		assert.Equal(t, "bd-1", bdMap["a1"])
+		assert.True(t, isLastPage)
+	})
+
+	t.Run("disable biz domain skips biz domain filter", func(t *testing.T) {
+		setDisablePmsCheck(t, false)
+		setDisableBizDomainForPublished(t, true)
+
+		ctrl := gomock.NewController(t)
+		defer ctrl.Finish()
+
+		mockRepo := idbaccessmock.NewMockIPubedAgentRepo(ctrl)
+		mockAuthz := authzaccmock.NewMockAuthZHttpAcc(ctrl)
+		svc := &publishedSvc{
+			pubedAgentRepo: mockRepo,
+			authZHttp:      mockAuthz,
+		}
+
+		mockRepo.EXPECT().GetPubedList(gomock.Any(), gomock.Any()).
+			Return([]*dapo.PublishedJoinPo{newPublishedJoinPo("a1", 0, 11)}, nil)
+		mockAuthz.EXPECT().FilterCanUseAgentIDMap(gomock.Any(), gomock.Any(), gomock.Any()).
+			Return(map[string]struct{}{}, nil).AnyTimes()
+
+		pos, bdMap, isLastPage, err := svc.getPmsAgentPos(context.Background(), &pubedreq.PubedAgentListReq{Size: 10})
+		assert.NoError(t, err)
+		assert.Len(t, pos, 1)
+		assert.Empty(t, bdMap)
 		assert.True(t, isLastPage)
 	})
 

@@ -5,9 +5,12 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/cconf"
+	"github.com/kweaver-ai/decision-agent/agent-factory/conf"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service"
 	pubedreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/published/pubedreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/idbaccess/idbaccessmock"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/port/driven/ihttpaccess/ibizdomainacc/bizdomainaccmock"
@@ -22,6 +25,21 @@ func createPublishedCtx(bdID string) context.Context {
 	ctx = context.WithValue(ctx, cenum.BizDomainIDCtxKey.String(), bdID) //nolint:staticcheck // SA1029
 
 	return ctx
+}
+
+func setPublishedDisableBizDomain(t *testing.T, disable bool) {
+	t.Helper()
+
+	oldCfg := global.GConfig
+	global.GConfig = &conf.Config{
+		Config:       cconf.BaseDefConfig(),
+		SwitchFields: conf.NewSwitchFields(),
+	}
+	global.GConfig.SwitchFields.DisableBizDomain = disable
+
+	t.Cleanup(func() {
+		global.GConfig = oldCfg
+	})
 }
 
 func TestGetPubedTplList_BizDomainHttpError(t *testing.T) {
@@ -154,6 +172,39 @@ func TestGetPubedTplList_EmptyResults(t *testing.T) {
 	res, err := svc.GetPubedTplList(ctx, req)
 
 	// When repo returns empty list, function returns without error (no p2e conversion needed)
+	assert.NoError(t, err)
+	assert.NotNil(t, res)
+}
+
+func TestGetPubedTplList_DisableBizDomainSkipsFilter(t *testing.T) {
+	setPublishedDisableBizDomain(t, true)
+
+	ctrl := gomock.NewController(t)
+	defer ctrl.Finish()
+
+	mockPublishedTplRepo := idbaccessmock.NewMockIPublishedTplRepo(ctrl)
+	mockUmHttp := httpaccmock.NewMockUmHttpAcc(ctrl)
+
+	svc := NewPublishedService(&NewPublishedSvcDto{
+		SvcBase:          service.NewSvcBase(),
+		PublishedTplRepo: mockPublishedTplRepo,
+		UmHttp:           mockUmHttp,
+	})
+
+	ctx := createPublishedCtx("test-bd-id")
+	req := &pubedreq.PubedTplListReq{
+		Size: 10,
+	}
+
+	mockPublishedTplRepo.EXPECT().GetPubTplList(gomock.Any(), gomock.Any()).DoAndReturn(
+		func(_ context.Context, arg *pubedreq.PubedTplListReq) ([]*dapo.PublishedTplPo, error) {
+			assert.Nil(t, arg.TplIDsByBd)
+			return []*dapo.PublishedTplPo{}, nil
+		},
+	)
+
+	res, err := svc.GetPubedTplList(ctx, req)
+
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 }

@@ -86,7 +86,7 @@ class AgentOperatorIntegrationService:
     @circuit(
         failure_threshold=GetFailureThreshold(), recovery_timeout=GetRecoveryTimeout()
     )
-    async def get_tool_info(self, box_id, tool_id) -> dict:
+    async def get_tool_info(self, box_id, tool_id) -> dict | None:
         # if Config.LOCAL_DEV_AARON:
         #     return self.get_mock_tool_info()
 
@@ -94,22 +94,35 @@ class AgentOperatorIntegrationService:
             basic_url=self._basic_url, box_id=box_id, tool_id=tool_id
         )
 
-        async with aiohttp.ClientSession(headers=self.headers) as session:
-            async with session.get(url, ssl=False) as response:
-                if response.status != HTTPStatus.OK:
-                    err = (
-                        "req_url: "
-                        + url
-                        + "\nget_tool_info error: {}".format(await response.text())
-                        + "\nresponse_code: {}".format(response.status)
-                    )
+        try:
+            async with aiohttp.ClientSession(headers=self.headers) as session:
+                async with session.get(url, ssl=False) as response:
+                    if response.status != HTTPStatus.OK:
+                        err = (
+                            "tool unavailable, tool_box_id: {box_id}, tool_id: {tool_id}, req_url: {url}"
+                            "\nget_tool_info error: {response_text}"
+                            "\nresponse_code: {response_status}"
+                        ).format(
+                            box_id=box_id,
+                            tool_id=tool_id,
+                            url=url,
+                            response_text=await response.text(),
+                            response_status=response.status,
+                        )
 
-                    error_log = get_error_log_json(err, sys._getframe())
-                    StandLogger.error(error_log, log_oper.SYSTEM_LOG)
+                        error_log = get_error_log_json(err, sys._getframe())
+                        StandLogger.error(error_log, log_oper.SYSTEM_LOG)
+                        return None
 
-                    raise CodeException(errors.ExternalServiceError(), err)
-
-                res = await response.json()
+                    res = await response.json()
+        except Exception as exc:
+            err = (
+                "tool unavailable, tool_box_id: {box_id}, tool_id: {tool_id}, req_url: {url}"
+                "\nget_tool_info exception: {exception}"
+            ).format(box_id=box_id, tool_id=tool_id, url=url, exception=repr(exc))
+            error_log = get_error_log_json(err, sys._getframe())
+            StandLogger.error(error_log, log_oper.SYSTEM_LOG)
+            return None
 
         return res
 

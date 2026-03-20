@@ -27,16 +27,21 @@ func (svc *publishedSvc) getPmsAgentPos(ctx context.Context, req *pubedreq.Pubed
 		}
 	}
 
-	// get all by 业务域
-	agentIdsByBdIds, agentID2BdIDMap, err := svc.bizDomainHttp.GetAllAgentIDList(ctx, req.BusinessDomainIDs)
-	if err != nil {
-		err = errors.Wrapf(err, "[publishedSvc][GetPublishedAgentList]: get all agent id list failed")
-		return
-	}
+	var agentIdsByBdIds []string
 
-	if len(agentIdsByBdIds) == 0 {
-		isLastPage = true
-		return
+	agentID2BdIDMap = make(map[string]string)
+	if !global.GConfig.IsBizDomainDisabled() {
+		// get all by 业务域
+		agentIdsByBdIds, agentID2BdIDMap, err = svc.bizDomainHttp.GetAllAgentIDList(ctx, req.BusinessDomainIDs)
+		if err != nil {
+			err = errors.Wrapf(err, "[publishedSvc][GetPublishedAgentList]: get all agent id list failed")
+			return
+		}
+
+		if len(agentIdsByBdIds) == 0 {
+			isLastPage = true
+			return
+		}
 	}
 
 	for {
@@ -145,6 +150,10 @@ func (svc *publishedSvc) getPos(ctx context.Context, req *pubedreq.PubedAgentLis
 	if err != nil {
 		err = errors.Wrapf(err, "[publishedSvc][GetPublishedAgentList]: get published agent list failed")
 		return
+	}
+
+	if agentIdsByBdIds == nil {
+		return pos, nil
 	}
 
 	newPos := make([]*dapo.PublishedJoinPo, 0)

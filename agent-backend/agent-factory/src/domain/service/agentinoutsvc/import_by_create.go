@@ -9,6 +9,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 )
 
@@ -53,6 +54,10 @@ func (s *agentInOutSvc) importByCreate(ctx context.Context, exportData *agentino
 	// 4. 批量导入agent
 	err = s.agentConfRepo.CreateBatch(ctx, tx, pos)
 	if err != nil {
+		return
+	}
+
+	if global.GConfig.IsBizDomainDisabled() {
 		return
 	}
 

@@ -148,6 +148,7 @@ func (agentSvc *agentSvc) GetHistoryAndMsgIndex(ctx context.Context, req *agentr
 			} else {
 				contexts, err = agentSvc.conversationSvc.GetHistory(ctx, req.ConversationID, historyLimit, req.RegenerateUserMsgID, req.RegenerateAssistantMsgID)
 			}
+
 			if err != nil {
 				o11y.Error(ctx, fmt.Sprintf("[GetHistoryAndMsgIndex] get conversation messages history failed: %v", err))
 				return nil, nil, 0, rest.NewHTTPError(ctx, http.StatusInternalServerError,

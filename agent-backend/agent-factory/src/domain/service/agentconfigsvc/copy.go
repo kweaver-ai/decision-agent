@@ -15,6 +15,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cconstant"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/util"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	"github.com/pkg/errors"
@@ -65,6 +66,17 @@ func (s *dataAgentConfigSvc) Copy(ctx context.Context, agentID string, req *agen
 	err = s.agentConfRepo.Create(ctx, tx, newID, newPo)
 	if err != nil {
 		err = errors.Wrapf(err, "保存新Agent失败")
+		return
+	}
+
+	if global.GConfig.IsBizDomainDisabled() {
+		res = &agentconfigresp.CopyResp{
+			ID:      newID,
+			Name:    newName,
+			Key:     newKey,
+			Version: daconstant.AgentVersionUnpublished,
+		}
+
 		return
 	}
 

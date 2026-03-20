@@ -21,7 +21,7 @@ type PubedAgentListReq struct {
 
 	IsToSquare int `form:"is_to_square" json:"is_to_square"` // 获取发布到广场的智能体
 
-	BusinessDomainIDs []string `json:"business_domain_ids"` // 业务域ID数组，如果不传，会使用header中的"x-business-domain"。如果该header也没有传，会默认使用"公共业务域"进行过滤
+	BusinessDomainIDs []string `json:"business_domain_ids"` // 业务域ID数组；当未禁用业务域时，如果不传会使用 header 中的 "x-business-domain"，若该 header 也未传则默认使用“公共业务域”过滤
 
 	Size int `form:"size,default=10" json:"size" binding:"numeric,max=1000"` // 每页显示数量
 

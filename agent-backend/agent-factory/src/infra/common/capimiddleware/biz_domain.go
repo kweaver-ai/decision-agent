@@ -8,12 +8,18 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 )
 
 // BizDomainMiddleware 业务域中间件
 // isUseDefault: 是否使用默认业务域（当请求中未携带业务域ID时）
 func HandleBizDomain(isUseDefault bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
+		if global.GConfig.IsBizDomainDisabled() {
+			c.Next()
+			return
+		}
+
 		// 1. 从请求上下文中获取业务域ID
 		bizDomainID, isExist, err := chelper.GetBizDomainIDFromGinHeader(c)
 		if err != nil {

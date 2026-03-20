@@ -12,11 +12,6 @@ import (
 )
 
 func (repo *personalSpaceRepo) ListPersonalSpaceTpl(ctx context.Context, arg *psdbarg.TplListArg) (pos []*dapo.DataAgentTplPo, err error) {
-	if len(arg.TplIDsByBd) == 0 {
-		// 如果len(arg.TplIDsByBd) == 0不应该调用此方法
-		panic("[personalSpaceRepo][ListPersonalSpaceTpl] arg.TplIDsByBd should not be empty")
-	}
-
 	req := arg.ListReq
 
 	po := &dapo.DataAgentTplPo{}

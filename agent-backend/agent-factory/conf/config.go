@@ -61,6 +61,10 @@ func (c Config) IsDebug() bool {
 	return cenvhelper.IsDebugMode()
 }
 
+func (c *Config) IsBizDomainDisabled() bool {
+	return c != nil && c.SwitchFields.IsBizDomainDisabled()
+}
+
 var (
 	configOnce sync.Once
 	configImpl *Config
