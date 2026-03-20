@@ -29,6 +29,11 @@ func (u *umHttpAcc) GetUserIDNameMap(ctx context.Context, userIDs []string) (idN
 		return nil, errors.Wrap(err, "获取用户ID=\u003eName键值对失败")
 	}
 
+	// UM 可能返回 (nil, nil)，需防止 nil pointer dereference
+	if ret == nil {
+		return make(map[string]string), nil
+	}
+
 	idNameMap = ret.UserNameMap
 
 	return

@@ -89,6 +89,11 @@ func (u *umHttpAcc) GetAppIDNameKv(ctx context.Context, appIDs []string) (idName
 		return nil, errors.Wrap(err, "获取应用账号ID=>Name键值对失败")
 	}
 
+	// UM 可能返回 (nil, nil)，需防止 nil pointer dereference
+	if ret == nil {
+		return make(map[string]string), nil
+	}
+
 	idNameKvMap = ret.AppNameMap
 
 	return
