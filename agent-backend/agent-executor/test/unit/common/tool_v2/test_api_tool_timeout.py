@@ -65,6 +65,7 @@ async def _run_arun_stream(tool):
     with (
         patch("app.common.tool_v2.api_tool.StandLogger"),
         patch("app.common.tool_v2.api_tool.aiohttp.ClientSession", FakeClientSession),
+        patch("app.common.tool_v2.api_tool.is_aaron_local_dev", return_value=False),
     ):
         result = [
             item
