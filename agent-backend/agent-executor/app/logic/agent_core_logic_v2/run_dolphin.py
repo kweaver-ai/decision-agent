@@ -156,6 +156,25 @@ async def run_dolphin(
 
     # ctx_manager = ContextManager()
 
+    # 9.2 创建trace listener（如果启用）
+    trace_listener = None
+    if Config.is_dolphin_trace_enabled():
+        try:
+            from dolphin.core.observability.otel_listener import OTelTraceListener
+            
+            trace_listener = OTelTraceListener(
+                agent_id=config.agent_id or "",
+                conversation_id=config.conversation_id or "",
+                user_id=user_id or "",
+            )
+            o11y_logger().info(
+                f"[run_dolphin] Dolphin trace listener created: "
+                f"agent_id={config.agent_id}, conversation_id={config.conversation_id}"
+            )
+        except Exception as e:
+            o11y_logger().warning(f"[run_dolphin] Failed to create trace listener: {e}")
+            trace_listener = None
+
     agent = DolphinAgent(
         content=dolphin_prompt,
         name=f"agent_core_v2_{config.agent_id}",
@@ -165,6 +184,7 @@ async def run_dolphin(
         verbose=Config.app.enable_dolphin_agent_verbose,  # 启用详细输出模式
         log_level=Config.app.get_stdlib_log_level(),
         output_variables=output_variables,
+        trace_listener=trace_listener,
         # context_manager=ctx_manager,
     )
     # todo control by config

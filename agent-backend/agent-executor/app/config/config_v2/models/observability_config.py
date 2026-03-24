@@ -2,6 +2,7 @@
 可观测性相关配置
 """
 
+import os
 from dataclasses import dataclass
 
 
@@ -15,12 +16,40 @@ class O11yConfig:
     # 追踪开关
     trace_enabled: bool = False
 
+    # Dolphin SDK trace开关
+    dolphin_trace_enabled: bool = False
+
+    # Dolphin SDK trace上报URL
+    dolphin_trace_url: str = ""
+
     @classmethod
     def from_dict(cls, data: dict) -> "O11yConfig":
-        """从字典创建配置对象"""
+        """从字典创建配置对象
+        
+        优先从环境变量读取dolphin trace配置:
+        - TRACE_ENABLE: dolphin trace开关
+        - TRACE_URL: dolphin trace上报URL
+        
+        如果环境变量不存在,则从yaml配置读取
+        """
+        # Dolphin trace配置优先从环境变量读取
+        trace_enable_env = os.getenv("TRACE_ENABLE", "").lower()
+        dolphin_trace_enabled = (
+            trace_enable_env == "true" 
+            if trace_enable_env 
+            else data.get("dolphin_trace_enabled", False)
+        )
+        
+        dolphin_trace_url = (
+            os.getenv("TRACE_URL", "")
+            or data.get("dolphin_trace_url", "")
+        )
+        
         return cls(
             log_enabled=data.get("log_enabled", False),
             trace_enabled=data.get("trace_enabled", False),
+            dolphin_trace_enabled=dolphin_trace_enabled,
+            dolphin_trace_url=dolphin_trace_url,
         )
 
 
