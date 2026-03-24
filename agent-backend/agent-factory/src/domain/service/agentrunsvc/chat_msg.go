@@ -14,6 +14,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 
 	"github.com/bytedance/sonic"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/otelconst"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
@@ -31,9 +32,9 @@ func (agentSvc *agentSvc) MsgResp2MsgPO(ctx context.Context, msgResp agentresp.C
 	ctx, _ = oteltrace.StartInternalSpan(ctx)
 	defer oteltrace.EndSpan(ctx, err)
 	oteltrace.SetAttributes(ctx,
-		attribute.String("gen_ai.agent.id", req.AgentID),
-		attribute.String("gen_ai.agent.run_id", req.AgentRunID),
-		attribute.String("user_id", req.UserID),
+		attribute.String(otelconst.AttrGenAIAgentID, req.AgentID),
+		attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID),
+		attribute.String(otelconst.AttrUserID, req.UserID),
 	)
 
 	content, err := sonic.Marshal(msgResp.Message.Content)
@@ -85,9 +86,9 @@ func (agentSvc *agentSvc) GetHistoryAndMsgIndex(ctx context.Context, req *agentr
 	ctx, _ = oteltrace.StartInternalSpan(ctx)
 	defer oteltrace.EndSpan(ctx, err)
 	oteltrace.SetAttributes(ctx,
-		attribute.String("gen_ai.agent.id", req.AgentID),
-		attribute.String("gen_ai.agent.run_id", req.AgentRunID),
-		attribute.String("user_id", req.UserID),
+		attribute.String(otelconst.AttrGenAIAgentID, req.AgentID),
+		attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID),
+		attribute.String(otelconst.AttrUserID, req.UserID),
 	)
 	// NOTE: 从前端请求的conversationID不为空，接口可能为空;
 	// NOTE: 如果会话ID为空，则创建新会话；
@@ -182,9 +183,9 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 	ctx, _ = oteltrace.StartInternalSpan(ctx)
 	defer oteltrace.EndSpan(ctx, err)
 	oteltrace.SetAttributes(ctx,
-		attribute.String("gen_ai.agent.id", req.AgentID),
-		attribute.String("gen_ai.agent.run_id", req.AgentRunID),
-		attribute.String("user_id", req.UserID),
+		attribute.String(otelconst.AttrGenAIAgentID, req.AgentID),
+		attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID),
+		attribute.String(otelconst.AttrUserID, req.UserID),
 	)
 	// NOTE: 普通对话则创建userMessage,状态为recieved
 	if IsNormalChat(req) {

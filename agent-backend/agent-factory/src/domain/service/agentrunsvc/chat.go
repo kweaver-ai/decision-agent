@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/otelconst"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/agentrunsvc/chatlogrecord"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo"
@@ -54,17 +55,17 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	newCtx, _ := oteltrace.StartInvokeAgentSpan(ctx, "")
 	defer oteltrace.EndSpan(newCtx, err)
 	oteltrace.SetAttributes(newCtx,
-		attribute.String("gen_ai.operation.name", "invoke_agent"),
-		attribute.String("gen_ai.agent.id", req.AgentID),
-		attribute.String("gen_ai.agent.run_id", req.AgentRunID),
-		attribute.String("gen_ai.agent.version", req.AgentVersion),
-		attribute.String("gen_ai.conversation.id", req.ConversationID),
-		attribute.String("user_id", req.UserID),
+		attribute.String(otelconst.AttrGenAIOperationName, "invoke_agent"),
+		attribute.String(otelconst.AttrGenAIAgentID, req.AgentID),
+		attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID),
+		attribute.String(otelconst.AttrGenAIAgentVersion, req.AgentVersion),
+		attribute.String(otelconst.AttrGenAIConversationID, req.ConversationID),
+		attribute.String(otelconst.AttrUserID, req.UserID),
 	)
 
 	otellog.LogDebug(newCtx, "[chat] started",
-		otelsdklog.String("agent_id", req.AgentID),
-		otelsdklog.String("conversation_id", req.ConversationID),
+		otelsdklog.String(otelconst.AttrGenAIAgentID, req.AgentID),
+		otelsdklog.String(otelconst.AttrGenAIConversationID, req.ConversationID),
 	)
 
 	defer func() {
@@ -92,8 +93,8 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	req.AgentID = agentInfo.DataAgent.ID
 
 	otellog.LogDebug(newCtx, "[chat] agent info loaded",
-		otelsdklog.String("agent_name", agentInfo.DataAgent.Name),
-		otelsdklog.String("agent_id", agentInfo.DataAgent.ID),
+		otelsdklog.String(otelconst.AttrGenAIAgentName, agentInfo.DataAgent.Name),
+		otelsdklog.String(otelconst.AttrGenAIAgentID, agentInfo.DataAgent.ID),
 	)
 
 	// NOTE: 如果是apichat,但是没有发布成api agent，则返回403
@@ -221,8 +222,8 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	channel := make(chan []byte, CHANNEL_SIZE)
 
 	otellog.LogDebug(newCtx, "[chat] starting Process goroutine",
-		otelsdklog.String("conversation_id", req.ConversationID),
-		otelsdklog.String("assistant_message_id", req.AssistantMessageID),
+		otelsdklog.String(otelconst.AttrGenAIConversationID, req.ConversationID),
+		otelsdklog.String(otelconst.AttrGenAIAssistantMsgID, req.AssistantMessageID),
 	)
 
 	go func() {

@@ -6,6 +6,7 @@ import (
 	"slices"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/otelconst"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/comvalobj"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/agentexecutoraccess/agentexecutordto"
@@ -22,9 +23,9 @@ func (agentSvc *agentSvc) GenerateAgentCallReq(ctx context.Context, req *agentre
 	ctx, _ = oteltrace.StartInternalSpan(ctx)
 	defer oteltrace.EndSpan(ctx, err)
 	oteltrace.SetAttributes(ctx,
-		attribute.String("gen_ai.agent.id", req.AgentID),
-		attribute.String("gen_ai.agent.run_id", req.AgentRunID),
-		attribute.String("user_id", req.UserID),
+		attribute.String(otelconst.AttrGenAIAgentID, req.AgentID),
+		attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID),
+		attribute.String(otelconst.AttrUserID, req.UserID),
 	)
 	// NOTE: 如果req.ChatMode不为空，则设置req.ChatMode
 	if req.ChatMode != constant.DeepThinkingMode {

@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/bytedance/sonic"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/otelconst"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/conversationmsgvo"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
@@ -24,9 +25,9 @@ func (agentSvc *agentSvc) handleProgressOld(ctx context.Context, req *agentreq.C
 		ctx, _ = oteltrace.StartInternalSpan(ctx)
 		defer oteltrace.EndSpan(ctx, nil)
 		oteltrace.SetAttributes(ctx,
-			attribute.String("gen_ai.agent.run_id", req.AgentRunID),
-			attribute.String("gen_ai.agent.id", req.AgentID),
-			attribute.String("user_id", req.UserID),
+			attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID),
+			attribute.String(otelconst.AttrGenAIAgentID, req.AgentID),
+			attribute.String(otelconst.AttrUserID, req.UserID),
 			attribute.String("stream.chunk_position", "first"),
 		)
 	}
@@ -84,9 +85,9 @@ func (agentSvc *agentSvc) handleProgress(ctx context.Context, req *agentreq.Chat
 		ctx, _ = oteltrace.StartInternalSpan(ctx)
 		defer oteltrace.EndSpan(ctx, nil)
 		oteltrace.SetAttributes(ctx,
-			attribute.String("gen_ai.agent.run_id", req.AgentRunID),
-			attribute.String("gen_ai.agent.id", req.AgentID),
-			attribute.String("user_id", req.UserID),
+			attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID),
+			attribute.String(otelconst.AttrGenAIAgentID, req.AgentID),
+			attribute.String(otelconst.AttrUserID, req.UserID),
 			attribute.String("stream.chunk_position", "first"),
 		)
 	}

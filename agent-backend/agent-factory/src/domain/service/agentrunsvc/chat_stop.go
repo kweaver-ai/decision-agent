@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/bytedance/sonic"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/otelconst"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
@@ -21,10 +22,10 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 	ctx, _ = oteltrace.StartInternalSpan(ctx)
 	defer oteltrace.EndSpan(ctx, err)
 	oteltrace.SetAttributes(ctx,
-		attribute.String("gen_ai.agent.id", req.AgentID),
-		attribute.String("gen_ai.agent.run_id", req.AgentRunID),
-		attribute.String("gen_ai.conversation.id", req.ConversationID),
-		attribute.String("user_id", req.UserID),
+		attribute.String(otelconst.AttrGenAIAgentID, req.AgentID),
+		attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID),
+		attribute.String(otelconst.AttrGenAIConversationID, req.ConversationID),
+		attribute.String(otelconst.AttrUserID, req.UserID),
 	)
 
 	msgResp := session.GetTempMsgResp()

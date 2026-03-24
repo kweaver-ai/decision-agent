@@ -330,7 +330,7 @@ otel:
   service_name: "agent-factory"
   service_version: "1.0.0"
   environment: "production"
-  otlp_endpoint: "otel-collector:4318"
+  otlp_endpoint: "otelcol-contrib:4318"
   trace:
     enabled: false
     sampling_rate: 1.0

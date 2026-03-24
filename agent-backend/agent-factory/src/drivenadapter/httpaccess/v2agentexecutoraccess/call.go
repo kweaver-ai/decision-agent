@@ -4,12 +4,29 @@ import (
 	"context"
 	"fmt"
 
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/otelconst"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
-	"go.opentelemetry.io/otel/attribute"
 )
+
+// mapCarrier adapts map[string]string to propagation.TextMapCarrier.
+type mapCarrier map[string]string
+
+func (c mapCarrier) Get(key string) string { return c[key] }
+func (c mapCarrier) Set(key, value string) { c[key] = value }
+func (c mapCarrier) Keys() []string {
+	keys := make([]string, 0, len(c))
+	for k := range c {
+		keys = append(keys, k)
+	}
+
+	return keys
+}
 
 func (ae *v2AgentExecutorHttpAcc) Call(ctx context.Context, req *v2agentexecutordto.V2AgentCallReq) (chan string, chan error, error) {
 	var err error
@@ -18,9 +35,9 @@ func (ae *v2AgentExecutorHttpAcc) Call(ctx context.Context, req *v2agentexecutor
 	defer oteltrace.EndSpan(ctx, err)
 	oteltrace.SetAttributes(ctx,
 		attribute.String("agent_call_req", fmt.Sprintf("%+v", req)),
-		attribute.String("user_id", req.UserID),
-		attribute.String("gen_ai.agent.run_id", req.AgentOptions.AgentRunID),
-		attribute.String("gen_ai.agent.id", req.AgentID),
+		attribute.String(otelconst.AttrUserID, req.UserID),
+		attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentOptions.AgentRunID),
+		attribute.String(otelconst.AttrGenAIAgentID, req.AgentID),
 	)
 
 	var url string
@@ -50,6 +67,9 @@ func (ae *v2AgentExecutorHttpAcc) Call(ctx context.Context, req *v2agentexecutor
 	}
 
 	headers["x-business-domain"] = req.XBusinessDomainID
+
+	// 注入 OTel trace context（traceparent/tracestate）到请求头，实现跨服务 trace 关联
+	otel.GetTextMapPropagator().Inject(ctx, mapCarrier(headers))
 
 	messages, errs, err := ae.streamClient.StreamPost(ctx, url, headers, req)
 

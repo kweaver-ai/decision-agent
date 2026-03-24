@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/bytedance/sonic"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/otelconst"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/service/agentrunsvc/chatlogrecord"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
@@ -50,9 +51,9 @@ func (agentSvc *agentSvc) Process(traceCtx context.Context, req *agentreq.ChatRe
 
 	defer oteltrace.EndSpan(ctx, err)
 	oteltrace.SetAttributes(ctx,
-		attribute.String("gen_ai.agent.id", req.AgentID),
-		attribute.String("gen_ai.agent.run_id", req.AgentRunID),
-		attribute.String("user_id", req.UserID),
+		attribute.String(otelconst.AttrGenAIAgentID, req.AgentID),
+		attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID),
+		attribute.String(otelconst.AttrUserID, req.UserID),
 	)
 	// NOTE: process是对话的核心，process结束时关闭respChan
 	defer close(respChan)

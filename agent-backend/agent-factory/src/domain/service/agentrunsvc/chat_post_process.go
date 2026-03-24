@@ -22,6 +22,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 
 	"github.com/bytedance/sonic"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/otelconst"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/otellog"
@@ -45,9 +46,9 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 		ctx, _ = oteltrace.StartInternalSpan(ctx)
 		defer oteltrace.EndSpan(ctx, err)
 		oteltrace.SetAttributes(ctx,
-			attribute.String("gen_ai.agent.run_id", req.AgentRunID),
-			attribute.String("gen_ai.agent.id", req.AgentID),
-			attribute.String("user_id", req.UserID),
+			attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID),
+			attribute.String(otelconst.AttrGenAIAgentID, req.AgentID),
+			attribute.String(otelconst.AttrUserID, req.UserID),
 			attribute.String("stream.chunk_position", "first"),
 		)
 	}
@@ -371,9 +372,9 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 func (agentSvc *agentSvc) handleMessageAndTempArea(ctx context.Context, req *agentreq.ChatReq, messageVO conversationmsgvo.Message) error {
 	ctx, _ = oteltrace.StartInternalSpan(ctx)
 	defer oteltrace.EndSpan(ctx, nil)
-	oteltrace.SetAttributes(ctx, attribute.String("gen_ai.agent.run_id", req.AgentRunID))
-	oteltrace.SetAttributes(ctx, attribute.String("gen_ai.agent.id", req.AgentID))
-	oteltrace.SetAttributes(ctx, attribute.String("user_id", req.UserID))
+	oteltrace.SetAttributes(ctx, attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID))
+	oteltrace.SetAttributes(ctx, attribute.String(otelconst.AttrGenAIAgentID, req.AgentID))
+	oteltrace.SetAttributes(ctx, attribute.String(otelconst.AttrUserID, req.UserID))
 	// NOTE: VO-PO
 	content, err := sonic.Marshal(messageVO.Content)
 	if err != nil {

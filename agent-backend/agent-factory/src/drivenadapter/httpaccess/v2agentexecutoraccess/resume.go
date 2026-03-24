@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/otelconst"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
 	"go.opentelemetry.io/otel/attribute"
@@ -16,7 +17,7 @@ func (ae *v2AgentExecutorHttpAcc) Resume(ctx context.Context, req *v2agentexecut
 	ctx, _ = oteltrace.StartInternalSpan(ctx)
 	defer oteltrace.EndSpan(ctx, err)
 	oteltrace.SetAttributes(ctx,
-		attribute.String("gen_ai.agent.run_id", req.AgentRunID),
+		attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID),
 		attribute.String("action", req.ResumeInfo.Action),
 	)
 
