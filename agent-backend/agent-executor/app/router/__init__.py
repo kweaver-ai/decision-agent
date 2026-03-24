@@ -17,18 +17,32 @@ from app.utils.observability.observability import (
 from .middleware_pkg import o11y_trace, log_requests
 
 
+from app.utils.otel_test_setup import (
+    is_otel_test_enabled,
+    init_otel_test_provider,
+    instrument_fastapi_app,
+)
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """应用生命周期管理"""
     # 启动时执行
     init_observability(server_info, observability_config)
     AioHttpClientInstrumentor().instrument()
+    # OTel 测试埋点 — 初始化 provider（环境变量 ENABLE_OTEL_TEST 控制）
+    if is_otel_test_enabled():
+        init_otel_test_provider()
     yield
     # 关闭时执行
     shutdown_observability()
 
 
 app = FastAPI(lifespan=lifespan)
+
+# OTel 测试埋点 — instrument FastAPI app（必须在 app 创建后、启动前调用）
+if is_otel_test_enabled():
+    instrument_fastapi_app(app)
 
 
 token_rate = Config.app.rps_limit
