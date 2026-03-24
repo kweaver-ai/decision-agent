@@ -41,7 +41,10 @@ func (u *umHttpAcc) GetSingleUserName(ctx context.Context, userID string) (name 
 		return "", errors.Wrap(err, "获取单个用户名称失败")
 	}
 
-	name = idNameMap[userID]
+	name, ok := idNameMap[userID]
+	if !ok {
+		return "", errors.New("用户不存在")
+	}
 
 	return
 }

@@ -34,6 +34,7 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 			o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] marshal msgResp.Message.Content err: %v", err))
 			return errors.Wrapf(err, "[HandleStopChan] marshal msgResp.Message.Content err")
 		}
+
 		o11y.Info(ctx, fmt.Sprintf("[HandleStopChan] msgResp.Message.Content: %s", string(contentBytes)))
 	}
 
@@ -46,6 +47,7 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 	if existingMsgPO == nil {
 		o11y.Info(ctx, "[HandleStopChan] message does not exist, creating new message")
 		agentSvc.logger.Infof("[HandleStopChan] message does not exist, creating new message")
+
 		msgPO, _, err := agentSvc.MsgResp2MsgPO(ctx, msgResp, req)
 		if err != nil {
 			o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] convert msgResp to msgPO err: %v", err))
@@ -89,6 +91,7 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 
 		o11y.Info(ctx, "[HandleStopChan] message exists, updating content and status to cancelled")
 		agentSvc.logger.Infof("[HandleStopChan] message exists, updating content and status to cancelled")
+
 		err = agentSvc.conversationMsgRepo.Update(ctx, existingMsgPO)
 		if err != nil {
 			o11y.Error(ctx, fmt.Sprintf("[HandleStopChan] update message err: %v", err))

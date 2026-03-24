@@ -194,6 +194,7 @@ looplabel:
 			o11y.Error(ctx, fmt.Sprintf("[Process] failed to get assistant message %s: %v", req.AssistantMessageID, errNew))
 		} else {
 			conversationAssistantMsgPO.Status = cdaenum.MsgStatusFailed
+
 			updateErr := agentSvc.conversationMsgRepo.Update(ctx, conversationAssistantMsgPO)
 			if updateErr != nil {
 				agentSvc.logger.Errorf("[Process] update message status failed: %v", updateErr)
@@ -203,6 +204,7 @@ looplabel:
 
 		// NOTE： 上报日志
 		var agentResp agentresp.ChatResp
+
 		var logErr error
 		if err != nil {
 			logErr = err
