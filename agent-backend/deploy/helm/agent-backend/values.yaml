@@ -325,6 +325,19 @@ opentelemetry:
     http_endpoint: "http://localhost:4318/v1/metrics"
     export_interval: 10
 
+# 新版 OTel Collector 配置
+otel:
+  service_name: "agent-factory"
+  service_version: "1.0.0"
+  environment: "production"
+  otlp_endpoint: "otel-collector:4318"
+  trace:
+    enabled: false
+    sampling_rate: 1.0
+  log:
+    enabled: false
+    level: "info"
+
 # ========== Agent Executor 配置 ==========
 agentExecutor:
   port: 30778

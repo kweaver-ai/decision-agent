@@ -19,7 +19,6 @@ from .api_tool_pkg.evidence_extractor import (
     is_evidence_extraction_enabled,
     extract_evidence,
 )
-from app.infra.common.helper.env_helper import is_aaron_local_dev
 
 
 class APITool(APIToolInputHandler):
@@ -203,10 +202,10 @@ class APITool(APIToolInputHandler):
         # 此处不再主动抛出 ToolInterrupt 异常
 
         # Mock: is_aaron_local_dev() 时直接使用 mock 数据
-        if is_aaron_local_dev():
-            async for rt in self._mock_kn_search_stream():
-                yield rt
-            return
+        # if is_aaron_local_dev():
+        #     async for rt in self._mock_kn_search_stream():
+        #         yield rt
+        #     return
 
         # 1. 获取gvp
         gvp: "Context" = props.get("gvp")

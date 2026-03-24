@@ -20,11 +20,11 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/panichelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/ctype"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/logs"
-	otelTrace "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/opentelemetry/trace"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/otellog"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"go.opentelemetry.io/otel/attribute"
+	otelsdklog "go.opentelemetry.io/otel/log"
 )
 
 var (
@@ -50,11 +50,22 @@ const (
 func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan []byte, error) {
 	var err error
 
-	newCtx, _ := otelTrace.StartInternalSpan(ctx)
-	defer otelTrace.EndSpan(newCtx, err)
-	otelTrace.SetAttributes(newCtx, attribute.String("agent_id", req.AgentID))
-	otelTrace.SetAttributes(newCtx, attribute.String("agent_run_id", req.AgentRunID))
-	otelTrace.SetAttributes(newCtx, attribute.String("user_id", req.UserID))
+	// NOTE: 使用 invoke_agent span（按 OTel Gen AI Agent Spans 规范）
+	newCtx, _ := oteltrace.StartInvokeAgentSpan(ctx, "")
+	defer oteltrace.EndSpan(newCtx, err)
+	oteltrace.SetAttributes(newCtx,
+		attribute.String("gen_ai.operation.name", "invoke_agent"),
+		attribute.String("gen_ai.agent.id", req.AgentID),
+		attribute.String("gen_ai.agent.run_id", req.AgentRunID),
+		attribute.String("gen_ai.agent.version", req.AgentVersion),
+		attribute.String("gen_ai.conversation.id", req.ConversationID),
+		attribute.String("user_id", req.UserID),
+	)
+
+	otellog.LogDebug(newCtx, "[chat] started",
+		otelsdklog.String("agent_id", req.AgentID),
+		otelsdklog.String("conversation_id", req.ConversationID),
+	)
 
 	defer func() {
 		if err != nil {
@@ -71,11 +82,7 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 		AgentVersion: req.AgentVersion,
 	})
 	if err != nil {
-		o11y.Error(newCtx, fmt.Sprintf("[chat] get agent failed: %v", err))
-
-		attributes := []attribute.KeyValue{}
-		attributes = append(attributes, attribute.String("error", err.Error()))
-		logs.LoggerFromContext(newCtx).Error(newCtx, "[chat] get agent failed: ", attributes...)
+		otellog.LogError(newCtx, "[chat] get agent failed", err)
 
 		return nil, rest.NewHTTPError(newCtx, http.StatusInternalServerError,
 			apierr.AgentAPP_Agent_GetAgentFailed).WithErrorDetails(fmt.Sprintf("[chat] get agent failed: %v", err))
@@ -83,6 +90,11 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 
 	// 1.2 传递给AgentExecutor的agentID 前确保实际值为agentID
 	req.AgentID = agentInfo.DataAgent.ID
+
+	otellog.LogDebug(newCtx, "[chat] agent info loaded",
+		otelsdklog.String("agent_name", agentInfo.DataAgent.Name),
+		otelsdklog.String("agent_id", agentInfo.DataAgent.ID),
+	)
 
 	// NOTE: 如果是apichat,但是没有发布成api agent，则返回403
 	if req.CallType == constant.APIChat && agentInfo.PublishInfo.IsAPIAgent == 0 {
@@ -98,14 +110,14 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 
 	conversationPO, contexts, msgIndex, err := agentSvc.GetHistoryAndMsgIndex(newCtx, req, historyLimit, agentInfo.Config.ConversationHistoryConfig)
 	if err != nil {
-		o11y.Error(newCtx, fmt.Sprintf("[chat] get history and msg index failed: %v", err))
+		otellog.LogError(newCtx, "[chat] get history and msg index failed", err)
 		return nil, err
 	}
 
 	// NOTE: 3. 插入用户消息和助手消息, 并返回userMessageID, assistantMessageID, assistantMessageIndex
 	req.UserMessageID, req.AssistantMessageID, req.AssistantMessageIndex, err = agentSvc.UpsertUserAndAssistantMsg(newCtx, req, msgIndex, conversationPO)
 	if err != nil {
-		o11y.Error(newCtx, fmt.Sprintf("[chat] upsert user and assistant msg failed: %v", err))
+		otellog.LogError(newCtx, "[chat] upsert user and assistant msg failed", err)
 		return nil, err
 	}
 
@@ -153,7 +165,7 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 
 		sandboxSessionID, sandboxErr = agentSvc.EnsureSandboxSession(newCtx, sessionID, req)
 		if sandboxErr != nil {
-			o11y.Warn(newCtx, fmt.Sprintf("[chat] ensure sandbox session failed: %v", sandboxErr))
+			otellog.LogWarn(newCtx, fmt.Sprintf("[chat] ensure sandbox session failed: %v", sandboxErr))
 		}
 	}
 
@@ -167,7 +179,7 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	agentCallReq, err := agentSvc.GenerateAgentCallReq(newCtx, req, contexts, agentInfo)
 	if err != nil {
 		agentSvc.logger.Errorf("[Chat] generate agent call req err: %v", err)
-		o11y.Error(newCtx, fmt.Sprintf("[chat] generate agent call req err: %v", err))
+		otellog.LogError(newCtx, "[chat] generate agent call req err", err)
 
 		return nil, err
 	}
@@ -199,7 +211,7 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 		conversationAssistantMsgPO.Status = cdaenum.MsgStatusFailed
 		_ = agentSvc.conversationMsgRepo.Update(callCtx, conversationAssistantMsgPO)
 		agentSvc.logger.Errorf("[Chat] call agent executor err: %v", err)
-		o11y.Error(newCtx, fmt.Sprintf("[chat] call agent executor err: %v", err))
+		otellog.LogError(newCtx, "[chat] call agent executor err", err)
 
 		return nil, rest.NewHTTPError(newCtx, http.StatusInternalServerError,
 			apierr.AgentAPP_Agent_CallAgentExecutorFailed).WithErrorDetails(fmt.Sprintf("[chat] call agent executor err: %v", err))
@@ -208,9 +220,16 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	// NOTE: 8. 流式响应处理
 	channel := make(chan []byte, CHANNEL_SIZE)
 
+	otellog.LogDebug(newCtx, "[chat] starting Process goroutine",
+		otelsdklog.String("conversation_id", req.ConversationID),
+		otelsdklog.String("assistant_message_id", req.AssistantMessageID),
+	)
+
 	go func() {
 		defer panichelper.Recovery(agentSvc.logger)
-		_ = agentSvc.Process(req, agentInfo, stopChan, channel, messageChan, errChan, agentCall.Cancel)
+		// NOTE: 使用 WithoutCancel 继承 trace context 但不继承 cancel signal
+		traceCtx := context.WithoutCancel(newCtx)
+		_ = agentSvc.Process(traceCtx, req, agentInfo, stopChan, channel, messageChan, errChan, agentCall.Cancel)
 	}()
 
 	// NOTE: 9. 异步恢复会话

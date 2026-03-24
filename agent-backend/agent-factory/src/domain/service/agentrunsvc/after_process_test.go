@@ -37,7 +37,7 @@ func TestAfterProcess_AnswerVarEmpty(t *testing.T) {
 	req := &agentreq.ChatReq{AgentID: "a1", InternalParam: agentreq.InternalParam{UserID: "u1"}}
 	callResult := []byte(`{"status":"True","answer":"hello"}`)
 
-	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent)
+	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent, 0)
 	assert.Error(t, err)
 	assert.False(t, isEnd)
 	assert.NotNil(t, result)
@@ -67,7 +67,7 @@ func TestAfterProcess_InvalidCallResult(t *testing.T) {
 	// invalid JSON
 	callResult := []byte(`NOT_JSON`)
 
-	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent)
+	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent, 0)
 	// daresvo.NewDataAgentRes may or may not error on invalid JSON; just check it doesn't panic
 	_ = err
 	_ = isEnd
@@ -97,7 +97,7 @@ func TestAfterProcess_InvalidJSON(t *testing.T) {
 	req := &agentreq.ChatReq{AgentID: "a1", InternalParam: agentreq.InternalParam{UserID: "u1"}}
 	callResult := []byte(`NOT_VALID_JSON`)
 
-	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent)
+	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent, 0)
 	assert.Error(t, err)
 	assert.False(t, isEnd)
 	assert.NotNil(t, result)

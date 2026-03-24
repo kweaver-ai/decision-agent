@@ -1,6 +1,7 @@
 package agentsvc
 
 import (
+	"context"
 	"testing"
 	"time"
 
@@ -66,7 +67,7 @@ func TestProcess_IncStream(t *testing.T) {
 	messageChan <- `data:{"status":"True","answer":{"final_answer":"done"}}`
 	close(messageChan)
 
-	err := svc.Process(req, agent, stopChan, respChan, messageChan, errChan, func() {})
+	err := svc.Process(context.Background(), req, agent, stopChan, respChan, messageChan, errChan, func() {})
 	assert.NoError(t, err)
 }
 
@@ -120,7 +121,7 @@ func TestProcess_NonStream_ErrChan(t *testing.T) {
 	errChan <- assert.AnError
 	close(errChan)
 
-	err := svc.Process(req, agent, stopChan, respChan, messageChan, errChan, func() {})
+	err := svc.Process(context.Background(), req, agent, stopChan, respChan, messageChan, errChan, func() {})
 	assert.NoError(t, err)
 }
 
@@ -173,7 +174,7 @@ func TestProcess_Stream_UnexpectedEOF(t *testing.T) {
 	errChan <- &unexpectedEOFError{}
 	close(errChan)
 
-	err := svc.Process(req, agent, stopChan, respChan, messageChan, errChan, func() {})
+	err := svc.Process(context.Background(), req, agent, stopChan, respChan, messageChan, errChan, func() {})
 	assert.NoError(t, err)
 }
 
@@ -233,7 +234,7 @@ func TestProcess_Stream_NonEOFError(t *testing.T) {
 	errChan <- &eofErrType{}
 	close(errChan)
 
-	err := svc.Process(req, agent, stopChan, respChan, messageChan, errChan, func() {})
+	err := svc.Process(context.Background(), req, agent, stopChan, respChan, messageChan, errChan, func() {})
 	assert.NoError(t, err)
 }
 
@@ -290,7 +291,7 @@ func TestProcess_InvalidMessageFormat(t *testing.T) {
 	messageChan <- `invalid_no_colon`
 	close(messageChan)
 
-	err := svc.Process(req, agent, stopChan, respChan, messageChan, errChan, func() {})
+	err := svc.Process(context.Background(), req, agent, stopChan, respChan, messageChan, errChan, func() {})
 	assert.NoError(t, err)
 }
 
@@ -347,7 +348,7 @@ func TestProcess_TimeoutBranch(t *testing.T) {
 		close(stopChan)
 	}()
 
-	err := svc.Process(req, agent, stopChan, respChan, messageChan, errChan, func() {})
+	err := svc.Process(context.Background(), req, agent, stopChan, respChan, messageChan, errChan, func() {})
 	assert.NoError(t, err)
 }
 
@@ -400,6 +401,6 @@ func TestProcess_AfterProcessError_GetByIDFails(t *testing.T) {
 	messageChan <- `data:{"status":"False","answer":{"final_answer":"hi"}}`
 	close(messageChan)
 
-	err := svc.Process(req, agent, stopChan, respChan, messageChan, errChan, func() {})
+	err := svc.Process(context.Background(), req, agent, stopChan, respChan, messageChan, errChan, func() {})
 	assert.NoError(t, err)
 }

@@ -1,6 +1,7 @@
 package agentsvc
 
 import (
+	"context"
 	"errors"
 	"testing"
 	"time"
@@ -81,7 +82,7 @@ func TestProcess_MessageChanClosed(t *testing.T) {
 	// Close messageChan immediately
 	close(messageChan)
 
-	err := svc.Process(req, agent, stopChan, respChan, messageChan, errChan, func() {})
+	err := svc.Process(context.Background(), req, agent, stopChan, respChan, messageChan, errChan, func() {})
 	assert.NoError(t, err)
 }
 
@@ -127,7 +128,7 @@ func TestProcess_ErrChanEOF(t *testing.T) {
 	errChan <- errors.New("EOF")
 	close(errChan)
 
-	err := svc.Process(req, agent, stopChan, respChan, messageChan, errChan, func() {})
+	err := svc.Process(context.Background(), req, agent, stopChan, respChan, messageChan, errChan, func() {})
 	assert.NoError(t, err)
 }
 
@@ -174,7 +175,7 @@ func TestProcess_ErrChanNonEOF(t *testing.T) {
 	errChan <- errors.New("some real error")
 	close(errChan)
 
-	err := svc.Process(req, agent, stopChan, respChan, messageChan, errChan, func() {})
+	err := svc.Process(context.Background(), req, agent, stopChan, respChan, messageChan, errChan, func() {})
 	assert.NoError(t, err)
 }
 
@@ -223,7 +224,7 @@ func TestProcess_MessageWithAfterProcessError(t *testing.T) {
 	messageChan <- `data:{"status":"False","answer":{"final_answer":"hi"}}`
 	close(messageChan)
 
-	err := svc.Process(req, agent, stopChan, respChan, messageChan, errChan, func() {})
+	err := svc.Process(context.Background(), req, agent, stopChan, respChan, messageChan, errChan, func() {})
 	assert.NoError(t, err)
 }
 
@@ -272,7 +273,7 @@ func TestProcess_MessageStatusTrue(t *testing.T) {
 	messageChan <- `data:{"status":"True","answer":{"final_answer":"done"}}`
 	close(messageChan)
 
-	err := svc.Process(req, agent, stopChan, respChan, messageChan, errChan, func() {})
+	err := svc.Process(context.Background(), req, agent, stopChan, respChan, messageChan, errChan, func() {})
 	assert.NoError(t, err)
 }
 
@@ -322,6 +323,6 @@ func TestProcess_StopChanTriggered(t *testing.T) {
 		close(stopChan)
 	}()
 
-	err := svc.Process(req, agent, stopChan, respChan, messageChan, errChan, func() {})
+	err := svc.Process(context.Background(), req, agent, stopChan, respChan, messageChan, errChan, func() {})
 	assert.NoError(t, err)
 }

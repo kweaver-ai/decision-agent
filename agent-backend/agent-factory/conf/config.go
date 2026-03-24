@@ -5,6 +5,7 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/cconf"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel"
 )
 
 type AuthConf struct {
@@ -49,6 +50,9 @@ type Config struct {
 	// OpenTelemetry 配置
 	OtelConfig *OtelConfig `yaml:"opentelemetry"`
 
+	// 新版 OTel Collector 配置
+	OtelV2Config *otel.OtelV2Config `yaml:"otel"`
+
 	// 特性开关配置
 	SwitchFields *SwitchFields `yaml:"switch_fields"`
 
@@ -79,6 +83,7 @@ func NewConfig() *Config {
 		configImpl.Config = cconf.BaseDefConfig()
 
 		configImpl.OtelConfig = &OtelConfig{}
+		configImpl.OtelV2Config = &otel.OtelV2Config{}
 
 		bys := cconf.GetConfigBys("agent-factory.yaml")
 		cconf.LoadConfig(bys, configImpl.Config)
@@ -86,6 +91,7 @@ func NewConfig() *Config {
 		cconf.LoadConfig(bys, configImpl)
 
 		setOtelDefaults(configImpl.OtelConfig)
+		configImpl.OtelV2Config.SetDefaults()
 
 		secretBys := cconf.GetConfigBys("secret/agent-factory-secret.yaml")
 		cconf.LoadConfig(secretBys, configImpl.Config)

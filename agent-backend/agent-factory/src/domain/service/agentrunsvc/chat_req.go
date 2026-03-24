@@ -12,18 +12,20 @@ import (
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req/chatopt"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squareresp"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
 	"go.opentelemetry.io/otel/attribute"
 )
 
 func (agentSvc *agentSvc) GenerateAgentCallReq(ctx context.Context, req *agentreq.ChatReq, contexts []*comvalobj.LLMMessage, agent *squareresp.AgentMarketAgentInfoResp) (*agentexecutordto.AgentCallReq, error) {
 	var err error
 
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
-	o11y.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
-	o11y.SetAttributes(ctx, attribute.String("user_id", req.UserID))
+	ctx, _ = oteltrace.StartInternalSpan(ctx)
+	defer oteltrace.EndSpan(ctx, err)
+	oteltrace.SetAttributes(ctx,
+		attribute.String("gen_ai.agent.id", req.AgentID),
+		attribute.String("gen_ai.agent.run_id", req.AgentRunID),
+		attribute.String("user_id", req.UserID),
+	)
 	// NOTE: 如果req.ChatMode不为空，则设置req.ChatMode
 	if req.ChatMode != constant.DeepThinkingMode {
 		req.ChatMode = constant.NormalMode

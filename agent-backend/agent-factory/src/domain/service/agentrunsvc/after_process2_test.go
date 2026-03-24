@@ -60,7 +60,7 @@ func TestAfterProcess_StatusFalse_Full(t *testing.T) {
 	}
 	callResult := []byte(`{"status":"False","answer":{"final_answer":"partial answer"}}`)
 
-	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent)
+	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent, 0)
 	assert.NoError(t, err)
 	assert.False(t, isEnd)
 	assert.NotNil(t, result)
@@ -97,7 +97,7 @@ func TestAfterProcess_StatusTrue_Full(t *testing.T) {
 	}
 	callResult := []byte(`{"status":"True","answer":{"final_answer":"final answer"}}`)
 
-	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent)
+	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent, 0)
 	assert.NoError(t, err)
 	assert.True(t, isEnd)
 	assert.NotNil(t, result)
@@ -134,7 +134,7 @@ func TestAfterProcess_StatusError_Full(t *testing.T) {
 	}
 	callResult := []byte(`{"status":"Error","answer":{"final_answer":""},"error":"something went wrong"}`)
 
-	result, _, err := svc.AfterProcess(context.Background(), callResult, req, agent)
+	result, _, err := svc.AfterProcess(context.Background(), callResult, req, agent, 0)
 	assert.Error(t, err)
 	assert.NotNil(t, result)
 }
@@ -170,7 +170,7 @@ func TestAfterProcess_HandleMsgAreaError(t *testing.T) {
 	}
 	callResult := []byte(`{"status":"True","answer":{"final_answer":"final"}}`)
 
-	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent)
+	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent, 0)
 	assert.Error(t, err)
 	assert.False(t, isEnd)
 	assert.NotNil(t, result)

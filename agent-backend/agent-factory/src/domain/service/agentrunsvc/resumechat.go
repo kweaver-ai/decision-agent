@@ -7,7 +7,8 @@ import (
 	"github.com/bytedance/sonic"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/panichelper"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/otellog"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
 	"go.opentelemetry.io/otel/attribute"
 )
 
@@ -15,13 +16,13 @@ import (
 func (agentSvc *agentSvc) ResumeChat(ctx context.Context, conversationID string) (chan []byte, error) {
 	var err error
 
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("conversation_id", conversationID))
+	ctx, _ = oteltrace.StartInternalSpan(ctx)
+	defer oteltrace.EndSpan(ctx, err)
+	oteltrace.SetAttributes(ctx, attribute.String("gen_ai.conversation.id", conversationID))
 
 	sessionInterface, ok := SessionMap.Load(conversationID)
 	if !ok {
-		o11y.Error(ctx, fmt.Sprintf("[ResumeChat] conversation_id %s not found", conversationID))
+		otellog.LogError(ctx, fmt.Sprintf("[ResumeChat] conversation_id %s not found", conversationID), nil)
 		agentSvc.logger.Errorf("[ResumeChat] conversation_id %s not found", conversationID)
 
 		return nil, capierr.New400Err(ctx, "conversation_id not found")
@@ -52,7 +53,7 @@ func (agentSvc *agentSvc) ResumeChat(ctx context.Context, conversationID string)
 
 		sessionInterface, ok := SessionMap.Load(conversationID)
 		if !ok {
-			o11y.Error(ctx, fmt.Sprintf("[ResumeChat] conversation_id %s not found", conversationID))
+			otellog.LogError(ctx, fmt.Sprintf("[ResumeChat] conversation_id %s not found", conversationID), nil)
 			agentSvc.logger.Errorf("[ResumeChat] conversation_id %s not found", conversationID)
 
 			return
@@ -63,15 +64,15 @@ func (agentSvc *agentSvc) ResumeChat(ctx context.Context, conversationID string)
 
 		newResp, err := sonic.Marshal(session.GetTempMsgResp())
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[ResumeChat] marshal temp msg resp err: %v", err))
+			otellog.LogError(ctx, fmt.Sprintf("[ResumeChat] marshal temp msg resp err: %v", err), err)
 			agentSvc.logger.Errorf("[ResumeChat] marshal temp msg resp err: %v", err)
 
 			return
 		}
 		// NOTE:先发送一次,把当前的tempMsgResp发送出去
 		if newResp != nil {
-			if err := StreamDiff(ctx, seq, oldResp, newResp, channel); err != nil {
-				o11y.Error(ctx, fmt.Sprintf("[ResumeChat] stream diff err: %v", err))
+			if err := StreamDiff(ctx, seq, oldResp, newResp, channel, 0); err != nil {
+				otellog.LogError(ctx, fmt.Sprintf("[ResumeChat] stream diff err: %v", err), err)
 				agentSvc.logger.Errorf("[ResumeChat] stream diff err: %v", err)
 
 				return
@@ -83,7 +84,7 @@ func (agentSvc *agentSvc) ResumeChat(ctx context.Context, conversationID string)
 			// NOTE: 每当收到信号，就发送一条消息
 			newResp, err := sonic.Marshal(session.GetTempMsgResp())
 			if err != nil {
-				o11y.Error(ctx, fmt.Sprintf("[ResumeChat] marshal temp msg resp err: %v", err))
+				otellog.LogError(ctx, fmt.Sprintf("[ResumeChat] marshal temp msg resp err: %v", err), err)
 				agentSvc.logger.Errorf("[ResumeChat] marshal temp msg resp err: %v", err)
 
 				break
@@ -92,8 +93,8 @@ func (agentSvc *agentSvc) ResumeChat(ctx context.Context, conversationID string)
 			if len(oldResp) == 0 {
 				oldResp = newResp
 			} else {
-				if err := StreamDiff(ctx, seq, oldResp, newResp, channel); err != nil {
-					o11y.Error(ctx, fmt.Sprintf("[ResumeChat] stream diff err: %v", err))
+				if err := StreamDiff(ctx, seq, oldResp, newResp, channel, 0); err != nil {
+					otellog.LogError(ctx, fmt.Sprintf("[ResumeChat] stream diff err: %v", err), err)
 					agentSvc.logger.Errorf("[ResumeChat] stream diff err: %v", err)
 
 					break

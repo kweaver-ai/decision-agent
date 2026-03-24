@@ -17,7 +17,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/enum/cdaenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/otellog"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
@@ -27,21 +28,23 @@ import (
 func (agentSvc *agentSvc) MsgResp2MsgPO(ctx context.Context, msgResp agentresp.ChatResp, req *agentreq.ChatReq) (dapo.ConversationMsgPO, bool, error) {
 	var err error
 
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
-	o11y.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
-	o11y.SetAttributes(ctx, attribute.String("user_id", req.UserID))
+	ctx, _ = oteltrace.StartInternalSpan(ctx)
+	defer oteltrace.EndSpan(ctx, err)
+	oteltrace.SetAttributes(ctx,
+		attribute.String("gen_ai.agent.id", req.AgentID),
+		attribute.String("gen_ai.agent.run_id", req.AgentRunID),
+		attribute.String("user_id", req.UserID),
+	)
 
 	content, err := sonic.Marshal(msgResp.Message.Content)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[MsgResp2MsgPO] marshal msgResp.Message.Content err: %v", err))
+		otellog.LogError(ctx, fmt.Sprintf("[MsgResp2MsgPO] marshal msgResp.Message.Content err: %v", err), err)
 		return dapo.ConversationMsgPO{}, false, errors.Wrapf(err, "[MsgResp2MsgPO] marshal msgResp.Message.Content err")
 	}
 
 	ext, err := sonic.Marshal(msgResp.Message.Ext)
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[MsgResp2MsgPO] marshal msgResp.Message.Ext err: %v", err))
+		otellog.LogError(ctx, fmt.Sprintf("[MsgResp2MsgPO] marshal msgResp.Message.Ext err: %v", err), err)
 		return dapo.ConversationMsgPO{}, false, errors.Wrapf(err, "[MsgResp2MsgPO] marshal msgResp.Message.Ext err")
 	}
 
@@ -79,11 +82,13 @@ func (agentSvc *agentSvc) GetHistoryAndMsgIndex(ctx context.Context, req *agentr
 
 	var err error
 
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
-	o11y.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
-	o11y.SetAttributes(ctx, attribute.String("user_id", req.UserID))
+	ctx, _ = oteltrace.StartInternalSpan(ctx)
+	defer oteltrace.EndSpan(ctx, err)
+	oteltrace.SetAttributes(ctx,
+		attribute.String("gen_ai.agent.id", req.AgentID),
+		attribute.String("gen_ai.agent.run_id", req.AgentRunID),
+		attribute.String("user_id", req.UserID),
+	)
 	// NOTE: 从前端请求的conversationID不为空，接口可能为空;
 	// NOTE: 如果会话ID为空，则创建新会话；
 	if req.ConversationID == "" {
@@ -108,7 +113,7 @@ func (agentSvc *agentSvc) GetHistoryAndMsgIndex(ctx context.Context, req *agentr
 
 		conversationPO, err = agentSvc.conversationRepo.Create(ctx, conversationPO)
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[GetHistoryAndMsgIndex] create conversation failed: %v", err))
+			otellog.LogError(ctx, fmt.Sprintf("[GetHistoryAndMsgIndex] create conversation failed: %v", err), err)
 			return nil, nil, 0, rest.NewHTTPError(ctx, http.StatusInternalServerError,
 				apierr.AgentAPP_Agent_CreateConversationFailed).WithErrorDetails(fmt.Sprintf("[GetHistoryAndMsgIndex] create conversation failed: %v", err))
 		}
@@ -119,12 +124,12 @@ func (agentSvc *agentSvc) GetHistoryAndMsgIndex(ctx context.Context, req *agentr
 		conversationPO, err = agentSvc.conversationRepo.GetByID(ctx, req.ConversationID)
 		if err != nil {
 			if chelper.IsSqlNotFound(err) {
-				o11y.Warn(ctx, fmt.Sprintf("[GetHistoryAndMsgIndex] conversation not found: %v", err))
+				otellog.LogWarn(ctx, fmt.Sprintf("[GetHistoryAndMsgIndex] conversation not found: %v", err))
 				return nil, nil, 0, rest.NewHTTPError(ctx, http.StatusNotFound,
 					apierr.AgentAPP_Agent_GetConversationFailed).WithErrorDetails(fmt.Sprintf("[GetHistoryAndMsgIndex] conversation not found: %v", err))
 			}
 
-			o11y.Error(ctx, fmt.Sprintf("[GetHistoryAndMsgIndex] get conversation failed: %v", err))
+			otellog.LogError(ctx, fmt.Sprintf("[GetHistoryAndMsgIndex] get conversation failed: %v", err), err)
 
 			return nil, nil, 0, rest.NewHTTPError(ctx, http.StatusInternalServerError,
 				apierr.AgentAPP_Agent_GetConversationFailed).WithErrorDetails(fmt.Sprintf("[GetHistoryAndMsgIndex] get conversation failed: %v", err))
@@ -136,7 +141,7 @@ func (agentSvc *agentSvc) GetHistoryAndMsgIndex(ctx context.Context, req *agentr
 			if chelper.IsSqlNotFound(err) {
 				msgIndex = 0
 			} else {
-				o11y.Error(ctx, fmt.Sprintf("[GetHistoryAndMsgIndex] get max index failed: %v", err))
+				otellog.LogError(ctx, fmt.Sprintf("[GetHistoryAndMsgIndex] get max index failed: %v", err), err)
 				return nil, nil, 0, rest.NewHTTPError(ctx, http.StatusInternalServerError,
 					apierr.AgentAPP_Agent_GetMaxIndexFailed).WithErrorDetails(fmt.Sprintf("[GetHistoryAndMsgIndex] get max index failed: %v", err))
 			}
@@ -150,7 +155,7 @@ func (agentSvc *agentSvc) GetHistoryAndMsgIndex(ctx context.Context, req *agentr
 			}
 
 			if err != nil {
-				o11y.Error(ctx, fmt.Sprintf("[GetHistoryAndMsgIndex] get conversation messages history failed: %v", err))
+				otellog.LogError(ctx, fmt.Sprintf("[GetHistoryAndMsgIndex] get conversation messages history failed: %v", err), err)
 				return nil, nil, 0, rest.NewHTTPError(ctx, http.StatusInternalServerError,
 					apierr.AgentAPP_Agent_GetHistoryFailed).WithErrorDetails(fmt.Sprintf("[GetHistoryAndMsgIndex] get conversation messages history failed: %v", err))
 			}
@@ -174,11 +179,13 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 
 	var err error
 	// NOTE: ctx变量名
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
-	o11y.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
-	o11y.SetAttributes(ctx, attribute.String("user_id", req.UserID))
+	ctx, _ = oteltrace.StartInternalSpan(ctx)
+	defer oteltrace.EndSpan(ctx, err)
+	oteltrace.SetAttributes(ctx,
+		attribute.String("gen_ai.agent.id", req.AgentID),
+		attribute.String("gen_ai.agent.run_id", req.AgentRunID),
+		attribute.String("user_id", req.UserID),
+	)
 	// NOTE: 普通对话则创建userMessage,状态为recieved
 	if IsNormalChat(req) {
 		userContent := conversationmsgvo.UserContent{
@@ -204,7 +211,7 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 
 		userMessageID, err = agentSvc.conversationMsgRepo.Create(ctx, conversationUserMsgPO)
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] create conversation user message failed: %v", err))
+			otellog.LogError(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] create conversation user message failed: %v", err), err)
 			return userMessageID, assistantMessageID, assistantMessageIndex, rest.NewHTTPError(ctx, http.StatusInternalServerError,
 				apierr.AgentAPP_Agent_CreateMessageFailed).WithErrorDetails(fmt.Sprintf("[UpsertUserAndAssistantMsg] create conversation user message failed: %v", err))
 		}
@@ -213,7 +220,7 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 
 		err = agentSvc.conversationRepo.Update(ctx, conversationPO)
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] update conversation failed: %v", err))
+			otellog.LogError(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] update conversation failed: %v", err), err)
 			return userMessageID, assistantMessageID, assistantMessageIndex, rest.NewHTTPError(ctx, http.StatusInternalServerError,
 				apierr.AgentAPP_Agent_UpdateConversationFailed).WithErrorDetails(fmt.Sprintf("[UpsertUserAndAssistantMsg] update conversation failed: %v", err))
 		}
@@ -223,7 +230,7 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 
 		conversationUserMsgPO, err = agentSvc.conversationMsgRepo.GetByID(ctx, req.RegenerateUserMsgID)
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] get conversation user message [%s] failed: %v", req.RegenerateUserMsgID, err))
+			otellog.LogWarn(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] get conversation user message [%s] failed: %v", req.RegenerateUserMsgID, err))
 			return userMessageID, assistantMessageID, assistantMessageIndex, rest.NewHTTPError(ctx, http.StatusInternalServerError,
 				apierr.AgentAPP_Agent_GetMessageFailed).WithErrorDetails(fmt.Sprintf("[UpsertUserAndAssistantMsg] get conversation user message [%s] failed: %v", req.RegenerateUserMsgID, err))
 		}
@@ -241,7 +248,7 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 
 		err = agentSvc.conversationMsgRepo.Update(ctx, conversationUserMsgPO)
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] update conversation user message failed: %v", err))
+			otellog.LogError(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] update conversation user message failed: %v", err), err)
 			return userMessageID, assistantMessageID, assistantMessageIndex, rest.NewHTTPError(ctx, http.StatusInternalServerError,
 				apierr.AgentAPP_Agent_UpdateMessageFailed).WithErrorDetails(fmt.Sprintf("[UpsertUserAndAssistantMsg] update conversation user message failed: %v", err))
 		}
@@ -250,14 +257,14 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 		if req.RegenerateAssistantMsgID != "" {
 			conversationAssistantMsgPO, err = agentSvc.conversationMsgRepo.GetByID(ctx, req.RegenerateAssistantMsgID)
 			if err != nil {
-				o11y.Error(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] get conversation assistant message [%s] failed: %v", req.RegenerateAssistantMsgID, err))
+				otellog.LogWarn(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] get conversation assistant message [%s] failed: %v", req.RegenerateAssistantMsgID, err))
 				return userMessageID, assistantMessageID, assistantMessageIndex, rest.NewHTTPError(ctx, http.StatusInternalServerError,
 					apierr.AgentAPP_Agent_GetMessageFailed).WithErrorDetails(fmt.Sprintf("[UpsertUserAndAssistantMsg] get conversation assistant message [%s] failed: %v", req.RegenerateAssistantMsgID, err))
 			}
 		} else {
 			conversationAssistantMsgPO, err = agentSvc.conversationMsgRepo.GetByID(ctx, req.InterruptedAssistantMsgID)
 			if err != nil {
-				o11y.Error(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] get conversation assistant message [%s] failed: %v", req.InterruptedAssistantMsgID, err))
+				otellog.LogWarn(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] get conversation assistant message [%s] failed: %v", req.InterruptedAssistantMsgID, err))
 				return userMessageID, assistantMessageID, assistantMessageIndex, rest.NewHTTPError(ctx, http.StatusInternalServerError,
 					apierr.AgentAPP_Agent_GetMessageFailed).WithErrorDetails(fmt.Sprintf("[UpsertUserAndAssistantMsg] get conversation assistant message [%s] failed: %v", req.InterruptedAssistantMsgID, err))
 			}
@@ -289,7 +296,7 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 		assistantMessageIndex = conversationAssistantMsgPO.Index
 
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] create conversation assistant message failed: %v", err))
+			otellog.LogError(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] create conversation assistant message failed: %v", err), err)
 			return userMessageID, assistantMessageID, assistantMessageIndex, rest.NewHTTPError(ctx, http.StatusInternalServerError,
 				apierr.AgentAPP_Agent_CreateMessageFailed).WithErrorDetails(fmt.Sprintf("[UpsertUserAndAssistantMsg] create conversation assistant message failed: %v", err))
 		}
@@ -297,7 +304,7 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 		// NOTE: 如果是重新生成
 		conversationAssistantMsgPO, err = agentSvc.conversationMsgRepo.GetByID(ctx, req.RegenerateAssistantMsgID)
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] get conversation assistant message [%s] failed: %v", req.RegenerateAssistantMsgID, err))
+			otellog.LogWarn(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] get conversation assistant message [%s] failed: %v", req.RegenerateAssistantMsgID, err))
 			return userMessageID, assistantMessageID, assistantMessageIndex, rest.NewHTTPError(ctx, http.StatusInternalServerError,
 				apierr.AgentAPP_Agent_GetMessageFailed).WithErrorDetails(fmt.Sprintf("[UpsertUserAndAssistantMsg] get conversation assistant message [%s] failed: %v", req.RegenerateAssistantMsgID, err))
 		}
@@ -306,7 +313,7 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 
 		err = agentSvc.conversationMsgRepo.Update(ctx, conversationAssistantMsgPO)
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] update conversation assistant message failed: %v", err))
+			otellog.LogError(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] update conversation assistant message failed: %v", err), err)
 			return userMessageID, assistantMessageID, assistantMessageIndex, rest.NewHTTPError(ctx, http.StatusInternalServerError,
 				apierr.AgentAPP_Agent_UpdateMessageFailed).WithErrorDetails(fmt.Sprintf("[UpsertUserAndAssistantMsg] update conversation assistant message failed: %v", err))
 		}
@@ -317,7 +324,7 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 		// NOTE: 如果是中断
 		conversationAssistantMsgPO, err = agentSvc.conversationMsgRepo.GetByID(ctx, req.InterruptedAssistantMsgID)
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] get conversation assistant message [%s] failed: %v", req.InterruptedAssistantMsgID, err))
+			otellog.LogWarn(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] get conversation assistant message [%s] failed: %v", req.InterruptedAssistantMsgID, err))
 			return userMessageID, assistantMessageID, assistantMessageIndex, rest.NewHTTPError(ctx, http.StatusInternalServerError,
 				apierr.AgentAPP_Agent_GetMessageFailed).WithErrorDetails(fmt.Sprintf("[UpsertUserAndAssistantMsg] get conversation assistant message [%s] failed: %v", req.InterruptedAssistantMsgID, err))
 		}
@@ -328,7 +335,7 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 		if conversationAssistantMsgPO.Ext != nil && *conversationAssistantMsgPO.Ext != "" {
 			var msgExt conversationmsgvo.MessageExt
 			if err = sonic.Unmarshal([]byte(*conversationAssistantMsgPO.Ext), &msgExt); err != nil {
-				o11y.Error(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] unmarshal ext err: %v", err))
+				otellog.LogError(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] unmarshal ext err: %v", err), err)
 				return userMessageID, assistantMessageID, assistantMessageIndex, errors.Wrapf(err, "[UpsertUserAndAssistantMsg] unmarshal ext err")
 			}
 
@@ -336,7 +343,7 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 
 			extBytes, marshalErr := sonic.Marshal(msgExt)
 			if marshalErr != nil {
-				o11y.Error(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] marshal ext err: %v", marshalErr))
+				otellog.LogError(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] marshal ext err: %v", marshalErr), marshalErr)
 				return userMessageID, assistantMessageID, assistantMessageIndex, errors.Wrapf(marshalErr, "[UpsertUserAndAssistantMsg] marshal ext err")
 			}
 
@@ -346,7 +353,7 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 
 		err = agentSvc.conversationMsgRepo.Update(ctx, conversationAssistantMsgPO)
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] update conversation assistant message failed: %v", err))
+			otellog.LogError(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] update conversation assistant message failed: %v", err), err)
 			return userMessageID, assistantMessageID, assistantMessageIndex, rest.NewHTTPError(ctx, http.StatusInternalServerError,
 				apierr.AgentAPP_Agent_UpdateMessageFailed).WithErrorDetails(fmt.Sprintf("[UpsertUserAndAssistantMsg] update conversation assistant message failed: %v", err))
 		}
@@ -358,7 +365,7 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 		// TODO: 后续版本优，同时考虑多版本消息设计
 		conversation, err := agentSvc.conversationSvc.Detail(ctx, req.ConversationID)
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] get conversation failed: %v", err))
+			otellog.LogError(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] get conversation failed: %v", err), err)
 			return userMessageID, assistantMessageID, assistantMessageIndex, rest.NewHTTPError(ctx, http.StatusInternalServerError,
 				apierr.AgentAPP_Agent_GetConversationFailed).WithErrorDetails(fmt.Sprintf("[UpsertUserAndAssistantMsg] get conversation failed: %v", err))
 		}
@@ -374,7 +381,7 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 		// NOTE: 编辑用户消息将assistantMessage 状态设置为processing
 		conversationAssistantMsgPO, err = agentSvc.conversationMsgRepo.GetByID(ctx, assistantMessageID)
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] get conversation assistant message [%s] failed: %v", assistantMessageID, err))
+			otellog.LogWarn(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] get conversation assistant message [%s] failed: %v", assistantMessageID, err))
 			return userMessageID, assistantMessageID, assistantMessageIndex, rest.NewHTTPError(ctx, http.StatusInternalServerError,
 				apierr.AgentAPP_Agent_GetMessageFailed).WithErrorDetails(fmt.Sprintf("[UpsertUserAndAssistantMsg] get conversation assistant message [%s] failed: %v", assistantMessageID, err))
 		}
@@ -383,7 +390,7 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 
 		err = agentSvc.conversationMsgRepo.Update(ctx, conversationAssistantMsgPO)
 		if err != nil {
-			o11y.Error(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] update conversation assistant message failed: %v", err))
+			otellog.LogError(ctx, fmt.Sprintf("[UpsertUserAndAssistantMsg] update conversation assistant message failed: %v", err), err)
 			return userMessageID, assistantMessageID, assistantMessageIndex, rest.NewHTTPError(ctx, http.StatusInternalServerError,
 				apierr.AgentAPP_Agent_UpdateMessageFailed).WithErrorDetails(fmt.Sprintf("[UpsertUserAndAssistantMsg] update conversation assistant message failed: %v", err))
 		}

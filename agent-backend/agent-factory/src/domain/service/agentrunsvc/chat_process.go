@@ -14,13 +14,14 @@ import (
 	agentresp "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/resp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/square/squareresp"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/otellog"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"go.opentelemetry.io/otel/attribute"
 )
 
 // NOTE: 流式处理, 接受agent-executor的返回结果,进行会话后处理，响应前端
-func (agentSvc *agentSvc) Process(req *agentreq.ChatReq, agent *squareresp.AgentMarketAgentInfoResp, stopChan chan struct{},
+func (agentSvc *agentSvc) Process(traceCtx context.Context, req *agentreq.ChatReq, agent *squareresp.AgentMarketAgentInfoResp, stopChan chan struct{},
 	respChan chan []byte, messageChan chan string, errChan chan error, cancelFunc func(),
 ) error {
 	// NOTE: 记录开始时间
@@ -43,14 +44,16 @@ func (agentSvc *agentSvc) Process(req *agentreq.ChatReq, agent *squareresp.Agent
 	}()
 
 	var err error
-	// NOTE: 使用新的ctx，确保process协程能独立完成请求，不受外界影响
-	ctx := context.Background()
-	ctx, _ = o11y.StartInternalSpan(ctx)
+	// NOTE: 使用传入的 traceCtx，继承 trace context 但不继承 cancel signal（由上层 WithoutCancel 保证）
+	ctx := traceCtx
+	ctx, _ = oteltrace.StartInternalSpan(ctx)
 
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
-	o11y.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
-	o11y.SetAttributes(ctx, attribute.String("user_id", req.UserID))
+	defer oteltrace.EndSpan(ctx, err)
+	oteltrace.SetAttributes(ctx,
+		attribute.String("gen_ai.agent.id", req.AgentID),
+		attribute.String("gen_ai.agent.run_id", req.AgentRunID),
+		attribute.String("user_id", req.UserID),
+	)
 	// NOTE: process是对话的核心，process结束时关闭respChan
 	defer close(respChan)
 
@@ -91,10 +94,10 @@ looplabel:
 			}
 			// NOTE: message 是原始数据
 			// currentData, isEnd, err = agentSvc.CallResult2MsgResp(ctx, []byte(message), req)
-			currentData, isEnd, err = agentSvc.AfterProcess(ctx, []byte(message), req, agent)
+			currentData, isEnd, err = agentSvc.AfterProcess(ctx, []byte(message), req, agent, counter+1)
 			if err != nil {
 				agentSvc.logger.Errorf("[Process] after process err: %v", err)
-				o11y.Error(ctx, fmt.Sprintf("[Process] after process err: %v", err))
+				otellog.LogError(ctx, fmt.Sprintf("[Process] after process err: %v", err), err)
 				isEnd = true
 				break looplabel
 			}
@@ -109,7 +112,7 @@ looplabel:
 				err = sonic.Unmarshal(currentData, &val)
 				if err != nil {
 					agentSvc.logger.Errorf("[Process] unmarshal currentData err: %v", err)
-					o11y.Error(ctx, fmt.Sprintf("[Process] unmarshal currentData err: %v", err))
+					otellog.LogError(ctx, fmt.Sprintf("[Process] unmarshal currentData err: %v", err), err)
 				}
 				sessionInterface, ok := SessionMap.Load(req.ConversationID)
 				if !ok {
@@ -127,10 +130,10 @@ looplabel:
 				}
 				if req.Stream {
 					if req.IncStream {
-						err := StreamDiff(ctx, seq, lastData, currentData, respChan)
+						err := StreamDiff(ctx, seq, lastData, currentData, respChan, counter)
 						if err != nil {
 							agentSvc.logger.Errorf("[Process] parse event stream message err: %v", err)
-							o11y.Error(ctx, fmt.Sprintf("[Process] parse event stream message err: %v", err))
+							otellog.LogError(ctx, fmt.Sprintf("[Process] parse event stream message err: %v", err), err)
 						}
 						lastData = currentData
 					} else {
@@ -175,7 +178,7 @@ looplabel:
 			err := agentSvc.HandleStopChan(ctx, req, session)
 			if err != nil {
 				agentSvc.logger.Errorf("[Process] handle stop chan err: %v", err)
-				o11y.Error(ctx, fmt.Sprintf("[Process] handle stop chan err: %v", err))
+				otellog.LogError(ctx, fmt.Sprintf("[Process] handle stop chan err: %v", err), err)
 			}
 			// NOTE: 取消agent-executor的请求,中断大模型输出
 			cancelFunc()
@@ -191,14 +194,14 @@ looplabel:
 		conversationAssistantMsgPO, errNew := agentSvc.conversationMsgRepo.GetByID(ctx, req.AssistantMessageID)
 		if errNew != nil {
 			agentSvc.logger.Errorf("[Process] failed to get assistant message %s: %v", req.AssistantMessageID, errNew)
-			o11y.Error(ctx, fmt.Sprintf("[Process] failed to get assistant message %s: %v", req.AssistantMessageID, errNew))
+			otellog.LogError(ctx, fmt.Sprintf("[Process] failed to get assistant message %s: %v", req.AssistantMessageID, errNew), errNew)
 		} else {
 			conversationAssistantMsgPO.Status = cdaenum.MsgStatusFailed
 
 			updateErr := agentSvc.conversationMsgRepo.Update(ctx, conversationAssistantMsgPO)
 			if updateErr != nil {
 				agentSvc.logger.Errorf("[Process] update message status failed: %v", updateErr)
-				o11y.Error(ctx, fmt.Sprintf("[Process] update message status failed: %v", updateErr))
+				otellog.LogError(ctx, fmt.Sprintf("[Process] update message status failed: %v", updateErr), updateErr)
 			}
 		}
 
@@ -228,7 +231,7 @@ looplabel:
 		// NOTE: 分类讨论
 		if req.Stream {
 			// NOTE: 如果err不为nil，则把err写入到respChan,是chatresponse结构，可以携带正确数据信息
-			_ = StreamDiff(ctx, seq, lastData, currentData, respChan)
+			_ = StreamDiff(ctx, seq, lastData, currentData, respChan, counter)
 		} else {
 			// NOTE: 非流式处理，直接返回err，直接是错误码，无法携带正确数据信息
 			httpErr := rest.NewHTTPError(ctx, http.StatusInternalServerError, apierr.AgentAPP_InternalError).WithErrorDetails(logErr.Error())
@@ -254,6 +257,12 @@ looplabel:
 	processTime := time.Since(startTime)
 	// NOTE: 打印处理时间，ms
 	agentSvc.logger.Infof("[Process] chat process time: %d ms", processTime.Milliseconds())
+
+	// NOTE: 记录流式处理统计到 Process span
+	oteltrace.SetAttributes(ctx,
+		attribute.Int("stream.chunk_count", counter+1),
+		attribute.Int64("stream.total_duration_ms", processTime.Milliseconds()),
+	)
 
 	return nil
 }

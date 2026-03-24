@@ -5,7 +5,7 @@ import (
 	"fmt"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
 	"go.opentelemetry.io/otel/attribute"
 )
 
@@ -13,9 +13,9 @@ import (
 func (ae *v2AgentExecutorHttpAcc) Terminate(ctx context.Context, req *v2agentexecutordto.AgentTerminateReq) error {
 	var err error
 
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
+	ctx, _ = oteltrace.StartInternalSpan(ctx)
+	defer oteltrace.EndSpan(ctx, err)
+	oteltrace.SetAttributes(ctx, attribute.String("gen_ai.agent.run_id", req.AgentRunID))
 
 	url := fmt.Sprintf("%s/api/agent-executor/v2/agent/terminate", ae.privateAddress)
 

@@ -128,6 +128,8 @@ data:
         protocol: {{ .Values.depServices.bizDomain.privateSvc.protocol | quote }}
     opentelemetry:
       {{- toYaml .Values.opentelemetry | nindent 6 }}
+    otel:
+      {{- toYaml .Values.otel | nindent 6 }}
   mq_config.yaml: |
     {{- toYaml .Values.depServices.mq | nindent 4 }}
 

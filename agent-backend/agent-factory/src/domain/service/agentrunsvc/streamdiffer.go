@@ -7,8 +7,8 @@ import (
 	"strings"
 
 	"github.com/bytedance/sonic"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
 	"github.com/kweaver-ai/kweaver-go-lib/logger"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 )
 
 func formatSSEMessage(data string) []byte {
@@ -56,11 +56,14 @@ func emitJSON(seq *int, out chan []byte, keyPath []interface{}, content interfac
 }
 
 // StreamDiff 对比 oldJSON/newJSON，并把每条增量以 "data: {...}" 推送到 out chan
-func StreamDiff(ctx context.Context, lastSeq *int, oldJSON, newJSON []byte, out chan []byte) error {
+// chunkIndex: 流式周期索引，仅首(0)周期创建独立 span
+func StreamDiff(ctx context.Context, lastSeq *int, oldJSON, newJSON []byte, out chan []byte, chunkIndex int) error {
 	var err error
 
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
+	if chunkIndex == 0 {
+		ctx, _ = oteltrace.StartInternalSpan(ctx)
+		defer oteltrace.EndSpan(ctx, err)
+	}
 
 	var oldVal, newVal interface{}
 	if err := sonic.Unmarshal(oldJSON, &oldVal); err != nil {

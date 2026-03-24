@@ -48,7 +48,7 @@ func TestAfterProcess_IsNeedDocRetrivalPostProcess(t *testing.T) {
 	}
 	callResult := []byte(`{"status":"False","answer":{"final_answer":"partial"}}`)
 
-	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent)
+	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent, 0)
 	assert.NoError(t, err)
 	assert.False(t, isEnd)
 	assert.NotNil(t, result)
@@ -86,7 +86,7 @@ func TestAfterProcess_IsNeedProgressFalse(t *testing.T) {
 	}
 	callResult := []byte(`{"status":"False","answer":{"final_answer":"partial"}}`)
 
-	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent)
+	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent, 0)
 	assert.NoError(t, err)
 	assert.False(t, isEnd)
 	assert.NotNil(t, result)
@@ -127,7 +127,7 @@ func TestAfterProcess_StatusTrue_TTFTAlreadySet(t *testing.T) {
 	}
 	callResult := []byte(`{"status":"True","answer":{"final_answer":"done"}}`)
 
-	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent)
+	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent, 0)
 	assert.NoError(t, err)
 	assert.True(t, isEnd)
 	assert.NotNil(t, result)
@@ -167,7 +167,7 @@ func TestAfterProcess_HandleMsgArea_ConvGetByIDFails(t *testing.T) {
 	}
 	callResult := []byte(`{"status":"True","answer":{"final_answer":"done"}}`)
 
-	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent)
+	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent, 0)
 	assert.Error(t, err)
 	assert.False(t, isEnd)
 	assert.NotNil(t, result)
@@ -208,7 +208,7 @@ func TestAfterProcess_HandleMsgArea_ConvUpdateFails(t *testing.T) {
 	}
 	callResult := []byte(`{"status":"True","answer":{"final_answer":"done"}}`)
 
-	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent)
+	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent, 0)
 	assert.Error(t, err)
 	assert.False(t, isEnd)
 	assert.NotNil(t, result)
@@ -250,7 +250,7 @@ func TestAfterProcess_StatusTrue_IsNeedProgress(t *testing.T) {
 	}
 	callResult := []byte(`{"status":"True","answer":{"final_answer":"done"}}`)
 
-	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent)
+	result, isEnd, err := svc.AfterProcess(context.Background(), callResult, req, agent, 0)
 	assert.NoError(t, err)
 	assert.True(t, isEnd)
 	assert.NotNil(t, result)
@@ -291,7 +291,7 @@ func TestAfterProcess_StatusError_WithErrorCode(t *testing.T) {
 	}
 	callResult := []byte(`{"status":"Error","answer":{"final_answer":""},"error":{"error_code":"AgentExecutor.DolphinSDKException.ModelExecption","error_details":"model error"}}`)
 
-	result, _, err := svc.AfterProcess(context.Background(), callResult, req, agent)
+	result, _, err := svc.AfterProcess(context.Background(), callResult, req, agent, 0)
 	assert.Error(t, err)
 	assert.NotNil(t, result)
 }
