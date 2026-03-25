@@ -32,14 +32,15 @@ observability_config = ObservabilitySetting(
         ),
     ),
     trace=TraceSetting(
-        trace_enabled=os.getenv("O11Y_TRACE_ENABLED", "false") == "true",
-        trace_provider=os.getenv("O11Y_TRACE_PROVIDER", "http"),
+        trace_enabled=os.getenv("O11Y_TRACE_ENABLED", "false") == "true" or os.getenv("TRACE_ENABLE", "false") == "true",
+        trace_provider=os.getenv("O11Y_TRACE_PROVIDER", "otlp"),
         trace_max_queue_size=int(os.getenv("O11Y_TRACE_MAX_QUEUE_SIZE", "512")),
         max_export_batch_size=int(os.getenv("O11Y_TRACE_MAX_EXPORT_BATCH_SIZE", "512")),
         http_trace_feed_ingester_url=os.getenv(
             "O11Y_HTTP_TRACE_FEED_INGESTER_URL",
             "http://feed-ingester-service:13031/api/feed_ingester/v1/jobs/dip-o11y-trace/events",
         ),
+        otlp_endpoint=os.getenv("TRACE_URL", ""),
     ),
 )
 

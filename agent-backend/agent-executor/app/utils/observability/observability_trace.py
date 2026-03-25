@@ -45,17 +45,42 @@ def init_trace_provider(server_info: ServerInfo, setting: TraceSetting) -> None:
     if not Config.is_o11y_trace_enabled():
         return
 
-    from exporter.ar_trace.trace_exporter import ARTraceExporter
-    from exporter.public.client import HTTPClient
-    from exporter.public.public import WithAnyRobotURL
-
     if setting.trace_provider == "console":
         trace_exporter = ConsoleSpanExporter()
 
+    elif setting.trace_provider == "otlp":
+        # 使用标准 OTLP HTTP exporter（与 Go 版本对齐）
+        from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
+        
+        otlp_endpoint = setting.otlp_endpoint
+        if not otlp_endpoint:
+            print("[OTel] Warning: OTLP endpoint is empty, trace will not be exported")
+            return
+        
+        # OTLPSpanExporter 的 endpoint 参数应该是完整 URL
+        # Go 使用 WithEndpoint(host:port)，Python 需要完整 URL
+        if not otlp_endpoint.startswith("http://") and not otlp_endpoint.startswith("https://"):
+            otlp_endpoint = f"http://{otlp_endpoint}"
+        if not otlp_endpoint.endswith("/v1/traces"):
+            otlp_endpoint = f"{otlp_endpoint}/v1/traces"
+        
+        trace_exporter = OTLPSpanExporter(endpoint=otlp_endpoint)
+        print(f"[OTel] Initialized OTLP trace exporter: service={server_info.server_name}, endpoint={otlp_endpoint}, sampling_rate={os.getenv('OTEL_TRACE_SAMPLING_RATE', '1.0')}")
+
     elif setting.trace_provider == "http":
+        # 旧的 ARTraceExporter
+        from exporter.ar_trace.trace_exporter import ARTraceExporter
+        from exporter.public.client import HTTPClient
+        from exporter.public.public import WithAnyRobotURL
+        
         trace_exporter = ARTraceExporter(
             HTTPClient(WithAnyRobotURL(setting.http_trace_feed_ingester_url))
         )
+    
+    # 如果没有配置任何 exporter，直接返回
+    if trace_exporter is None:
+        print(f"[OTel] Warning: No trace exporter configured for provider: {setting.trace_provider}")
+        return
 
     trace_processor = BatchSpanProcessor(
         span_exporter=trace_exporter,

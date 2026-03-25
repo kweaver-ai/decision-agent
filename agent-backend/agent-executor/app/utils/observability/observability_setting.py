@@ -43,6 +43,7 @@ class TraceSetting:
         http_trace_feed_ingester_url: str = "",
         grpc_trace_feed_ingester_url: str = "",
         grpc_trace_job_id: str = "",
+        otlp_endpoint: str = "",
     ):
         self.trace_enabled = trace_enabled
         self.trace_provider = trace_provider
@@ -51,6 +52,7 @@ class TraceSetting:
         self.http_trace_feed_ingester_url = http_trace_feed_ingester_url
         self.grpc_trace_feed_ingester_url = grpc_trace_feed_ingester_url
         self.grpc_trace_job_id = grpc_trace_job_id
+        self.otlp_endpoint = otlp_endpoint
 
 
 @dataclass
