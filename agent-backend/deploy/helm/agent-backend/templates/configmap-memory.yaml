@@ -35,8 +35,8 @@ data:
   LOG_ENABLE: {{ quote .Values.agentMemory.telemetry.log.enabled }}
   METRIC_URL: {{ .Values.agentMemory.telemetry.metric.endpoint | quote }}
   METRIC_ENABLE: {{ quote .Values.agentMemory.telemetry.metric.enabled }}
-  TRACE_ENABLE: {{ quote .Values.agentMemory.telemetry.trace.enabled }}
-  TRACE_URL: {{ .Values.agentMemory.telemetry.trace.endpoint | quote}}
+  TRACE_ENABLE: {{ quote .Values.otel.trace.enabled }}
+  TRACE_URL: {{ .Values.otel.otlp_endpoint | quote}}
   OPENSEARCH_HOST: {{ .Values.depServices.opensearch.host | quote}}
   OPENSEARCHRED: {{ .Values.depServices.opensearch.read | quote}}
   OPENSEARCHWRITE: {{ .Values.depServices.opensearch.write | quote}}
