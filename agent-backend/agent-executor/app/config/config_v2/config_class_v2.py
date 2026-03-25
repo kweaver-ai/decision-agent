@@ -49,6 +49,14 @@ class ConfigClassV2(ConfigState):
         """是否启用o11y追踪"""
         return self.o11y.trace_enabled
 
+    def is_dolphin_trace_enabled(self):
+        """是否启用dolphin trace"""
+        return self.o11y.dolphin_trace_enabled
+
+    def get_dolphin_trace_url(self):
+        """获取dolphin trace上报URL"""
+        return self.o11y.dolphin_trace_url
+
     def is_debug_mode(self):
         """是否启用调试模式"""
         return self.app.debug
