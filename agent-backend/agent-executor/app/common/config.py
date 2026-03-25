@@ -13,8 +13,8 @@ from app.utils.observability.observability_setting import (
 ## 1. 初始化 server info
 
 server_info = ServerInfo(
-    server_name="agent-executor",
-    server_version="1.0.0",
+    server_name=os.getenv("OTEL_SERVICE_NAME", "agent-executor"),
+    server_version=os.getenv("OTEL_SERVICE_VERSION", "1.0.0"),
     language="python",
     python_version=sys.version,
 )

@@ -16,6 +16,7 @@ from app.utils.observability.observability_setting import TraceSetting, ServerIn
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
 from opentelemetry.trace import set_tracer_provider
+from opentelemetry.sdk.resources import Resource
 
 
 def init_trace_provider(server_info: ServerInfo, setting: TraceSetting) -> None:
@@ -61,8 +62,27 @@ def init_trace_provider(server_info: ServerInfo, setting: TraceSetting) -> None:
         schedule_delay_millis=2000,
         max_queue_size=setting.trace_max_queue_size,
     )
+    
+    # 合并基础 resource 和额外的 otel 属性
+    base_resource = trace_resource()
+    otel_environment = os.getenv("OTEL_ENVIRONMENT")
+    if otel_environment:
+        extra_resource = Resource.create({
+            "deployment.environment": otel_environment,
+        })
+        merged_resource = base_resource.merge(extra_resource)
+    else:
+        merged_resource = base_resource
+    
+    # 设置采样率（如果配置了）
+    from opentelemetry.sdk.trace.sampling import ParentBasedTraceIdRatio
+    sampling_rate = float(os.getenv("OTEL_TRACE_SAMPLING_RATE", "1.0"))
+    sampler = ParentBasedTraceIdRatio(sampling_rate)
+    
     trace_provider = TracerProvider(
-        resource=trace_resource(), active_span_processor=trace_processor
+        resource=merged_resource, 
+        active_span_processor=trace_processor,
+        sampler=sampler
     )
 
     set_tracer_provider(trace_provider)
