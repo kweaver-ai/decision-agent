@@ -15,9 +15,8 @@ data:
     switch_fields:
       keep_legacy_app_path: {{ .Values.service.keep_legacy_app_path | default false }}
       disable_pms_check: {{ .Values.service.disablePmsCheck | default false }}
-      disable_biz_domain: {{ .Values.service.disableBizDomain | default false }}
+      disable_biz_domain: {{ not (.Values.businessDomain.enabled | default true) }}
       disable_biz_domain_init: {{ .Values.service.disableBizDomainInit | default false }}
-      use_default_biz_domain: {{ .Values.service.useDefaultBizDomain | default false }}
       disable_audit_init: {{ .Values.service.disableAuditInit | default false }}
       mock:
         mock_mq_client: {{ .Values.service.mockMqClient | default false }}

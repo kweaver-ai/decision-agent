@@ -21,6 +21,8 @@ func (agentSvc *agentSvc) ResumeChat(ctx context.Context, conversationID string)
 	defer oteltrace.EndSpan(ctx, err)
 	oteltrace.SetAttributes(ctx, attribute.String(otelconst.AttrGenAIConversationID, conversationID))
 
+	otellog.LogDebug(ctx, "[ResumeChat] started")
+
 	sessionInterface, ok := SessionMap.Load(conversationID)
 	if !ok {
 		otellog.LogError(ctx, fmt.Sprintf("[ResumeChat] conversation_id %s not found", conversationID), nil)

@@ -13,9 +13,6 @@ import (
 func (s *httpServer) registerManagementPubRoutes(engine *gin.Engine) {
 	router := engine.Group("/api/agent-factory/v3")
 
-	// 外部接口默认不使用默认业务域
-	isUseDefaultBizDomain := global.GConfig.SwitchFields.UseDefaultBizDomain
-
 	if cenvhelper.IsLocalDev() {
 		router.Use(capimiddleware.Cors())
 
@@ -31,8 +28,8 @@ func (s *httpServer) registerManagementPubRoutes(engine *gin.Engine) {
 		capimiddleware.Language(),
 		// 新增 Hydra 接口鉴权，开发环境可以临时屏蔽
 		capimiddleware.VerifyOAuthMiddleWare(),
-		// 业务域
-		capimiddleware.HandleBizDomain(isUseDefaultBizDomain),
+		// 业务域：外部接口要求必须携带业务域ID
+		capimiddleware.HandleBizDomain(false),
 		apimiddleware.VisitorTypeCheck(),
 
 		// 注入OpenTelemetry中间件
@@ -60,18 +57,13 @@ func (s *httpServer) registerManagementPubRoutes(engine *gin.Engine) {
 func (s *httpServer) registerManagementPriRoutes(engine *gin.Engine) {
 	internalRouterG := engine.Group("/api/agent-factory/internal/v3")
 
-	// 内部接口默认使用默认业务域
-	isUseDefaultBizDomain := global.GConfig.SwitchFields.UseDefaultBizDomain
-	if !isUseDefaultBizDomain {
-		isUseDefaultBizDomain = true
-	}
-
 	internalRouterG.Use(
 		capimiddleware.Recovery(),
 		capimiddleware.ErrorHandler(),
 		capimiddleware.RequestLoggerV2Middleware(),
 		capimiddleware.Language(),
-		capimiddleware.HandleBizDomain(isUseDefaultBizDomain),
+		// 业务域：内部接口自动使用默认业务域
+		capimiddleware.HandleBizDomain(true),
 
 		// 注入OpenTelemetry中间件
 		otelgin.Middleware(global.GConfig.OtelConfig.ServiceName),

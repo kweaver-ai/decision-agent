@@ -51,9 +51,7 @@ service:
 
   # ========== 开发环境控制开关（生产环境建议设置为 false）==========
   disablePmsCheck: false
-  disableBizDomain: false
   disableBizDomainInit: false
-  useDefaultBizDomain: false
   disableAuditInit: false
   mockMqClient: false
   mockSandboxPlatform: false
@@ -79,6 +77,11 @@ service:
     periodSeconds: 10
     timeoutSeconds: 60
     failureThreshold: 10
+
+
+# 业务域开关
+businessDomain:
+  enabled: true
 
 env:
   language: en_US.UTF-8
