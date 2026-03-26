@@ -58,6 +58,7 @@ async def run_dolphin(
         agent_run_id=config.agent_run_id or "",
         agent_id=config.agent_id or "",
         user_id=get_user_account_id(headers) or "",
+        conversation_id=config.conversation_id or "",
     )
 
     # 从headers中提取user_id和visitor_type
@@ -167,6 +168,13 @@ async def run_dolphin(
     if Config.is_dolphin_trace_enabled():
         try:
             from dolphin.core.observability.otel_listener import OTelTraceListener
+            
+            o11y_logger().info(
+                f"[run_dolphin] Creating OTelTraceListener with: "
+                f"agent_id={config.agent_id}, "
+                f"conversation_id={config.conversation_id}, "
+                f"user_id={user_id}"
+            )
             
             trace_listener = OTelTraceListener(
                 agent_id=config.agent_id or "",

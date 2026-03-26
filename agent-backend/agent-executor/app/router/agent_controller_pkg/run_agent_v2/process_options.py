@@ -60,7 +60,12 @@ def process_options(
         agent_config.agent_id = options.agent_id
 
     if options.conversation_id:
+        from app.utils.observability.observability_log import get_logger as o11y_logger
+        o11y_logger().info(f"[process_options] Setting conversation_id from options: {options.conversation_id}")
         agent_config.conversation_id = options.conversation_id
+    else:
+        from app.utils.observability.observability_log import get_logger as o11y_logger
+        o11y_logger().warning(f"[process_options] No conversation_id in options, will use auto-generated value: {agent_config.conversation_id}")
 
     if options.agent_run_id:
         agent_config.agent_run_id = options.agent_run_id

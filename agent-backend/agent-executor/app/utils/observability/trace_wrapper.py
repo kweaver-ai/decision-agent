@@ -44,78 +44,108 @@ def internal_span(
             async def async_generator_wrapper(
                 *args, **kwargs
             ) -> AsyncGenerator[Any, Any]:
+                from opentelemetry.trace import use_span
+                
                 span = tracer.start_span(
                     span_name, kind=SpanKind.INTERNAL, attributes=attributes
                 )
-                try:
-                    span.set_status(Status(StatusCode.OK))
-                    span.set_attribute("error", False)
+                
+                # 打印span创建信息
+                span_context = span.get_span_context()
+                print(f"[trace_wrapper] Created span '{span_name}', trace_id={format(span_context.trace_id, '032x')}, span_id={format(span_context.span_id, '016x')}")
+                
+                # 将span设置为当前上下文，使得子span可以自动关联
+                with use_span(span, end_on_exit=False):
+                    try:
+                        span.set_status(Status(StatusCode.OK))
+                        span.set_attribute("error", False)
 
-                    kwargs["span"] = span
+                        kwargs["span"] = span
 
-                    result = func(*args, **kwargs)
-                    async for item in result:
-                        yield item
+                        result = func(*args, **kwargs)
+                        async for item in result:
+                            yield item
 
-                except Exception as e:
-                    if span.is_recording():
-                        span.set_status(Status(StatusCode.ERROR))
-                        span.set_attribute("error", True)
-                        span.record_exception(e)
-                    raise
-                finally:
-                    span.end()
+                    except Exception as e:
+                        if span.is_recording():
+                            span.set_status(Status(StatusCode.ERROR))
+                            span.set_attribute("error", True)
+                            span.record_exception(e)
+                        raise
+                    finally:
+                        print(f"[trace_wrapper] Ending span '{span_name}'")
+                        span.end()
 
             return async_generator_wrapper
         elif is_async:
             # 异步函数处理
             @wraps(func)
             async def async_wrapper(*args, **kwargs) -> Awaitable[Any]:
+                from opentelemetry.trace import use_span
+                
                 span = tracer.start_span(
                     span_name, kind=SpanKind.INTERNAL, attributes=attributes
                 )
-                try:
-                    span.set_status(Status(StatusCode.OK))
-                    span.set_attribute("error", False)
+                
+                # 打印span创建信息
+                span_context = span.get_span_context()
+                print(f"[trace_wrapper] Created span '{span_name}', trace_id={format(span_context.trace_id, '032x')}, span_id={format(span_context.span_id, '016x')}")
+                
+                # 将span设置为当前上下文，使得子span可以自动关联
+                with use_span(span, end_on_exit=False):
+                    try:
+                        span.set_status(Status(StatusCode.OK))
+                        span.set_attribute("error", False)
 
-                    kwargs["span"] = span
+                        kwargs["span"] = span
 
-                    result = await func(*args, **kwargs)
-                    return result
+                        result = await func(*args, **kwargs)
+                        return result
 
-                except Exception as e:
-                    if span.is_recording():
-                        span.set_status(Status(StatusCode.ERROR))
-                        span.set_attribute("error", True)
-                        span.record_exception(e)
-                    raise
-                finally:
-                    span.end()
+                    except Exception as e:
+                        if span.is_recording():
+                            span.set_status(Status(StatusCode.ERROR))
+                            span.set_attribute("error", True)
+                            span.record_exception(e)
+                        raise
+                    finally:
+                        print(f"[trace_wrapper] Ending span '{span_name}'")
+                        span.end()
 
             return async_wrapper
         else:
 
             @wraps(func)
             def sync_wrapper(*args, **kwargs) -> Any:
+                from opentelemetry.trace import use_span
+                
                 # 创建 INTERNAL 类型的 span
                 span = tracer.start_span(
                     span_name, kind=SpanKind.INTERNAL, attributes=attributes
                 )
-                try:
-                    kwargs["span"] = span
-                    # 执行被注解的函数
-                    result = func(*args, **kwargs)
-                    span.set_status(Status(StatusCode.OK))
-                    return result
-                except Exception as e:
-                    # 记录异常信息
-                    if span.is_recording():
-                        span.set_status(Status(StatusCode.ERROR))
-                        span.set_attribute("error", True)
-                        span.record_exception(e)
-                    raise  # 重新抛出异常，不影响原有逻辑
-                finally:
-                    span.end()
+                
+                # 打印span创建信息
+                span_context = span.get_span_context()
+                print(f"[trace_wrapper] Created span '{span_name}', trace_id={format(span_context.trace_id, '032x')}, span_id={format(span_context.span_id, '016x')}")
+                
+                # 将span设置为当前上下文，使得子span可以自动关联
+                with use_span(span, end_on_exit=False):
+                    try:
+                        kwargs["span"] = span
+                        # 执行被注解的函数
+                        result = func(*args, **kwargs)
+                        span.set_status(Status(StatusCode.OK))
+                        return result
+                    except Exception as e:
+                        # 记录异常信息
+                        if span.is_recording():
+                            span.set_status(Status(StatusCode.ERROR))
+                            span.set_attribute("error", True)
+                            span.record_exception(e)
+                        raise  # 重新抛出异常，不影响原有逻辑
+                    finally:
+                        print(f"[trace_wrapper] Ending span '{span_name}'")
+                        span.end()
 
             return sync_wrapper
 
