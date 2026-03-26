@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/dbhelper2"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
@@ -27,7 +28,7 @@ func (repo *ConversationMsgRepo) GetByID(ctx context.Context, id string) (po *da
 func (repo *ConversationMsgRepo) GetMaxIndexByID(ctx context.Context, id string) (maxIndex int, err error) {
 	ctx, _ = o11y.StartInternalSpan(ctx)
 	defer o11y.EndSpan(ctx, nil)
-	o11y.SetAttributes(ctx, attribute.String("conversationID", id))
+	oteltrace.SetConversationID(ctx, id)
 
 	sr := dbhelper2.NewSQLRunner(repo.db, repo.logger)
 	po := &dapo.ConversationMsgPO{}

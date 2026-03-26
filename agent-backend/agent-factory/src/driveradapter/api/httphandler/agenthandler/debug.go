@@ -14,7 +14,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/otellog"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
@@ -24,7 +25,7 @@ func (h *agentHTTPHandler) Debug(c *gin.Context) {
 	agentAPPKey := c.Param("app_key")
 	if agentAPPKey == "" {
 		err := capierr.New400Err(c, "[Debug] app key is empty")
-		o11y.Error(c, "[Debug] app key is empty")
+		otellog.LogError(c, "[Debug] app key is empty", err)
 		h.logger.Errorf("[Debug] app key is empty")
 		rest.ReplyError(c, err)
 
@@ -39,7 +40,7 @@ func (h *agentHTTPHandler) Debug(c *gin.Context) {
 	}
 	if err := c.ShouldBindJSON(&req); err != nil {
 		httpErr := capierr.New400Err(c, fmt.Sprintf("[Debug] should bind json err: %v", err))
-		o11y.Error(c, fmt.Sprintf("[Debug] should bind json err: %v", err))
+		otellog.LogError(c, fmt.Sprintf("[Debug] should bind json err: %v", err), err)
 		h.logger.Errorf("[Debug] should bind json err: %v", err)
 		rest.ReplyError(c, httpErr)
 
@@ -57,7 +58,7 @@ func (h *agentHTTPHandler) Debug(c *gin.Context) {
 	user := chelper.GetVisitorFromCtx(c)
 	if user == nil {
 		httpErr := capierr.New401Err(c, "[Debug] user not found")
-		o11y.Error(c, "[Debug] user not found")
+		otellog.LogError(c, "[Debug] user not found", nil)
 		h.logger.Errorf("[Debug] user not found")
 		rest.ReplyError(c, httpErr)
 
@@ -113,10 +114,13 @@ func (h *agentHTTPHandler) Debug(c *gin.Context) {
 	// 	chatReq.VisitorType = constant.Anonymous
 	// }
 	chatReq.CallType = constant.DebugChat
+	oteltrace.SetConversationID(ctx, chatReq.ConversationID)
 
 	channel, err := h.agentSvc.Chat(ctx, chatReq)
+	oteltrace.SetConversationID(ctx, chatReq.ConversationID)
+
 	if err != nil {
-		o11y.Error(c, fmt.Sprintf("[Debug] chat error: %v", err.Error()))
+		otellog.LogError(ctx, fmt.Sprintf("[Debug] chat error: %v", err.Error()), err)
 		h.logger.Errorf("[Debug] chat error: %v", err.Error())
 		rest.ReplyError(c, err)
 

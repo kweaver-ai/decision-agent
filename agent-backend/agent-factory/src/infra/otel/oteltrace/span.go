@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/otelconst"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/codes"
@@ -76,6 +77,16 @@ func ExtractTraceHeader(ctx context.Context, header http.Header) context.Context
 func SetAttributes(ctx context.Context, kv ...attribute.KeyValue) {
 	span := trace.SpanFromContext(ctx)
 	span.SetAttributes(kv...)
+}
+
+// SetConversationID 在当前 span 上设置标准会话属性。
+// 只有拿到真实 conversationID 时才写入，避免空值污染链路。
+func SetConversationID(ctx context.Context, conversationID string) {
+	if conversationID == "" {
+		return
+	}
+
+	SetAttributes(ctx, attribute.String(otelconst.AttrGenAIConversationID, conversationID))
 }
 
 // EndSpan 结束当前 span，如有错误则记录。

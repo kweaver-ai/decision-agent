@@ -55,6 +55,7 @@ func (agentSvc *agentSvc) Process(traceCtx context.Context, req *agentreq.ChatRe
 		attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID),
 		attribute.String(otelconst.AttrUserID, req.UserID),
 	)
+	oteltrace.SetConversationID(ctx, req.ConversationID)
 	// NOTE: process是对话的核心，process结束时关闭respChan
 	defer close(respChan)
 

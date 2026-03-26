@@ -21,10 +21,10 @@ func (agentSvc *agentSvc) TerminateChat(ctx context.Context, conversationID stri
 	ctx, _ = oteltrace.StartInternalSpan(ctx)
 	defer oteltrace.EndSpan(ctx, err)
 	oteltrace.SetAttributes(ctx,
-		attribute.String(otelconst.AttrGenAIConversationID, conversationID),
 		attribute.String(otelconst.AttrGenAIAgentRunID, agentRunID),
 		attribute.String(otelconst.AttrGenAIAssistantMsgID, interruptedAssistantMessageID),
 	)
+	oteltrace.SetConversationID(ctx, conversationID)
 
 	otellog.LogDebug(ctx, "[TerminateChat] started")
 

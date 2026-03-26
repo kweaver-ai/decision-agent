@@ -1,6 +1,9 @@
 test:
 	helm template agent-factory agent-backend>./helm-template-gen.yaml
 
+test-business-domain:
+	./test-business-domain-toggle.sh
+
 test-split:
 	helm template agent-factory agent-backend>./helm-template-gen.yaml && \
 	mkdir -p ./helm-template-gen-split && \

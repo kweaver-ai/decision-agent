@@ -59,14 +59,18 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 		attribute.String(otelconst.AttrGenAIAgentID, req.AgentID),
 		attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID),
 		attribute.String(otelconst.AttrGenAIAgentVersion, req.AgentVersion),
-		attribute.String(otelconst.AttrGenAIConversationID, req.ConversationID),
 		attribute.String(otelconst.AttrUserID, req.UserID),
 	)
+	oteltrace.SetConversationID(newCtx, req.ConversationID)
 
-	otellog.LogDebug(newCtx, "[chat] started",
+	startAttrs := []otelsdklog.KeyValue{
 		otelsdklog.String(otelconst.AttrGenAIAgentID, req.AgentID),
-		otelsdklog.String(otelconst.AttrGenAIConversationID, req.ConversationID),
-	)
+	}
+	if req.ConversationID != "" {
+		startAttrs = append(startAttrs, otelsdklog.String(otelconst.AttrGenAIConversationID, req.ConversationID))
+	}
+
+	otellog.LogDebug(newCtx, "[chat] started", startAttrs...)
 
 	defer func() {
 		if err != nil {
@@ -114,6 +118,8 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 		otellog.LogError(newCtx, "[chat] get history and msg index failed", err)
 		return nil, err
 	}
+
+	oteltrace.SetConversationID(newCtx, req.ConversationID)
 
 	// NOTE: 3. 插入用户消息和助手消息, 并返回userMessageID, assistantMessageID, assistantMessageIndex
 	req.UserMessageID, req.AssistantMessageID, req.AssistantMessageIndex, err = agentSvc.UpsertUserAndAssistantMsg(newCtx, req, msgIndex, conversationPO)
@@ -221,10 +227,14 @@ func (agentSvc *agentSvc) Chat(ctx context.Context, req *agentreq.ChatReq) (chan
 	// NOTE: 8. 流式响应处理
 	channel := make(chan []byte, CHANNEL_SIZE)
 
-	otellog.LogDebug(newCtx, "[chat] starting Process goroutine",
-		otelsdklog.String(otelconst.AttrGenAIConversationID, req.ConversationID),
+	processAttrs := []otelsdklog.KeyValue{
 		otelsdklog.String(otelconst.AttrGenAIAssistantMsgID, req.AssistantMessageID),
-	)
+	}
+	if req.ConversationID != "" {
+		processAttrs = append(processAttrs, otelsdklog.String(otelconst.AttrGenAIConversationID, req.ConversationID))
+	}
+
+	otellog.LogDebug(newCtx, "[chat] starting Process goroutine", processAttrs...)
 
 	go func() {
 		defer panichelper.Recovery(agentSvc.logger)

@@ -5,12 +5,10 @@ import (
 	"fmt"
 
 	"github.com/bytedance/sonic"
-	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/otelconst"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/panichelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/otellog"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
-	"go.opentelemetry.io/otel/attribute"
 )
 
 // ResumeChat 恢复聊天（Session恢复）
@@ -19,7 +17,7 @@ func (agentSvc *agentSvc) ResumeChat(ctx context.Context, conversationID string)
 
 	ctx, _ = oteltrace.StartInternalSpan(ctx)
 	defer oteltrace.EndSpan(ctx, err)
-	oteltrace.SetAttributes(ctx, attribute.String(otelconst.AttrGenAIConversationID, conversationID))
+	oteltrace.SetConversationID(ctx, conversationID)
 
 	otellog.LogDebug(ctx, "[ResumeChat] started")
 

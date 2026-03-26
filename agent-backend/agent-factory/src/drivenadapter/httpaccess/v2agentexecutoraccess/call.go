@@ -39,6 +39,7 @@ func (ae *v2AgentExecutorHttpAcc) Call(ctx context.Context, req *v2agentexecutor
 		attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentOptions.AgentRunID),
 		attribute.String(otelconst.AttrGenAIAgentID, req.AgentID),
 	)
+	oteltrace.SetConversationID(ctx, req.AgentOptions.ConversationID)
 
 	var url string
 	if req.CallType == constant.DebugChat {
