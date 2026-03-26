@@ -58,18 +58,14 @@ lint = [
 ]
 [tool.uv]
 index-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
-index-strategy = "unsafe-best-match"
-# 注意: timeout 参数不支持，请使用环境变量 UV_HTTP_TIMEOUT=300
 
-[[tool.uv.index]]
-name = "test-pypi"
-url = "https://test.pypi.org/simple/"
 
-[[tool.uv.index]]
-name = "official-pypi"
-url = "https://pypi.org/simple/"
+#[[tool.uv.index]]
+#name = "test-pypi"
+#url = "https://test.pypi.org/simple/"
 
 ##  打开下方注释则从 TestPyPI 安装（测试版本）
+#index-strategy = "unsafe-best-match"
 #[tool.uv.sources]
 # kweaver-dolphin 源切换配置
 #kweaver-dolphin = { index = "test-pypi" }
