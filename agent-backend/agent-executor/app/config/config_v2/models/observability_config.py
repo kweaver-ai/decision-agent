@@ -45,9 +45,17 @@ class O11yConfig:
             or data.get("dolphin_trace_url", "")
         )
         
+        # o11y trace 也优先从环境变量读取（与 observability_config 保持一致）
+        o11y_trace_enable_env = os.getenv("O11Y_TRACE_ENABLED", "").lower()
+        trace_enabled = (
+            o11y_trace_enable_env == "true"
+            if o11y_trace_enable_env
+            else (trace_enable_env == "true" if trace_enable_env else data.get("trace_enabled", False))
+        )
+        
         return cls(
             log_enabled=data.get("log_enabled", False),
-            trace_enabled=data.get("trace_enabled", False),
+            trace_enabled=trace_enabled,
             dolphin_trace_enabled=dolphin_trace_enabled,
             dolphin_trace_url=dolphin_trace_url,
         )

@@ -43,13 +43,16 @@ def init_trace_provider(server_info: ServerInfo, setting: TraceSetting) -> None:
 
     # 如果没有启用 o11y 跟踪，直接返回
     if not Config.is_o11y_trace_enabled():
+        print(f"[OTel] Trace provider initialization skipped: Config.is_o11y_trace_enabled()={Config.is_o11y_trace_enabled()}")
         return
+    
+    print(f"[OTel] Config.is_o11y_trace_enabled()=True, proceeding with trace provider initialization")
 
     if setting.trace_provider == "console":
         trace_exporter = ConsoleSpanExporter()
 
     elif setting.trace_provider == "otlp":
-        # 使用标准 OTLP HTTP exporter（与 Go 版本对齐）
+        # 使用标准 OTLP HTTP exporter
         from opentelemetry.exporter.otlp.proto.http.trace_exporter import OTLPSpanExporter
         
         otlp_endpoint = setting.otlp_endpoint
@@ -58,7 +61,6 @@ def init_trace_provider(server_info: ServerInfo, setting: TraceSetting) -> None:
             return
         
         # OTLPSpanExporter 的 endpoint 参数应该是完整 URL
-        # Go 使用 WithEndpoint(host:port)，Python 需要完整 URL
         if not otlp_endpoint.startswith("http://") and not otlp_endpoint.startswith("https://"):
             otlp_endpoint = f"http://{otlp_endpoint}"
         if not otlp_endpoint.endswith("/v1/traces"):

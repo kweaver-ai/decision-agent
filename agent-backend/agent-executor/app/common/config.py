@@ -20,6 +20,14 @@ server_info = ServerInfo(
 )
 
 ## 2. 初始化配置
+print(f"[Config] Initializing observability config:")
+print(f"[Config]   TRACE_ENABLE={os.getenv('TRACE_ENABLE', 'not set')}")
+print(f"[Config]   TRACE_URL={os.getenv('TRACE_URL', 'not set')}")
+print(f"[Config]   O11Y_TRACE_ENABLED={os.getenv('O11Y_TRACE_ENABLED', 'not set')}")
+print(f"[Config]   O11Y_TRACE_PROVIDER={os.getenv('O11Y_TRACE_PROVIDER', 'not set')}")
+print(f"[Config]   OTEL_SERVICE_NAME={os.getenv('OTEL_SERVICE_NAME', 'not set')}")
+print(f"[Config]   OTEL_ENVIRONMENT={os.getenv('OTEL_ENVIRONMENT', 'not set')}")
+
 observability_config = ObservabilitySetting(
     log=LogSetting(
         log_enabled=os.getenv("O11Y_LOG_ENABLED", "false") == "true",

@@ -158,6 +158,12 @@ async def run_dolphin(
 
     # 9.2 创建trace listener（如果启用）
     trace_listener = None
+    o11y_logger().info(
+        f"[run_dolphin] Dolphin trace check: "
+        f"is_dolphin_trace_enabled={Config.is_dolphin_trace_enabled()}, "
+        f"is_o11y_trace_enabled={Config.is_o11y_trace_enabled()}"
+    )
+    
     if Config.is_dolphin_trace_enabled():
         try:
             from dolphin.core.observability.otel_listener import OTelTraceListener
@@ -168,12 +174,14 @@ async def run_dolphin(
                 user_id=user_id or "",
             )
             o11y_logger().info(
-                f"[run_dolphin] Dolphin trace listener created: "
+                f"[run_dolphin] Dolphin trace listener created successfully: "
                 f"agent_id={config.agent_id}, conversation_id={config.conversation_id}"
             )
         except Exception as e:
             o11y_logger().warning(f"[run_dolphin] Failed to create trace listener: {e}")
             trace_listener = None
+    else:
+        o11y_logger().info("[run_dolphin] Dolphin trace is disabled")
 
     agent = DolphinAgent(
         content=dolphin_prompt,

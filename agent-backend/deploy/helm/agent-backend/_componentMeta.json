@@ -124,7 +124,7 @@
             },
             "otel": {
                 "type": "object",
-                "title": "OpenTelemetry配置",
+                "title": "otel配置",
                 "description": "新版 OTel Collector 配置，用于统一管理可观测性数据上报",
                 "properties": {
                     "service_name": {

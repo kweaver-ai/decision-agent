@@ -147,7 +147,7 @@ data:
     # 10. o11y 相关
     o11y:
       log_enabled: {{ .Values.agentExecutor.telemetry.log.enabled }}
-      trace_enabled: {{ .Values.agentExecutor.telemetry.trace.enabled }}
+      trace_enabled: {{ .Values.otel.trace.enabled }}
 
     # 11. 对话日志相关配置
     dialog_logging:
