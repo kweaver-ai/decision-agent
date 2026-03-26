@@ -60,6 +60,10 @@ lint = [
 index-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 index-strategy = "unsafe-best-match"
 
+[tool.uv.pip]
+# HTTP 请求超时时间（秒）
+timeout = 300
+
 [[tool.uv.index]]
 name = "test-pypi"
 url = "https://test.pypi.org/simple/"
