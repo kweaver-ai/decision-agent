@@ -30,6 +30,7 @@ func (agentSvc *agentSvc) handleProgressOld(ctx context.Context, req *agentreq.C
 			attribute.String(otelconst.AttrUserID, req.UserID),
 			attribute.String("stream.chunk_position", "first"),
 		)
+		oteltrace.SetConversationID(ctx, req.ConversationID)
 	}
 
 	setInterface, _ := progressSet.Load(req.AssistantMessageID)
@@ -90,6 +91,7 @@ func (agentSvc *agentSvc) handleProgress(ctx context.Context, req *agentreq.Chat
 			attribute.String(otelconst.AttrUserID, req.UserID),
 			attribute.String("stream.chunk_position", "first"),
 		)
+		oteltrace.SetConversationID(ctx, req.ConversationID)
 	}
 
 	aMsgID := req.AssistantMessageID

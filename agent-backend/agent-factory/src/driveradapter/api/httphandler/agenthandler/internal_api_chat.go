@@ -11,12 +11,13 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/otellog"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
 
 	// "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr/chelper"
 
 	"github.com/bytedance/sonic"
 	"github.com/gin-gonic/gin"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
@@ -27,7 +28,7 @@ func (h *agentHTTPHandler) InternalAPIChat(c *gin.Context) {
 	agentAPPKey := c.Param("app_key")
 	if agentAPPKey == "" {
 		httpErr := capierr.New400Err(c, "[InternalAPIChat] app key is empty")
-		o11y.Error(c, "[InternalAPIChat] app key is empty")
+		otellog.LogError(c, "[InternalAPIChat] app key is empty", httpErr)
 		h.logger.Errorf("[InternalAPIChat] app key is empty")
 		rest.ReplyError(c, httpErr)
 
@@ -43,7 +44,7 @@ func (h *agentHTTPHandler) InternalAPIChat(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		httpErr := capierr.New400Err(c, fmt.Sprintf("[InternalAPIChat] should bind json err: %v", err))
-		o11y.Error(c, fmt.Sprintf("[InternalAPIChat] should bind json err: %v", err))
+		otellog.LogError(c, fmt.Sprintf("[InternalAPIChat] should bind json err: %v", err), err)
 		h.logger.Errorf("[InternalAPIChat] should bind json err: %v", err)
 		rest.ReplyError(c, httpErr)
 
@@ -82,10 +83,15 @@ func (h *agentHTTPHandler) InternalAPIChat(c *gin.Context) {
 	if req.ExecutorVersion == "" {
 		req.ExecutorVersion = "v2"
 	}
+
+	ctx := c.Request.Context()
+	oteltrace.SetConversationID(ctx, req.ConversationID)
 	// 3. 调用服务
-	channel, err := h.agentSvc.Chat(c.Request.Context(), &req)
+	channel, err := h.agentSvc.Chat(ctx, &req)
+	oteltrace.SetConversationID(ctx, req.ConversationID)
+
 	if err != nil {
-		o11y.Error(c, fmt.Sprintf("[InternalAPIChat] chat error: %v", err.Error()))
+		otellog.LogError(ctx, fmt.Sprintf("[InternalAPIChat] chat error: %v", err.Error()), err)
 		h.logger.Errorf("[InternalAPIChat] chat error: %v", err.Error())
 		rest.ReplyError(c, err)
 

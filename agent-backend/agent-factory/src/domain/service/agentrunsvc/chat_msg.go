@@ -36,6 +36,8 @@ func (agentSvc *agentSvc) MsgResp2MsgPO(ctx context.Context, msgResp agentresp.C
 		attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID),
 		attribute.String(otelconst.AttrUserID, req.UserID),
 	)
+	oteltrace.SetConversationID(ctx, req.ConversationID)
+	oteltrace.SetConversationID(ctx, msgResp.ConversationID)
 
 	content, err := sonic.Marshal(msgResp.Message.Content)
 	if err != nil {
@@ -90,6 +92,7 @@ func (agentSvc *agentSvc) GetHistoryAndMsgIndex(ctx context.Context, req *agentr
 		attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID),
 		attribute.String(otelconst.AttrUserID, req.UserID),
 	)
+	oteltrace.SetConversationID(ctx, req.ConversationID)
 	// NOTE: 从前端请求的conversationID不为空，接口可能为空;
 	// NOTE: 如果会话ID为空，则创建新会话；
 	if req.ConversationID == "" {
@@ -120,7 +123,9 @@ func (agentSvc *agentSvc) GetHistoryAndMsgIndex(ctx context.Context, req *agentr
 		}
 
 		req.ConversationID = conversationPO.ID
+		oteltrace.SetConversationID(ctx, req.ConversationID)
 	} else {
+		oteltrace.SetConversationID(ctx, req.ConversationID)
 		// 获取对话
 		conversationPO, err = agentSvc.conversationRepo.GetByID(ctx, req.ConversationID)
 		if err != nil {
@@ -187,6 +192,7 @@ func (agentSvc *agentSvc) UpsertUserAndAssistantMsg(ctx context.Context, req *ag
 		attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID),
 		attribute.String(otelconst.AttrUserID, req.UserID),
 	)
+	oteltrace.SetConversationID(ctx, req.ConversationID)
 	// NOTE: 普通对话则创建userMessage,状态为recieved
 	if IsNormalChat(req) {
 		userContent := conversationmsgvo.UserContent{

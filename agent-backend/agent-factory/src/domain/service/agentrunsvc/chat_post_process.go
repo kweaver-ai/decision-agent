@@ -51,6 +51,7 @@ func (agentSvc *agentSvc) AfterProcess(ctx context.Context, callResult []byte, r
 			attribute.String(otelconst.AttrUserID, req.UserID),
 			attribute.String("stream.chunk_position", "first"),
 		)
+		oteltrace.SetConversationID(ctx, req.ConversationID)
 	}
 
 	var chatResponse agentresp.ChatResp
@@ -375,6 +376,7 @@ func (agentSvc *agentSvc) handleMessageAndTempArea(ctx context.Context, req *age
 	oteltrace.SetAttributes(ctx, attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID))
 	oteltrace.SetAttributes(ctx, attribute.String(otelconst.AttrGenAIAgentID, req.AgentID))
 	oteltrace.SetAttributes(ctx, attribute.String(otelconst.AttrUserID, req.UserID))
+	oteltrace.SetConversationID(ctx, req.ConversationID)
 	// NOTE: VO-PO
 	content, err := sonic.Marshal(messageVO.Content)
 	if err != nil {

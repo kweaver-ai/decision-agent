@@ -12,12 +12,13 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	// "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper" // reserved for local dev debug
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/otellog"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
 
 	// "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr/chelper"
 
 	"github.com/bytedance/sonic"
 	"github.com/gin-gonic/gin"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
@@ -28,7 +29,7 @@ func (h *agentHTTPHandler) APIChat(c *gin.Context) {
 	agentAPPKey := c.Param("app_key")
 	if agentAPPKey == "" {
 		httpErr := capierr.New400Err(c, "[APIChat] app key is empty")
-		o11y.Error(c, "[APIChat] app key is empty")
+		otellog.LogError(c, "[APIChat] app key is empty", httpErr)
 		h.logger.Errorf("[APIChat] app key is empty")
 		rest.ReplyError(c, httpErr)
 
@@ -44,7 +45,7 @@ func (h *agentHTTPHandler) APIChat(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		httpErr := capierr.New400Err(c, fmt.Sprintf("[APIChat] should bind json err: %v", err))
-		o11y.Error(c, fmt.Sprintf("[APIChat] should bind json err: %v", err))
+		otellog.LogError(c, fmt.Sprintf("[APIChat] should bind json err: %v", err), err)
 		h.logger.Errorf("[APIChat] should bind json err: %v", err)
 		rest.ReplyError(c, httpErr)
 
@@ -60,7 +61,7 @@ func (h *agentHTTPHandler) APIChat(c *gin.Context) {
 	user := chelper.GetVisitorFromCtx(c)
 	if user == nil {
 		httpErr := capierr.New401Err(c, "[APIChat] user not found")
-		o11y.Error(c, "[APIChat] user not found")
+		otellog.LogError(c, "[APIChat] user not found", nil)
 		h.logger.Errorf("[APIChat] user not found")
 		rest.ReplyError(c, httpErr)
 
@@ -101,10 +102,15 @@ func (h *agentHTTPHandler) APIChat(c *gin.Context) {
 		req.ExecutorVersion = "v2"
 	}
 
+	ctx := c.Request.Context()
+	oteltrace.SetConversationID(ctx, req.ConversationID)
+
 	// 3. 调用服务
-	channel, err := h.agentSvc.Chat(c.Request.Context(), &req)
+	channel, err := h.agentSvc.Chat(ctx, &req)
+	oteltrace.SetConversationID(ctx, req.ConversationID)
+
 	if err != nil {
-		o11y.Error(c, fmt.Sprintf("[APIChat] chat error: %v", err.Error()))
+		otellog.LogError(ctx, fmt.Sprintf("[APIChat] chat error: %v", err.Error()), err)
 		h.logger.Errorf("[APIChat] chat error: %v", err.Error())
 		rest.ReplyError(c, err)
 

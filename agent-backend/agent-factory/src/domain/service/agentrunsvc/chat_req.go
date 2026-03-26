@@ -27,6 +27,7 @@ func (agentSvc *agentSvc) GenerateAgentCallReq(ctx context.Context, req *agentre
 		attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID),
 		attribute.String(otelconst.AttrUserID, req.UserID),
 	)
+	oteltrace.SetConversationID(ctx, req.ConversationID)
 	// NOTE: 如果req.ChatMode不为空，则设置req.ChatMode
 	if req.ChatMode != constant.DeepThinkingMode {
 		req.ChatMode = constant.NormalMode

@@ -13,6 +13,7 @@ import (
 	// "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper" // reserved for local dev debug
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/otellog"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 
 	"github.com/bytedance/sonic"
@@ -115,9 +116,12 @@ func (h *agentHTTPHandler) Chat(c *gin.Context) {
 
 	req.CallType = constant.Chat
 	ctx := c.Request.Context()
+	oteltrace.SetConversationID(ctx, req.ConversationID)
 
 	// 3. 调用服务
 	channel, err := h.agentSvc.Chat(ctx, &req)
+	oteltrace.SetConversationID(ctx, req.ConversationID)
+
 	if err != nil {
 		otellog.LogError(ctx, fmt.Sprintf("[Chat] chat failed: %v", err.Error()), err)
 		h.logger.Errorf("[Chat] chat failed: %v", err.Error())

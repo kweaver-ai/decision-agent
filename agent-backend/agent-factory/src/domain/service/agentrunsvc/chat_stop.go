@@ -24,9 +24,9 @@ func (agentSvc *agentSvc) HandleStopChan(ctx context.Context, req *agentreq.Chat
 	oteltrace.SetAttributes(ctx,
 		attribute.String(otelconst.AttrGenAIAgentID, req.AgentID),
 		attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID),
-		attribute.String(otelconst.AttrGenAIConversationID, req.ConversationID),
 		attribute.String(otelconst.AttrUserID, req.UserID),
 	)
+	oteltrace.SetConversationID(ctx, req.ConversationID)
 
 	msgResp := session.GetTempMsgResp()
 

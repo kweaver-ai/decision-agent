@@ -11,7 +11,8 @@ import (
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/apierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/otellog"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/pkg/errors"
 )
@@ -32,16 +33,18 @@ import (
 func (h *agentHTTPHandler) ResumeChat(c *gin.Context) {
 	req := &agentreq.ResumeReq{}
 	if err := c.ShouldBindJSON(req); err != nil {
-		o11y.Error(c, fmt.Sprintf("[ResumeChat] should bind json error: %v", err))
+		otellog.LogError(c, fmt.Sprintf("[ResumeChat] should bind json error: %v", err), err)
 		h.logger.Errorf("[ResumeChat] should bind json error: %v", err)
 		rest.ReplyError(c, capierr.New400Err(c, err.Error()))
 
 		return
 	}
 
+	oteltrace.SetConversationID(c.Request.Context(), req.ConversationID)
+
 	channel, err := h.agentSvc.ResumeChat(c.Request.Context(), req.ConversationID)
 	if err != nil {
-		o11y.Error(c, fmt.Sprintf("[ResumeChat] resume chat error: %v", err))
+		otellog.LogError(c, fmt.Sprintf("[ResumeChat] resume chat error: %v", err), err)
 		h.logger.Errorf("[ResumeChat] resume chat error cause: %v,err trace: %+v\n", errors.Cause(err), err)
 		httpErr := rest.NewHTTPError(c.Request.Context(), http.StatusInternalServerError, apierr.AgentAPP_Agent_ResumeFailed).WithErrorDetails(err.Error())
 		rest.ReplyError(c, httpErr)
