@@ -212,6 +212,21 @@ class AgentCoreV2:
                 context_variables,
                 new_event_key,
             ) = await process_tool_input(agent_input)
+            
+            # 诊断日志：检查 Factory 传递的 history 是否在 context_variables 中
+            if "history" in context_variables:
+                history_len = len(context_variables["history"]) if context_variables["history"] else 0
+                o11y_logger().info(
+                    f"[agent_core_v2] ✅ context_variables 包含 history: "
+                    f"messages={history_len}"
+                )
+                if history_len > 0:
+                    o11y_logger().info(
+                        f"[agent_core_v2] history 预览: "
+                        f"{str(context_variables['history'][:1])[:150]}..."
+                    )
+            else:
+                o11y_logger().info("[agent_core_v2] ℹ️ context_variables 中没有 history（首轮对话）")
 
             # 更新event_key
             if new_event_key:

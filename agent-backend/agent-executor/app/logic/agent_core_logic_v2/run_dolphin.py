@@ -64,6 +64,15 @@ async def run_dolphin(
     # 从headers中提取user_id和visitor_type
     user_id = get_user_account_id(headers) or ""
     visitor_type = get_user_account_type(headers) or ""
+    
+    # 诊断日志：检查传入的 context_variables 中的 history
+    history_in_vars = context_variables.get('history', [])
+    history_len = len(history_in_vars) if history_in_vars else 0
+    o11y_logger().info(
+        f"[run_dolphin] 接收到的 context_variables: "
+        f"keys={list(context_variables.keys())}, "
+        f"history_messages={history_len}"
+    )
 
     # 1. 构造dolphin使用的LLM参数
     llm_config = await build_llm_config(ac, user_id, visitor_type)
@@ -191,6 +200,18 @@ async def run_dolphin(
     else:
         o11y_logger().info("[run_dolphin] Dolphin trace is disabled")
 
+    # 诊断日志：确认传递给 DolphinAgent 的 variables
+    o11y_logger().info(
+        f"[run_dolphin] 创建 DolphinAgent，variables 包含: "
+        f"keys={list(context_variables.keys())}, "
+        f"history={'YES' if 'history' in context_variables else 'NO'}"
+    )
+    if 'history' in context_variables and context_variables['history']:
+        o11y_logger().info(
+            f"[run_dolphin] 传递给 Dolphin 的 history: "
+            f"messages={len(context_variables['history'])}"
+        )
+    
     agent = DolphinAgent(
         content=dolphin_prompt,
         name=f"agent_core_v2_{config.agent_id}",
