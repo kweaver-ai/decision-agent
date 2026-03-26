@@ -17,16 +17,22 @@ def process_fixed_value(
     val = tool_map_item.get_map_value()
     input_type = tool_map_item.input_type
 
-    if input_type != "string":
-        try:
-            tool_map_item.map_value = json.loads(val)
-        except Exception:
-            StandLogger.warn(
-                f"工具的输入参数{tool_map_item.input_name}的值{val}不是json格式"
-            )
-            tool_map_item.map_value = val
-    else:
-        if val.startswith('"') and val.endswith('"'):
-            tool_map_item.map_value = json.loads(val)
+    # Use a local variable to avoid mutating tool_map_item.map_value.
+    # Mutating the shared ToolMapInfo object would cause spurious warnings on
+    # repeated invocations (second call would try json.loads on an already-parsed
+    # dict, fail, and log "不是json格式" unnecessarily).
+    parsed_val = val
+    if isinstance(val, str):
+        if input_type != "string":
+            try:
+                parsed_val = json.loads(val)
+            except Exception:
+                StandLogger.warn(
+                    f"工具的输入参数{tool_map_item.input_name}的值{val}不是json格式"
+                )
+                parsed_val = val
+        else:
+            if val.startswith('"') and val.endswith('"'):
+                parsed_val = json.loads(val)
 
-    current_tool_input[tool_map_item.input_name] = tool_map_item.get_map_value()
+    current_tool_input[tool_map_item.input_name] = parsed_val

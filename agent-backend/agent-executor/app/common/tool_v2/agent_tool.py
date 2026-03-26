@@ -96,12 +96,24 @@ class AgentTool(Tool):
             if item.map_type == "auto":
                 continue
             elif item.map_type == "var":
+                # Priority guard: Dolphin statement variables take precedence over config var mappings.
+                if item.input_name in tool_input and tool_input[item.input_name] is not None:
+                    continue
                 cite_var = item.map_value
                 cite_var_value = get_dict_val_by_path(gvp.get_all_variables(), cite_var)
 
                 cite_var_value = get_dolphin_var_value(cite_var_value)
                 tool_input[item.input_name] = cite_var_value
             elif item.map_type == "fixedValue":
+                # Priority guard: Dolphin statement variables take precedence over fixedValue config.
+                # Note: agent_tool.py uses a local 'map_value' variable (unlike process_fixed_value.py
+                # which mutates tool_map_item.map_value), so no state corruption across invocations.
+                # Note: self.inputs only contains 'auto' params (_parse_agent_inputs), so for
+                # fixedValue params self.inputs.get(item.input_name) always returns {}, making
+                # the type check always '' != 'string' → True (pre-existing discrepancy with
+                # process_fixed_value.py which uses tool_map_item.input_type directly).
+                if item.input_name in tool_input and tool_input[item.input_name] is not None:
+                    continue
                 if self.inputs.get(item.input_name, {}).get("type", "") != "string":
                     if not isinstance(item.map_value, str):
                         try:
@@ -117,6 +129,9 @@ class AgentTool(Tool):
                     map_value = item.map_value
                 tool_input[item.input_name] = map_value
             else:
+                # model and other types: Dolphin statement variables take precedence.
+                if item.input_name in tool_input and tool_input[item.input_name] is not None:
+                    continue
                 tool_input[item.input_name] = item.map_value
 
         url = "http://{HOST_AGENT_EXECUTOR}:{PORT_AGENT_EXECUTOR}/api/agent-executor/v2/agent/run".format(

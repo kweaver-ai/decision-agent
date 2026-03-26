@@ -83,11 +83,17 @@ def process_map_type(
 ):
     """处理工具映射项的 map_type"""
     map_type = tool_map_item.get_map_type()
+    input_name = tool_map_item.input_name
 
     if map_type == "auto":
         return
 
     elif map_type == "var":
+        # Priority guard: Dolphin statement variables take precedence over config var mappings.
+        # If tool_input already has a non-None value for this param, skip the config override.
+        if input_name in current_tool_input and current_tool_input[input_name] is not None:
+            return
+
         cite_var = tool_map_item.get_map_value()
         # 递归获取变量值
         all_variables = gvp.get_all_variables()
@@ -96,12 +102,19 @@ def process_map_type(
 
         cite_var_value = get_dolphin_var_value(cite_var_value)
 
-        current_tool_input[tool_map_item.input_name] = cite_var_value
+        current_tool_input[input_name] = cite_var_value
 
     elif map_type == "fixedValue":
+        # Priority guard: placed BEFORE process_fixed_value() to prevent map_value mutation
+        # when Dolphin has already provided a non-None value for this param.
+        if input_name in current_tool_input and current_tool_input[input_name] is not None:
+            return
         process_fixed_value(tool_map_item, current_tool_input, input_params)
     else:
-        current_tool_input[tool_map_item.input_name] = tool_map_item.get_map_value()
+        # model and other types: Dolphin statement variables take precedence.
+        if input_name in current_tool_input and current_tool_input[input_name] is not None:
+            return
+        current_tool_input[input_name] = tool_map_item.get_map_value()
 
 
 def process_tool_map_item(

@@ -365,6 +365,220 @@ class TestAgentToolHelperMethods:
         assert result == 123
 
 
+class TestAgentToolPriorityGuard:
+    """测试 AgentTool.arun_stream() 中的参数优先级守卫"""
+
+    def _make_agent_tool(self, tool_map_list):
+        from app.common.tool_v2.agent_tool import AgentTool
+
+        mock_ac = MagicMock()
+        mock_ac.run_options_vo.enable_dependency_cache = False
+
+        class MockAgentSkill:
+            def __init__(self):
+                self.inner_dto = MagicMock()
+                self.inner_dto.agent_info = {
+                    "name": "test_agent",
+                    "id": "agent-1",
+                    "config": {
+                        "session_id": "test-session",
+                        "output": {"variables": {"answer_var": "answer"}},
+                    },
+                }
+                self.inner_dto.HOST_AGENT_EXECUTOR = "localhost"
+                self.inner_dto.PORT_AGENT_EXECUTOR = "8080"
+                self.inner_dto.agent_options = {}
+                self.agent_input = tool_map_list
+                self.intervention = False
+                self.agent_timeout = 30
+
+        return AgentTool(mock_ac, MockAgentSkill())
+
+    def _make_mock_gvp(self):
+        mock_gvp = MagicMock()
+        mock_gvp.get_all_variables.return_value = {}
+        mock_gvp.get_var_value.return_value = {}
+        return mock_gvp
+
+    async def _run_arun_stream(self, tool, tool_input_dict, mock_gvp):
+        """Execute arun_stream with mocked HTTP, capturing the body sent."""
+        from unittest.mock import patch
+
+        captured = {}
+
+        class FakeResponseContent:
+            async def read(self, n):
+                return b""  # End of stream immediately
+
+        class FakeResponse:
+            status = 200
+            content = FakeResponseContent()
+
+            async def __aenter__(self):
+                return self
+
+            async def __aexit__(self, *args):
+                return False
+
+            async def text(self):
+                return ""
+
+        class FakeSession:
+            def __init__(self, *args, **kwargs):
+                pass
+
+            async def __aenter__(self):
+                return self
+
+            async def __aexit__(self, *args):
+                return False
+
+            def request(self, method, url, headers=None, json=None, verify_ssl=None):
+                captured["json"] = json
+                return FakeResponse()
+
+        results = []
+        with (
+            patch("app.common.tool_v2.agent_tool.aiohttp.ClientSession", FakeSession),
+            patch("app.common.tool_v2.agent_tool.StandLogger"),
+            patch("app.common.tool_v2.agent_tool.Config") as mock_config,
+            patch("app.common.tool_v2.agent_tool.handle_progress", return_value=[]),
+            patch("app.common.tool_v2.agent_tool.cleanup_progress"),
+        ):
+            mock_config.features.is_skill_agent_need_progress = False
+            async for item in tool.arun_stream(
+                tool_input=tool_input_dict,
+                props={"gvp": mock_gvp},
+            ):
+                results.append(item)
+
+        return captured.get("json", {}), results
+
+    def test_agent_tool_dolphin_var_overrides_config(self):
+        """优先级：Dolphin提供的值优先于AgentTool的fixedValue配置"""
+        import asyncio
+        from app.common.tool_v2.common import ToolMapInfo
+
+        fixed_item = ToolMapInfo(
+            input_name="city",
+            input_type="string",
+            map_type="fixedValue",
+            map_value="Beijing",
+            enable=True,
+        )
+
+        tool = self._make_agent_tool([fixed_item])
+        mock_gvp = self._make_mock_gvp()
+
+        body, _ = asyncio.run(
+            self._run_arun_stream(tool, {"city": "Shanghai"}, mock_gvp)
+        )
+
+        assert body["agent_input"]["city"] == "Shanghai"
+
+    def test_agent_tool_config_fallback_when_missing(self):
+        """回退：Dolphin未提供时，AgentTool的fixedValue配置作为回退值"""
+        import asyncio
+        from app.common.tool_v2.common import ToolMapInfo
+
+        fixed_item = ToolMapInfo(
+            input_name="api_key",
+            input_type="string",
+            map_type="fixedValue",
+            map_value="sk-config-key",
+            enable=True,
+        )
+
+        tool = self._make_agent_tool([fixed_item])
+        mock_gvp = self._make_mock_gvp()
+
+        body, _ = asyncio.run(
+            self._run_arun_stream(tool, {}, mock_gvp)
+        )
+
+        assert body["agent_input"]["api_key"] == "sk-config-key"
+
+    def test_agent_tool_repeated_invocation_no_state_corruption(self):
+        """验收测试：同一AgentTool实例多次调用arun_stream，参数状态不被污染。
+
+        第一次调用：Dolphin提供api_key（守卫跳过fixedValue）
+        第二次调用：Dolphin未提供api_key（守卫不触发，配置值生效）
+        验证：第二次调用独立于第一次，正确应用配置值；固定值item.map_value不被修改。
+        """
+        import asyncio
+        from app.common.tool_v2.common import ToolMapInfo
+
+        fixed_item = ToolMapInfo(
+            input_name="api_key",
+            input_type="string",
+            map_type="fixedValue",
+            map_value="sk-config-secret",
+            enable=True,
+        )
+
+        tool = self._make_agent_tool([fixed_item])
+        mock_gvp = self._make_mock_gvp()
+
+        original_map_value = fixed_item.map_value
+
+        # 第一次调用：Dolphin提供了api_key
+        body_1, _ = asyncio.run(
+            self._run_arun_stream(tool, {"api_key": "dolphin-key-first-call"}, mock_gvp)
+        )
+
+        # 第一次调用：Dolphin值保留
+        assert body_1["agent_input"]["api_key"] == "dolphin-key-first-call"
+        # item.map_value不被修改（agent_tool.py使用局部变量，不突变item）
+        assert fixed_item.map_value == original_map_value
+
+        # 第二次调用：Dolphin未提供api_key
+        body_2, _ = asyncio.run(
+            self._run_arun_stream(tool, {}, mock_gvp)
+        )
+
+        # 第二次调用：配置值生效，独立于第一次调用
+        assert body_2["agent_input"]["api_key"] == "sk-config-secret"
+        # item.map_value仍然不被修改
+        assert fixed_item.map_value == original_map_value
+
+    def test_agent_tool_var_type_dolphin_override(self):
+        """补充测试：var类型配置存在时，Dolphin提供的值优先，且变量解析被短路。
+
+        验证守卫在var解析之前短路：当Dolphin提供了值时，不执行get_dict_val_by_path
+        调用（即Context变量查找路径被跳过）。
+
+        注意：arun_stream在tool_map_list循环之后会额外调用get_all_variables()以检查
+        "tool"变量，这是无关的路径，不影响验证结果。
+        """
+        import asyncio
+        from unittest.mock import patch
+        from app.common.tool_v2.common import ToolMapInfo
+
+        var_item = ToolMapInfo(
+            input_name="query",
+            input_type="string",
+            map_type="var",
+            map_value="context.user_query",  # Config points to a context var
+            enable=True,
+        )
+
+        tool = self._make_agent_tool([var_item])
+        mock_gvp = self._make_mock_gvp()
+
+        # Patch get_dict_val_by_path to detect if var resolution is attempted
+        with patch("app.common.tool_v2.agent_tool.get_dict_val_by_path") as mock_get_path:
+            # Dolphin provides a value for 'query'
+            body, _ = asyncio.run(
+                self._run_arun_stream(tool, {"query": "dolphin-query-value"}, mock_gvp)
+            )
+
+        # Dolphin's value preserved in the request body
+        assert body["agent_input"]["query"] == "dolphin-query-value"
+        # Guard short-circuits: get_dict_val_by_path must NOT be called for var resolution
+        # (the guard 'continue' happens before 'get_dict_val_by_path(gvp.get_all_variables(), ...)')
+        mock_get_path.assert_not_called()
+
+
 class TestModuleImports:
     """测试模块导入"""
 
