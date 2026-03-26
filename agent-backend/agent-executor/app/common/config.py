@@ -20,13 +20,16 @@ server_info = ServerInfo(
 )
 
 ## 2. 初始化配置
-print(f"[Config] Initializing observability config:")
-print(f"[Config]   TRACE_ENABLE={os.getenv('TRACE_ENABLE', 'not set')}")
+# 统一使用 otel 配置（只从 TRACE_ENABLE 和 TRACE_URL 读取）
+_trace_enable_env = os.getenv("TRACE_ENABLE", "false").lower()
+_trace_enabled = _trace_enable_env == "true"
+
+print(f"[Config] Initializing observability config (unified from otel):")
+print(f"[Config]   TRACE_ENABLE={_trace_enable_env} -> trace_enabled={_trace_enabled}")
 print(f"[Config]   TRACE_URL={os.getenv('TRACE_URL', 'not set')}")
-print(f"[Config]   O11Y_TRACE_ENABLED={os.getenv('O11Y_TRACE_ENABLED', 'not set')}")
-print(f"[Config]   O11Y_TRACE_PROVIDER={os.getenv('O11Y_TRACE_PROVIDER', 'not set')}")
 print(f"[Config]   OTEL_SERVICE_NAME={os.getenv('OTEL_SERVICE_NAME', 'not set')}")
 print(f"[Config]   OTEL_ENVIRONMENT={os.getenv('OTEL_ENVIRONMENT', 'not set')}")
+print(f"[Config]   OTEL_TRACE_SAMPLING_RATE={os.getenv('OTEL_TRACE_SAMPLING_RATE', 'not set')}")
 
 observability_config = ObservabilitySetting(
     log=LogSetting(
@@ -40,8 +43,8 @@ observability_config = ObservabilitySetting(
         ),
     ),
     trace=TraceSetting(
-        trace_enabled=os.getenv("O11Y_TRACE_ENABLED", "false") == "true" or os.getenv("TRACE_ENABLE", "false") == "true",
-        trace_provider=os.getenv("O11Y_TRACE_PROVIDER", "otlp"),
+        trace_enabled=_trace_enabled,
+        trace_provider="otlp",
         trace_max_queue_size=int(os.getenv("O11Y_TRACE_MAX_QUEUE_SIZE", "512")),
         max_export_batch_size=int(os.getenv("O11Y_TRACE_MAX_EXPORT_BATCH_SIZE", "512")),
         http_trace_feed_ingester_url=os.getenv(
@@ -51,6 +54,8 @@ observability_config = ObservabilitySetting(
         otlp_endpoint=os.getenv("TRACE_URL", ""),
     ),
 )
+
+print(f"[Config] observability_config created: trace_enabled={_trace_enabled}, provider=otlp, endpoint={os.getenv('TRACE_URL', '')}")
 
 
 # 3. 初始化Config配置
