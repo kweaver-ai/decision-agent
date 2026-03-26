@@ -1,4 +1,11 @@
 # Changelog
+## 0.4.4
+
+### Frontend (agent-web)
+
+- Bug fix: fix the issue where knowledge entries could not be added in Agent configuration.
+- Bug fix: fix the issue where metrics could not be added in Agent configuration.
+
 ## 0.4.3
 
 ### Features & Improvements
