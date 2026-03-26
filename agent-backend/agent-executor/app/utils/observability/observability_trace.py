@@ -26,27 +26,34 @@ def init_trace_provider(server_info: ServerInfo, setting: TraceSetting) -> None:
         server_info: 服务器信息
         setting: 追踪配置设置
     """
-    # 如果 SDK 不可用，直接返回
-    if not TELEMETRY_SDK_AVAILABLE:
-        return
+    try:
+        print(f"[OTel] init_trace_provider called: TELEMETRY_SDK_AVAILABLE={TELEMETRY_SDK_AVAILABLE}")
+        
+        # 如果 SDK 不可用，直接返回
+        if not TELEMETRY_SDK_AVAILABLE:
+            print(f"[OTel] Trace provider initialization skipped: TelemetrySDK not available")
+            return
 
-    # 延迟导入 Config 避免循环依赖
-    from app.common.config import Config
+        print(f"[OTel] TelemetrySDK available, loading Config...")
+        # 延迟导入 Config 避免循环依赖
+        from app.common.config import Config
 
-    set_service_info(
-        server_info.server_name,
-        server_info.server_version,
-        os.getenv("POD_NAME", "unknown"),
-    )
+        print(f"[OTel] Setting service info: name={server_info.server_name}, version={server_info.server_version}")
+        set_service_info(
+            server_info.server_name,
+            server_info.server_version,
+            os.getenv("POD_NAME", "unknown"),
+        )
 
-    trace_exporter = None
+        trace_exporter = None
 
-    # 如果没有启用 o11y 跟踪，直接返回
-    if not Config.is_o11y_trace_enabled():
-        print(f"[OTel] Trace provider initialization skipped: Config.is_o11y_trace_enabled()={Config.is_o11y_trace_enabled()}")
-        return
-    
-    print(f"[OTel] Config.is_o11y_trace_enabled()=True, proceeding with trace provider initialization")
+        # 如果没有启用 o11y 跟踪，直接返回
+        print(f"[OTel] Checking Config.is_o11y_trace_enabled()...")
+        if not Config.is_o11y_trace_enabled():
+            print(f"[OTel] Trace provider initialization skipped: Config.is_o11y_trace_enabled()={Config.is_o11y_trace_enabled()}")
+            return
+        
+        print(f"[OTel] Config.is_o11y_trace_enabled()=True, proceeding with trace provider initialization")
 
     if setting.trace_provider == "console":
         trace_exporter = ConsoleSpanExporter()
@@ -106,10 +113,18 @@ def init_trace_provider(server_info: ServerInfo, setting: TraceSetting) -> None:
     sampling_rate = float(os.getenv("OTEL_TRACE_SAMPLING_RATE", "1.0"))
     sampler = ParentBasedTraceIdRatio(sampling_rate)
     
-    trace_provider = TracerProvider(
-        resource=merged_resource, 
-        active_span_processor=trace_processor,
-        sampler=sampler
-    )
-
-    set_tracer_provider(trace_provider)
+        print(f"[OTel] Creating TracerProvider with sampling_rate={sampling_rate}...")
+        trace_provider = TracerProvider(
+            resource=merged_resource, 
+            active_span_processor=trace_processor,
+            sampler=sampler
+        )
+        
+        print(f"[OTel] Setting global tracer provider...")
+        set_tracer_provider(trace_provider)
+        print(f"[OTel] ✅ Trace provider initialized successfully!")
+        
+    except Exception as e:
+        print(f"[OTel] ❌ Error initializing trace provider: {type(e).__name__}: {e}")
+        import traceback
+        traceback.print_exc()
