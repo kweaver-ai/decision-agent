@@ -3,6 +3,7 @@ from typing import Any, AsyncGenerator, Dict, Optional, TYPE_CHECKING
 from dolphin.sdk.agent.dolphin_agent import DolphinAgent
 from dolphin.core.config.global_config import GlobalConfig
 from dolphin.sdk.skill.traditional_toolkit import TriditionalToolkit
+from dolphin.core.common.constants import KEY_HISTORY
 
 from app.common.config import Config
 from app.common.stand_log import StandLogger
@@ -65,17 +66,6 @@ async def run_dolphin(
     user_id = get_user_account_id(headers) or ""
     visitor_type = get_user_account_type(headers) or ""
 
-    # 诊断日志：检查传入的 context_variables 中的 history
-    history_in_vars = context_variables.get("history", [])
-    history_len = len(history_in_vars) if history_in_vars else 0
-    msg = (
-        f"[DIAGNOSTIC] run_dolphin: 接收到的 context_variables: "
-        f"keys={list(context_variables.keys())}, "
-        f"history_messages={history_len}"
-    )
-    print(msg, flush=True)  # 输出到 pod logs
-    StandLogger.info_log(msg)  # 输出到 log/agent-executor.log
-
     # 1. 构造dolphin使用的LLM参数
     llm_config = await build_llm_config(ac, user_id, visitor_type)
 
@@ -127,7 +117,7 @@ async def run_dolphin(
         f"{COLORS['blue']}========================================{COLORS['end']}\n"
         f"{COLORS['cyan']}{COLORS['bold']}Dolphin Language Prompt:{COLORS['end']}\n{dolphin_prompt}\n"
         f"{COLORS['blue']}----------------------------------------{COLORS['end']}\n"
-        # f"{COLORS['green']}{COLORS['bold']}Context Variables:{COLORS['end']} {json.dumps(context_variables, indent=2, ensure_ascii=False)}\n"
+        f"{COLORS['green']}{COLORS['bold']}Context Variables:{COLORS['end']} {json.dumps(context_variables, indent=2, ensure_ascii=False)}\n"
         f"{COLORS['blue']}----------------------------------------{COLORS['end']}\n"
         f"{COLORS['yellow']}{COLORS['bold']}Skill Kit Tolls:{COLORS['end']} {json.dumps(toolkit.tools, indent=2, ensure_ascii=False, default=str)}\n"
         f"{COLORS['blue']}----------------------------------------{COLORS['end']}\n"
@@ -202,19 +192,11 @@ async def run_dolphin(
     else:
         o11y_logger().info("[run_dolphin] Dolphin trace is disabled")
 
-    # 诊断日志：确认传递给 DolphinAgent 的 variables
-    msg = (
-        f"[DIAGNOSTIC] run_dolphin: 创建 DolphinAgent, "
-        f"keys={list(context_variables.keys())}, "
-        f"history={'YES' if 'history' in context_variables else 'NO'}"
-    )
-    print(msg, flush=True)  # 输出到 pod logs
-    StandLogger.info_log(msg)  # 输出到 log/agent-executor.log
-
-    if "history" in context_variables and context_variables["history"]:
-        msg2 = f"[DIAGNOSTIC] run_dolphin: 传递给 Dolphin 的 history 长度={len(context_variables['history'])}"
-        print(msg2, flush=True)
-        StandLogger.info_log(msg2)
+    # 适配 Dolphin SDK 的 history 变量名：
+    # SDK 内部使用 KEY_HISTORY 常量（当前值为 "_history"）而不是 "history"
+    # 这里引用 SDK 常量避免硬编码，自动跟随 SDK 的变化
+    if "history" in context_variables:
+        context_variables[KEY_HISTORY] = context_variables.pop("history")
 
     agent = DolphinAgent(
         content=dolphin_prompt,
