@@ -25,19 +25,19 @@ class O11yConfig:
     @classmethod
     def from_dict(cls, data: dict) -> "O11yConfig":
         """从字典创建配置对象
-        
+
         统一使用 otel.trace.enabled 配置:
         - TRACE_ENABLE: 统一的 trace 开关（来自 otel.trace.enabled）
         - TRACE_URL: OTLP endpoint（来自 otel.otlp_endpoint）
-        
+
         不再使用其它开关变量（O11Y_TRACE_ENABLED 等）
         """
         # 统一从 TRACE_ENABLE 环境变量读取（对应 otel.trace.enabled）
         trace_enable_env = os.getenv("TRACE_ENABLE", "").lower()
         trace_enabled = trace_enable_env == "true"
-        
+
         trace_url = os.getenv("TRACE_URL", "")
-        
+
         return cls(
             log_enabled=data.get("log_enabled", False),
             trace_enabled=trace_enabled,

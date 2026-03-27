@@ -157,8 +157,12 @@ class PromptBuilder:
             return ""
 
         memory_prompt = f"""@search_memory(query=$query, user_id=$header['x-account-id'], limit={Config.memory.limit}, threshold={Config.memory.threshold}, rerank_thread={Config.memory.rerank_threshold}) -> relevant_memories\n"""
-        memory_prompt += """$history + [{"role": "system", "content": "Relevant memories: " + str($relevant_memories["answer"]["result"])}] -> history\n"""
+        memory_prompt += (
+            """json.dumps($relevant_memories["answer"]["result"]) -> memory_str\n"""
+        )
+        memory_prompt += """$history + [{"role": "system", "content": "Relevant memories: " + $memory_str}] -> history\n"""
         memory_prompt += """'' -> relevant_memories\n"""
+        memory_prompt += """'' -> memory_str\n"""
 
         return memory_prompt
 

@@ -165,18 +165,18 @@ async def run_dolphin(
         f"is_dolphin_trace_enabled={Config.is_dolphin_trace_enabled()}, "
         f"is_o11y_trace_enabled={Config.is_o11y_trace_enabled()}"
     )
-    
+
     if Config.is_dolphin_trace_enabled():
         try:
             from dolphin.core.observability.otel_listener import OTelTraceListener
-            
+
             o11y_logger().info(
                 f"[run_dolphin] Creating OTelTraceListener with: "
                 f"agent_id={config.agent_id}, "
                 f"conversation_id={config.conversation_id}, "
                 f"user_id={user_id}"
             )
-            
+
             trace_listener = OTelTraceListener(
                 agent_id=config.agent_id or "",
                 conversation_id=config.conversation_id or "",
@@ -195,9 +195,9 @@ async def run_dolphin(
     # 适配 Dolphin SDK 的 history 变量名：
     # SDK 内部使用 KEY_HISTORY 常量（当前值为 "_history"）而不是 "history"
     # 这里引用 SDK 常量避免硬编码，自动跟随 SDK 的变化
-    if 'history' in context_variables:
-        context_variables[KEY_HISTORY] = context_variables.pop('history')
-    
+    if "history" in context_variables:
+        context_variables[KEY_HISTORY] = context_variables.pop("history")
+
     agent = DolphinAgent(
         content=dolphin_prompt,
         name=f"agent_core_v2_{config.agent_id}",
