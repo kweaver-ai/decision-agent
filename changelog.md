@@ -1,4 +1,10 @@
 # Changelog
+## 0.4.5
+
+### Frontend (agent-web)
+
+- Bug fix: support list-type interrupt parameters during conversation interruption.
+
 ## 0.4.4
 
 ### Frontend (agent-web)
