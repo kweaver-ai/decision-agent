@@ -12,6 +12,7 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capierr"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/capimiddleware"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
@@ -176,6 +177,12 @@ func CheckAgentUsePmsInternal() gin.HandlerFunc {
 		// 重新设置请求体
 		// NOTE: 读取完请求体后需要重新设置，否则后续的处理器无法读取
 		c.Request.Body = io.NopCloser(bytes.NewBuffer(body))
+
+		if global.GConfig != nil && global.GConfig.SwitchFields != nil && global.GConfig.SwitchFields.DisablePmsCheck {
+			c.Next()
+			return
+		}
+
 		userID := c.Request.Header.Get("x-account-id")
 
 		if userID == "" {
