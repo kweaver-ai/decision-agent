@@ -1,4 +1,25 @@
 # 版本 changelog 说明
+## 0.5.0
+
+### 功能与改进
+
+- 为 `agent-factory` 和 `agent-executor` 升级 OpenTelemetry 可观测能力
+  - 在 `agent-factory` 中初始化新版 OTel 链路，并开放服务名、版本、环境、OTLP 端点、Trace 采样率和日志级别等配置
+  - 统一 Agent ID、用户 ID、会话 ID 和操作名等 GenAI Trace 属性，便于请求链路与下游 Span 关联排查
+  - 将 `agent-executor` 的 Trace 配置统一到 OTLP 端点和基于环境变量的采样设置
+- 为 `agent-executor` 的 API 工具新增 evidence 提取能力
+  - 支持从 API 工具返回结果中的 `nodes` 字段提取 `_evidence` 结构
+  - 新增 `ENABLE_EVIDENCE_EXTRACTION` 开关，用于按环境控制该行为
+- 增强部署与运行控制能力
+  - 为 Sandbox Platform 开关和业务域开关补充 Helm 渲染与配置支持
+  - 当 `disable_pms_check` 开启时，内部 agent-app 权限中间件支持跳过用户 ID 强校验
+
+### 文档
+
+- 补充 `agent-factory` 与 `agent-executor` 生成版 API 文档
+- 为新版 OTel 配置补充 Helm 组件元数据说明
+
+
 ## 0.4.4
 
 ### 前端 (agent-web)
