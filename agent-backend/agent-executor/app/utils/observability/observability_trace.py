@@ -130,9 +130,9 @@ def init_trace_provider(server_info: ServerInfo, setting: TraceSetting) -> None:
         )
 
     except Exception as e:
-        StandLogger.info_log(
-            f"[OTel] ❌ Error initializing trace provider: {type(e).__name__}: {e}"
-        )
         import traceback
 
-        traceback.print_exc()
+        trace_details = traceback.format_exc()
+        StandLogger.info_log(
+            f"[OTel] ❌ Error initializing trace provider: {type(e).__name__}: {e}\n{trace_details}"
+        )
