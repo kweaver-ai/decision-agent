@@ -21,10 +21,12 @@ func (m *MemoryRetrieveContent) LoadFromConfig(config *daconfvalobj.Config) {
 		// m.Queries = config.Input.Fields.GenNotFileDolphinStr()
 		m.RelevantMemory = `
 @search_memory(query=$query, user_id=$header['x-account-id'], limit=50, threshold=0.5) -> relevant_memories
-$history + [{"role": "user", "content": "Memories:\\n" + "\\n".join(f"- {entry['memory']}" for entry in $relevant_memories["answer"]["result"])}] -> history
+json.dumps($relevant_memories["answer"]["result"]) -> memory_str
+$_history + [{"role": "system", "content": "Relevant memories: " + $memory_str}] -> _history
 `
 		m.Other += `
 "" -> relevant_memories
+"" -> memory_str
 `
 
 		m.IsEnable = true
