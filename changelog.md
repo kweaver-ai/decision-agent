@@ -1,4 +1,32 @@
 # Changelog
+## 0.5.0
+
+### Features & Improvements
+
+- Add OpenTelemetry upgrades across `agent-factory` and `agent-executor`
+  - Initialize the new OTel pipeline in `agent-factory` and expose service name, version, environment, OTLP endpoint, trace sampling, and log level through configuration
+  - Standardize GenAI trace attributes for agent ID, user ID, conversation ID, and operation name so request spans and downstream spans can be correlated consistently
+  - Update `agent-executor` trace configuration to use the unified OTLP endpoint and environment-based sampling settings
+- Add evidence extraction support for API tools in `agent-executor`
+  - Allow API tool responses to extract `nodes` data into `_evidence` payloads
+  - Add the `ENABLE_EVIDENCE_EXTRACTION` switch to control the behavior at runtime
+- Expand deployment and operations controls
+  - Add Helm and config support for sandbox platform toggles and improved business-domain toggle rendering
+  - Add permission-check bypass support for internal agent-app middleware when `disable_pms_check` is enabled
+
+### Documentation
+
+- Add generated API documentation for `agent-factory` and `agent-executor`
+- Add Helm component metadata for the new OTel configuration surface
+
+
+## 0.4.4
+
+### Frontend (agent-web)
+
+- Bug fix: fix the issue where knowledge entries could not be added in Agent configuration.
+- Bug fix: fix the issue where metrics could not be added in Agent configuration.
+
 ## 0.4.3
 
 ### Features & Improvements
