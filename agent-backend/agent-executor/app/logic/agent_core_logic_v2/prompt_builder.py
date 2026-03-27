@@ -160,7 +160,7 @@ class PromptBuilder:
         memory_prompt += (
             """json.dumps($relevant_memories["answer"]["result"]) -> memory_str\n"""
         )
-        memory_prompt += """$history + [{"role": "system", "content": "Relevant memories: " + $memory_str}] -> history\n"""
+        memory_prompt += """$_history + [{"role": "system", "content": "Relevant memories: " + $memory_str}] -> _history\n"""
         memory_prompt += """'' -> relevant_memories\n"""
         memory_prompt += """'' -> memory_str\n"""
 

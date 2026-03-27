@@ -45,14 +45,14 @@ def internal_span(
                 *args, **kwargs
             ) -> AsyncGenerator[Any, Any]:
                 from opentelemetry.trace import use_span
+                from app.common.stand_log import StandLogger
 
                 span = tracer.start_span(
                     span_name, kind=SpanKind.INTERNAL, attributes=attributes
                 )
 
-                # 打印span创建信息
                 span_context = span.get_span_context()
-                print(
+                StandLogger.info_log(
                     f"[trace_wrapper] Created span '{span_name}', trace_id={format(span_context.trace_id, '032x')}, span_id={format(span_context.span_id, '016x')}"
                 )
 
@@ -75,7 +75,9 @@ def internal_span(
                             span.record_exception(e)
                         raise
                     finally:
-                        print(f"[trace_wrapper] Ending span '{span_name}'")
+                        StandLogger.info_log(
+                            f"[trace_wrapper] Ending span '{span_name}'"
+                        )
                         span.end()
 
             return async_generator_wrapper
@@ -84,14 +86,14 @@ def internal_span(
             @wraps(func)
             async def async_wrapper(*args, **kwargs) -> Awaitable[Any]:
                 from opentelemetry.trace import use_span
+                from app.common.stand_log import StandLogger
 
                 span = tracer.start_span(
                     span_name, kind=SpanKind.INTERNAL, attributes=attributes
                 )
 
-                # 打印span创建信息
                 span_context = span.get_span_context()
-                print(
+                StandLogger.info_log(
                     f"[trace_wrapper] Created span '{span_name}', trace_id={format(span_context.trace_id, '032x')}, span_id={format(span_context.span_id, '016x')}"
                 )
 
@@ -113,7 +115,9 @@ def internal_span(
                             span.record_exception(e)
                         raise
                     finally:
-                        print(f"[trace_wrapper] Ending span '{span_name}'")
+                        StandLogger.info_log(
+                            f"[trace_wrapper] Ending span '{span_name}'"
+                        )
                         span.end()
 
             return async_wrapper
@@ -122,15 +126,15 @@ def internal_span(
             @wraps(func)
             def sync_wrapper(*args, **kwargs) -> Any:
                 from opentelemetry.trace import use_span
+                from app.common.stand_log import StandLogger
 
                 # 创建 INTERNAL 类型的 span
                 span = tracer.start_span(
                     span_name, kind=SpanKind.INTERNAL, attributes=attributes
                 )
 
-                # 打印span创建信息
                 span_context = span.get_span_context()
-                print(
+                StandLogger.info_log(
                     f"[trace_wrapper] Created span '{span_name}', trace_id={format(span_context.trace_id, '032x')}, span_id={format(span_context.span_id, '016x')}"
                 )
 
@@ -150,7 +154,9 @@ def internal_span(
                             span.record_exception(e)
                         raise  # 重新抛出异常，不影响原有逻辑
                     finally:
-                        print(f"[trace_wrapper] Ending span '{span_name}'")
+                        StandLogger.info_log(
+                            f"[trace_wrapper] Ending span '{span_name}'"
+                        )
                         span.end()
 
             return sync_wrapper

@@ -1,4 +1,18 @@
 # 版本 changelog 说明
+## 0.5.1
+
+### Bug 修复
+
+- 修复开启长期记忆后可能报错的问题
+  - 将召回记忆改为以 system message 的形式追加到 `_history`，避免错误写入历史变量导致执行异常
+  - 在注入提示词前先序列化记忆召回结果，确保后续提示拼装过程稳定可用
+
+### 可观测性
+
+- 改进 `agent-executor` 的 OpenTelemetry 故障诊断日志
+  - 将 trace wrapper 中直接输出到标准输出的调试信息统一改为结构化日志
+  - 在 trace provider 初始化失败时补充完整 traceback，便于排查问题
+
 ## 0.5.0
 
 ### 功能与改进
