@@ -1,4 +1,18 @@
 # Changelog
+## 0.5.1
+
+### Bug Fixes
+
+- Fix long-term memory prompt assembly to prevent errors when memory retrieval is enabled
+  - Update memory injection to append retrieved memories into `_history` as a system message instead of mutating the wrong history variable
+  - Serialize retrieved memory results before injection so downstream prompt rendering can consume them consistently
+
+### Observability
+
+- Improve OpenTelemetry failure diagnostics in `agent-executor`
+  - Replace direct stdout prints in trace wrapper with structured logger output
+  - Include full traceback details when trace provider initialization fails
+
 ## 0.5.0
 
 ### Features & Improvements
