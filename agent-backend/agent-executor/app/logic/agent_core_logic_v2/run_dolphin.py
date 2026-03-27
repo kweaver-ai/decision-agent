@@ -64,9 +64,9 @@ async def run_dolphin(
     # 从headers中提取user_id和visitor_type
     user_id = get_user_account_id(headers) or ""
     visitor_type = get_user_account_type(headers) or ""
-    
+
     # 诊断日志：检查传入的 context_variables 中的 history
-    history_in_vars = context_variables.get('history', [])
+    history_in_vars = context_variables.get("history", [])
     history_len = len(history_in_vars) if history_in_vars else 0
     msg = (
         f"[DIAGNOSTIC] run_dolphin: 接收到的 context_variables: "
@@ -175,18 +175,18 @@ async def run_dolphin(
         f"is_dolphin_trace_enabled={Config.is_dolphin_trace_enabled()}, "
         f"is_o11y_trace_enabled={Config.is_o11y_trace_enabled()}"
     )
-    
+
     if Config.is_dolphin_trace_enabled():
         try:
             from dolphin.core.observability.otel_listener import OTelTraceListener
-            
+
             o11y_logger().info(
                 f"[run_dolphin] Creating OTelTraceListener with: "
                 f"agent_id={config.agent_id}, "
                 f"conversation_id={config.conversation_id}, "
                 f"user_id={user_id}"
             )
-            
+
             trace_listener = OTelTraceListener(
                 agent_id=config.agent_id or "",
                 conversation_id=config.conversation_id or "",
@@ -210,12 +210,12 @@ async def run_dolphin(
     )
     print(msg, flush=True)  # 输出到 pod logs
     StandLogger.info_log(msg)  # 输出到 log/agent-executor.log
-    
-    if 'history' in context_variables and context_variables['history']:
+
+    if "history" in context_variables and context_variables["history"]:
         msg2 = f"[DIAGNOSTIC] run_dolphin: 传递给 Dolphin 的 history 长度={len(context_variables['history'])}"
         print(msg2, flush=True)
         StandLogger.info_log(msg2)
-    
+
     agent = DolphinAgent(
         content=dolphin_prompt,
         name=f"agent_core_v2_{config.agent_id}",

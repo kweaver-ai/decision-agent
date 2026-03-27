@@ -45,15 +45,17 @@ def internal_span(
                 *args, **kwargs
             ) -> AsyncGenerator[Any, Any]:
                 from opentelemetry.trace import use_span
-                
+
                 span = tracer.start_span(
                     span_name, kind=SpanKind.INTERNAL, attributes=attributes
                 )
-                
+
                 # 打印span创建信息
                 span_context = span.get_span_context()
-                print(f"[trace_wrapper] Created span '{span_name}', trace_id={format(span_context.trace_id, '032x')}, span_id={format(span_context.span_id, '016x')}")
-                
+                print(
+                    f"[trace_wrapper] Created span '{span_name}', trace_id={format(span_context.trace_id, '032x')}, span_id={format(span_context.span_id, '016x')}"
+                )
+
                 # 将span设置为当前上下文，使得子span可以自动关联
                 with use_span(span, end_on_exit=False):
                     try:
@@ -82,15 +84,17 @@ def internal_span(
             @wraps(func)
             async def async_wrapper(*args, **kwargs) -> Awaitable[Any]:
                 from opentelemetry.trace import use_span
-                
+
                 span = tracer.start_span(
                     span_name, kind=SpanKind.INTERNAL, attributes=attributes
                 )
-                
+
                 # 打印span创建信息
                 span_context = span.get_span_context()
-                print(f"[trace_wrapper] Created span '{span_name}', trace_id={format(span_context.trace_id, '032x')}, span_id={format(span_context.span_id, '016x')}")
-                
+                print(
+                    f"[trace_wrapper] Created span '{span_name}', trace_id={format(span_context.trace_id, '032x')}, span_id={format(span_context.span_id, '016x')}"
+                )
+
                 # 将span设置为当前上下文，使得子span可以自动关联
                 with use_span(span, end_on_exit=False):
                     try:
@@ -118,16 +122,18 @@ def internal_span(
             @wraps(func)
             def sync_wrapper(*args, **kwargs) -> Any:
                 from opentelemetry.trace import use_span
-                
+
                 # 创建 INTERNAL 类型的 span
                 span = tracer.start_span(
                     span_name, kind=SpanKind.INTERNAL, attributes=attributes
                 )
-                
+
                 # 打印span创建信息
                 span_context = span.get_span_context()
-                print(f"[trace_wrapper] Created span '{span_name}', trace_id={format(span_context.trace_id, '032x')}, span_id={format(span_context.span_id, '016x')}")
-                
+                print(
+                    f"[trace_wrapper] Created span '{span_name}', trace_id={format(span_context.trace_id, '032x')}, span_id={format(span_context.span_id, '016x')}"
+                )
+
                 # 将span设置为当前上下文，使得子span可以自动关联
                 with use_span(span, end_on_exit=False):
                     try:

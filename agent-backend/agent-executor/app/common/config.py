@@ -24,12 +24,14 @@ server_info = ServerInfo(
 _trace_enable_env = os.getenv("TRACE_ENABLE", "false").lower()
 _trace_enabled = _trace_enable_env == "true"
 
-print(f"[Config] Initializing observability config (unified from otel):")
+print("[Config] Initializing observability config (unified from otel):")
 print(f"[Config]   TRACE_ENABLE={_trace_enable_env} -> trace_enabled={_trace_enabled}")
 print(f"[Config]   TRACE_URL={os.getenv('TRACE_URL', 'not set')}")
 print(f"[Config]   OTEL_SERVICE_NAME={os.getenv('OTEL_SERVICE_NAME', 'not set')}")
 print(f"[Config]   OTEL_ENVIRONMENT={os.getenv('OTEL_ENVIRONMENT', 'not set')}")
-print(f"[Config]   OTEL_TRACE_SAMPLING_RATE={os.getenv('OTEL_TRACE_SAMPLING_RATE', 'not set')}")
+print(
+    f"[Config]   OTEL_TRACE_SAMPLING_RATE={os.getenv('OTEL_TRACE_SAMPLING_RATE', 'not set')}"
+)
 
 observability_config = ObservabilitySetting(
     log=LogSetting(
@@ -55,7 +57,9 @@ observability_config = ObservabilitySetting(
     ),
 )
 
-print(f"[Config] observability_config created: trace_enabled={_trace_enabled}, provider=otlp, endpoint={os.getenv('TRACE_URL', '')}")
+print(
+    f"[Config] observability_config created: trace_enabled={_trace_enabled}, provider=otlp, endpoint={os.getenv('TRACE_URL', '')}"
+)
 
 
 # 3. 初始化Config配置

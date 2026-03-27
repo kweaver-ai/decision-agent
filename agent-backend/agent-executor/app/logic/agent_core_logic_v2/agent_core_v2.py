@@ -212,10 +212,14 @@ class AgentCoreV2:
                 context_variables,
                 new_event_key,
             ) = await process_tool_input(agent_input)
-            
+
             # 诊断日志：检查 Factory 传递的 history 是否在 context_variables 中
             if "history" in context_variables:
-                history_len = len(context_variables["history"]) if context_variables["history"] else 0
+                history_len = (
+                    len(context_variables["history"])
+                    if context_variables["history"]
+                    else 0
+                )
                 msg = f"[DIAGNOSTIC] agent_core_v2: context_variables 包含 history, messages={history_len}"
                 print(msg, flush=True)  # 输出到 pod logs
                 StandLogger.info_log(msg)  # 输出到 log/agent-executor.log
