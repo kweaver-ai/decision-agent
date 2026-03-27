@@ -95,7 +95,7 @@ func TestStreamDiff(t *testing.T) {
 		oldJSON := []byte(`{"name":"test","value":123}`)
 		newJSON := []byte(`{"name":"test","value":123}`)
 
-		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out)
+		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out, 0)
 		assert.NoError(t, err)
 		assert.Empty(t, out)
 	})
@@ -107,7 +107,7 @@ func TestStreamDiff(t *testing.T) {
 		oldJSON := []byte(`{"name":"test","value":123}`)
 		newJSON := []byte(`{"name":"test","value":456}`)
 
-		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out)
+		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out, 0)
 		assert.NoError(t, err)
 		assert.NotEmpty(t, out)
 	})
@@ -120,7 +120,7 @@ func TestStreamDiff(t *testing.T) {
 		oldJSON := []byte(`{"text":"hello"}`)
 		newJSON := []byte(`{"text":"hello world"}`)
 
-		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out)
+		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out, 0)
 		assert.NoError(t, err)
 		assert.NotEmpty(t, out)
 	})
@@ -132,7 +132,7 @@ func TestStreamDiff(t *testing.T) {
 		oldJSON := []byte(`{invalid json}`)
 		newJSON := []byte(`{"name":"test"}`)
 
-		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out)
+		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out, 0)
 		assert.Error(t, err)
 	})
 
@@ -143,7 +143,7 @@ func TestStreamDiff(t *testing.T) {
 		oldJSON := []byte(`{"name":"test"}`)
 		newJSON := []byte(`{invalid json}`)
 
-		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out)
+		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out, 0)
 		assert.Error(t, err)
 	})
 
@@ -155,7 +155,7 @@ func TestStreamDiff(t *testing.T) {
 		oldJSON := []byte(`{"name":"test"}`)
 		newJSON := []byte(`{"name":"test","value":123}`)
 
-		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out)
+		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out, 0)
 		assert.NoError(t, err)
 		assert.NotEmpty(t, out)
 
@@ -171,7 +171,7 @@ func TestStreamDiff(t *testing.T) {
 		oldJSON := []byte(`{"name":"test","value":123}`)
 		newJSON := []byte(`{"name":"test"}`)
 
-		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out)
+		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out, 0)
 		assert.NoError(t, err)
 		assert.NotEmpty(t, out)
 
@@ -187,7 +187,7 @@ func TestStreamDiff(t *testing.T) {
 		oldJSON := []byte(`{"items":[1,2]}`)
 		newJSON := []byte(`{"items":[1,2,3]}`)
 
-		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out)
+		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out, 0)
 		assert.NoError(t, err)
 		assert.NotEmpty(t, out)
 
@@ -203,7 +203,7 @@ func TestStreamDiff(t *testing.T) {
 		oldJSON := []byte(`{"items":[1,2,3]}`)
 		newJSON := []byte(`{"items":[1,2]}`)
 
-		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out)
+		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out, 0)
 		assert.NoError(t, err)
 		assert.NotEmpty(t, out)
 
@@ -219,7 +219,7 @@ func TestStreamDiff(t *testing.T) {
 		oldJSON := []byte(`{"items":[1,2,3]}`)
 		newJSON := []byte(`{"items":[1,5,3]}`)
 
-		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out)
+		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out, 0)
 		assert.NoError(t, err)
 		assert.NotEmpty(t, out)
 
@@ -235,7 +235,7 @@ func TestStreamDiff(t *testing.T) {
 		oldJSON := []byte(`{"user":{"name":"test","age":30}}`)
 		newJSON := []byte(`{"user":{"name":"test","age":31}}`)
 
-		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out)
+		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out, 0)
 		assert.NoError(t, err)
 		assert.NotEmpty(t, out)
 	})
@@ -248,7 +248,7 @@ func TestStreamDiff(t *testing.T) {
 		oldJSON := []byte(`{"matrix":[[1,2],[3,4]]}`)
 		newJSON := []byte(`{"matrix":[[1,2],[3,5]]}`)
 
-		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out)
+		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out, 0)
 		assert.NoError(t, err)
 		assert.NotEmpty(t, out)
 	})
@@ -261,7 +261,7 @@ func TestStreamDiff(t *testing.T) {
 		oldJSON := []byte(`{"value":123}`)
 		newJSON := []byte(`{"value":"123"}`)
 
-		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out)
+		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out, 0)
 		assert.NoError(t, err)
 		assert.NotEmpty(t, out)
 
@@ -277,7 +277,7 @@ func TestStreamDiff(t *testing.T) {
 		oldJSON := []byte(`{"items":[1,2,3]}`)
 		newJSON := []byte(`{"items":[1,"two",3]}`)
 
-		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out)
+		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out, 0)
 		assert.NoError(t, err)
 		assert.NotEmpty(t, out)
 
@@ -293,7 +293,7 @@ func TestStreamDiff(t *testing.T) {
 		oldJSON := []byte(`{"text":"hello"}`)
 		newJSON := []byte(`{"text":"goodbye"}`)
 
-		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out)
+		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out, 0)
 		assert.NoError(t, err)
 		assert.NotEmpty(t, out)
 
@@ -309,7 +309,7 @@ func TestStreamDiff(t *testing.T) {
 		oldJSON := []byte(`{}`)
 		newJSON := []byte(`{}`)
 
-		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out)
+		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out, 0)
 		assert.NoError(t, err)
 		assert.Empty(t, out)
 	})
@@ -322,7 +322,7 @@ func TestStreamDiff(t *testing.T) {
 		oldJSON := []byte(`{"items":[]}`)
 		newJSON := []byte(`{"items":[]}`)
 
-		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out)
+		err := StreamDiff(ctx, &lastSeq, oldJSON, newJSON, out, 0)
 		assert.NoError(t, err)
 		assert.Empty(t, out)
 	})

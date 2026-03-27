@@ -6,9 +6,9 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/conversation_message/conversationmsgreq"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/dbhelper2"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
 	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
-	"go.opentelemetry.io/otel/attribute"
 
 	"github.com/pkg/errors"
 )
@@ -17,7 +17,7 @@ import (
 func (repo *ConversationMsgRepo) List(ctx context.Context, req conversationmsgreq.ListReq) (rt []*dapo.ConversationMsgPO, err error) {
 	ctx, _ = o11y.StartInternalSpan(ctx)
 	defer o11y.EndSpan(ctx, nil)
-	o11y.SetAttributes(ctx, attribute.String("conversationID", req.ConversationID))
+	oteltrace.SetConversationID(ctx, req.ConversationID)
 
 	sr := dbhelper2.NewSQLRunner(repo.db, repo.logger)
 

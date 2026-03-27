@@ -12,8 +12,9 @@ dependencies = [
     "fastapi==0.119.1",
     "jsonschema==4.17.0",
     "limiter==0.5.0",
-    "opentelemetry-instrumentation-aiohttp-client==0.42b0",
-    "opentelemetry-sdk==1.21.0",
+    "opentelemetry-instrumentation-aiohttp-client==0.61b0",
+    "opentelemetry-sdk==1.40.0",
+    "opentelemetry-exporter-otlp-proto-http==1.40.0",
     "pycryptodome==3.20.0",
     "pydantic==2.12.2",
     "python-multipart==0.0.22",
@@ -30,7 +31,7 @@ dependencies = [
     #"telemetrysdk-python@git+ssh://devops.aishu.cn:22/AISHUDevOps/One-Architecture/_git/TelemetrySDK-Python@2.6.1",
     #    "telemetrysdk-python@git+https://github.com/kweaver-ai/TelemetrySDK-Python@2.4.2",
     #    "tlogging",
-    "kweaver-dolphin==0.2.4",
+    "kweaver-dolphin==0.4.3",
     "python-dotenv>=1.0.0",
 ]
 
@@ -59,7 +60,16 @@ lint = [
 index-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 
 
-[tool.uv.sources]
+#[[tool.uv.index]]
+#name = "test-pypi"
+#url = "https://test.pypi.org/simple/"
+
+##  打开下方注释则从 TestPyPI 安装（测试版本）
+#index-strategy = "unsafe-best-match"
+#[tool.uv.sources]
+# kweaver-dolphin 源切换配置
+#kweaver-dolphin = { index = "test-pypi" }
+
 #mq-sdk = { git = "https://github.com/kweaver-ai/proton-mq-sdk-py", rev = "release/1.9.0" }
 #tlogging = { git = "https://github.com/kweaver-ai/TelemetrySDK-Python", rev = "2.4.2" }
 

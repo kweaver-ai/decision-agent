@@ -6,11 +6,13 @@ import (
 	"sync"
 
 	"github.com/bytedance/sonic"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/otelconst"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/conversationmsgvo"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/otellog"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/persistence/dapo"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 	"go.opentelemetry.io/otel/attribute"
 )
@@ -18,12 +20,19 @@ import (
 // NOTE: key 为assistantMessageID，value 为bool ,判断是否已经获取过中断前的progress
 var isInterruptPreProgressGetMap sync.Map = sync.Map{}
 
-func (agentSvc *agentSvc) handleProgressOld(ctx context.Context, req *agentreq.ChatReq, progresses []*agentrespvo.Progress) ([]*agentrespvo.Progress, error) {
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, nil)
-	o11y.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
-	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
-	o11y.SetAttributes(ctx, attribute.String("user_id", req.UserID))
+func (agentSvc *agentSvc) handleProgressOld(ctx context.Context, req *agentreq.ChatReq, progresses []*agentrespvo.Progress, chunkIndex int) ([]*agentrespvo.Progress, error) {
+	if chunkIndex == 0 {
+		ctx, _ = oteltrace.StartInternalSpan(ctx)
+		defer oteltrace.EndSpan(ctx, nil)
+		oteltrace.SetAttributes(ctx,
+			attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID),
+			attribute.String(otelconst.AttrGenAIAgentID, req.AgentID),
+			attribute.String(otelconst.AttrUserID, req.UserID),
+			attribute.String("stream.chunk_position", "first"),
+		)
+		oteltrace.SetConversationID(ctx, req.ConversationID)
+	}
+
 	setInterface, _ := progressSet.Load(req.AssistantMessageID)
 
 	// 1. 初始化 set
@@ -72,12 +81,18 @@ func (agentSvc *agentSvc) handleProgressOld(ctx context.Context, req *agentreq.C
 	return ans, nil
 }
 
-func (agentSvc *agentSvc) handleProgress(ctx context.Context, req *agentreq.ChatReq, progresses []*agentrespvo.Progress) (newPgs []*agentrespvo.Progress, err error) {
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, nil)
-	o11y.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentRunID))
-	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
-	o11y.SetAttributes(ctx, attribute.String("user_id", req.UserID))
+func (agentSvc *agentSvc) handleProgress(ctx context.Context, req *agentreq.ChatReq, progresses []*agentrespvo.Progress, chunkIndex int) (newPgs []*agentrespvo.Progress, err error) {
+	if chunkIndex == 0 {
+		ctx, _ = oteltrace.StartInternalSpan(ctx)
+		defer oteltrace.EndSpan(ctx, nil)
+		oteltrace.SetAttributes(ctx,
+			attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentRunID),
+			attribute.String(otelconst.AttrGenAIAgentID, req.AgentID),
+			attribute.String(otelconst.AttrUserID, req.UserID),
+			attribute.String("stream.chunk_position", "first"),
+		)
+		oteltrace.SetConversationID(ctx, req.ConversationID)
+	}
 
 	aMsgID := req.AssistantMessageID
 
@@ -162,7 +177,7 @@ func (agentSvc *agentSvc) forResumeInterrupt(ctx context.Context, req *agentreq.
 		if assistantMsgPO.Content != nil && *assistantMsgPO.Content != "" {
 			err = sonic.Unmarshal([]byte(*assistantMsgPO.Content), &content)
 			if err != nil {
-				o11y.Error(ctx, fmt.Sprintf("[handleProgress] unmarshal assistant content error, id: %s, err: %v", req.InterruptedAssistantMsgID, err))
+				otellog.LogWarn(ctx, fmt.Sprintf("[handleProgress] unmarshal assistant content error, id: %s, err: %v", req.InterruptedAssistantMsgID, err))
 				err = errors.Wrapf(err, "[handleProgress] unmarshal assistant content error, id: %s, err: %v", req.InterruptedAssistantMsgID, err)
 
 				return

@@ -121,6 +121,65 @@
                         }
                     }
                 }
+            },
+            "otel": {
+                "type": "object",
+                "title": "otel配置",
+                "description": "新版 OTel Collector 配置，用于统一管理可观测性数据上报",
+                "properties": {
+                    "service_name": {
+                        "type": "string",
+                        "title": "服务名称",
+                        "description": "在链路追踪中显示的服务名称"
+                    },
+                    "service_version": {
+                        "type": "string",
+                        "title": "服务版本",
+                        "description": "服务的版本号"
+                    },
+                    "environment": {
+                        "type": "string",
+                        "title": "运行环境",
+                        "description": "运行环境标识（如 production, staging, dev）"
+                    },
+                    "otlp_endpoint": {
+                        "type": "string",
+                        "title": "OTLP端点地址",
+                        "description": "OpenTelemetry Collector 的地址，格式：host:port"
+                    },
+                    "trace": {
+                        "type": "object",
+                        "title": "链路追踪配置",
+                        "properties": {
+                            "enabled": {
+                                "type": "boolean",
+                                "title": "启用链路追踪",
+                                "description": "是否启用分布式链路追踪功能"
+                            },
+                            "sampling_rate": {
+                                "type": "number",
+                                "title": "采样率",
+                                "description": "链路追踪采样率（0.0-1.0），1.0表示全量采集"
+                            }
+                        }
+                    },
+                    "log": {
+                        "type": "object",
+                        "title": "日志配置",
+                        "properties": {
+                            "enabled": {
+                                "type": "boolean",
+                                "title": "启用日志",
+                                "description": "是否启用结构化日志上报"
+                            },
+                            "level": {
+                                "type": "string",
+                                "title": "日志级别",
+                                "description": "日志级别（debug, info, warn, error）"
+                            }
+                        }
+                    }
+                }
             }
         }
     },

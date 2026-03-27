@@ -22,7 +22,6 @@ func TestNewSwitchFields(t *testing.T) {
 		assert.False(t, sf.DisablePmsCheck)
 		assert.False(t, sf.DisableBizDomain)
 		assert.False(t, sf.DisableBizDomainInit)
-		assert.False(t, sf.UseDefaultBizDomain)
 		assert.False(t, sf.DisableAuditInit)
 	})
 
@@ -51,7 +50,6 @@ func TestSwitchFields_Struct(t *testing.T) {
 			DisablePmsCheck:      true,
 			DisableBizDomain:     true,
 			DisableBizDomainInit: true,
-			UseDefaultBizDomain:  true,
 			DisableAuditInit:     true,
 			Mock: &MockSwitchFields{
 				MockMQClient:        true,

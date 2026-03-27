@@ -60,6 +60,7 @@ COPY agent-backend/agent-executor/hooks /build/hooks
 RUN set -ex; \
     cd /build; \
     export PATH="/root/.local/bin:$PATH"; \
+    export UV_HTTP_TIMEOUT=300; \
     # sed -i 's|git+ssh://devops.aishu.cn:22/AISHUDevOps/One-Architecture/_git/proton-mq-python@1.7.4|git+https://github.com/kweaver-ai/proton-mq-sdk-py@release/1.9.0|' pyproject.toml; \
     # sed -i 's|git+ssh://devops.aishu.cn:22/AISHUDevOps/One-Architecture/_git/TelemetrySDK-Python@2.6.1|git+https://github.com/kweaver-ai/TelemetrySDK-Python@2.4.2|' pyproject.toml; \
     uv sync; \

@@ -185,7 +185,7 @@ func TestHandleProgress_EmptyProgresses_NoInterrupt(t *testing.T) {
 		InternalParam: agentreq.InternalParam{AssistantMessageID: "msg-hp-1"},
 	}
 
-	result, err := svc.handleProgress(context.Background(), req, nil)
+	result, err := svc.handleProgress(context.Background(), req, nil, 0)
 	assert.NoError(t, err)
 	assert.Empty(t, result)
 }
@@ -219,7 +219,7 @@ func TestHandleProgress_WithCompletedAndProcessing(t *testing.T) {
 		{ID: "pg-4", Status: "skipped"},
 	}
 
-	result, err := svc.handleProgress(context.Background(), req, progresses)
+	result, err := svc.handleProgress(context.Background(), req, progresses, 0)
 	assert.NoError(t, err)
 	// completed + failed + skipped → 3, plus processing currentProgress → 4 total
 	assert.Len(t, result, 4)
@@ -248,7 +248,7 @@ func TestHandleProgressOld_EmptyProgresses_NoInterrupt(t *testing.T) {
 		InternalParam: agentreq.InternalParam{AssistantMessageID: "msg-hpo-1"},
 	}
 
-	result, err := svc.handleProgressOld(context.Background(), req, nil)
+	result, err := svc.handleProgressOld(context.Background(), req, nil, 0)
 	assert.NoError(t, err)
 	assert.Empty(t, result)
 }
@@ -280,7 +280,7 @@ func TestHandleProgressOld_WithCompletedAndProcessing(t *testing.T) {
 		{ID: "pg-old-3", Status: "failed"},
 	}
 
-	result, err := svc.handleProgressOld(context.Background(), req, progresses)
+	result, err := svc.handleProgressOld(context.Background(), req, progresses, 0)
 	assert.NoError(t, err)
 	// completed + failed → 2, plus processing → 3
 	assert.Len(t, result, 3)

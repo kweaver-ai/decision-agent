@@ -12,7 +12,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	// "github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper/cenvhelper" // reserved for local dev debug
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/otellog"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 
 	"github.com/bytedance/sonic"
@@ -39,7 +40,7 @@ func (h *agentHTTPHandler) Chat(c *gin.Context) {
 	if agentAPPKey == "" {
 		err := capierr.New400Err(c, "[Chat] app key is empty")
 		h.logger.Errorf("[Chat] app key is empty: %v", err)
-		o11y.Error(c, "[Chat] app key is empty")
+		otellog.LogError(c, "[Chat] app key is empty", err)
 		rest.ReplyError(c, err)
 
 		return
@@ -56,7 +57,7 @@ func (h *agentHTTPHandler) Chat(c *gin.Context) {
 
 	if err := c.ShouldBindJSON(&req); err != nil {
 		h.logger.Errorf("[Chat] should bind json err: %v", err)
-		o11y.Error(c, fmt.Sprintf("[Chat] should bind json err: %v", err))
+		otellog.LogError(c, fmt.Sprintf("[Chat] should bind json err: %v", err), err)
 		httpErr := capierr.New400Err(c, fmt.Sprintf("[Chat] should bind json err: %v", err))
 		rest.ReplyError(c, httpErr)
 
@@ -74,7 +75,7 @@ func (h *agentHTTPHandler) Chat(c *gin.Context) {
 	user := chelper.GetVisitorFromCtx(c)
 	if user == nil {
 		httpErr := capierr.New404Err(c, "[Chat] user not found")
-		o11y.Error(c, "[Chat] user not found")
+		otellog.LogError(c, "[Chat] user not found", nil)
 		h.logger.Errorf("[Chat] user not found: %v", httpErr)
 		rest.ReplyError(c, httpErr)
 
@@ -115,11 +116,14 @@ func (h *agentHTTPHandler) Chat(c *gin.Context) {
 
 	req.CallType = constant.Chat
 	ctx := c.Request.Context()
+	oteltrace.SetConversationID(ctx, req.ConversationID)
 
 	// 3. 调用服务
 	channel, err := h.agentSvc.Chat(ctx, &req)
+	oteltrace.SetConversationID(ctx, req.ConversationID)
+
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[Chat] chat failed: %v", err.Error()))
+		otellog.LogError(ctx, fmt.Sprintf("[Chat] chat failed: %v", err.Error()), err)
 		h.logger.Errorf("[Chat] chat failed: %v", err.Error())
 		rest.ReplyError(c, err)
 
@@ -162,7 +166,7 @@ func (h *agentHTTPHandler) Chat(c *gin.Context) {
 					_, err := c.Writer.Write(data)
 					if err != nil {
 						h.logger.Errorf("[Chat] write data err: %v", err)
-						o11y.Error(ctx, fmt.Sprintf("[Chat] write data err: %v", err))
+						otellog.LogError(ctx, fmt.Sprintf("[Chat] write data err: %v", err), err)
 						// NOTE:如果出错，清空channel，直到channel关闭，再退出；
 						// NOTE: 如果channel未关闭直接退出，会导致管道阻塞，对话Process无法继续
 						drainFunc()

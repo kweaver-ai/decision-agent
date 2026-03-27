@@ -7,7 +7,6 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentconfigvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/valueobject/agentrespvo"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
 	"github.com/pkg/errors"
 )
 
@@ -37,11 +36,8 @@ type DataAgentRes struct {
 	middleOutputVarsHelper    *ResHelper
 }
 
-func NewDataAgentRes(ctx context.Context, data []byte, outputVariablesS *agentconfigvo.OutputVariablesS) (*DataAgentRes, error) {
+func NewDataAgentRes(_ context.Context, data []byte, outputVariablesS *agentconfigvo.OutputVariablesS) (*DataAgentRes, error) {
 	var err error
-
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
 
 	r := &DataAgentRes{
 		Answer: agentrespvo.NewAnswerS(),

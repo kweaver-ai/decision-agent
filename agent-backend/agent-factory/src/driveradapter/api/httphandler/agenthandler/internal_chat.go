@@ -13,7 +13,8 @@ import (
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cenum"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/cutil"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/otellog"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
@@ -22,10 +23,10 @@ func (h *agentHTTPHandler) InternalChat(c *gin.Context) {
 	// 1. app_key
 	agentAPPKey := c.Param("app_key")
 	if agentAPPKey == "" {
-		o11y.Error(c, "[InternalChat] app key is empty")
 		h.logger.Errorf("[InternalChat] app key is empty")
 
 		err := capierr.New400Err(c, "[InternalChat] app key is empty")
+		otellog.LogError(c, "[InternalChat] app key is empty", err)
 		rest.ReplyError(c, err)
 
 		return
@@ -37,7 +38,9 @@ func (h *agentHTTPHandler) InternalChat(c *gin.Context) {
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
+		otellog.LogError(c, fmt.Sprintf("[InternalChat] should bind json err: %v", err), err)
 		rest.ReplyError(c, err)
+
 		return
 	}
 
@@ -65,10 +68,13 @@ func (h *agentHTTPHandler) InternalChat(c *gin.Context) {
 	// 3. 调用服务
 	req.CallType = constant.InternalChat
 	req.ReqStartTime = reqStartTime
+	oteltrace.SetConversationID(ctx, req.ConversationID)
 
 	channel, err := h.agentSvc.Chat(ctx, &req)
+	oteltrace.SetConversationID(ctx, req.ConversationID)
+
 	if err != nil {
-		o11y.Error(ctx, fmt.Sprintf("[InternalChat] chat error: %v", err.Error()))
+		otellog.LogError(ctx, fmt.Sprintf("[InternalChat] chat error: %v", err.Error()), err)
 		h.logger.Errorf("[InternalChat] chat error: %v", err.Error())
 		rest.ReplyError(c, err)
 

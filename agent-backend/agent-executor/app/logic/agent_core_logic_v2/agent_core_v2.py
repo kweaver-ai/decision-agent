@@ -162,7 +162,7 @@ class AgentCoreV2:
         agent, _ = result
         return agent
 
-    @internal_span()
+    @internal_span(name="invoke_agent")
     async def run(
         self,
         agent_config: AgentConfigVo,
@@ -187,6 +187,8 @@ class AgentCoreV2:
             agent_run_id=agent_config.agent_run_id,
             agent_id=agent_config.agent_id,
             user_id=get_user_account_id(headers) or "",
+            conversation_id=agent_config.conversation_id,
+            is_root_span=True,
         )
 
         self.agent_config = agent_config

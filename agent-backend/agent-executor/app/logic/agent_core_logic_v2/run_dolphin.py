@@ -3,6 +3,7 @@ from typing import Any, AsyncGenerator, Dict, Optional, TYPE_CHECKING
 from dolphin.sdk.agent.dolphin_agent import DolphinAgent
 from dolphin.core.config.global_config import GlobalConfig
 from dolphin.sdk.skill.traditional_toolkit import TriditionalToolkit
+from dolphin.core.common.constants import KEY_HISTORY
 
 from app.common.config import Config
 from app.common.stand_log import StandLogger
@@ -58,6 +59,7 @@ async def run_dolphin(
         agent_run_id=config.agent_run_id or "",
         agent_id=config.agent_id or "",
         user_id=get_user_account_id(headers) or "",
+        conversation_id=config.conversation_id or "",
     )
 
     # 从headers中提取user_id和visitor_type
@@ -115,7 +117,7 @@ async def run_dolphin(
         f"{COLORS['blue']}========================================{COLORS['end']}\n"
         f"{COLORS['cyan']}{COLORS['bold']}Dolphin Language Prompt:{COLORS['end']}\n{dolphin_prompt}\n"
         f"{COLORS['blue']}----------------------------------------{COLORS['end']}\n"
-        # f"{COLORS['green']}{COLORS['bold']}Context Variables:{COLORS['end']} {json.dumps(context_variables, indent=2, ensure_ascii=False)}\n"
+        f"{COLORS['green']}{COLORS['bold']}Context Variables:{COLORS['end']} {json.dumps(context_variables, indent=2, ensure_ascii=False)}\n"
         f"{COLORS['blue']}----------------------------------------{COLORS['end']}\n"
         f"{COLORS['yellow']}{COLORS['bold']}Skill Kit Tolls:{COLORS['end']} {json.dumps(toolkit.tools, indent=2, ensure_ascii=False, default=str)}\n"
         f"{COLORS['blue']}----------------------------------------{COLORS['end']}\n"
@@ -156,6 +158,46 @@ async def run_dolphin(
 
     # ctx_manager = ContextManager()
 
+    # 9.2 创建trace listener（如果启用）
+    trace_listener = None
+    o11y_logger().info(
+        f"[run_dolphin] Dolphin trace check: "
+        f"is_dolphin_trace_enabled={Config.is_dolphin_trace_enabled()}, "
+        f"is_o11y_trace_enabled={Config.is_o11y_trace_enabled()}"
+    )
+
+    if Config.is_dolphin_trace_enabled():
+        try:
+            from dolphin.core.observability.otel_listener import OTelTraceListener
+
+            o11y_logger().info(
+                f"[run_dolphin] Creating OTelTraceListener with: "
+                f"agent_id={config.agent_id}, "
+                f"conversation_id={config.conversation_id}, "
+                f"user_id={user_id}"
+            )
+
+            trace_listener = OTelTraceListener(
+                agent_id=config.agent_id or "",
+                conversation_id=config.conversation_id or "",
+                user_id=user_id or "",
+            )
+            o11y_logger().info(
+                f"[run_dolphin] Dolphin trace listener created successfully: "
+                f"agent_id={config.agent_id}, conversation_id={config.conversation_id}"
+            )
+        except Exception as e:
+            o11y_logger().warning(f"[run_dolphin] Failed to create trace listener: {e}")
+            trace_listener = None
+    else:
+        o11y_logger().info("[run_dolphin] Dolphin trace is disabled")
+
+    # 适配 Dolphin SDK 的 history 变量名：
+    # SDK 内部使用 KEY_HISTORY 常量（当前值为 "_history"）而不是 "history"
+    # 这里引用 SDK 常量避免硬编码，自动跟随 SDK 的变化
+    if "history" in context_variables:
+        context_variables[KEY_HISTORY] = context_variables.pop("history")
+
     agent = DolphinAgent(
         content=dolphin_prompt,
         name=f"agent_core_v2_{config.agent_id}",
@@ -165,6 +207,7 @@ async def run_dolphin(
         verbose=Config.app.enable_dolphin_agent_verbose,  # 启用详细输出模式
         log_level=Config.app.get_stdlib_log_level(),
         output_variables=output_variables,
+        trace_listener=trace_listener,
         # context_manager=ctx_manager,
     )
     # todo control by config

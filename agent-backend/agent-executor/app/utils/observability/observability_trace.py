@@ -3,19 +3,17 @@
 """
 Python 实现的可观测性追踪模块
 提供带上下文追踪的日志记录功能，支持多种日志导出方式
+使用标准 OpenTelemetry SDK
 """
 
 import os
 
-from app.utils.observability.sdk_available import (
-    TELEMETRY_SDK_AVAILABLE,
-    set_service_info,
-    trace_resource,
-)
 from app.utils.observability.observability_setting import TraceSetting, ServerInfo
 from opentelemetry.sdk.trace import TracerProvider
 from opentelemetry.sdk.trace.export import BatchSpanProcessor, ConsoleSpanExporter
 from opentelemetry.trace import set_tracer_provider
+from opentelemetry.sdk.resources import Resource
+from app.common.stand_log import StandLogger
 
 
 def init_trace_provider(server_info: ServerInfo, setting: TraceSetting) -> None:
@@ -25,44 +23,116 @@ def init_trace_provider(server_info: ServerInfo, setting: TraceSetting) -> None:
         server_info: 服务器信息
         setting: 追踪配置设置
     """
-    # 如果 SDK 不可用，直接返回
-    if not TELEMETRY_SDK_AVAILABLE:
-        return
+    try:
+        StandLogger.info_log("[OTel] init_trace_provider called")
+        StandLogger.info_log(f"[OTel]   server_name={server_info.server_name}")
+        StandLogger.info_log(f"[OTel]   server_version={server_info.server_version}")
+        StandLogger.info_log(f"[OTel]   trace_provider={setting.trace_provider}")
+        StandLogger.info_log(f"[OTel]   otlp_endpoint={setting.otlp_endpoint}")
 
-    # 延迟导入 Config 避免循环依赖
-    from app.common.config import Config
+        # 创建 trace exporter
+        trace_exporter = None
 
-    set_service_info(
-        server_info.server_name,
-        server_info.server_version,
-        os.getenv("POD_NAME", "unknown"),
-    )
+        if setting.trace_provider == "console":
+            trace_exporter = ConsoleSpanExporter()
+            StandLogger.info_log("[OTel] Created ConsoleSpanExporter")
 
-    trace_exporter = None
+        elif setting.trace_provider == "otlp":
+            # 使用标准 OTLP HTTP exporter（参考 agent-executor-tmp/otel_test_setup.py）
+            from opentelemetry.exporter.otlp.proto.http.trace_exporter import (
+                OTLPSpanExporter,
+            )
 
-    # 如果没有启用 o11y 跟踪，直接返回
-    if not Config.is_o11y_trace_enabled():
-        return
+            otlp_endpoint = setting.otlp_endpoint
+            if not otlp_endpoint:
+                StandLogger.info_log(
+                    "[OTel] ❌ OTLP endpoint is empty, trace will not be exported"
+                )
+                return
 
-    from exporter.ar_trace.trace_exporter import ARTraceExporter
-    from exporter.public.client import HTTPClient
-    from exporter.public.public import WithAnyRobotURL
+            StandLogger.info_log(f"[OTel] Raw OTLP endpoint: {otlp_endpoint}")
 
-    if setting.trace_provider == "console":
-        trace_exporter = ConsoleSpanExporter()
+            # 构造完整 URL
+            if not otlp_endpoint.startswith("http://") and not otlp_endpoint.startswith(
+                "https://"
+            ):
+                otlp_endpoint = f"http://{otlp_endpoint}"
+            if not otlp_endpoint.endswith("/v1/traces"):
+                otlp_endpoint = f"{otlp_endpoint}/v1/traces"
 
-    elif setting.trace_provider == "http":
-        trace_exporter = ARTraceExporter(
-            HTTPClient(WithAnyRobotURL(setting.http_trace_feed_ingester_url))
+            StandLogger.info_log(f"[OTel] Final OTLP endpoint: {otlp_endpoint}")
+            trace_exporter = OTLPSpanExporter(endpoint=otlp_endpoint)
+            StandLogger.info_log("[OTel] ✅ OTLPSpanExporter created successfully")
+
+        else:
+            StandLogger.info_log(
+                f"[OTel] ❌ Unsupported trace provider: {setting.trace_provider}"
+            )
+
+        # 如果没有配置任何 exporter，直接返回
+        if trace_exporter is None:
+            StandLogger.info_log(
+                f"[OTel] ❌ No trace exporter configured for provider: {setting.trace_provider}"
+            )
+            return
+
+        StandLogger.info_log("[OTel] Creating BatchSpanProcessor...")
+        trace_processor = BatchSpanProcessor(
+            span_exporter=trace_exporter,
+            schedule_delay_millis=2000,
+            max_queue_size=setting.trace_max_queue_size,
         )
 
-    trace_processor = BatchSpanProcessor(
-        span_exporter=trace_exporter,
-        schedule_delay_millis=2000,
-        max_queue_size=setting.trace_max_queue_size,
-    )
-    trace_provider = TracerProvider(
-        resource=trace_resource(), active_span_processor=trace_processor
-    )
+        # 构建 Resource（使用标准 OpenTelemetry SDK）
+        StandLogger.info_log("[OTel] Building resource attributes...")
+        resource_attributes = {
+            "service.name": server_info.server_name,
+            "service.version": server_info.server_version,
+        }
 
-    set_tracer_provider(trace_provider)
+        # 添加 deployment.environment
+        otel_environment = os.getenv("OTEL_ENVIRONMENT")
+        if otel_environment:
+            resource_attributes["deployment.environment"] = otel_environment
+            StandLogger.info_log(
+                f"[OTel] Adding deployment.environment={otel_environment}"
+            )
+
+        # 添加 pod.name
+        pod_name = os.getenv("POD_NAME")
+        if pod_name:
+            resource_attributes["pod.name"] = pod_name
+            StandLogger.info_log(f"[OTel] Adding pod.name={pod_name}")
+
+        resource = Resource.create(resource_attributes)
+        StandLogger.info_log(
+            f"[OTel] Resource created with attributes: {resource_attributes}"
+        )
+
+        # 设置采样率
+        from opentelemetry.sdk.trace.sampling import ParentBasedTraceIdRatio
+
+        sampling_rate = float(os.getenv("OTEL_TRACE_SAMPLING_RATE", "1.0"))
+        sampler = ParentBasedTraceIdRatio(sampling_rate)
+        StandLogger.info_log(f"[OTel] Sampling rate: {sampling_rate}")
+
+        # 创建 TracerProvider
+        StandLogger.info_log("[OTel] Creating TracerProvider...")
+        trace_provider = TracerProvider(
+            resource=resource, active_span_processor=trace_processor, sampler=sampler
+        )
+
+        StandLogger.info_log("[OTel] Setting global tracer provider...")
+        set_tracer_provider(trace_provider)
+        StandLogger.info_log("[OTel] ✅ Trace provider initialized successfully!")
+        StandLogger.info_log(
+            f"[OTel] Summary: service={server_info.server_name}, version={server_info.server_version}, endpoint={setting.otlp_endpoint}, provider={setting.trace_provider}"
+        )
+
+    except Exception as e:
+        StandLogger.info_log(
+            f"[OTel] ❌ Error initializing trace provider: {type(e).__name__}: {e}"
+        )
+        import traceback
+
+        traceback.print_exc()

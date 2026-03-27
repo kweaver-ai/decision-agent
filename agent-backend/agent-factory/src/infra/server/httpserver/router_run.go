@@ -40,8 +40,8 @@ func (s *httpServer) runPubRouter(engine *gin.Engine, basePath string) {
 		capimiddleware.Language(),
 		// 新增 Hydra 接口鉴权，开发环境可以临时屏蔽
 		capimiddleware.VerifyOAuthMiddleWare(),
-		// 注入业务域id
-		capimiddleware.HandleBizDomain(global.GConfig.SwitchFields.UseDefaultBizDomain),
+		// 业务域：外部接口要求必须携带业务域ID
+		capimiddleware.HandleBizDomain(false),
 
 		// 注入OpenTelemetry中间件
 		otelgin.Middleware(global.GConfig.OtelConfig.ServiceName),
@@ -63,8 +63,8 @@ func (s *httpServer) runPriRouter(engine *gin.Engine, basePath string) {
 		capimiddleware.Recovery(),
 		capimiddleware.RequestLoggerV2Middleware(),
 		capimiddleware.Language(),
-		// 注入业务域id
-		capimiddleware.HandleBizDomain(global.GConfig.SwitchFields.UseDefaultBizDomain),
+		// 业务域：内部接口自动使用默认业务域
+		capimiddleware.HandleBizDomain(true),
 
 		// 注入OpenTelemetry中间件
 		otelgin.Middleware(global.GConfig.OtelConfig.ServiceName),

@@ -8,7 +8,7 @@ import (
 
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/sandboxplatformhttp/sandboxplatformdto"
 	agentreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/agent/req"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 	"github.com/pkg/errors"
 )
@@ -16,10 +16,9 @@ import (
 // EnsureSandboxSession 确保 Sandbox Session 存在并就绪
 // 完全移除 sync.Map 缓存，每次直接调用 Sandbox Platform 检测
 func (s *agentSvc) EnsureSandboxSession(ctx context.Context, sessionID string, req *agentreq.ChatReq) (string, error) {
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, nil)
+	ctx, _ = oteltrace.StartInternalSpan(ctx)
+	defer oteltrace.EndSpan(ctx, nil)
 
-	o11y.SetAttributes(ctx) // o11y.String("session_id", sessionID),
 	// o11y.String("user_id", req.UserID),
 	// o11y.String("agent_id", req.AgentID),
 

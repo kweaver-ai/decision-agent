@@ -4,22 +4,42 @@ import (
 	"context"
 	"fmt"
 
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/domain/constant/otelconst"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/drivenadapter/httpaccess/v2agentexecutoraccess/v2agentexecutordto"
 	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/chelper"
-	o11y "github.com/kweaver-ai/kweaver-go-lib/observability"
-	"go.opentelemetry.io/otel/attribute"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/otel/oteltrace"
 )
+
+// mapCarrier adapts map[string]string to propagation.TextMapCarrier.
+type mapCarrier map[string]string
+
+func (c mapCarrier) Get(key string) string { return c[key] }
+func (c mapCarrier) Set(key, value string) { c[key] = value }
+func (c mapCarrier) Keys() []string {
+	keys := make([]string, 0, len(c))
+	for k := range c {
+		keys = append(keys, k)
+	}
+
+	return keys
+}
 
 func (ae *v2AgentExecutorHttpAcc) Call(ctx context.Context, req *v2agentexecutordto.V2AgentCallReq) (chan string, chan error, error) {
 	var err error
 
-	ctx, _ = o11y.StartInternalSpan(ctx)
-	defer o11y.EndSpan(ctx, err)
-	o11y.SetAttributes(ctx, attribute.String("agent_call_req", fmt.Sprintf("%+v", req)))
-	o11y.SetAttributes(ctx, attribute.String("user_id", req.UserID))
-	o11y.SetAttributes(ctx, attribute.String("agent_run_id", req.AgentOptions.AgentRunID))
-	o11y.SetAttributes(ctx, attribute.String("agent_id", req.AgentID))
+	ctx, _ = oteltrace.StartInternalSpan(ctx)
+	defer oteltrace.EndSpan(ctx, err)
+	oteltrace.SetAttributes(ctx,
+		attribute.String("agent_call_req", fmt.Sprintf("%+v", req)),
+		attribute.String(otelconst.AttrUserID, req.UserID),
+		attribute.String(otelconst.AttrGenAIAgentRunID, req.AgentOptions.AgentRunID),
+		attribute.String(otelconst.AttrGenAIAgentID, req.AgentID),
+	)
+	oteltrace.SetConversationID(ctx, req.AgentOptions.ConversationID)
 
 	var url string
 	if req.CallType == constant.DebugChat {
@@ -48,6 +68,9 @@ func (ae *v2AgentExecutorHttpAcc) Call(ctx context.Context, req *v2agentexecutor
 	}
 
 	headers["x-business-domain"] = req.XBusinessDomainID
+
+	// 注入 OTel trace context（traceparent/tracestate）到请求头，实现跨服务 trace 关联
+	otel.GetTextMapPropagator().Inject(ctx, mapCarrier(headers))
 
 	messages, errs, err := ae.streamClient.StreamPost(ctx, url, headers, req)
 

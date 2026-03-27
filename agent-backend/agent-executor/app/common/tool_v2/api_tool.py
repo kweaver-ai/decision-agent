@@ -15,6 +15,10 @@ from .api_tool_pkg.input import APIToolInputHandler
 from .api_tool_pkg.arun_stream_param_processor import (
     process_params as process_params_func,
 )
+from .api_tool_pkg.evidence_extractor import (
+    is_evidence_extraction_enabled,
+    extract_evidence,
+)
 
 
 class APITool(APIToolInputHandler):
@@ -197,6 +201,12 @@ class APITool(APIToolInputHandler):
         # 注意：中断逻辑已移至 Dolphin SDK 内部，通过 interrupt_config 触发
         # 此处不再主动抛出 ToolInterrupt 异常
 
+        # Mock: is_aaron_local_dev() 时直接使用 mock 数据
+        # if is_aaron_local_dev():
+        #     async for rt in self._mock_kn_search_stream():
+        #         yield rt
+        #     return
+
         # 1. 获取gvp
         gvp: "Context" = props.get("gvp")
 
@@ -258,8 +268,16 @@ class APITool(APIToolInputHandler):
             ) as response:
                 # 传递超时时间给handle_response
                 try:
+                    last_rt = None
                     async for rt in self.handle_response(response, toolTimeout):
                         yield rt
+                        # 记录最后一条有效 rt
+                        if rt.get("answer"):
+                            last_rt = rt
+
+                    # 流式响应结束后，修改原 rt 追加 evidence 并重新 yield
+                    if self._try_append_evidence(last_rt):
+                        yield last_rt
                 except asyncio.TimeoutError:
                     StandLogger.error(
                         f"\n{COLORS['header']}{COLORS['bold']}请求工具 {self.name} 的总时长超时 ({toolTimeout}秒){COLORS['end']}\n"
@@ -396,3 +414,86 @@ class APITool(APIToolInputHandler):
         return process_params_func(
             tool_input, api_spec, gvp, self.tool_map_list, self.unfiltered_inputs
         )
+
+    def _try_append_evidence(self, last_rt):
+        """
+        尝试从最后一条 rt 中提取 evidence，直接修改原 rt 的 answer/block_answer。
+        仅当 name=='kn_search' 且环境变量开启时触发。
+
+        Args:
+            last_rt: 流式响应中最后一条有效的 rt 字典
+
+        Returns:
+            bool: 是否成功追加了 evidence
+        """
+        if self.name != "kn_search":
+            return False
+        if not is_evidence_extraction_enabled():
+            return False
+        if not last_rt:
+            return False
+
+        answer_data = last_rt.get("answer")
+        if not answer_data or not isinstance(answer_data, dict):
+            return False
+
+        evidence = extract_evidence(answer_data)
+        if evidence:
+            # 直接修改原 rt 的 answer 和 block_answer
+            answer_data["_evidence"] = evidence
+            block_answer = last_rt.get("block_answer")
+            if block_answer and isinstance(block_answer, dict):
+                block_answer["_evidence"] = evidence
+
+            StandLogger.info(
+                f"\n{COLORS['green']}{COLORS['bold']}工具 {self.name} 提取到 evidence, "
+                f"包含 {len(evidence.get('evidences', [{}])[0].get('content', {}).get('object_instances', []))} 个 object_instances"
+                f"{COLORS['end']}\n"
+            )
+            return True
+
+        return False
+
+    async def _mock_kn_search_stream(self):
+        """
+        本地开发环境 mock 流式响应。
+        使用 .local/tmp/evidence/kn_serach_res.json 作为 mock 数据。
+        """
+        import os
+
+        mock_file = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "..",
+            "..",
+            "..",
+            ".local",
+            "tmp",
+            "evidence",
+            "kn_serach_res.json",
+        )
+
+        try:
+            with open(mock_file, "r", encoding="utf-8") as f:
+                mock_data = json.load(f)
+            StandLogger.info(
+                f"\n{COLORS['cyan']}{COLORS['bold']}[Mock] 工具 {self.name} 使用本地 mock 数据: {mock_file}{COLORS['end']}\n"
+            )
+        except FileNotFoundError:
+            StandLogger.error(
+                f"\n{COLORS['red']}{COLORS['bold']}[Mock] Mock 文件不存在: {mock_file}{COLORS['end']}\n"
+            )
+            mock_data = {
+                "nodes": [],
+                "relation_types": [],
+                "action_types": [],
+                "object_types": [],
+            }
+
+        resp = APIToolResponse(answer=mock_data, block_answer=mock_data)
+        rt = resp.to_dict()
+
+        # mock 也触发 evidence 提取（直接修改 rt）
+        self.name = "kn_search"
+        self._try_append_evidence(rt)
+
+        yield rt

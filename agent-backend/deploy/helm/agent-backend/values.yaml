@@ -51,9 +51,7 @@ service:
 
   # ========== 开发环境控制开关（生产环境建议设置为 false）==========
   disablePmsCheck: false
-  disableBizDomain: false
   disableBizDomainInit: false
-  useDefaultBizDomain: false
   disableAuditInit: false
   mockMqClient: false
   mockSandboxPlatform: false
@@ -79,6 +77,11 @@ service:
     periodSeconds: 10
     timeoutSeconds: 60
     failureThreshold: 10
+
+
+# 业务域开关
+businessDomain:
+  enabled: true
 
 env:
   language: en_US.UTF-8
@@ -324,6 +327,19 @@ opentelemetry:
     exporter: "console"
     http_endpoint: "http://localhost:4318/v1/metrics"
     export_interval: 10
+
+# 新版 OTel Collector 配置
+otel:
+  service_name: "agent-factory"
+  service_version: "1.0.0"
+  environment: "production"
+  otlp_endpoint: "otelcol-contrib:4318"
+  trace:
+    enabled: false
+    sampling_rate: 1.0
+  log:
+    enabled: false
+    level: "info"
 
 # ========== Agent Executor 配置 ==========
 agentExecutor:

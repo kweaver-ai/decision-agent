@@ -7,11 +7,27 @@ import (
 	"testing"
 
 	"github.com/gin-gonic/gin"
+	"github.com/kweaver-ai/decision-agent/agent-factory/conf"
+	"github.com/kweaver-ai/decision-agent/agent-factory/src/infra/common/global"
 	"github.com/stretchr/testify/assert"
 )
 
 func init() {
 	gin.SetMode(gin.TestMode)
+}
+
+func setDisablePmsCheckForMiddlewareTest(t *testing.T, disable bool) {
+	t.Helper()
+
+	oldCfg := global.GConfig
+	global.GConfig = &conf.Config{
+		SwitchFields: conf.NewSwitchFields(),
+	}
+	global.GConfig.SwitchFields.DisablePmsCheck = disable
+
+	t.Cleanup(func() {
+		global.GConfig = oldCfg
+	})
 }
 
 // ==================== CheckAgentUsePms — additional error paths ====================
@@ -135,4 +151,20 @@ func TestCheckAgentUsePmsInternal_BadAccountType(t *testing.T) {
 	w := httptest.NewRecorder()
 	router.ServeHTTP(w, req)
 	assert.NotEqual(t, http.StatusOK, w.Code)
+}
+
+func TestCheckAgentUsePmsInternal_DisablePmsCheck_AllowsMissingUser(t *testing.T) {
+	setDisablePmsCheckForMiddlewareTest(t, true)
+
+	router := gin.New()
+	router.POST("/test", CheckAgentUsePmsInternal(), func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{"ok": true})
+	})
+
+	req := httptest.NewRequest("POST", "/test", strings.NewReader(`{"agent_id":"agent-1"}`))
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	router.ServeHTTP(w, req)
+	assert.Equal(t, http.StatusOK, w.Code)
 }
