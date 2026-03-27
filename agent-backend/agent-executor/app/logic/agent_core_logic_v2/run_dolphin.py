@@ -122,12 +122,18 @@ async def run_dolphin(
                 return o.value
             return super().default(o)
 
+    # 诊断：检查 Dolphin prompt 是否包含 history=True
+    has_history_param = "history=True" in dolphin_prompt or "history = True" in dolphin_prompt
+    history_check_msg = f"[DIAGNOSTIC] run_dolphin: Dolphin prompt 中 {'包含' if has_history_param else '❌ 缺少'} history=True 参数"
+    print(history_check_msg, flush=True)
+    StandLogger.info_log(history_check_msg)
+    
     StandLogger.info_log(
         f"{COLORS['header']}{COLORS['bold']}Agent execution details:{COLORS['end']}\n"
         f"{COLORS['blue']}========================================{COLORS['end']}\n"
         f"{COLORS['cyan']}{COLORS['bold']}Dolphin Language Prompt:{COLORS['end']}\n{dolphin_prompt}\n"
         f"{COLORS['blue']}----------------------------------------{COLORS['end']}\n"
-        # f"{COLORS['green']}{COLORS['bold']}Context Variables:{COLORS['end']} {json.dumps(context_variables, indent=2, ensure_ascii=False)}\n"
+        f"{COLORS['green']}{COLORS['bold']}Context Variables:{COLORS['end']} {json.dumps(context_variables, indent=2, ensure_ascii=False)}\n"
         f"{COLORS['blue']}----------------------------------------{COLORS['end']}\n"
         f"{COLORS['yellow']}{COLORS['bold']}Skill Kit Tolls:{COLORS['end']} {json.dumps(toolkit.tools, indent=2, ensure_ascii=False, default=str)}\n"
         f"{COLORS['blue']}----------------------------------------{COLORS['end']}\n"
