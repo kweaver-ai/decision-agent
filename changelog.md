@@ -19,6 +19,9 @@
 - Add generated API documentation for `agent-factory` and `agent-executor`
 - Add Helm component metadata for the new OTel configuration surface
 
+### Frontend (agent-web)
+
+- Bug fix: support list-type interrupt parameters during conversation interruption.
 
 ## 0.4.4
 

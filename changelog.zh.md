@@ -19,6 +19,9 @@
 - 补充 `agent-factory` 与 `agent-executor` 生成版 API 文档
 - 为新版 OTel 配置补充 Helm 组件元数据说明
 
+### 前端 (agent-web)
+
+- Bug 修复：支持对话中断场景下 list 类型的中断参数。
 
 ## 0.4.4
 
