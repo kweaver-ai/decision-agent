@@ -68,11 +68,13 @@ async def run_dolphin(
     # 诊断日志：检查传入的 context_variables 中的 history
     history_in_vars = context_variables.get('history', [])
     history_len = len(history_in_vars) if history_in_vars else 0
-    o11y_logger().info(
-        f"[run_dolphin] 接收到的 context_variables: "
+    msg = (
+        f"[DIAGNOSTIC] run_dolphin: 接收到的 context_variables: "
         f"keys={list(context_variables.keys())}, "
         f"history_messages={history_len}"
     )
+    print(msg, flush=True)  # 输出到 pod logs
+    StandLogger.info_log(msg)  # 输出到 log/agent-executor.log
 
     # 1. 构造dolphin使用的LLM参数
     llm_config = await build_llm_config(ac, user_id, visitor_type)
@@ -201,16 +203,18 @@ async def run_dolphin(
         o11y_logger().info("[run_dolphin] Dolphin trace is disabled")
 
     # 诊断日志：确认传递给 DolphinAgent 的 variables
-    o11y_logger().info(
-        f"[run_dolphin] 创建 DolphinAgent，variables 包含: "
+    msg = (
+        f"[DIAGNOSTIC] run_dolphin: 创建 DolphinAgent, "
         f"keys={list(context_variables.keys())}, "
         f"history={'YES' if 'history' in context_variables else 'NO'}"
     )
+    print(msg, flush=True)  # 输出到 pod logs
+    StandLogger.info_log(msg)  # 输出到 log/agent-executor.log
+    
     if 'history' in context_variables and context_variables['history']:
-        o11y_logger().info(
-            f"[run_dolphin] 传递给 Dolphin 的 history: "
-            f"messages={len(context_variables['history'])}"
-        )
+        msg2 = f"[DIAGNOSTIC] run_dolphin: 传递给 Dolphin 的 history 长度={len(context_variables['history'])}"
+        print(msg2, flush=True)
+        StandLogger.info_log(msg2)
     
     agent = DolphinAgent(
         content=dolphin_prompt,

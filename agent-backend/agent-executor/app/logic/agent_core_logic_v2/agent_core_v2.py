@@ -216,17 +216,17 @@ class AgentCoreV2:
             # 诊断日志：检查 Factory 传递的 history 是否在 context_variables 中
             if "history" in context_variables:
                 history_len = len(context_variables["history"]) if context_variables["history"] else 0
-                o11y_logger().info(
-                    f"[agent_core_v2] ✅ context_variables 包含 history: "
-                    f"messages={history_len}"
-                )
+                msg = f"[DIAGNOSTIC] agent_core_v2: context_variables 包含 history, messages={history_len}"
+                print(msg, flush=True)  # 输出到 pod logs
+                StandLogger.info_log(msg)  # 输出到 log/agent-executor.log
                 if history_len > 0:
-                    o11y_logger().info(
-                        f"[agent_core_v2] history 预览: "
-                        f"{str(context_variables['history'][:1])[:150]}..."
-                    )
+                    preview_msg = f"[DIAGNOSTIC] agent_core_v2: history 预览: {str(context_variables['history'][:1])[:150]}..."
+                    print(preview_msg, flush=True)
+                    StandLogger.info_log(preview_msg)
             else:
-                o11y_logger().info("[agent_core_v2] ℹ️ context_variables 中没有 history（首轮对话）")
+                msg = "[DIAGNOSTIC] agent_core_v2: context_variables 中没有 history（首轮对话）"
+                print(msg, flush=True)
+                StandLogger.info_log(msg)
 
             # 更新event_key
             if new_event_key:
