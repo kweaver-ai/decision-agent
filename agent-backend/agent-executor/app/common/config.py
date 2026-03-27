@@ -1,6 +1,5 @@
 import os
 import sys
-from app.common.stand_log import StandLogger
 from app.config.builtin_ids_class import BuiltinIdsConfig
 from app.config.config_v2 import ConfigClassV2
 from app.utils.observability.observability_setting import (
@@ -24,21 +23,6 @@ server_info = ServerInfo(
 _trace_enable_env = os.getenv("TRACE_ENABLE", "false").lower()
 _trace_enabled = _trace_enable_env == "true"
 
-StandLogger.info_log("[Config] Initializing observability config (unified from otel):")
-StandLogger.info_log(
-    f"[Config]   TRACE_ENABLE={_trace_enable_env} -> trace_enabled={_trace_enabled}"
-)
-StandLogger.info_log(f"[Config]   TRACE_URL={os.getenv('TRACE_URL', 'not set')}")
-StandLogger.info_log(
-    f"[Config]   OTEL_SERVICE_NAME={os.getenv('OTEL_SERVICE_NAME', 'not set')}"
-)
-StandLogger.info_log(
-    f"[Config]   OTEL_ENVIRONMENT={os.getenv('OTEL_ENVIRONMENT', 'not set')}"
-)
-StandLogger.info_log(
-    f"[Config]   OTEL_TRACE_SAMPLING_RATE={os.getenv('OTEL_TRACE_SAMPLING_RATE', 'not set')}"
-)
-
 observability_config = ObservabilitySetting(
     log=LogSetting(
         log_enabled=os.getenv("O11Y_LOG_ENABLED", "false") == "true",
@@ -61,10 +45,6 @@ observability_config = ObservabilitySetting(
         ),
         otlp_endpoint=os.getenv("TRACE_URL", ""),
     ),
-)
-
-StandLogger.info_log(
-    f"[Config] observability_config created: trace_enabled={_trace_enabled}, provider=otlp, endpoint={os.getenv('TRACE_URL', '')}"
 )
 
 
