@@ -57,8 +57,8 @@ type Config struct {
 	SwitchFields *SwitchFields `yaml:"switch_fields"`
 
 	// OpenAPI 文档配置
-	EnableSwagger bool   `yaml:"enable_swagger"` // 是否启用 Swagger UI
-	SwaggerToken  string `yaml:"swagger_token"`  // Swagger UI 认证 token (开发模式)
+	EnableSwagger bool   `yaml:"enable_swagger"` // 是否启用 API 文档 UI（兼容旧配置名）
+	SwaggerToken  string `yaml:"swagger_token"`  // 文档 UI 认证 token（开发模式，当前保留）
 }
 
 func (c Config) IsDebug() bool {
