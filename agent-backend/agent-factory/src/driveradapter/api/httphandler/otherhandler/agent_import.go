@@ -14,6 +14,19 @@ import (
 )
 
 // ImportAgent 导入agent数据
+// @Summary      导入数据
+// @Description  - 从导出的JSON文件中导入data agent数据 - 支持批量导入多个agent - agent标识（key）不可与已存在的重复 - 如果重复，需要先删除已存在的agent，再导入 - 重复时，会返回重复的agent列表（包括agent_id、agent_key和agent_name） - 只能导入到\"我的个人空间\"中
+// @Tags         其他
+// @Accept       json
+// @Produce      json
+// @Param        request  body      object  true  "请求体"
+// @Success      200  {object}  object  "导入结果"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/agent-inout/import [post]
 func (o *otherHTTPHandler) ImportAgent(c *gin.Context) {
 	isPrivate := capimiddleware.IsInternalAPI(c)
 

@@ -9,6 +9,18 @@ import (
 )
 
 // GetUserStatus 获取用户拥有的管理权限状态
+// @Summary      获取用户拥有的管理权限状态
+// @Description  - 获取用户拥有的管理权限状态 - 这里暂时不针对某个具体的资源实例，而是针对资源类型 - 管理权限和具体的资源实例无关
+// @Tags         权限,权限-internal
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  object  "成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/agent-permission/management/user-status [get]
 func (h *permissionHandler) GetUserStatus(c *gin.Context) {
 	// 接收语言标识转换为 context.Context
 	ctx := rest.GetLanguageCtx(c)

@@ -12,6 +12,20 @@ import (
 )
 
 // CheckUsePermission 检查非个人空间下的某个agent是否有运行权限
+// @Summary      检查某个agent是否有执行（使用）权限
+// @Description  - 检查某个agent是否有执行（使用）权限 - 此接口有`内部接口`和`外部接口`
+// @Tags         权限,权限-internal
+// @Accept       json
+// @Produce      json
+// @Param        request  body      object  false  "请求体"
+// @Success      200  {object}  object  "请求成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      404  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/agent-permission/execute [post]
 func (h *permissionHandler) CheckUsePermission(c *gin.Context) {
 	// 接收语言标识转换为 context.Context
 	ctx := rest.GetLanguageCtx(c)

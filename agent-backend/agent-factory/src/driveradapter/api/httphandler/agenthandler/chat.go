@@ -21,9 +21,9 @@ import (
 )
 
 // Chat Agent 对话接口
-// @Summary      Agent 对话
+// @Summary      对话
 // @Description  与 Agent 进行对话交互，支持流式响应
-// @Tags         Agent
+// @Tags         对话,对话-internal
 // @Accept       json
 // @Produce      json
 // @Param        app_key  path      string        true  "应用 Key"

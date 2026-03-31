@@ -16,6 +16,20 @@ import (
 )
 
 // ExportAgent 导出agent数据
+// @Summary      导出数据
+// @Description  - 批量导出指定的data agent数据 - 支持导出多个agent - 返回JSON格式的导出文件 - 只能导出\"我的个人空间\"中的agent - 如果提供的agent_id有不存在的，会返回404错误
+// @Tags         其他
+// @Accept       json
+// @Produce      json
+// @Param        request  body      object  true  "请求体"
+// @Success      200  {object}  object  "导出成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      404  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/agent-inout/export [post]
 func (o *otherHTTPHandler) ExportAgent(c *gin.Context) {
 	isPrivate := capimiddleware.IsInternalAPI(c)
 

@@ -1,5 +1,8 @@
 .DEFAULT_GOAL := lint
 
+SWAG_CMD := go run github.com/swaggo/swag/cmd/swag@v1.16.6
+OPENAPI_DOCS_CMD := go run ./cmd/openapi-docs
+
 ciLint:
 	golangci-lint run --out-format=colored-line-number ./...
 	@echo "ciLint done"
@@ -94,16 +97,25 @@ serviceUtAndCoverage:
 	@echo "========================================="
 # Swagger 文档生成
 gen-swag:
-	swag init -g main.go -o docs --parseDependency
+	$(SWAG_CMD) init -g main.go -o docs --parseDependency
 
 # 查看 Swagger 文档（需要先启动服务）
 view-swag:
-	@echo "Swagger UI: http://localhost:30777/swagger/index.html"
+	@echo "Scalar: http://localhost:30777/swagger/index.html"
 
 # 清理并重新生成 Swagger
 clean-swag:
-	rm -rf docs
+	rm -f docs/docs.go docs/swagger.json docs/swagger.yaml
 	$(MAKE) gen-swag
+
+gen-api-docs: gen-swag
+	$(OPENAPI_DOCS_CMD) generate
+
+compare-api-docs: gen-swag
+	$(OPENAPI_DOCS_CMD) compare
+
+validate-api-docs:
+	$(OPENAPI_DOCS_CMD) validate
 
 add:
 	goimports -w ./**/*.go
@@ -115,4 +127,3 @@ pull:
 push:
 	git pull origin $(shell git rev-parse --abbrev-ref HEAD)
 	git push origin $(shell git rev-parse --abbrev-ref HEAD)
-

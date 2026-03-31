@@ -15,6 +15,21 @@ import (
 	"github.com/pkg/errors"
 )
 
+// @Summary      发布智能体
+// @Description  可以通过提交已有的 agent_id 发布智能体，或者提交 agent_config 创建并发布智能体
+// @Tags         发布相关,发布相关-internal
+// @Accept       json
+// @Produce      json
+// @Param        agent_id  path      string  true  "agent_id"
+// @Param        request  body      object  true  "请求体"
+// @Success      201  {object}  object  "发布成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      404  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/agent/{agent_id}/publish [post]
 func (h *releaseHandler) Publish(c *gin.Context) {
 	isPrivate := capimiddleware.IsInternalAPI(c)
 

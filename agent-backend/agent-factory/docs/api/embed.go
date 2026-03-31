@@ -10,5 +10,5 @@ var (
 	AgentFactoryYAML []byte
 
 	//go:embed agent-factory.html
-	AgentFactoryRedocHTML []byte
+	AgentFactoryHTML []byte
 )

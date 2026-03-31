@@ -15,6 +15,20 @@ import (
 )
 
 // Copy2TplAndPublish 复制Agent为模板并发布
+// @Summary      复制agent为模板并发布
+// @Description  复制agent为模板并发布
+// @Tags         agent,模板
+// @Accept       json
+// @Produce      json
+// @Param        agent_id  path      string  true  "agent_id"
+// @Param        request  body      object  true  "请求体"
+// @Success      201  {object}  object  "操作成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/agent/{agent_id}/copy2tpl-and-publish [post]
 func (h *daConfHTTPHandler) Copy2TplAndPublish(c *gin.Context) {
 	// 接收语言标识转换为 context.Context
 	ctx := rest.GetLanguageCtx(c)

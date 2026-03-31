@@ -16,7 +16,7 @@ import (
 // Manage 管理对话session
 // @Summary      管理对话session
 // @Description  管理指定的对话会话状态
-// @Tags         Session
+// @Tags         对话session管理
 // @Accept       json
 // @Produce      json
 // @Param        conversation_id  path      string                 true  "会话 ID"

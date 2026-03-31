@@ -15,6 +15,20 @@ import (
 )
 
 // UpdatePublishInfo 更新模板发布信息
+// @Summary      更新模板发布信息
+// @Description  更新模板发布信息
+// @Tags         模板
+// @Accept       json
+// @Produce      json
+// @Param        id  path      string  true  "id"
+// @Param        request  body      object  true  "请求体"
+// @Success      200  {object}  object  "更新成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/agent-tpl/{id}/publish-info [put]
 func (h *daTplHTTPHandler) UpdatePublishInfo(c *gin.Context) {
 	// 接收语言标识转换为 context.Context
 	ctx := rest.GetLanguageCtx(c)

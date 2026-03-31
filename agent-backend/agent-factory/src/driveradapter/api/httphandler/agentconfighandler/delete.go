@@ -13,6 +13,19 @@ import (
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
+// @Summary      删除agent
+// @Description  删除agent
+// @Tags         agent,agent-internal
+// @Accept       json
+// @Produce      json
+// @Param        agent_id  path      string  true  "agent_id"
+// @Success      204  {object}  object  "请求成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/agent/{agent_id} [delete]
 func (h *daConfHTTPHandler) Delete(c *gin.Context) {
 	// 判断是否是私有API
 	isPrivate := capimiddleware.IsInternalAPI(c)

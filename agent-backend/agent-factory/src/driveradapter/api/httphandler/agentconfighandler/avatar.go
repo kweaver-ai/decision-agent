@@ -24,6 +24,20 @@ type BuiltInAvatarListResponse struct {
 }
 
 // GetBuiltInAvatar 获取内置头像
+// @Summary      获取内置头像
+// @Description  获取内置头像
+// @Tags         其他-ignore
+// @Accept       json
+// @Produce      json
+// @Param        avatar_id  path      string  true  "avatar_id"
+// @Success      200  {object}  object  "获取成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      404  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/agent/avatar/built-in/{avatar_id} [get]
 func (h *daConfHTTPHandler) GetBuiltInAvatar(c *gin.Context) {
 	// 1. 获取头像ID参数
 	avatarID := c.Param("avatar_id")
@@ -53,6 +67,18 @@ func (h *daConfHTTPHandler) GetBuiltInAvatar(c *gin.Context) {
 }
 
 // GetBuiltInAvatarList 获取内置头像列表
+// @Summary      获取内置头像列表
+// @Description  获取内置头像列表
+// @Tags         其他
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  object  "获取成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/agent/avatar/built-in [get]
 func (h *daConfHTTPHandler) GetBuiltInAvatarList(c *gin.Context) {
 	// 构建头像列表
 	var avatars []BuiltInAvatarInfo

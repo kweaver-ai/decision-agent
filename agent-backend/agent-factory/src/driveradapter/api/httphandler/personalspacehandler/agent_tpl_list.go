@@ -11,6 +11,19 @@ import (
 )
 
 // AgentTplList 获取个人空间Agent模板列表
+// @Summary      个人空间（开发）下Agent模板列表
+// @Description  个人空间（开发）下Agent模板列表
+// @Tags         个人空间（开发）,模板
+// @Accept       json
+// @Produce      json
+// @Param        pagination_marker_str  query      string  false  "- 分页marker（用于获取下一页数据） - base64编码的json字符串 - base64编码前的json格式： ``` { \"updated_at\": 111, \"last_tpl_id\": 222 } ```"
+// @Success      200  {object}  object  "成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/personal-space/agent-tpl-list [get]
 func (h *PersonalSpaceHTTPHandler) AgentTplList(c *gin.Context) {
 	// 1. 获取请求参数
 	var req personalspacereq.AgentTplListReq

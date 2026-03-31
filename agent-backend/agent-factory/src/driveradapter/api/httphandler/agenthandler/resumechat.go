@@ -18,9 +18,9 @@ import (
 )
 
 // ResumeChat 恢复对话
-// @Summary      恢复对话
+// @Summary      对话恢复
 // @Description  恢复之前的对话会话
-// @Tags         Agent
+// @Tags         对话
 // @Accept       json
 // @Produce      json
 // @Param        app_key  path      string                   true  "应用 Key"

@@ -17,15 +17,17 @@ import (
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
-// Create 创建Agent
-// @Summary      创建Agent
+// Create 创建agent
+// @Summary      创建agent
 // @Description  创建一个新的 Agent 配置
-// @Tags         AgentConfig
+// @Tags         agent,agent-internal
 // @Accept       json
 // @Produce      json
 // @Param        request  body      agentconfigreq.CreateReq  true  "Agent 配置"
 // @Success      201      {object}  agentconfigresp.DetailRes  "成功"
 // @Failure      400      {object}  swagger.APIError   "请求参数错误"
+// @Failure      401      {object}  swagger.APIError   "未授权"
+// @Failure      403      {object}  swagger.APIError   "禁止访问"
 // @Failure      500      {object}  swagger.APIError   "服务器内部错误"
 // @Router       /v3/agent [post]
 // @Security     BearerAuth

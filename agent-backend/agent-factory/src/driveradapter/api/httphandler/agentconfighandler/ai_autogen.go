@@ -16,6 +16,19 @@ import (
 )
 
 // aiAutogenContent AI自动生成内容
+// @Summary      AI自动生成内容
+// @Description  - 根据提供的提示词，AI自动生成内容
+// @Tags         其他
+// @Accept       json
+// @Produce      json
+// @Param        request  body      object  true  "请求体"
+// @Success      200  {object}  object  "请求成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/agent/ai-autogen [post]
 func (h *daConfHTTPHandler) AIAutogenContent(c *gin.Context) {
 	language := chelper.GetVisitLanguageCtx(c)
 	closeNotify := c.Request.Context().Done()

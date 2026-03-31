@@ -16,13 +16,14 @@ import (
 // Delete 删除产品
 // @Summary      删除产品
 // @Description  根据产品 ID 删除产品
-// @Tags         Product
+// @Tags         产品
 // @Accept       json
 // @Produce      json
 // @Param        id  path      int  true  "产品 ID"
 // @Success      204
 // @Failure      400  {object}  swagger.APIError           "请求参数错误"
-// @Failure      404  {object}  swagger.APIError           "产品不存在"
+// @Failure      401  {object}  swagger.APIError           "未授权"
+// @Failure      403  {object}  swagger.APIError           "禁止访问"
 // @Failure      500  {object}  swagger.APIError           "服务器内部错误"
 // @Router       /v3/product/{id} [delete]
 // @Security     BearerAuth

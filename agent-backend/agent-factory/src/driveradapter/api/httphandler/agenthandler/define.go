@@ -40,7 +40,6 @@ func (h *agentHTTPHandler) RegPriRouter(router *gin.RouterGroup) {
 	// router.POST("/app/:app_key/chat/termination", h.TerminateChat)
 	// router.POST("/app/:app_key/api/chat/completion", h.APIChat)
 	// router.POST("/app/:app_key/api/doc", h.GetAPIDoc)
-	// router.POST("/file/check", h.FileCheck)
 	permissionRouter := router.Group("",
 		apimiddleware.CheckAgentUsePmsInternal(),
 		// apimiddleware.CheckSpaceMemberInternal(),

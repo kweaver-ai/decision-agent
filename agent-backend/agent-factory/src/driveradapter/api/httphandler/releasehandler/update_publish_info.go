@@ -15,6 +15,21 @@ import (
 )
 
 // UpdatePublishInfo 更新发布信息
+// @Summary      更新发布信息
+// @Description  更新发布信息
+// @Tags         发布相关
+// @Accept       json
+// @Produce      json
+// @Param        agent_id  path      string  true  "agent_id"
+// @Param        request  body      object  true  "请求体"
+// @Success      200  {object}  object  "更新发布信息成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      404  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/agent/{agent_id}/publish-info [put]
 func (h *releaseHandler) UpdatePublishInfo(c *gin.Context) {
 	isPrivate := capimiddleware.IsInternalAPI(c)
 

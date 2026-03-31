@@ -14,6 +14,20 @@ import (
 	observabilityreq "github.com/kweaver-ai/decision-agent/agent-factory/src/driveradapter/api/rdto/observability/req"
 )
 
+// @Summary      获取指定对话的session列表
+// @Description  获取指定对话的session列表，包含session的详细信息
+// @Tags         可观测性
+// @Accept       json
+// @Produce      json
+// @Param        agent_id  path      string  true  "agent_id"
+// @Param        conversation_id  path      string  true  "conversation_id"
+// @Param        request  body      object  true  "请求体"
+// @Success      200  {object}  object  "成功返回session列表"
+// @Failure      400  {object}  object  "失败"
+// @Failure      404  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v1/observability/agent/{agent_id}/conversation/{conversation_id}/session [post]
 func (h *observabilityHTTPHandler) SessionList(c *gin.Context) {
 	// 1. 获取路径参数
 	agentID := c.Param("agent_id")

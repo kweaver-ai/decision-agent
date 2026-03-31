@@ -15,6 +15,20 @@ import (
 	"github.com/pkg/errors"
 )
 
+// @Summary      取消发布智能体
+// @Description  通过发布 ID 取消已发布的智能体
+// @Tags         发布相关
+// @Accept       json
+// @Produce      json
+// @Param        agent_id  path      string  true  "agent_id"
+// @Success      204  {object}  object  "取消发布成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      404  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/agent/{agent_id}/unpublish [put]
 func (h *releaseHandler) UnPublish(c *gin.Context) {
 	isPrivate := capimiddleware.IsInternalAPI(c)
 

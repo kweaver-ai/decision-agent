@@ -13,6 +13,20 @@ import (
 	"github.com/pkg/errors"
 )
 
+// @Summary      标记对话已读
+// @Description  标记对话已读
+// @Tags         对话管理
+// @Accept       json
+// @Produce      json
+// @Param        app_key  path      string  true  "app_key"
+// @Param        id  path      string  true  "id"
+// @Param        request  body      object  true  "请求体"
+// @Success      204  {object}  object  "成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      404  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v1/app/{app_key}/conversation/{id}/mark_read [put]
 func (h *conversationHTTPHandler) MarkRead(c *gin.Context) {
 	ctx := rest.GetLanguageCtx(c)
 

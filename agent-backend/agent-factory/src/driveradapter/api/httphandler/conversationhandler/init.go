@@ -14,10 +14,10 @@ import (
 	"github.com/pkg/errors"
 )
 
-// Init 初始化会话
-// @Summary      初始化会话
+// Init 初始化对话
+// @Summary      初始化对话
 // @Description  创建一个新的会话会话
-// @Tags         Conversation
+// @Tags         对话管理
 // @Accept       json
 // @Produce      json
 // @Param        app_key  path      string                     true  "应用 Key"

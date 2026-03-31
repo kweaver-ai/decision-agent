@@ -22,6 +22,19 @@ var (
 	_ observabilityresp.ObservabilityConversationDetail
 )
 
+// @Summary      查询Agent下的所有对话列表
+// @Description  查询Agent下的所有对话列表，支持分页和根据对话title模糊查询
+// @Tags         可观测性
+// @Accept       json
+// @Produce      json
+// @Param        agent_key  path      string  true  "agent_key"
+// @Param        request  body      object  true  "请求体"
+// @Success      200  {object}  object  "成功返回对话列表"
+// @Failure      400  {object}  object  "失败"
+// @Failure      404  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v1/observability/agent/{agent_key}/conversation [post]
 func (h *observabilityHTTPHandler) ConversationList(c *gin.Context) {
 	// 1. 获取路径参数
 	agentID := c.Param("agent_id")

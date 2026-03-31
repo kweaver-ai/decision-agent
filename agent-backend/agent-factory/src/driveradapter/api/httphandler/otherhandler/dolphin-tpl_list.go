@@ -12,6 +12,20 @@ import (
 	"github.com/pkg/errors"
 )
 
+// @Summary      获取dolphin模板列表
+// @Description  获取dolphin模板列表
+// @Tags         其他
+// @Accept       json
+// @Produce      json
+// @Param        request  body      object  true  "请求体"
+// @Success      200  {object}  object  "获取成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      404  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/agent/dolphin-tpl/list [post]
 func (o *otherHTTPHandler) DolphinTplList(c *gin.Context) {
 	// 1. 获取请求参数
 	var req otherreq.DolphinTplListReq

@@ -14,6 +14,16 @@ import (
 	"github.com/pkg/errors"
 )
 
+// @Summary      获取Agent Api文档
+// @Description  获取Agent Api文档
+// @Tags         对话
+// @Accept       json
+// @Produce      json
+// @Param        app_key  path      string  true  "app_key"
+// @Param        request  body      object  true  "请求体"
+// @Success      200  {object}  object  "成功"
+// @Security     BearerAuth
+// @Router       /v1/app/{app_key}/api/doc [post]
 func (h *agentHTTPHandler) GetAPIDoc(c *gin.Context) {
 	var req agentreq.GetAPIDocReq
 	if err := c.ShouldBindJSON(&req); err != nil {

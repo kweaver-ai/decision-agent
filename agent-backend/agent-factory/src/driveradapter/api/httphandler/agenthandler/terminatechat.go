@@ -12,6 +12,19 @@ import (
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
+// @Summary      终止对话
+// @Description  终止对话
+// @Tags         对话
+// @Accept       json
+// @Produce      json
+// @Param        app_key  path      string  true  "app_key"
+// @Param        request  body      object  true  "请求体"
+// @Success      204  {object}  object  "成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      404  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v1/app/{app_key}/chat/termination [post]
 func (h *agentHTTPHandler) TerminateChat(c *gin.Context) {
 	var req agentreq.TerminateReq
 	if err := c.ShouldBindJSON(&req); err != nil {

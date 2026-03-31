@@ -15,4 +15,4 @@ coverage.out
 # UT coverage reports
 test_out/
 *.test
-output/playwright
+output/

@@ -17,12 +17,14 @@ import (
 // Create 创建产品
 // @Summary      创建产品
 // @Description  创建一个新的产品
-// @Tags         Product
+// @Tags         产品
 // @Accept       json
 // @Produce      json
 // @Param        product  body      productreq.CreateReq  true  "产品信息"
 // @Success      201     {object}  productresp.CreateRes  "创建成功"
 // @Failure      400     {object}  swagger.APIError         "请求参数错误"
+// @Failure      401     {object}  swagger.APIError         "未授权"
+// @Failure      403     {object}  swagger.APIError         "禁止访问"
 // @Failure      500     {object}  swagger.APIError         "服务器内部错误"
 // @Router       /v3/product [post]
 // @Security     BearerAuth

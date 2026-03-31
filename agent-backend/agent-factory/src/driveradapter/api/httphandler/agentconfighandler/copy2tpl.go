@@ -14,6 +14,19 @@ import (
 )
 
 // Copy2Tpl 复制Agent为模板
+// @Summary      复制agent为模板
+// @Description  复制agent为模板
+// @Tags         agent,模板
+// @Accept       json
+// @Produce      json
+// @Param        agent_id  path      string  true  "agent_id"
+// @Success      201  {object}  object  "复制成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/agent/{agent_id}/copy2tpl [post]
 func (h *daConfHTTPHandler) Copy2Tpl(c *gin.Context) {
 	isPrivate := capimiddleware.IsInternalAPI(c)
 

@@ -17,10 +17,10 @@ import (
 	"github.com/pkg/errors"
 )
 
-// List 获取会话列表
-// @Summary      获取会话列表
+// List 获取对话列表
+// @Summary      获取对话列表
 // @Description  获取指定应用的会话列表，支持分页
-// @Tags         Conversation
+// @Tags         对话管理
 // @Accept       json
 // @Produce      json
 // @Param        app_key  path      string  true  "应用 Key"

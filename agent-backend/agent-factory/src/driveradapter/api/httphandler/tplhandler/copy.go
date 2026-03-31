@@ -15,6 +15,19 @@ import (
 )
 
 // Copy 复制智能体模板
+// @Summary      复制智能体模板
+// @Description  复制智能体模板
+// @Tags         模板
+// @Accept       json
+// @Produce      json
+// @Param        id  path      string  true  "id"
+// @Success      201  {object}  object  "复制成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/agent-tpl/{id}/copy [post]
 func (h *daTplHTTPHandler) Copy(c *gin.Context) {
 	// 接收语言标识转换为 context.Context
 	ctx := rest.GetLanguageCtx(c)

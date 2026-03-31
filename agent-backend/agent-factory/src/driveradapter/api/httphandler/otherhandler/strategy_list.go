@@ -26,6 +26,19 @@ var strategyMap = map[string][]skillvalobj.Strategy{
 	// },
 }
 
+// @Summary      根据分类获取结果处理策略列表
+// @Description  根据分类获取结果处理策略列表
+// @Tags         工具结果处理策略
+// @Accept       json
+// @Produce      json
+// @Param        category_id  path      string  true  "category_id"
+// @Success      200  {object}  object  "成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/tool-result-process-strategy/category/{category_id}/strategy [get]
 func (o *otherHTTPHandler) StrategyList(c *gin.Context) {
 	category := c.Param("category_id")
 	if category == "" {

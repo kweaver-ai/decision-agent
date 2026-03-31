@@ -14,6 +14,19 @@ import (
 )
 
 // Copy 复制Agent
+// @Summary      复制agent
+// @Description  复制agent
+// @Tags         agent
+// @Accept       json
+// @Produce      json
+// @Param        agent_id  path      string  true  "agent_id"
+// @Success      201  {object}  object  "复制成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/agent/{agent_id}/copy [post]
 func (h *daConfHTTPHandler) Copy(c *gin.Context) {
 	isPrivate := capimiddleware.IsInternalAPI(c)
 

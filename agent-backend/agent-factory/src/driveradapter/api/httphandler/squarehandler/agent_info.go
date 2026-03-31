@@ -12,6 +12,21 @@ import (
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
+// @Summary      智能体详情（已发布或未发布）
+// @Description  - 智能体详情 - 包含已发布和未发布
+// @Tags         已发布,agent-internal
+// @Accept       json
+// @Produce      json
+// @Param        agent_id  path      string  true  "agent_id"
+// @Param        version  path      string  true  "version"
+// @Success      200  {object}  object  "成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      404  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/agent-market/agent/{agent_id}/version/{version} [get]
 func (h *squareHandler) AgentInfo(c *gin.Context) {
 	// 接收语言标识转换为 context.Context
 	ctx := rest.GetLanguageCtx(c)

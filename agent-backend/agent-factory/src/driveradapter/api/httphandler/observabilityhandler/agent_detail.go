@@ -13,6 +13,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// @Summary      查询指定Agent的可观测信息
+// @Description  查询指定Agent的可观测信息，返回结果包含Agent的配置信息以及可观测性的指标，支持时间过滤
+// @Tags         可观测性
+// @Accept       json
+// @Produce      json
+// @Param        agent_id  path      string  true  "agent_id"
+// @Param        request  body      object  true  "请求体"
+// @Success      200  {object}  object  "成功返回Agent可观测信息"
+// @Failure      400  {object}  object  "失败"
+// @Failure      404  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v1/observability/agent/{agent_id}/detail [post]
 func (h *observabilityHTTPHandler) AgentDetail(c *gin.Context) {
 	// 1. 获取路径参数
 	agentID := c.Param("agent_id")

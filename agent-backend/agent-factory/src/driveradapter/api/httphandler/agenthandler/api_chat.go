@@ -23,6 +23,18 @@ import (
 )
 
 // NOTE: API调用，除url不同，其余与外部调用相同，只是token变为长期有效
+// @Summary      APIChat
+// @Description  APIChat
+// @Tags         对话,对话-internal
+// @Accept       json
+// @Produce      json
+// @Param        app_key  path      string  true  "app_key"
+// @Param        request  body      object  true  "请求体"
+// @Success      200  {object}  object  "成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v1/app/{app_key}/api/chat/completion [post]
 func (h *agentHTTPHandler) APIChat(c *gin.Context) {
 	reqStartTime := cutil.GetCurrentMSTimestamp()
 	// 1. app_key

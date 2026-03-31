@@ -13,14 +13,16 @@ import (
 )
 
 // PublishedAgentList 已发布智能体列表
-// @Summary      获取已发布智能体列表
+// @Summary      已发布智能体列表
 // @Description  获取已发布的智能体列表，支持分页和筛选
-// @Tags         Published
+// @Tags         已发布
 // @Accept       json
 // @Produce      json
 // @Param        request  body      pubedreq.PubedAgentListReq  true  "查询参数"
 // @Success      200       {string}  string  "成功"
 // @Failure      400      {object}  swagger.APIError  "请求参数错误"
+// @Failure      401      {object}  swagger.APIError  "未授权"
+// @Failure      403      {object}  swagger.APIError  "禁止访问"
 // @Failure      500      {object}  swagger.APIError  "服务器内部错误"
 // @Router       /v3/published/agent [post]
 // @Security     BearerAuth

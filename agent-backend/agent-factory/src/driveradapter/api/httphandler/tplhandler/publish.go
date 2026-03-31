@@ -15,6 +15,20 @@ import (
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
+// @Summary      发布智能体模板
+// @Description  发布智能体模板
+// @Tags         模板
+// @Accept       json
+// @Produce      json
+// @Param        id  path      string  true  "id"
+// @Param        request  body      object  true  "请求体"
+// @Success      200  {object}  object  "发布成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/agent-tpl/{id}/publish [post]
 func (h *daTplHTTPHandler) Publish(c *gin.Context) {
 	// 接收语言标识转换为 context.Context
 	ctx := rest.GetLanguageCtx(c)

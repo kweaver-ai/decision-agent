@@ -16,6 +16,18 @@ import (
 	"github.com/kweaver-ai/kweaver-go-lib/rest"
 )
 
+// @Summary      获取最近访问的智能体
+// @Description  获取最近访问的智能体
+// @Tags         最近访问
+// @Accept       json
+// @Produce      json
+// @Success      200  {object}  object  "成功"
+// @Failure      400  {object}  object  "失败"
+// @Failure      401  {object}  object  "失败"
+// @Failure      403  {object}  object  "失败"
+// @Failure      500  {object}  object  "失败"
+// @Security     BearerAuth
+// @Router       /v3/recent-visit/agent [get]
 func (h *squareHandler) RecentAgentList(c *gin.Context) {
 	// 接收语言标识转换为 context.Context
 	ctx := rest.GetLanguageCtx(c)
