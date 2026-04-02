@@ -22,4 +22,10 @@ tests/tools/*/build/
 .windsurf/
 .kiro/
 .specify/
+.conf/
+.ktctl/
+.trae/
+.vscode/
+.kubeconfig
+
 
