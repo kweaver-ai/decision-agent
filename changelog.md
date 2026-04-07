@@ -1,4 +1,12 @@
 # Changelog
+## 0.5.2
+
+### Bug Fixes
+
+- Fix logger method calls in agent-executor dolphin paths
+  - Replace `warning` with `warn` when dolphin trace listener creation fails
+  - Replace `warning` with `warn` when run-agent options fall back to auto-generated conversation id
+  
 ## 0.5.1
 
 ### Bug Fixes

@@ -1,4 +1,12 @@
 # 版本 changelog 说明
+## 0.5.2
+
+### Bug 修复
+
+- 修复 agent-executor dolphin 路径中的日志方法调用
+  - 将 dolphin trace listener 创建失败时的 `warning` 改为 `warn`
+  - 将 run-agent options 回退到自动生成会话 ID 时的 `warning` 改为 `warn`
+  
 ## 0.5.1
 
 ### Bug 修复
