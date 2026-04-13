@@ -4,6 +4,8 @@
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE.txt)
 
+> **本项目已弃用。** 作为 KWeaver Core 的一部分，本仓库已迁入单体仓库 **[kweaver-ai/kweaver-core](https://github.com/kweaver-ai/kweaver-core)**。后续开发请关注 **[kweaver-core 中的 decision-agent 目录](https://github.com/kweaver-ai/kweaver-core/tree/main/decision-agent)**，并持续关注我们的新项目。
+
 Decision Agent 是 KWeaver 生态的一部分。如果您喜欢这个项目，欢迎也给 **[KWeaver](https://github.com/kweaver-ai/kweaver)** 项目点个 ⭐！
 
 **[KWeaver](https://github.com/kweaver-ai/kweaver)** 是一个构建、发布、运行决策智能型 AI 应用的开源生态。此生态采用本体作为业务知识网络的核心方法，以 DIP 为核心平台，旨在提供弹性、敏捷、可靠的企业级决策智能，进一步释放每一员的生产力。
